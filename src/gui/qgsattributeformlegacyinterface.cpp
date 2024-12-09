@@ -33,8 +33,8 @@ QgsAttributeFormLegacyInterface::QgsAttributeFormLegacyInterface( const QString 
   mPyLayerVarName.replace( reClean, QStringLiteral( "_" ) ); // clean identifier
 
   const QString initLayer = QStringLiteral( "%1 = sip.wrapinstance( %2, qgis.core.QgsVectorLayer )" )
-                            .arg( mPyLayerVarName )
-                            .arg( ( quint64 ) form->layer() );
+                              .arg( mPyLayerVarName )
+                              .arg( ( quint64 ) form->layer() );
 
   QgsPythonRunner::run( initLayer );
 }
@@ -61,16 +61,13 @@ void QgsAttributeFormLegacyInterface::featureChanged()
   const QDateTime dt = QDateTime::currentDateTime();
   const QString pyFeatureVarName = QStringLiteral( "_qgis_feature_%1" ).arg( dt.toString( QStringLiteral( "yyyyMMddhhmmsszzz" ) ) );
   const QString initFeature = QStringLiteral( "%1 = sip.wrapinstance( %2, qgis.core.QgsFeature )" )
-                              .arg( pyFeatureVarName )
-                              .arg( ( quint64 ) & form()->feature() );
+                                .arg( pyFeatureVarName )
+                                .arg( ( quint64 ) &form()->feature() );
 
   QgsPythonRunner::run( initFeature );
 
   const QString expr = QStringLiteral( "%1( %2, %3, %4)" )
-                       .arg( mPyFunctionName,
-                             mPyFormVarName,
-                             mPyLayerVarName,
-                             pyFeatureVarName );
+                         .arg( mPyFunctionName, mPyFormVarName, mPyLayerVarName, pyFeatureVarName );
 
   QgsPythonRunner::run( expr );
 

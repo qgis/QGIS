@@ -8,5 +8,5 @@ QgsGeometryCheckError.ValueArea = QgsGeometryCheckError.ValueType.ValueArea
 QgsGeometryCheckError.ValueOther = QgsGeometryCheckError.ValueType.ValueOther
 try:
     QgsGeometryCheckError.__group__ = ['vector', 'geometry_checker']
-except NameError:
+except (NameError, AttributeError):
     pass

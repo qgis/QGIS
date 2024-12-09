@@ -39,7 +39,6 @@ Shows a grid on the map canvas given a spatial resolution.
       sipType = nullptr;
 %End
   public:
-
     QgsSnapToGridCanvasItem( QgsMapCanvas *mapCanvas /TransferThis/ );
 %Docstring
 Will automatically be added to the ``mapCanvas``.

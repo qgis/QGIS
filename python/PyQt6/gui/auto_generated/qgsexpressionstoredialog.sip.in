@@ -9,7 +9,6 @@
 
 
 
-
 class QgsExpressionStoreDialog : QDialog
 {
 %Docstring(signature="appended")
@@ -22,19 +21,14 @@ A generic dialog for editing expression text, label and help text.
 #include "qgsexpressionstoredialog.h"
 %End
   public:
-
-    QgsExpressionStoreDialog( const QString &label,
-                              const QString &expression,
-                              const QString &helpText,
-                              const QStringList &existingLabels = QStringList(),
-                              QWidget *parent = 0 );
+    QgsExpressionStoreDialog( const QString &label, const QString &expression, const QString &helpText, const QStringList &existingLabels = QStringList(), QWidget *parent = 0 );
 %Docstring
 Creates a QgsExpressionStoreDialog with given ``label``, ``expression`` and ``helpText``.
 ``existingLabels`` is an optional list of existing labels for unique label validation,
 ``parent`` is the optional parent widget.
 %End
 
-    QString expression( );
+    QString expression();
 %Docstring
 Returns the expression text
 %End

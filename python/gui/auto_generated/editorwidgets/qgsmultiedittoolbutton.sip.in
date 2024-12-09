@@ -20,7 +20,6 @@ edit mode.
 #include "qgsmultiedittoolbutton.h"
 %End
   public:
-
     enum State
     {
       Default,

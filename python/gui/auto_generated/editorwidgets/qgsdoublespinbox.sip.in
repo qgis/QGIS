@@ -36,7 +36,6 @@ This value can then be handled by a special value text.
       sipType = NULL;
 %End
   public:
-
     enum ClearValueMode
     {
       MinimumValue,

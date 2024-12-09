@@ -31,11 +31,10 @@ QgsCalloutPanelWidget::QgsCalloutPanelWidget( QWidget *parent, QgsMapLayer *laye
   const QStringList calloutTypes = QgsApplication::calloutRegistry()->calloutTypes();
   for ( const QString &type : calloutTypes )
   {
-    mCalloutStyleComboBox->addItem( QgsApplication::calloutRegistry()->calloutMetadata( type )->icon(),
-                                    QgsApplication::calloutRegistry()->calloutMetadata( type )->visibleName(), type );
+    mCalloutStyleComboBox->addItem( QgsApplication::calloutRegistry()->calloutMetadata( type )->icon(), QgsApplication::calloutRegistry()->calloutMetadata( type )->visibleName(), type );
   }
 
-  connect( mCalloutStyleComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsCalloutPanelWidget::calloutTypeChanged );
+  connect( mCalloutStyleComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsCalloutPanelWidget::calloutTypeChanged );
   calloutTypeChanged();
 }
 
@@ -47,7 +46,7 @@ void QgsCalloutPanelWidget::setGeometryType( Qgis::GeometryType type )
 void QgsCalloutPanelWidget::setContext( const QgsSymbolWidgetContext &context )
 {
   mContext = context;
-  if ( QgsCalloutWidget *cw = qobject_cast< QgsCalloutWidget * >( mCalloutStackedWidget->currentWidget() ) )
+  if ( QgsCalloutWidget *cw = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() ) )
   {
     cw->setContext( context );
   }
@@ -71,8 +70,8 @@ void QgsCalloutPanelWidget::setCallout( const QgsCallout *callout )
 QgsCallout *QgsCalloutPanelWidget::callout()
 {
   const QString calloutType = mCalloutStyleComboBox->currentData().toString();
-  std::unique_ptr< QgsCallout > callout;
-  if ( QgsCalloutWidget *pew = qobject_cast< QgsCalloutWidget * >( mCalloutStackedWidget->currentWidget() ) )
+  std::unique_ptr<QgsCallout> callout;
+  if ( QgsCalloutWidget *pew = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() ) )
   {
     callout.reset( pew->callout()->clone() );
   }
@@ -86,7 +85,7 @@ QgsCallout *QgsCalloutPanelWidget::callout()
 void QgsCalloutPanelWidget::calloutTypeChanged()
 {
   const QString newCalloutType = mCalloutStyleComboBox->currentData().toString();
-  QgsCalloutWidget *pew = qobject_cast< QgsCalloutWidget * >( mCalloutStackedWidget->currentWidget() );
+  QgsCalloutWidget *pew = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() );
   if ( pew )
   {
     if ( pew->callout() && pew->callout()->type() == newCalloutType )
@@ -101,7 +100,7 @@ void QgsCalloutPanelWidget::calloutTypeChanged()
 
   // change callout to a new one (with different type)
   // base new callout on existing callout's properties
-  const std::unique_ptr< QgsCallout > newCallout( am->createCallout( pew && pew->callout() ? pew->callout()->properties( QgsReadWriteContext() ) : QVariantMap(), QgsReadWriteContext() ) );
+  const std::unique_ptr<QgsCallout> newCallout( am->createCallout( pew && pew->callout() ? pew->callout()->properties( QgsReadWriteContext() ) : QVariantMap(), QgsReadWriteContext() ) );
   if ( !newCallout )
     return;
 
@@ -120,7 +119,7 @@ void QgsCalloutPanelWidget::updateCalloutWidget( const QgsCallout *callout )
   if ( mCalloutStackedWidget->currentWidget() != pageDummy )
   {
     // stop updating from the original widget
-    if ( QgsCalloutWidget *pew = qobject_cast< QgsCalloutWidget * >( mCalloutStackedWidget->currentWidget() ) )
+    if ( QgsCalloutWidget *pew = qobject_cast<QgsCalloutWidget *>( mCalloutStackedWidget->currentWidget() ) )
       disconnect( pew, &QgsCalloutWidget::changed, this, &QgsCalloutPanelWidget::calloutChanged );
   }
 
@@ -130,7 +129,7 @@ void QgsCalloutPanelWidget::updateCalloutWidget( const QgsCallout *callout )
     if ( QgsCalloutWidget *w = am->createCalloutWidget( mLayer ) )
     {
       Qgis::GeometryType geometryType = mGeometryType;
-      if ( QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( mLayer ) )
+      if ( QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( mLayer ) )
         geometryType = vLayer->geometryType();
       w->setGeometryType( geometryType );
       w->setCallout( callout );

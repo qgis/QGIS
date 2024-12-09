@@ -31,9 +31,7 @@
 namespace QgsGuiUtils
 {
 
-  bool GUI_EXPORT openFilesRememberingFilter( QString const &filterName,
-      QString const &filters, QStringList &selectedFiles, QString &enc, QString &title,
-      bool cancelAll )
+  bool GUI_EXPORT openFilesRememberingFilter( QString const &filterName, QString const &filters, QStringList &selectedFiles, QString &enc, QString &title, bool cancelAll )
   {
     Q_UNUSED( enc )
 
@@ -122,7 +120,7 @@ namespace QgsGuiUtils
     }
 #endif
 
-    QgsSettings settings;  // where we keep last used filter in persistent state
+    QgsSettings settings; // where we keep last used filter in persistent state
     const QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
 
     QString selectedFilter = settings.value( QStringLiteral( "UI/lastSaveAsImageFilter" ), QString() ).toString();
@@ -145,7 +143,7 @@ namespace QgsGuiUtils
 
     QString outputFileName;
     QString ext;
-#if defined(Q_OS_WIN) || defined(Q_OS_MAC) || defined(Q_OS_LINUX)
+#if defined( Q_OS_WIN ) || defined( Q_OS_MAC ) || defined( Q_OS_LINUX )
     outputFileName = QFileDialog::getSaveFileName( parent, message, initialPath, formatByExtension + QStringLiteral( ";;" ) + qgsMapJoinKeys( filterMap, QStringLiteral( ";;" ) ), &selectedFilter );
 #else
     //create a file dialog using the filter list generated above
@@ -156,7 +154,7 @@ namespace QgsGuiUtils
     fileDialog->setAcceptMode( QFileDialog::AcceptSave );
     fileDialog->setOption( QFileDialog::DontConfirmOverwrite, false );
 
-    if ( !selectedFilter.isEmpty() )     // set the filter to the last one used
+    if ( !selectedFilter.isEmpty() ) // set the filter to the last one used
     {
       fileDialog->selectNameFilter( selectedFilter );
     }
@@ -175,7 +173,7 @@ namespace QgsGuiUtils
         settings.setValue( QStringLiteral( "UI/lastSaveAsImageFilter" ), QString() );
         ext = QFileInfo( outputFileName ).suffix();
 
-        auto match = std::find_if( filterMap.begin(), filterMap.end(), [&ext]( const QString & filter ) { return filter == ext; } );
+        auto match = std::find_if( filterMap.begin(), filterMap.end(), [&ext]( const QString &filter ) { return filter == ext; } );
         if ( match == filterMap.end() )
         {
           // Use "png" format when extension missing or not matching
@@ -216,7 +214,7 @@ namespace QgsGuiUtils
     // parent is intentionally not set to 'this' as
     // that would make it follow the style sheet font
     // see also #12233 and #4937
-#if defined(Q_OS_MAC)
+#if defined( Q_OS_MAC )
     // Native dialog broken on macOS with Qt5
     // probably only broken in Qt5.11.1 and .2
     //    (see https://successfulsoftware.net/2018/11/02/qt-is-broken-on-macos-right-now/ )
@@ -297,13 +295,13 @@ namespace QgsGuiUtils
   {
     const int precision { significantDigits( dataType ) };
     QString result { QLocale().toString( value, 'f', precision ) };
-    if ( ! displayTrailingZeroes )
+    if ( !displayTrailingZeroes )
     {
       const QRegularExpression zeroesRe { QStringLiteral( R"raw(\%1\d*?(0+$))raw" ).arg( QLocale().decimalPoint() ) };
       if ( zeroesRe.match( result ).hasMatch() )
       {
         result.truncate( zeroesRe.match( result ).capturedStart( 1 ) );
-        if ( result.endsWith( QLocale().decimalPoint( ) ) )
+        if ( result.endsWith( QLocale().decimalPoint() ) )
         {
           result.chop( 1 );
         }
@@ -346,7 +344,7 @@ namespace QgsGuiUtils
     }
     return 0;
   }
-}
+} // namespace QgsGuiUtils
 
 //
 // QgsTemporaryCursorOverride

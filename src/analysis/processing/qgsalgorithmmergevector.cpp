@@ -81,7 +81,7 @@ QgsMergeVectorAlgorithm *QgsMergeVectorAlgorithm::createInstance() const
 
 QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
 
   QgsFields outputFields;
   long totalFeatureCount = 0;
@@ -112,7 +112,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
     if ( layer->type() != Qgis::LayerType::Vector )
       throw QgsProcessingException( QObject::tr( "All layers must be vector layers!" ) );
 
-    QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
 
     const Qgis::WkbType layerWkbType = vl->wkbType();
     const QgsCoordinateReferenceSystem layerCrs = vl->crs();
@@ -129,8 +129,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
     {
       if ( QgsWkbTypes::geometryType( outputType ) != QgsWkbTypes::geometryType( layerWkbType ) )
         throw QgsProcessingException( QObject::tr( "All layers must have same geometry type! Encountered a %1 layer when expecting a %2 layer." )
-                                      .arg( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( layerWkbType ) ),
-                                            QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( outputType ) ) ) );
+                                        .arg( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( layerWkbType ) ), QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( outputType ) ) ) );
 
       if ( QgsWkbTypes::hasM( layerWkbType ) && !QgsWkbTypes::hasM( outputType ) )
       {
@@ -169,7 +168,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
           {
             feedback->pushWarning( QObject::tr( "%1 field in layer %2 has different data type than the destination layer (%3 instead of %4). "
                                                 "%1 field will be converted to string type." )
-                                   .arg( sourceField.name(), layerName, sourceField.typeName(), destField.typeName() ) );
+                                     .arg( sourceField.name(), layerName, sourceField.typeName(), destField.typeName() ) );
             destField.setType( QMetaType::Type::QString );
             destField.setSubType( QMetaType::Type::UnknownType );
             destField.setLength( 0 );
@@ -198,7 +197,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
   }
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, outputType, outputCrs, QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outputFields, outputType, outputCrs, QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -214,7 +213,7 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
     if ( !layer )
       continue;
 
-    QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
+    QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
     if ( !vl )
       continue;
 

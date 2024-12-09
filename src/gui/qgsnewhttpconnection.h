@@ -35,15 +35,14 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     Q_OBJECT
 
   public:
-
     /**
      * Available connection types for configuring in the dialog.
      */
     enum ConnectionType SIP_ENUM_BASETYPE( IntFlag )
     {
-      ConnectionWfs = 1 << 1, //!< WFS connection
-      ConnectionWms = 1 << 2, //!< WMS connection
-      ConnectionWcs = 1 << 3, //!< WCS connection
+      ConnectionWfs = 1 << 1,   //!< WFS connection
+      ConnectionWms = 1 << 2,   //!< WMS connection
+      ConnectionWcs = 1 << 3,   //!< WCS connection
       ConnectionOther = 1 << 4, //!< Other connection type
     };
     Q_DECLARE_FLAGS( ConnectionTypes, ConnectionType )
@@ -53,9 +52,9 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
      */
     enum Flag SIP_ENUM_BASETYPE( IntFlag )
     {
-      FlagShowTestConnection = 1 << 1, //!< Display the 'test connection' button
+      FlagShowTestConnection = 1 << 1,      //!< Display the 'test connection' button
       FlagHideAuthenticationGroup = 1 << 2, //!< Hide the Authentication group
-      FlagShowHttpSettings = 1 << 3, //!< Display the 'http' group
+      FlagShowHttpSettings = 1 << 3,        //!< Display the 'http' group
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -68,12 +67,9 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
      * The \a flags argument allows specifying flags which control the dialog behavior
      * and appearance.
      */
-    QgsNewHttpConnection( QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                          QgsNewHttpConnection::ConnectionTypes types = ConnectionWms,
+    QgsNewHttpConnection( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsNewHttpConnection::ConnectionTypes types = ConnectionWms,
                           const QString &serviceName SIP_PYARGRENAME( settingsKey ) = "WMS", // TODO QGIS 4 remove arg rename
-                          const QString &connectionName = QString(),
-                          QgsNewHttpConnection::Flags flags = QgsNewHttpConnection::Flags(),
-                          Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+                          const QString &connectionName = QString(), QgsNewHttpConnection::Flags flags = QgsNewHttpConnection::Flags(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     /**
      * Returns the current connection name.
@@ -98,7 +94,6 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     void wfsFeaturePagingCurrentIndexChanged( int index );
 
   protected:
-
     //! Index of wfsVersionComboBox
     enum WfsVersionIndex
     {
@@ -191,13 +186,11 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
     void updateServiceSpecificSettings();
 
   private:
-
     ConnectionTypes mTypes = ConnectionWms;
 
     QString mServiceName;
     QString mOriginalConnName; //store initial name to delete entry in case of rename
     void showHelp();
-
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsNewHttpConnection::ConnectionTypes )

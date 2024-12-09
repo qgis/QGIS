@@ -40,7 +40,7 @@ for f in $FILES; do
 	esac
 
 	# only run astyle on sipified directories, others are handled by clang-format (see .pre-commit-config.yaml)
-	if [[ $f =~ ^src/(core|gui|analysis|3d|server) ]]; then
+	if [[ $f =~ ^src/(core|3d|server) ]]; then
 		m="$f.prepare"
 		cp "$f" "$m"
 		astyle.sh "$f"

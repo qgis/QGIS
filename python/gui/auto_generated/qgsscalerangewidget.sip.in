@@ -19,7 +19,6 @@ A widget allowing entry of a range of map scales, e.g. minimum scale and maximum
 #include "qgsscalerangewidget.h"
 %End
   public:
-
     explicit QgsScaleRangeWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsScaleRangeWidget.

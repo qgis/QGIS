@@ -45,7 +45,6 @@ The :py:class:`QgsNumericFormatGuiRegistry` is a home for widgets for configurin
 #include "qgsnumericformatguiregistry.h"
 %End
   public:
-
     QgsNumericFormatGuiRegistry();
 %Docstring
 Constructor. Should never be called manually, is already

@@ -32,10 +32,7 @@ void QgsReclassifyUtils::reportClasses( const QVector<QgsReclassifyUtils::Raster
   feedback->pushInfo( QObject::tr( "Using classes:" ) );
   for ( const RasterClass &c : classes )
   {
-    feedback->pushInfo( QStringLiteral( " %1) %2 %3 %4" ).arg( i )
-                        .arg( c.asText() )
-                        .arg( QChar( 0x2192 ) )
-                        .arg( c.value ) );
+    feedback->pushInfo( QStringLiteral( " %1) %2 %3 %4" ).arg( i ).arg( c.asText() ).arg( QChar( 0x2192 ) ).arg( c.value ) );
     i++;
   }
 }
@@ -51,19 +48,13 @@ void QgsReclassifyUtils::checkForOverlaps( const QVector<QgsReclassifyUtils::Ras
       const QgsReclassifyUtils::RasterClass &class2 = classes.at( j );
       if ( class1.overlaps( class2 ) )
       {
-        feedback->reportError( QObject::tr( "Warning: Class %1 (%2) overlaps with class %3 (%4)" ).arg( i + 1 )
-                               .arg( class1.asText() )
-                               .arg( j + 1 )
-                               .arg( class2.asText() ) );
+        feedback->reportError( QObject::tr( "Warning: Class %1 (%2) overlaps with class %3 (%4)" ).arg( i + 1 ).arg( class1.asText() ).arg( j + 1 ).arg( class2.asText() ) );
       }
     }
   }
 }
 
-void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterClass> &classes, QgsRasterInterface *sourceRaster, int band,
-                                     const QgsRectangle &extent, int sourceWidthPixels, int sourceHeightPixels,
-                                     QgsRasterDataProvider *destinationRaster, double destNoDataValue, bool useNoDataForMissingValues,
-                                     QgsProcessingFeedback *feedback )
+void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterClass> &classes, QgsRasterInterface *sourceRaster, int band, const QgsRectangle &extent, int sourceWidthPixels, int sourceHeightPixels, QgsRasterDataProvider *destinationRaster, double destNoDataValue, bool useNoDataForMissingValues, QgsProcessingFeedback *feedback )
 {
   const int maxWidth = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_WIDTH;
   const int maxHeight = QgsRasterIterator::DEFAULT_MAXIMUM_TILE_HEIGHT;
@@ -71,8 +62,8 @@ void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterCla
   QgsRasterIterator iter( sourceRaster );
   iter.startRasterRead( band, sourceWidthPixels, sourceHeightPixels, extent );
 
-  const int nbBlocksWidth = static_cast< int >( std::ceil( 1.0 * sourceWidthPixels / maxWidth ) );
-  const int nbBlocksHeight = static_cast< int >( std::ceil( 1.0 * sourceHeightPixels / maxHeight ) );
+  const int nbBlocksWidth = static_cast<int>( std::ceil( 1.0 * sourceWidthPixels / maxWidth ) );
+  const int nbBlocksHeight = static_cast<int>( std::ceil( 1.0 * sourceHeightPixels / maxHeight ) );
   const int nbBlocks = nbBlocksWidth * nbBlocksHeight;
 
   int iterLeft = 0;
@@ -80,7 +71,7 @@ void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterCla
   int iterCols = 0;
   int iterRows = 0;
   destinationRaster->setEditable( true );
-  std::unique_ptr< QgsRasterBlock > rasterBlock;
+  std::unique_ptr<QgsRasterBlock> rasterBlock;
   bool reclassed = false;
   bool isNoData = false;
   while ( iter.readNextRasterPart( band, iterCols, iterRows, rasterBlock, iterLeft, iterTop ) )
@@ -89,7 +80,7 @@ void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterCla
       feedback->setProgress( 100 * ( ( iterTop / maxHeight * nbBlocksWidth ) + iterLeft / maxWidth ) / nbBlocks );
     if ( feedback && feedback->isCanceled() )
       break;
-    std::unique_ptr< QgsRasterBlock > reclassifiedBlock = std::make_unique< QgsRasterBlock >( destinationRaster->dataType( 1 ), iterCols, iterRows );
+    std::unique_ptr<QgsRasterBlock> reclassifiedBlock = std::make_unique<QgsRasterBlock>( destinationRaster->dataType( 1 ), iterCols, iterRows );
 
     for ( int row = 0; row < iterRows; row++ )
     {
@@ -116,8 +107,4 @@ void QgsReclassifyUtils::reclassify( const QVector<QgsReclassifyUtils::RasterCla
 }
 
 
-
 ///@endcond
-
-
-

@@ -6,5 +6,5 @@ try:
     QgsProcessingModelChildParameterSource.fromExpression = staticmethod(QgsProcessingModelChildParameterSource.fromExpression)
     QgsProcessingModelChildParameterSource.fromExpressionText = staticmethod(QgsProcessingModelChildParameterSource.fromExpressionText)
     QgsProcessingModelChildParameterSource.__group__ = ['processing', 'models']
-except NameError:
+except (NameError, AttributeError):
     pass

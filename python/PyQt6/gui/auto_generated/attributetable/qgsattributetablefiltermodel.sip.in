@@ -10,14 +10,13 @@
 
 
 
-class QgsAttributeTableFilterModel: QSortFilterProxyModel, QgsFeatureModel
+class QgsAttributeTableFilterModel : QSortFilterProxyModel, QgsFeatureModel
 {
 
 %TypeHeaderCode
 #include "qgsattributetablefiltermodel.h"
 %End
   public:
-
     enum FilterMode /BaseType=IntEnum/
     {
       ShowAll,
@@ -253,7 +252,6 @@ Emitted when an error occurred while filtering features
 %End
 
   protected:
-
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 
 %Docstring

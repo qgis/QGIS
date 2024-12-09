@@ -59,7 +59,7 @@ QgsVoronoiPolygonsAlgorithm *QgsVoronoiPolygonsAlgorithm::createInstance() const
 
 void QgsVoronoiPolygonsAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "BUFFER" ), QObject::tr( "Buffer region (% of extent)" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0 ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "TOLERANCE" ), QObject::tr( "Tolerance" ), Qgis::ProcessingNumberParameterType::Double, 0, true, 0 ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "COPY_ATTRIBUTES" ), QObject::tr( "Copy attributes from input features" ), true ) );
@@ -106,7 +106,7 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
   const QgsFields fields = mSource->fields();
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, mSource->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, mSource->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -114,13 +114,12 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
   QgsFeatureIterator it = mSource->getFeatures( request, Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
 
   QgsGeometry allPoints;
-  QHash< QgsFeatureId, QgsAttributes > attributeCache;
+  QHash<QgsFeatureId, QgsAttributes> attributeCache;
 
   long long i = 0;
   const double step = mSource->featureCount() > 0 ? 50.0 / mSource->featureCount() : 1;
 
-  const QgsSpatialIndex index( it, [&]( const QgsFeature & f )->bool
-  {
+  const QgsSpatialIndex index( it, [&]( const QgsFeature &f ) -> bool {
     i++;
     if ( feedback->isCanceled() )
       return false;
@@ -146,8 +145,7 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
 
     attributeCache.insert( f.id(), f.attributes() );
 
-    return true;
-  }, QgsSpatialIndex::FlagStoreFeatureGeometries );
+    return true; }, QgsSpatialIndex::FlagStoreFeatureGeometries );
 
   QgsRectangle extent = mSource->sourceExtent();
   double delta = extent.width() * mBuffer / 100.0;
@@ -162,9 +160,9 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
 
   if ( !voronoiDiagram.isEmpty() )
   {
-    std::unique_ptr< QgsGeometryEngine > engine;
-    std::unique_ptr< QgsGeometryEngine > extentEngine( QgsGeometry::createGeometryEngine( clippingGeom.constGet() ) );
-    const QVector< QgsGeometry > collection = voronoiDiagram.asGeometryCollection();
+    std::unique_ptr<QgsGeometryEngine> engine;
+    std::unique_ptr<QgsGeometryEngine> extentEngine( QgsGeometry::createGeometryEngine( clippingGeom.constGet() ) );
+    const QVector<QgsGeometry> collection = voronoiDiagram.asGeometryCollection();
     for ( int i = 0; i < collection.length(); i++ )
     {
       if ( feedback->isCanceled() )
@@ -174,7 +172,7 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithAttributes( const QVariantMap &p
       QgsFeature f;
       f.setFields( fields );
       f.setGeometry( QgsGeometry( extentEngine->intersection( collection[i].constGet() ) ) );
-      const QList< QgsFeatureId > intersected = index.intersects( collection[i].boundingBox() );
+      const QList<QgsFeatureId> intersected = index.intersects( collection[i].boundingBox() );
       engine.reset( QgsGeometry::createGeometryEngine( collection[i].constGet() ) );
       engine->prepareGeometry();
       for ( const QgsFeatureId id : intersected )
@@ -200,11 +198,11 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithoutAttributes( const QVariantMap
   fields.append( QgsField( QStringLiteral( "id" ), QMetaType::Type::LongLong ) );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, mSource->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, mSource->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  std::unique_ptr< QgsMultiPoint > points = std::make_unique< QgsMultiPoint >();
+  std::unique_ptr<QgsMultiPoint> points = std::make_unique<QgsMultiPoint>();
 
   long long i = 0;
   const double step = mSource->featureCount() > 0 ? 50.0 / mSource->featureCount() : 1;
@@ -225,15 +223,15 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithoutAttributes( const QVariantMap
     const QgsAbstractGeometry *geom = f.geometry().constGet();
     if ( QgsWkbTypes::isMultiType( geom->wkbType() ) )
     {
-      const QgsMultiPoint mp( *qgsgeometry_cast< const QgsMultiPoint * >( geom ) );
+      const QgsMultiPoint mp( *qgsgeometry_cast<const QgsMultiPoint *>( geom ) );
       for ( auto pit = mp.const_parts_begin(); pit != mp.const_parts_end(); ++pit )
       {
-        points->addGeometry( qgsgeometry_cast< QgsPoint * >( *pit )->clone() );
+        points->addGeometry( qgsgeometry_cast<QgsPoint *>( *pit )->clone() );
       }
     }
     else
     {
-      points->addGeometry( qgsgeometry_cast< QgsPoint * >( geom )->clone() );
+      points->addGeometry( qgsgeometry_cast<QgsPoint *>( geom )->clone() );
     }
   }
 
@@ -251,9 +249,9 @@ QString QgsVoronoiPolygonsAlgorithm::voronoiWithoutAttributes( const QVariantMap
 
   if ( !voronoiDiagram.isEmpty() )
   {
-    std::unique_ptr< QgsGeometryEngine > engine;
-    std::unique_ptr< QgsGeometryEngine > extentEngine( QgsGeometry::createGeometryEngine( clippingGeom.constGet() ) );
-    const QVector< QgsGeometry > collection = voronoiDiagram.asGeometryCollection();
+    std::unique_ptr<QgsGeometryEngine> engine;
+    std::unique_ptr<QgsGeometryEngine> extentEngine( QgsGeometry::createGeometryEngine( clippingGeom.constGet() ) );
+    const QVector<QgsGeometry> collection = voronoiDiagram.asGeometryCollection();
     for ( int i = 0; i < collection.length(); i++ )
     {
       if ( feedback->isCanceled() )

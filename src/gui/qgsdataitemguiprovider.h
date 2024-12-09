@@ -41,7 +41,6 @@ class QgsBrowserTreeView;
 class GUI_EXPORT QgsDataItemGuiContext
 {
   public:
-
     QgsDataItemGuiContext() = default;
 
     /**
@@ -79,7 +78,6 @@ class GUI_EXPORT QgsDataItemGuiContext
     void setView( QgsBrowserTreeView *view );
 
   private:
-
     QgsMessageBar *mMessageBar = nullptr;
 
     QgsBrowserTreeView *mView = nullptr;
@@ -101,7 +99,6 @@ Q_DECLARE_METATYPE( QgsDataItemGuiContext );
 class GUI_EXPORT QgsDataItemGuiProvider
 {
   public:
-
     virtual ~QgsDataItemGuiProvider() = default;
 
     /**
@@ -133,8 +130,7 @@ class GUI_EXPORT QgsDataItemGuiProvider
      *
      * The base class method has no effect.
      */
-    virtual void populateContextMenu( QgsDataItem *item, QMenu *menu,
-                                      const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context );
+    virtual void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context );
 
     /**
      * Returns the provider's precedence to use when populating context menus via calls to populateContextMenu().

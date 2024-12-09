@@ -30,7 +30,6 @@
 class GUI_EXPORT QgsMapCanvasInteractionBlocker
 {
   public:
-
     /**
      * Available interactions to block.
      */
@@ -45,7 +44,6 @@ class GUI_EXPORT QgsMapCanvasInteractionBlocker
      * Returns TRUE if the specified \a interaction should be blocked.
      */
     virtual bool blockCanvasInteraction( Interaction interaction ) const = 0;
-
 };
 
 #endif // QGSMAPCANVASINTERACTIONBLOCKER_H

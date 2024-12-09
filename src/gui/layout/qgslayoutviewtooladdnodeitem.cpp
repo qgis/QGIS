@@ -74,7 +74,7 @@ void QgsLayoutViewToolAddNodeItem::layoutPressEvent( QgsLayoutViewMouseEvent *ev
     if ( !item )
       return;
 
-    if ( QgsLayoutNodesItem *nodesItem = qobject_cast< QgsLayoutNodesItem * >( item ) )
+    if ( QgsLayoutNodesItem *nodesItem = qobject_cast<QgsLayoutNodesItem *>( item ) )
       nodesItem->setNodes( mPolygon );
 
     layout()->addLayoutItem( item );
@@ -86,7 +86,6 @@ void QgsLayoutViewToolAddNodeItem::layoutPressEvent( QgsLayoutViewMouseEvent *ev
     event->ignore();
     mRubberBand.reset();
   }
-
 }
 
 void QgsLayoutViewToolAddNodeItem::layoutMoveEvent( QgsLayoutViewMouseEvent *event )
@@ -184,11 +183,11 @@ void QgsLayoutViewToolAddNodeItem::moveTemporaryNode( QPointF scenePoint, Qt::Ke
 
 void QgsLayoutViewToolAddNodeItem::setRubberBandNodes()
 {
-  if ( QGraphicsPolygonItem *polygonItem = dynamic_cast< QGraphicsPolygonItem *>( mRubberBand.get() ) )
+  if ( QGraphicsPolygonItem *polygonItem = dynamic_cast<QGraphicsPolygonItem *>( mRubberBand.get() ) )
   {
     polygonItem->setPolygon( mPolygon );
   }
-  else if ( QGraphicsPathItem *polylineItem = dynamic_cast< QGraphicsPathItem *>( mRubberBand.get() ) )
+  else if ( QGraphicsPathItem *polylineItem = dynamic_cast<QGraphicsPathItem *>( mRubberBand.get() ) )
   {
     // rebuild a new qpainter path
     QPainterPath path;

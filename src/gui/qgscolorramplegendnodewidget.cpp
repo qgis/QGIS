@@ -53,8 +53,7 @@ QgsColorRampLegendNodeWidget::QgsColorRampLegendNodeWidget( QWidget *parent, Cap
   mFontButton->setShowNullFormat( true );
   mFontButton->setNoFormatString( tr( "Default" ) );
 
-  connect( mUseContinuousLegendCheckBox, &QCheckBox::stateChanged, this, [ = ]( bool checked )
-  {
+  connect( mUseContinuousLegendCheckBox, &QCheckBox::stateChanged, this, [=]( bool checked ) {
     mLayoutGroup->setEnabled( checked );
     mLabelsGroup->setEnabled( checked );
     onChanged();
@@ -90,8 +89,8 @@ QgsColorRampLegendNodeSettings QgsColorRampLegendNodeWidget::settings() const
 {
   QgsColorRampLegendNodeSettings settings;
   settings.setUseContinuousLegend( mUseContinuousLegendCheckBox->isChecked() );
-  settings.setDirection( static_cast< QgsColorRampLegendNodeSettings::Direction >( mDirectionComboBox->currentData().toInt() ) );
-  settings.setOrientation( static_cast< Qt::Orientation >( mOrientationComboBox->currentData().toInt() ) );
+  settings.setDirection( static_cast<QgsColorRampLegendNodeSettings::Direction>( mDirectionComboBox->currentData().toInt() ) );
+  settings.setOrientation( static_cast<Qt::Orientation>( mOrientationComboBox->currentData().toInt() ) );
   settings.setMinimumLabel( mMinLabelLineEdit->text() );
   settings.setMaximumLabel( mMaxLabelLineEdit->text() );
   settings.setPrefix( mPrefixLineEdit->text() );
@@ -128,8 +127,7 @@ void QgsColorRampLegendNodeWidget::changeNumberFormat()
   QgsNumericFormatSelectorWidget *widget = new QgsNumericFormatSelectorWidget( this );
   widget->setPanelTitle( tr( "Number Format" ) );
   widget->setFormat( mSettings.numericFormat() );
-  connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [ = ]
-  {
+  connect( widget, &QgsNumericFormatSelectorWidget::changed, this, [=] {
     mSettings.setNumericFormat( widget->format() );
     onChanged();
   } );
@@ -139,7 +137,7 @@ void QgsColorRampLegendNodeWidget::changeNumberFormat()
 
 void QgsColorRampLegendNodeWidget::onOrientationChanged()
 {
-  switch ( static_cast< Qt::Orientation >( mOrientationComboBox->currentData().toInt() ) )
+  switch ( static_cast<Qt::Orientation>( mOrientationComboBox->currentData().toInt() ) )
   {
     case Qt::Vertical:
       mDirectionComboBox->setItemText( 0, tr( "Maximum on Top" ) );
@@ -176,8 +174,7 @@ QgsColorRampLegendNodeDialog::QgsColorRampLegendNodeDialog( const QgsColorRampLe
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, Qt::Horizontal );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [ = ]
-  {
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [=] {
     QgsHelp::openHelp( QStringLiteral( "working_with_raster/raster_properties.html#raster-legend-settings" ) );
   } );
   connect( mWidget, &QgsPanelWidget::panelAccepted, this, &QDialog::reject );

@@ -22,10 +22,9 @@ Produces colored relief rasters from DEM.
   public:
     struct ReliefColor
     {
-      ReliefColor( const QColor &c, double min, double max );
-      QColor color;
-      double minElevation;
-      double maxElevation;
+        ReliefColor( const QColor &c, double min, double max );
+        double minElevation;
+        double maxElevation;
     };
 
     QgsRelief( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
@@ -46,10 +45,10 @@ Starts the calculation, reads from mInputFile and stores the result in mOutputFi
 
     void clearReliefColors();
     void addReliefColorClass( const QgsRelief::ReliefColor &color );
-    QList< QgsRelief::ReliefColor > reliefColors() const;
-    void setReliefColors( const QList< QgsRelief::ReliefColor > &c );
+    QList<QgsRelief::ReliefColor> reliefColors() const;
+    void setReliefColors( const QList<QgsRelief::ReliefColor> &c );
 
-    QList< QgsRelief::ReliefColor > calculateOptimizedReliefClasses();
+    QList<QgsRelief::ReliefColor> calculateOptimizedReliefClasses();
 %Docstring
 Calculates class breaks according with the method of Buenzli (2011) using an iterative algorithm for segmented regression
 

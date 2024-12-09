@@ -6,13 +6,13 @@ try:
     QgsDualView.requiredAttributes = staticmethod(QgsDualView.requiredAttributes)
     QgsDualView.__signal_arguments__ = {'displayExpressionChanged': ['expression: str'], 'filterExpressionSet': ['expression: str', 'type: QgsAttributeForm.FilterType'], 'formModeChanged': ['mode: QgsAttributeEditorContext.Mode'], 'showContextMenuExternally': ['menu: QgsActionMenu', 'fid: QgsFeatureId']}
     QgsDualView.__group__ = ['attributetable']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsAttributeTableAction.__group__ = ['attributetable']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsAttributeTableMapLayerAction.__group__ = ['attributetable']
-except NameError:
+except (NameError, AttributeError):
     pass

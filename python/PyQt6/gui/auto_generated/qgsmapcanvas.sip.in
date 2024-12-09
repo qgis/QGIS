@@ -39,7 +39,6 @@ Map canvas is a class for displaying all GIS data types on a canvas.
       sipType = nullptr;
 %End
   public:
-
     QgsMapCanvas( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
@@ -360,9 +359,7 @@ Pan to the combined extent of the selected features of all provided (vector) lay
 .. versionadded:: 3.18
 %End
 
-    void flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids,
-                          const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
-                          int flashes = 3, int duration = 500 );
+    void flashFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids, const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ), int flashes = 3, int duration = 500 );
 %Docstring
 Causes a set of features with matching ``ids`` from a vector ``layer`` to flash
 within the canvas.
@@ -377,9 +374,7 @@ The ``startColor`` and ``endColor`` can be specified, along with the number of
 .. seealso:: :py:func:`flashGeometries`
 %End
 
-    void flashGeometries( const QList< QgsGeometry > &geometries, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
-                          const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ),
-                          int flashes = 3, int duration = 500 );
+    void flashGeometries( const QList<QgsGeometry> &geometries, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QColor &startColor = QColor( 255, 0, 0, 255 ), const QColor &endColor = QColor( 255, 0, 0, 0 ), int flashes = 3, int duration = 500 );
 %Docstring
 Causes a set of ``geometries`` to flash within the canvas.
 
@@ -777,7 +772,7 @@ Sets segmentation tolerance type (maximum angle or maximum difference between cu
 :param type: the segmentation tolerance typename
 %End
 
-    QList< QgsMapCanvasAnnotationItem *> annotationItems() const;
+    QList<QgsMapCanvasAnnotationItem *> annotationItems() const;
 %Docstring
 Returns a list of all annotation items in the canvas.
 %End
@@ -1263,7 +1258,6 @@ Can be used to extend the context menu.
 %End
 
   protected:
-
     virtual bool event( QEvent *e );
 
     virtual void keyPressEvent( QKeyEvent *e );

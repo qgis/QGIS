@@ -23,14 +23,12 @@ Contains general functions and values related to Processing GUI components.
 #include "qgsprocessinggui.h"
 %End
   public:
-
     enum WidgetType /BaseType=IntEnum/
     {
       Standard,
       Batch,
       Modeler,
     };
-
 };
 
 /************************************************************************

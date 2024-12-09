@@ -21,7 +21,6 @@
 #include "ui_qgsexpressionstoredialogbase.h"
 
 
-
 /**
  * \ingroup gui
  * \brief A generic dialog for editing expression text, label and help text.
@@ -31,27 +30,22 @@ class GUI_EXPORT QgsExpressionStoreDialog : public QDialog, private Ui::QgsExpre
 {
     Q_OBJECT
   public:
-
     /**
      * Creates a QgsExpressionStoreDialog with given \a label, \a expression and \a helpText.
      * \a existingLabels is an optional list of existing labels for unique label validation,
      * \a parent is the optional parent widget.
      */
-    QgsExpressionStoreDialog( const QString &label,
-                              const QString &expression,
-                              const QString &helpText,
-                              const QStringList &existingLabels = QStringList(),
-                              QWidget *parent = nullptr );
+    QgsExpressionStoreDialog( const QString &label, const QString &expression, const QString &helpText, const QStringList &existingLabels = QStringList(), QWidget *parent = nullptr );
 
     /**
      * Returns the expression text
      */
-    QString expression( ) { return mExpression->text( ); }
+    QString expression() { return mExpression->text(); }
 
     /**
      * Returns the label text
      */
-    QString label() { return  mLabel->text(); }
+    QString label() { return mLabel->text(); }
 
     /**
      * Returns the help text
@@ -62,13 +56,14 @@ class GUI_EXPORT QgsExpressionStoreDialog : public QDialog, private Ui::QgsExpre
      * Returns whether the label text was modified either manually by the user,
      * or automatically because it contained slashes or leading/trailing whitespace characters
      */
-    bool isLabelModified() const SIP_SKIP { return mLabel->text() != mOriginalLabel; }
+    bool isLabelModified() const SIP_SKIP
+    {
+      return mLabel->text() != mOriginalLabel;
+    }
 
   private:
-
     QStringList mExistingLabels;
     QString mOriginalLabel;
-
 };
 
 #endif // QGSEXPRESSIONSTOREDIALOG_H

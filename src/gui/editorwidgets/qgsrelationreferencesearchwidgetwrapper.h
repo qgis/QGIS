@@ -40,7 +40,6 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsRelationReferenceSearchWidgetWrapper
      * \param vl associated vector layer

@@ -44,7 +44,6 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsTableEditorDialog with the specified \a parent widget.
      */
@@ -169,7 +168,6 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
     void includeHeaderChanged( bool included );
 
   protected:
-
     void closeEvent( QCloseEvent * ) override;
 
   private:
@@ -179,7 +177,7 @@ class GUI_EXPORT QgsTableEditorDialog : public QMainWindow, private Ui::QgsTable
     QgsPanelWidgetStack *mPropertiesStack = nullptr;
     QgsTableEditorFormattingWidget *mFormattingWidget = nullptr;
     bool mBlockSignals = false;
-    QPointer< QgsMapLayer > mLayer;
+    QPointer<QgsMapLayer> mLayer;
 
     void updateActionsFromSelection();
 };

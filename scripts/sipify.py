@@ -1452,6 +1452,10 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
     match = re.match(r"^\s*SIP_CONVERT_TO_SUBCLASS_CODE(.*)$", CONTEXT.current_line)
     if match:
+        # TYPE HEADER CODE
+        if CONTEXT.header_code and not re.match(r"^ *//.*$", CONTEXT.current_line):
+            CONTEXT.header_code = False
+            write_output("HCE", "%End\n")
         CONTEXT.current_line = f"%ConvertToSubClassCode{match.group(1)}"
         # Do not continue here, let the code process the next steps
 
@@ -1469,6 +1473,12 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     if match:
         dbg_info("found SIP_WHEN_FEATURE")
         CONTEXT.if_feature_condition = match.group(1)
+
+    match = re.search(r'SIP_TYPEHEADER_INCLUDE\(\s*"(.*?)"\s*\)', CONTEXT.current_line)
+    if match:
+        dbg_info("found SIP_TYPEHEADER_INCLUDE")
+        write_output("STI", f'#include "{match.group(1)}"\n')
+        continue
 
     if CONTEXT.is_qt6:
         CONTEXT.current_line = re.sub(
@@ -1492,15 +1502,15 @@ while CONTEXT.line_idx < CONTEXT.line_count:
 
     # Do not process SIP code %XXXCode
     if CONTEXT.sip_run and re.match(
-        r"^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$",
+        r"^ *[/]*% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$",
         CONTEXT.current_line,
     ):
         CONTEXT.current_line = (
-            f"%{re.match(r'^ *% *(.*)$', CONTEXT.current_line).group(1)}"
+            f"%{re.match(r'^ *[/]*% *(.*)$', CONTEXT.current_line).group(1)}"
         )
         CONTEXT.comment = ""
         dbg_info("do not process SIP code")
-        while not re.match(r"^ *% *End", CONTEXT.current_line):
+        while not re.match(r"^ *[/]*% *End", CONTEXT.current_line):
             write_output("COD", CONTEXT.current_line + "\n")
             CONTEXT.current_line = read_line()
             if CONTEXT.is_qt6:
@@ -1511,7 +1521,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                     r"SIPLong_AsLong", "PyLong_AsLong", CONTEXT.current_line
                 )
             CONTEXT.current_line = re.sub(
-                r"^ *% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$",
+                r"^ *[/]*% *(VirtualErrorHandler|MappedType|Type(?:Header)?Code|Module(?:Header)?Code|Convert(?:From|To)(?:Type|SubClass)Code|MethodCode|Docstring)(.*)?$",
                 r"%\1\2",
                 CONTEXT.current_line,
             )
@@ -1519,12 +1529,14 @@ while CONTEXT.line_idx < CONTEXT.line_count:
                 r"^\s*SIP_END(.*)$", r"%End\1", CONTEXT.current_line
             )
 
-        CONTEXT.current_line = re.sub(r"^\s*% End", "%End", CONTEXT.current_line)
+        CONTEXT.current_line = re.sub(r"^\s*[/]*% *End", "%End", CONTEXT.current_line)
         write_output("COD", CONTEXT.current_line + "\n")
         continue
 
     # Do not process SIP code %Property
-    if CONTEXT.sip_run and re.match(r"^ *% *(Property)(.*)?$", CONTEXT.current_line):
+    if CONTEXT.sip_run and re.match(
+        r"^ *[/]*% *(Property)(.*)?$", CONTEXT.current_line
+    ):
         CONTEXT.current_line = (
             f"%{re.match(r'^ *% *(.*)$', CONTEXT.current_line).group(1)}"
         )
@@ -1533,7 +1545,7 @@ while CONTEXT.line_idx < CONTEXT.line_count:
         continue
 
     # Do not process SIP code %If %End
-    if CONTEXT.sip_run and re.match(r"^ *% (If|End)(.*)?$", CONTEXT.current_line):
+    if CONTEXT.sip_run and re.match(r"^ *[/]*% *(If|End)(.*)?$", CONTEXT.current_line):
         CONTEXT.current_line = (
             f"%{re.match(r'^ *% (.*)$', CONTEXT.current_line).group(1)}"
         )
@@ -1631,7 +1643,11 @@ while CONTEXT.line_idx < CONTEXT.line_count:
             continue
 
     # TYPE HEADER CODE
-    if CONTEXT.header_code and not CONTEXT.sip_run:
+    if (
+        CONTEXT.header_code
+        and not CONTEXT.sip_run
+        and not re.match(r"^ *//.*$", CONTEXT.current_line)
+    ):
         CONTEXT.header_code = False
         write_output("HCE", "%End\n")
 
@@ -2482,6 +2498,8 @@ while CONTEXT.line_idx < CONTEXT.line_count:
     if match:
         flags = match.group(2)
         flag = CONTEXT.qflag_hash.get(flags)
+        if flag is None:
+            exit_with_error(f"error reading flags: {flags}")
         CONTEXT.current_line = (
             f"{match.group(1)}QFlags<{flag}> operator|({flag} f1, QFlags<{flag}> f2);\n"
         )
@@ -3100,9 +3118,8 @@ for _class, additions in class_additions.items():
     if additions:
         this_class_additions = "\n".join("    " + c for c in additions)
         CONTEXT.output_python.append(
-            f"try:\n{this_class_additions}\nexcept NameError:\n    pass\n"
+            f"try:\n{this_class_additions}\nexcept (NameError, AttributeError):\n    pass\n"
         )
-
 
 if args.python_output and CONTEXT.output_python:
 

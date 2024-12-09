@@ -5,17 +5,17 @@ try:
 
 .. versionadded:: 3.28"""
     QgsMetadataSearchContext.__group__ = ['metadata']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsLayerMetadataProviderResult.__group__ = ['metadata']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsLayerMetadataSearchResults.__group__ = ['metadata']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsAbstractLayerMetadataProvider.__group__ = ['metadata']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -44,7 +44,6 @@ class QgsProcessingParameterWidgetContext;
 class GUI_EXPORT QgsProcessingGuiRegistry
 {
   public:
-
     /**
      * Constructor. Should never be called manually, is already
      * created by QgsGui.
@@ -135,9 +134,7 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      *
      * \since QGIS 3.4
      */
-    QgsProcessingModelerParameterWidget *createModelerParameterWidget( QgsProcessingModelAlgorithm *model,
-        const QString &childId,
-        const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context ) SIP_FACTORY;
+    QgsProcessingModelerParameterWidget *createModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context ) SIP_FACTORY;
 
     /**
      * Creates a new parameter definition widget allowing for configuration of an instance of
@@ -160,16 +157,11 @@ class GUI_EXPORT QgsProcessingGuiRegistry
      *
      * \since QGIS 3.10
      */
-    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget( const QString &type,
-        QgsProcessingContext &context,
-        const QgsProcessingParameterWidgetContext &widgetContext,
-        const QgsProcessingParameterDefinition *definition = nullptr,
-        const QgsProcessingAlgorithm *algorithm = nullptr ) SIP_FACTORY;
+    QgsProcessingAbstractParameterDefinitionWidget *createParameterDefinitionWidget( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr ) SIP_FACTORY;
 
   private:
-
-    QList <QgsProcessingAlgorithmConfigurationWidgetFactory *> mAlgorithmConfigurationWidgetFactories;
-    QMap< QString, QgsProcessingParameterWidgetFactoryInterface *> mParameterWidgetFactories;
+    QList<QgsProcessingAlgorithmConfigurationWidgetFactory *> mAlgorithmConfigurationWidgetFactories;
+    QMap<QString, QgsProcessingParameterWidgetFactoryInterface *> mParameterWidgetFactories;
 };
 
 #endif // QGSPROCESSINGGUIREGISTRY_H

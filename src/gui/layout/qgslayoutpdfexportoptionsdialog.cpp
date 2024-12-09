@@ -37,9 +37,9 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
 
   mGeospatialPdfStructureTreeMenu = new QMenu( this );
 
-  mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Paths (Recommended)" ), static_cast< int >( Qgis::TextRenderFormat::AlwaysOutlines ) );
-  mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), static_cast< int >( Qgis::TextRenderFormat::AlwaysText ) );
-  mTextRenderFormatComboBox->addItem( tr( "Prefer Exporting Text as Text Objects" ), static_cast< int >( Qgis::TextRenderFormat::PreferText ) );
+  mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Paths (Recommended)" ), static_cast<int>( Qgis::TextRenderFormat::AlwaysOutlines ) );
+  mTextRenderFormatComboBox->addItem( tr( "Always Export Text as Text Objects" ), static_cast<int>( Qgis::TextRenderFormat::AlwaysText ) );
+  mTextRenderFormatComboBox->addItem( tr( "Prefer Exporting Text as Text Objects" ), static_cast<int>( Qgis::TextRenderFormat::PreferText ) );
 
   mGeospatialPdfAvailable = allowGeospatialPdfExport && QgsAbstractGeospatialPdfExporter::geospatialPDFCreationAvailable();
   mGeospatialPDFGroupBox->setEnabled( mGeospatialPdfAvailable );
@@ -73,7 +73,7 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
     mThemesList->addItem( item );
   }
 
-  QList< QgsMapLayer * > order = QgsProject::instance()->layerTreeRoot()->layerOrder();
+  QList<QgsMapLayer *> order = QgsProject::instance()->layerTreeRoot()->layerOrder();
   for ( auto it = geospatialPdfLayerOrder.rbegin(); it != geospatialPdfLayerOrder.rend(); ++it )
   {
     for ( int i = 0; i < order.size(); ++i )
@@ -99,8 +99,7 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
   mGeospatialPdfStructureTree->setDefaultDropAction( Qt::MoveAction );
 
   mGeospatialPdfStructureTree->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( mGeospatialPdfStructureTree, &QTreeView::customContextMenuRequested, this, [ = ]( const QPoint & point )
-  {
+  connect( mGeospatialPdfStructureTree, &QTreeView::customContextMenuRequested, this, [=]( const QPoint &point ) {
     const QModelIndex index = mGeospatialPdfStructureTree->indexAt( point );
     if ( index.isValid() )
       showContextMenuForGeospatialPdfStructure( point, mGeospatialPdfStructureProxyModel->mapToSource( index ) );
@@ -112,12 +111,12 @@ QgsLayoutPdfExportOptionsDialog::QgsLayoutPdfExportOptionsDialog( QWidget *paren
 
 void QgsLayoutPdfExportOptionsDialog::setTextRenderFormat( Qgis::TextRenderFormat format )
 {
-  mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( static_cast< int >( format ) ) );
+  mTextRenderFormatComboBox->setCurrentIndex( mTextRenderFormatComboBox->findData( static_cast<int>( format ) ) );
 }
 
 Qgis::TextRenderFormat QgsLayoutPdfExportOptionsDialog::textRenderFormat() const
 {
-  return static_cast< Qgis::TextRenderFormat >( mTextRenderFormatComboBox->currentData().toInt() );
+  return static_cast<Qgis::TextRenderFormat>( mTextRenderFormatComboBox->currentData().toInt() );
 }
 
 void QgsLayoutPdfExportOptionsDialog::setForceVector( bool force )
@@ -258,7 +257,7 @@ QStringList QgsLayoutPdfExportOptionsDialog::geospatialPdfLayerOrder() const
   QStringList order;
   for ( int row = 0; row < mGeospatialPdfStructureProxyModel->rowCount(); ++row )
   {
-    order << mGeospatialPdfStructureProxyModel->data( mGeospatialPdfStructureProxyModel->index( row, 0 ), static_cast< int >( QgsMapLayerModel::CustomRole::LayerId ) ).toString();
+    order << mGeospatialPdfStructureProxyModel->data( mGeospatialPdfStructureProxyModel->index( row, 0 ), static_cast<int>( QgsMapLayerModel::CustomRole::LayerId ) ).toString();
   }
   return order;
 }
@@ -304,14 +303,12 @@ void QgsLayoutPdfExportOptionsDialog::showContextMenuForGeospatialPdfStructure( 
     {
       QAction *selectAll = new QAction( tr( "Select All" ), mGeospatialPdfStructureTreeMenu );
       mGeospatialPdfStructureTreeMenu->addAction( selectAll );
-      connect( selectAll, &QAction::triggered, this, [ = ]
-      {
+      connect( selectAll, &QAction::triggered, this, [=] {
         mGeospatialPdfStructureModel->checkAll( true, QModelIndex(), index.column() );
       } );
       QAction *deselectAll = new QAction( tr( "Deselect All" ), mGeospatialPdfStructureTreeMenu );
       mGeospatialPdfStructureTreeMenu->addAction( deselectAll );
-      connect( deselectAll, &QAction::triggered, this, [ = ]
-      {
+      connect( deselectAll, &QAction::triggered, this, [=] {
         mGeospatialPdfStructureModel->checkAll( false, QModelIndex(), index.column() );
       } );
       break;

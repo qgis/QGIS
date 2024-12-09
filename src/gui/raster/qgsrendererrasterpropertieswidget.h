@@ -38,7 +38,6 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
     Q_OBJECT
 
   public:
-
     /**
      * A widget to hold the renderer properties for a raster layer.
      * \param layer The raster layer to style

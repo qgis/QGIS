@@ -27,8 +27,7 @@
 ///@cond NOT_STABLE
 
 
-QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing, Marker startMarker,
-                                      QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming, Marker endMarker )
+QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, bool startIsOutgoing, Marker startMarker, QgsModelComponentGraphicItem *endItem, Qt::Edge endEdge, int endIndex, bool endIsIncoming, Marker endMarker )
   : QObject( nullptr )
   , mStartItem( startItem )
   , mStartEdge( startEdge )
@@ -50,9 +49,9 @@ QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Q
   updatePath();
 
   connect( mStartItem, &QgsModelComponentGraphicItem::updateArrowPaths, this, &QgsModelArrowItem::updatePath );
-  connect( mStartItem, &QgsModelComponentGraphicItem::repaintArrows, this, [ = ] { update(); } );
+  connect( mStartItem, &QgsModelComponentGraphicItem::repaintArrows, this, [=] { update(); } );
   connect( mEndItem, &QgsModelComponentGraphicItem::updateArrowPaths, this, &QgsModelArrowItem::updatePath );
-  connect( mEndItem, &QgsModelComponentGraphicItem::repaintArrows, this, [ = ] { update(); } );
+  connect( mEndItem, &QgsModelComponentGraphicItem::repaintArrows, this, [=] { update(); } );
 }
 
 QgsModelArrowItem::QgsModelArrowItem( QgsModelComponentGraphicItem *startItem, Qt::Edge startEdge, int startIndex, Marker startMarker, QgsModelComponentGraphicItem *endItem, Marker endMarker )
@@ -136,7 +135,7 @@ void QgsModelArrowItem::setPenStyle( Qt::PenStyle style )
 
 void QgsModelArrowItem::updatePath()
 {
-  QList< QPointF > controlPoints;
+  QList<QPointF> controlPoints;
 
   // is there a fixed start or end point?
   QPointF startPt;
@@ -145,12 +144,12 @@ void QgsModelArrowItem::updatePath()
   // usually arrows attached to an algorithm have a concept of directional flow -- they are either
   // "inputs" to the item or "outputs". In this case we need to reflect this in how we draw the linking
   // arrows, because we always have "inputs" on the left/top side and "outputs" on the right/bottom
-  bool startHasSpecificDirectionalFlow = qobject_cast< QgsModelChildAlgorithmGraphicItem * >( mStartItem );
-  bool endHasSpecificDirectionalFlow = qobject_cast< QgsModelChildAlgorithmGraphicItem * >( mEndItem );
+  bool startHasSpecificDirectionalFlow = qobject_cast<QgsModelChildAlgorithmGraphicItem *>( mStartItem );
+  bool endHasSpecificDirectionalFlow = qobject_cast<QgsModelChildAlgorithmGraphicItem *>( mEndItem );
 
   // some specific exceptions to the above
-  if ( qobject_cast< QgsModelCommentGraphicItem * >( mStartItem )
-       || qobject_cast< QgsModelCommentGraphicItem * >( mEndItem ) )
+  if ( qobject_cast<QgsModelCommentGraphicItem *>( mStartItem )
+       || qobject_cast<QgsModelCommentGraphicItem *>( mEndItem ) )
   {
     // comments can be freely attached to any side of an algorithm item without directional flow
     startHasSpecificDirectionalFlow = false;
@@ -205,7 +204,7 @@ void QgsModelArrowItem::updatePath()
   }
   else
   {
-    mEndPoint = mEndItem->pos() + endPt ;
+    mEndPoint = mEndItem->pos() + endPt;
     controlPoints.append( bezierPointForCurve( mEndItem->pos() + endPt, mEndEdge == Qt::BottomEdge ? Qt::RightEdge : Qt::LeftEdge, mEndIsIncoming, endHasSpecificDirectionalFlow ) );
     controlPoints.append( mEndItem->pos() + endPt );
   }
@@ -237,4 +236,3 @@ QPointF QgsModelArrowItem::bezierPointForCurve( const QPointF &point, Qt::Edge e
 
 
 ///@endcond
-

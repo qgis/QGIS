@@ -51,17 +51,11 @@ void QgsDetectVectorChangesAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "ORIGINAL" ), QObject::tr( "Original layer" ) ) );
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "REVISED" ), QObject::tr( "Revised layer" ) ) );
 
-  std::unique_ptr< QgsProcessingParameterField > compareAttributesParam = std::make_unique< QgsProcessingParameterField >( QStringLiteral( "COMPARE_ATTRIBUTES" ),
-      QObject::tr( "Attributes to consider for match (or none to compare geometry only)" ), QVariant(),
-      QStringLiteral( "ORIGINAL" ), Qgis::ProcessingFieldParameterDataType::Any, true, true );
+  std::unique_ptr<QgsProcessingParameterField> compareAttributesParam = std::make_unique<QgsProcessingParameterField>( QStringLiteral( "COMPARE_ATTRIBUTES" ), QObject::tr( "Attributes to consider for match (or none to compare geometry only)" ), QVariant(), QStringLiteral( "ORIGINAL" ), Qgis::ProcessingFieldParameterDataType::Any, true, true );
   compareAttributesParam->setDefaultToAllFields( true );
   addParameter( compareAttributesParam.release() );
 
-  std::unique_ptr< QgsProcessingParameterDefinition > matchTypeParam = std::make_unique< QgsProcessingParameterEnum >( QStringLiteral( "MATCH_TYPE" ),
-      QObject::tr( "Geometry comparison behavior" ),
-      QStringList() << QObject::tr( "Exact Match" )
-      << QObject::tr( "Tolerant Match (Topological Equality)" ),
-      false, 1 );
+  std::unique_ptr<QgsProcessingParameterDefinition> matchTypeParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "MATCH_TYPE" ), QObject::tr( "Geometry comparison behavior" ), QStringList() << QObject::tr( "Exact Match" ) << QObject::tr( "Tolerant Match (Topological Equality)" ), false, 1 );
   matchTypeParam->setFlags( matchTypeParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( matchTypeParam.release() );
 
@@ -115,27 +109,23 @@ bool QgsDetectVectorChangesAlgorithm::prepareAlgorithm( const QVariantMap &param
   if ( !mRevised )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "REVISED" ) ) );
 
-  mMatchType = static_cast< GeometryMatchType >( parameterAsEnum( parameters, QStringLiteral( "MATCH_TYPE" ), context ) );
+  mMatchType = static_cast<GeometryMatchType>( parameterAsEnum( parameters, QStringLiteral( "MATCH_TYPE" ), context ) );
 
   switch ( mMatchType )
   {
     case Exact:
       if ( mOriginal->wkbType() != mRevised->wkbType() )
-        throw QgsProcessingException( QObject::tr( "Geometry type of revised layer (%1) does not match the original layer (%2). Consider using the \"Tolerant Match\" option instead." ).arg( QgsWkbTypes::displayString( mRevised->wkbType() ),
-                                      QgsWkbTypes::displayString( mOriginal->wkbType() ) ) );
+        throw QgsProcessingException( QObject::tr( "Geometry type of revised layer (%1) does not match the original layer (%2). Consider using the \"Tolerant Match\" option instead." ).arg( QgsWkbTypes::displayString( mRevised->wkbType() ), QgsWkbTypes::displayString( mOriginal->wkbType() ) ) );
       break;
 
     case Topological:
       if ( QgsWkbTypes::geometryType( mOriginal->wkbType() ) != QgsWkbTypes::geometryType( mRevised->wkbType() ) )
-        throw QgsProcessingException( QObject::tr( "Geometry type of revised layer (%1) does not match the original layer (%2)" ).arg( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( mRevised->wkbType() ) ),
-                                      QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( mOriginal->wkbType() ) ) ) );
+        throw QgsProcessingException( QObject::tr( "Geometry type of revised layer (%1) does not match the original layer (%2)" ).arg( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( mRevised->wkbType() ) ), QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( mOriginal->wkbType() ) ) ) );
       break;
-
   }
 
   if ( mOriginal->sourceCrs() != mRevised->sourceCrs() )
-    feedback->reportError( QObject::tr( "CRS for revised layer (%1) does not match the original layer (%2) - reprojection accuracy may affect geometry matching" ).arg( mOriginal->sourceCrs().userFriendlyIdentifier(),
-                           mRevised->sourceCrs().userFriendlyIdentifier() ), false );
+    feedback->reportError( QObject::tr( "CRS for revised layer (%1) does not match the original layer (%2) - reprojection accuracy may affect geometry matching" ).arg( mOriginal->sourceCrs().userFriendlyIdentifier(), mRevised->sourceCrs().userFriendlyIdentifier() ), false );
 
   mFieldsToCompare = parameterAsStrings( parameters, QStringLiteral( "COMPARE_ATTRIBUTES" ), context );
   mOriginalFieldsToCompareIndices.reserve( mFieldsToCompare.size() );
@@ -166,20 +156,17 @@ bool QgsDetectVectorChangesAlgorithm::prepareAlgorithm( const QVariantMap &param
 QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString unchangedDestId;
-  std::unique_ptr< QgsFeatureSink > unchangedSink( parameterAsSink( parameters, QStringLiteral( "UNCHANGED" ), context, unchangedDestId, mOriginal->fields(),
-      mOriginal->wkbType(), mOriginal->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> unchangedSink( parameterAsSink( parameters, QStringLiteral( "UNCHANGED" ), context, unchangedDestId, mOriginal->fields(), mOriginal->wkbType(), mOriginal->sourceCrs() ) );
   if ( !unchangedSink && parameters.value( QStringLiteral( "UNCHANGED" ) ).isValid() )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "UNCHANGED" ) ) );
 
   QString addedDestId;
-  std::unique_ptr< QgsFeatureSink > addedSink( parameterAsSink( parameters, QStringLiteral( "ADDED" ), context, addedDestId, mRevised->fields(),
-      mRevised->wkbType(), mRevised->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> addedSink( parameterAsSink( parameters, QStringLiteral( "ADDED" ), context, addedDestId, mRevised->fields(), mRevised->wkbType(), mRevised->sourceCrs() ) );
   if ( !addedSink && parameters.value( QStringLiteral( "ADDED" ) ).isValid() )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "ADDED" ) ) );
 
   QString deletedDestId;
-  std::unique_ptr< QgsFeatureSink > deletedSink( parameterAsSink( parameters, QStringLiteral( "DELETED" ), context, deletedDestId, mOriginal->fields(),
-      mOriginal->wkbType(), mOriginal->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> deletedSink( parameterAsSink( parameters, QStringLiteral( "DELETED" ), context, deletedDestId, mOriginal->fields(), mOriginal->wkbType(), mOriginal->sourceCrs() ) );
   if ( !deletedSink && parameters.value( QStringLiteral( "DELETED" ) ).isValid() )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "DELETED" ) ) );
 
@@ -191,16 +178,15 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
   QgsFeatureIterator it = mOriginal->getFeatures( request );
 
   double step = mOriginal->featureCount() > 0 ? 100.0 / mOriginal->featureCount() : 0;
-  QHash< QgsFeatureId, QgsGeometry > originalGeometries;
-  QHash< QgsFeatureId, QgsAttributes > originalAttributes;
-  QHash< QgsAttributes, QgsFeatureId > originalNullGeometryAttributes;
+  QHash<QgsFeatureId, QgsGeometry> originalGeometries;
+  QHash<QgsFeatureId, QgsAttributes> originalAttributes;
+  QHash<QgsAttributes, QgsFeatureId> originalNullGeometryAttributes;
   long current = 0;
 
   QgsAttributes attrs;
   attrs.resize( mFieldsToCompare.size() );
 
-  const QgsSpatialIndex index( it, [&]( const QgsFeature & f )->bool
-  {
+  const QgsSpatialIndex index( it, [&]( const QgsFeature &f ) -> bool {
     if ( feedback->isCanceled() )
       return false;
 
@@ -224,7 +210,9 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
       if ( originalNullGeometryAttributes.contains( attrs ) )
       {
         feedback->reportError( QObject::tr( "A non-unique set of comparison attributes was found for "
-                                            "one or more features without geometries - results may be misleading (features %1 and %2)" ).arg( f.id() ).arg( originalNullGeometryAttributes.value( attrs ) ) );
+                                            "one or more features without geometries - results may be misleading (features %1 and %2)" )
+                                 .arg( f.id() )
+                                 .arg( originalNullGeometryAttributes.value( attrs ) ) );
       }
       else
       {
@@ -290,7 +278,7 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
         // attribute comparison is faster to do first, if desired
         if ( !mFieldsToCompare.empty() )
         {
-          if ( attrs != originalAttributes[ candidateId ] )
+          if ( attrs != originalAttributes[candidateId] )
           {
             // attributes don't match, so candidates is not a match
             continue;
@@ -429,9 +417,9 @@ QVariantMap QgsDetectVectorChangesAlgorithm::processAlgorithm( const QVariantMap
   outputs.insert( QStringLiteral( "UNCHANGED" ), unchangedDestId );
   outputs.insert( QStringLiteral( "ADDED" ), addedDestId );
   outputs.insert( QStringLiteral( "DELETED" ), deletedDestId );
-  outputs.insert( QStringLiteral( "UNCHANGED_COUNT" ), static_cast< long long >( unchangedOriginalIds.size() ) );
-  outputs.insert( QStringLiteral( "ADDED_COUNT" ), static_cast< long long >( addedRevisedIds.size() ) );
-  outputs.insert( QStringLiteral( "DELETED_COUNT" ), static_cast< long long >( deleted ) );
+  outputs.insert( QStringLiteral( "UNCHANGED_COUNT" ), static_cast<long long>( unchangedOriginalIds.size() ) );
+  outputs.insert( QStringLiteral( "ADDED_COUNT" ), static_cast<long long>( addedRevisedIds.size() ) );
+  outputs.insert( QStringLiteral( "DELETED_COUNT" ), static_cast<long long>( deleted ) );
 
   return outputs;
 }

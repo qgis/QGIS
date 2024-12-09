@@ -97,9 +97,9 @@ QgsStyleModel.CustomRole.__doc__ = """Custom model roles.
 QgsStyleModel.CustomRole.baseClass = QgsStyleModel
 try:
     QgsStyleModel.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsStyleProxyModel.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

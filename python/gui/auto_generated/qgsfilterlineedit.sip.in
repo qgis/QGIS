@@ -31,7 +31,6 @@ signal should be used instead of :py:func:`~textChanged`.
       sipType = NULL;
 %End
   public:
-
     enum ClearMode
     {
       ClearToNull,

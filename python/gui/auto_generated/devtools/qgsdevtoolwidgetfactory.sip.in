@@ -21,7 +21,6 @@ Factory class for creating custom developer/debugging tool pages
 #include "qgsdevtoolwidgetfactory.h"
 %End
   public:
-
     QgsDevToolWidgetFactory( const QString &title = QString(), const QIcon &icon = QIcon() );
 %Docstring
 Constructor for a QgsDevToolWidgetFactory with the specified ``title`` and ``icon``.

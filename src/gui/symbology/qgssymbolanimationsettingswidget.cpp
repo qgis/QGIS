@@ -27,13 +27,11 @@ QgsSymbolAnimationSettingsWidget::QgsSymbolAnimationSettingsWidget( QWidget *par
   mFrameRateSpin->setClearValue( 10 );
   mFrameRateSpin->setShowClearButton( true );
 
-  connect( mFrameRateSpin, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, [ this ]
-  {
+  connect( mFrameRateSpin, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [this] {
     if ( !mBlockUpdates )
       emit widgetChanged();
   } );
-  connect( mIsAnimatedGroup, &QGroupBox::toggled, this, [ this ]
-  {
+  connect( mIsAnimatedGroup, &QGroupBox::toggled, this, [this] {
     if ( !mBlockUpdates )
       emit widgetChanged();
   } );
@@ -64,7 +62,7 @@ QgsSymbolAnimationSettingsDialog::QgsSymbolAnimationSettingsDialog( QWidget *par
   : QDialog( parent, f )
 {
   QVBoxLayout *vLayout = new QVBoxLayout();
-  mWidget = new QgsSymbolAnimationSettingsWidget( );
+  mWidget = new QgsSymbolAnimationSettingsWidget();
   vLayout->addWidget( mWidget );
   QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
   connect( bbox, &QDialogButtonBox::accepted, this, &QgsSymbolAnimationSettingsDialog::accept );
@@ -83,4 +81,3 @@ QgsSymbolAnimationSettings QgsSymbolAnimationSettingsDialog::animationSettings()
 {
   return mWidget->animationSettings();
 }
-

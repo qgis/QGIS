@@ -51,9 +51,7 @@ QString QgsBoundingBoxAlgorithm::outputName() const
 
 QString QgsBoundingBoxAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm calculates the bounding box (envelope) for each feature in an input layer." ) +
-         QStringLiteral( "\n\n" )  +
-         QObject::tr( "See the 'Minimum bounding geometry' algorithm for a bounding box calculation which covers the whole layer or grouped subsets of features." );
+  return QObject::tr( "This algorithm calculates the bounding box (envelope) for each feature in an input layer." ) + QStringLiteral( "\n\n" ) + QObject::tr( "See the 'Minimum bounding geometry' algorithm for a bounding box calculation which covers the whole layer or grouped subsets of features." );
 }
 
 QgsBoundingBoxAlgorithm *QgsBoundingBoxAlgorithm::createInstance() const

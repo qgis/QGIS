@@ -31,7 +31,7 @@
 class QWidget;
 class QStandardItem;
 
-class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttributeTypeDialog, QgsExpressionContextGenerator
+class GUI_EXPORT QgsAttributeTypeDialog : public QWidget, private Ui::QgsAttributeTypeDialog, QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -284,7 +284,7 @@ class GUI_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
     QVariantMap mWidgetConfig;
 
     //! Cached configuration dialog (lazy loaded)
-    QMap< QString, QgsEditorConfigWidget * > mEditorConfigWidgets;
+    QMap<QString, QgsEditorConfigWidget *> mEditorConfigWidgets;
 
     QStandardItem *currentItem() const;
 

@@ -42,8 +42,8 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
   connect( mHtmlCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutLabelWidget::mHtmlCheckBox_stateChanged );
   connect( mTextEdit, &QPlainTextEdit::textChanged, this, &QgsLayoutLabelWidget::mTextEdit_textChanged );
   connect( mInsertExpressionButton, &QPushButton::clicked, this, &QgsLayoutLabelWidget::mInsertExpressionButton_clicked );
-  connect( mMarginXDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLabelWidget::mMarginXDoubleSpinBox_valueChanged );
-  connect( mMarginYDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLabelWidget::mMarginYDoubleSpinBox_valueChanged );
+  connect( mMarginXDoubleSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLabelWidget::mMarginXDoubleSpinBox_valueChanged );
+  connect( mMarginYDoubleSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutLabelWidget::mMarginYDoubleSpinBox_valueChanged );
 
   mHAlignmentComboBox->setAvailableAlignments( Qt::AlignLeft | Qt::AlignHCenter | Qt::AlignRight | Qt::AlignJustify );
   mVAlignmentComboBox->setAvailableAlignments( Qt::AlignTop | Qt::AlignVCenter | Qt::AlignBottom );
@@ -72,14 +72,12 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
   mDynamicTextMenu = new QMenu( this );
   mDynamicTextButton->setMenu( mDynamicTextMenu );
 
-  connect( mDynamicTextMenu, &QMenu::aboutToShow, this, [ = ]
-  {
+  connect( mDynamicTextMenu, &QMenu::aboutToShow, this, [=] {
     mDynamicTextMenu->clear();
     if ( mLabel->layout() )
     {
       // we need to rebuild this on each show, as the content varies depending on other available items...
-      buildInsertDynamicTextMenu( mLabel->layout(), mDynamicTextMenu, [ = ]( const QString & expression )
-      {
+      buildInsertDynamicTextMenu( mLabel->layout(), mDynamicTextMenu, [=]( const QString &expression ) {
         mLabel->beginCommand( tr( "Insert dynamic text" ) );
         mTextEdit->insertPlainText( "[%" + expression.trimmed() + "%]" );
         mLabel->endCommand();
@@ -111,21 +109,19 @@ QgsExpressionContext QgsLayoutLabelWidget::createExpressionContext() const
   return mLabel->createExpressionContext();
 }
 
-void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu *menu, const std::function<void ( const QString & )> &callback )
+void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu *menu, const std::function<void( const QString & )> &callback )
 {
   Q_ASSERT( layout );
-  auto addExpression = [&callback]( QMenu * menu, const QString & name, const QString & expression )
-  {
+  auto addExpression = [&callback]( QMenu *menu, const QString &name, const QString &expression ) {
     QAction *action = new QAction( name, menu );
-    connect( action, &QAction::triggered, action, [callback, expression]
-    {
+    connect( action, &QAction::triggered, action, [callback, expression] {
       callback( expression );
     } );
     menu->addAction( action );
   };
 
   QMenu *dateMenu = new QMenu( tr( "Current Date" ), menu );
-  for ( const std::pair< QString, QString > &expression :
+  for ( const std::pair<QString, QString> &expression :
         {
           std::make_pair( tr( "ISO Format (%1)" ).arg( QDateTime::currentDateTime().toString( QStringLiteral( "yyyy-MM-dd" ) ) ), QStringLiteral( "format_date(now(), 'yyyy-MM-dd')" ) ),
           std::make_pair( tr( "Day/Month/Year (%1)" ).arg( QDateTime::currentDateTime().toString( QStringLiteral( "dd/MM/yyyy" ) ) ), QStringLiteral( "format_date(now(), 'dd/MM/yyyy')" ) ),
@@ -137,7 +133,7 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
   menu->addMenu( dateMenu );
 
   QMenu *mapsMenu = new QMenu( tr( "Map Properties" ), menu );
-  QList< QgsLayoutItemMap * > maps;
+  QList<QgsLayoutItemMap *> maps;
   layout->layoutItems( maps );
   for ( QgsLayoutItemMap *map : std::as_const( maps ) )
   {
@@ -146,7 +142,7 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
       continue;
 
     QMenu *mapMenu = new QMenu( map->displayName(), mapsMenu );
-    for ( const std::pair< QString, QString > &expression :
+    for ( const std::pair<QString, QString> &expression :
           {
             std::make_pair( tr( "Scale (%1)" ).arg( map->scale() ), QStringLiteral( "format_number(item_variables('%1')['map_scale'], places:=6, omit_group_separators:=true, trim_trailing_zeroes:=true)" ).arg( map->id() ) ),
             std::make_pair( tr( "Rotation (%1)" ).arg( map->rotation() ), QStringLiteral( "item_variables('%1')['map_rotation']" ).arg( map->id() ) ),
@@ -155,13 +151,13 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
       addExpression( mapMenu, expression.first, expression.second );
     }
     mapMenu->addSeparator();
-    for ( const std::pair< QString, QString > &expression :
+    for ( const std::pair<QString, QString> &expression :
           {
-            std::make_pair( tr( "CRS Identifier (%1)" ).arg( map->crs().authid() ),  QStringLiteral( "item_variables('%1')['map_crs']" ).arg( map->id() ) ),
-            std::make_pair( tr( "CRS Name (%1)" ).arg( map->crs().description() ),  QStringLiteral( "item_variables('%1')['map_crs_description']" ).arg( map->id() ) ),
-            std::make_pair( tr( "Ellipsoid Name (%1)" ).arg( map->crs().ellipsoidAcronym() ),  QStringLiteral( "item_variables('%1')['map_crs_ellipsoid']" ).arg( map->id() ) ),
-            std::make_pair( tr( "Units (%1)" ).arg( QgsUnitTypes::toString( map->crs().mapUnits() ) ),  QStringLiteral( "item_variables('%1')['map_units']" ).arg( map->id() ) ),
-            std::make_pair( tr( "Projection (%1)" ).arg( map->crs().operation().description() ),  QStringLiteral( "item_variables('%1')['map_crs_projection']" ).arg( map->id() ) ),
+            std::make_pair( tr( "CRS Identifier (%1)" ).arg( map->crs().authid() ), QStringLiteral( "item_variables('%1')['map_crs']" ).arg( map->id() ) ),
+            std::make_pair( tr( "CRS Name (%1)" ).arg( map->crs().description() ), QStringLiteral( "item_variables('%1')['map_crs_description']" ).arg( map->id() ) ),
+            std::make_pair( tr( "Ellipsoid Name (%1)" ).arg( map->crs().ellipsoidAcronym() ), QStringLiteral( "item_variables('%1')['map_crs_ellipsoid']" ).arg( map->id() ) ),
+            std::make_pair( tr( "Units (%1)" ).arg( QgsUnitTypes::toString( map->crs().mapUnits() ) ), QStringLiteral( "item_variables('%1')['map_units']" ).arg( map->id() ) ),
+            std::make_pair( tr( "Projection (%1)" ).arg( map->crs().operation().description() ), QStringLiteral( "item_variables('%1')['map_crs_projection']" ).arg( map->id() ) ),
           } )
     {
       addExpression( mapMenu, expression.first, expression.second );
@@ -170,22 +166,22 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
 
     const QgsRectangle mapExtent = map->extent();
     const QgsPointXY center = mapExtent.center();
-    for ( const std::pair< QString, QString > &expression :
+    for ( const std::pair<QString, QString> &expression :
           {
-            std::make_pair( tr( "Center (X) (%1)" ).arg( center.x() ),  QStringLiteral( "x(item_variables('%1')['map_extent_center'])" ).arg( map->id() ) ),
-            std::make_pair( tr( "Center (Y) (%1)" ).arg( center.y() ),  QStringLiteral( "y(item_variables('%1')['map_extent_center'])" ).arg( map->id() ) ),
-            std::make_pair( tr( "X Minimum (%1)" ).arg( mapExtent.xMinimum() ),  QStringLiteral( "x_min(item_variables('%1')['map_extent'])" ).arg( map->id() ) ),
-            std::make_pair( tr( "Y Minimum (%1)" ).arg( mapExtent.yMinimum() ),  QStringLiteral( "y_min(item_variables('%1')['map_extent'])" ).arg( map->id() ) ),
-            std::make_pair( tr( "X Maximum (%1)" ).arg( mapExtent.xMaximum() ),  QStringLiteral( "x_max(item_variables('%1')['map_extent'])" ).arg( map->id() ) ),
-            std::make_pair( tr( "Y Maximum (%1)" ).arg( mapExtent.yMaximum() ),  QStringLiteral( "y_max(item_variables('%1')['map_extent'])" ).arg( map->id() ) ),
+            std::make_pair( tr( "Center (X) (%1)" ).arg( center.x() ), QStringLiteral( "x(item_variables('%1')['map_extent_center'])" ).arg( map->id() ) ),
+            std::make_pair( tr( "Center (Y) (%1)" ).arg( center.y() ), QStringLiteral( "y(item_variables('%1')['map_extent_center'])" ).arg( map->id() ) ),
+            std::make_pair( tr( "X Minimum (%1)" ).arg( mapExtent.xMinimum() ), QStringLiteral( "x_min(item_variables('%1')['map_extent'])" ).arg( map->id() ) ),
+            std::make_pair( tr( "Y Minimum (%1)" ).arg( mapExtent.yMinimum() ), QStringLiteral( "y_min(item_variables('%1')['map_extent'])" ).arg( map->id() ) ),
+            std::make_pair( tr( "X Maximum (%1)" ).arg( mapExtent.xMaximum() ), QStringLiteral( "x_max(item_variables('%1')['map_extent'])" ).arg( map->id() ) ),
+            std::make_pair( tr( "Y Maximum (%1)" ).arg( mapExtent.yMaximum() ), QStringLiteral( "y_max(item_variables('%1')['map_extent'])" ).arg( map->id() ) ),
           } )
     {
       addExpression( mapMenu, expression.first, expression.second );
     }
     mapMenu->addSeparator();
-    for ( const std::pair< QString, QString > &expression :
+    for ( const std::pair<QString, QString> &expression :
           {
-            std::make_pair( tr( "Layer Credits" ),  QStringLiteral( "array_to_string(map_credits('%1'))" ).arg( map->id() ) ),
+            std::make_pair( tr( "Layer Credits" ), QStringLiteral( "array_to_string(map_credits('%1'))" ).arg( map->id() ) ),
           } )
     {
       addExpression( mapMenu, expression.first, expression.second );
@@ -209,7 +205,7 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
     menu->addSeparator();
   }
 
-  for ( const std::pair< QString, QString > &expression :
+  for ( const std::pair<QString, QString> &expression :
         {
           std::make_pair( tr( "Layout Name" ), QStringLiteral( "@layout_name" ) ),
           std::make_pair( tr( "Layout Page Number" ), QStringLiteral( "@layout_page" ) ),
@@ -220,7 +216,7 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
     addExpression( menu, expression.first, expression.second );
   }
   menu->addSeparator();
-  for ( const std::pair< QString, QString > &expression :
+  for ( const std::pair<QString, QString> &expression :
         {
           std::make_pair( tr( "Project Author" ), QStringLiteral( "@project_author" ) ),
           std::make_pair( tr( "Project Title" ), QStringLiteral( "@project_title" ) ),
@@ -230,7 +226,7 @@ void QgsLayoutLabelWidget::buildInsertDynamicTextMenu( QgsLayout *layout, QMenu 
     addExpression( menu, expression.first, expression.second );
   }
   menu->addSeparator();
-  for ( const std::pair< QString, QString > &expression :
+  for ( const std::pair<QString, QString> &expression :
         {
           std::make_pair( tr( "Current User Name" ), QStringLiteral( "@user_full_name" ) ),
           std::make_pair( tr( "Current User Account" ), QStringLiteral( "@user_account_name" ) )
@@ -250,7 +246,7 @@ bool QgsLayoutLabelWidget::setNewItem( QgsLayoutItem *item )
     disconnect( mLabel, &QgsLayoutObject::changed, this, &QgsLayoutLabelWidget::setGuiElementValues );
   }
 
-  mLabel = qobject_cast< QgsLayoutItemLabel * >( item );
+  mLabel = qobject_cast<QgsLayoutItemLabel *>( item );
   mItemPropertiesWidget->setItem( mLabel );
 
   if ( mLabel )
@@ -359,7 +355,7 @@ void QgsLayoutLabelWidget::horizontalAlignmentChanged()
   if ( mLabel )
   {
     mLabel->beginCommand( tr( "Change Label Alignment" ) );
-    mLabel->setHAlign( static_cast< Qt::AlignmentFlag >( static_cast< int >( mHAlignmentComboBox->currentAlignment() ) ) );
+    mLabel->setHAlign( static_cast<Qt::AlignmentFlag>( static_cast<int>( mHAlignmentComboBox->currentAlignment() ) ) );
     mLabel->update();
     mLabel->endCommand();
   }
@@ -370,7 +366,7 @@ void QgsLayoutLabelWidget::verticalAlignmentChanged()
   if ( mLabel )
   {
     mLabel->beginCommand( tr( "Change Label Alignment" ) );
-    mLabel->setVAlign( static_cast< Qt::AlignmentFlag >( static_cast< int >( mVAlignmentComboBox->currentAlignment() ) ) );
+    mLabel->setVAlign( static_cast<Qt::AlignmentFlag>( static_cast<int>( mVAlignmentComboBox->currentAlignment() ) ) );
     mLabel->update();
     mLabel->endCommand();
   }

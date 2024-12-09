@@ -57,8 +57,8 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     //! Formats supported by provider
     struct SupportedFormat
     {
-      QString format;
-      QString label;
+        QString format;
+        QString label;
     };
 
     //! Constructor
@@ -80,7 +80,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
     void showStatusMessage( const QString &message );
 
   protected:
-
     /**
      * List of image formats (encodings) supported by provider
      * \returns list of format/label pairs
@@ -143,12 +142,7 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
      * create an item including possible parents
      * \note not available in Python bindings
      */
-    QgsTreeWidgetItem *createItem( int id,
-                                   const QStringList &names,
-                                   QMap<int, QgsTreeWidgetItem *> &items,
-                                   int &layerAndStyleCount,
-                                   const QMap<int, int> &layerParents,
-                                   const QMap<int, QStringList> &layerParentNames ) SIP_FACTORY SIP_SKIP;
+    QgsTreeWidgetItem *createItem( int id, const QStringList &names, QMap<int, QgsTreeWidgetItem *> &items, int &layerAndStyleCount, const QMap<int, int> &layerParents, const QMap<int, QStringList> &layerParentNames ) SIP_FACTORY SIP_SKIP;
 
     //! Returns a textual description for the authority id
     QString descriptionForAuthId( const QString &authId );
@@ -226,7 +220,6 @@ class GUI_EXPORT QgsOWSSourceSelect : public QgsAbstractDataSourceWidget, protec
 
 
   private:
-
     //! Selected CRS
     QString mSelectedCRS;
 

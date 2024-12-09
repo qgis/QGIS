@@ -136,4 +136,3 @@ bool QgsMapLayerAction::isEnabledOnlyWhenEditable() const
 {
   return mFlags & Qgis::MapLayerActionFlag::EnabledOnlyWhenEditable;
 }
-

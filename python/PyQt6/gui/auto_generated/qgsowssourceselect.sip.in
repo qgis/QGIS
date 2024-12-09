@@ -29,8 +29,8 @@ layers from the WCS server to the map canvas.
   public:
     struct SupportedFormat
     {
-      QString format;
-      QString label;
+        QString format;
+        QString label;
     };
 
     QgsOWSSourceSelect( const QString &service, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
@@ -63,7 +63,6 @@ Sets status message to theMessage
 %End
 
   protected:
-
     virtual QList<QgsOWSSourceSelect::SupportedFormat> providerFormats();
 %Docstring
 List of image formats (encodings) supported by provider

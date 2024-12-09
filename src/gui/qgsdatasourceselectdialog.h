@@ -43,11 +43,10 @@
  *
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsDataSourceSelectWidget: public QgsPanelWidget, private Ui::QgsDataSourceSelectDialog
+class GUI_EXPORT QgsDataSourceSelectWidget : public QgsPanelWidget, private Ui::QgsDataSourceSelectDialog
 {
     Q_OBJECT
   public:
-
     /**
      * Constructs a QgsDataSourceSelectWidget, optionally filtering by layer type
      *
@@ -56,10 +55,7 @@ class GUI_EXPORT QgsDataSourceSelectWidget: public QgsPanelWidget, private Ui::Q
      * \param layerType sets the layer type filter, this is in effect only if filtering by layer type is also active
      * \param parent the object
      */
-    QgsDataSourceSelectWidget( QgsBrowserGuiModel *browserModel = nullptr,
-                               bool setFilterByLayerType = false,
-                               Qgis::LayerType layerType = Qgis::LayerType::Vector,
-                               QWidget *parent = nullptr );
+    QgsDataSourceSelectWidget( QgsBrowserGuiModel *browserModel = nullptr, bool setFilterByLayerType = false, Qgis::LayerType layerType = Qgis::LayerType::Vector, QWidget *parent = nullptr );
 
 
     ~QgsDataSourceSelectWidget() override;
@@ -134,7 +130,6 @@ class GUI_EXPORT QgsDataSourceSelectWidget: public QgsPanelWidget, private Ui::Q
     void itemDoubleClicked( const QModelIndex &index );
 
   private:
-
     //! Refresh the model
     void refreshModel( const QModelIndex &index );
 
@@ -166,12 +161,11 @@ class GUI_EXPORT QgsDataSourceSelectWidget: public QgsPanelWidget, private Ui::Q
  *
  * \since QGIS 3.6
  */
-class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog
+class GUI_EXPORT QgsDataSourceSelectDialog : public QDialog
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructs a QgsDataSourceSelectDialog, optionally filtering by layer type
      *
@@ -180,10 +174,7 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog
      * \param layerType sets the layer type filter, this is in effect only if filtering by layer type is also active
      * \param parent the object
      */
-    QgsDataSourceSelectDialog( QgsBrowserGuiModel *browserModel = nullptr,
-                               bool setFilterByLayerType = false,
-                               Qgis::LayerType layerType = Qgis::LayerType::Vector,
-                               QWidget *parent = nullptr );
+    QgsDataSourceSelectDialog( QgsBrowserGuiModel *browserModel = nullptr, bool setFilterByLayerType = false, Qgis::LayerType layerType = Qgis::LayerType::Vector, QWidget *parent = nullptr );
 
     /**
      * Sets layer type filter to \a layerType and activates the filtering
@@ -224,9 +215,7 @@ class GUI_EXPORT QgsDataSourceSelectDialog: public QDialog
     void setFilter();
 
   private:
-
     QgsDataSourceSelectWidget *mWidget = nullptr;
-
 };
 
 #endif // QGSDATASOURCESELECTDIALOG_H

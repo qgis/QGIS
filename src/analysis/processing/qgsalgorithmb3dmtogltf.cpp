@@ -20,8 +20,8 @@
 #include "qgsgltfutils.h"
 
 #define TINYGLTF_IMPLEMENTATION
-#define TINYGLTF_NO_STB_IMAGE         // we use QImage-based reading of images
-#define TINYGLTF_NO_STB_IMAGE_WRITE   // we don't need writing of images
+#define TINYGLTF_NO_STB_IMAGE       // we use QImage-based reading of images
+#define TINYGLTF_NO_STB_IMAGE_WRITE // we don't need writing of images
 
 #include "tiny_gltf.h"
 #include <fstream>
@@ -65,8 +65,7 @@ QgsB3DMToGltfAlgorithm *QgsB3DMToGltfAlgorithm::createInstance() const
 
 void QgsB3DMToGltfAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input B3DM" ), Qgis::ProcessingFileParameterBehavior::File,
-                QStringLiteral( "b3dm" ), QVariant(), false, QStringLiteral( "B3DM (*.b3dm *.B3DM)" ) ) );
+  addParameter( new QgsProcessingParameterFile( QStringLiteral( "INPUT" ), QObject::tr( "Input B3DM" ), Qgis::ProcessingFileParameterBehavior::File, QStringLiteral( "b3dm" ), QVariant(), false, QStringLiteral( "B3DM (*.b3dm *.B3DM)" ) ) );
 
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output file" ), QStringLiteral( "GLTF (*.gltf *.GLTF);;GLB (*.glb *.GLB)" ) ) );
 }
@@ -145,8 +144,7 @@ QVariantMap QgsB3DMToGltfAlgorithm::processAlgorithm( const QVariantMap &paramet
     {
       // transfer B3DM RTC center to GLTF CESIUM_RTC extension
       tinygltf::Value::Object cesiumRtc;
-      cesiumRtc["center"] = tinygltf::Value( tinygltf::Value::Array
-      {
+      cesiumRtc["center"] = tinygltf::Value( tinygltf::Value::Array {
         tinygltf::Value( b3dmContent.rtcCenter.x() ),
         tinygltf::Value( b3dmContent.rtcCenter.y() ),
         tinygltf::Value( b3dmContent.rtcCenter.z() )

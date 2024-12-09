@@ -33,9 +33,7 @@ Widget for importing a certificate into the authentication database
       TextInput,
     };
 
-    explicit QgsAuthImportCertDialog( QWidget *parent /TransferThis/ = 0,
-                                      QgsAuthImportCertDialog::CertFilter filter = NoFilter,
-                                      QgsAuthImportCertDialog::CertInput input = AllInputs );
+    explicit QgsAuthImportCertDialog( QWidget *parent /TransferThis/ = 0, QgsAuthImportCertDialog::CertFilter filter = NoFilter, QgsAuthImportCertDialog::CertInput input = AllInputs );
 %Docstring
 Construct a dialog for importing certificates
 

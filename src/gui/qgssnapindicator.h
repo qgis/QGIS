@@ -55,7 +55,7 @@ class GUI_EXPORT QgsSnapIndicator
 
     QgsMapCanvas *mCanvas = nullptr;
     QgsPointLocator::Match mMatch;
-    QObjectParentUniquePtr< QgsVertexMarker > mSnappingMarker;
+    QObjectParentUniquePtr<QgsVertexMarker> mSnappingMarker;
 };
 
 #endif // QGSSNAPINDICATOR_H

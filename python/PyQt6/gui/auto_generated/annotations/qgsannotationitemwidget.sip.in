@@ -8,7 +8,7 @@
 
 
 
-class QgsAnnotationItemBaseWidget: QgsPanelWidget
+class QgsAnnotationItemBaseWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
 
@@ -23,7 +23,6 @@ All annotation item widgets should inherit from this base class.
 #include "qgsannotationitemwidget.h"
 %End
   public:
-
     QgsAnnotationItemBaseWidget( QWidget *parent /TransferThis/ );
 %Docstring
 Constructor for QgsAnnotationItemBaseWidget.
@@ -114,7 +113,6 @@ Emitted when the annotation item definition in the widget is changed by the user
 %End
 
   protected:
-
     virtual bool setNewItem( QgsAnnotationItem *item );
 %Docstring
 Attempts to update the widget to show the properties

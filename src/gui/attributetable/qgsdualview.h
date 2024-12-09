@@ -46,7 +46,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     Q_OBJECT
 
   public:
-
     /**
      * The view modes, in which this widget can present information.
      * Relates to the QStackedWidget stacks.
@@ -73,8 +72,8 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     //! Action on the map canvas when browsing the list of features
     enum FeatureListBrowsingAction
     {
-      NoAction = 0, //!< No action is done
-      PanToFeature, //!< The map is panned to the center of the feature bounding-box
+      NoAction = 0,  //!< No action is done
+      PanToFeature,  //!< The map is panned to the center of the feature bounding-box
       ZoomToFeature, //!< The map is zoomed to contained the feature bounding-box
     };
     Q_ENUM( FeatureListBrowsingAction )
@@ -98,11 +97,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
      *                   FALSE, limited features can later be loaded using setFilterMode()
      * \param showFirstFeature whether to initially show the first feature form upon initializing the dual view
      */
-    void init( QgsVectorLayer *layer,
-               QgsMapCanvas *mapCanvas,
-               const QgsFeatureRequest &request = QgsFeatureRequest(),
-               const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
-               bool loadFeatures = true, bool showFirstFeature = true );
+    void init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request = QgsFeatureRequest(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), bool loadFeatures = true, bool showFirstFeature = true );
 
     /**
      * Change the current view mode.
@@ -272,7 +267,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     /**
      * Cancel the progress dialog (if any)
      */
-    void cancelProgress( );
+    void cancelProgress();
 
     /**
      * Called in embedded forms when an \a attribute \a value in the parent form has changed.
@@ -401,7 +396,6 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void filterError( const QString &errorMessage );
 
   private:
-
     /**
      * Initialize the attribute form to a given \a feature.
      *
@@ -438,7 +432,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QAction *mLastDisplayExpressionAction = nullptr;
     QMenu *mHorizontalHeaderMenu = nullptr;
     QgsVectorLayerCache *mLayerCache = nullptr;
-    QPointer< QgsVectorLayer > mLayer = nullptr;
+    QPointer<QgsVectorLayer> mLayer = nullptr;
     QProgressDialog *mProgressDlg = nullptr;
     QgsIFeatureSelectionManager *mFeatureSelectionManager = nullptr;
     QString mDisplayExpression;
@@ -461,7 +455,6 @@ class GUI_EXPORT QgsAttributeTableAction : public QAction
     Q_OBJECT
 
   public:
-
     /**
      * Create a new attribute table action.
      *

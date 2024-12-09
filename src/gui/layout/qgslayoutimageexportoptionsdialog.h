@@ -32,12 +32,11 @@
  *
  * \note This class is not a part of public API
 */
-class GUI_EXPORT QgsLayoutImageExportOptionsDialog: public QDialog, private Ui::QgsLayoutImageExportOptionsDialog
+class GUI_EXPORT QgsLayoutImageExportOptionsDialog : public QDialog, private Ui::QgsLayoutImageExportOptionsDialog
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsLayoutImageExportOptionsDialog
      * \param parent parent widget
@@ -147,10 +146,7 @@ class GUI_EXPORT QgsLayoutImageExportOptionsDialog: public QDialog, private Ui::
     void showHelp();
 
   private:
-
     QSizeF mImageSize;
-
-
 };
 
 #endif // QGSLAYOUTIMAGEEXPORTOPTIONSDIALOG_H

@@ -41,7 +41,6 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     Q_OBJECT
 
   public:
-
     /**
      * Construct a widget for editing an SSL server certificate configuration
      * \param parent Parent widget
@@ -49,10 +48,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
      * \param hostport Unique host:port to associate with the server certificate
      * \param connectionCAs List of trusted Certificate Authorities objects
      */
-    explicit QgsAuthSslConfigWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                                     const QSslCertificate &cert = QSslCertificate(),
-                                     const QString &hostport = QString(),
-                                     const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
+    explicit QgsAuthSslConfigWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QSslCertificate &cert = QSslCertificate(), const QString &hostport = QString(), const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 
     //! Access to the certificate's group box widget
     QGroupBox *certificateGroupBox();
@@ -193,16 +189,13 @@ class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Construct wrapper dialog for the SSL config widget
      * \param parent Parent widget
      * \param cert SSL server certificate object
      * \param hostport Unique host:port to associate with the server certificate
      */
-    explicit QgsAuthSslConfigDialog( QWidget *parent = nullptr,
-                                     const QSslCertificate &cert = QSslCertificate(),
-                                     const QString &hostport = QString() );
+    explicit QgsAuthSslConfigDialog( QWidget *parent = nullptr, const QSslCertificate &cert = QSslCertificate(), const QString &hostport = QString() );
 
     //! Access the embedded SSL server configuration widget
     QgsAuthSslConfigWidget *sslCustomConfigWidget() { return mSslConfigWdgt; }

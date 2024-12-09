@@ -31,20 +31,19 @@ If used in a :py:class:`QgsMapToolIdentify`, it is accessible via :py:func:`QgsM
 
     struct ActionData
     {
+        ActionData();
 
-      ActionData();
+        ActionData( QgsMapLayer *layer, QgsMapLayerAction *mapLayerAction = 0 );
 
-      ActionData( QgsMapLayer *layer, QgsMapLayerAction *mapLayerAction = 0 );
+        ActionData( QgsMapLayer *layer, QgsFeatureId fid, QgsMapLayerAction *mapLayerAction = 0 );
 
-      ActionData( QgsMapLayer *layer, QgsFeatureId fid, QgsMapLayerAction *mapLayerAction = 0 );
-
-      bool mIsValid;
-      bool mAllResults;
-      bool mIsExternalAction;
-      QgsMapLayer *mLayer;
-      QgsFeatureId mFeatureId;
-      QgsIdentifyMenu::MenuLevel mLevel;
-      QgsMapLayerAction *mMapLayerAction;
+        bool mIsValid;
+        bool mAllResults;
+        bool mIsExternalAction;
+        QgsMapLayer *mLayer;
+        QgsFeatureId mFeatureId;
+        QgsIdentifyMenu::MenuLevel mLevel;
+        QgsMapLayerAction *mMapLayerAction;
     };
 
     explicit QgsIdentifyMenu( QgsMapCanvas *canvas );

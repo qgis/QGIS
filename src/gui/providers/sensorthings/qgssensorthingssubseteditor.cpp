@@ -120,12 +120,10 @@ QgsSensorThingsSubsetEditor::QgsSensorThingsSubsetEditor( QgsVectorLayer *layer,
           mButtonNow
         } )
   {
-    connect( button, &QPushButton::clicked, this, [this, button]
-    {
+    connect( button, &QPushButton::clicked, this, [this, button] {
       mSubsetEditor->insertText( button->property( "expression" ).toString() );
       mSubsetEditor->setFocus();
     } );
-
   }
 }
 
@@ -155,7 +153,7 @@ void QgsSensorThingsSubsetEditor::reset()
 
 void QgsSensorThingsSubsetEditor::lstFieldsDoubleClicked( const QModelIndex &index )
 {
-  mSubsetEditor->insertText( mModelFields->data( index, static_cast< int >( QgsFieldModel::CustomRole::FieldName ) ).toString() );
+  mSubsetEditor->insertText( mModelFields->data( index, static_cast<int>( QgsFieldModel::CustomRole::FieldName ) ).toString() );
   mSubsetEditor->setFocus();
 }
 

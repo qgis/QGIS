@@ -44,8 +44,7 @@ QgsCoordinateOperationWidget::QgsCoordinateOperationWidget( QWidget *parent )
   mInstallGridButton->hide();
 
   connect( mInstallGridButton, &QPushButton::clicked, this, &QgsCoordinateOperationWidget::installGrid );
-  connect( mAllowFallbackCheckBox, &QCheckBox::toggled, this, [ = ]
-  {
+  connect( mAllowFallbackCheckBox, &QCheckBox::toggled, this, [=] {
     if ( !mBlockSignals )
       emit operationChanged();
   } );
@@ -59,7 +58,7 @@ QgsCoordinateOperationWidget::QgsCoordinateOperationWidget( QWidget *parent )
   mShowSupersededCheckBox->setVisible( true );
   mLabelDstDescription->hide();
 
-  connect( mHideDeprecatedCheckBox, &QCheckBox::stateChanged, this, [ = ] { loadAvailableOperations(); } );
+  connect( mHideDeprecatedCheckBox, &QCheckBox::stateChanged, this, [=] { loadAvailableOperations(); } );
   connect( mShowSupersededCheckBox, &QCheckBox::toggled, this, &QgsCoordinateOperationWidget::showSupersededToggled );
   connect( mCoordinateOperationTableWidget, &QTableWidget::currentItemChanged, this, &QgsCoordinateOperationWidget::tableCurrentItemChanged );
   connect( mCoordinateOperationTableWidget, &QTableWidget::itemDoubleClicked, this, &QgsCoordinateOperationWidget::operationDoubleClicked );
@@ -77,12 +76,10 @@ void QgsCoordinateOperationWidget::setMapCanvas( QgsMapCanvas *canvas )
     QgsGeometry g = QgsGeometry::fromQPolygonF( mainCanvasPoly );
     // close polygon
     mainCanvasPoly << mainCanvasPoly.at( 0 );
-    if ( QgsProject::instance()->crs() !=
-         QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) )
+    if ( QgsProject::instance()->crs() != QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) )
     {
       // reproject extent
-      QgsCoordinateTransform ct( QgsProject::instance()->crs(),
-                                 QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance() );
+      QgsCoordinateTransform ct( QgsProject::instance()->crs(), QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance() );
       ct.setBallparkTransformsAreAppropriate( true );
       g = g.densifyByCount( 5 );
       try
@@ -137,7 +134,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
 
   for ( const QgsDatumTransform::TransformDetails &transform : std::as_const( mDatumTransforms ) )
   {
-    std::unique_ptr< QTableWidgetItem > item = std::make_unique< QTableWidgetItem >();
+    std::unique_ptr<QTableWidgetItem> item = std::make_unique<QTableWidgetItem>();
     item->setData( ProjRole, transform.proj );
     item->setData( AvailableRole, transform.isAvailable );
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
@@ -186,7 +183,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
           {
             if ( !grid.packageName.isEmpty() )
             {
-              m += ' ' +  tr( "This grid is part of the <i>%1</i> package, available for download from <a href=\"%2\">%2</a>." ).arg( grid.packageName, grid.url );
+              m += ' ' + tr( "This grid is part of the <i>%1</i> package, available for download from <a href=\"%2\">%2</a>." ).arg( grid.packageName, grid.url );
             }
             else
             {
@@ -286,9 +283,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     const QColor disabled = palette().color( QPalette::Disabled, QPalette::Text );
     const QColor active = palette().color( QPalette::Active, QPalette::Text );
 
-    const QColor codeColor( static_cast< int >( active.red() * 0.6 + disabled.red() * 0.4 ),
-                            static_cast< int >( active.green() * 0.6 + disabled.green() * 0.4 ),
-                            static_cast< int >( active.blue() * 0.6 + disabled.blue() * 0.4 ) );
+    const QColor codeColor( static_cast<int>( active.red() * 0.6 + disabled.red() * 0.4 ), static_cast<int>( active.green() * 0.6 + disabled.green() * 0.4 ), static_cast<int>( active.blue() * 0.6 + disabled.blue() * 0.4 ) );
     const QString toolTipString = QStringLiteral( "<b>%1</b>" ).arg( transform.name )
                                   + ( !opText.empty() ? ( opText.count() == 1 ? QStringLiteral( "<p>%1</p>" ).arg( opText.at( 0 ) ) : QStringLiteral( "<ul>%1</ul>" ).arg( opText.join( QString() ) ) ) : QString() )
                                   + ( !areasOfUse.empty() ? QStringLiteral( "<p><b>%1</b>: %2</p>" ).arg( tr( "Area of use" ), areasOfUse.join( QLatin1String( ", " ) ) ) : QString() )
@@ -300,7 +295,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     mCoordinateOperationTableWidget->setRowCount( row + 1 );
     mCoordinateOperationTableWidget->setItem( row, 0, item.release() );
 
-    item = std::make_unique< QTableWidgetItem >();
+    item = std::make_unique<QTableWidgetItem>();
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     item->setText( transform.accuracy >= 0 ? QLocale().toString( transform.accuracy ) : tr( "Unknown" ) );
     item->setToolTip( toolTipString );
@@ -311,7 +306,7 @@ void QgsCoordinateOperationWidget::loadAvailableOperations()
     mCoordinateOperationTableWidget->setItem( row, 1, item.release() );
 
     // area of use column
-    item = std::make_unique< QTableWidgetItem >();
+    item = std::make_unique<QTableWidgetItem>();
     item->setFlags( item->flags() & ~Qt::ItemIsEditable );
     item->setText( areasOfUse.join( QLatin1String( ", " ) ) );
     item->setToolTip( toolTipString );
@@ -483,7 +478,7 @@ bool QgsCoordinateOperationWidget::testGridShiftFileAvailability( QTableWidgetIt
     QStringList::const_iterator fileIt = fileList.constBegin();
     for ( ; fileIt != fileList.constEnd(); ++fileIt )
     {
-#if defined(Q_OS_WIN)
+#if defined( Q_OS_WIN )
       if ( fileIt->compare( filename, Qt::CaseInsensitive ) == 0 )
 #else
       if ( fileIt->compare( filename ) == 0 )
@@ -516,7 +511,7 @@ void QgsCoordinateOperationWidget::tableCurrentItemChanged( QTableWidgetItem *, 
     {
       // find area of intersection of operation, source and dest bounding boxes
       // see https://github.com/OSGeo/PROJ/issues/1549 for justification
-      const QgsRectangle operationRect = srcItem->data( BoundsRole ).value< QgsRectangle >();
+      const QgsRectangle operationRect = srcItem->data( BoundsRole ).value<QgsRectangle>();
       const QgsRectangle sourceRect = mSourceCrs.bounds();
       const QgsRectangle destRect = mDestinationCrs.bounds();
       QgsRectangle rect = operationRect.intersect( sourceRect );

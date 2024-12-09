@@ -28,7 +28,6 @@ The :py:class:`QgsDatabaseSchemaComboBox` class is a combo box which displays th
 #include "qgsdatabaseschemacombobox.h"
 %End
   public:
-
     explicit QgsDatabaseSchemaComboBox( const QString &provider, const QString &connection, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDatabaseSchemaComboBox, for the specified ``provider`` and ``connection``.

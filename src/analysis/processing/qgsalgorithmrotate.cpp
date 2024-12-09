@@ -63,16 +63,13 @@ QgsRotateFeaturesAlgorithm *QgsRotateFeaturesAlgorithm::createInstance() const
 
 void QgsRotateFeaturesAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr< QgsProcessingParameterNumber > rotation = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ANGLE" ),
-      QObject::tr( "Rotation (degrees clockwise)" ), Qgis::ProcessingNumberParameterType::Double,
-      0.0 );
+  std::unique_ptr<QgsProcessingParameterNumber> rotation = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "ANGLE" ), QObject::tr( "Rotation (degrees clockwise)" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   rotation->setIsDynamic( true );
   rotation->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "ANGLE" ), QObject::tr( "Rotation (degrees clockwise)" ), QgsPropertyDefinition::Rotation ) );
   rotation->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( rotation.release() );
 
-  std::unique_ptr< QgsProcessingParameterPoint > anchor = std::make_unique< QgsProcessingParameterPoint >( QStringLiteral( "ANCHOR" ),
-      QObject::tr( "Rotation anchor point" ), QVariant(), true );
+  std::unique_ptr<QgsProcessingParameterPoint> anchor = std::make_unique<QgsProcessingParameterPoint>( QStringLiteral( "ANCHOR" ), QObject::tr( "Rotation anchor point" ), QVariant(), true );
   addParameter( anchor.release() );
 }
 
@@ -81,7 +78,7 @@ bool QgsRotateFeaturesAlgorithm::prepareAlgorithm( const QVariantMap &parameters
   mAngle = parameterAsDouble( parameters, QStringLiteral( "ANGLE" ), context );
   mDynamicAngle = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "ANGLE" ) );
   if ( mDynamicAngle )
-    mAngleProperty = parameters.value( QStringLiteral( "ANGLE" ) ).value< QgsProperty >();
+    mAngleProperty = parameters.value( QStringLiteral( "ANGLE" ) ).value<QgsProperty>();
 
   mUseAnchor = parameters.value( QStringLiteral( "ANCHOR" ) ).isValid();
   if ( mUseAnchor )
@@ -145,5 +142,3 @@ QgsFeatureList QgsRotateFeaturesAlgorithm::processFeature( const QgsFeature &fea
 
 
 ///@endcond
-
-

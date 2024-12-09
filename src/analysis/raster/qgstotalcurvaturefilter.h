@@ -25,16 +25,13 @@
  * \ingroup analysis
  * \brief Calculates total curvature as described by Wilson, Gallant (2000): terrain analysis.
 */
-class ANALYSIS_EXPORT QgsTotalCurvatureFilter: public QgsNineCellFilter
+class ANALYSIS_EXPORT QgsTotalCurvatureFilter : public QgsNineCellFilter
 {
   public:
     QgsTotalCurvatureFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
 
   protected:
-
-    float processNineCellWindow( float *x11, float *x21, float *x31,
-                                 float *x12, float *x22, float *x32,
-                                 float *x13, float *x23, float *x33 ) override;
+    float processNineCellWindow( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 ) override;
 };
 
 #endif // QGSTOTALCURVATUREFILTER_H

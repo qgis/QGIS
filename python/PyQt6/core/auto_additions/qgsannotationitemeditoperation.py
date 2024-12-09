@@ -15,29 +15,29 @@ QgsAbstractAnnotationItemEditOperation.Type.__doc__ = """Operation type
 # --
 try:
     QgsAnnotationItemEditContext.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsAbstractAnnotationItemEditOperation.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsAnnotationItemEditOperationMoveNode.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsAnnotationItemEditOperationDeleteNode.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsAnnotationItemEditOperationAddNode.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsAnnotationItemEditOperationTranslateItem.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsAnnotationItemEditOperationTransientResults.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass

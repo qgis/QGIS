@@ -38,7 +38,6 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
     Q_OBJECT
 
   public:
-
     /**
      * Default constructor
      * \param parent parent widget
@@ -89,7 +88,6 @@ class GUI_EXPORT QgsHttpHeaderWidget : public QWidget, private Ui::QgsHttpHeader
 
   private:
     void addQueryPairRow( const QString &key, const QString &val );
-
 };
 
 #endif // QGSHTTPHEADERWIDGET_H

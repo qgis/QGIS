@@ -25,7 +25,7 @@
 #define SIP_NO_FILE
 
 ///@cond PRIVATE
-class GUI_EXPORT QgsInstallGridShiftFileDialog: public QDialog, private Ui::QgsInstallGridShiftFileDialogBase
+class GUI_EXPORT QgsInstallGridShiftFileDialog : public QDialog, private Ui::QgsInstallGridShiftFileDialogBase
 {
     Q_OBJECT
   public:
@@ -40,7 +40,6 @@ class GUI_EXPORT QgsInstallGridShiftFileDialog: public QDialog, private Ui::QgsI
 
   private:
     QString mGridName;
-
 };
 ///@endcond
 

@@ -33,11 +33,9 @@ class QgsMapCanvas;
 */
 class GUI_EXPORT QgsGeocoderLocatorFilter : public QgsAbstractGeocoderLocatorFilter
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsGeocoderLocatorFilter.
      *
@@ -57,11 +55,7 @@ class GUI_EXPORT QgsGeocoderLocatorFilter : public QgsAbstractGeocoderLocatorFil
      * The \a boundingBox argument specifies the geographic bounding box, in WGS84, covered by the
      * filter.
      */
-    QgsGeocoderLocatorFilter( const QString &name, const QString &displayName,
-                              const QString &prefix,
-                              QgsGeocoderInterface *geocoder,
-                              QgsMapCanvas *canvas,
-                              const QgsRectangle &boundingBox = QgsRectangle() );
+    QgsGeocoderLocatorFilter( const QString &name, const QString &displayName, const QString &prefix, QgsGeocoderInterface *geocoder, QgsMapCanvas *canvas, const QgsRectangle &boundingBox = QgsRectangle() );
 
     QgsLocatorFilter *clone() const override SIP_FACTORY;
 
@@ -69,7 +63,6 @@ class GUI_EXPORT QgsGeocoderLocatorFilter : public QgsAbstractGeocoderLocatorFil
     void handleGeocodeResult( const QgsGeocoderResult &result ) override;
 
     QgsMapCanvas *mCanvas = nullptr;
-
 };
 
 #endif // QGSGEOCODERLOCATORFILTER_H

@@ -17,5 +17,5 @@ try:
     QgsRasterMinMaxOrigin.statAccuracyString = staticmethod(QgsRasterMinMaxOrigin.statAccuracyString)
     QgsRasterMinMaxOrigin.statAccuracyFromString = staticmethod(QgsRasterMinMaxOrigin.statAccuracyFromString)
     QgsRasterMinMaxOrigin.__group__ = ['raster']
-except NameError:
+except (NameError, AttributeError):
     pass

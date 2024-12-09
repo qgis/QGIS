@@ -20,7 +20,6 @@ Wraps a search widget. Default form is just a :py:class:`QgsLineFilterEdit`
 #include "qgsdefaultsearchwidgetwrapper.h"
 %End
   public:
-
     explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDefaultSearchWidgetWrapper

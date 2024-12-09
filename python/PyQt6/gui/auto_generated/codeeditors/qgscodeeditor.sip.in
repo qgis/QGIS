@@ -24,7 +24,6 @@ An interface for code interpreters.
 #include "qgscodeeditor.h"
 %End
   public:
-
     virtual ~QgsCodeInterpreter();
 
     int exec( const QString &command );
@@ -49,7 +48,6 @@ interpreter, given a ``state``.
 %End
 
   protected:
-
     virtual int execCommandImpl( const QString &command ) = 0;
 %Docstring
 Pure virtual method for executing commands in the interpreter.
@@ -77,8 +75,6 @@ A text editor based on QScintilla2.
 %End
   public:
 
-
-
     enum class Mode
     {
       ScriptEditor,
@@ -87,7 +83,7 @@ A text editor based on QScintilla2.
     };
 
     enum class MarginRole /BaseType=IntEnum/
-      {
+    {
       LineNumbers,
       ErrorIndicators,
       FoldingControls,
@@ -520,7 +516,6 @@ Emitted when the persistent history of commands run in the editor is cleared.
 %End
 
   protected:
-
     static bool isFixedPitch( const QFont &font );
 %Docstring
 Returns ``True`` if a ``font`` is a fixed pitch font.

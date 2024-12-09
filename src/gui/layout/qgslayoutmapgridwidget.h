@@ -33,7 +33,7 @@
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapGridWidgetBase
+class GUI_EXPORT QgsLayoutMapGridWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapGridWidgetBase
 {
     Q_OBJECT
 
@@ -104,8 +104,6 @@ class GUI_EXPORT QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private
     void mDistanceToMapFrameSpinBox_valueChanged( double d );
 
   protected:
-
-
     //! Sets the current composer map values to the GUI elements
     virtual void updateGuiElements();
 
@@ -127,8 +125,8 @@ class GUI_EXPORT QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private
     void onCrsChanged();
 
   private:
-    QPointer< QgsLayoutItemMap > mMap;
-    QPointer< QgsLayoutItemMapGrid > mMapGrid;
+    QPointer<QgsLayoutItemMap> mMap;
+    QPointer<QgsLayoutItemMapGrid> mMapGrid;
     int mBlockAnnotationFormatUpdates = 0;
 
     //! Blocks / unblocks the signals of all GUI elements
@@ -153,7 +151,6 @@ class GUI_EXPORT QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private
 
     //! Is there some predefined scales, globally or as project's options ?
     bool hasPredefinedScales() const;
-
 };
 
 #endif //QGSLAYOUTMAPGRIDWIDGET_H

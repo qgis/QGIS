@@ -27,8 +27,8 @@
 
 ///@cond PRIVATE
 
-QgsStacDownloadAssetsDialog::QgsStacDownloadAssetsDialog( QWidget *parent ) :
-  QDialog( parent )
+QgsStacDownloadAssetsDialog::QgsStacDownloadAssetsDialog( QWidget *parent )
+  : QDialog( parent )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
@@ -47,16 +47,15 @@ QgsStacDownloadAssetsDialog::QgsStacDownloadAssetsDialog( QWidget *parent ) :
   connect( mDeselectAllButton, &QPushButton::clicked, this, &QgsStacDownloadAssetsDialog::deselectAll );
 
   mTreeWidget->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( mTreeWidget, &QWidget::customContextMenuRequested,
-           this, &QgsStacDownloadAssetsDialog::showContextMenu );
+  connect( mTreeWidget, &QWidget::customContextMenuRequested, this, &QgsStacDownloadAssetsDialog::showContextMenu );
 }
 
 void QgsStacDownloadAssetsDialog::setStacItem( QgsStacItem *stacItem )
 {
-  if ( ! stacItem )
+  if ( !stacItem )
     return;
 
-  const QMap< QString, QgsStacAsset > assets = stacItem->assets();
+  const QMap<QString, QgsStacAsset> assets = stacItem->assets();
   for ( auto it = assets.constBegin(); it != assets.constEnd(); ++it )
   {
     QTreeWidgetItem *item = new QTreeWidgetItem();
@@ -106,8 +105,7 @@ void QgsStacDownloadAssetsDialog::showContextMenu( QPoint p )
 
   const QString url = item->text( 5 );
   QAction *copyUrlAction = new QAction( tr( "Copy URL" ), mContextMenu );
-  connect( copyUrlAction, &QAction::triggered, this, [url]
-  {
+  connect( copyUrlAction, &QAction::triggered, this, [url] {
     QApplication::clipboard()->setText( url );
   } );
   mContextMenu->addAction( copyUrlAction );

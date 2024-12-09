@@ -31,9 +31,7 @@
  */
 class QgsAggregateAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsAggregateAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -46,33 +44,30 @@ class QgsAggregateAlgorithm : public QgsProcessingAlgorithm
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
 
   protected:
-
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     QgsExpression createExpression( const QString &expressionString, QgsProcessingContext &context ) const;
 
-    std::unique_ptr< QgsProcessingFeatureSource > mSource;
+    std::unique_ptr<QgsProcessingFeatureSource> mSource;
     QString mGroupBy;
 
     QgsExpression mGroupByExpression;
     QgsExpression mGeometryExpression;
 
     QgsFields mFields;
-    QList< QgsExpression > mExpressions;
-    QList< int > mAttributesRequireLastFeature;
+    QList<QgsExpression> mExpressions;
+    QList<int> mAttributesRequireLastFeature;
     QgsDistanceArea mDa;
 
     struct Group
     {
-      QgsFeatureSink *sink = nullptr;
-      QgsMapLayer *layer = nullptr;
-      QgsFeature firstFeature;
-      QgsFeature lastFeature;
+        QgsFeatureSink *sink = nullptr;
+        QgsMapLayer *layer = nullptr;
+        QgsFeature firstFeature;
+        QgsFeature lastFeature;
     };
-
 };
 
 ///@endcond PRIVATE

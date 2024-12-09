@@ -48,5 +48,5 @@ try:
     QgsGui.higFlags = staticmethod(QgsGui.higFlags)
     QgsGui.sampleColor = staticmethod(QgsGui.sampleColor)
     QgsGui.findScreenAt = staticmethod(QgsGui.findScreenAt)
-except NameError:
+except (NameError, AttributeError):
     pass

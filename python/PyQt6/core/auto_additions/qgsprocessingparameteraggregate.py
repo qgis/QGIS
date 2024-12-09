@@ -2,5 +2,5 @@
 try:
     QgsProcessingParameterAggregate.typeName = staticmethod(QgsProcessingParameterAggregate.typeName)
     QgsProcessingParameterAggregate.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass

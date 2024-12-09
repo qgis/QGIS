@@ -22,7 +22,6 @@ Widget for configuration of appearance of legend for marker symbols with data-de
 #include "qgsdatadefinedsizelegendwidget.h"
 %End
   public:
-
     explicit QgsDataDefinedSizeLegendWidget( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol /Transfer/, QgsMapCanvas *canvas = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Creates the dialog and initializes the content to what is passed in the legend configuration (may be ``None``).

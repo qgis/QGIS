@@ -42,11 +42,10 @@ class QInputEvent;
  *
  * \since QGIS 3.14
 */
-class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRectItem
+class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsRectItem
 {
     Q_OBJECT
   public:
-
     //! Describes the action (move or resize in different direction) to be done during mouse move
     enum MouseAction
     {
@@ -107,17 +106,23 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     void selectedItemRotationChanged();
 
   protected:
-
-    void paintInternal( QPainter *painter, bool showHandles, bool showStaticBoundingBoxes,
-                        bool showTemporaryBoundingBoxes, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr );
+    void paintInternal( QPainter *painter, bool showHandles, bool showStaticBoundingBoxes, bool showTemporaryBoundingBoxes, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr );
 
     //! Sets the mouse cursor for the QGraphicsView attached to the composition
     virtual void setViewportCursor( Qt::CursorShape cursor ) = 0;
 
     virtual QList<QGraphicsItem *> sceneItemsAtPoint( QPointF scenePoint ) = 0;
     virtual QList<QGraphicsItem *> selectedSceneItems( bool includeLockedItems = true ) const = 0;
-    virtual bool itemIsLocked( QGraphicsItem *item ) { Q_UNUSED( item ); return false; }
-    virtual bool itemIsGroupMember( QGraphicsItem *item ) { Q_UNUSED( item ); return false; }
+    virtual bool itemIsLocked( QGraphicsItem *item )
+    {
+      Q_UNUSED( item );
+      return false;
+    }
+    virtual bool itemIsGroupMember( QGraphicsItem *item )
+    {
+      Q_UNUSED( item );
+      return false;
+    }
     virtual QRectF itemRect( QGraphicsItem *item ) const = 0;
     virtual QRectF storedItemRect( QGraphicsItem *item ) const;
     virtual void moveItem( QGraphicsItem *item, double deltaX, double deltaY ) = 0;
@@ -144,7 +149,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     virtual QPointF snapPoint( QPointF originalPoint, SnapGuideMode mode, bool snapHorizontal = true, bool snapVertical = true );
 
     //! Collects all items from a list of \a items, exploring for any group members and adding them too
-    virtual void expandItemList( const QList< QGraphicsItem * > &items, QList< QGraphicsItem * > &collected ) const;
+    virtual void expandItemList( const QList<QGraphicsItem *> &items, QList<QGraphicsItem *> &collected ) const;
 
     void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) override;
     void hoverMoveEvent( QGraphicsSceneHoverEvent *event ) override;
@@ -201,7 +206,6 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
     static double relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax );
 
   private:
-
     QGraphicsView *mView = nullptr;
 
     double mHandleSize = 10;
@@ -246,9 +250,6 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRe
 
     //! Finds out the appropriate cursor for the current mouse position in the widget (e.g. move in the middle, resize at border)
     Qt::CursorShape cursorForPosition( QPointF itemCoordPos );
-
-
-
 };
 
 ///@endcond PRIVATE

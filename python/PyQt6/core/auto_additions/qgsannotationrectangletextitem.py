@@ -2,5 +2,5 @@
 try:
     QgsAnnotationRectangleTextItem.create = staticmethod(QgsAnnotationRectangleTextItem.create)
     QgsAnnotationRectangleTextItem.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -30,9 +30,7 @@
  */
 class QgsBoundingBoxAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsBoundingBoxAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -46,12 +44,9 @@ class QgsBoundingBoxAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString outputName() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType ) const override { return Qgis::WkbType::Polygon; }
     QgsFields outputFields( const QgsFields &inputFields ) const override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMBOUNDINGBOX_H
-
-

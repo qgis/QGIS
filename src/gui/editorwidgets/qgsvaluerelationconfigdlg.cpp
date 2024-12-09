@@ -45,8 +45,7 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fi
   connect( mLayerName, &QgsMapLayerComboBox::layerChanged, this, &QgsEditorConfigWidget::changed );
   connect( mKeyColumn, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
   connect( mValueColumn, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
-  connect( mGroupColumn, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int index )
-  {
+  connect( mGroupColumn, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=]( int index ) {
     mDisplayGroupName->setEnabled( index != 0 );
     emit changed();
   } );
@@ -56,20 +55,18 @@ QgsValueRelationConfigDlg::QgsValueRelationConfigDlg( QgsVectorLayer *vl, int fi
   connect( mOrderByValue, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mFilterExpression, &QTextEdit::textChanged, this, &QgsEditorConfigWidget::changed );
   connect( mUseCompleter, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
-  connect( mAllowMulti, &QAbstractButton::toggled, this, [ = ]( bool checked )
-  {
+  connect( mAllowMulti, &QAbstractButton::toggled, this, [=]( bool checked ) {
     label_nofColumns->setEnabled( checked );
     mNofColumns->setEnabled( checked );
   } );
 
-  connect( mUseCompleter, &QCheckBox::stateChanged, this,  [ = ]( int state )
-  {
+  connect( mUseCompleter, &QCheckBox::stateChanged, this, [=]( int state ) {
     mCompleterMatchFromStart->setEnabled( static_cast<Qt::CheckState>( state ) == Qt::CheckState::Checked );
   } );
 
   mCompleterMatchFromStart->setEnabled( mUseCompleter->isChecked() );
 
-  connect( mNofColumns, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( mNofColumns, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
 
   layerChanged();
 }
@@ -81,9 +78,7 @@ QVariantMap QgsValueRelationConfigDlg::config()
   cfg.insert( QStringLiteral( "Layer" ), mLayerName->currentLayer() ? mLayerName->currentLayer()->id() : QString() );
   cfg.insert( QStringLiteral( "LayerName" ), mLayerName->currentLayer() ? mLayerName->currentLayer()->name() : QString() );
   cfg.insert( QStringLiteral( "LayerSource" ), mLayerName->currentLayer() ? mLayerName->currentLayer()->publicSource() : QString() );
-  cfg.insert( QStringLiteral( "LayerProviderName" ), ( mLayerName->currentLayer() && mLayerName->currentLayer()->dataProvider() ) ?
-              mLayerName->currentLayer()->providerType() :
-              QString() );
+  cfg.insert( QStringLiteral( "LayerProviderName" ), ( mLayerName->currentLayer() && mLayerName->currentLayer()->dataProvider() ) ? mLayerName->currentLayer()->providerType() : QString() );
   cfg.insert( QStringLiteral( "Key" ), mKeyColumn->currentField() );
   cfg.insert( QStringLiteral( "Value" ), mValueColumn->currentField() );
   cfg.insert( QStringLiteral( "Group" ), mGroupColumn->currentField() );
@@ -122,7 +117,7 @@ void QgsValueRelationConfigDlg::setConfig( const QVariantMap &config )
   mFilterExpression->setPlainText( config.value( QStringLiteral( "FilterExpression" ) ).toString() );
   mUseCompleter->setChecked( config.value( QStringLiteral( "UseCompleter" ) ).toBool() );
   // Default is MatchStartsWith for backwards compatibility
-  const Qt::MatchFlags completerMatchFlags { config.contains( QStringLiteral( "CompleterMatchFlags" ) ) ? static_cast<Qt::MatchFlags>( config.value( QStringLiteral( "CompleterMatchFlags" ), Qt::MatchFlag::MatchStartsWith ).toInt( ) ) :  Qt::MatchFlag::MatchStartsWith };
+  const Qt::MatchFlags completerMatchFlags { config.contains( QStringLiteral( "CompleterMatchFlags" ) ) ? static_cast<Qt::MatchFlags>( config.value( QStringLiteral( "CompleterMatchFlags" ), Qt::MatchFlag::MatchStartsWith ).toInt() ) : Qt::MatchFlag::MatchStartsWith };
   mCompleterMatchFromStart->setChecked( completerMatchFlags.testFlag( Qt::MatchFlag::MatchStartsWith ) );
 }
 
@@ -139,15 +134,11 @@ void QgsValueRelationConfigDlg::editExpression()
     return;
 
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( vl ) );
-  context << QgsExpressionContextUtils::formScope( );
-  context << QgsExpressionContextUtils::parentFormScope( );
+  context << QgsExpressionContextUtils::formScope();
+  context << QgsExpressionContextUtils::parentFormScope();
 
   context.setHighlightedFunctions( QStringList() << QStringLiteral( "current_value" ) << QStringLiteral( "current_parent_value" ) );
-  context.setHighlightedVariables( QStringList() << QStringLiteral( "current_geometry" )
-                                   << QStringLiteral( "current_feature" )
-                                   << QStringLiteral( "form_mode" )
-                                   << QStringLiteral( "current_parent_geometry" )
-                                   << QStringLiteral( "current_parent_feature" ) );
+  context.setHighlightedVariables( QStringList() << QStringLiteral( "current_geometry" ) << QStringLiteral( "current_feature" ) << QStringLiteral( "form_mode" ) << QStringLiteral( "current_parent_geometry" ) << QStringLiteral( "current_parent_feature" ) );
 
   QgsExpressionBuilderDialog dlg( vl, mFilterExpression->toPlainText(), this, QStringLiteral( "generic" ), context );
   dlg.setWindowTitle( tr( "Edit Filter Expression" ) );

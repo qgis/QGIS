@@ -29,15 +29,15 @@
 #include "qgslayouttablebackgroundcolorsdialog.h"
 
 QgsLayoutManualTableWidget::QgsLayoutManualTableWidget( QgsLayoutFrame *frame )
-  : QgsLayoutItemBaseWidget( nullptr, frame ? qobject_cast< QgsLayoutItemManualTable* >( frame->multiFrame() ) : nullptr )
-  , mTable( frame ? qobject_cast< QgsLayoutItemManualTable* >( frame->multiFrame() ) : nullptr )
+  : QgsLayoutItemBaseWidget( nullptr, frame ? qobject_cast<QgsLayoutItemManualTable *>( frame->multiFrame() ) : nullptr )
+  , mTable( frame ? qobject_cast<QgsLayoutItemManualTable *>( frame->multiFrame() ) : nullptr )
   , mFrame( frame )
 {
   setupUi( this );
 
   connect( mSetContentsButton, &QPushButton::clicked, this, &QgsLayoutManualTableWidget::setTableContents );
-  connect( mMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutManualTableWidget::mMarginSpinBox_valueChanged );
-  connect( mGridStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutManualTableWidget::mGridStrokeWidthSpinBox_valueChanged );
+  connect( mMarginSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutManualTableWidget::mMarginSpinBox_valueChanged );
+  connect( mGridStrokeWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutManualTableWidget::mGridStrokeWidthSpinBox_valueChanged );
   connect( mGridColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutManualTableWidget::mGridColorButton_colorChanged );
   connect( mBackgroundColorButton, &QgsColorButton::colorChanged, this, &QgsLayoutManualTableWidget::mBackgroundColorButton_colorChanged );
   connect( mDrawHorizontalGrid, &QCheckBox::toggled, this, &QgsLayoutManualTableWidget::mDrawHorizontalGrid_toggled );
@@ -123,20 +123,19 @@ QgsExpressionContext QgsLayoutManualTableWidget::createExpressionContext() const
   else if ( mTable )
     context = mTable->createExpressionContext();
 
-  std::unique_ptr< QgsExpressionContextScope > cellScope = std::make_unique< QgsExpressionContextScope >();
+  std::unique_ptr<QgsExpressionContextScope> cellScope = std::make_unique<QgsExpressionContextScope>();
   cellScope->setVariable( QStringLiteral( "row_number" ), 1, true );
   cellScope->setVariable( QStringLiteral( "column_number" ), 1, true );
   context.appendScope( cellScope.release() );
 
-  context.setHighlightedVariables( { QStringLiteral( "row_number" ),
-                                     QStringLiteral( "column_number" )} );
+  context.setHighlightedVariables( { QStringLiteral( "row_number" ), QStringLiteral( "column_number" ) } );
 
   return context;
 }
 
 bool QgsLayoutManualTableWidget::setNewItem( QgsLayoutItem *item )
 {
-  QgsLayoutFrame *frame = qobject_cast< QgsLayoutFrame * >( item );
+  QgsLayoutFrame *frame = qobject_cast<QgsLayoutFrame *>( item );
   if ( !frame )
     return false;
 
@@ -156,7 +155,7 @@ bool QgsLayoutManualTableWidget::setNewItem( QgsLayoutItem *item )
     mEditorDialog->close();
   }
 
-  mTable = qobject_cast< QgsLayoutItemManualTable * >( multiFrame );
+  mTable = qobject_cast<QgsLayoutItemManualTable *>( multiFrame );
   mFrame = frame;
   mItemPropertiesWidget->setItem( frame );
 
@@ -199,14 +198,14 @@ void QgsLayoutManualTableWidget::setTableContents()
     mEditorDialog->setTableContents( mTable->tableContents() );
 
     int row = 0;
-    const QList< double > rowHeights = mTable->rowHeights();
+    const QList<double> rowHeights = mTable->rowHeights();
     for ( const double height : rowHeights )
     {
       mEditorDialog->setTableRowHeight( row, height );
       row++;
     }
     int col = 0;
-    const QList< double > columnWidths = mTable->columnWidths();
+    const QList<double> columnWidths = mTable->columnWidths();
     QVariantList headers;
     headers.reserve( columnWidths.size() );
     for ( const double width : columnWidths )
@@ -217,8 +216,7 @@ void QgsLayoutManualTableWidget::setTableContents()
     }
     mEditorDialog->setTableHeaders( headers );
 
-    connect( mEditorDialog, &QgsTableEditorDialog::tableChanged, this, [ = ]
-    {
+    connect( mEditorDialog, &QgsTableEditorDialog::tableChanged, this, [=] {
       if ( mTable )
       {
         mTable->beginCommand( tr( "Change Table Contents" ) );
@@ -236,7 +234,7 @@ void QgsLayoutManualTableWidget::setTableContents()
         }
 
         const int rowCount = mTable->tableContents().size();
-        QList< double > rowHeights;
+        QList<double> rowHeights;
         rowHeights.reserve( rowCount );
         for ( int row = 0; row < rowCount; ++row )
         {
@@ -247,7 +245,7 @@ void QgsLayoutManualTableWidget::setTableContents()
         if ( !mTable->tableContents().empty() )
         {
           const int columnCount = mTable->tableContents().at( 0 ).size();
-          QList< double > columnWidths;
+          QList<double> columnWidths;
           columnWidths.reserve( columnCount );
           for ( int col = 0; col < columnCount; ++col )
           {
@@ -260,8 +258,7 @@ void QgsLayoutManualTableWidget::setTableContents()
       }
     } );
 
-    connect( mEditorDialog, &QgsTableEditorDialog::includeHeaderChanged, this, [ = ]( bool included )
-    {
+    connect( mEditorDialog, &QgsTableEditorDialog::includeHeaderChanged, this, [=]( bool included ) {
       if ( mTable )
       {
         mTable->beginCommand( tr( "Change Table Header" ) );
@@ -365,7 +362,7 @@ void QgsLayoutManualTableWidget::mHeaderHAlignmentComboBox_currentIndexChanged( 
   }
 
   mTable->beginCommand( tr( "Change Table Alignment" ) );
-  mTable->setHeaderHAlignment( static_cast<  QgsLayoutTable::HeaderHAlignment >( mHeaderHAlignmentComboBox->currentData().toInt() ) );
+  mTable->setHeaderHAlignment( static_cast<QgsLayoutTable::HeaderHAlignment>( mHeaderHAlignmentComboBox->currentData().toInt() ) );
   mTable->endCommand();
 }
 
@@ -377,7 +374,7 @@ void QgsLayoutManualTableWidget::mHeaderModeComboBox_currentIndexChanged( int )
   }
 
   mTable->beginCommand( tr( "Change Table Header Mode" ) );
-  mTable->setHeaderMode( static_cast< QgsLayoutTable::HeaderMode >( mHeaderModeComboBox->currentData().toInt() ) );
+  mTable->setHeaderMode( static_cast<QgsLayoutTable::HeaderMode>( mHeaderModeComboBox->currentData().toInt() ) );
   mTable->endCommand();
 }
 
@@ -519,7 +516,7 @@ void QgsLayoutManualTableWidget::mResizeModeComboBox_currentIndexChanged( int in
   }
 
   mTable->beginCommand( tr( "Change Resize Mode" ) );
-  mTable->setResizeMode( static_cast< QgsLayoutMultiFrame::ResizeMode >( mResizeModeComboBox->itemData( index ).toInt() ) );
+  mTable->setResizeMode( static_cast<QgsLayoutMultiFrame::ResizeMode>( mResizeModeComboBox->itemData( index ).toInt() ) );
   mTable->endCommand();
 
   mAddFramePushButton->setEnabled( mTable->resizeMode() == QgsLayoutMultiFrame::UseExistingFrames );
@@ -533,7 +530,7 @@ void QgsLayoutManualTableWidget::mWrapBehaviorComboBox_currentIndexChanged( int 
   }
 
   mTable->beginCommand( tr( "Change Table Wrap Mode" ) );
-  mTable->setWrapBehavior( static_cast< QgsLayoutTable::WrapBehavior >( mWrapBehaviorComboBox->itemData( index ).toInt() ) );
+  mTable->setWrapBehavior( static_cast<QgsLayoutTable::WrapBehavior>( mWrapBehaviorComboBox->itemData( index ).toInt() ) );
   mTable->endCommand();
 }
 
@@ -560,4 +557,3 @@ void QgsLayoutManualTableWidget::mDrawEmptyCheckBox_toggled( bool checked )
   mTable->setShowEmptyRows( checked );
   mTable->endCommand();
 }
-

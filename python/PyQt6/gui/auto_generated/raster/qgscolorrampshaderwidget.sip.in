@@ -11,7 +11,7 @@
 
 
 
-class QgsColorRampShaderWidget: QWidget, protected Ui::QgsColorRampShaderWidgetBase
+class QgsColorRampShaderWidget : QWidget, protected Ui::QgsColorRampShaderWidgetBase
 {
 %Docstring(signature="appended")
 
@@ -27,7 +27,6 @@ The other mode is used to style mesh layer contours (scalar datasets)
 #include "qgscolorrampshaderwidget.h"
 %End
   public:
-
     QgsColorRampShaderWidget( QWidget *parent = 0 );
 %Docstring
 Creates new color ramp shader widget
@@ -113,7 +112,6 @@ Loads min and max values from color ramp tree
 %End
 
   protected:
-
     void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem> &colorRampItems );
 %Docstring
 Populates color ramp tree from ramp items

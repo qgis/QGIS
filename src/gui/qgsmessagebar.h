@@ -57,12 +57,11 @@ class QgsMessageBarItem;
  * The class also supports pushing custom widgets to the notification stack via
  * the pushWidget() method.
  */
-class GUI_EXPORT QgsMessageBar: public QFrame
+class GUI_EXPORT QgsMessageBar : public QFrame
 {
     Q_OBJECT
 
   public:
-
     //! Constructor for QgsMessageBar
     QgsMessageBar( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 

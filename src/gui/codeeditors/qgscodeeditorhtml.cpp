@@ -25,11 +25,7 @@
 
 
 QgsCodeEditorHTML::QgsCodeEditorHTML( QWidget *parent )
-  : QgsCodeEditor( parent,
-                   QString(),
-                   false,
-                   false,
-                   QgsCodeEditor::Flag::CodeFolding )
+  : QgsCodeEditor( parent, QString(), false, false, QgsCodeEditor::Flag::CodeFolding )
 {
   if ( !parent )
   {
@@ -103,20 +99,21 @@ QString QgsCodeEditorHTML::reformatCodeString( const QString &string )
   QString newText = string;
 
   const QString definePrettify = QStringLiteral(
-                                   "def __qgis_prettify(text):\n"
-                                   "  try:\n"
-                                   "    from bs4 import BeautifulSoup\n"
-                                   "    return BeautifulSoup(text, 'html.parser').prettify()\n"
-                                   "  except ImportError:\n"
-                                   "    try:\n"
-                                   "      import re\n"
-                                   "      from lxml import etree, html\n"
-                                   "      text = re.sub('>\\\\s+<', '><', text)\n"
-                                   "      text = re.sub('\\n\\\\s*', '', text)\n"
-                                   "      document_root = html.fromstring(text)\n"
-                                   "      return etree.tostring(document_root, encoding='utf-8', pretty_print=True).decode('utf-8')\n"
-                                   "    except ImportError:\n"
-                                   "      return '_ImportError'\n" );
+    "def __qgis_prettify(text):\n"
+    "  try:\n"
+    "    from bs4 import BeautifulSoup\n"
+    "    return BeautifulSoup(text, 'html.parser').prettify()\n"
+    "  except ImportError:\n"
+    "    try:\n"
+    "      import re\n"
+    "      from lxml import etree, html\n"
+    "      text = re.sub('>\\\\s+<', '><', text)\n"
+    "      text = re.sub('\\n\\\\s*', '', text)\n"
+    "      document_root = html.fromstring(text)\n"
+    "      return etree.tostring(document_root, encoding='utf-8', pretty_print=True).decode('utf-8')\n"
+    "    except ImportError:\n"
+    "      return '_ImportError'\n"
+  );
 
 
   if ( !QgsPythonRunner::run( definePrettify ) )
@@ -186,10 +183,10 @@ void QgsCodeEditorHTML::toggleComment()
   }
 
   // Remove leading spaces from the start line
-  QString startLineTrimmed  = text( startLine );
+  QString startLineTrimmed = text( startLine );
   startLineTrimmed.remove( QRegularExpression( "^\\s+" ) );
   // Remove trailing spaces from the end line
-  QString endLineTrimmed  = text( endLine );
+  QString endLineTrimmed = text( endLine );
   endLineTrimmed.remove( QRegularExpression( "\\s+$" ) );
 
   const bool commented = startLineTrimmed.startsWith( commentStart ) && endLineTrimmed.endsWith( commentEnd );
@@ -239,7 +236,7 @@ void QgsCodeEditorHTML::toggleComment()
   else
   {
     insertAt( QStringLiteral( " " ) + commentEnd, endLine, endLineTrimmed.size() );
-    insertAt( commentStart  + QStringLiteral( " " ), startLine, indentation( startLine ) );
+    insertAt( commentStart + QStringLiteral( " " ), startLine, indentation( startLine ) );
   }
 
   endUndoAction();

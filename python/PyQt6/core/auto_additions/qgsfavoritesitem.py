@@ -2,5 +2,5 @@
 try:
     QgsFavoritesItem.iconFavorites = staticmethod(QgsFavoritesItem.iconFavorites)
     QgsFavoritesItem.__group__ = ['browser']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -32,11 +32,9 @@ class QgsQsciLexerPython : public QsciLexerPython
 {
     Q_OBJECT
   public:
-
     QgsQsciLexerPython( QObject *parent = nullptr );
 
     const char *keywords( int set ) const override;
-
 };
 ///@endcond
 #endif
@@ -52,9 +50,8 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     Q_OBJECT
 
   public:
-
 #ifndef SIP_RUN
-///@cond PRIVATE
+    ///@cond PRIVATE
     static inline QgsSettingsTreeNode *sTreePythonCodeEditor = QgsCodeEditor::sTreeCodeEditor->createChildNode( QStringLiteral( "python" ) );
     static const QgsSettingsEntryString *settingCodeFormatter;
     static const QgsSettingsEntryInteger *settingMaxLineLength;
@@ -73,8 +70,7 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
      * \param mode code editor mode (since QGIS 3.30)
      * \param flags code editor flags (since QGIS 3.32)
      */
-    QgsCodeEditorPython( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QList<QString> &filenames = QList<QString>(),
-                         QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor, QgsCodeEditor::Flags flags = QgsCodeEditor::Flag::CodeFolding );
+    QgsCodeEditorPython( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QList<QString> &filenames = QList<QString>(), QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor, QgsCodeEditor::Flags flags = QgsCodeEditor::Flag::CodeFolding );
 
     Qgis::ScriptLanguage language() const override;
     Qgis::ScriptLanguageCapabilities languageCapabilities() const override;
@@ -137,7 +133,6 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     void toggleComment() override;
 
   protected:
-
     void initializeLexer() override;
     virtual void keyPressEvent( QKeyEvent *event ) override;
     QString reformatCodeString( const QString &string ) override;
@@ -153,7 +148,6 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
     void autoComplete();
 
   private:
-
     QList<QString> mAPISFilesList;
     QString mPapFile;
 
@@ -163,7 +157,6 @@ class GUI_EXPORT QgsCodeEditorPython : public QgsCodeEditor
 
     // Only used for selected text
     static const QStringList sCompletionSingleCharacters;
-
 };
 
 #endif

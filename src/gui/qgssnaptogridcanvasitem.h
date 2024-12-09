@@ -24,10 +24,10 @@
 #include "qgscoordinatetransform.h"
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // For ConvertToSubClassCode.
 #include <qgssnaptogridcanvasitem.h>
-% End
+//%End
 #endif
 
 /**
@@ -63,7 +63,6 @@ class GUI_EXPORT QgsSnapToGridCanvasItem : public QgsMapCanvasItem
 #endif
 
   public:
-
     /**
      * Will automatically be added to the \a mapCanvas.
      */

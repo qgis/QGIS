@@ -18,7 +18,6 @@ Layout view tool for adding items to a layout.
 #include "qgslayoutviewtooladditem.h"
 %End
   public:
-
     QgsLayoutViewToolAddItem( QgsLayoutView *view /TransferThis/ );
 %Docstring
 Constructs a QgsLayoutViewToolAddItem for the given layout ``view``.
