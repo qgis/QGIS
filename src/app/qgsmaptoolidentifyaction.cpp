@@ -207,9 +207,9 @@ void QgsMapToolIdentifyAction::deactivate()
   QgsMapToolIdentify::deactivate();
 }
 
-void QgsMapToolIdentifyAction::identifyAndShowResults( const QgsGeometry &geom, double searchRadiusMapUnits )
+void QgsMapToolIdentifyAction::identifyAndShowResults( const QgsGeometry &geom, double searchRadiusMapUnits, bool skip3DLayers )
 {
-  setCanvasPropertiesOverrides( searchRadiusMapUnits );
+  setCanvasPropertiesOverrides( searchRadiusMapUnits, skip3DLayers );
   mSelectionHandler->setSelectedGeometry( geom );
   restoreCanvasPropertiesOverrides();
 }

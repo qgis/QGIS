@@ -243,14 +243,16 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
      *
      * This is useful when the identification is triggered by some other piece of GUI like a 3D map view
      * and some properties like search radius need to be adjusted so that identification returns correct
-     * results. Currently only search radius may be overridden.
-     *
+     * results.
      * When the custom identification has finished, restoreCanvasPropertiesOverrides() should
      * be called to erase any overrides.
+     *
+     * \param searchRadiusMapUnits The overridden search radius in map units
+     * \param skip3DLayers Optional override to skip identify results from layers that have a 3d renderer set (since QGIS 3.42)
      * \see restoreCanvasPropertiesOverrides()
      * \since QGIS 3.4
      */
-    void setCanvasPropertiesOverrides( double searchRadiusMapUnits );
+    void setCanvasPropertiesOverrides( double searchRadiusMapUnits, bool skip3DLayers = true );
 
     /**
      * Clears canvas properties overrides previously set with setCanvasPropertiesOverrides()
@@ -329,6 +331,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
     int mCoordinatePrecision;
 
     double mOverrideCanvasSearchRadius = -1;
+    bool mSkip3DLayers = false;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolIdentify::LayerType )
