@@ -425,7 +425,7 @@ double QgsFeatureRenderer::maximumExtentBuffer( QgsRenderContext &context ) cons
   if ( symbolList.empty() )
     return 0;
 
-  const QgsExpressionContext &expContext = context.expressionContext();
+  QgsExpressionContext &expContext = context.expressionContext();
 
   auto getValueFromSymbol = [ &expContext, &context ]( const QgsSymbol * sym ) -> double
   {
@@ -435,7 +435,11 @@ double QgsFeatureRenderer::maximumExtentBuffer( QgsRenderContext &context ) cons
 
     if ( property.isActive() )
     {
+      expContext.setOriginalValueVariable( sym->extentBuffer() );
+
       value = sym->dataDefinedProperties().valueAsDouble( QgsSymbol::Property::ExtentBuffer, expContext, sym->extentBuffer() );
+      if ( value < 0 )
+        value = 0;
     }
     else
     {

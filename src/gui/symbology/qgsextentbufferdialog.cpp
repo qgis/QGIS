@@ -17,8 +17,11 @@
 #include "moc_qgsextentbufferdialog.cpp"
 #include "qdialogbuttonbox.h"
 #include "qgsexpressioncontext.h"
+#include "qgsexpressioncontextutils.h"
 #include "qgshelp.h"
+#include "qgsmapcanvas.h"
 #include "qgspanelwidget.h"
+#include "qgsproject.h"
 #include "qgssymbol.h"
 #include "qgssymbolwidgetcontext.h"
 #include "qgsunittypes.h"
@@ -78,8 +81,28 @@ void QgsExtentBufferWidget::registerDataDefinedButton( QgsPropertyOverrideButton
 
 QgsExpressionContext QgsExtentBufferWidget::createExpressionContext() const
 {
-  QList<QgsExpressionContextScope *> scopes = mContext.globalProjectAtlasMapLayerScopes( mLayer );
-  QgsExpressionContext expContext( scopes );
+  if ( QgsExpressionContext *lExpressionContext = mContext.expressionContext() )
+    return *lExpressionContext;
+
+  QgsExpressionContext expContext;
+
+  if ( mContext.mapCanvas() )
+  {
+    expContext = mContext.mapCanvas()->createExpressionContext();
+  }
+  else
+  {
+    expContext << QgsExpressionContextUtils::globalScope()
+               << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+               << QgsExpressionContextUtils::atlasScope( nullptr )
+               << QgsExpressionContextUtils::mapSettingsScope( QgsMapSettings() );
+  }
+
+  if ( mLayer )
+    expContext << QgsExpressionContextUtils::layerScope( mLayer );
+
+  expContext.setOriginalValueVariable( mExtentBufferSpinBox->value() );
+  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE );
 
   return expContext;
 }
@@ -148,6 +171,12 @@ QgsExtentBufferWidget *QgsExtentBufferDialog::widget() const
 {
   return mWidget;
 }
+
+void QgsExtentBufferDialog::setContext( const QgsSymbolWidgetContext &context )
+{
+  mWidget->setContext( context );
+}
+
 
 void QgsExtentBufferDialog::showHelp()
 {

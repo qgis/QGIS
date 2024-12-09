@@ -17,7 +17,6 @@
 
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"
-#include "qgsrectangle.h"
 #include "qgsrenderer.h"
 #include "qgsrendercontext.h"
 #include "qgssinglesymbolrenderer.h"

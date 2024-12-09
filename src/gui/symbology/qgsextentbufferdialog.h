@@ -134,6 +134,12 @@ class GUI_EXPORT QgsExtentBufferDialog : public QDialog
     */
     QgsExtentBufferWidget *widget() const;
 
+    /**
+     * Sets the context in which widget is shown, e.g., the associated map canvas and expression contexts.
+     * \param context symbol widget context
+     */
+    void setContext( const QgsSymbolWidgetContext &context );
+
   private:
     QgsExtentBufferWidget *mWidget;
 

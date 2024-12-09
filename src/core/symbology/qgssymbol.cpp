@@ -2254,7 +2254,7 @@ void QgsSymbol::initPropertyDefinitions()
   sPropertyDefinitions = QgsPropertiesDefinition
   {
     { static_cast< int >( QgsSymbol::Property::Opacity ), QgsPropertyDefinition( "alpha", QObject::tr( "Opacity" ), QgsPropertyDefinition::Opacity, origin )},
-    { static_cast< int >( QgsSymbol::Property::ExtentBuffer ), QgsPropertyDefinition( "extent_buffer", QObject::tr( "Extent buffer" ), QgsPropertyDefinition::Double, origin )},
+    { static_cast< int >( QgsSymbol::Property::ExtentBuffer ), QgsPropertyDefinition( "extent_buffer", QObject::tr( "Extent buffer" ), QgsPropertyDefinition::DoublePositive, origin )},
   };
 }
 
