@@ -216,7 +216,7 @@ class CORE_EXPORT QgsRasterIterator
      * \see blockCountWidth()
      * \since QGIS 3.42
      */
-    int blockCountHeight() const { return mNumberBlocksWidth; }
+    int blockCountHeight() const { return mNumberBlocksHeight; }
 
     /**
      * Returns the total number of blocks required to iterate over the input raster.
