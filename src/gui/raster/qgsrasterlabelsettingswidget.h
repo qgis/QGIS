@@ -53,7 +53,7 @@ class GUI_EXPORT QgsRasterLabelSettingsWidget : public QgsLabelingGui
      */
     void updateLabeling( QgsAbstractRasterLayerLabeling *labeling );
 
-    void setLayer( QgsMapLayer *layer ) override;
+    void setLayer( QgsMapLayer *layer ) final;
 
   private slots:
     void changeNumberFormat();
@@ -62,6 +62,9 @@ class GUI_EXPORT QgsRasterLabelSettingsWidget : public QgsLabelingGui
     QgsRasterBandComboBox *mBandCombo = nullptr;
     std::unique_ptr<QgsNumericFormat> mNumberFormat;
     int mBlockChangesSignal = 0;
+
+    QgsSpinBox *mResampleOverSpin = nullptr;
+    QComboBox *mResampleMethodComboBox = nullptr;
 };
 
 #endif // QGSRASTERLABELSETTINGSWIDGET_H

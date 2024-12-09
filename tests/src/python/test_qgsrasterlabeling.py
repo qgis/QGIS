@@ -21,6 +21,7 @@ from qgis.core import (
     QgsRectangle,
     QgsReadWriteContext,
     QgsAbstractRasterLayerLabeling,
+    QgsBasicNumericFormat,
     QgsCurrencyNumericFormat,
     QgsPercentageNumericFormat,
 )
@@ -90,6 +91,8 @@ class TestQgsRasterLabeling(QgisTestCase):
         labeling.setMaximumScale(12345)
         labeling.setMinimumScale(123456)
         labeling.setScaleBasedVisibility(True)
+        labeling.setResampleOver(3)
+        labeling.setResampleMethod(Qgis.RasterResamplingMethod.CubicSpline)
 
         self.assertEqual(labeling.band(), 3)
         self.assertEqual(labeling.textFormat().size(), 33)
@@ -106,6 +109,10 @@ class TestQgsRasterLabeling(QgisTestCase):
         self.assertEqual(labeling.maximumScale(), 12345)
         self.assertEqual(labeling.minimumScale(), 123456)
         self.assertEqual(labeling.hasScaleBasedVisibility(), True)
+        self.assertEqual(labeling.resampleOver(), 3)
+        self.assertEqual(
+            labeling.resampleMethod(), Qgis.RasterResamplingMethod.CubicSpline
+        )
 
         labeling_clone = labeling.clone()
         self.assertIsInstance(labeling_clone, QgsRasterLayerSimpleLabeling)
@@ -126,6 +133,10 @@ class TestQgsRasterLabeling(QgisTestCase):
         self.assertEqual(labeling_clone.maximumScale(), 12345)
         self.assertEqual(labeling_clone.minimumScale(), 123456)
         self.assertEqual(labeling_clone.hasScaleBasedVisibility(), True)
+        self.assertEqual(labeling_clone.resampleOver(), 3)
+        self.assertEqual(
+            labeling_clone.resampleMethod(), Qgis.RasterResamplingMethod.CubicSpline
+        )
 
         doc = QDomDocument()
         context = QgsReadWriteContext()
@@ -156,6 +167,10 @@ class TestQgsRasterLabeling(QgisTestCase):
         self.assertEqual(labeling_from_xml.maximumScale(), 12345)
         self.assertEqual(labeling_from_xml.minimumScale(), 123456)
         self.assertEqual(labeling_from_xml.hasScaleBasedVisibility(), True)
+        self.assertEqual(labeling_from_xml.resampleOver(), 3)
+        self.assertEqual(
+            labeling_from_xml.resampleMethod(), Qgis.RasterResamplingMethod.CubicSpline
+        )
 
     def test_render_int(self):
         raster_layer = QgsRasterLayer(
@@ -273,6 +288,40 @@ class TestQgsRasterLabeling(QgisTestCase):
             self.render_map_settings_check(
                 "numeric_format", "numeric_format", mapsettings
             )
+        )
+
+    def test_render_resampled(self):
+        raster_layer = QgsRasterLayer(
+            self.get_test_data_path("raster/dem.tif").as_posix()
+        )
+        self.assertTrue(raster_layer.isValid())
+
+        format = QgsTextFormat()
+        format.setFont(getTestFont("bold"))
+        format.setColor(QColor(255, 0, 0))
+        format.setSize(30)
+        labeling = QgsRasterLayerSimpleLabeling()
+        labeling.setBand(1)
+        labeling.setTextFormat(format)
+        labeling.setResampleOver(4)
+        labeling.setResampleMethod(Qgis.RasterResamplingMethod.Average)
+
+        numeric_format = QgsBasicNumericFormat()
+        numeric_format.setNumberDecimalPlaces(1)
+        labeling.setNumericFormat(numeric_format)
+
+        raster_layer.setLabeling(labeling)
+        raster_layer.setLabelsEnabled(True)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(800, 800))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
+        mapsettings.setExtent(QgsRectangle(2080356.7, 5746858.1, 2080585.6, 5747055.3))
+        mapsettings.setLayers([raster_layer])
+
+        self.assertTrue(
+            self.render_map_settings_check("resampling", "resampling", mapsettings)
         )
 
 

@@ -48,8 +48,29 @@ QgsRasterLabelSettingsWidget::QgsRasterLabelSettingsWidget( QgsRasterLayer *laye
 
   gLayout->addWidget( numberFormatButton, 1, 1 );
 
-  labelWithWidget->setLayout( gLayout );
+  gLayout->addWidget( new QLabel( tr( "Resample over" ) ), 2, 0 );
+  mResampleOverSpin = new QgsSpinBox();
+  mResampleOverSpin->setMinimum( 1 );
+  mResampleOverSpin->setMaximum( 128 );
+  mResampleOverSpin->setClearValue( 1 );
+  mResampleOverSpin->setSuffix( tr( " pixels" ) );
+  connect( mResampleOverSpin, qOverload<int>( &QgsSpinBox::valueChanged ), this, &QgsRasterLabelSettingsWidget::widgetChanged );
+  gLayout->addWidget( mResampleOverSpin, 2, 1 );
 
+  gLayout->addWidget( new QLabel( tr( "Resample using" ) ), 3, 0 );
+  mResampleMethodComboBox = new QComboBox();
+  mResampleMethodComboBox->addItem( QObject::tr( "Nearest Neighbour" ), QVariant::fromValue( Qgis::RasterResamplingMethod::Nearest ) );
+  mResampleMethodComboBox->addItem( QObject::tr( "Bilinear (2x2 Kernel)" ), QVariant::fromValue( Qgis::RasterResamplingMethod::Bilinear ) );
+  mResampleMethodComboBox->addItem( QObject::tr( "Cubic (4x4 Kernel)" ), QVariant::fromValue( Qgis::RasterResamplingMethod::Cubic ) );
+  mResampleMethodComboBox->addItem( QObject::tr( "Cubic B-Spline (4x4 Kernel)" ), QVariant::fromValue( Qgis::RasterResamplingMethod::CubicSpline ) );
+  mResampleMethodComboBox->addItem( QObject::tr( "Lanczos (6x6 Kernel)" ), QVariant::fromValue( Qgis::RasterResamplingMethod::Lanczos ) );
+  mResampleMethodComboBox->addItem( QObject::tr( "Average" ), QVariant::fromValue( Qgis::RasterResamplingMethod::Average ) );
+  mResampleMethodComboBox->addItem( QObject::tr( "Mode" ), QVariant::fromValue( Qgis::RasterResamplingMethod::Mode ) );
+  mResampleMethodComboBox->addItem( QObject::tr( "Gauss" ), QVariant::fromValue( Qgis::RasterResamplingMethod::Gauss ) );
+  connect( mResampleMethodComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsRasterLabelSettingsWidget::widgetChanged );
+  gLayout->addWidget( mResampleMethodComboBox, 3, 1 );
+
+  labelWithWidget->setLayout( gLayout );
 
   mStackedWidgetLabelWith->addWidget( labelWithWidget );
   mStackedWidgetLabelWith->setCurrentWidget( labelWithWidget );
@@ -60,7 +81,6 @@ QgsRasterLabelSettingsWidget::QgsRasterLabelSettingsWidget( QgsRasterLayer *laye
 
   setPropertyOverrideButtonsVisible( true );
   mTextFormatsListWidget->setEntityTypes( QList<QgsStyle::StyleEntity>() << QgsStyle::TextFormatEntity );
-  //?mTextOrientationComboBox->addItem( tr( "Rotation-based" ), static_cast< int >( Qgis::TextOrientation::RotationBased ) );
 
   delete mLabelingOptionsListWidget->takeItem( 6 ); // callouts
   delete mLabelingOptionsListWidget->takeItem( 3 ); // mask
@@ -163,6 +183,9 @@ void QgsRasterLabelSettingsWidget::setLabeling( QgsAbstractRasterLayerLabeling *
     mMinScaleWidget->setScale( simpleLabeling->minimumScale() );
     mMaxScaleWidget->setScale( simpleLabeling->maximumScale() );
 
+    mResampleOverSpin->setValue( simpleLabeling->resampleOver() );
+    mResampleMethodComboBox->setCurrentIndex( mResampleMethodComboBox->findData( QVariant::fromValue( simpleLabeling->resampleMethod() ) ) );
+
     updateUi();
   }
 }
@@ -185,6 +208,9 @@ void QgsRasterLabelSettingsWidget::updateLabeling( QgsAbstractRasterLayerLabelin
     simpleLabeling->setScaleBasedVisibility( mScaleBasedVisibilityChkBx->isChecked() );
     simpleLabeling->setMinimumScale( mMinScaleWidget->scale() );
     simpleLabeling->setMaximumScale( mMaxScaleWidget->scale() );
+
+    simpleLabeling->setResampleOver( mResampleOverSpin->value() );
+    simpleLabeling->setResampleMethod( mResampleMethodComboBox->currentData().value<Qgis::RasterResamplingMethod>() );
   }
 }
 

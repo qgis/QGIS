@@ -100,6 +100,16 @@ QgsNumericFormat *QgsRasterLayerLabelProvider::numericFormat()
   return mNumericFormat.get();
 }
 
+void QgsRasterLayerLabelProvider::setResampleMethod( Qgis::RasterResamplingMethod method )
+{
+  mResampleMethod = method;
+}
+
+void QgsRasterLayerLabelProvider::setResampleOver( int pixels )
+{
+  mResampleOver = pixels;
+}
+
 QList<QgsLabelFeature *> QgsRasterLayerLabelProvider::labelFeatures( QgsRenderContext & )
 {
   return mLabels;
@@ -125,6 +135,30 @@ void QgsRasterLayerLabelProvider::startRender( QgsRenderContext &context )
   QgsAbstractLabelProvider::startRender( context );
 }
 
+///@cond PRIVATE
+// RAII properties restorer for QgsRasterDataProvider
+struct ProviderSettingsRestorer
+{
+  QgsRasterDataProvider *mProvider;
+  const bool mProviderResampling;
+  const Qgis::RasterResamplingMethod mZoomedOutMethod;
+  const double mMaxOversampling;
+
+  ProviderSettingsRestorer( QgsRasterDataProvider *provider )
+    : mProvider( provider )
+    , mProviderResampling( provider->isProviderResamplingEnabled() )
+    , mZoomedOutMethod( provider->zoomedOutResamplingMethod() )
+    , mMaxOversampling( provider->maxOversampling() ) {}
+
+  ~ProviderSettingsRestorer()
+  {
+    mProvider->enableProviderResampling( mProviderResampling );
+    mProvider->setZoomedOutResamplingMethod( mZoomedOutMethod );
+    mProvider->setMaxOversampling( mMaxOversampling );
+  }
+};
+///@endcond
+
 void QgsRasterLayerLabelProvider::generateLabels( QgsRenderContext &context, QgsRasterPipe *pipe, QgsRasterViewPort *rasterViewPort, QgsRasterLayerRendererFeedback *feedback )
 {
   if ( !pipe )
@@ -146,6 +180,7 @@ void QgsRasterLayerLabelProvider::generateLabels( QgsRenderContext &context, Qgs
   const QSize maxTileSize {provider->maximumTileSize()};
   iterator.setMaximumTileWidth( maxTileSize.width() );
   iterator.setMaximumTileHeight( maxTileSize.height() );
+  iterator.setSnapToPixelFactor( mResampleOver );
 
   // we need to calculate the visible portion of the layer, in the original (layer) CRS:
   QgsCoordinateTransform layerToMapTransform = context.coordinateTransform();
@@ -178,8 +213,8 @@ void QgsRasterLayerLabelProvider::generateLabels( QgsRenderContext &context, Qgs
                                    subRegionLeft,
                                    subRegionTop );
 
-  const double rasterUnitsPerPixelX = provider->extent().width() / provider->xSize();
-  const double rasterUnitsPerPixelY = provider->extent().height() / provider->ySize();
+  const double rasterUnitsPerPixelX = provider->extent().width() / provider->xSize() * mResampleOver;
+  const double rasterUnitsPerPixelY = provider->extent().height() / provider->ySize() * mResampleOver;
 
   const double minPixelSizePainterUnits = context.convertToPainterUnits( mThinningSettings.minimumFeatureSize(), Qgis::RenderUnit::Millimeters );
   if ( minPixelSizePainterUnits > 0 )
@@ -201,7 +236,7 @@ void QgsRasterLayerLabelProvider::generateLabels( QgsRenderContext &context, Qgs
     const QgsPointXY p1PainterUnits = context.mapToPixel().transform( p1 );
     const QgsPointXY p2PainterUnits = context.mapToPixel().transform( p2 );
     const double painterUnitsPerRasterPixel = std::max( std::fabs( p1PainterUnits.x() - p2PainterUnits.x() ),
-        std::fabs( p1PainterUnits.y() - p2PainterUnits.y() ) );
+        std::fabs( p1PainterUnits.y() - p2PainterUnits.y() ) ) * mResampleOver;
     if ( painterUnitsPerRasterPixel < minPixelSizePainterUnits )
       return;
   }
@@ -219,21 +254,34 @@ void QgsRasterLayerLabelProvider::generateLabels( QgsRenderContext &context, Qgs
   std::unique_ptr< QgsRasterBlock > block;
   bool isNoData = false;
   int numberLabels = 0;
-  while ( iterator.readNextRasterPart( mBandNumber, iterCols, iterRows, block, iterLeft, iterTop, &blockExtent ) )
+
+  ProviderSettingsRestorer restorer( provider );
+  if ( mResampleOver > 1 )
+  {
+    provider->enableProviderResampling( true );
+    provider->setZoomedOutResamplingMethod( mResampleMethod );
+    provider->setMaxOversampling( mResampleOver );
+  }
+
+  while ( iterator.next( mBandNumber, iterCols, iterRows, iterLeft, iterTop, blockExtent ) )
   {
     if ( feedback && feedback->isCanceled() )
       return;
 
+    const int resampledColumns = iterCols / mResampleOver;
+    const int resampledRows = iterRows / mResampleOver;
+    block.reset( provider->block( mBandNumber, blockExtent, resampledColumns, resampledRows, feedback ) );
+
     double currentY = blockExtent.yMaximum() - 0.5 * rasterUnitsPerPixelY;
 
-    for ( int row = 0; row < iterRows; row++ )
+    for ( int row = 0; row < resampledRows; row++ )
     {
       if ( feedback && feedback->isCanceled() )
         return;
 
       double currentX = blockExtent.xMinimum() + 0.5 * rasterUnitsPerPixelX;
 
-      for ( int column = 0; column < iterCols; column++ )
+      for ( int column = 0; column < resampledColumns; column++ )
       {
         const double value = block->valueAndNoData( row, column, isNoData );
         if ( !isNoData )
@@ -338,6 +386,8 @@ QgsRasterLayerSimpleLabeling *QgsRasterLayerSimpleLabeling::clone() const
   res->setScaleBasedVisibility( mScaleVisibility );
   res->setMaximumScale( mMaximumScale );
   res->setMinimumScale( mMinimumScale );
+  res->setResampleMethod( mResampleMethod );
+  res->setResampleOver( mResampleOver );
 
   return res.release();
 }
@@ -351,6 +401,8 @@ std::unique_ptr< QgsRasterLayerLabelProvider > QgsRasterLayerSimpleLabeling::pro
   res->setPlacementSettings( mPlacementSettings );
   res->setZIndex( mZIndex );
   res->setThinningSettings( mThinningSettings );
+  res->setResampleMethod( mResampleMethod );
+  res->setResampleOver( mResampleOver );
   if ( mNumericFormat )
   {
     res->setNumericFormat( std::unique_ptr< QgsNumericFormat >( mNumericFormat->clone() ) );
@@ -365,6 +417,12 @@ QDomElement QgsRasterLayerSimpleLabeling::save( QDomDocument &doc, const QgsRead
   elem.setAttribute( QStringLiteral( "band" ), mBandNumber );
   elem.setAttribute( QStringLiteral( "priority" ), mPriority );
   elem.setAttribute( QStringLiteral( "zIndex" ), mZIndex );
+
+  if ( mResampleOver > 1 )
+  {
+    elem.setAttribute( QStringLiteral( "resampleOver" ), mResampleOver );
+  }
+  elem.setAttribute( QStringLiteral( "resampleMethod" ), qgsEnumValueToKey( mResampleMethod ) );
 
   QDomElement textFormatElem = doc.createElement( QStringLiteral( "textFormat" ) );
   textFormatElem.appendChild( mTextFormat.writeXml( doc, context ) );
@@ -419,6 +477,8 @@ QgsRasterLayerSimpleLabeling *QgsRasterLayerSimpleLabeling::create( const QDomEl
   res->setBand( element.attribute( QStringLiteral( "band" ), QStringLiteral( "1" ) ).toInt() );
   res->setPriority( element.attribute( QStringLiteral( "priority" ), QStringLiteral( "0.5" ) ).toDouble() );
   res->setZIndex( element.attribute( QStringLiteral( "zIndex" ), QStringLiteral( "0" ) ).toDouble() );
+  res->setResampleOver( element.attribute( QStringLiteral( "resampleOver" ), QStringLiteral( "1" ) ).toInt() );
+  res->setResampleMethod( qgsEnumKeyToValue( element.attribute( QStringLiteral( "resampleMethod" ) ), Qgis::RasterResamplingMethod::Average ) );
 
   const QDomElement textFormatElem = element.firstChildElement( QStringLiteral( "textFormat" ) );
   if ( !textFormatElem.isNull() )
@@ -516,6 +576,26 @@ bool QgsRasterLayerSimpleLabeling::isInScaleRange( double scale ) const
   return !mScaleVisibility
          || ( ( mMinimumScale == 0 || !QgsScaleUtils::lessThanMaximumScale( scale, mMinimumScale ) )
               && ( mMaximumScale == 0 || !QgsScaleUtils::equalToOrGreaterThanMinimumScale( scale, mMaximumScale ) ) );
+}
+
+Qgis::RasterResamplingMethod QgsRasterLayerSimpleLabeling::resampleMethod() const
+{
+  return mResampleMethod;
+}
+
+void QgsRasterLayerSimpleLabeling::setResampleMethod( Qgis::RasterResamplingMethod method )
+{
+  mResampleMethod = method;
+}
+
+int QgsRasterLayerSimpleLabeling::resampleOver() const
+{
+  return mResampleOver;
+}
+
+void QgsRasterLayerSimpleLabeling::setResampleOver( int pixels )
+{
+  mResampleOver = pixels;
 }
 
 void QgsRasterLayerSimpleLabeling::setScaleBasedVisibility( bool enabled )

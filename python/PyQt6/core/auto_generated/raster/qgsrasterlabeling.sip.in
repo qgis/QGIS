@@ -343,6 +343,46 @@ Returns whether scale based visibility is enabled for the labels.
     virtual bool isInScaleRange( double scale ) const;
 
 
+    Qgis::RasterResamplingMethod resampleMethod() const;
+%Docstring
+Returns the resampling method used when the raster labels are being
+resampled over neighboring pixels.
+
+.. seealso:: :py:func:`setResampleMethod`
+
+.. seealso:: :py:func:`resampleOver`
+%End
+
+    void setResampleMethod( Qgis::RasterResamplingMethod method );
+%Docstring
+Sets the resampling ``method`` to use when the raster labels are being
+resampled over neighboring pixels.
+
+.. seealso:: :py:func:`resampleMethod`
+
+.. seealso:: :py:func:`setResampleOver`
+%End
+
+    int resampleOver() const;
+%Docstring
+Returns the number of neighboring pixels to resample over, when labels are
+showing values resampled over neighboring pixels.
+
+.. seealso:: :py:func:`setResampleOver`
+
+.. seealso:: :py:func:`resampleMethod`
+%End
+
+    void setResampleOver( int pixels );
+%Docstring
+Sets the number of neighboring ``pixels`` to resample over, when labels are
+showing values resampled over neighboring pixels.
+
+.. seealso:: :py:func:`resampleOver`
+
+.. seealso:: :py:func:`setResampleMethod`
+%End
+
 };
 
 
