@@ -162,9 +162,23 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      */
     void textEdited( const QString &text );
 
+    /**
+     * Emitted when either:
+     *
+     * 1. 2 seconds has elapsed since the last value change in the widget (eg last key press or scroll wheel event)
+     * 2. or, immediately after the widget has lost focus after its value was changed.
+     *
+     * This signal can be used to respond semi-instantly to changes in the spin box, without responding too quickly
+     * while the user in the middle of setting the value.
+     *
+     * \since QGIS 3.42
+     */
+    void editingTimeout( double value );
+
   protected:
     void changeEvent( QEvent *event ) override;
     void wheelEvent( QWheelEvent *event ) override;
+    void focusOutEvent( QFocusEvent *event ) override;
     // This is required because private implementation of
     // QAbstractSpinBoxPrivate may trigger a second
     // undesired event from the auto-repeat mouse timer
@@ -172,6 +186,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
 
   private slots:
     void changed( double value );
+    void onLastEditTimeout();
 
   private:
     int frameWidth() const;
@@ -184,6 +199,9 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     double mCustomClearValue = 0.0;
 
     bool mExpressionsEnabled = true;
+
+    QTimer *mLastEditTimer = nullptr;
+    double mLastEditTimeoutValue = std::numeric_limits<double>::quiet_NaN();
 
     QString stripped( const QString &originalText ) const;
 
