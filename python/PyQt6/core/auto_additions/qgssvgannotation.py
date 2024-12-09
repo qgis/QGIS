@@ -2,5 +2,5 @@
 try:
     QgsSvgAnnotation.create = staticmethod(QgsSvgAnnotation.create)
     QgsSvgAnnotation.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass

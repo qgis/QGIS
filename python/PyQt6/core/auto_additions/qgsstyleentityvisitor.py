@@ -33,16 +33,16 @@ try:
     QgsStyleEntityVisitorInterface.StyleLeaf.__attribute_docs__ = {'identifier': 'A string identifying the style entity. The actual value of ``identifier`` will vary\ndepending on the class being visited. E.g for a categorized renderer, the\nidentifier will be the category ID associated with the symbol.\n\nThis may be blank if no identifier is required, e.g. when a renderer has a single\nsymbol only.\n\nNote that in some cases where a specific identifier is not available, a generic, untranslated\none may be used (e.g. "overview", "grid").', 'description': 'A string describing the style entity. The actual value of ``description`` will vary\ndepending on the class being visited. E.g for a categorized renderer, the\ndescription will be the category label associated with the symbol, for a print layout, it will\nbe the name of the layout in the project.\n\nThis may be blank if no description is associated with a style entity, e.g. when a renderer has a single\nsymbol only.\n\nThis value may be a generic, translated value in some cases, e.g. "Grid" or "Overview".', 'entity': 'Reference to style entity being visited.'}
     QgsStyleEntityVisitorInterface.StyleLeaf.__doc__ = """Contains information relating to the style entity currently being visited."""
     QgsStyleEntityVisitorInterface.StyleLeaf.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsStyleEntityVisitorInterface.Node.__attribute_docs__ = {'type': 'Node type.', 'identifier': 'A string identifying the node. The actual value of ``identifier`` will vary\ndepending on the node being visited. E.g for a rule based renderer, the\nidentifier will be a rule ID. For a project, node identifiers will be\nlayer IDs.', 'description': 'A string describing the node. The actual value of ``description`` will vary\ndepending on the node being visited. E.g for a rule based renderer, the\nidentifier will be a rule label. For a project, node identifiers will be\nlayer names.'}
     QgsStyleEntityVisitorInterface.Node.__doc__ = """Contains information relating to a node (i.e. a group of symbols or other nodes)
 being visited."""
     QgsStyleEntityVisitorInterface.Node.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsStyleEntityVisitorInterface.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

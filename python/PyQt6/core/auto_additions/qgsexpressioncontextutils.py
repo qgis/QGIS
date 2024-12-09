@@ -35,5 +35,5 @@ try:
     QgsExpressionContextUtils.registerContextFunctions = staticmethod(QgsExpressionContextUtils.registerContextFunctions)
     QgsExpressionContextUtils.meshExpressionScope = staticmethod(QgsExpressionContextUtils.meshExpressionScope)
     QgsExpressionContextUtils.__group__ = ['expression']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -31,7 +31,6 @@ for their corresponding values and emit valuesChanged signal.
 #include "qgseditorwidgetwrapper.h"
 %End
   public:
-
     enum ConstraintResult
     {
       ConstraintResultPass,
@@ -318,7 +317,6 @@ depend on the parent form scope.
 %End
 
   protected:
-
     virtual void updateConstraintWidgetStatus();
 %Docstring
 This should update the widget with a visual cue if a constraint status

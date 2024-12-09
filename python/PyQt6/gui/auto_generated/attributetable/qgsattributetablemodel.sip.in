@@ -10,7 +10,7 @@
 
 
 
-class QgsAttributeTableModel: QAbstractTableModel
+class QgsAttributeTableModel : QAbstractTableModel
 {
 %Docstring(signature="appended")
 A model backed by a :py:class:`QgsVectorLayerCache` which is able to provide
@@ -27,7 +27,6 @@ Is mostly referred to as "master model" within this doc and the source.
 %End
   public:
 
-
     enum class CustomRole /BaseType=IntEnum/
     {
       FeatureId,
@@ -38,7 +37,6 @@ Is mostly referred to as "master model" within this doc and the source.
     };
 
   public:
-
     QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = 0 );
 %Docstring
 Constructor

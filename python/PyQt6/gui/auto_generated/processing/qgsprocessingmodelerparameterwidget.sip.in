@@ -35,12 +35,7 @@ constructed through the central registry, via calls to
 #include "qgsprocessingmodelerparameterwidget.h"
 %End
   public:
-
-    QgsProcessingModelerParameterWidget( QgsProcessingModelAlgorithm *model,
-                                         const QString &childId,
-                                         const QgsProcessingParameterDefinition *parameter,
-                                         QgsProcessingContext &context,
-                                         QWidget *parent /TransferThis/ = 0 );
+    QgsProcessingModelerParameterWidget( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProcessingModelerParameterWidget, for the specified
 ``parameter`` definition within the given ``model``.
@@ -70,9 +65,7 @@ Registers a Processing context ``generator`` class that will be used to retrieve
 a Processing context for the widget when required.
 %End
 
-    void populateSources( const QStringList &compatibleParameterTypes,
-                          const QStringList &compatibleOutputTypes,
-                          const QList< int > &compatibleDataTypes );
+    void populateSources( const QStringList &compatibleParameterTypes, const QStringList &compatibleOutputTypes, const QList<int> &compatibleDataTypes );
 %Docstring
 Populates the widget with available sources for the parameter's value, e.g.
 adding the available child algorithm outputs and model input parameter
@@ -114,7 +107,7 @@ Sets the current ``value`` for the parameter.
 .. seealso:: :py:func:`value`
 %End
 
-    void setWidgetValue( const QList< QgsProcessingModelChildParameterSource > &values );
+    void setWidgetValue( const QList<QgsProcessingModelChildParameterSource> &values );
 %Docstring
 Sets the current ``values`` for the parameter.
 

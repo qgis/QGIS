@@ -22,9 +22,7 @@ controlling the multi edit results.
 #include "qgsattributeformeditorwidget.h"
 %End
   public:
-
-    explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget, const QString &widgetType,
-                                           QgsAttributeForm *form  /TransferThis/ );
+    explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget, const QString &widgetType, QgsAttributeForm *form /TransferThis/ );
 %Docstring
 Constructor for QgsAttributeFormEditorWidget.
 

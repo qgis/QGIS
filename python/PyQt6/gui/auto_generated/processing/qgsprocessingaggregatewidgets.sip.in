@@ -11,7 +11,7 @@
 
 
 
-class QgsAggregateMappingModel: QAbstractTableModel
+class QgsAggregateMappingModel : QAbstractTableModel
 {
 %Docstring(signature="appended")
 The :py:class:`QgsAggregateMappingModel` holds mapping information for defining sets of aggregates of
@@ -24,7 +24,6 @@ fields from a :py:class:`QgsFields` object.
 #include "qgsprocessingaggregatewidgets.h"
 %End
   public:
-
     enum class ColumnDataIndex /BaseType=IntEnum/
     {
       SourceExpression,
@@ -39,18 +38,16 @@ fields from a :py:class:`QgsFields` object.
 
     struct Aggregate
     {
-      QString source;
+        QString source;
 
-      QString aggregate;
+        QString aggregate;
 
-      QString delimiter;
+        QString delimiter;
 
-      QgsField field;
-
+        QgsField field;
     };
 
-    QgsAggregateMappingModel( const QgsFields &sourceFields = QgsFields(),
-                              QObject *parent = 0 );
+    QgsAggregateMappingModel( const QgsFields &sourceFields = QgsFields(), QObject *parent = 0 );
 %Docstring
 Constructs a QgsAggregateMappingModel from a set of ``sourceFields``.
 A ``parent`` object can be also specified.
@@ -135,9 +132,7 @@ fields from a :py:class:`QgsFields` object.
 #include "qgsprocessingaggregatewidgets.h"
 %End
   public:
-
-    explicit QgsAggregateMappingWidget( QWidget *parent = 0,
-                                        const QgsFields &sourceFields = QgsFields() );
+    explicit QgsAggregateMappingWidget( QWidget *parent = 0, const QgsFields &sourceFields = QgsFields() );
 %Docstring
 Constructs a QgsAggregateMappingWidget from a set of ``sourceFields``. A ``parent`` object
 can also be specified.
@@ -209,17 +204,17 @@ Emitted when the aggregates defined in the widget are changed.
 Appends a new ``field`` to the model, with an optional ``source`` and ``aggregate``
 %End
 
-    bool removeSelectedFields( );
+    bool removeSelectedFields();
 %Docstring
 Removes the currently selected field from the model
 %End
 
-    bool moveSelectedFieldsUp( );
+    bool moveSelectedFieldsUp();
 %Docstring
 Moves up currently selected field
 %End
 
-    bool moveSelectedFieldsDown( );
+    bool moveSelectedFieldsDown();
 %Docstring
 Moves down currently selected field
 %End

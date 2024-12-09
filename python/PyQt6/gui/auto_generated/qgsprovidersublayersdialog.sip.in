@@ -23,7 +23,6 @@ A model for representing the sublayers present in a URI for the :py:class:`QgsPr
 #include "qgsprovidersublayersdialog.h"
 %End
   public:
-
     QgsProviderSublayerDialogModel( QObject *parent = 0 );
 %Docstring
 Constructor.
@@ -54,31 +53,24 @@ Dialog for selecting provider sublayers.
 #include "qgsprovidersublayersdialog.h"
 %End
   public:
-
-    QgsProviderSublayersDialog( const QString &uri,
-                                const QString &providerKey,
-                                const QString &filePath,
-                                const QList< QgsProviderSublayerDetails> initialDetails = QList< QgsProviderSublayerDetails>(),
-                                const QList< Qgis::LayerType > &acceptableTypes = QList< Qgis::LayerType >(),
-                                QWidget *parent /TransferThis/ = 0,
-                                Qt::WindowFlags fl = Qt::WindowFlags() );
+    QgsProviderSublayersDialog( const QString &uri, const QString &providerKey, const QString &filePath, const QList<QgsProviderSublayerDetails> initialDetails = QList<QgsProviderSublayerDetails>(), const QList<Qgis::LayerType> &acceptableTypes = QList<Qgis::LayerType>(), QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = Qt::WindowFlags() );
 %Docstring
 Constructor.
 %End
 
-    void setNonLayerItems( const QList< QgsProviderSublayerModel::NonLayerItem > &items );
+    void setNonLayerItems( const QList<QgsProviderSublayerModel::NonLayerItem> &items );
 %Docstring
 Set list of non-layer items (e.g. embedded QGIS project items).
 %End
 
     ~QgsProviderSublayersDialog();
 
-    QList< QgsProviderSublayerDetails > selectedLayers() const;
+    QList<QgsProviderSublayerDetails> selectedLayers() const;
 %Docstring
 Returns the list of selected layers.
 %End
 
-    QList< QgsProviderSublayerModel::NonLayerItem > selectedNonLayerItems() const;
+    QList<QgsProviderSublayerModel::NonLayerItem> selectedNonLayerItems() const;
 %Docstring
 Returns the list of selected non-layer items (e.g. embedded QGIS project items).
 %End
@@ -95,7 +87,7 @@ Sets an appropriate name for the layer group.
 
   signals:
 
-    void layersAdded( const QList< QgsProviderSublayerDetails > &layers );
+    void layersAdded( const QList<QgsProviderSublayerDetails> &layers );
 %Docstring
 Emitted when sublayers selected from the dialog should be added to the project.
 %End

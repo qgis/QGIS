@@ -13,5 +13,5 @@ QgsTextBlockFormat.BooleanValue.__doc__ = """Status values for boolean format pr
 # --
 try:
     QgsTextBlockFormat.__group__ = ['textrenderer']
-except NameError:
+except (NameError, AttributeError):
     pass

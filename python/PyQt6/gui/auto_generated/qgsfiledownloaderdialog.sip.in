@@ -28,7 +28,6 @@ cancellation.
 #include "qgsfiledownloaderdialog.h"
 %End
   public:
-
     QgsFileDownloaderDialog( const QUrl &url, const QString &outputFileName, const QString &authcfg = QString() );
 %Docstring
 :py:class:`QgsFileDownloader`

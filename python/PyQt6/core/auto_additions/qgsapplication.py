@@ -149,5 +149,5 @@ try:
     QgsApplication.scaleIconSize = staticmethod(QgsApplication.scaleIconSize)
     QgsApplication.setTranslation = staticmethod(QgsApplication.setTranslation)
     QgsApplication.__signal_arguments__ = {'requestForTranslatableObjects': ['translationContext: QgsTranslationContext']}
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -24,7 +24,6 @@ See :py:class:`QgsExpressionBuilderDialog` for example of usage.
 #include "qgsexpressionbuilderwidget.h"
 %End
   public:
-
     enum Flag
     {
       LoadNothing,
@@ -77,7 +76,7 @@ Sets layer in order to get the fields and values
 Returns the current layer or a None.
 %End
 
- void loadFieldNames();
+ void loadFieldNames() /Deprecated/;
 %Docstring
 
 .. deprecated:: 3.14
@@ -85,7 +84,7 @@ Returns the current layer or a None.
    This is now done automatically.
 %End
 
- void loadFieldNames( const QgsFields &fields );
+ void loadFieldNames( const QgsFields &fields ) /Deprecated/;
 %Docstring
 
 .. deprecated:: 3.14
@@ -163,7 +162,7 @@ Returns if the expression is valid
 %End
 
 
-    void setCustomPreviewGenerator( const QString &label, const QList< QPair< QString, QVariant > > &choices, SIP_PYCALLABLE );
+    void setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant>> &choices, SIP_PYCALLABLE );
 %Docstring
 Sets the widget to run using a custom preview generator.
 
@@ -180,22 +179,21 @@ objects (i.e. for objects which aren't vector layer features).
 %MethodCode
     Py_XINCREF( a2 );
     Py_BEGIN_ALLOW_THREADS
-    sipCpp->setCustomPreviewGenerator( *a0, *a1, [a2]( const QVariant &value )->QgsExpressionContext
-    {
-      QgsExpressionContext res;
-      SIP_BLOCK_THREADS
-      PyObject *s = sipCallMethod( NULL, a2, "D", &value, sipType_QVariant, NULL );
-      int state;
-      int sipIsError = 0;
-      QgsExpressionContext *t1 = reinterpret_cast<QgsExpressionContext *>( sipConvertToType( s, sipType_QgsExpressionContext, 0, SIP_NOT_NONE, &state, &sipIsError ) );
-      if ( sipIsError == 0 )
-      {
-        res = QgsExpressionContext( *t1 );
-      }
-      sipReleaseType( t1, sipType_QgsExpressionContext, state );
-      SIP_UNBLOCK_THREADS
-      return res;
-    } );
+      sipCpp->setCustomPreviewGenerator( *a0, *a1, [a2]( const QVariant &value ) -> QgsExpressionContext {
+        QgsExpressionContext res;
+        SIP_BLOCK_THREADS
+        PyObject *s = sipCallMethod( NULL, a2, "D", &value, sipType_QVariant, NULL );
+        int state;
+        int sipIsError = 0;
+        QgsExpressionContext *t1 = reinterpret_cast<QgsExpressionContext *>( sipConvertToType( s, sipType_QgsExpressionContext, 0, SIP_NOT_NONE, &state, &sipIsError ) );
+        if ( sipIsError == 0 )
+        {
+          res = QgsExpressionContext( *t1 );
+        }
+        sipReleaseType( t1, sipType_QgsExpressionContext, state );
+        SIP_UNBLOCK_THREADS
+        return res;
+      } );
 
     Py_END_ALLOW_THREADS
 %End
@@ -211,7 +209,7 @@ By default it is saved to the collection "generic".
    Use :py:func:`~QgsExpressionBuilderWidget.expressionTree`->:py:func:`~QgsExpressionBuilderWidget.saveRecent` instead.
 %End
 
- void loadRecent( const QString &collection = QStringLiteral( "generic" ) )/Deprecated/;
+ void loadRecent( const QString &collection = QStringLiteral( "generic" ) ) /Deprecated/;
 %Docstring
 Loads the recent expressions from the given ``collection``.
 By default it is loaded from the collection "generic".
@@ -386,14 +384,14 @@ when text changes.
 :param enabled: ``True`` to enable auto saving.
 %End
 
-    void storeCurrentUserExpression( );
+    void storeCurrentUserExpression();
 %Docstring
 Adds the current expressions to the stored user expressions.
 
 .. versionadded:: 3.12
 %End
 
-    void removeSelectedUserExpression( );
+    void removeSelectedUserExpression();
 %Docstring
 Removes the selected expression from the stored user expressions,
 the selected expression must be a user stored expression.

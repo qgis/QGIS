@@ -64,9 +64,9 @@ try:
     QgsCodeEditor.getMonospaceFont = staticmethod(QgsCodeEditor.getMonospaceFont)
     QgsCodeEditor.isFixedPitch = staticmethod(QgsCodeEditor.isFixedPitch)
     QgsCodeEditor.__group__ = ['codeeditors']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsCodeInterpreter.__group__ = ['codeeditors']
-except NameError:
+except (NameError, AttributeError):
     pass

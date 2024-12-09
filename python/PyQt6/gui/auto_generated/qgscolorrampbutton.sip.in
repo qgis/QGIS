@@ -21,7 +21,6 @@ saved color ramps, as well as option to invert the current color ramp and create
 #include "qgscolorrampbutton.h"
 %End
   public:
-
     QgsColorRampButton( QWidget *parent /TransferThis/ = 0, const QString &dialogTitle = QString() );
 %Docstring
 Construct a new color ramp button.
@@ -304,7 +303,6 @@ In case the new color ramp is the same, no signal is emitted to avoid infinite l
 %End
 
   protected:
-
     virtual bool event( QEvent *e );
 
     virtual void changeEvent( QEvent *e );

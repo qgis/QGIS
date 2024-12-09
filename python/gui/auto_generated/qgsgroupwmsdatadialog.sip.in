@@ -8,7 +8,7 @@
 
 
 
-class QgsGroupWmsDataDialog: QDialog
+class QgsGroupWmsDataDialog : QDialog
 {
 
 %TypeHeaderCode

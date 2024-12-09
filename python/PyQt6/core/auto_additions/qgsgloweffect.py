@@ -4,14 +4,14 @@ QgsGlowEffect.ColorRamp = QgsGlowEffect.GlowColorType.ColorRamp
 try:
     QgsOuterGlowEffect.create = staticmethod(QgsOuterGlowEffect.create)
     QgsOuterGlowEffect.__group__ = ['effects']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsInnerGlowEffect.create = staticmethod(QgsInnerGlowEffect.create)
     QgsInnerGlowEffect.__group__ = ['effects']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsGlowEffect.__group__ = ['effects']
-except NameError:
+except (NameError, AttributeError):
     pass

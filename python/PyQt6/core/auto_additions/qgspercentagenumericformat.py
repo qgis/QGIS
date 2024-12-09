@@ -3,5 +3,5 @@ QgsPercentageNumericFormat.ValuesArePercentage = QgsPercentageNumericFormat.Inpu
 QgsPercentageNumericFormat.ValuesAreFractions = QgsPercentageNumericFormat.InputValues.ValuesAreFractions
 try:
     QgsPercentageNumericFormat.__group__ = ['numericformats']
-except NameError:
+except (NameError, AttributeError):
     pass

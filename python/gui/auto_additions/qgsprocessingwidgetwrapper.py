@@ -13,25 +13,25 @@ try:
     QgsAbstractProcessingParameterWidgetWrapper.__attribute_docs__ = {'widgetValueHasChanged': 'Emitted whenever the parameter value (as defined by the wrapped widget) is changed.\n'}
     QgsAbstractProcessingParameterWidgetWrapper.__signal_arguments__ = {'widgetValueHasChanged': ['wrapper: QgsAbstractProcessingParameterWidgetWrapper']}
     QgsAbstractProcessingParameterWidgetWrapper.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsProcessingContextGenerator.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParametersGenerator.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterWidgetContext.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsProcessingParameterWidgetFactoryInterface.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsProcessingHiddenWidgetWrapper.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass

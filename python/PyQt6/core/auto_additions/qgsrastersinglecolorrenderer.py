@@ -2,5 +2,5 @@
 try:
     QgsRasterSingleColorRenderer.create = staticmethod(QgsRasterSingleColorRenderer.create)
     QgsRasterSingleColorRenderer.__group__ = ['raster']
-except NameError:
+except (NameError, AttributeError):
     pass

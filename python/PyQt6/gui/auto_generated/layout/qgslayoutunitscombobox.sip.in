@@ -18,7 +18,6 @@ A custom combo box for selecting units for layout settings.
 #include "qgslayoutunitscombobox.h"
 %End
   public:
-
     QgsLayoutUnitsComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLayoutUnitsComboBox.

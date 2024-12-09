@@ -23,7 +23,6 @@ Uses a :py:class:`QgsFeatureListModel` as source model.
 #include "qgsfeaturelistview.h"
 %End
   public:
-
     explicit QgsFeatureListView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Creates a feature list view
@@ -200,7 +199,6 @@ editLastFeature will try to edit the last feature of the list
 
 .. versionadded:: 3.8
 %End
-
 
 
 };

@@ -22,7 +22,6 @@ The :py:class:`QgsMediaWidget` class creates a widget for playing back audio and
 #include "qgsmediawidget.h"
 %End
   public:
-
     enum Mode
     {
       Audio,

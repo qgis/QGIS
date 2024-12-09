@@ -4,5 +4,5 @@ try:
     QgsLayerTreeNode.readXml = staticmethod(QgsLayerTreeNode.readXml)
     QgsLayerTreeNode.__signal_arguments__ = {'willAddChildren': ['node: QgsLayerTreeNode', 'indexFrom: int', 'indexTo: int'], 'addedChildren': ['node: QgsLayerTreeNode', 'indexFrom: int', 'indexTo: int'], 'willRemoveChildren': ['node: QgsLayerTreeNode', 'indexFrom: int', 'indexTo: int'], 'removedChildren': ['node: QgsLayerTreeNode', 'indexFrom: int', 'indexTo: int'], 'visibilityChanged': ['node: QgsLayerTreeNode'], 'customPropertyChanged': ['node: QgsLayerTreeNode', 'key: str'], 'expandedChanged': ['node: QgsLayerTreeNode', 'expanded: bool'], 'nameChanged': ['node: QgsLayerTreeNode', 'name: str']}
     QgsLayerTreeNode.__group__ = ['layertree']
-except NameError:
+except (NameError, AttributeError):
     pass

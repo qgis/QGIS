@@ -41,7 +41,6 @@ for tracking the mouse while drawing polylines or polygons.
 %End
   public:
 
-
     enum IconType /BaseType=IntEnum/
     {
 
@@ -378,7 +377,6 @@ Ownership of ``symbol`` is transferred to the rubberband.
 %End
 
   protected:
-
     virtual void paint( QPainter *p );
 
 %Docstring

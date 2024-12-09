@@ -31,14 +31,13 @@ Represents a gamepad device used for controlling a 3D map.
 #include "qgs3dgamepadcontroller.h"
 %End
 %ConvertToSubClassCode
-    if ( qobject_cast< QgsGamepad3DMapController * >( sipCpp ) )
+    if ( qobject_cast<QgsGamepad3DMapController *>( sipCpp ) )
 
       sipType = sipType_QgsGamepad3DMapController;
     else
       sipType = nullptr;
 %End
   public:
-
     QgsGamepad3DMapController( int gamepadDeviceId, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGamepad3DMapController, with the specified ``gamepadDeviceId`` and ``parent`` object.

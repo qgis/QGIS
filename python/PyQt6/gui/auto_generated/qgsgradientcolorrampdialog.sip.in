@@ -20,7 +20,6 @@ A dialog which allows users to modify the properties of a :py:class:`QgsGradient
 #include "qgsgradientcolorrampdialog.h"
 %End
   public:
-
     QgsGradientColorRampDialog( const QgsGradientColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGradientColorRampDialog.

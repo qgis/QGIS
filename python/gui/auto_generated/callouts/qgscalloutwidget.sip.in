@@ -19,7 +19,6 @@ Base class for widgets which allow control over the properties of callouts.
 #include "qgscalloutwidget.h"
 %End
   public:
-
     QgsCalloutWidget( QWidget *parent /TransferThis/, QgsMapLayer *vl = 0 );
 %Docstring
 Constructor for QgsCalloutWidget.
@@ -81,7 +80,6 @@ Sets the geometry ``type`` of the features to customize the widget accordingly.
 %End
 
   protected:
-
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsCallout::Property key );
 %Docstring
 Registers a data defined override button. Handles setting up connections

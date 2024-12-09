@@ -24,7 +24,6 @@ A tree model for display of known coordinate reference systems.
 %End
   public:
 
-
     enum class CustomRole
     {
       NodeType,
@@ -75,7 +74,7 @@ Returns an invalid index if the CRS was not found.
 };
 
 
-class QgsCoordinateReferenceSystemProxyModel: QSortFilterProxyModel
+class QgsCoordinateReferenceSystemProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
 A sort/filter proxy model for coordinate reference systems.
@@ -87,7 +86,6 @@ A sort/filter proxy model for coordinate reference systems.
 #include "qgscoordinatereferencesystemmodel.h"
 %End
   public:
-
     enum Filter
     {
       FilterHorizontal,
@@ -137,7 +135,7 @@ Returns the current filter string, if set.
 .. seealso:: :py:func:`setFilterString`
 %End
 
-    void setFilterAuthIds( const QSet< QString > &filter );
+    void setFilterAuthIds( const QSet<QString> &filter );
 %Docstring
 Sets a ``filter`` list of CRS auth ID strings, such that only coordinate reference systems matching the
 specified auth IDs will be shown.
@@ -145,7 +143,7 @@ specified auth IDs will be shown.
 .. seealso:: :py:func:`filterAuthIds`
 %End
 
-    QSet< QString > filterAuthIds() const;
+    QSet<QString> filterAuthIds() const;
 %Docstring
 Returns the current filter list of auth ID strings, if set.
 

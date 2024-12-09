@@ -21,7 +21,6 @@ A widget for manipulating :py:class:`QgsCurveTransform` curves.
 #include "qgscurveeditorwidget.h"
 %End
   public:
-
     QgsCurveEditorWidget( QWidget *parent /TransferThis/ = 0, const QgsCurveTransform &curve = QgsCurveTransform() );
 %Docstring
 Constructor for QgsCurveEditorWidget.
@@ -100,13 +99,10 @@ Emitted when the widget curve changes
 %End
 
   protected:
-
     virtual void keyPressEvent( QKeyEvent *event );
 
 
 };
-
-
 
 
 

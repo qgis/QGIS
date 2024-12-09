@@ -8,7 +8,7 @@
 
 
 
-class QgsTableWidgetBase: QWidget, protected Ui::QgsTableWidgetUiBase
+class QgsTableWidgetBase : QWidget, protected Ui::QgsTableWidgetUiBase
 {
 %Docstring(signature="appended")
 Base widget allowing to edit a collection, using a table.
@@ -21,7 +21,6 @@ Child classes must call init(QAbstractTableModel*) from their constructor.
 #include "qgstablewidgetbase.h"
 %End
   public:
-
     explicit QgsTableWidgetBase( QWidget *parent );
 %Docstring
 Constructor.
@@ -48,7 +47,6 @@ Sets whether the widget should be shown in a read-only state.
 %End
 
   protected:
-
     void init( QAbstractTableModel *model );
 %Docstring
 Initialize the table with the given model.

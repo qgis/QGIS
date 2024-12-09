@@ -2,5 +2,5 @@
 try:
     QgsGeometryGeneratorSymbolLayer.create = staticmethod(QgsGeometryGeneratorSymbolLayer.create)
     QgsGeometryGeneratorSymbolLayer.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

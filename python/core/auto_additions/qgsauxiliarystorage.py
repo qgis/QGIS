@@ -4,12 +4,12 @@ try:
     QgsAuxiliaryLayer.createAuxiliaryField = staticmethod(QgsAuxiliaryLayer.createAuxiliaryField)
     QgsAuxiliaryLayer.nameFromProperty = staticmethod(QgsAuxiliaryLayer.nameFromProperty)
     QgsAuxiliaryLayer.propertyDefinitionFromField = staticmethod(QgsAuxiliaryLayer.propertyDefinitionFromField)
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsAuxiliaryStorage.deleteTable = staticmethod(QgsAuxiliaryStorage.deleteTable)
     QgsAuxiliaryStorage.duplicateTable = staticmethod(QgsAuxiliaryStorage.duplicateTable)
     QgsAuxiliaryStorage.extension = staticmethod(QgsAuxiliaryStorage.extension)
     QgsAuxiliaryStorage.exists = staticmethod(QgsAuxiliaryStorage.exists)
-except NameError:
+except (NameError, AttributeError):
     pass

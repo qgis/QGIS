@@ -3,7 +3,7 @@ try:
     QgsRasterFileWriter.FilterFormatDetails.__attribute_docs__ = {'driverName': 'Unique driver name', 'filterString': 'Filter string for file picker dialogs'}
     QgsRasterFileWriter.FilterFormatDetails.__doc__ = """Details of available filters and formats."""
     QgsRasterFileWriter.FilterFormatDetails.__group__ = ['raster']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsRasterFileWriter.filterForDriver = staticmethod(QgsRasterFileWriter.filterForDriver)
@@ -12,5 +12,5 @@ try:
     QgsRasterFileWriter.driverForExtension = staticmethod(QgsRasterFileWriter.driverForExtension)
     QgsRasterFileWriter.extensionsForFormat = staticmethod(QgsRasterFileWriter.extensionsForFormat)
     QgsRasterFileWriter.__group__ = ['raster']
-except NameError:
+except (NameError, AttributeError):
     pass

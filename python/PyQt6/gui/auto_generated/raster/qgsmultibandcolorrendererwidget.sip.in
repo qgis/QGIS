@@ -10,7 +10,7 @@
 
 
 
-class QgsMultiBandColorRendererWidget: QgsRasterRendererWidget
+class QgsMultiBandColorRendererWidget : QgsRasterRendererWidget
 {
 
 %TypeHeaderCode

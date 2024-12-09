@@ -20,10 +20,7 @@ A generic dialog with layout and button box
 #include "qgsdialog.h"
 %End
   public:
-
-    QgsDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
-               QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close,
-               Qt::Orientation orientation = Qt::Horizontal );
+    QgsDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close, Qt::Orientation orientation = Qt::Horizontal );
 %Docstring
 Constructor for QgsDialog.
 %End
