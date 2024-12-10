@@ -36,6 +36,8 @@
 #include "qgspointcloudrequest.h"
 #include "qgsrendercontext.h"
 #include "qgsruntimeprofiler.h"
+#include "qgsapplication.h"
+#include "qgsvirtualpointcloudprovider.h"
 
 #include <delaunator.hpp>
 
@@ -198,37 +200,52 @@ bool QgsPointCloudLayerRenderer::render()
   }
   else
   {
-    mSubIndexExtentRenderer->startRender( context );
+    const QgsVirtualPointCloudProvider &vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider &>( *mLayer->dataProvider() );
+    QVector< QgsPointCloudSubIndex > visibleIndexes;
     for ( const auto &si : mSubIndexes )
     {
-      if ( canceled )
-        break;
+      if ( renderExtent.intersects( si.extent() ) )
+      {
+        visibleIndexes.append( si );
+      }
+    }
+    // if the overview of virtual point cloud exists we render it when we are zoomed out
+    if ( vpcProvider.overview() != nullptr &&
+         renderExtent.width() > vpcProvider.averageSubIndexWidth() &&
+         renderExtent.height() > vpcProvider.averageSubIndexHeight() )
+    {
+      renderIndex( vpcProvider.overview() );
+    }
+    else
+    {
+      mSubIndexExtentRenderer->startRender( context );
+      for ( const auto &si : visibleIndexes )
+      {
+        if ( canceled )
+          break;
 
       QgsPointCloudIndex pc = si.index();
 
-      if ( !renderExtent.intersects( si.extent() ) )
-        continue;
-
-      if ( !pc || !pc.isValid() || renderExtent.width() > si.extent().width() )
-      {
-        // when dealing with virtual point clouds, we want to render the individual extents when zoomed out
-        // and only use the selected renderer when zoomed in
-        mSubIndexExtentRenderer->renderExtent( si.polygonBounds(), context );
-        // render the label of point cloud tile
-        if ( mSubIndexExtentRenderer->showLabels() )
+        if ( !pc || !pc.isValid() )
         {
-          mSubIndexExtentRenderer->renderLabel(
-            context.renderContext().mapToPixel().transformBounds( si.extent().toRectF() ),
-            si.uri().section( "/", -1 ).section( ".", 0, 0 ),
-            context );
+          // TODO: render the individual extents when zoomed out and users requests them
+          mSubIndexExtentRenderer->renderExtent( si.polygonBounds(), context );
+          // render the label of point cloud tile
+          if ( mSubIndexExtentRenderer->showLabels() )
+          {
+            mSubIndexExtentRenderer->renderLabel(
+              context.renderContext().mapToPixel().transformBounds( si.extent().toRectF() ),
+              si.uri().section( "/", -1 ).section( ".", 0, 0 ),
+              context );
+          }
+        }
+        else
+        {
+          canceled = !renderIndex( pc );
         }
       }
-      else
-      {
-        canceled = !renderIndex( pc );
-      }
+      mSubIndexExtentRenderer->stopRender( context );
     }
-    mSubIndexExtentRenderer->stopRender( context );
   }
 
   mRenderer->stopRender( context );

@@ -45,6 +45,9 @@
 #include "qgscopcpointcloudindex.h"
 #endif
 
+#include "qgsvirtualpointcloudprovider.h"
+
+
 #include <QUrl>
 
 QgsPointCloudLayer::QgsPointCloudLayer( const QString &uri,
@@ -956,6 +959,7 @@ void QgsPointCloudLayer::loadIndexesForRenderContext( QgsRenderContext &renderer
     }
 
     const QVector<QgsPointCloudSubIndex> subIndex = mDataProvider->subIndexes();
+    const QgsVirtualPointCloudProvider &vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider &>( *mDataProvider );
     for ( int i = 0; i < subIndex.size(); ++i )
     {
       // no need to load as it's there
@@ -963,7 +967,8 @@ void QgsPointCloudLayer::loadIndexesForRenderContext( QgsRenderContext &renderer
         continue;
 
       if ( subIndex.at( i ).extent().intersects( renderExtent ) &&
-           renderExtent.width() < subIndex.at( i ).extent().width() )
+           renderExtent.width() < vpcProvider.averageSubIndexWidth() &&
+           renderExtent.height() < vpcProvider.averageSubIndexHeight() )
       {
         mDataProvider->loadSubIndex( i );
       }

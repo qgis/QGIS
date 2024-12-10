@@ -177,6 +177,8 @@ void QgsVirtualPointCloudProvider::parseFile()
   }
 
   QSet<QString> attributeNames;
+  double subIndexesWidth = 0.0;
+  double subIndexesHeight = 0.0;
 
   for ( const auto &f : data["features"] )
   {
@@ -202,12 +204,35 @@ void QgsVirtualPointCloudProvider::parseFile()
     QgsGeometry geometry;
     QgsDoubleRange zRange;
 
-    for ( const auto &asset : f["assets"] )
+    // look directly for link to data file
+    if ( f["assets"].find( "data" ) != f["assets"].end() )
     {
-      if ( asset.contains( "href" ) )
+      if ( f["assets"]["data"].contains( "href" ) )
       {
-        uri = QString::fromStdString( asset["href"] );
-        break;
+        uri = QString::fromStdString( f["assets"]["data"]["href"] );
+      }
+    }
+
+    // look for vpc overview reference
+    if ( mOverview == nullptr && f["assets"].find( "overview" ) != f["assets"].end() )
+    {
+      if ( f["assets"]["overview"].contains( "href" ) )
+      {
+        mOverview = std::make_unique<QgsCopcPointCloudIndex>();
+        mOverview->load( fInfo.absoluteDir().absoluteFilePath( QString::fromStdString( f["assets"]["overview"]["href"] ) ) );
+      }
+    }
+    // if it doesn't exist look for overview file in the directory
+    else if ( mOverview == nullptr )
+    {
+      QDir vpcDir = fInfo.absoluteDir();
+      QStringList nameFilter = { "*overview.*laz" };
+      vpcDir.setNameFilters( nameFilter );
+      vpcDir.setFilter( QDir::Files );
+      if ( !vpcDir.entryList().empty() )
+      {
+        mOverview = std::make_unique<QgsCopcPointCloudIndex>();
+        mOverview->load( vpcDir.absoluteFilePath( vpcDir.entryList().first() ) );
       }
     }
 
@@ -364,12 +389,16 @@ void QgsVirtualPointCloudProvider::parseFile()
       }
     }
 
+    subIndexesWidth += extent.width();
+    subIndexesHeight += extent.height();
     mPolygonBounds->addPart( geometry );
     mPointCount += count;
     QgsPointCloudSubIndex si( uri, geometry, extent, zRange, count );
     mSubLayers.push_back( si );
   }
   mExtent = mPolygonBounds->boundingBox();
+  mAverageSubIndexWidth = subIndexesWidth / mSubLayers.size();
+  mAverageSubIndexHeight = subIndexesHeight / mSubLayers.size();
   populateAttributeCollection( attributeNames );
 }
 
