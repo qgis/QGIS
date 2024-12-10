@@ -300,4 +300,4 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
 };
 
 
-#endif // QGSPOINTCLOUDPLAYER_H
+#endif // QGSPOINTCLOUDLAYER_H
