@@ -13,9 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsframegraph.h"
-#include "qgspointcloudlayer3drenderer.h"
-#include "qgsrubberband3d.h"
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/QEntity>
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -28,16 +25,19 @@
 #include <Qt3DInput/QInputSettings>
 #include <Qt3DLogic/QLogicAspect>
 #include <Qt3DRender/QCamera>
+#include <Qt3DLogic/QFrameAction>
 
 #include "qgs3dmapcanvas.h"
+#include "moc_qgs3dmapcanvas.cpp"
 
-#include <Qt3DLogic/QFrameAction>
 #include "qgs3dmapscene.h"
 #include "qgswindow3dengine.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptool.h"
 #include "qgstemporalcontroller.h"
-#include "moc_qgs3dmapcanvas.cpp"
+#include "qgsframegraph.h"
+#include "qgspointcloudlayer3drenderer.h"
+#include "qgsrubberband3d.h"
 
 Qgs3DMapCanvas::Qgs3DMapCanvas()
   : m_aspectEngine( new Qt3DCore::QAspectEngine )
@@ -87,7 +87,8 @@ Qgs3DMapCanvas::~Qgs3DMapCanvas()
   mScene = nullptr;
   mMapSettings->deleteLater();
   mMapSettings = nullptr;
-
+  qDeleteAll( mHighlights );
+  mHighlights.clear();
 
   delete m_aspectEngine;
 }
@@ -359,8 +360,7 @@ void Qgs3DMapCanvas::highlightFeature( const QgsFeature &feature, QgsMapLayer *l
     return;
 
   const QgsGeometry geom = feature.geometry();
-  QgsPoint pt( geom.vertexAt( 0 ) );
-  pt.setZ( pt.z() / mMapSettings->terrainVerticalScale() );
+  const QgsPoint pt( geom.vertexAt( 0 ) );
 
   if ( !mHighlights.contains( layer ) )
   {
@@ -368,7 +368,7 @@ void Qgs3DMapCanvas::highlightFeature( const QgsFeature &feature, QgsMapLayer *l
         mEngine,
         mEngine->frameGraph()->rubberBandsRootEntity(),
         Qgis::GeometryType::Point );
-    band->setHideLastMarker( false );
+
     const QgsSettings settings;
     const QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
     band->setColor( color );

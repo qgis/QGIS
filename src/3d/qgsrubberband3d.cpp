@@ -100,7 +100,6 @@ QgsRubberBand3D::~QgsRubberBand3D()
   if ( mLineEntity )
     mLineEntity->deleteLater();
   mMarkerEntity->deleteLater();
-  delete mMarkerSymbol;
 }
 
 float QgsRubberBand3D::width() const
@@ -151,9 +150,6 @@ void QgsRubberBand3D::setColor( QColor color )
 
 void QgsRubberBand3D::setMarkerType( MarkerType marker )
 {
-  if ( mMarkerSymbol )
-    delete mMarkerSymbol;
-
   mMarkerType = marker;
 
   const QVariantMap props
@@ -166,7 +162,7 @@ void QgsRubberBand3D::setMarkerType( MarkerType marker )
     { QStringLiteral( "name" ), mMarkerType == Square ? QStringLiteral( "square" ) : QStringLiteral( "circle" ) }
   };
 
-  mMarkerSymbol = QgsMarkerSymbol::createSimple( props );
+  mMarkerSymbol.reset( QgsMarkerSymbol::createSimple( props ) );
   updateMarkerMaterial();
 }
 
@@ -229,7 +225,7 @@ void QgsRubberBand3D::updateGeometry()
 void QgsRubberBand3D::updateMarkerMaterial()
 {
   mMarkerMaterial = new QgsPoint3DBillboardMaterial();
-  mMarkerMaterial->setTexture2DFromSymbol( mMarkerSymbol, Qgs3DRenderContext::fromMapSettings( mMapSettings ) );
+  mMarkerMaterial->setTexture2DFromSymbol( mMarkerSymbol.get(), Qgs3DRenderContext::fromMapSettings( mMapSettings ) );
   mMarkerEntity->addComponent( mMarkerMaterial );
 
   //TODO: QgsAbstract3DEngine::sizeChanged should have const QSize &size param
