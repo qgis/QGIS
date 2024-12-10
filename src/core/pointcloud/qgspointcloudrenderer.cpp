@@ -61,6 +61,16 @@ void QgsPointCloudRenderContext::setAttributes( const QgsPointCloudAttributeColl
   attributes.find( QStringLiteral( "Z" ), mZOffset );
 }
 
+QgsPointCloudRenderer::QgsPointCloudRenderer()
+{
+  QgsTextFormat textFormat = QgsStyle::defaultStyle()->defaultTextFormat();
+  QgsTextBufferSettings settings;
+  settings.setEnabled( true );
+  settings.setSize( 1 );
+  textFormat.setBuffer( settings );
+  mLabelTextFormat = ( textFormat );
+}
+
 QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
 {
   if ( element.isNull() )

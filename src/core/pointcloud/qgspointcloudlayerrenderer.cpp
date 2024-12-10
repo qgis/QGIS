@@ -218,7 +218,7 @@ bool QgsPointCloudLayerRenderer::render()
         // render the label of point cloud tile
         if ( mSubIndexExtentRenderer->showLabels() )
         {
-          mSubIndexExtentRenderer->renderLabels(
+          mSubIndexExtentRenderer->renderLabel(
             context.renderContext().mapToPixel().transformBounds( si.extent().toRectF() ),
             si.uri().section( "/", -1 ).section( ".", 0, 0 ),
             context );

@@ -138,10 +138,9 @@ void QgsPointCloudExtentRenderer::setFillSymbol( QgsFillSymbol *symbol )
 {
   mFillSymbol.reset( symbol );
 }
-void QgsPointCloudExtentRenderer::renderLabels( const QRectF &extent, const QString &text, QgsPointCloudRenderContext &context ) const
+void QgsPointCloudExtentRenderer::renderLabel( const QRectF &extent, const QString &text, QgsPointCloudRenderContext &context ) const
 {
-  QStringList labelText;
-  const QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( labelText << text, labelTextFormat() );
+  const QgsTextDocument doc = QgsTextDocument::fromTextAndFormat( {text}, labelTextFormat() );
   const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( doc, labelTextFormat(), context.renderContext() );
   const QSizeF textSize = metrics.documentSize( Qgis::TextLayoutMode::Rectangle, labelTextFormat().orientation() );
   if ( textSize.width() < extent.width() && textSize.height() < extent.height() )

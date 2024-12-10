@@ -24,6 +24,7 @@
 #include "qgis_sip.h"
 #include "qgsvector3d.h"
 #include "qgspointcloudattribute.h"
+#include "qgsstyle.h"
 
 class QgsPointCloudBlock;
 class QgsLayerTreeLayer;
@@ -340,7 +341,7 @@ class CORE_EXPORT QgsPointCloudRenderer
 
   public:
 
-    QgsPointCloudRenderer() = default;
+    QgsPointCloudRenderer();
 
     virtual ~QgsPointCloudRenderer() = default;
 
