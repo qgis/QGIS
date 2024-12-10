@@ -2233,11 +2233,12 @@ Acts on all layers.</string>
    </property>
    <property name="toolTip">
     <string>Offset Curve
-Creates an offset or an offset copy of a line or polygon ring:
-Click to select ring or line to offset.
+Creates an offset or an offset copy of a geometry:
+Click to select a geometry to offset.
 2nd click to specify offset distance.
-Ctrl+2nd click to create a copy.
-Ctrl+click with snapping to offset geometry from another layer.</string>
+Ctrl+2nd click to offset a copy of the selected geometry.
+Ctrl+click with snapping to select another layer's geometry to copy and offset.
+</string>
    </property>
   </action>
   <action name="mActionCopyStyle">
@@ -2673,8 +2674,7 @@ Shift+click to snap rotation to 45 degree steps.</string>
    <property name="toolTip">
     <string>Fill Ring
 Creates a hole in a polygon and fills it with a new feature:
-Click within an existing polygon to draw new inner ring.
-Right click to finish and fill ring.
+Click+click to draw a new inner ring in a polygon and right click to finish and fill ring.
 Shift+click on existing inner ring to fill.</string>
    </property>
   </action>
