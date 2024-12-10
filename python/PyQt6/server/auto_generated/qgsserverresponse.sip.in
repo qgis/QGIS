@@ -19,7 +19,6 @@ class QgsServerResponse
 #include "qgsserverresponse.h"
 %End
   public:
-
     QgsServerResponse();
     virtual ~QgsServerResponse();
 
@@ -64,7 +63,7 @@ Set the http status code
 Returns the http status code
 %End
 
-    virtual void sendError( int code,  const QString &message ) = 0;
+    virtual void sendError( int code, const QString &message ) = 0;
 %Docstring
 Send error
 This method delegates error handling at the server level. This is different

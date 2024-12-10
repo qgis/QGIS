@@ -27,7 +27,6 @@ A PBR metal rough shading material used for rendering.
 #include "qgsmetalroughmaterialsettings.h"
 %End
   public:
-
     QgsMetalRoughMaterialSettings();
 
     virtual QString type() const;
