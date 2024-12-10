@@ -120,7 +120,7 @@ for f in $MODIFIED; do
   esac
 
   # only run astyle on sipified directories, others are handled by clang-format (see .pre-commit-config.yaml)
-	if [[ $f =~ ^src/(core|3d|server) ]]; then
+	if [[ $f =~ ^src/(core) ]]; then
     m=$f.$REV.prepare
     cp "$f" "$m"
     ASTYLEPROGRESS=" [$i/$N]" astyle.sh "$f"
