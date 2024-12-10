@@ -260,13 +260,13 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
         void setCollapsedExpression( const QgsOptionalExpression &collapsedExpression );
 
         RelationEditorConfiguration relationEditorConfiguration() const;
-        void setRelationEditorConfiguration( RelationEditorConfiguration relationEditorConfiguration );
+        void setRelationEditorConfiguration( const RelationEditorConfiguration &relationEditorConfiguration );
 
         QmlElementEditorConfiguration qmlElementEditorConfiguration() const;
-        void setQmlElementEditorConfiguration( QmlElementEditorConfiguration qmlElementEditorConfiguration );
+        void setQmlElementEditorConfiguration( const QmlElementEditorConfiguration &qmlElementEditorConfiguration );
 
         HtmlElementEditorConfiguration htmlElementEditorConfiguration() const;
-        void setHtmlElementEditorConfiguration( HtmlElementEditorConfiguration htmlElementEditorConfiguration );
+        void setHtmlElementEditorConfiguration( const HtmlElementEditorConfiguration &htmlElementEditorConfiguration );
 
         /**
          * Returns the spacer element configuration
