@@ -394,6 +394,14 @@ class CORE_EXPORT QgsLayerTreeModel : public QAbstractItemModel
 
     void invalidateLegendMapBasedData();
 
+  private slots:
+
+    /**
+     * Triggered when layer elevation properties have changed.
+     * \since QGIS 3.42
+     */
+    void layerProfileGenerationPropertyChanged();
+
   protected:
     void removeLegendFromLayer( QgsLayerTreeLayer *nodeLayer );
     void addLegendToLayer( QgsLayerTreeLayer *nodeL );
