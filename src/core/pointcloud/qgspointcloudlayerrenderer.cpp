@@ -37,6 +37,7 @@
 #include "qgsrendercontext.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsvirtualpointcloudprovider.h"
+#include "qgsapplication.h"
 
 #include <delaunator.hpp>
 
