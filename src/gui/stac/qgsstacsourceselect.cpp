@@ -198,7 +198,7 @@ void QgsStacSourceSelect::btnEdit_clicked()
   nc.setConnection( cmbConnections->currentText(), uri );
   if ( nc.exec() )
   {
-    QgsStacConnection::Data connectionData = QgsStacConnection::decodedUri( nc.connectionUri() );
+    const QgsStacConnection::Data connectionData = QgsStacConnection::decodedUri( nc.connectionUri() );
     QgsStacConnection::addConnection( nc.connectionName(), connectionData );
     populateConnectionList();
     emit connectionsChanged();
