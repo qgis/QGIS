@@ -256,7 +256,7 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 
     QgsTemporalController *mTemporalController = nullptr;
 
-    //! This holds rubber bands for highlighting identified features
+    //! This holds and owns the rubber bands for highlighting identified features
     QMap<QgsMapLayer *, QgsRubberBand3D *> mHighlights;
 };
 

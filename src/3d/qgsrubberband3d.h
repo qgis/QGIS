@@ -165,7 +165,8 @@ class _3D_EXPORT QgsRubberBand3D
     Qt3DRender::QGeometryRenderer *mMarkerGeometryRenderer = nullptr;
     QgsBillboardGeometry *mMarkerGeometry = nullptr;
     QgsPoint3DBillboardMaterial *mMarkerMaterial = nullptr;
-    QgsMarkerSymbol *mMarkerSymbol = nullptr;
+
+    std::unique_ptr<QgsMarkerSymbol> mMarkerSymbol;
 
     // Disable copying as we have pointer members.
     QgsRubberBand3D( const QgsRubberBand3D & ) = delete;
