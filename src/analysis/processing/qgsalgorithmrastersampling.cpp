@@ -129,7 +129,8 @@ QVariantMap QgsRasterSamplingAlgorithm::processAlgorithm( const QVariantMap &par
     {
       attributes += emptySampleAttributes;
       outputFeature.setAttributes( attributes );
-      sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
+      if ( !sink->addFeature( outputFeature, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
       feedback->reportError( QObject::tr( "No geometry attached to feature %1." ).arg( feature.id() ) );
       continue;
     }

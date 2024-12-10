@@ -1170,7 +1170,8 @@ QVariantMap QgsMeshContoursAlgorithm::processAlgorithm( const QVariantMap &param
       lineFeat.setGeometry( line );
       lineFeat.setAttributes( lineAttributes );
 
-      sinkLines->addFeature( lineFeat );
+      if ( !sinkLines->addFeature( lineFeat, QgsFeatureSink::FastInsert ) )
+        throw QgsProcessingException( writeFeatureError( sinkLines.get(), parameters, QStringLiteral( "OUTPUT_LINES" ) ) );
     }
 
     for ( int l = 0; l < mLevels.count() - 1; ++l )
