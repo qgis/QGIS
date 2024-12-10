@@ -104,7 +104,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsTerrainEntity::rayIntersection( const Qgs
     case QgsTerrainGenerator::Flat:
     {
       if ( ray.direction().z() == 0 )
-        break;  // the ray is parallel to the flat terrain
+        break; // the ray is parallel to the flat terrain
 
       const float dist = static_cast<float>( mMapSettings->terrainElevationOffset() - ray.origin().z() ) / ray.direction().z();
       const QVector3D terrainPlanePoint = ray.origin() + ray.direction() * dist;
@@ -121,12 +121,9 @@ QVector<QgsRayCastingUtils::RayHit> QgsTerrainEntity::rayIntersection( const Qgs
       const QList<QgsChunkNode *> activeNodes = this->activeNodes();
       for ( QgsChunkNode *node : activeNodes )
       {
-
         QgsAABB nodeBbox = Qgs3DUtils::mapToWorldExtent( node->box3D(), mMapSettings->origin() );
 
-        if ( node->entity() &&
-             ( minDist < 0 || nodeBbox.distanceFromPoint( ray.origin() ) < minDist ) &&
-             QgsRayCastingUtils::rayBoxIntersection( ray, nodeBbox ) )
+        if ( node->entity() && ( minDist < 0 || nodeBbox.distanceFromPoint( ray.origin() ) < minDist ) && QgsRayCastingUtils::rayBoxIntersection( ray, nodeBbox ) )
         {
           Qt3DRender::QGeometryRenderer *rend = node->entity()->findChild<Qt3DRender::QGeometryRenderer *>();
           auto *geom = rend->geometry();

@@ -53,7 +53,7 @@ QgsNullMaterialSettings *QgsNullMaterialSettings::clone() const
 
 bool QgsNullMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
 {
-  const QgsNullMaterialSettings *otherNull = dynamic_cast< const QgsNullMaterialSettings * >( other );
+  const QgsNullMaterialSettings *otherNull = dynamic_cast<const QgsNullMaterialSettings *>( other );
   if ( !otherNull )
     return false;
 

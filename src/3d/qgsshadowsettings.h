@@ -34,7 +34,6 @@ class QDomElement;
 class _3D_EXPORT QgsShadowSettings
 {
   public:
-
     QgsShadowSettings() = default;
     QgsShadowSettings( const QgsShadowSettings &other );
     QgsShadowSettings &operator=( QgsShadowSettings const &rhs );

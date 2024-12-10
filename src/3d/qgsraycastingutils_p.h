@@ -37,7 +37,7 @@ namespace Qt3DRender
 {
   class QCamera;
   class QGeometryRenderer;
-}
+} // namespace Qt3DRender
 
 
 namespace QgsRayCastingUtils
@@ -99,12 +99,7 @@ namespace QgsRayCastingUtils
    * \note With switch to Qt 5.11 we may remove it and use QRayCaster/QScreenRayCaster instead.
    * \since QGIS 3.4
    */
-  bool rayTriangleIntersection( const Ray3D &ray,
-                                QVector3D a,
-                                QVector3D b,
-                                QVector3D c,
-                                QVector3D &uvw,
-                                float &t );
+  bool rayTriangleIntersection( const Ray3D &ray, QVector3D a, QVector3D b, QVector3D c, QVector3D &uvw, float &t );
 
   /**
    * Tests whether a triangular mesh is intersected by a ray. Returns whether an intersection
@@ -112,13 +107,9 @@ namespace QgsRayCastingUtils
    * of the intersecting triangle.
    * \since QGIS 3.34
    */
-  bool rayMeshIntersection( Qt3DRender::QGeometryRenderer *geometryRenderer,
-                            const QgsRayCastingUtils::Ray3D &r,
-                            const QMatrix4x4 &worldTransform,
-                            QVector3D &intPt,
-                            int &triangleIndex );
+  bool rayMeshIntersection( Qt3DRender::QGeometryRenderer *geometryRenderer, const QgsRayCastingUtils::Ray3D &r, const QMatrix4x4 &worldTransform, QVector3D &intPt, int &triangleIndex );
 
-}
+} // namespace QgsRayCastingUtils
 
 /// @endcond
 

@@ -55,7 +55,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 {
     Q_OBJECT
   public:
-
     Qgs3DMapSettings();
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
     ~Qgs3DMapSettings() override;
@@ -977,42 +976,42 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
   private:
     //! Offset in map CRS coordinates at which our 3D world has origin (0,0,0)
     QgsVector3D mOrigin;
-    QgsCoordinateReferenceSystem mCrs;   //!< Destination coordinate system of the world
-    QColor mBackgroundColor = Qt::black;   //!< Background color of the scene
-    QColor mSelectionColor; //!< Color to be used for selected map features
-    double mTerrainVerticalScale = 1;   //!< Multiplier of terrain heights to make the terrain shape more pronounced
-    std::unique_ptr<QgsTerrainGenerator> mTerrainGenerator;  //!< Implementation of the terrain generation
-    int mMapTileResolution = 512;   //!< Size of map textures of tiles in pixels (width/height)
-    float mMaxTerrainScreenError = 3.f;   //!< Maximum allowed terrain error in pixels (determines when tiles are switched to more detailed ones)
-    float mMaxTerrainGroundError = 1.f;  //!< Maximum allowed horizontal map error in map units (determines how many zoom levels will be used)
-    float mTerrainElevationOffset = 0.0f; //!< Terrain elevation offset (used to adjust the position of the terrain and move it up and down)
-    bool mTerrainShadingEnabled = false;   //!< Whether terrain should be shaded taking lights into account
-    QgsPhongMaterialSettings mTerrainShadingMaterial;  //!< Material to use for the terrain (if shading is enabled). Diffuse color is ignored.
-    QString mTerrainMapTheme;  //!< Name of map theme used for terrain's texture (empty means use the current map theme)
-    bool mShowTerrainBoundingBoxes = false;  //!< Whether to show bounding boxes of entities - useful for debugging
-    bool mShowTerrainTileInfo = false;  //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
-    bool mShowCameraViewCenter = false;  //!< Whether to show camera view center as a sphere - useful for debugging
-    bool mShowCameraRotationCenter = false; //!< Whether to show camera rotation center as a sphere - useful for debugging
-    bool mShowLightSources = false; //!< Whether to show the origin of light sources
-    bool mShowLabels = false; //!< Whether to display labels on terrain tiles
-    bool mStopUpdates = false; //!< Whether to stop updating scene on zoom
-    bool mShowDebugPanel = false; //!< Whether to show debug panel
-    QList< QgsLightSource * > mLightSources; //!< List of light sources in the scene (owned by the settings)
-    float mFieldOfView = 45.0f; //<! Camera lens field of view value
-    Qt3DRender::QCameraLens::ProjectionType mProjectionType = Qt3DRender::QCameraLens::PerspectiveProjection;  //<! Camera lens projection type
+    QgsCoordinateReferenceSystem mCrs;                                                                        //!< Destination coordinate system of the world
+    QColor mBackgroundColor = Qt::black;                                                                      //!< Background color of the scene
+    QColor mSelectionColor;                                                                                   //!< Color to be used for selected map features
+    double mTerrainVerticalScale = 1;                                                                         //!< Multiplier of terrain heights to make the terrain shape more pronounced
+    std::unique_ptr<QgsTerrainGenerator> mTerrainGenerator;                                                   //!< Implementation of the terrain generation
+    int mMapTileResolution = 512;                                                                             //!< Size of map textures of tiles in pixels (width/height)
+    float mMaxTerrainScreenError = 3.f;                                                                       //!< Maximum allowed terrain error in pixels (determines when tiles are switched to more detailed ones)
+    float mMaxTerrainGroundError = 1.f;                                                                       //!< Maximum allowed horizontal map error in map units (determines how many zoom levels will be used)
+    float mTerrainElevationOffset = 0.0f;                                                                     //!< Terrain elevation offset (used to adjust the position of the terrain and move it up and down)
+    bool mTerrainShadingEnabled = false;                                                                      //!< Whether terrain should be shaded taking lights into account
+    QgsPhongMaterialSettings mTerrainShadingMaterial;                                                         //!< Material to use for the terrain (if shading is enabled). Diffuse color is ignored.
+    QString mTerrainMapTheme;                                                                                 //!< Name of map theme used for terrain's texture (empty means use the current map theme)
+    bool mShowTerrainBoundingBoxes = false;                                                                   //!< Whether to show bounding boxes of entities - useful for debugging
+    bool mShowTerrainTileInfo = false;                                                                        //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
+    bool mShowCameraViewCenter = false;                                                                       //!< Whether to show camera view center as a sphere - useful for debugging
+    bool mShowCameraRotationCenter = false;                                                                   //!< Whether to show camera rotation center as a sphere - useful for debugging
+    bool mShowLightSources = false;                                                                           //!< Whether to show the origin of light sources
+    bool mShowLabels = false;                                                                                 //!< Whether to display labels on terrain tiles
+    bool mStopUpdates = false;                                                                                //!< Whether to stop updating scene on zoom
+    bool mShowDebugPanel = false;                                                                             //!< Whether to show debug panel
+    QList<QgsLightSource *> mLightSources;                                                                    //!< List of light sources in the scene (owned by the settings)
+    float mFieldOfView = 45.0f;                                                                               //<! Camera lens field of view value
+    Qt3DRender::QCameraLens::ProjectionType mProjectionType = Qt3DRender::QCameraLens::PerspectiveProjection; //<! Camera lens projection type
     Qgis::NavigationMode mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
     double mCameraMovementSpeed = 5.0;
-    QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
+    QList<QgsMapLayerRef> mLayers; //!< Layers to be rendered
     //! Coordinate transform context
     QgsCoordinateTransformContext mTransformContext;
     QgsPathResolver mPathResolver;
-    QgsMapThemeCollection *mMapThemes = nullptr;   //!< Pointer to map themes (e.g. from the current project) to resolve map theme content from the name
-    double mDpi = 96;  //!< Dot per inch value for the screen / painter
+    QgsMapThemeCollection *mMapThemes = nullptr; //!< Pointer to map themes (e.g. from the current project) to resolve map theme content from the name
+    double mDpi = 96;                            //!< Dot per inch value for the screen / painter
     bool mIsFpsCounterEnabled = false;
 
-    bool mIsSkyboxEnabled = false;  //!< Whether the skybox is enabled
-    QgsSkyboxSettings mSkyboxSettings; //!< Skybox related configuration
-    QgsShadowSettings mShadowSettings; //!< Shadow rendering related settings
+    bool mIsSkyboxEnabled = false;                         //!< Whether the skybox is enabled
+    QgsSkyboxSettings mSkyboxSettings;                     //!< Skybox related configuration
+    QgsShadowSettings mShadowSettings;                     //!< Shadow rendering related settings
     QgsAmbientOcclusionSettings mAmbientOcclusionSettings; //!< Screen Space Ambient Occlusion related settings
 
     bool mEyeDomeLightingEnabled = false;
@@ -1041,7 +1040,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QgsRectangle mExtent; //!< 2d extent used to limit the 3d view
 
     bool mShowExtentIn2DView = false;
-
 };
 
 

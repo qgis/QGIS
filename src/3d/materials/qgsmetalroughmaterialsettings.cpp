@@ -52,7 +52,7 @@ QgsMetalRoughMaterialSettings *QgsMetalRoughMaterialSettings::clone() const
 
 bool QgsMetalRoughMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
 {
-  const QgsMetalRoughMaterialSettings *otherMetal = dynamic_cast< const QgsMetalRoughMaterialSettings * >( other );
+  const QgsMetalRoughMaterialSettings *otherMetal = dynamic_cast<const QgsMetalRoughMaterialSettings *>( other );
   if ( !otherMetal )
     return false;
 
@@ -86,7 +86,7 @@ QgsMaterial *QgsMetalRoughMaterialSettings::toMaterial( QgsMaterialSettingsRende
     case QgsMaterialSettingsRenderingTechnique::TrianglesWithFixedTexture:
     case QgsMaterialSettingsRenderingTechnique::TrianglesFromModel:
     {
-      QgsMetalRoughMaterial *material  = new QgsMetalRoughMaterial;
+      QgsMetalRoughMaterial *material = new QgsMetalRoughMaterial;
       material->setBaseColor( context.isSelected() ? context.selectionColor() : mBaseColor );
       material->setMetalness( mMetalness );
       material->setRoughness( mRoughness );
@@ -109,5 +109,4 @@ QMap<QString, QString> QgsMetalRoughMaterialSettings::toExportParameters() const
 
 void QgsMetalRoughMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *, const QgsMaterialContext & ) const
 {
-
 }

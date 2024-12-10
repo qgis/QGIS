@@ -40,12 +40,12 @@ namespace QgsWms
   enum class ImageOutputFormat
   {
     Unknown, //!< Unknown/invalid format
-    PNG, //!< PNG format
-    PNG8, //!< PNG8 format
-    PNG16, //!< PNG16 format
-    PNG1, //!< PNG1 format
-    JPEG, //!< JPEG format
-    WEBP, //!< WEBP format
+    PNG,     //!< PNG format
+    PNG8,    //!< PNG8 format
+    PNG16,   //!< PNG16 format
+    PNG1,    //!< PNG1 format
+    JPEG,    //!< JPEG format
+    WEBP,    //!< WEBP format
   };
 
   /**
@@ -68,8 +68,7 @@ namespace QgsWms
   /**
    * Write image response
    */
-  void writeImage( QgsServerResponse &response, QImage &img, const QString &formatStr,
-                   int imageQuality = -1 );
+  void writeImage( QgsServerResponse &response, QImage &img, const QString &formatStr, int imageQuality = -1 );
 } // namespace QgsWms
 
 #endif

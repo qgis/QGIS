@@ -59,7 +59,6 @@ QCursor Qgs3DMapTool::cursor() const
 
 void Qgs3DMapTool::onMapSettingsChanged()
 {
-
 }
 
 Qgs3DMapCanvas *Qgs3DMapTool::canvas()

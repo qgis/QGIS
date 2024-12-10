@@ -50,7 +50,7 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
 
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
   mesh->setGeometry( mTileGeometry ); // takes ownership if the component has no parent
-  entity->addComponent( mesh ); // takes ownership if the component has no parent
+  entity->addComponent( mesh );       // takes ownership if the component has no parent
 
   // create material
 
@@ -66,12 +66,7 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
   const QgsBox3D box3D = mNode->box3D();
   const QgsBox3D mapFullBox3D( map->extent(), box3D.zMinimum(), box3D.zMaximum() );
 
-  const QgsBox3D commonExtent( std::max( box3D.xMinimum(), mapFullBox3D.xMinimum() ),
-                               std::max( box3D.yMinimum(), mapFullBox3D.yMinimum() ),
-                               box3D.zMinimum(),
-                               std::min( box3D.xMaximum(), mapFullBox3D.xMaximum() ),
-                               std::min( box3D.yMaximum(), mapFullBox3D.yMaximum() ),
-                               box3D.zMaximum() );
+  const QgsBox3D commonExtent( std::max( box3D.xMinimum(), mapFullBox3D.xMinimum() ), std::max( box3D.yMinimum(), mapFullBox3D.yMinimum() ), box3D.zMinimum(), std::min( box3D.xMaximum(), mapFullBox3D.xMaximum() ), std::min( box3D.yMaximum(), mapFullBox3D.yMaximum() ), box3D.zMaximum() );
   const double xSide = commonExtent.width();
   const double ySide = commonExtent.height();
   const double xMin = commonExtent.xMinimum();

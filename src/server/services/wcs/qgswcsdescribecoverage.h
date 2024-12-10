@@ -28,14 +28,12 @@ namespace QgsWcs
   /**
    * Create describe coverage document
    */
-  QDomDocument createDescribeCoverageDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-      const QgsServerRequest &request );
+  QDomDocument createDescribeCoverageDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request );
 
   /**
    * Output WCS DescribeCoverage response
    */
-  void writeDescribeCoverage( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-                              const QgsServerRequest &request, QgsServerResponse &response );
+  void writeDescribeCoverage( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response );
 
 } // namespace QgsWcs
 

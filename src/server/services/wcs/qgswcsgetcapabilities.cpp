@@ -29,8 +29,7 @@ namespace QgsWcs
   /**
    * Output WCS  GetCapabilities response
    */
-  void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-                             const QgsServerRequest &request, QgsServerResponse &response )
+  void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response )
   {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
@@ -63,15 +62,14 @@ namespace QgsWcs
   }
 
 
-  QDomDocument createGetCapabilitiesDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-      const QgsServerRequest &request )
+  QDomDocument createGetCapabilitiesDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request )
   {
     Q_UNUSED( version )
 
     QDomDocument doc;
 
     //wcs:WCS_Capabilities element
-    QDomElement wcsCapabilitiesElement = doc.createElement( QStringLiteral( "WCS_Capabilities" )/*wcs:WCS_Capabilities*/ );
+    QDomElement wcsCapabilitiesElement = doc.createElement( QStringLiteral( "WCS_Capabilities" ) /*wcs:WCS_Capabilities*/ );
     wcsCapabilitiesElement.setAttribute( QStringLiteral( "xmlns" ), WCS_NAMESPACE );
     wcsCapabilitiesElement.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
     wcsCapabilitiesElement.setAttribute( QStringLiteral( "xsi:schemaLocation" ), WCS_NAMESPACE + " http://schemas.opengis.net/wcs/1.0.0/wcsCapabilities.xsd" );
@@ -85,41 +83,41 @@ namespace QgsWcs
     wcsCapabilitiesElement.appendChild( getServiceElement( doc, project ) );
 
     //wcs:Capability element
-    QDomElement capabilityElement = doc.createElement( QStringLiteral( "Capability" )/*wcs:Capability*/ );
+    QDomElement capabilityElement = doc.createElement( QStringLiteral( "Capability" ) /*wcs:Capability*/ );
     wcsCapabilitiesElement.appendChild( capabilityElement );
 
     //wcs:Request element
-    QDomElement requestElement = doc.createElement( QStringLiteral( "Request" )/*wcs:Request*/ );
+    QDomElement requestElement = doc.createElement( QStringLiteral( "Request" ) /*wcs:Request*/ );
     capabilityElement.appendChild( requestElement );
 
     //wcs:GetCapabilities
-    QDomElement getCapabilitiesElement = doc.createElement( QStringLiteral( "GetCapabilities" )/*wcs:GetCapabilities*/ );
+    QDomElement getCapabilitiesElement = doc.createElement( QStringLiteral( "GetCapabilities" ) /*wcs:GetCapabilities*/ );
     requestElement.appendChild( getCapabilitiesElement );
 
-    QDomElement dcpTypeElement = doc.createElement( QStringLiteral( "DCPType" )/*wcs:DCPType*/ );
+    QDomElement dcpTypeElement = doc.createElement( QStringLiteral( "DCPType" ) /*wcs:DCPType*/ );
     getCapabilitiesElement.appendChild( dcpTypeElement );
-    QDomElement httpElement = doc.createElement( QStringLiteral( "HTTP" )/*wcs:HTTP*/ );
+    QDomElement httpElement = doc.createElement( QStringLiteral( "HTTP" ) /*wcs:HTTP*/ );
     dcpTypeElement.appendChild( httpElement );
 
     //Prepare url
     const QString hrefString = serviceUrl( request, project, *serverIface->serverSettings() );
 
-    QDomElement getElement = doc.createElement( QStringLiteral( "Get" )/*wcs:Get*/ );
+    QDomElement getElement = doc.createElement( QStringLiteral( "Get" ) /*wcs:Get*/ );
     httpElement.appendChild( getElement );
-    QDomElement onlineResourceElement = doc.createElement( QStringLiteral( "OnlineResource" )/*wcs:OnlineResource*/ );
+    QDomElement onlineResourceElement = doc.createElement( QStringLiteral( "OnlineResource" ) /*wcs:OnlineResource*/ );
     onlineResourceElement.setAttribute( QStringLiteral( "xlink:type" ), QStringLiteral( "simple" ) );
     onlineResourceElement.setAttribute( QStringLiteral( "xlink:href" ), hrefString );
     getElement.appendChild( onlineResourceElement );
 
-    const QDomElement getCapabilitiesDhcTypePostElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
+    const QDomElement getCapabilitiesDhcTypePostElement = dcpTypeElement.cloneNode().toElement(); //this is the same as for 'GetCapabilities'
     getCapabilitiesDhcTypePostElement.firstChild().firstChild().toElement().setTagName( QStringLiteral( "Post" ) );
     getCapabilitiesElement.appendChild( getCapabilitiesDhcTypePostElement );
 
-    QDomElement describeCoverageElement = getCapabilitiesElement.cloneNode().toElement();//this is the same as 'GetCapabilities'
+    QDomElement describeCoverageElement = getCapabilitiesElement.cloneNode().toElement(); //this is the same as 'GetCapabilities'
     describeCoverageElement.setTagName( QStringLiteral( "DescribeCoverage" ) );
     requestElement.appendChild( describeCoverageElement );
 
-    QDomElement getCoverageElement = getCapabilitiesElement.cloneNode().toElement();//this is the same as 'GetCapabilities'
+    QDomElement getCoverageElement = getCapabilitiesElement.cloneNode().toElement(); //this is the same as 'GetCapabilities'
     getCoverageElement.setTagName( QStringLiteral( "GetCoverage" ) );
     requestElement.appendChild( getCoverageElement );
 
@@ -127,7 +125,6 @@ namespace QgsWcs
     wcsCapabilitiesElement.appendChild( getContentMetadataElement( doc, serverIface, project ) );
 
     return doc;
-
   }
 
   QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project )
@@ -177,12 +174,7 @@ namespace QgsWcs
     const QString contactMail = QgsServerProjectUtils::owsServiceContactMail( *project );
     const QString contactPhone = QgsServerProjectUtils::owsServiceContactPhone( *project );
     const QString onlineResource = QgsServerProjectUtils::owsServiceOnlineResource( *project );
-    if ( !contactPerson.isEmpty() ||
-         !contactOrganization.isEmpty() ||
-         !contactPosition.isEmpty() ||
-         !contactMail.isEmpty() ||
-         !contactPhone.isEmpty() ||
-         !onlineResource.isEmpty() )
+    if ( !contactPerson.isEmpty() || !contactOrganization.isEmpty() || !contactPosition.isEmpty() || !contactMail.isEmpty() || !contactPhone.isEmpty() || !onlineResource.isEmpty() )
     {
       QDomElement responsiblePartyElem = doc.createElement( QStringLiteral( "responsibleParty" ) );
       if ( !contactPerson.isEmpty() )
@@ -206,9 +198,7 @@ namespace QgsWcs
         contactPositionElem.appendChild( contactPositionText );
         responsiblePartyElem.appendChild( contactPositionElem );
       }
-      if ( !contactMail.isEmpty() ||
-           !contactPhone.isEmpty() ||
-           !onlineResource.isEmpty() )
+      if ( !contactMail.isEmpty() || !contactPhone.isEmpty() || !onlineResource.isEmpty() )
       {
         QDomElement contactInfoElem = doc.createElement( QStringLiteral( "contactInfo" ) );
         if ( !contactMail.isEmpty() )
@@ -271,12 +261,12 @@ namespace QgsWcs
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
 #else
-    ( void )serverIface;
+    ( void ) serverIface;
 #endif
     /*
      * Adding layer list in ContentMetadata
      */
-    QDomElement contentMetadataElement = doc.createElement( QStringLiteral( "ContentMetadata" )/*wcs:ContentMetadata*/ );
+    QDomElement contentMetadataElement = doc.createElement( QStringLiteral( "ContentMetadata" ) /*wcs:ContentMetadata*/ );
 
     const QStringList wcsLayersId = QgsServerProjectUtils::wcsLayerIds( *project );
     for ( int i = 0; i < wcsLayersId.size(); ++i )
@@ -308,6 +298,3 @@ namespace QgsWcs
   }
 
 } // namespace QgsWcs
-
-
-

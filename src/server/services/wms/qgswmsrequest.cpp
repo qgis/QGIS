@@ -55,4 +55,4 @@ namespace QgsWms
   {
     mWmsParams = QgsWmsParameters( serverParameters() );
   }
-}
+} // namespace QgsWms

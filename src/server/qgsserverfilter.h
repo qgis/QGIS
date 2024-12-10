@@ -42,9 +42,7 @@ class QgsServerInterface;
  */
 class SERVER_EXPORT QgsServerFilter
 {
-
   public:
-
     /**
      * Constructor
      * QgsServerInterface passed to plugins constructors
@@ -141,10 +139,8 @@ class SERVER_EXPORT QgsServerFilter
     virtual bool onSendResponse();
 
 
-
   private:
     QgsServerInterface *mServerInterface = nullptr;
-
 };
 
 typedef QMultiMap<int, QgsServerFilter *> QgsServerFiltersMap;
