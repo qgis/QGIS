@@ -25,12 +25,13 @@
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
 #include "qgs3d.h"
+#include "qgs3drendercontext.h"
 
 #include "qgs3dmapscene.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgscameracontroller.h"
-#include "qgsdemterraingenerator.h"
+#include "qgsdemterrainsettings.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsline3dsymbol.h"
 #include "qgsoffscreen3dengine.h"
@@ -53,6 +54,7 @@
 #include "qgsmetalroughmaterialsettings.h"
 #include "qgspointlightsettings.h"
 #include "qgsphongtexturedmaterialsettings.h"
+#include "qgsdemterraingenerator.h"
 
 #include <QFileInfo>
 #include <QDir>
@@ -328,12 +330,14 @@ void TestQgs3DRendering::testDemTerrain()
   map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayerRgb );
 
-  QgsDemTerrainGenerator *demTerrain = new QgsDemTerrainGenerator;
-  demTerrain->setCrs( mProject->crs(), mProject->transformContext() );
-  demTerrain->setLayer( mLayerDtm );
-  map->setTerrainGenerator( demTerrain );
-  map->setTerrainVerticalScale( 3 );
-  QVERIFY( demTerrain->isValid() );
+  QgsDemTerrainSettings *demTerrainSettings = new QgsDemTerrainSettings;
+  demTerrainSettings->setLayer( mLayerDtm );
+  demTerrainSettings->setVerticalScale( 3 );
+  map->setTerrainSettings( demTerrainSettings );
+
+  std::unique_ptr<QgsTerrainGenerator> generator = demTerrainSettings->createTerrainGenerator( Qgs3DRenderContext::fromMapSettings( map ) );
+  QVERIFY( dynamic_cast<QgsDemTerrainGenerator *>( generator.get() )->isValid() );
+  QCOMPARE( dynamic_cast<QgsDemTerrainGenerator *>( generator.get() )->layer(), mLayerDtm );
 
   QgsOffscreen3DEngine engine;
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
@@ -363,12 +367,10 @@ void TestQgs3DRendering::testTerrainShading()
   map->setExtent( fullExtent );
   // no terrain layers set!
 
-  QgsDemTerrainGenerator *demTerrain = new QgsDemTerrainGenerator;
-  demTerrain->setCrs( mProject->crs(), mProject->transformContext() );
-  demTerrain->setLayer( mLayerDtm );
-  map->setTerrainGenerator( demTerrain );
-  map->setTerrainVerticalScale( 3 );
-  QVERIFY( demTerrain->isValid() );
+  QgsDemTerrainSettings *demTerrainSettings = new QgsDemTerrainSettings;
+  demTerrainSettings->setLayer( mLayerDtm );
+  demTerrainSettings->setVerticalScale( 3 );
+  map->setTerrainSettings( demTerrainSettings );
 
   QgsPhongMaterialSettings terrainMaterial;
   terrainMaterial.setAmbient( QColor( 0, 0, 0 ) );
@@ -1891,12 +1893,10 @@ void TestQgs3DRendering::testFilteredDemTerrain()
   map->setExtent( fullExtent );
   map->setLayers( QList<QgsMapLayer *>() << mLayerRgb );
 
-  QgsDemTerrainGenerator *demTerrain = new QgsDemTerrainGenerator;
-  demTerrain->setCrs( mProject->crs(), mProject->transformContext() );
-  demTerrain->setLayer( mLayerDtm );
-  map->setTerrainGenerator( demTerrain );
-  map->setTerrainVerticalScale( 3 );
-  QVERIFY( demTerrain->isValid() );
+  QgsDemTerrainSettings *demTerrainSettings = new QgsDemTerrainSettings;
+  demTerrainSettings->setLayer( mLayerDtm );
+  demTerrainSettings->setVerticalScale( 3 );
+  map->setTerrainSettings( demTerrainSettings );
 
   QgsOffscreen3DEngine engine;
   Qgs3DMapScene *scene = new Qgs3DMapScene( *map, &engine );
@@ -1980,6 +1980,7 @@ void TestQgs3DRendering::testAmbientOcclusion()
   const QgsRectangle fullExtent = layerDtm->extent();
 
   QgsProject project;
+  project.setCrs( layerDtm->crs() );
   project.addMapLayer( layerDtm );
 
   Qgs3DMapSettings mapSettings;
@@ -1991,12 +1992,10 @@ void TestQgs3DRendering::testAmbientOcclusion()
   mapSettings.setPathResolver( project.pathResolver() );
   mapSettings.setMapThemeCollection( project.mapThemeCollection() );
 
-  QgsDemTerrainGenerator *demTerrain = new QgsDemTerrainGenerator;
-  demTerrain->setCrs( mProject->crs(), mProject->transformContext() );
-  demTerrain->setLayer( layerDtm );
-  mapSettings.setTerrainGenerator( demTerrain );
-  mapSettings.setTerrainVerticalScale( 3 );
-  QVERIFY( demTerrain->isValid() );
+  QgsDemTerrainSettings *demTerrainSettings = new QgsDemTerrainSettings;
+  demTerrainSettings->setLayer( layerDtm );
+  demTerrainSettings->setVerticalScale( 3 );
+  mapSettings.setTerrainSettings( demTerrainSettings );
 
   QgsPointLightSettings defaultPointLight;
   defaultPointLight.setPosition( QgsVector3D( 0, 0, 400 ) );
@@ -2035,7 +2034,6 @@ void TestQgs3DRendering::testAmbientOcclusion()
 
   delete scene;
   mapSettings.setLayers( {} );
-  demTerrain->deleteLater();
 }
 
 void TestQgs3DRendering::testDepthBuffer()
@@ -2045,6 +2043,7 @@ void TestQgs3DRendering::testDepthBuffer()
   QgsRasterLayer *layerDtm = new QgsRasterLayer( testDataPath( "/3d/dtm.tif" ), "dtm", "gdal" );
   QVERIFY( layerDtm->isValid() );
   QgsProject project;
+  project.setCrs( layerDtm->crs() );
   project.addMapLayer( layerDtm );
 
   const QgsRectangle fullExtent = layerDtm->extent();
@@ -2058,12 +2057,10 @@ void TestQgs3DRendering::testDepthBuffer()
   mapSettings.setPathResolver( project.pathResolver() );
   mapSettings.setMapThemeCollection( project.mapThemeCollection() );
 
-  QgsDemTerrainGenerator *demTerrain = new QgsDemTerrainGenerator;
-  demTerrain->setCrs( mProject->crs(), mProject->transformContext() );
-  demTerrain->setLayer( layerDtm );
-  mapSettings.setTerrainGenerator( demTerrain );
-  mapSettings.setTerrainVerticalScale( 3 );
-  QVERIFY( demTerrain->isValid() );
+  QgsDemTerrainSettings *demTerrainSettings = new QgsDemTerrainSettings;
+  demTerrainSettings->setLayer( layerDtm );
+  demTerrainSettings->setVerticalScale( 3 );
+  mapSettings.setTerrainSettings( demTerrainSettings );
 
   QgsPointLightSettings defaultPointLight;
   defaultPointLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
@@ -2171,7 +2168,6 @@ void TestQgs3DRendering::testDepthBuffer()
 
   delete scene;
   mapSettings.setLayers( {} );
-  demTerrain->deleteLater();
 }
 
 void TestQgs3DRendering::testDebugMap()
@@ -2377,6 +2373,7 @@ void TestQgs3DRendering::test3DSceneExporterBig()
   const QgsRectangle fullExtent = layerDtm->extent();
 
   QgsProject project;
+  project.setCrs( layerDtm->crs() );
   project.addMapLayer( layerDtm );
 
   Qgs3DMapSettings mapSettings;
@@ -2388,12 +2385,10 @@ void TestQgs3DRendering::test3DSceneExporterBig()
   mapSettings.setPathResolver( project.pathResolver() );
   mapSettings.setMapThemeCollection( project.mapThemeCollection() );
 
-  QgsDemTerrainGenerator *demTerrain = new QgsDemTerrainGenerator;
-  demTerrain->setCrs( mProject->crs(), mProject->transformContext() );
-  demTerrain->setLayer( layerDtm );
-  mapSettings.setTerrainGenerator( demTerrain );
-  mapSettings.setTerrainVerticalScale( 3 );
-  QVERIFY( demTerrain->isValid() );
+  QgsDemTerrainSettings *demTerrainSettings = new QgsDemTerrainSettings;
+  demTerrainSettings->setLayer( layerDtm );
+  demTerrainSettings->setVerticalScale( 3 );
+  mapSettings.setTerrainSettings( demTerrainSettings );
 
   QgsPointLightSettings defaultPointLight;
   defaultPointLight.setPosition( QgsVector3D( 0, 400, 0 ) );
@@ -2431,7 +2426,6 @@ void TestQgs3DRendering::test3DSceneExporterBig()
 
   delete scene;
   mapSettings.setLayers( {} );
-  demTerrain->deleteLater();
 }
 
 
