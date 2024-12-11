@@ -23,7 +23,6 @@ Object that controls camera movement based on user input
 #include "qgscameracontroller.h"
 %End
   public:
-
     ~QgsCameraController();
 
 

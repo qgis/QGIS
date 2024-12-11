@@ -25,7 +25,6 @@ class QgsLine3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
 #include "qgsline3dsymbol.h"
 %End
   public:
-
     QgsLine3DSymbol();
     ~QgsLine3DSymbol();
 
@@ -44,7 +43,7 @@ Caller takes ownership of the returned symbol.
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
-    virtual QList< Qgis::GeometryType > compatibleGeometryTypes() const;
+    virtual QList<Qgis::GeometryType> compatibleGeometryTypes() const;
 
     virtual void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer );
 

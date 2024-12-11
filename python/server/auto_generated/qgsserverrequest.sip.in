@@ -23,7 +23,6 @@ Class defining request interface passed to services :py:func:`QgsService.execute
     static const QMetaObject staticMetaObject;
 
   public:
-
     typedef QMap<QString, QString> Parameters;
     typedef QMap<QString, QString> Headers;
 
@@ -206,7 +205,7 @@ the base URL will be ``http://example.com/folder``
 Set the request method
 %End
 
-    const QString queryParameter( const QString &name, const QString &defaultValue = QString( ) ) const;
+    const QString queryParameter( const QString &name, const QString &defaultValue = QString() ) const;
 %Docstring
 Returns the query string parameter with the given ``name`` from the request URL, a ``defaultValue`` can be specified.
 
@@ -214,7 +213,6 @@ Returns the query string parameter with the given ``name`` from the request URL,
 %End
 
   protected:
-
     void setOriginalUrl( const QUrl &url );
 %Docstring
 Set the request original ``url`` (the request url as seen by the web server)

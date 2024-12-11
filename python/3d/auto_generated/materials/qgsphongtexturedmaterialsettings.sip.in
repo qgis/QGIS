@@ -27,7 +27,6 @@ A phong shading model with diffuse texture map.
 #include "qgsphongtexturedmaterialsettings.h"
 %End
   public:
-
     QgsPhongTexturedMaterialSettings();
 
     virtual QString type() const;

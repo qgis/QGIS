@@ -39,7 +39,6 @@ as instances of :py:class:`QgsServerOgcApiHandler`.
     static const QMetaObject staticMetaObject;
 
   public:
-
     enum Rel
     {
       // The following registered link relation types are used
@@ -68,11 +67,7 @@ as instances of :py:class:`QgsServerOgcApiHandler`.
       XML
     };
 
-    QgsServerOgcApi( QgsServerInterface *serverIface,
-                     const QString &rootPath,
-                     const QString &name,
-                     const QString &description = QString(),
-                     const QString &version = QString() );
+    QgsServerOgcApi( QgsServerInterface *serverIface, const QString &rootPath, const QString &name, const QString &description = QString(), const QString &version = QString() );
 %Docstring
 QgsServerOgcApi constructor
 
