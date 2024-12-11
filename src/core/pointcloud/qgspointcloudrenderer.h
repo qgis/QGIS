@@ -701,6 +701,18 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     QgsTextFormat labelTextFormat() const { return mLabelTextFormat; }
 
+    /**
+     * Set whether the renderer should render point cloud extends instead of overview when zoomed out
+     * \since QGIS 3.42
+     */
+    void setShowExtends( const bool show ) { mShowExtends = show; }
+
+    /**
+     * Returns whether the renderer renders point cloud extends instead of overview when zoomed out
+     * \since QGIS 3.42
+     */
+    bool showExtends() const { return mShowExtends; }
+
   protected:
 
     /**
@@ -842,6 +854,8 @@ class CORE_EXPORT QgsPointCloudRenderer
 
     bool mShowLabels = false;
     QgsTextFormat mLabelTextFormat;
+
+    bool mShowExtends = false;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H

@@ -578,6 +578,20 @@ Returns the text format renderer is using for rendering labels
 .. versionadded:: 3.42
 %End
 
+    void setShowExtends( const bool show );
+%Docstring
+Set whether the renderer should render point cloud extends instead of overview when zoomed out
+
+.. versionadded:: 3.42
+%End
+
+    bool showExtends() const;
+%Docstring
+Returns whether the renderer renders point cloud extends instead of overview when zoomed out
+
+.. versionadded:: 3.42
+%End
+
   protected:
 
     static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y );

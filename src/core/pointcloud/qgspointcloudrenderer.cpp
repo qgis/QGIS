@@ -218,6 +218,7 @@ void QgsPointCloudRenderer::copyCommonProperties( QgsPointCloudRenderer *destina
 
   destination->setShowLabels( mShowLabels );
   destination->setLabelTextFormat( mLabelTextFormat );
+  destination->setShowExtends( mShowExtends );
 }
 
 void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext &context )
@@ -242,6 +243,7 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
     mLabelTextFormat = QgsTextFormat();
     mLabelTextFormat.readXml( element.firstChildElement( QStringLiteral( "text-style" ) ), context );
   }
+  mShowExtends = element.attribute( QStringLiteral( "showExtends" ), QStringLiteral( "0" ) ).toInt();
 }
 
 void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const
@@ -267,6 +269,7 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
     QDomDocument doc = element.ownerDocument();
     element.appendChild( mLabelTextFormat.writeXml( doc, context ) );
   }
+  element.setAttribute( QStringLiteral( "showExtends" ), QString::number( mShowExtends ) );
 }
 
 Qgis::PointCloudSymbol QgsPointCloudRenderer::pointSymbol() const
