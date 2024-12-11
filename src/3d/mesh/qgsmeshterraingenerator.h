@@ -18,7 +18,6 @@
 #ifndef QGSMESHTERRAINGENERATOR_H
 #define QGSMESHTERRAINGENERATOR_H
 
-#include "qgsmaplayerref.h"
 #include "qgsmesh3dsymbol.h"
 #include "qgsmeshlayer.h"
 #include "qgstriangularmesh.h"
@@ -59,7 +58,6 @@ class _3D_EXPORT QgsMeshTerrainGenerator : public QgsTerrainGenerator
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
     float rootChunkError( const Qgs3DMapSettings &map ) const override;
     void rootChunkHeightRange( float &hMin, float &hMax ) const override;
-    void resolveReferences( const QgsProject &project ) override;
     QgsTerrainGenerator *clone() const override SIP_FACTORY;
     Type type() const override;
     QgsRectangle rootChunkExtent() const override;
@@ -69,7 +67,7 @@ class _3D_EXPORT QgsMeshTerrainGenerator : public QgsTerrainGenerator
     void updateTriangularMesh();
 
   private:
-    QgsMapLayerRef mLayer;
+    QPointer< QgsMeshLayer > mLayer;
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
     std::unique_ptr<QgsMesh3DSymbol> mSymbol;

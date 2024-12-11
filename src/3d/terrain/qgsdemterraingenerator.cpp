@@ -34,13 +34,13 @@ QgsDemTerrainGenerator::~QgsDemTerrainGenerator()
 
 void QgsDemTerrainGenerator::setLayer( QgsRasterLayer *layer )
 {
-  mLayer = QgsMapLayerRef( layer );
+  mLayer = layer;
   updateGenerator();
 }
 
 QgsRasterLayer *QgsDemTerrainGenerator::layer() const
 {
-  return qobject_cast<QgsRasterLayer *>( mLayer.layer.data() );
+  return mLayer;
 }
 
 void QgsDemTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context )
@@ -80,13 +80,6 @@ float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderCon
     return mHeightMapGenerator->heightAt( x, y );
   else
     return 0;
-}
-
-void QgsDemTerrainGenerator::resolveReferences( const QgsProject &project )
-{
-  mLayer = QgsMapLayerRef( project.mapLayer( mLayer.layerId ) );
-  // now that we have the layer, call setExtent() again so we can keep the intersection of mExtent and layer's extent
-  setExtent( mExtent );
 }
 
 QgsChunkLoader *QgsDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const

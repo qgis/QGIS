@@ -17,7 +17,6 @@
 
 #include "qgschunknode.h"
 #include "qgscoordinatetransform.h"
-#include "qgsmaplayerref.h"
 #include "qgsterrainentity.h"
 #include "qgsrectangle.h"
 #include "qgsterraingenerator.h"
@@ -25,6 +24,7 @@
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiles.h"
+#include <QPointer>
 
 #define SIP_NO_FILE
 
@@ -52,7 +52,6 @@ class _3D_EXPORT QgsQuantizedMeshTerrainGenerator : public QgsTerrainGenerator
     virtual float rootChunkError( const Qgs3DMapSettings &map ) const override;
     virtual void rootChunkHeightRange( float &hMin, float &hMax ) const override;
     virtual float heightAt( double x, double y, const Qgs3DRenderContext &context ) const override;
-    virtual void resolveReferences( const QgsProject &project ) override;
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
     // Root node has zoom=0, x=0, y=0.
     // It corresponds to a fake zoom=-1 tile for QgsTileMatrix
@@ -68,12 +67,10 @@ class _3D_EXPORT QgsQuantizedMeshTerrainGenerator : public QgsTerrainGenerator
     QgsTiledSceneLayer *layer() const;
 
   private:
-    QgsMapLayerRef mLayerRef;
+    QPointer< QgsTiledSceneLayer > mLayer;
     std::optional<QgsQuantizedMeshMetadata> mMetadata;
     QgsCoordinateTransform mTileCrsToMapCrs;
     QgsTiledSceneIndex mIndex;
     QgsRectangle mMapExtent;
-
-    QgsQuantizedMeshTerrainGenerator( QgsMapLayerRef layerRef, const QgsQuantizedMeshMetadata &metadata );
     QgsTileXYZ nodeIdToTile( QgsChunkNodeId nodeId ) const;
 };

@@ -90,9 +90,6 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
     //! Returns height at (x,y) in map's CRS
     virtual float heightAt( double x, double y, const Qgs3DRenderContext &context ) const;
 
-    //! After read of XML, resolve references to any layers that have been read as layer IDs
-    virtual void resolveReferences( const QgsProject &project ) { Q_UNUSED( project ) }
-
     //! Converts terrain generator type enumeration into a string
     static QString typeToString( Type type );
 
