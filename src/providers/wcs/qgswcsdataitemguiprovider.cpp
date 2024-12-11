@@ -72,7 +72,7 @@ void QgsWcsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 
 void QgsWcsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWcs, QStringLiteral( "WCS" ) );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWcs, QStringLiteral( "WCS" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
 
   if ( nc.exec() )
   {
@@ -82,7 +82,7 @@ void QgsWcsDataItemGuiProvider::newConnection( QgsDataItem *item )
 
 void QgsWcsDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWcs, QStringLiteral( "WCS" ), item->name() );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWcs, QStringLiteral( "WCS" ), item->name(), QgsNewHttpConnection::FlagShowHttpSettings );
 
   if ( nc.exec() )
   {
