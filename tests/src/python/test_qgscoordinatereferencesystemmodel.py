@@ -299,6 +299,16 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
                 epsg_3577_index, QgsCoordinateReferenceSystemModel.Roles.RoleProj
             )
         )
+        self.assertEqual(
+            model.data(epsg_3577_index, QgsCoordinateReferenceSystemModel.Roles.Group),
+            "Projected",
+        )
+        self.assertEqual(
+            model.data(
+                epsg_3577_index, QgsCoordinateReferenceSystemModel.Roles.Projection
+            ),
+            "Albers Equal Area",
+        )
 
         # check that same result is returned by authIdToIndex
         self.assertEqual(model.authIdToIndex("EPSG:3577"), epsg_3577_index)

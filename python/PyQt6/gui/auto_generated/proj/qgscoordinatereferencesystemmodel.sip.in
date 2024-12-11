@@ -34,6 +34,8 @@ A tree model for display of known coordinate reference systems.
       GroupId,
       Wkt,
       Proj,
+      Group,
+      Projection,
     };
 
     QgsCoordinateReferenceSystemModel( QObject *parent /TransferThis/ = 0 );
