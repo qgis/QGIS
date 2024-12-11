@@ -35,27 +35,27 @@
 class CORE_EXPORT QgsAuthorizationSettings
 {
   public:
-  
-  //! Constructor for QgsAuthorizationSettings.
-  QgsAuthorizationSettings( const QString &userName = QString(), const QString &password = QString(), const QgsHttpHeaders &httpHeaders = QgsHttpHeaders(), const QString &authcfg = QString() );
 
-  //! Update authorization for request
-  bool setAuthorization( QNetworkRequest &request ) const;
+    //! Constructor for QgsAuthorizationSettings.
+    QgsAuthorizationSettings( const QString &userName = QString(), const QString &password = QString(), const QgsHttpHeaders &httpHeaders = QgsHttpHeaders(), const QString &authcfg = QString() );
 
-  //! Update authorization for reply
-  bool setAuthorizationReply( QNetworkReply *reply ) const;
+    //! Update authorization for request
+    bool setAuthorization( QNetworkRequest &request ) const;
 
-  //! Username for basic http authentication
-  QString mUserName;
+    //! Update authorization for reply
+    bool setAuthorizationReply( QNetworkReply *reply ) const;
 
-  //! Password for basic http authentication
-  QString mPassword;
+    //! Username for basic http authentication
+    QString mUserName;
 
-  //! headers for http requests
-  QgsHttpHeaders mHttpHeaders;
+    //! Password for basic http authentication
+    QString mPassword;
 
-  //! Authentication configuration ID
-  QString mAuthCfg;
+    //! headers for http requests
+    QgsHttpHeaders mHttpHeaders;
+
+    //! Authentication configuration ID
+    QString mAuthCfg;
 };
 
 #endif // QGSAUTHORIZATIONSETTINGS_H
