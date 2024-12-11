@@ -33,7 +33,7 @@
 #include <QTextLine>
 
 ///@cond PRIVATE
-const QgsSettingsEntryInteger *QgsLocatorWidget::settingLocatorTreeHeight = new QgsSettingsEntryInteger( QStringLiteral( "tree-height" ), sTreeGuiLocator, 20, QStringLiteral( "Number of rows to show in the locator tree" ), Qgis::SettingsOptions(), 5 /*min*/, 100 /*max*/ );
+const QgsSettingsEntryInteger *QgsLocatorWidget::settingLocatorTreeHeight = new QgsSettingsEntryInteger( QStringLiteral( "tree-height" ), sTreeGuiLocator, 20, QStringLiteral( "Number of rows to show in the locator tree (requires a restart)" ), Qgis::SettingsOptions(), 5 /*min*/, 100 /*max*/ );
 ///@endcond PRIVATE
 
 QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
