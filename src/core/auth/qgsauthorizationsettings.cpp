@@ -15,34 +15,34 @@
 
 #include "qgsauthorizationsettings.h"
 
-QgsAuthorizationSettings::QgsAuthorizationSettings(const QString &userName, const QString &password, const QgsHttpHeaders &httpHeaders, const QString &authcfg)
-    : mUserName( userName )
-    , mPassword( password )
-    , mHttpHeaders( httpHeaders )
-    , mAuthCfg( authcfg )
+QgsAuthorizationSettings::QgsAuthorizationSettings( const QString &userName, const QString &password, const QgsHttpHeaders &httpHeaders, const QString &authcfg )
+  : mUserName( userName )
+  , mPassword( password )
+  , mHttpHeaders( httpHeaders )
+  , mAuthCfg( authcfg )
 {}
 
-bool QgsAuthorizationSettings::setAuthorization(QNetworkRequest &request) const
+bool QgsAuthorizationSettings::setAuthorization( QNetworkRequest &request ) const
 {
-    if ( !mAuthCfg.isEmpty() ) // must be non-empty value
-    {
-        return QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
-    }
-    else if ( !mUserName.isEmpty() || !mPassword.isEmpty() )
-    {
-        request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUserName, mPassword ).toUtf8().toBase64() );
-    }
+  if ( !mAuthCfg.isEmpty() ) // must be non-empty value
+  {
+    return QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
+  }
+  else if ( !mUserName.isEmpty() || !mPassword.isEmpty() )
+  {
+    request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUserName, mPassword ).toUtf8().toBase64() );
+  }
 
-    mHttpHeaders.updateNetworkRequest( request );
+  mHttpHeaders.updateNetworkRequest( request );
 
-    return true;
+  return true;
 }
 
-bool QgsAuthorizationSettings::setAuthorizationReply(QNetworkReply *reply) const
+bool QgsAuthorizationSettings::setAuthorizationReply( QNetworkReply *reply ) const
 {
-    if ( !mAuthCfg.isEmpty() )
-    {
-        return QgsApplication::authManager()->updateNetworkReply( reply, mAuthCfg );
-    }
-    return true;
+  if ( !mAuthCfg.isEmpty() )
+  {
+    return QgsApplication::authManager()->updateNetworkReply( reply, mAuthCfg );
+  }
+  return true;
 }
