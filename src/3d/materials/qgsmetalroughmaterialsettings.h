@@ -35,7 +35,6 @@ class QDomElement;
 class _3D_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSettings
 {
   public:
-
     QgsMetalRoughMaterialSettings() = default;
 
     QString type() const override;
@@ -107,13 +106,11 @@ class _3D_EXPORT QgsMetalRoughMaterialSettings : public QgsAbstractMaterialSetti
     // TODO c++20 - replace with = default
     bool operator==( const QgsMetalRoughMaterialSettings &other ) const
     {
-      return mBaseColor == other.mBaseColor &&
-             mMetalness == other.mMetalness &&
-             mRoughness == other.mRoughness;
+      return mBaseColor == other.mBaseColor && mMetalness == other.mMetalness && mRoughness == other.mRoughness;
     }
 
   private:
-    QColor mBaseColor{ QColor::fromRgbF( 0.5f, 0.5f, 0.5f, 1.0f ) };
+    QColor mBaseColor { QColor::fromRgbF( 0.5f, 0.5f, 0.5f, 1.0f ) };
     float mMetalness = 0.0f;
     float mRoughness = 0.0f;
 };

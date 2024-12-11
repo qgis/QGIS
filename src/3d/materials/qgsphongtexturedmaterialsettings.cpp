@@ -107,7 +107,7 @@ QgsMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterialSettingsRe
     {
       bool fitsInCache = false;
       const QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( mDiffuseTexturePath, QSize(), true, 1.0, fitsInCache );
-      ( void )fitsInCache;
+      ( void ) fitsInCache;
 
       // No texture image was provided.
       // Fallback to QgsPhongMaterialSettings.
@@ -156,7 +156,6 @@ QgsMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterialSettingsRe
 
     case QgsMaterialSettingsRenderingTechnique::Lines:
       return nullptr;
-
   }
   return nullptr;
 }
@@ -164,9 +163,9 @@ QgsMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterialSettingsRe
 QMap<QString, QString> QgsPhongTexturedMaterialSettings::toExportParameters() const
 {
   QMap<QString, QString> parameters;
-  parameters[ QStringLiteral( "Ka" ) ] = QStringLiteral( "%1 %2 %3" ).arg( mAmbient.redF() ).arg( mAmbient.greenF() ).arg( mAmbient.blueF() );
-  parameters[ QStringLiteral( "Ks" ) ] = QStringLiteral( "%1 %2 %3" ).arg( mSpecular.redF() ).arg( mSpecular.greenF() ).arg( mSpecular.blueF() );
-  parameters[ QStringLiteral( "Ns" ) ] = QString::number( mShininess );
+  parameters[QStringLiteral( "Ka" )] = QStringLiteral( "%1 %2 %3" ).arg( mAmbient.redF() ).arg( mAmbient.greenF() ).arg( mAmbient.blueF() );
+  parameters[QStringLiteral( "Ks" )] = QStringLiteral( "%1 %2 %3" ).arg( mSpecular.redF() ).arg( mSpecular.greenF() ).arg( mSpecular.blueF() );
+  parameters[QStringLiteral( "Ns" )] = QString::number( mShininess );
   return parameters;
 }
 

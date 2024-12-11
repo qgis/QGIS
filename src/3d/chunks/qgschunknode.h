@@ -59,49 +59,48 @@ class QgsChunkQueueJobFactory;
  */
 struct QgsChunkNodeId
 {
-
-  /**
+    /**
    * Constructs node ID from depth, x, y and z.
    */
-  QgsChunkNodeId( int _d = -1, int _x = -1, int _y = -1, int _z = -1 )
-    : d( _d ), x( _x ), y( _y ), z( _z ) {}
+    QgsChunkNodeId( int _d = -1, int _x = -1, int _y = -1, int _z = -1 )
+      : d( _d ), x( _x ), y( _y ), z( _z ) {}
 
-  /**
+    /**
    * Constructs node ID from a unique integer ID.
    *
    * Useful for nodes which are not structured in a quadtree or octree arrangement.
    */
-  QgsChunkNodeId( long long id )
-    : uniqueId( id )
-  {}
+    QgsChunkNodeId( long long id )
+      : uniqueId( id )
+    {}
 
-  int d = 0;
-  int x = 0;
-  int y = 0;
-  int z = 0;
-  long long uniqueId = -1;
+    int d = 0;
+    int x = 0;
+    int y = 0;
+    int z = 0;
+    long long uniqueId = -1;
 
-  //! Returns textual representation of the node ID in form of "Z/X/Y"
-  QString text() const
-  {
-    if ( uniqueId != -1 )
-      return QString::number( uniqueId );
-    else if ( z == -1 )
-      return QStringLiteral( "%1/%2/%3" ).arg( d ).arg( x ).arg( y );   // quadtree
-    else
-      return QStringLiteral( "%1/%2/%3/%4" ).arg( d ).arg( x ).arg( y ).arg( z );   // octree
-  }
+    //! Returns textual representation of the node ID in form of "Z/X/Y"
+    QString text() const
+    {
+      if ( uniqueId != -1 )
+        return QString::number( uniqueId );
+      else if ( z == -1 )
+        return QStringLiteral( "%1/%2/%3" ).arg( d ).arg( x ).arg( y ); // quadtree
+      else
+        return QStringLiteral( "%1/%2/%3/%4" ).arg( d ).arg( x ).arg( y ).arg( z ); // octree
+    }
 
-  bool operator==( const QgsChunkNodeId &other ) const
-  {
-    return ( uniqueId == -1 && other.uniqueId == -1 && d == other.d && x == other.x && y == other.y && z == other.z )
-           || ( uniqueId != -1 && uniqueId == other.uniqueId );
-  }
+    bool operator==( const QgsChunkNodeId &other ) const
+    {
+      return ( uniqueId == -1 && other.uniqueId == -1 && d == other.d && x == other.x && y == other.y && z == other.z )
+             || ( uniqueId != -1 && uniqueId == other.uniqueId );
+    }
 
-  bool operator!=( const QgsChunkNodeId &other ) const
-  {
-    return !( *this == other );
-  }
+    bool operator!=( const QgsChunkNodeId &other ) const
+    {
+      return !( *this == other );
+    }
 };
 
 /**
@@ -121,7 +120,6 @@ struct QgsChunkNodeId
 class QgsChunkNode
 {
   public:
-
     //! constructs a skeleton chunk
     QgsChunkNode( const QgsChunkNodeId &nodeId, const QgsAABB &bbox, float error, QgsChunkNode *parent = nullptr );
 
@@ -147,12 +145,12 @@ class QgsChunkNode
      */
     enum State
     {
-      Skeleton,         //!< Does not contain data of the chunk and data are not being loaded
-      QueuedForLoad,    //!< Data are not available yet, but node is in the request queue
-      Loading,          //!< Data are being loaded right now
-      Loaded,           //!< Data are fully available
-      QueuedForUpdate,  //!< Loaded, but some data need to be updated - the node is in the queue
-      Updating,         //!< Data are being updated right now
+      Skeleton,        //!< Does not contain data of the chunk and data are not being loaded
+      QueuedForLoad,   //!< Data are not available yet, but node is in the request queue
+      Loading,         //!< Data are being loaded right now
+      Loaded,          //!< Data are fully available
+      QueuedForUpdate, //!< Loaded, but some data need to be updated - the node is in the queue
+      Updating,        //!< Data are being updated right now
     };
 
     //! Returns 3D bounding box of the chunk
@@ -256,30 +254,30 @@ class QgsChunkNode
     bool hasData() const { return mHasData; }
 
   private:
-    QgsAABB mBbox;      //!< Bounding box in world coordinates
-    float mError;    //!< Error of the node in world coordinates (negative error means that chunk at this level has no data, but there may be children that do)
+    QgsAABB mBbox; //!< Bounding box in world coordinates
+    float mError;  //!< Error of the node in world coordinates (negative error means that chunk at this level has no data, but there may be children that do)
 
-    QgsChunkNodeId mNodeId;  //!< Chunk coordinates (for use with a tiling scheme)
+    QgsChunkNodeId mNodeId; //!< Chunk coordinates (for use with a tiling scheme)
 
-    QgsChunkNode *mParent;        //!< TODO: should be shared pointer
-    QVector<QgsChunkNode *> mChildren;   //!< Child nodes of this node. Initially children are not be populated
-    bool mChildrenPopulated = false;     //!< Whether the child nodes (if any) have been already created
+    QgsChunkNode *mParent;             //!< TODO: should be shared pointer
+    QVector<QgsChunkNode *> mChildren; //!< Child nodes of this node. Initially children are not be populated
+    bool mChildrenPopulated = false;   //!< Whether the child nodes (if any) have been already created
 
-    State mState;  //!< State of the node
+    State mState; //!< State of the node
 
-    Qgis::TileRefinementProcess mRefinementProcess = Qgis::TileRefinementProcess::Replacement;  //!< How to handle display of the node when children get activated
+    Qgis::TileRefinementProcess mRefinementProcess = Qgis::TileRefinementProcess::Replacement; //!< How to handle display of the node when children get activated
 
-    QgsChunkListEntry *mLoaderQueueEntry;       //!< Not null <=> QueuedForLoad or QueuedForUpdate state
-    QgsChunkListEntry *mReplacementQueueEntry;  //!< Not null <=> has non-null entity (Loaded or QueuedForUpdate or Updating state)
+    QgsChunkListEntry *mLoaderQueueEntry;      //!< Not null <=> QueuedForLoad or QueuedForUpdate state
+    QgsChunkListEntry *mReplacementQueueEntry; //!< Not null <=> has non-null entity (Loaded or QueuedForUpdate or Updating state)
 
-    QgsChunkLoader *mLoader;         //!< Contains extra data necessary for entity creation (not null <=> Loading state)
-    Qt3DCore::QEntity *mEntity;   //!< Contains everything to display chunk as 3D object (not null <=> Loaded or QueuedForUpdate or Updating state)
+    QgsChunkLoader *mLoader;    //!< Contains extra data necessary for entity creation (not null <=> Loading state)
+    Qt3DCore::QEntity *mEntity; //!< Contains everything to display chunk as 3D object (not null <=> Loaded or QueuedForUpdate or Updating state)
 
-    QgsChunkQueueJobFactory *mUpdaterFactory;  //!< Object that creates updater (not null <=> QueuedForUpdate state)
-    QgsChunkQueueJob *mUpdater;                //!< Object that does update of the chunk (not null <=> Updating state)
+    QgsChunkQueueJobFactory *mUpdaterFactory; //!< Object that creates updater (not null <=> QueuedForUpdate state)
+    QgsChunkQueueJob *mUpdater;               //!< Object that does update of the chunk (not null <=> Updating state)
 
     QTime mEntityCreatedTime;
-    bool mHasData = true;   //!< Whether there are (will be) any data in this node and so whether it makes sense to load this node
+    bool mHasData = true; //!< Whether there are (will be) any data in this node and so whether it makes sense to load this node
 };
 
 /// @endcond

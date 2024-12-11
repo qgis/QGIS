@@ -39,9 +39,7 @@ Qt3DCore::QEntity *QgsPointLightSettings::createEntity( const Qgs3DMapSettings &
 {
   Qt3DCore::QEntity *lightEntity = new Qt3DCore::QEntity();
   Qt3DCore::QTransform *lightTransform = new Qt3DCore::QTransform;
-  lightTransform->setTranslation( QVector3D( position().x(),
-                                  position().y(),
-                                  position().z() ) );
+  lightTransform->setTranslation( QVector3D( position().x(), position().y(), position().z() ) );
 
   Qt3DRender::QPointLight *light = new Qt3DRender::QPointLight;
   light->setColor( color() );
@@ -101,9 +99,7 @@ QDomElement QgsPointLightSettings::writeXml( QDomDocument &doc, const QgsReadWri
 
 void QgsPointLightSettings::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
-  mPosition.set( elem.attribute( QStringLiteral( "x" ) ).toDouble(),
-                 elem.attribute( QStringLiteral( "y" ) ).toDouble(),
-                 elem.attribute( QStringLiteral( "z" ) ).toDouble() );
+  mPosition.set( elem.attribute( QStringLiteral( "x" ) ).toDouble(), elem.attribute( QStringLiteral( "y" ) ).toDouble(), elem.attribute( QStringLiteral( "z" ) ).toDouble() );
   mColor = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "color" ) ) );
   mIntensity = elem.attribute( QStringLiteral( "intensity" ) ).toFloat();
   mConstantAttenuation = elem.attribute( QStringLiteral( "attenuation-0" ) ).toDouble();
@@ -113,7 +109,5 @@ void QgsPointLightSettings::readXml( const QDomElement &elem, const QgsReadWrite
 
 bool QgsPointLightSettings::operator==( const QgsPointLightSettings &other )
 {
-  return mPosition == other.mPosition && mColor == other.mColor && mIntensity == other.mIntensity &&
-         mConstantAttenuation == other.mConstantAttenuation && mLinearAttenuation == other.mLinearAttenuation &&
-         mQuadraticAttenuation == other.mQuadraticAttenuation;
+  return mPosition == other.mPosition && mColor == other.mColor && mIntensity == other.mIntensity && mConstantAttenuation == other.mConstantAttenuation && mLinearAttenuation == other.mLinearAttenuation && mQuadraticAttenuation == other.mQuadraticAttenuation;
 }

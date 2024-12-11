@@ -56,9 +56,7 @@ Qgs3DAnimationSettings::Keyframe Qgs3DAnimationSettings::interpolate( float time
 
         Keyframe kf;
         kf.time = time;
-        kf.point.set( k0.point.x() * eIip + k1.point.x() * eIp,
-                      k0.point.y() * eIip + k1.point.y() * eIp,
-                      k0.point.z() * eIip + k1.point.z() * eIp );
+        kf.point.set( k0.point.x() * eIip + k1.point.x() * eIp, k0.point.y() * eIip + k1.point.y() * eIp, k0.point.z() * eIip + k1.point.z() * eIp );
         kf.dist = k0.dist * eIip + k1.dist * eIp;
         kf.pitch = k0.pitch * eIip + k1.pitch * eIp;
 
@@ -93,9 +91,7 @@ void Qgs3DAnimationSettings::readXml( const QDomElement &elem )
   {
     Keyframe kf;
     kf.time = elemKeyframe.attribute( QStringLiteral( "time" ) ).toFloat();
-    kf.point.set( elemKeyframe.attribute( QStringLiteral( "x" ) ).toDouble(),
-                  elemKeyframe.attribute( QStringLiteral( "y" ) ).toDouble(),
-                  elemKeyframe.attribute( QStringLiteral( "z" ) ).toDouble() );
+    kf.point.set( elemKeyframe.attribute( QStringLiteral( "x" ) ).toDouble(), elemKeyframe.attribute( QStringLiteral( "y" ) ).toDouble(), elemKeyframe.attribute( QStringLiteral( "z" ) ).toDouble() );
     kf.dist = elemKeyframe.attribute( QStringLiteral( "dist" ) ).toFloat();
     kf.pitch = elemKeyframe.attribute( QStringLiteral( "pitch" ) ).toFloat();
     kf.yaw = elemKeyframe.attribute( QStringLiteral( "yaw" ) ).toFloat();

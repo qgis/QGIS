@@ -43,7 +43,6 @@ class QgsServerInterface;
 class SERVER_EXPORT QgsServiceNativeLoader
 {
   public:
-
     //! Constructor
     QgsServiceNativeLoader() = default;
 
@@ -53,8 +52,7 @@ class SERVER_EXPORT QgsServiceNativeLoader
      * \param registrar QgsServiceRegistry instance for registering services
      * \param serverIface QgsServerInterface instarce
      */
-    void loadModules( const QString &modulePath, QgsServiceRegistry &registrar,
-                      QgsServerInterface *serverIface = nullptr );
+    void loadModules( const QString &modulePath, QgsServiceRegistry &registrar, QgsServerInterface *serverIface = nullptr );
 
     /**
      * Unload all modules
@@ -71,7 +69,7 @@ class SERVER_EXPORT QgsServiceNativeLoader
 
 
   private:
-    typedef QHash<QString, std::shared_ptr<QgsServiceNativeModuleEntry> > ModuleTable;
+    typedef QHash<QString, std::shared_ptr<QgsServiceNativeModuleEntry>> ModuleTable;
 
     /**
      * Finds module.
@@ -90,4 +88,3 @@ class SERVER_EXPORT QgsServiceNativeLoader
 };
 
 #endif
-

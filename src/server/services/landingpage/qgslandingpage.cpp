@@ -28,26 +28,20 @@
  * Landing page API
  * \since QGIS 3.16
  */
-class QgsLandingPageApi: public QgsServerOgcApi
+class QgsLandingPageApi : public QgsServerOgcApi
 {
-
   public:
-
-    QgsLandingPageApi( QgsServerInterface *serverIface,
-                       const QString &rootPath,
-                       const QString &name,
-                       const QString &description = QString(),
-                       const QString &version = QString() )
+    QgsLandingPageApi( QgsServerInterface *serverIface, const QString &rootPath, const QString &name, const QString &description = QString(), const QString &version = QString() )
       : QgsServerOgcApi( serverIface, rootPath, name, description, version )
     {
     }
 
     bool accept( const QUrl &url ) const override
     {
-      QString baseUrlPrefix{ serverIface()->serverSettings()->landingPageBaseUrlPrefix() };
+      QString baseUrlPrefix { serverIface()->serverSettings()->landingPageBaseUrlPrefix() };
 
       // Make sure non empty prefix always starts with /
-      if ( ! baseUrlPrefix.isEmpty() && ! baseUrlPrefix.startsWith( '/' ) )
+      if ( !baseUrlPrefix.isEmpty() && !baseUrlPrefix.startsWith( '/' ) )
       {
         baseUrlPrefix.prepend( '/' );
       }
@@ -57,8 +51,7 @@ class QgsLandingPageApi: public QgsServerOgcApi
 
       // Mainly for CI testing of legacy OGC XML responses, we offer a way to disable landingpage API.
       // The plugin installation is optional so this won't be an issue in production.
-      if ( qgetenv( "QGIS_SERVER_DISABLED_APIS" ).contains( name().toUtf8() ) ||
-           ( ! path.startsWith( baseUrlPrefix ) ) )
+      if ( qgetenv( "QGIS_SERVER_DISABLED_APIS" ).contains( name().toUtf8() ) || ( !path.startsWith( baseUrlPrefix ) ) )
       {
         return false;
       }
@@ -75,7 +68,6 @@ class QgsLandingPageApi: public QgsServerOgcApi
              || path.startsWith( QLatin1String( "/js/" ) )
              || path == QLatin1String( "favicon.ico" );
     }
-
 };
 
 /**
@@ -83,11 +75,9 @@ class QgsLandingPageApi: public QgsServerOgcApi
  * This is used to set the QGIS_PROJECT_FILE environment variable for legacy SERVICEs (WFS, WMS etc.)
  * \since QGIS 3.16
  */
-class QgsProjectLoaderFilter: public QgsServerFilter
+class QgsProjectLoaderFilter : public QgsServerFilter
 {
-
   public:
-
     QgsProjectLoaderFilter( QgsServerInterface *serverIface )
       : QgsServerFilter( serverIface )
     {
@@ -103,7 +93,7 @@ class QgsProjectLoaderFilter: public QgsServerFilter
       if ( handler->path().startsWith( QStringLiteral( "%1/project/" ).arg( QgsLandingPageHandler::prefix( serverInterface()->serverSettings() ) ) ) )
       {
         const QString projectPath { QgsLandingPageUtils::projectUriFromUrl( handler->url(), *serverInterface()->serverSettings() ) };
-        if ( ! projectPath.isEmpty() )
+        if ( !projectPath.isEmpty() )
         {
           mEnvWasChanged = true;
           mOriginalProjectFromEnv = qgetenv( "QGIS_PROJECT_FILE" );
@@ -129,10 +119,8 @@ class QgsProjectLoaderFilter: public QgsServerFilter
 
 
   private:
-
     QString mOriginalProjectFromEnv;
     bool mEnvWasChanged = false;
-
 };
 
 
@@ -141,20 +129,18 @@ class QgsProjectLoaderFilter: public QgsServerFilter
  * \brief Landing page module for QGIS Server
  * \since QGIS 3.16
  */
-class QgsLandingPageModule: public QgsServiceModule
+class QgsLandingPageModule : public QgsServiceModule
 {
   public:
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
-      QgsLandingPageApi *landingPageApi = new QgsLandingPageApi{ serverIface,
-                                                                 QStringLiteral( "/" ),
-                                                                 QStringLiteral( "Landing Page" ),
-                                                                 QStringLiteral( "1.0.0" )
-                                                               };
+      QgsLandingPageApi *landingPageApi = new QgsLandingPageApi { serverIface, QStringLiteral( "/" ), QStringLiteral( "Landing Page" ), QStringLiteral( "1.0.0" ) };
       // Register handlers
       landingPageApi->registerHandler<QgsServerStaticHandler>(
         QStringLiteral( "%1/(?<staticFilePath>((css|js)/.*)|favicon.ico)$" )
-        .arg( QgsLandingPageHandler::prefix( serverIface->serverSettings() ) ), QStringLiteral( "landingpage" ) );
+          .arg( QgsLandingPageHandler::prefix( serverIface->serverSettings() ) ),
+        QStringLiteral( "landingpage" )
+      );
       landingPageApi->registerHandler<QgsLandingPageHandler>( serverIface->serverSettings() );
       landingPageApi->registerHandler<QgsLandingPageMapHandler>( serverIface->serverSettings() );
 

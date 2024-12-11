@@ -81,8 +81,7 @@ QgsRuleBasedChunkLoader::QgsRuleBasedChunkLoader( const QgsRuleBasedChunkLoaderF
   mFutureWatcher = new QFutureWatcher<void>( this );
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
-  const QFuture<void> future = QtConcurrent::run( [req, this]
-  {
+  const QFuture<void> future = QtConcurrent::run( [req, this] {
     const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "RB chunk load" ) );
 
     QgsFeature f;
@@ -121,7 +120,7 @@ Qt3DCore::QEntity *QgsRuleBasedChunkLoader::createEntity( Qt3DCore::QEntity *par
 {
   if ( mNode->level() < mFactory->mLeafLevel )
   {
-    return new Qt3DCore::QEntity( parent );  // dummy entity
+    return new Qt3DCore::QEntity( parent ); // dummy entity
   }
 
   long long featureCount = 0;
@@ -172,7 +171,7 @@ QgsRuleBasedChunkLoaderFactory::QgsRuleBasedChunkLoaderFactory( const Qgs3DRende
   , mLeafLevel( leafLevel )
 {
   const QgsAABB rootBbox = Qgs3DUtils::mapToWorldExtent( context.extent(), zMin, zMax, context.origin() );
-  setupQuadtree( rootBbox, -1, leafLevel );  // negative root error means that the node does not contain anything
+  setupQuadtree( rootBbox, -1, leafLevel ); // negative root error means that the node does not contain anything
 }
 
 QgsRuleBasedChunkLoaderFactory::~QgsRuleBasedChunkLoaderFactory() = default;

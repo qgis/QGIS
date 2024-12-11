@@ -15,7 +15,7 @@
 
 #include "qgschunknode.h"
 
-#include "qgschunkedentity.h"  // for ChunkLoader destructor
+#include "qgschunkedentity.h" // for ChunkLoader destructor
 #include "qgschunklist_p.h"
 #include "qgschunkloader.h"
 #include <Qt3DCore/QEntity>
@@ -56,7 +56,7 @@ bool QgsChunkNode::allChildChunksResident( QTime currentTime ) const
   for ( int i = 0; i < childCount(); ++i )
   {
     if ( mChildren[i]->mHasData && !mChildren[i]->mEntity )
-      return false;  // no there yet
+      return false;         // no there yet
     Q_UNUSED( currentTime ) // seems we do not need this extra time (it just brings extra problems)
     //if (children[i]->entityCreatedTime.msecsTo(currentTime) < 100)
     //  return false;  // allow some time for upload of stuff within Qt3D (TODO: better way to check it is ready?)
@@ -136,7 +136,7 @@ void QgsChunkNode::cancelLoading()
   Q_ASSERT( !mEntity );
   Q_ASSERT( !mReplacementQueueEntry );
 
-  mLoader = nullptr;  // not owned by chunk node
+  mLoader = nullptr; // not owned by chunk node
 
   mState = QgsChunkNode::Skeleton;
 }
@@ -151,7 +151,7 @@ void QgsChunkNode::setLoaded( Qt3DCore::QEntity *newEntity )
   mEntity = newEntity;
   mEntityCreatedTime = QTime::currentTime();
 
-  mLoader = nullptr;  // not owned by chunk node
+  mLoader = nullptr; // not owned by chunk node
 
   mState = QgsChunkNode::Loaded;
   mReplacementQueueEntry = new QgsChunkListEntry( this );
@@ -194,7 +194,7 @@ void QgsChunkNode::cancelQueuedForUpdate()
   Q_ASSERT( !mUpdater );
 
   mState = Loaded;
-  mUpdaterFactory = nullptr;  // not owned by the node
+  mUpdaterFactory = nullptr; // not owned by the node
 
   delete mLoaderQueueEntry;
   mLoaderQueueEntry = nullptr;
@@ -211,7 +211,7 @@ void QgsChunkNode::setUpdating()
 
   mState = Updating;
   mUpdater = mUpdaterFactory->createJob( this );
-  mUpdaterFactory = nullptr;  // not owned by the node
+  mUpdaterFactory = nullptr; // not owned by the node
   mLoaderQueueEntry = nullptr;
 }
 
@@ -221,7 +221,7 @@ void QgsChunkNode::cancelUpdating()
   Q_ASSERT( mUpdater );
   Q_ASSERT( !mLoaderQueueEntry );
 
-  mUpdater = nullptr;  // not owned by chunk node
+  mUpdater = nullptr; // not owned by chunk node
 
   mState = Loaded;
 }
@@ -233,7 +233,7 @@ void QgsChunkNode::setUpdated()
   Q_ASSERT( !mLoaderQueueEntry );
   Q_ASSERT( mReplacementQueueEntry );
 
-  mUpdater = nullptr;   // not owned by chunk node
+  mUpdater = nullptr; // not owned by chunk node
 
   mState = QgsChunkNode::Loaded;
 }
@@ -251,12 +251,12 @@ void QgsChunkNode::updateParentBoundingBoxesRecursively() const
   while ( currentNode )
   {
     QgsChunkNode *const *currentNodeChildren = currentNode->children();
-    float xMin = std::numeric_limits< float >::max();
-    float xMax = -std::numeric_limits< float >::max();
-    float yMin = std::numeric_limits< float >::max();
-    float yMax = -std::numeric_limits< float >::max();
-    float zMin = std::numeric_limits< float >::max();
-    float zMax = -std::numeric_limits< float >::max();
+    float xMin = std::numeric_limits<float>::max();
+    float xMax = -std::numeric_limits<float>::max();
+    float yMin = std::numeric_limits<float>::max();
+    float yMax = -std::numeric_limits<float>::max();
+    float zMin = std::numeric_limits<float>::max();
+    float zMax = -std::numeric_limits<float>::max();
 
     for ( int i = 0; i < currentNode->childCount(); ++i )
     {

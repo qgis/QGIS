@@ -37,7 +37,6 @@ namespace QgsWms
       Q_GADGET
 
     public:
-
       /**
        * Exception codes as defined in OGC scpecifications for WMS 1.1.1 and
        * WMS 1.3.0. Some custom QGIS codes are defined too.
@@ -54,8 +53,8 @@ namespace QgsWms
         OGC_InvalidUpdateSequence,
         OGC_MissingDimensionValue,
         OGC_InvalidDimensionValue,
-        OGC_InvalidPoint, // new in WMS 1.3.0
-        OGC_InvalidCRS, // new in WMS 1.3.0
+        OGC_InvalidPoint,          // new in WMS 1.3.0
+        OGC_InvalidCRS,            // new in WMS 1.3.0
         OGC_OperationNotSupported, // new in WMS 1.3.0
         QGIS_MissingParameterValue,
         QGIS_InvalidParameterValue
@@ -69,8 +68,7 @@ namespace QgsWms
        * \param locator Locator attribute according to OGC specifications
        * \param responseCode HTTP error code
        */
-      QgsServiceException( const QString &code, const QString &message, const QString &locator = QString(),
-                           int responseCode = 200 )
+      QgsServiceException( const QString &code, const QString &message, const QString &locator = QString(), int responseCode = 200 )
         : QgsOgcServiceException( code, message, locator, responseCode, QStringLiteral( "1.3.0" ) )
       {}
 
@@ -187,10 +185,9 @@ namespace QgsWms
    * \class  QgsWms::QgsSecurityException
    * \brief Exception thrown when data access violates access controls
    */
-  class QgsSecurityException: public QgsServiceException
+  class QgsSecurityException : public QgsServiceException
   {
     public:
-
       /**
        * Constructor for QgsSecurityException (HTTP error code 403 with
        * Security code name).
@@ -207,10 +204,9 @@ namespace QgsWms
    * \class  QgsWms::QgsBadRequestException
    * \brief Exception thrown in case of malformed request
    */
-  class QgsBadRequestException: public QgsServiceException
+  class QgsBadRequestException : public QgsServiceException
   {
     public:
-
       /**
        * Constructor for QgsBadRequestException (HTTP error code 400).
        * \param code Error code

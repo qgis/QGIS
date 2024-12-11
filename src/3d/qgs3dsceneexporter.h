@@ -58,7 +58,7 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
     Q_OBJECT
 
   public:
-    Qgs3DSceneExporter() { }
+    Qgs3DSceneExporter() {}
 
     ~Qgs3DSceneExporter()
     {
@@ -73,7 +73,7 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
     bool parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsVectorLayer *layer );
 
     //! Creates terrain export objects from the terrain entity
-    void parseTerrain( QgsTerrainEntity *terrain, const  QString &layer );
+    void parseTerrain( QgsTerrainEntity *terrain, const QString &layer );
 
     //! Saves the scene to a .obj file
     void save( const QString &sceneName, const QString &sceneFolderPath, int precision = 6 );
@@ -136,6 +136,7 @@ class _3D_EXPORT Qgs3DSceneExporter : public Qt3DCore::QEntity
     void parseMeshTile( QgsTerrainTileEntity *meshEntity, const QString &layerName );
 
     QString getObjectName( const QString &name );
+
   private:
     QMap<QString, int> usedObjectNamesCounter;
     QVector<Qgs3DExportObject *> mObjects;
