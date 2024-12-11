@@ -436,7 +436,7 @@ void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnCreation()
   QgsMeshVertex vertex;
 
   // default settings in mesh interpolate mesh otherwise default value of z widget
-  mEditMeshMapTool->setZValueType( QgsMeshEditDigitizingAction::ZValueSource::PreferMeshThenZWidget );
+  mEditMeshMapTool->setZValueSourceType( QgsMeshEditDigitizingAction::ZValueSource::PreferMeshThenZWidget );
 
   // test points outside of faces, should get defaultZ Z value
   point = QgsPointXY( 1100, 3100 );
@@ -476,7 +476,7 @@ void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnCreation()
   mEditMeshMapTool->mZValueWidget->setDefaultValue( defaultZ );
 
   // set get Z from project elevation to true - Z values will always be obtained from elevation provider
-  mEditMeshMapTool->setZValueType( QgsMeshEditDigitizingAction::ZValueSource::Terrain );
+  mEditMeshMapTool->setZValueSourceType( QgsMeshEditDigitizingAction::ZValueSource::Terrain );
 
   // test points outside of faces
   point = QgsPointXY( 1100, 3100 );
@@ -507,7 +507,7 @@ void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnCreation()
   mEditMeshMapTool->mZValueWidget->setDefaultValue( defaultZ );
 
   // set get Z from project elevation to true - Z values will be obtained from elevation provider outside of mesh
-  mEditMeshMapTool->setZValueType( QgsMeshEditDigitizingAction::ZValueSource::PreferMeshThenTerrain );
+  mEditMeshMapTool->setZValueSourceType( QgsMeshEditDigitizingAction::ZValueSource::PreferMeshThenTerrain );
 
   // test points outside of faces
   point = QgsPointXY( 1100, 3100 );
@@ -557,7 +557,7 @@ void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnCreation()
   mEditMeshMapTool->mZValueWidget->setDefaultValue( defaultZ );
 
   // set get Z from project elevation to false - Z values will be obtained Z widget outside of mesh
-  mEditMeshMapTool->setZValueType( QgsMeshEditDigitizingAction::ZValueSource::PreferMeshThenZWidget );
+  mEditMeshMapTool->setZValueSourceType( QgsMeshEditDigitizingAction::ZValueSource::PreferMeshThenZWidget );
 
   // test points outside of faces
   point = QgsPointXY( 2700, 1800 );
@@ -588,7 +588,7 @@ void TestQgsMapToolEditMesh::testAssignVertexZValueFromTerrainOnCreation()
   mEditMeshMapTool->mZValueWidget->setDefaultValue( defaultZ );
 
   // set get Z from project elevation to false - Z values will be obtained Z widget
-  mEditMeshMapTool->setZValueType( QgsMeshEditDigitizingAction::ZValueSource::ZWidget );
+  mEditMeshMapTool->setZValueSourceType( QgsMeshEditDigitizingAction::ZValueSource::ZWidget );
 
   // point inside faces
   point = QgsPointXY( 1700, 2200 );
