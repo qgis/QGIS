@@ -25,10 +25,6 @@ QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical
   - [Documentation](#documentation)
   - [Help and support channels](#help-and-support-channels)
 - [Get involved with the community](#get-involved-with-the-community)
-  - [Bug reporting and bug fixing](#bug-reporting-and-bug-fixing)
-  - [New features and enhancements](#new-features-and-enhancements)
-  - [Translations](#translations)
-  - [Other ways to contribute](#other-ways-to-contribute)
 
 ## Features
 
