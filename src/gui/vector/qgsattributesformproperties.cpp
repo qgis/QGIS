@@ -1894,7 +1894,7 @@ QgsAttributesFormProperties::RelationEditorConfiguration QgsAttributesFormProper
   return mRelationEditorConfiguration;
 }
 
-void QgsAttributesFormProperties::DnDTreeItemData::setRelationEditorConfiguration( QgsAttributesFormProperties::RelationEditorConfiguration relationEditorConfiguration )
+void QgsAttributesFormProperties::DnDTreeItemData::setRelationEditorConfiguration( const QgsAttributesFormProperties::RelationEditorConfiguration &relationEditorConfiguration )
 {
   mRelationEditorConfiguration = relationEditorConfiguration;
 }
@@ -1904,7 +1904,7 @@ QgsAttributesFormProperties::QmlElementEditorConfiguration QgsAttributesFormProp
   return mQmlElementEditorConfiguration;
 }
 
-void QgsAttributesFormProperties::DnDTreeItemData::setQmlElementEditorConfiguration( QgsAttributesFormProperties::QmlElementEditorConfiguration qmlElementEditorConfiguration )
+void QgsAttributesFormProperties::DnDTreeItemData::setQmlElementEditorConfiguration( const QmlElementEditorConfiguration &qmlElementEditorConfiguration )
 {
   mQmlElementEditorConfiguration = qmlElementEditorConfiguration;
 }
@@ -1915,7 +1915,7 @@ QgsAttributesFormProperties::HtmlElementEditorConfiguration QgsAttributesFormPro
   return mHtmlElementEditorConfiguration;
 }
 
-void QgsAttributesFormProperties::DnDTreeItemData::setHtmlElementEditorConfiguration( QgsAttributesFormProperties::HtmlElementEditorConfiguration htmlElementEditorConfiguration )
+void QgsAttributesFormProperties::DnDTreeItemData::setHtmlElementEditorConfiguration( const HtmlElementEditorConfiguration &htmlElementEditorConfiguration )
 {
   mHtmlElementEditorConfiguration = htmlElementEditorConfiguration;
 }

@@ -198,7 +198,7 @@ void QgsStacSourceSelect::btnEdit_clicked()
   nc.setConnection( cmbConnections->currentText(), uri );
   if ( nc.exec() )
   {
-    QgsStacConnection::Data connectionData = QgsStacConnection::decodedUri( nc.connectionUri() );
+    const QgsStacConnection::Data connectionData = QgsStacConnection::decodedUri( nc.connectionUri() );
     QgsStacConnection::addConnection( nc.connectionName(), connectionData );
     populateConnectionList();
     emit connectionsChanged();
@@ -490,23 +490,24 @@ void QgsStacSourceSelect::showItemsContextMenu( QPoint point )
   QMenu *menu = new QMenu( this );
 
   QgsMessageBar *bar = nullptr;
-  QgsDataSourceManagerDialog *dsm = qobject_cast<QgsDataSourceManagerDialog *>( window() );
-  if ( dsm )
+  if ( QgsDataSourceManagerDialog *dsm = qobject_cast<QgsDataSourceManagerDialog *>( window() ) )
     bar = dsm->messageBar();
 
-  const QgsStacItem *item = dynamic_cast<QgsStacItem *>( index.data( QgsStacItemListModel::Role::StacObject ).value<QgsStacObject *>() );
   QMenu *assetsMenu = menu->addMenu( tr( "Add Layer" ) );
-  const QMap<QString, QgsStacAsset> assets = item->assets();
-  for ( const QgsStacAsset &asset : assets )
+  if ( const QgsStacItem *item = dynamic_cast<QgsStacItem *>( index.data( QgsStacItemListModel::Role::StacObject ).value<QgsStacObject *>() ) )
   {
-    if ( asset.isCloudOptimized() )
+    const QMap<QString, QgsStacAsset> assets = item->assets();
+    for ( const QgsStacAsset &asset : assets )
     {
-      QAction *loadAssetAction = new QAction( asset.title(), assetsMenu );
-      connect( loadAssetAction, &QAction::triggered, this, [this, &asset] {
-        QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
-        loadUri( asset.uri() );
-      } );
-      assetsMenu->addAction( loadAssetAction );
+      if ( asset.isCloudOptimized() )
+      {
+        QAction *loadAssetAction = new QAction( asset.title(), assetsMenu );
+        connect( loadAssetAction, &QAction::triggered, this, [this, uri = asset.uri()] {
+          QgsTemporaryCursorOverride cursorOverride( Qt::WaitCursor );
+          loadUri( uri );
+        } );
+        assetsMenu->addAction( loadAssetAction );
+      }
     }
   }
 

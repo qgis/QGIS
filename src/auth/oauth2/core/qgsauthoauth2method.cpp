@@ -109,7 +109,7 @@ QgsO2 *QgsOAuth2Factory::createO2Private( const QString &authcfg, QgsAuthOAuth2C
   {
     oauth2config->moveToThread( nullptr );
 #ifndef __clang_analyzer__
-    QMetaObject::invokeMethod( this, createO2InThread, Qt::BlockingQueuedConnection );
+    QMetaObject::invokeMethod( this, std::move( createO2InThread ), Qt::BlockingQueuedConnection );
 #endif
   }
   Q_ASSERT( o2->thread() == this );

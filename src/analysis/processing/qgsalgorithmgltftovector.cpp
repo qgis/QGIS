@@ -330,7 +330,7 @@ QVariantMap QgsGltfToVectorFeaturesAlgorithm::processAlgorithm( const QVariantMa
 
   const QgsVector3D tileTranslationEcef = QgsGltfUtils::extractTileTranslation( model );
   std::function<void( int nodeIndex, const QMatrix4x4 &transform )> traverseNode;
-  traverseNode = [&model, feedback, &polygonSink, &lineSink, &warnedPrimitiveTypes, &ecefTransform, &tileTranslationEcef, &traverseNode]( int nodeIndex, const QMatrix4x4 &parentTransform ) {
+  traverseNode = [&model, feedback, &polygonSink, &lineSink, &warnedPrimitiveTypes, &ecefTransform, &tileTranslationEcef, &traverseNode, &parameters]( int nodeIndex, const QMatrix4x4 &parentTransform ) {
     const tinygltf::Node &gltfNode = model.nodes[nodeIndex];
     std::unique_ptr<QMatrix4x4> gltfLocalTransform = QgsGltfUtils::parseNodeTransform( gltfNode );
     if ( !parentTransform.isIdentity() )
@@ -361,7 +361,8 @@ QVariantMap QgsGltfToVectorFeaturesAlgorithm::processAlgorithm( const QVariantMa
               {
                 QgsFeature f;
                 f.setGeometry( std::move( geometry ) );
-                polygonSink->addFeature( f, QgsFeatureSink::FastInsert );
+                if ( !polygonSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+                  throw QgsProcessingException( writeFeatureError( polygonSink.get(), parameters, QStringLiteral( "OUTPUT_POLYGONS" ) ) );
               }
             }
             break;
@@ -376,7 +377,8 @@ QVariantMap QgsGltfToVectorFeaturesAlgorithm::processAlgorithm( const QVariantMa
               {
                 QgsFeature f;
                 f.setGeometry( std::move( geometry ) );
-                lineSink->addFeature( f, QgsFeatureSink::FastInsert );
+                if ( !lineSink->addFeature( f, QgsFeatureSink::FastInsert ) )
+                  throw QgsProcessingException( writeFeatureError( lineSink.get(), parameters, QStringLiteral( "OUTPUT_LINES" ) ) );
               }
             }
             break;

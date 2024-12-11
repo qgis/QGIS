@@ -259,14 +259,47 @@ class GUI_EXPORT QgsAttributesFormProperties : public QWidget, public QgsExpress
          */
         void setCollapsedExpression( const QgsOptionalExpression &collapsedExpression );
 
+        /**
+         * Returns the relation editor configuration.
+         *
+         * \see setRelationEditorConfiguration()
+         */
         RelationEditorConfiguration relationEditorConfiguration() const;
-        void setRelationEditorConfiguration( RelationEditorConfiguration relationEditorConfiguration );
 
+        /**
+         * Sets the relation editor configuration.
+         *
+         * \see relationEditorConfiguration()
+         */
+        void setRelationEditorConfiguration( const RelationEditorConfiguration &relationEditorConfiguration );
+
+        /**
+         * Returns the QML editor configuration.
+         *
+         * \see setQmlElementEditorConfiguration()
+         */
         QmlElementEditorConfiguration qmlElementEditorConfiguration() const;
-        void setQmlElementEditorConfiguration( QmlElementEditorConfiguration qmlElementEditorConfiguration );
 
+        /**
+         * Sets the QML editor configuration.
+         *
+         * \see qmlElementEditorConfiguration()
+         */
+        void setQmlElementEditorConfiguration( const QmlElementEditorConfiguration &qmlElementEditorConfiguration );
+
+        /**
+         * Returns the HTML editor configuration.
+         *
+         * \see setHtmlElementEditorConfiguration()
+         */
         HtmlElementEditorConfiguration htmlElementEditorConfiguration() const;
-        void setHtmlElementEditorConfiguration( HtmlElementEditorConfiguration htmlElementEditorConfiguration );
+
+        /**
+         * Sets the HTML editor configuration.
+         *
+         * \see htmlElementEditorConfiguration()
+         */
+        void setHtmlElementEditorConfiguration( const HtmlElementEditorConfiguration &htmlElementEditorConfiguration );
 
         /**
          * Returns the spacer element configuration
