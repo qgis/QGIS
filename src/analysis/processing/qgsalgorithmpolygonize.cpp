@@ -53,7 +53,7 @@ QString QgsPolygonizeAlgorithm::groupId() const
 void QgsPolygonizeAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "KEEP_FIELDS" ), QObject::tr( "Keep table structure of line layer" ), false, true ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "KEEP_FIELDS" ), QObject::tr( "Keep table structure of line layer" ), false ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Polygons" ), Qgis::ProcessingSourceType::VectorPolygon ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NUM_POLYGONS" ), QObject::tr( "Number of polygons" ) ) );
 }

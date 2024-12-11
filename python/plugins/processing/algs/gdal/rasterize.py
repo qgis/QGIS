@@ -109,7 +109,6 @@ class rasterize(GdalAlgorithm):
                 self.USE_Z,
                 self.tr('Burn value extracted from the "Z" values of the feature'),
                 defaultValue=False,
-                optional=True,
             )
         )
         self.addParameter(

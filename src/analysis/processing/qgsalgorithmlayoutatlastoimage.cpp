@@ -73,7 +73,7 @@ void QgsLayoutAtlasToImageAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "COVERAGE_LAYER" ), QObject::tr( "Coverage layer" ), QList<int>(), QVariant(), true ) );
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "SORTBY_EXPRESSION" ), QObject::tr( "Sort expression" ), QString(), QStringLiteral( "COVERAGE_LAYER" ), true ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SORTBY_REVERSE" ), QObject::tr( "Reverse sort order (used when a sort expression is provided)" ), false, true ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SORTBY_REVERSE" ), QObject::tr( "Reverse sort order (used when a sort expression is provided)" ), false ) );
 
   addParameter( new QgsProcessingParameterExpression( QStringLiteral( "FILENAME_EXPRESSION" ), QObject::tr( "Output filename expression" ), QStringLiteral( "'output_'||@atlas_featurenumber" ), QStringLiteral( "COVERAGE_LAYER" ) ) );
   addParameter( new QgsProcessingParameterFile( QStringLiteral( "FOLDER" ), QObject::tr( "Output folder" ), Qgis::ProcessingFileParameterBehavior::Folder ) );

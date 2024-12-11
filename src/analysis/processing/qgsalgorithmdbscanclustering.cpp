@@ -57,7 +57,7 @@ void QgsDbscanClusteringAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MIN_SIZE" ), QObject::tr( "Minimum cluster size" ), Qgis::ProcessingNumberParameterType::Integer, 5, false, 1 ) );
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "EPS" ), QObject::tr( "Maximum distance between clustered points" ), 1, QStringLiteral( "INPUT" ), false, 0 ) );
 
-  auto dbscanStarParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "DBSCAN*" ), QObject::tr( "Treat border points as noise (DBSCAN*)" ), false, true );
+  auto dbscanStarParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "DBSCAN*" ), QObject::tr( "Treat border points as noise (DBSCAN*)" ), false );
   dbscanStarParam->setFlags( dbscanStarParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dbscanStarParam.release() );
 

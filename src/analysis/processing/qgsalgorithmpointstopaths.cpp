@@ -63,9 +63,9 @@ QString QgsPointsToPathsAlgorithm::groupId() const
 void QgsPointsToPathsAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( std::make_unique<QgsProcessingParameterFeatureSource>( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
-  addParameter( std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "CLOSE_PATH" ), QObject::tr( "Create closed paths" ), false, true ) );
+  addParameter( std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "CLOSE_PATH" ), QObject::tr( "Create closed paths" ), false ) );
   addParameter( std::make_unique<QgsProcessingParameterExpression>( QStringLiteral( "ORDER_EXPRESSION" ), QObject::tr( "Order expression" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
-  addParameter( std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "NATURAL_SORT" ), QObject::tr( "Sort text containing numbers naturally" ), false, true ) );
+  addParameter( std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "NATURAL_SORT" ), QObject::tr( "Sort text containing numbers naturally" ), false ) );
   addParameter( std::make_unique<QgsProcessingParameterExpression>( QStringLiteral( "GROUP_EXPRESSION" ), QObject::tr( "Path group expression" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
   addParameter( std::make_unique<QgsProcessingParameterFeatureSink>( QStringLiteral( "OUTPUT" ), QObject::tr( "Paths" ), Qgis::ProcessingSourceType::VectorLine ) );
   // TODO QGIS 4: remove parameter. move logic to separate algorithm if needed.
