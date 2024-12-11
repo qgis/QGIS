@@ -2759,8 +2759,7 @@ void QgsMapToolEditMeshFrame::addVertex(
       QgisApp::instance()->messageBar()->pushMessage(
         tr( "Terrain Z Value" ),
         tr( "Z Value from project terrain could not be obtained, setting default value %1." ).arg( mZValueWidget->getDefaultValue() ),
-        Qgis::MessageLevel::Warning,
-        3
+        Qgis::MessageLevel::Warning
       );
 
       zValue = mZValueWidget->getDefaultValue();
