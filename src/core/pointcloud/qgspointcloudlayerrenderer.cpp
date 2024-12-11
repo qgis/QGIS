@@ -18,24 +18,24 @@
 #include <QElapsedTimer>
 #include <QPointer>
 
-#include "qgspointcloudlayerrenderer.h"
-#include "qgspointcloudlayer.h"
-#include "qgsrendercontext.h"
-#include "qgspointcloudindex.h"
+#include "qgsapplication.h"
 #include "qgscolorramp.h"
 #include "qgselevationmap.h"
-#include "qgsmeshlayerutils.h"
-#include "qgspointcloudrequest.h"
-#include "qgspointcloudattribute.h"
-#include "qgspointcloudrenderer.h"
-#include "qgspointcloudextentrenderer.h"
 #include "qgslogger.h"
-#include "qgspointcloudlayerelevationproperties.h"
-#include "qgsmessagelog.h"
 #include "qgsmapclippingutils.h"
+#include "qgsmeshlayerutils.h"
+#include "qgsmessagelog.h"
+#include "qgspointcloudattribute.h"
 #include "qgspointcloudblockrequest.h"
+#include "qgspointcloudextentrenderer.h"
+#include "qgspointcloudindex.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudlayerelevationproperties.h"
+#include "qgspointcloudlayerrenderer.h"
+#include "qgspointcloudrenderer.h"
+#include "qgspointcloudrequest.h"
+#include "qgsrendercontext.h"
 #include "qgsruntimeprofiler.h"
-#include "qgsapplication.h"
 
 #include <delaunator.hpp>
 
@@ -59,7 +59,11 @@ QgsPointCloudLayerRenderer::QgsPointCloudLayerRenderer( QgsPointCloudLayer *laye
 
   mRenderer.reset( mLayer->renderer()->clone() );
   if ( !mSubIndexes.isEmpty() )
+  {
     mSubIndexExtentRenderer.reset( new QgsPointCloudExtentRenderer() );
+    mSubIndexExtentRenderer->setShowLabels( mRenderer->showLabels() );
+    mSubIndexExtentRenderer->setLabelTextFormat( mRenderer->labelTextFormat() );
+  }
 
   if ( mLayer->dataProvider()->index() )
   {
@@ -211,6 +215,14 @@ bool QgsPointCloudLayerRenderer::render()
         // when dealing with virtual point clouds, we want to render the individual extents when zoomed out
         // and only use the selected renderer when zoomed in
         mSubIndexExtentRenderer->renderExtent( si.polygonBounds(), context );
+        // render the label of point cloud tile
+        if ( mSubIndexExtentRenderer->showLabels() )
+        {
+          mSubIndexExtentRenderer->renderLabel(
+            context.renderContext().mapToPixel().transformBounds( si.extent().toRectF() ),
+            si.uri().section( "/", -1 ).section( ".", 0, 0 ),
+            context );
+        }
       }
       else
       {

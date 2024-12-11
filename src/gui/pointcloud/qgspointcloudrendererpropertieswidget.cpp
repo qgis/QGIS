@@ -16,19 +16,23 @@
 #include "moc_qgspointcloudrendererpropertieswidget.cpp"
 
 #include "qgis.h"
-#include "qgspointcloudrendererregistry.h"
 #include "qgsapplication.h"
-#include "qgssymbolwidgetcontext.h"
-#include "qgspointcloudrendererwidget.h"
-#include "qgspointcloudlayer.h"
-#include "qgspointcloudrenderer.h"
-#include "qgspointcloudrgbrendererwidget.h"
+#include "qgsfontbutton.h"
+#include "qgslogger.h"
 #include "qgspointcloudattributebyramprendererwidget.h"
 #include "qgspointcloudclassifiedrendererwidget.h"
+#include "qgspointcloudextentrenderer.h"
 #include "qgspointcloudextentrendererwidget.h"
-#include "qgslogger.h"
+#include "qgspointcloudlayer.h"
+#include "qgspointcloudrenderer.h"
+#include "qgspointcloudrendererregistry.h"
+#include "qgspointcloudrendererwidget.h"
+#include "qgspointcloudrgbrendererwidget.h"
 #include "qgsproject.h"
 #include "qgsprojectutils.h"
+#include "qgsstyle.h"
+#include "qgssymbolwidgetcontext.h"
+#include "qgstextformatwidget.h"
 
 static bool initPointCloudRenderer( const QString &name, QgsPointCloudRendererWidgetFunc f, const QString &iconName = QString() )
 {
@@ -120,6 +124,14 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   connect( mHorizontalTriangleThresholdSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mHorizontalTriangleUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
+  // show label options only for virtual point clouds
+  bool showLabelOptions = !mLayer->dataProvider()->subIndexes().isEmpty();
+  mLabels->setVisible( showLabelOptions );
+  mLabelOptions->setVisible( showLabelOptions );
+  mLabelOptions->setDialogTitle( tr( "Customize label text" ) );
+  connect( mLabels, &QCheckBox::stateChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  connect( mLabelOptions, &QgsFontButton::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+
   syncToLayer( layer );
 }
 
@@ -174,6 +186,12 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     mHorizontalTriangleCheckBox->setChecked( mLayer->renderer()->horizontalTriangleFilter() );
     mHorizontalTriangleThresholdSpinBox->setValue( mLayer->renderer()->horizontalTriangleFilterThreshold() );
     mHorizontalTriangleUnitWidget->setUnit( mLayer->renderer()->horizontalTriangleFilterUnit() );
+
+    if ( !mLayer->dataProvider()->subIndexes().isEmpty() )
+    {
+      mLabels->setChecked( mLayer->renderer()->showLabels() );
+      mLabelOptions->setTextFormat( mLayer->renderer()->labelTextFormat() );
+    }
   }
 
   mBlockChangedSignal = false;
@@ -213,6 +231,9 @@ void QgsPointCloudRendererPropertiesWidget::apply()
   mLayer->renderer()->setHorizontalTriangleFilter( mHorizontalTriangleCheckBox->isChecked() );
   mLayer->renderer()->setHorizontalTriangleFilterThreshold( mHorizontalTriangleThresholdSpinBox->value() );
   mLayer->renderer()->setHorizontalTriangleFilterUnit( mHorizontalTriangleUnitWidget->unit() );
+
+  mLayer->renderer()->setShowLabels( mLabels->isChecked() );
+  mLayer->renderer()->setLabelTextFormat( mLabelOptions->textFormat() );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()
