@@ -76,6 +76,7 @@ qgis.kdev4
 qgis.supp
 qtcreator-build/
 resources/themes/*/style.qss.auto
+resources/server/src/landingpage/node_modules/
 scripts/Debug
 scripts/RelWithDebInfo
 scripts/astyle.exe
