@@ -147,7 +147,7 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
   {
     QString name;
     const QgsPolymorphicRelation polymorphicRelation = relation.polymorphicRelation();
-    if( polymorphicRelation.isValid() )
+    if ( polymorphicRelation.isValid() )
     {
       name = QStringLiteral( "%1 (%2)" ).arg( relation.name(), polymorphicRelation.name() );
     }
