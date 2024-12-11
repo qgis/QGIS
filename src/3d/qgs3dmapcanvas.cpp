@@ -359,10 +359,7 @@ void Qgs3DMapCanvas::highlightFeature( const QgsFeature &feature, QgsMapLayer *l
 
   if ( !mHighlights.contains( layer ) )
   {
-    QgsRubberBand3D *band = new QgsRubberBand3D( *mMapSettings,
-        mEngine,
-        mEngine->frameGraph()->rubberBandsRootEntity(),
-        Qgis::GeometryType::Point );
+    QgsRubberBand3D *band = new QgsRubberBand3D( *mMapSettings, mEngine, mEngine->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point );
 
     const QgsSettings settings;
     const QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );

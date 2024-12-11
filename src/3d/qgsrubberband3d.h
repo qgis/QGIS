@@ -76,7 +76,6 @@ namespace Qt3DRender
 class _3D_EXPORT QgsRubberBand3D
 {
   public:
-
     //! Icons
     enum MarkerType
     {

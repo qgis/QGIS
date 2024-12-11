@@ -151,8 +151,7 @@ void QgsRubberBand3D::setMarkerType( MarkerType marker )
 {
   mMarkerType = marker;
 
-  const QVariantMap props
-  {
+  const QVariantMap props {
     { QStringLiteral( "color" ), mGeometryType == Qgis::GeometryType::Line ? mColor.lighter( 130 ).name() : mColor.name() },
     { QStringLiteral( "size_unit" ), QStringLiteral( "pixel" ) },
     { QStringLiteral( "size" ), QString::number( mGeometryType == Qgis::GeometryType::Line ? mWidth * 3.f : mWidth ) },
