@@ -37,7 +37,6 @@ Qgs3DMapCanvas is a convenience wrapper to simplify the creation of a 3D window 
 #include "qgs3dmapcanvas.h"
 %End
   public:
-
     Qgs3DMapCanvas();
     ~Qgs3DMapCanvas();
 
@@ -58,7 +57,6 @@ Returns access to the view's camera controller. Returns ``None`` if the scene ha
 
 
   protected:
-
     virtual void showEvent( QShowEvent *e );
 
 %Docstring

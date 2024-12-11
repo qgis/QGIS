@@ -28,7 +28,6 @@ Null shading material used for rendering models and scenes with native textures.
 #include "qgsnullmaterialsettings.h"
 %End
   public:
-
     QgsNullMaterialSettings();
 
     virtual QString type() const;
@@ -48,7 +47,6 @@ Returns a new instance of QgsNullMaterialSettings.
 
 
     virtual QMap<QString, QString> toExportParameters() const;
-
 
 };
 

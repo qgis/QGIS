@@ -37,7 +37,7 @@ class QgsPolygon3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
-    virtual QList< Qgis::GeometryType > compatibleGeometryTypes() const;
+    virtual QList<Qgis::GeometryType> compatibleGeometryTypes() const;
 
     virtual void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer );
 

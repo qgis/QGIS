@@ -28,7 +28,6 @@ Definition of the world.
 #include "qgs3dmapsettings.h"
 %End
   public:
-
     Qgs3DMapSettings();
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
     ~Qgs3DMapSettings();

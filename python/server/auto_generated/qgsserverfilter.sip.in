@@ -29,7 +29,6 @@ Filters can define any (or none) of the following hooks:
 #include "qgsserverfilter.h"
 %End
   public:
-
     QgsServerFilter( QgsServerInterface *serverInterface );
 %Docstring
 Constructor
@@ -132,7 +131,6 @@ is called once for each feature before hitting :py:func:`~QgsServerFilter.respon
 
 .. versionadded:: 3.22
 %End
-
 
 
 };
