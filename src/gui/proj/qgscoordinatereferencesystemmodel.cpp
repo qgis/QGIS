@@ -158,6 +158,12 @@ QVariant QgsCoordinateReferenceSystemModel::data( const QModelIndex &index, int 
         case static_cast<int>( CustomRole::Proj ):
           return crsNode->proj();
 
+        case static_cast<int>( CustomRole::Group ):
+          return crsNode->group();
+
+        case static_cast<int>( CustomRole::Projection ):
+          return crsNode->projection();
+
         default:
           break;
       }
@@ -424,6 +430,7 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
         break;
     }
   }
+  crsNode->setGroup( groupName );
 
   if ( QgsCoordinateReferenceSystemModelGroupNode *group = parentNode->getChildGroupNode( groupId ) )
   {
@@ -441,6 +448,8 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
     QString projectionName = QgsCoordinateReferenceSystemUtils::translateProjection( record.projectionAcronym );
     if ( projectionName.isEmpty() )
       projectionName = tr( "Other" );
+    else
+      crsNode->setProjection( projectionName );
 
     if ( QgsCoordinateReferenceSystemModelGroupNode *group = parentNode->getChildGroupNode( record.projectionAcronym ) )
     {

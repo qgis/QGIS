@@ -194,10 +194,44 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModelCrsNode : public QgsCoordinate
      */
     QString proj() const { return mProj; }
 
+    /**
+     * Sets the CRS's group name.
+     *
+     * \see group()
+     * \since QGIS 3.42
+     */
+    void setGroup( const QString &group ) { mGroup = group; }
+
+    /**
+     * Returns the CRS's group name.
+     *
+     * \see setGroup()
+     * \since QGIS 3.42
+     */
+    QString group() const { return mGroup; }
+
+    /**
+     * Sets the CRS's projection name.
+     *
+     * \see projection()
+     * \since QGIS 3.42
+     */
+    void setProjection( const QString &projection ) { mProjection = projection; }
+
+    /**
+     * Returns the CRS's projection name.
+     *
+     * \see setProjection()
+     * \since QGIS 3.42
+     */
+    QString projection() const { return mProjection; }
+
   private:
     const QgsCrsDbRecord mRecord;
     QString mWkt;
     QString mProj;
+    QString mGroup;
+    QString mProjection;
 };
 
 #endif
@@ -232,6 +266,8 @@ class GUI_EXPORT QgsCoordinateReferenceSystemModel : public QAbstractItemModel
       GroupId SIP_MONKEYPATCH_COMPAT_NAME( RoleGroupId ) = Qt::UserRole + 5,       //!< The node ID (for group nodes)
       Wkt SIP_MONKEYPATCH_COMPAT_NAME( RoleWkt ) = Qt::UserRole + 6,               //!< The coordinate reference system's WKT representation. This is only used for non-standard CRS (i.e. those not present in the database).
       Proj SIP_MONKEYPATCH_COMPAT_NAME( RoleProj ) = Qt::UserRole + 7,             //!< The coordinate reference system's PROJ representation. This is only used for non-standard CRS (i.e. those not present in the database).
+      Group = Qt::UserRole + 8,                                                    //!< Group name. \since QGIS 3.42
+      Projection = Qt::UserRole + 9,                                               //!< Projection name. \since QGIS 3.42
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
