@@ -127,6 +127,9 @@ class CORE_EXPORT QgsMeshMemoryDataProvider final: public QgsMeshDataProvider
      * \endcode
      */
     bool addDataset( const QString &uri ) override;
+
+    bool removeDatasetGroup( int index ) override;
+
     QStringList extraDatasets() const override;
     int datasetGroupCount() const override;
     int datasetCount( int groupIndex ) const override;

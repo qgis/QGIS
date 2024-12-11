@@ -62,6 +62,9 @@ class QgsMdalProvider : public QgsMeshDataProvider
     void populateMesh( QgsMesh *mesh ) const override;
 
     bool addDataset( const QString &uri ) override;
+
+    bool removeDatasetGroup( int index ) override;
+
     QStringList extraDatasets() const override;
 
     int datasetGroupCount() const override;
@@ -116,6 +119,10 @@ class QgsMdalProvider : public QgsMeshDataProvider
     QVector<QgsMeshFace> faces() const;
     void loadData();
     void addGroupToTemporalCapabilities( int indexGroup );
+
+    // ensures that last added dataset group has unique name (adds suffix of underscore and number to make it unique)
+    void makeLastDatasetGroupNameUnique();
+
     MDAL_MeshH mMeshH = nullptr;
     QStringList mExtraDatasetUris;
     QgsCoordinateReferenceSystem mCrs;
