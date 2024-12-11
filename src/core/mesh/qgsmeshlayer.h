@@ -214,7 +214,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     /**
      * Removes datasets from the mesh with given \a name.
      *
-     * \param name of dataset group to remove
+     * \param name name of dataset group to remove
      * \return whether the dataset is removed
      *
      * \since QGIS 3.42
