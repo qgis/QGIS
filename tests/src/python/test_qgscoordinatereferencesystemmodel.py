@@ -775,6 +775,35 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
         ][0]
         self.assertTrue(epsg_4347_index.isValid())
 
+        model.setFilterString("equal gda2020 Area")
+        projected_index = [
+            model.index(row, 0, QModelIndex())
+            for row in range(model.rowCount(QModelIndex()))
+            if model.data(
+                model.index(row, 0, QModelIndex()),
+                QgsCoordinateReferenceSystemModel.Roles.RoleGroupId,
+            )
+            == "Projected"
+        ][0]
+        aae_index = [
+            model.index(row, 0, projected_index)
+            for row in range(model.rowCount(projected_index))
+            if model.data(
+                model.index(row, 0, projected_index),
+                Qt.DisplayRole,
+            )
+            == "Albers Equal Area"
+        ][0]
+        epsg_9473_index = [
+            model.index(row, 0, aae_index)
+            for row in range(model.rowCount(aae_index))
+            if model.data(
+                model.index(row, 0, aae_index),
+                QgsCoordinateReferenceSystemModel.Roles.RoleAuthId,
+            )
+            == "EPSG:9473"
+        ][0]
+
         model.setFilterString("")
 
         # set filtered list of crs to show

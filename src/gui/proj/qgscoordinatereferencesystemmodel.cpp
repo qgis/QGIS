@@ -716,7 +716,15 @@ bool QgsCoordinateReferenceSystemProxyModel::filterAcceptsRow( int sourceRow, co
   if ( !mFilterString.trimmed().isEmpty() )
   {
     const QString name = sourceModel()->data( sourceIndex, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::Name ) ).toString();
-    if ( !( QgsStringUtils::containsByWord( name, mFilterString )
+    QString candidate = name;
+    const QString groupName = sourceModel()->data( sourceIndex, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::Group ) ).toString();
+    if ( !groupName.isEmpty() )
+      candidate += ' ' + groupName;
+    const QString projectionName = sourceModel()->data( sourceIndex, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::Projection ) ).toString();
+    if ( !projectionName.isEmpty() )
+      candidate += ' ' + projectionName;
+
+    if ( !( QgsStringUtils::containsByWord( candidate, mFilterString )
             || authid.contains( mFilterString, Qt::CaseInsensitive ) ) )
       return false;
   }
