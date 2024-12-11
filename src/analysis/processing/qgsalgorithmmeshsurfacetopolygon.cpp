@@ -199,7 +199,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
 
   if ( feedback )
   {
-    feedback->setProgressText( QObject::( "Creating final geometry." ) );
+    feedback->setProgressText( QObject::tr( "Creating final geometry." ) );
     if ( feedback->isCanceled() )
       return QVariantMap();
   }
