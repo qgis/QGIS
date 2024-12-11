@@ -840,10 +840,13 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
     {
       projResult = 0;
       proj_errno_reset( transform );
+      memcpy( x, xprev.data(), sizeof( double ) * numPoints );
+      memcpy( y, yprev.data(), sizeof( double ) * numPoints );
+      memcpy( z, zprev.data(), sizeof( double ) * numPoints );
       proj_trans_generic( transform, direction == Qgis::TransformDirection::Forward ? PJ_FWD : PJ_INV,
-                          xprev.data(), sizeof( double ), numPoints,
-                          yprev.data(), sizeof( double ), numPoints,
-                          zprev.data(), sizeof( double ), numPoints,
+                          x, sizeof( double ), numPoints,
+                          y, sizeof( double ), numPoints,
+                          z, sizeof( double ), numPoints,
                           useTime ? t.data() : nullptr, sizeof( double ), useTime ? numPoints : 0 );
       // Try to - approximately - emulate the behavior of pj_transform()...
       // In the case of a single point transform, and a transformation error occurs,
@@ -859,14 +862,11 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
         // hmm - something very odd here. We can't trust proj_errno( transform ), as that's giving us incorrect error numbers
         // (such as "failed to load datum shift file", which is definitely incorrect for a default proj created operation!)
         // so we resort to testing values ourselves...
-        errorOccurredDuringFallbackOperation = std::isinf( xprev[0] ) || std::isinf( yprev[0] ) || std::isinf( zprev[0] );
+        errorOccurredDuringFallbackOperation = std::isinf( x[0] ) || std::isinf( y[0] ) || std::isinf( z[0] );
       }
 
       if ( !errorOccurredDuringFallbackOperation )
       {
-        memcpy( x, xprev.data(), sizeof( double ) * numPoints );
-        memcpy( y, yprev.data(), sizeof( double ) * numPoints );
-        memcpy( z, zprev.data(), sizeof( double ) * numPoints );
         mFallbackOperationOccurred = true;
       }
 
