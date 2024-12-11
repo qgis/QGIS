@@ -101,10 +101,10 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     struct IdentifyProperties
     {
-      //! Identify search radius is map units. Use negative value to ignore
-      double searchRadiusMapUnits = -1;
-      //! Skip identify results from layers that have a 3d renderer set
-      bool skip3DLayers = false;
+        //! Identify search radius is map units. Use negative value to ignore
+        double searchRadiusMapUnits = -1;
+        //! Skip identify results from layers that have a 3d renderer set
+        bool skip3DLayers = false;
     };
 
     //! constructor

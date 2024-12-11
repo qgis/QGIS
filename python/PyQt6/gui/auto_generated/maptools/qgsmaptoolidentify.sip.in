@@ -65,8 +65,8 @@ after selecting a point, performs the identification:
 
     struct IdentifyProperties
     {
-      double searchRadiusMapUnits;
-      bool skip3DLayers;
+        double searchRadiusMapUnits;
+        bool skip3DLayers;
     };
 
     QgsMapToolIdentify( QgsMapCanvas *canvas );
