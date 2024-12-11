@@ -145,7 +145,17 @@ void QgsAttributesFormProperties::initAvailableWidgetsTree()
 
   for ( const QgsRelation &relation : relations )
   {
-    DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, relation.id(), relation.name() );
+    QString name;
+    const QgsPolymorphicRelation polymorphicRelation = relation.polymorphicRelation();
+    if( polymorphicRelation.isValid() )
+    {
+      name = QStringLiteral( "%1 (%2)" ).arg( relation.name(), polymorphicRelation.name() );
+    }
+    else
+    {
+      name = relation.name();
+    }
+    DnDTreeItemData itemData = DnDTreeItemData( DnDTreeItemData::Relation, relation.id(), name );
     itemData.setShowLabel( true );
     QTreeWidgetItem *item = mAvailableWidgetsTree->addItem( catitem, itemData );
     item->setData( 0, FieldNameRole, relation.id() );
