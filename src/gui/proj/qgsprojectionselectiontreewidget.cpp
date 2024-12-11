@@ -88,6 +88,8 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   connect( leSearch, &QgsFilterLineEdit::textChanged, this, [=]( const QString &filter ) {
     mCrsModel->setFilterString( filter );
     mRecentCrsModel->setFilterString( filter );
+    if ( filter.length() >= 3 )
+      lstCoordinateSystems->expandAll();
   } );
 
   mAreaCanvas->setVisible( mShowMap );
