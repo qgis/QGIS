@@ -256,7 +256,6 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
      * be called to erase any overrides.
      *
      * \param searchRadiusMapUnits The overridden search radius in map units
-     * \param skip3DLayers Optional override to skip identify results from layers that have a 3d renderer set (since QGIS 3.42)
      * \see restoreCanvasPropertiesOverrides()
      * \since QGIS 3.4
      * \deprecated QGIS 3.42. Use setPropertiesOverrides() instead.
