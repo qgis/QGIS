@@ -35,7 +35,17 @@ QString QgsQuantizedMeshTerrainSettings::type() const
 
 void QgsQuantizedMeshTerrainSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  mLayer = QgsMapLayerRef( element.attribute( QStringLiteral( "layer" ) ) );
+  if ( element.hasAttribute( QStringLiteral( "layer" ) ) )
+  {
+    mLayer = QgsMapLayerRef( element.attribute( QStringLiteral( "layer" ) ) );
+  }
+  else
+  {
+    // restore old project
+    const QDomElement elemTerrainGenerator = element.firstChildElement( QStringLiteral( "generator" ) );
+    mLayer = QgsMapLayerRef( elemTerrainGenerator.attribute( QStringLiteral( "layer" ) ) );
+  }
+
   readCommonProperties( element, context );
 }
 
