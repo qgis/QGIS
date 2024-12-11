@@ -36,7 +36,6 @@
 #include "qgspointcloudrequest.h"
 #include "qgsrendercontext.h"
 #include "qgsruntimeprofiler.h"
-#include "qgsapplication.h"
 #include "qgsvirtualpointcloudprovider.h"
 
 #include <delaunator.hpp>
@@ -209,8 +208,10 @@ bool QgsPointCloudLayerRenderer::render()
         visibleIndexes.append( si );
       }
     }
-    // if the overview of virtual point cloud exists we render it when we are zoomed out
+    // if the overview of virtual point cloud exists and user hasn't requested point cloud extends we render overview,
+    // when we are zoomed out
     if ( vpcProvider.overview() != nullptr &&
+         !mRenderer->showExtends() &&
          renderExtent.width() > vpcProvider.averageSubIndexWidth() &&
          renderExtent.height() > vpcProvider.averageSubIndexHeight() )
     {
@@ -226,9 +227,10 @@ bool QgsPointCloudLayerRenderer::render()
 
       QgsPointCloudIndex pc = si.index();
 
-        if ( !pc || !pc.isValid() )
+        if ( ( !pc || !pc.isValid() || mRenderer->showExtends() ) &&
+             renderExtent.width() > vpcProvider.averageSubIndexWidth() &&
+             renderExtent.height() > vpcProvider.averageSubIndexHeight() )
         {
-          // TODO: render the individual extents when zoomed out and users requests them
           mSubIndexExtentRenderer->renderExtent( si.polygonBounds(), context );
           // render the label of point cloud tile
           if ( mSubIndexExtentRenderer->showLabels() )

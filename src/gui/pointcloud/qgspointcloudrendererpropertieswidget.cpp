@@ -124,11 +124,11 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   connect( mHorizontalTriangleThresholdSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mHorizontalTriangleUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
-  // show label options only for virtual point clouds
-  bool showLabelOptions = !mLayer->dataProvider()->subIndexes().isEmpty();
-  mLabels->setVisible( showLabelOptions );
-  mLabelOptions->setVisible( showLabelOptions );
+  // show virtual point cloud options only when vpc layer is selected
+  bool showVpcOptions = !mLayer->dataProvider()->subIndexes().isEmpty();
+  mVpcGroupBox->setVisible( showVpcOptions );
   mLabelOptions->setDialogTitle( tr( "Customize label text" ) );
+  connect( mExtendsCheckBox, &QCheckBox::stateChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mLabels, &QCheckBox::stateChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mLabelOptions, &QgsFontButton::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
@@ -191,6 +191,7 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     {
       mLabels->setChecked( mLayer->renderer()->showLabels() );
       mLabelOptions->setTextFormat( mLayer->renderer()->labelTextFormat() );
+      mExtendsCheckBox->setChecked( mLayer->renderer()->showExtends() );
     }
   }
 
@@ -234,6 +235,7 @@ void QgsPointCloudRendererPropertiesWidget::apply()
 
   mLayer->renderer()->setShowLabels( mLabels->isChecked() );
   mLayer->renderer()->setLabelTextFormat( mLabelOptions->textFormat() );
+  mLayer->renderer()->setShowExtends( mExtendsCheckBox->isChecked() );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()
