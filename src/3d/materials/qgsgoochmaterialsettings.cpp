@@ -18,7 +18,7 @@
 #include "qgs3dutils.h"
 
 #include <Qt3DExtras/QGoochMaterial>
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
@@ -131,7 +131,6 @@ void QgsGoochMaterialSettings::addParametersToEffect( Qt3DRender::QEffect *, con
 
 QByteArray QgsGoochMaterialSettings::dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const
 {
-
   const QColor diffuse = dataDefinedProperties().valueAsColor( QgsAbstractMaterialSettings::Property::Diffuse, expressionContext, mDiffuse );
   const QColor warm = dataDefinedProperties().valueAsColor( QgsAbstractMaterialSettings::Property::Warm, expressionContext, mWarm );
   const QColor cool = dataDefinedProperties().valueAsColor( QgsAbstractMaterialSettings::Property::Cool, expressionContext, mCool );
@@ -245,7 +244,7 @@ QgsMaterial *QgsGoochMaterialSettings::buildMaterial( const QgsMaterialContext &
     const QUrl urlVert( QStringLiteral( "qrc:/shaders/goochDataDefined.vert" ) );
     shaderProgram->setShaderCode( Qt3DRender::QShaderProgram::Vertex, Qt3DRender::QShaderProgram::loadSource( urlVert ) );
 
-    const QByteArray finalFragmentShaderCode = Qgs3DUtils::addDefinesToShaderCode( fragmentShaderCode, QStringList( {"DATA_DEFINED"} ) );
+    const QByteArray finalFragmentShaderCode = Qgs3DUtils::addDefinesToShaderCode( fragmentShaderCode, QStringList( { "DATA_DEFINED" } ) );
     shaderProgram->setFragmentShaderCode( finalFragmentShaderCode );
   }
   else

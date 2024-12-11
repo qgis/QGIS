@@ -88,8 +88,7 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
   mFutureWatcher = new QFutureWatcher<void>( this );
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
-  const QFuture<void> future = QtConcurrent::run( [req, this]
-  {
+  const QFuture<void> future = QtConcurrent::run( [req, this] {
     const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "VL chunk load" ) );
 
     QgsFeature f;
@@ -125,7 +124,7 @@ Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *p
 {
   if ( mNode->level() < mFactory->mLeafLevel )
   {
-    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );  // dummy entity
+    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent ); // dummy entity
     entity->setObjectName( mLayerName + "_CONTAINER_" + mNode->tileId().text() );
     return entity;
   }
@@ -174,7 +173,7 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DR
   rootBbox.yMax += 1.0;
   rootBbox.zMin -= 1.0;
   rootBbox.zMax += 1.0;
-  setupQuadtree( rootBbox, -1, leafLevel );  // negative root error means that the node does not contain anything
+  setupQuadtree( rootBbox, -1, leafLevel ); // negative root error means that the node does not contain anything
 }
 
 QgsChunkLoader *QgsVectorLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
@@ -285,9 +284,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
 #ifdef QGISDEBUG
     nodesAll++;
 #endif
-    if ( node->entity() &&
-         ( minDist < 0 || node->bbox().distanceFromPoint( ray.origin() ) < minDist ) &&
-         QgsRayCastingUtils::rayBoxIntersection( ray, node->bbox() ) )
+    if ( node->entity() && ( minDist < 0 || node->bbox().distanceFromPoint( ray.origin() ) < minDist ) && QgsRayCastingUtils::rayBoxIntersection( ray, node->bbox() ) )
     {
 #ifdef QGISDEBUG
       nodeUsed++;

@@ -30,14 +30,13 @@
 class _3D_EXPORT Qgs3DTypes
 {
   public:
-
     //! Triangle culling mode
     enum CullingMode
     {
-      NoCulling,     //!< Will render both front and back faces of triangles
-      Front,         //!< Will render only back faces of triangles
-      Back,          //!< Will render only front faces of triangles (recommended when input data are consistent)
-      FrontAndBack   //!< Will not render anything
+      NoCulling,   //!< Will render both front and back faces of triangles
+      Front,       //!< Will render only back faces of triangles
+      Back,        //!< Will render only front faces of triangles (recommended when input data are consistent)
+      FrontAndBack //!< Will not render anything
     };
 
     //! Qt property name to hold the 3D geometry renderer flag
@@ -46,11 +45,9 @@ class _3D_EXPORT Qgs3DTypes
     //! 3D geometry renderer flag
     enum Flag3DRenderer
     {
-      Main3DRenderer = 0,       //!< Renderer for normal entities
-      Selected3DRenderer,  //!< Renderer for selected entities
+      Main3DRenderer = 0, //!< Renderer for normal entities
+      Selected3DRenderer, //!< Renderer for selected entities
     };
-
-
 };
 
 #endif // QGS3DTYPES_H

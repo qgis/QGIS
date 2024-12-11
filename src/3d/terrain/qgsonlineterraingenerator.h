@@ -47,7 +47,11 @@ class _3D_EXPORT QgsOnlineTerrainGenerator : public QgsTerrainGenerator
     QgsCoordinateReferenceSystem crs() const override { return mCrs; }
 
     //! Sets resolution of the generator (how many elevation samples on one side of a terrain tile)
-    void setResolution( int resolution ) { mResolution = resolution; updateGenerator(); }
+    void setResolution( int resolution )
+    {
+      mResolution = resolution;
+      updateGenerator();
+    }
     //! Returns resolution of the generator (how many elevation samples on one side of a terrain tile)
     int resolution() const { return mResolution; }
 
@@ -71,7 +75,6 @@ class _3D_EXPORT QgsOnlineTerrainGenerator : public QgsTerrainGenerator
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
 
   private:
-
     void updateGenerator();
 
     QgsCoordinateReferenceSystem mCrs;

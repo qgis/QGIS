@@ -33,18 +33,17 @@ class QgsRectangle;
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include "qgsserverprojectutils.h"
-% End
+  % End
 #endif
 
 
-/**
+  /**
  * \ingroup server
  * \brief The QgsServerProjectUtils namespace provides a way to retrieve specific
  * entries from a QgsProject.
  */
-namespace QgsServerProjectUtils
+  namespace QgsServerProjectUtils
 {
-
   /**
    * Returns a double greater than \a number to the specified number of \a places.
    *
@@ -372,7 +371,7 @@ namespace QgsServerProjectUtils
    * \param project the QGIS project
    * \returns the WMS Extent restriction.
    */
-  SERVER_EXPORT  QgsRectangle wmsExtent( const QgsProject &project );
+  SERVER_EXPORT QgsRectangle wmsExtent( const QgsProject &project );
 
   /**
    * Returns the WFS service url.
@@ -399,7 +398,7 @@ namespace QgsServerProjectUtils
    * \return the layer precision for WFS GetFeature.
    */
 
-  SERVER_EXPORT  int wfsLayerPrecision( const QgsProject &project, const QString &layerId );
+  SERVER_EXPORT int wfsLayerPrecision( const QgsProject &project, const QString &layerId );
 
   /**
    * Returns the Layer ids list defined in a QGIS project as published as WFS-T with update capabilities.

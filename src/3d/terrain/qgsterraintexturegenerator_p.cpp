@@ -192,10 +192,7 @@ QgsMapSettings QgsTerrainTextureGenerator::baseMapSettings()
     layers = mapThemes->mapThemeVisibleLayers( mapThemeName );
     mapSettings.setLayerStyleOverrides( mapThemes->mapThemeStyleOverrides( mapThemeName ) );
   }
-  layers.erase( std::remove_if( layers.begin(),
-                                layers.end(),
-  []( const QgsMapLayer * layer ) { return layer->renderer3D(); } ),
-  layers.end() );
+  layers.erase( std::remove_if( layers.begin(), layers.end(), []( const QgsMapLayer *layer ) { return layer->renderer3D(); } ), layers.end() );
   mapSettings.setLayers( layers );
 
   return mapSettings;

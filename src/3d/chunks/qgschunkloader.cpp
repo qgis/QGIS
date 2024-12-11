@@ -52,7 +52,7 @@ QVector<QgsChunkNode *> QgsQuadtreeChunkLoaderFactory::createChildren( QgsChunkN
   for ( int i = 0; i < 4; ++i )
   {
     int dx = i & 1, dy = !!( i & 2 );
-    const QgsChunkNodeId childId( nodeId.d + 1, nodeId.x * 2 + dx, nodeId.y * 2 + ( dy ? 0 : 1 ) );  // TODO: inverse dy?
+    const QgsChunkNodeId childId( nodeId.d + 1, nodeId.x * 2 + dx, nodeId.y * 2 + ( dy ? 0 : 1 ) ); // TODO: inverse dy?
     // the Y and Z coordinates below are intentionally flipped, because
     // in chunk node IDs the X,Y axes define horizontal plane,
     // while in our 3D scene the X,Z axes define the horizontal plane

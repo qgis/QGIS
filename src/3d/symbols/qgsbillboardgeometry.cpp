@@ -15,7 +15,7 @@
 
 #include <QVector3D>
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 
@@ -37,7 +37,6 @@ QgsBillboardGeometry::QgsBillboardGeometry( Qt3DCore::QNode *parent )
   , mPositionAttribute( new Qt3DQAttribute( this ) )
   , mVertexBuffer( new Qt3DQBuffer( this ) )
 {
-
   mPositionAttribute->setAttributeType( Qt3DQAttribute::VertexAttribute );
   mPositionAttribute->setBuffer( mVertexBuffer );
   mPositionAttribute->setVertexBaseType( Qt3DQAttribute::Float );
@@ -47,7 +46,6 @@ QgsBillboardGeometry::QgsBillboardGeometry( Qt3DCore::QNode *parent )
   mPositionAttribute->setName( Qt3DQAttribute::defaultPositionAttributeName() );
 
   addAttribute( mPositionAttribute );
-
 }
 
 void QgsBillboardGeometry::setPoints( const QVector<QVector3D> &vertices )
@@ -67,12 +65,9 @@ void QgsBillboardGeometry::setPoints( const QVector<QVector3D> &vertices )
   mVertexBuffer->setData( vertexBufferData );
 
   emit countChanged( mVertexCount );
-
 }
 
 int QgsBillboardGeometry::count() const
 {
   return mVertexCount;
 }
-
-

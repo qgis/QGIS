@@ -60,7 +60,6 @@ QgsDemTerrainTileLoader::QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, Qgs
   : QgsTerrainTileLoader( terrain, node )
   , mResolution( 0 )
 {
-
   QgsDemHeightMapGenerator *heightMapGenerator = nullptr;
   if ( terrainGenerator->type() == QgsTerrainGenerator::Dem )
   {
@@ -122,7 +121,7 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
   entity->addComponent( transform );
 
   transform->setScale( side );
-  transform->setTranslation( QVector3D( x0 + half, 0, - ( y0 + half ) ) );
+  transform->setTranslation( QVector3D( x0 + half, 0, -( y0 + half ) ) );
 
   mNode->setExactBbox( QgsAABB( x0, zMin * map->terrainVerticalScale(), -y0, x0 + side, zMax * map->terrainVerticalScale(), -( y0 + side ) ) );
   mNode->updateParentBoundingBoxesRecursively();
@@ -185,7 +184,7 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
     projector->setInput( provider );
     input = projector.get();
   }
-  std::unique_ptr< QgsRasterBlock > block( input->block( 1, extent, res, res ) );
+  std::unique_ptr<QgsRasterBlock> block( input->block( 1, extent, res, res ) );
 
   QByteArray data;
   if ( block )
@@ -203,7 +202,7 @@ static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectan
     block->setIsNoDataExcept( subRect );
 
     data = block->data();
-    data.detach();  // this should make a deep copy
+    data.detach(); // this should make a deep copy
 
     if ( block->hasNoData() )
     {
@@ -251,7 +250,7 @@ int QgsDemHeightMapGenerator::render( const QgsChunkNodeId &nodeId )
   if ( mClonedProvider )
   {
     // make a clone of the data provider so it is safe to use in worker thread
-    std::unique_ptr< QgsRasterDataProvider > clonedProviderClone( mClonedProvider->clone() );
+    std::unique_ptr<QgsRasterDataProvider> clonedProviderClone( mClonedProvider->clone() );
     clonedProviderClone->moveToThread( nullptr );
     jd.future = QtConcurrent::run( _readDtmData, clonedProviderClone.release(), extent, mResolution, mTilingScheme.crs(), mTilingScheme.fullExtent() );
   }
@@ -275,7 +274,7 @@ void QgsDemHeightMapGenerator::waitForFinished()
     disconnect( fw, &QFutureWatcher<QByteArray>::finished, this, &QgsDemHeightMapGenerator::onFutureFinished );
     disconnect( fw, &QFutureWatcher<QByteArray>::finished, fw, &QObject::deleteLater );
   }
-  QVector<QFutureWatcher<QByteArray>*> toBeDeleted;
+  QVector<QFutureWatcher<QByteArray> *> toBeDeleted;
   for ( auto it = mJobs.keyBegin(); it != mJobs.keyEnd(); it++ )
   {
     QFutureWatcher<QByteArray> *fw = *it;
@@ -299,24 +298,24 @@ void QgsDemHeightMapGenerator::lazyLoadDtmCoarseData( int res, const QgsRectangl
   QMutexLocker locker( &mLazyLoadDtmCoarseDataMutex );
   if ( mDtmCoarseData.isEmpty() )
   {
-    std::unique_ptr< QgsRasterBlock > block( mClonedProvider->block( 1, rect, res, res ) );
+    std::unique_ptr<QgsRasterBlock> block( mClonedProvider->block( 1, rect, res, res ) );
     block->convert( Qgis::DataType::Float32 );
     mDtmCoarseData = block->data();
-    mDtmCoarseData.detach();  // make a deep copy
+    mDtmCoarseData.detach(); // make a deep copy
   }
 }
 
 float QgsDemHeightMapGenerator::heightAt( double x, double y )
 {
   if ( !mClonedProvider )
-    return 0;  // TODO: calculate heights for online DTM
+    return 0; // TODO: calculate heights for online DTM
 
   // TODO: this is quite a primitive implementation: better to use heightmaps currently in use
   int res = 1024;
   lazyLoadDtmCoarseData( res, mDtmExtent );
 
-  int cellX = ( int )( ( x - mDtmExtent.xMinimum() ) / mDtmExtent.width() * res + .5f );
-  int cellY = ( int )( ( mDtmExtent.yMaximum() - y ) / mDtmExtent.height() * res + .5f );
+  int cellX = ( int ) ( ( x - mDtmExtent.xMinimum() ) / mDtmExtent.width() * res + .5f );
+  int cellY = ( int ) ( ( mDtmExtent.yMaximum() - y ) / mDtmExtent.height() * res + .5f );
   cellX = std::clamp( cellX, 0, res - 1 );
   cellY = std::clamp( cellY, 0, res - 1 );
 
@@ -326,7 +325,7 @@ float QgsDemHeightMapGenerator::heightAt( double x, double y )
 
 void QgsDemHeightMapGenerator::onFutureFinished()
 {
-  QFutureWatcher<QByteArray> *fw = static_cast<QFutureWatcher<QByteArray>*>( sender() );
+  QFutureWatcher<QByteArray> *fw = static_cast<QFutureWatcher<QByteArray> *>( sender() );
   Q_ASSERT( fw );
   Q_ASSERT( mJobs.contains( fw ) );
   JobData jobData = mJobs.value( fw );

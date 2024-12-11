@@ -61,9 +61,7 @@ QDomElement QgsDirectionalLightSettings::writeXml( QDomDocument &doc, const QgsR
 
 void QgsDirectionalLightSettings::readXml( const QDomElement &elem, const QgsReadWriteContext & )
 {
-  mDirection.set( elem.attribute( QStringLiteral( "x" ) ).toFloat(),
-                  elem.attribute( QStringLiteral( "y" ) ).toFloat(),
-                  elem.attribute( QStringLiteral( "z" ) ).toFloat() );
+  mDirection.set( elem.attribute( QStringLiteral( "x" ) ).toFloat(), elem.attribute( QStringLiteral( "y" ) ).toFloat(), elem.attribute( QStringLiteral( "z" ) ).toFloat() );
   mColor = QgsColorUtils::colorFromString( elem.attribute( QStringLiteral( "color" ) ) );
   mIntensity = elem.attribute( QStringLiteral( "intensity" ) ).toFloat();
 }

@@ -26,16 +26,12 @@
  * \brief Module specialized for WFS3 service
  * \since QGIS 3.10
  */
-class QgsWfs3Module: public QgsServiceModule
+class QgsWfs3Module : public QgsServiceModule
 {
   public:
     void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
-      QgsServerOgcApi *wfs3Api = new QgsServerOgcApi { serverIface,
-                                                       QStringLiteral( "/wfs3" ),
-                                                       QStringLiteral( "OGC WFS3 (Draft)" ),
-                                                       QStringLiteral( "1.0.0" )
-                                                     };
+      QgsServerOgcApi *wfs3Api = new QgsServerOgcApi { serverIface, QStringLiteral( "/wfs3" ), QStringLiteral( "OGC WFS3 (Draft)" ), QStringLiteral( "1.0.0" ) };
       // Register handlers
       wfs3Api->registerHandler<QgsWfs3CollectionsItemsHandler>();
       wfs3Api->registerHandler<QgsWfs3CollectionsFeatureHandler>();
@@ -51,7 +47,6 @@ class QgsWfs3Module: public QgsServiceModule
       registry.registerApi( wfs3Api );
     }
 };
-
 
 
 // Entry points

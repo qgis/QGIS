@@ -22,7 +22,7 @@
 #include "qgsambientocclusionrenderentity.h"
 #include "qgsambientocclusionblurentity.h"
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
@@ -379,7 +379,8 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructAmbientOcclusionRenderPass(
   mAmbientOcclusionRenderStateSet = new Qt3DRender::QRenderStateSet( mAmbientOcclusionRenderCameraSelector );
 
   Qt3DRender::QDepthTest *depthRenderDepthTest = new Qt3DRender::QDepthTest;
-  depthRenderDepthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );;
+  depthRenderDepthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
+  ;
   Qt3DRender::QCullFace *depthRenderCullFace = new Qt3DRender::QCullFace;
   depthRenderCullFace->setMode( Qt3DRender::QCullFace::NoCulling );
 
@@ -427,7 +428,8 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructAmbientOcclusionBlurPass()
   mAmbientOcclusionBlurStateSet = new Qt3DRender::QRenderStateSet( mAmbientOcclusionBlurCameraSelector );
 
   Qt3DRender::QDepthTest *depthRenderDepthTest = new Qt3DRender::QDepthTest;
-  depthRenderDepthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );;
+  depthRenderDepthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
+  ;
   Qt3DRender::QCullFace *depthRenderCullFace = new Qt3DRender::QCullFace;
   depthRenderCullFace->setMode( Qt3DRender::QCullFace::NoCulling );
 
@@ -491,7 +493,6 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructRubberBandsPass()
 }
 
 
-
 Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructDepthRenderPass()
 {
   // depth buffer render to copy pass
@@ -503,7 +504,8 @@ Qt3DRender::QFrameGraphNode *QgsFrameGraph::constructDepthRenderPass()
   mDepthRenderStateSet = new Qt3DRender::QRenderStateSet( mDepthRenderCameraSelector );
 
   Qt3DRender::QDepthTest *depthRenderDepthTest = new Qt3DRender::QDepthTest;
-  depthRenderDepthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );;
+  depthRenderDepthTest->setDepthFunction( Qt3DRender::QDepthTest::Always );
+  ;
   Qt3DRender::QCullFace *depthRenderCullFace = new Qt3DRender::QCullFace;
   depthRenderCullFace->setMode( Qt3DRender::QCullFace::NoCulling );
 
@@ -563,7 +565,7 @@ Qt3DCore::QEntity *QgsFrameGraph::constructDepthRenderQuad()
 
   Qt3DQGeometry *geom = new Qt3DQGeometry;
   Qt3DQAttribute *positionAttribute = new Qt3DQAttribute;
-  const QVector<float> vert = { -1.0f, -1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ -1.0f,  1.0f, 1.0f, /**/ -1.0f,  1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ 1.0f,  1.0f, 1.0f };
+  const QVector<float> vert = { -1.0f, -1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ -1.0f, 1.0f, 1.0f, /**/ -1.0f, 1.0f, 1.0f, /**/ 1.0f, -1.0f, 1.0f, /**/ 1.0f, 1.0f, 1.0f };
 
   const QByteArray vertexArr( ( const char * ) vert.constData(), vert.size() * sizeof( float ) );
   Qt3DQBuffer *vertexBuffer = nullptr;
@@ -629,7 +631,6 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
   : Qt3DCore::QEntity( root )
   , mSize( s )
 {
-
   // general overview of how the frame graph looks:
   //
   //  +------------------------+    using window or
@@ -680,7 +681,7 @@ QgsFrameGraph::QgsFrameGraph( QSurface *surface, QSize s, Qt3DRender::QCamera *m
 
   mRenderSurfaceSelector = new Qt3DRender::QRenderSurfaceSelector;
 
-  QObject *surfaceObj = dynamic_cast< QObject *  >( surface );
+  QObject *surfaceObj = dynamic_cast<QObject *>( surface );
   Q_ASSERT( surfaceObj );
 
   mRenderSurfaceSelector->setSurface( surfaceObj );
@@ -751,21 +752,20 @@ void calculateViewExtent( Qt3DRender::QCamera *camera, float shadowRenderingDist
   const QMatrix4x4 projectionMatrix = camera->projectionMatrix();
   const QMatrix4x4 viewMatrix = camera->viewMatrix();
   float depth = 1.0f;
-  QVector4D viewCenter =  viewMatrix * QVector4D( camera->viewCenter(), 1.0f );
+  QVector4D viewCenter = viewMatrix * QVector4D( camera->viewCenter(), 1.0f );
   viewCenter /= viewCenter.w();
   viewCenter = projectionMatrix * viewCenter;
   viewCenter /= viewCenter.w();
   depth = viewCenter.z();
-  QVector<QVector3D> viewFrustumPoints =
-  {
-    QVector3D( 0.0f,  0.0f, depth ),
-    QVector3D( 0.0f,  1.0f, depth ),
-    QVector3D( 1.0f,  0.0f, depth ),
-    QVector3D( 1.0f,  1.0f, depth ),
-    QVector3D( 0.0f,  0.0f, 0 ),
-    QVector3D( 0.0f,  1.0f, 0 ),
-    QVector3D( 1.0f,  0.0f, 0 ),
-    QVector3D( 1.0f,  1.0f, 0 )
+  QVector<QVector3D> viewFrustumPoints = {
+    QVector3D( 0.0f, 0.0f, depth ),
+    QVector3D( 0.0f, 1.0f, depth ),
+    QVector3D( 1.0f, 0.0f, depth ),
+    QVector3D( 1.0f, 1.0f, depth ),
+    QVector3D( 0.0f, 0.0f, 0 ),
+    QVector3D( 0.0f, 1.0f, 0 ),
+    QVector3D( 1.0f, 0.0f, 0 ),
+    QVector3D( 1.0f, 1.0f, 0 )
   };
   maxX = std::numeric_limits<float>::lowest();
   maxY = std::numeric_limits<float>::lowest();
@@ -823,9 +823,10 @@ void QgsFrameGraph::setupDirectionalLight( const QgsDirectionalLightSettings &li
 
   mLightCamera->setProjectionType( Qt3DRender::QCameraLens::ProjectionType::OrthographicProjection );
   mLightCamera->lens()->setOrthographicProjection(
-    - 0.7 * ( maxX - minX ), 0.7 * ( maxX - minX ),
-    - 0.7 * ( maxZ - minZ ), 0.7 * ( maxZ - minZ ),
-    1.0f, 2 * ( lookingAt - lightPosition ).length() );
+    -0.7 * ( maxX - minX ), 0.7 * ( maxX - minX ),
+    -0.7 * ( maxZ - minZ ), 0.7 * ( maxZ - minZ ),
+    1.0f, 2 * ( lookingAt - lightPosition ).length()
+  );
 
   mPostprocessingEntity->setupShadowRenderingExtent( minX, maxX, minZ, maxZ );
   mPostprocessingEntity->setupDirectionalLight( lightPosition, lightDirection );
@@ -911,7 +912,7 @@ void QgsFrameGraph::setFrustumCullingEnabled( bool enabled )
   if ( mFrustumCullingEnabled )
     mFrustumCulling->setParent( mForwardClearBuffers );
   else
-    mFrustumCulling->setParent( ( Qt3DCore::QNode * )nullptr );
+    mFrustumCulling->setParent( ( Qt3DCore::QNode * ) nullptr );
 }
 
 void QgsFrameGraph::setupEyeDomeLighting( bool enabled, double strength, int distance )
@@ -1022,5 +1023,4 @@ void QgsFrameGraph::addClipPlanes( int nrClipPlanes )
     clipPlane->setPlaneIndex( i );
     mClipRenderStateSet->addRenderState( clipPlane );
   }
-
 }

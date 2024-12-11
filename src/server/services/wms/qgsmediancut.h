@@ -42,5 +42,3 @@ namespace QgsWms
 } // namespace QgsWms
 
 #endif
-
-

@@ -70,14 +70,10 @@ class QgsMesh3DMaterial : public QgsMaterial
     };
 
     //! Constructor
-    QgsMesh3DMaterial( QgsMeshLayer *layer,
-                       const QgsDateTimeRange &timeRange,
-                       const QgsVector3D &origin,
-                       const QgsMesh3DSymbol *symbol,
-                       MagnitudeType magnitudeType = ZValue );
+    QgsMesh3DMaterial( QgsMeshLayer *layer, const QgsDateTimeRange &timeRange, const QgsVector3D &origin, const QgsMesh3DSymbol *symbol, MagnitudeType magnitudeType = ZValue );
 
   private:
-    std::unique_ptr< QgsMesh3DSymbol > mSymbol;
+    std::unique_ptr<QgsMesh3DSymbol> mSymbol;
     Qt3DRender::QTechnique *mTechnique;
     MagnitudeType mMagnitudeType = ZValue;
     QgsVector3D mOrigin;
@@ -87,7 +83,7 @@ class QgsMesh3DMaterial : public QgsMaterial
 };
 
 
-class ArrowsGridTexture: public Qt3DRender::QAbstractTextureImage
+class ArrowsGridTexture : public Qt3DRender::QAbstractTextureImage
 {
     Q_OBJECT
 

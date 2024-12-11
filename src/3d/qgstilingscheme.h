@@ -67,12 +67,10 @@ class _3D_EXPORT QgsTilingScheme
     QgsRectangle fullExtent() const { return mFullExtent; }
 
   private:
-    QgsPointXY mMapOrigin; //!< Origin point in map coordinates: (0,0) in the tiling scheme
-    double mBaseTileSide = 0;  //!< Length of tile side at zoom level 0 in map coordinates
-    QgsCoordinateReferenceSystem mCrs;  //!< CRS of the coordinates
-    QgsRectangle mFullExtent; //!< The fullExtent used in constructor
-
-
+    QgsPointXY mMapOrigin;             //!< Origin point in map coordinates: (0,0) in the tiling scheme
+    double mBaseTileSide = 0;          //!< Length of tile side at zoom level 0 in map coordinates
+    QgsCoordinateReferenceSystem mCrs; //!< CRS of the coordinates
+    QgsRectangle mFullExtent;          //!< The fullExtent used in constructor
 };
 
 #endif // QGSTILINGSCHEME_H
