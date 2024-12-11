@@ -105,13 +105,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
 
   QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, QStringLiteral( "CRS_OUTPUT" ), context );
   QString identifier;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters,
-                                        QStringLiteral( "OUTPUT" ),
-                                        context,
-                                        identifier,
-                                        QgsFields(),
-                                        Qgis::WkbType::MultiPolygon,
-                                        outputCrs ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, identifier, QgsFields(), Qgis::WkbType::MultiPolygon, outputCrs ) );
   if ( !sink )
     return QVariantMap();
 
@@ -229,7 +223,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
 
     // individula polygon - can be either polygon or hole in polygon
     QgsPolygon *polygon = new QgsPolygon();
-    polygon->setExteriorRing( qgsgeometry_cast< QgsLineString * >( *pit )->clone() );
+    polygon->setExteriorRing( qgsgeometry_cast<QgsLineString *>( *pit )->clone() );
 
     // add first polygon, no need to check anything
     if ( polygons.empty() )
@@ -247,7 +241,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
 
     for ( int i = 0; i < polygons.count(); i++ )
     {
-      QgsPolygon *p = qgsgeometry_cast<QgsPolygon *> ( polygons.at( i ) );
+      QgsPolygon *p = qgsgeometry_cast<QgsPolygon *>( polygons.at( i ) );
 
       // polygon covers another, turn contained polygon into interior ring
       if ( engine->contains( p ) )
@@ -266,7 +260,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
     }
 
     // if is not a hole polygon add it to the vector of polygons
-    if ( ! isHole )
+    if ( !isHole )
       polygons.append( polygon );
   }
 
