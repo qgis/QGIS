@@ -209,7 +209,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
   mergedLines = mergedLines.mergeLines();
   QgsAbstractGeometry *multiLinesAbstract = mergedLines.get();
 
-  // set of polygons to consturct result
+  // set of polygons to construct result
   QVector<QgsAbstractGeometry *> polygons;
 
   // for every part create polygon and add to resulting multipolygon
