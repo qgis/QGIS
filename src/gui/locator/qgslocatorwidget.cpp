@@ -32,6 +32,10 @@
 #include <QTextLayout>
 #include <QTextLine>
 
+///@cond PRIVATE
+const QgsSettingsEntryInteger *QgsLocatorWidget::settingLocatorTreeHeight = new QgsSettingsEntryInteger( QStringLiteral( "tree-height" ), sTreeGuiLocator, 20, QStringLiteral( "Number of rows to show in the locator tree (requires a restart)" ), Qgis::SettingsOptions(), 5 /*min*/, 100 /*max*/ );
+///@endcond PRIVATE
+
 QgsLocatorWidget::QgsLocatorWidget( QWidget *parent )
   : QWidget( parent )
   , mModelBridge( new QgsLocatorModelBridge( this ) )
@@ -404,7 +408,7 @@ void QgsLocatorResultsView::recalculateSize()
 #endif
 
   // try to show about 20 rows
-  int rowSize = 20 * itemDelegate()->sizeHint( optView, model()->index( 0, 0 ) ).height();
+  int rowSize = QgsLocatorWidget::settingLocatorTreeHeight->value() * itemDelegate()->sizeHint( optView, model()->index( 0, 0 ) ).height();
 
   // try to take up a sensible portion of window width (about half)
   int width = std::max( 300, window()->size().width() / 2 );

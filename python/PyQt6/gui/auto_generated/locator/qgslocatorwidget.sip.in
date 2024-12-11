@@ -24,6 +24,7 @@ and presenting them to users for selection.
 #include "qgslocatorwidget.h"
 %End
   public:
+
     QgsLocatorWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLocatorWidget.
