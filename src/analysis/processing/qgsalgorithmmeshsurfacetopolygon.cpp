@@ -262,6 +262,9 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
     // if is not a hole polygon add it to the vector of polygons
     if ( !isHole )
       polygons.append( polygon );
+    else
+      // polygon was used as a hole, it is not needed anymore, delete it to avoid memory leak
+      delete polygon;
   }
 
   // create resulting multipolygon
