@@ -176,7 +176,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
   if ( feedback )
   {
     feedback->setProgress( 0 );
-    feedback->setProgressText( "Parsing mesh edges." );
+    feedback->setProgressText( QObject::tr( "Parsing mesh edges." ) );
   }
 
   std::unique_ptr<QgsMultiLineString> multiLineString( new QgsMultiLineString() );
