@@ -226,9 +226,9 @@ QgsMeshEditDigitizingAction::QgsMeshEditDigitizingAction( QObject *parent )
   QLabel *labelZValueType = new QLabel( tr( "New vertex Z value" ) );
   labelZValueType->setToolTip( tr( "Sets the source of Z values when adding new vertices" ) );
   mComboZValueType = new QComboBox();
-    mComboZValueType->addItem( tr( "Prefer mesh, then Z Widget" ), PreferMeshThenZWidget );
+  mComboZValueType->addItem( tr( "Prefer mesh, then Z Widget" ), PreferMeshThenZWidget );
   mComboZValueType->setItemData( 0, tr( "Get interpolated value from the existing mesh.\nIf vertex lies outside the mesh, get the value from the Z value widget instead." ), Qt::ToolTipRole );
-    mComboZValueType->addItem( tr( "Prefer mesh, then terrain" ), PreferMeshThenTerrain );
+  mComboZValueType->addItem( tr( "Prefer mesh, then terrain" ), PreferMeshThenTerrain );
   mComboZValueType->setItemData( 1, tr( "Get interpolated value from the existing mesh.\nIf vertex lies outside the mesh, get the value from the project terrain instead." ), Qt::ToolTipRole );
   mComboZValueType->addItem( tr( "Project terrain" ), Terrain );
   mComboZValueType->setItemData( 2, tr( "Get the value from the project's terrain.\nIf the terrain has no value for the point, the default elevation will be used." ), Qt::ToolTipRole );
