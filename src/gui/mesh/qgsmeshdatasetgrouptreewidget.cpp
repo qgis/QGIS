@@ -44,8 +44,7 @@ QgsMeshDatasetGroupTreeWidget::QgsMeshDatasetGroupTreeWidget( QWidget *parent ):
     this->mDatasetGroupTreeView->resetDefault( this->mMeshLayer );
   } );
 
-  connect( mDatasetGroupTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, [this]()
-  {
+  connect( mDatasetGroupTreeView->selectionModel(), &QItemSelectionModel::currentChanged, this, [this]() {
     QModelIndex index = mDatasetGroupTreeView->currentIndex();
     QgsMeshDatasetGroupTreeItem *meshGroupItem = mDatasetGroupTreeView->datasetGroupTreeRootItem()->childFromDatasetGroupIndex( index.row() );
     if ( meshGroupItem )
