@@ -37,39 +37,13 @@ class CORE_EXPORT QgsAuthorizationSettings
   public:
   
   //! Constructor for QgsAuthorizationSettings.
-  QgsAuthorizationSettings( const QString &userName = QString(), const QString &password = QString(), const QgsHttpHeaders &httpHeaders = QgsHttpHeaders(), const QString &authcfg = QString() )
-    : mUserName( userName )
-    , mPassword( password )
-    , mHttpHeaders( httpHeaders )
-    , mAuthCfg( authcfg )
-  {}
+  QgsAuthorizationSettings( const QString &userName = QString(), const QString &password = QString(), const QgsHttpHeaders &httpHeaders = QgsHttpHeaders(), const QString &authcfg = QString() );
 
   //! Update authorization for request
-  bool setAuthorization( QNetworkRequest &request ) const
-  {
-    if ( !mAuthCfg.isEmpty() ) // must be non-empty value
-    {
-      return QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
-    }
-    else if ( !mUserName.isEmpty() || !mPassword.isEmpty() )
-    {
-      request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUserName, mPassword ).toUtf8().toBase64() );
-    }
-
-    mHttpHeaders.updateNetworkRequest( request );
-
-    return true;
-  }
+  bool setAuthorization( QNetworkRequest &request ) const;
 
   //! Update authorization for reply
-  bool setAuthorizationReply( QNetworkReply *reply ) const
-  {
-    if ( !mAuthCfg.isEmpty() )
-    {
-      return QgsApplication::authManager()->updateNetworkReply( reply, mAuthCfg );
-    }
-    return true;
-  }
+  bool setAuthorizationReply( QNetworkReply *reply ) const;
 
   //! Username for basic http authentication
   QString mUserName;
