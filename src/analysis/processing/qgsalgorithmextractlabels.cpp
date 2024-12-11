@@ -89,7 +89,7 @@ void QgsExtractLabelsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterBoolean(
     QStringLiteral( "INCLUDE_UNPLACED" ),
     QObject::tr( "Include unplaced labels" ),
-    QVariant( true ), true
+    QVariant( true )
   ) );
 
   std::unique_ptr<QgsProcessingParameterNumber> dpiParameter = std::make_unique<QgsProcessingParameterNumber>(
