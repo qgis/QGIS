@@ -22,6 +22,7 @@
 #include "qgslocatorfilter.h"
 #include "qgsfloatingwidget.h"
 #include "qgsfilterlineedit.h"
+#include "qgssettingstree.h"
 
 #include <QWidget>
 #include <QTreeView>
@@ -34,6 +35,7 @@ class QgsLocatorResultsView;
 class QgsMapCanvas;
 class QgsLocatorModelBridge;
 class QgsLocatorLineEdit;
+class QgsSettingsEntryInteger;
 
 /**
  * \class QgsLocatorWidget
@@ -47,6 +49,12 @@ class GUI_EXPORT QgsLocatorWidget : public QWidget
     Q_OBJECT
 
   public:
+#ifndef SIP_RUN
+
+    static inline QgsSettingsTreeNode *sTreeGuiLocator = QgsSettingsTree::sTreeGui->createChildNode( QStringLiteral( "locator" ) );
+    static const QgsSettingsEntryInteger *settingLocatorTreeHeight;
+#endif
+
     /**
      * Constructor for QgsLocatorWidget.
      */
