@@ -28,6 +28,7 @@ class QgsMapCanvas;
 
 #include "qgis_app.h"
 #include "qgspointxy.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <QWidget>
 #include <QElapsedTimer>
@@ -87,6 +88,7 @@ class APP_EXPORT QgsStatusBarCoordinatesWidget : public QWidget
     unsigned int mMousePrecisionDecimalPlaces;
 
     QgsPointXY mLastCoordinate;
+    QgsCoordinateReferenceSystem mLastCoordinateCrs;
 
     bool mIsFirstSizeChange = true;
     QElapsedTimer mLastSizeChangeTimer;

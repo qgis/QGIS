@@ -374,6 +374,7 @@ void QgsStatusBarCoordinatesWidget::refreshMapCanvas()
 void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &p )
 {
   mLastCoordinate = p;
+  mLastCoordinateCrs = mMapCanvas->mapSettings().destinationCrs();
   updateCoordinateDisplay();
 }
 
@@ -431,7 +432,7 @@ void QgsStatusBarCoordinatesWidget::updateCoordinateDisplay()
   if ( mLastCoordinate.isEmpty() )
     mLineEdit->clear();
   else
-    mLineEdit->setText( QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), mLastCoordinate, mMapCanvas->mapSettings().destinationCrs(), static_cast<int>( mMousePrecisionDecimalPlaces ) ) );
+    mLineEdit->setText( QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), mLastCoordinate, mLastCoordinateCrs, static_cast<int>( mMousePrecisionDecimalPlaces ) ) );
 
   ensureCoordinatesVisible();
 }
