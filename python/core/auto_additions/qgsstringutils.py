@@ -18,5 +18,6 @@ try:
     QgsStringUtils.htmlToMarkdown = staticmethod(QgsStringUtils.htmlToMarkdown)
     QgsStringUtils.qRegExpEscape = staticmethod(QgsStringUtils.qRegExpEscape)
     QgsStringUtils.truncateMiddleOfString = staticmethod(QgsStringUtils.truncateMiddleOfString)
+    QgsStringUtils.containsByWord = staticmethod(QgsStringUtils.containsByWord)
 except (NameError, AttributeError):
     pass

@@ -18,6 +18,7 @@
 #include "moc_qgscoordinatereferencesystemmodel.cpp"
 #include "qgscoordinatereferencesystemutils.h"
 #include "qgsapplication.h"
+#include "qgsstringutils.h"
 
 #include <QFont>
 
@@ -706,7 +707,7 @@ bool QgsCoordinateReferenceSystemProxyModel::filterAcceptsRow( int sourceRow, co
   if ( !mFilterString.trimmed().isEmpty() )
   {
     const QString name = sourceModel()->data( sourceIndex, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::Name ) ).toString();
-    if ( !( name.contains( mFilterString, Qt::CaseInsensitive )
+    if ( !( QgsStringUtils::containsByWord( name, mFilterString )
             || authid.contains( mFilterString, Qt::CaseInsensitive ) ) )
       return false;
   }
