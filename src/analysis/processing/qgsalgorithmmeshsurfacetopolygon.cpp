@@ -247,13 +247,13 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
       if ( engine->contains( p ) )
       {
         polygons.removeAt( i );
-        polygon->addInteriorRing( p->exteriorRing() );
+        polygon->addInteriorRing( p->exteriorRing()->clone() );
         break;
       }
       // polygon is within another, make it interior rind and do not add it
       else if ( engine->within( p ) )
       {
-        p->addInteriorRing( polygon->exteriorRing() );
+        p->addInteriorRing( polygon->exteriorRing()->clone() );
         isHole = true;
         break;
       }
