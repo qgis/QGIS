@@ -101,6 +101,14 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
       QMap< QString, QVariant > mParams;
     };
 
+    struct IdentifyProperties
+    {
+      //! Identify search radius is map units. Use negative value to ignore
+      double searchRadiusMapUnits = -1;
+      //! Skip identify results from layers that have a 3d renderer set
+      bool skip3DLayers = true;
+    };
+
     //! constructor
     QgsMapToolIdentify( QgsMapCanvas *canvas );
 
@@ -254,15 +262,38 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
      * \param skip3DLayers Optional override to skip identify results from layers that have a 3d renderer set (since QGIS 3.42)
      * \see restoreCanvasPropertiesOverrides()
      * \since QGIS 3.4
+     * \deprecated QGIS 3.42. Use setPropertiesOverrides() instead.
      */
-    void setCanvasPropertiesOverrides( double searchRadiusMapUnits, bool skip3DLayers = true );
+    Q_DECL_DEPRECATED void setCanvasPropertiesOverrides( double searchRadiusMapUnits ) SIP_DEPRECATED;
 
     /**
      * Clears canvas properties overrides previously set with setCanvasPropertiesOverrides()
      * \see setCanvasPropertiesOverrides()
      * \since QGIS 3.4
+     * \deprecated QGIS 3.42. Use restorePropertiesOverrides() instead.
      */
-    void restoreCanvasPropertiesOverrides();
+    Q_DECL_DEPRECATED void restoreCanvasPropertiesOverrides() SIP_DEPRECATED;
+
+    /**
+     * Overrides some map canvas properties inside the map tool for the upcoming identify requests.
+     *
+     * This is useful when the identification is triggered by some other piece of GUI like a 3D map view
+     * and some properties like search radius need to be adjusted so that identification returns correct
+     * results.
+     * When the custom identification has finished, restorePropertiesOverrides() should
+     * be called to erase any overrides.
+     *
+     * \param overrides The identify tool properties that will be overridden
+     * \since QGIS 3.42
+     */
+    void setPropertiesOverrides( IdentifyProperties overrides );
+
+    /**
+     * Clears canvas properties overrides previously set with setPropertiesOverrides()
+     * \see setPropertiesOverrides()
+     * \since QGIS 3.42
+     */
+    void restorePropertiesOverrides();
 
   private:
 
@@ -341,8 +372,7 @@ class GUI_EXPORT QgsMapToolIdentify : public QgsMapTool
 
     int mCoordinatePrecision;
 
-    double mOverrideCanvasSearchRadius = -1;
-    bool mSkip3DLayers = false;
+    IdentifyProperties mPropertiesOverrides;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolIdentify::LayerType )

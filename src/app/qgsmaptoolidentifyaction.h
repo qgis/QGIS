@@ -60,10 +60,10 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     /**
      * Triggers map identification at the given location and outputs results in GUI
-     * \param searchRadiusMapUnits The search radius to use for identification in map units
-     * \param skip3DLayers When set to TRUE only layers with no 3d renderer set will be identified
+     * \param geom The geometry to use for identification
+     * \param properties Sets overridden properties for this identification, like search radius
      */
-    void identifyAndShowResults( const QgsGeometry &geom, double searchRadiusMapUnits, bool skip3DLayers );
+    void identifyAndShowResults( const QgsGeometry &geom, IdentifyProperties properties );
     //! Clears any previous results from the GUI
     void clearResults();
     //! Looks up feature by its ID and outputs the result in GUI
