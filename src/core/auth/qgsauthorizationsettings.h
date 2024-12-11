@@ -32,8 +32,10 @@
  * \brief Utility class that contains authorization information.
  * \since QGIS 3.42
  */
-struct CORE_EXPORT QgsAuthorizationSettings
+class CORE_EXPORT QgsAuthorizationSettings
 {
+  public:
+  
   //! Constructor for QgsAuthorizationSettings.
   QgsAuthorizationSettings( const QString &userName = QString(), const QString &password = QString(), const QgsHttpHeaders &httpHeaders = QgsHttpHeaders(), const QString &authcfg = QString() )
     : mUserName( userName )
