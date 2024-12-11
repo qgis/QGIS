@@ -189,16 +189,26 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsMapToolIdentify::identify( const Qg
   return results;
 }
 
-void QgsMapToolIdentify::setCanvasPropertiesOverrides( double searchRadiusMapUnits, bool skip3DLayers )
+void QgsMapToolIdentify::setCanvasPropertiesOverrides( double searchRadiusMapUnits )
 {
-  mOverrideCanvasSearchRadius = searchRadiusMapUnits;
-  mSkip3DLayers = skip3DLayers;
+  mPropertiesOverrides.searchRadiusMapUnits = searchRadiusMapUnits;
 }
 
 void QgsMapToolIdentify::restoreCanvasPropertiesOverrides()
 {
-  mOverrideCanvasSearchRadius = -1;
-  mSkip3DLayers = false;
+  mPropertiesOverrides.searchRadiusMapUnits = -1;
+  mPropertiesOverrides.skip3DLayers = false;
+}
+
+void QgsMapToolIdentify::setPropertiesOverrides( IdentifyProperties overrides )
+{
+  mPropertiesOverrides = overrides;
+}
+
+void QgsMapToolIdentify::restorePropertiesOverrides()
+{
+  mPropertiesOverrides.searchRadiusMapUnits = -1;
+  mPropertiesOverrides.skip3DLayers = false;
 }
 
 void QgsMapToolIdentify::activate()
@@ -282,7 +292,7 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
   if ( !layer )
     return false;
 
-  if ( mSkip3DLayers && layer->renderer3D() )
+  if ( mPropertiesOverrides.skip3DLayers && layer->renderer3D() )
     return false;
 
   if ( !identifyContext.zRange().isInfinite() )
@@ -291,7 +301,7 @@ bool QgsMapToolIdentify::identifyMeshLayer( QList<QgsMapToolIdentify::IdentifyRe
       return false;
   }
 
-  double searchRadius = mOverrideCanvasSearchRadius < 0 ? searchRadiusMU( mCanvas ) : mOverrideCanvasSearchRadius;
+  double searchRadius = mPropertiesOverrides.searchRadiusMapUnits < 0 ? searchRadiusMU( mCanvas ) : mPropertiesOverrides.searchRadiusMapUnits;
   bool isTemporal = identifyContext.isTemporal() && layer->temporalProperties()->isActive();
 
   QList<QgsMeshDatasetIndex> datasetIndexList;
@@ -454,7 +464,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
     QgsRectangle r;
     if ( isSingleClick )
     {
-      double sr = mOverrideCanvasSearchRadius < 0 ? searchRadiusMU( mCanvas ) : mOverrideCanvasSearchRadius;
+      double sr = mPropertiesOverrides.searchRadiusMapUnits < 0 ? searchRadiusMU( mCanvas ) : mPropertiesOverrides.searchRadiusMapUnits;
       r = toLayerCoordinates( layer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ) );
     }
     else
@@ -540,7 +550,7 @@ bool QgsMapToolIdentify::identifyVectorTileLayer( QList<QgsMapToolIdentify::Iden
 
 bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::IdentifyResult> *results, QgsPointCloudLayer *layer, const QgsGeometry &geometry, const QgsIdentifyContext &identifyContext )
 {
-  if ( mSkip3DLayers && layer->renderer3D() )
+  if ( mPropertiesOverrides.skip3DLayers && layer->renderer3D() )
     return false;
 
   if ( !identifyContext.zRange().isInfinite() )
@@ -556,7 +566,7 @@ bool QgsMapToolIdentify::identifyPointCloudLayer( QList<QgsMapToolIdentify::Iden
   if ( !identifyContext.zRange().isInfinite() )
     context.setZRange( identifyContext.zRange() );
 
-  const double searchRadiusMapUnits = mOverrideCanvasSearchRadius < 0 ? searchRadiusMU( mCanvas ) : mOverrideCanvasSearchRadius;
+  const double searchRadiusMapUnits = mPropertiesOverrides.searchRadiusMapUnits < 0 ? searchRadiusMU( mCanvas ) : mPropertiesOverrides.searchRadiusMapUnits;
 
   const QVector<QVariantMap> points = renderer->identify( layer, context, geometry, searchRadiusMapUnits );
 
@@ -585,7 +595,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
   if ( !layer || !layer->isSpatial() || !layer->dataProvider() )
     return false;
 
-  if ( mSkip3DLayers && layer->renderer3D() )
+  if ( mPropertiesOverrides.skip3DLayers && layer->renderer3D() )
     return false;
 
   if ( !layer->isInScaleRange( mCanvas->mapSettings().scale() ) )
@@ -639,7 +649,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QList<QgsMapToolIdentify::Identify
     QgsRectangle r;
     if ( isSingleClick )
     {
-      double sr = mOverrideCanvasSearchRadius < 0 ? searchRadiusMU( mCanvas ) : mOverrideCanvasSearchRadius;
+      double sr = mPropertiesOverrides.searchRadiusMapUnits < 0 ? searchRadiusMU( mCanvas ) : mPropertiesOverrides.searchRadiusMapUnits;
       r = toLayerCoordinates( layer, QgsRectangle( point.x() - sr, point.y() - sr, point.x() + sr, point.y() + sr ) );
     }
     else
