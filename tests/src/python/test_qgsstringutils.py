@@ -10,6 +10,7 @@ __author__ = "Nyall Dawson"
 __date__ = "30/08/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
     QgsStringReplacement,
@@ -370,6 +371,84 @@ class PyQgsStringUtils(unittest.TestCase):
         self.assertEqual(
             QgsStringUtils.truncateMiddleOfString("this is a test", 0), "…"
         )
+
+    def test_contains_by_word(self):
+        """
+        Test QgsStringUtils.containsByWord
+        """
+        self.assertTrue(QgsStringUtils.containsByWord("Hello World", "world hello"))
+        self.assertTrue(QgsStringUtils.containsByWord("Hello World", "hello\tworld"))
+        self.assertTrue(QgsStringUtils.containsByWord("Hello World", "hello"))
+        self.assertTrue(QgsStringUtils.containsByWord("Hello World", "world"))
+        self.assertFalse(QgsStringUtils.containsByWord("Hello World", "goodbye"))
+
+        # Case insensitive (default)
+        self.assertTrue(QgsStringUtils.containsByWord("Hello World", "WORLD"))
+        self.assertTrue(QgsStringUtils.containsByWord("HELLO WORLD", "world"))
+
+        # Case sensitive
+        self.assertFalse(
+            QgsStringUtils.containsByWord(
+                "Hello World", "WORLD", Qt.CaseSensitivity.CaseSensitive
+            )
+        )
+        self.assertTrue(
+            QgsStringUtils.containsByWord(
+                "Hello World", "World", Qt.CaseSensitivity.CaseSensitive
+            )
+        )
+
+        # Test that parts of words can match
+        self.assertTrue(
+            QgsStringUtils.containsByWord("Worldmap_Winkel_II", "winkel world")
+        )
+        self.assertTrue(QgsStringUtils.containsByWord("HelloWorld", "hello world"))
+        self.assertTrue(
+            QgsStringUtils.containsByWord("SuperCalifragilistic", "super cal fragi")
+        )
+
+        # empty strings
+        self.assertFalse(QgsStringUtils.containsByWord("Hello World", ""))
+        self.assertFalse(QgsStringUtils.containsByWord("Hello World", " "))
+        self.assertFalse(QgsStringUtils.containsByWord("", "hello"))
+        self.assertFalse(QgsStringUtils.containsByWord(" ", "hello"))
+        self.assertFalse(QgsStringUtils.containsByWord("", ""))
+        self.assertFalse(QgsStringUtils.containsByWord(" ", ""))
+        self.assertFalse(QgsStringUtils.containsByWord(" ", " "))
+
+        self.assertTrue(QgsStringUtils.containsByWord("Hello, World!", "hello world"))
+        self.assertTrue(QgsStringUtils.containsByWord("Hello-World", "hello world"))
+        self.assertTrue(QgsStringUtils.containsByWord("Hello_World", "hello world"))
+        self.assertTrue(QgsStringUtils.containsByWord("Hello\tWorld\n", "hello world"))
+
+        # test multiple words in different orders
+        self.assertTrue(
+            QgsStringUtils.containsByWord("The Quick Brown Fox", "fox quick")
+        )
+        self.assertTrue(
+            QgsStringUtils.containsByWord("The Quick Brown Fox", "brown the fox")
+        )
+        self.assertFalse(
+            QgsStringUtils.containsByWord("The Quick Brown Fox", "fox quick jumping")
+        )
+
+        # test handling of unicode characters"""
+        self.assertTrue(QgsStringUtils.containsByWord("École Primaire", "école"))
+        self.assertTrue(QgsStringUtils.containsByWord("München Stadt", "münchen"))
+        self.assertTrue(QgsStringUtils.containsByWord("北京市", "北京"))
+
+        # test handling of various whitespace scenarios
+        self.assertTrue(QgsStringUtils.containsByWord("Hello   World", "hello world"))
+        self.assertTrue(QgsStringUtils.containsByWord("Hello\tWorld", "hello world"))
+        self.assertTrue(QgsStringUtils.containsByWord("Hello\nWorld", "hello world"))
+        self.assertTrue(
+            QgsStringUtils.containsByWord("  Hello  World  ", "hello world")
+        )
+
+        # Test handling of word boundaries
+        self.assertTrue(QgsStringUtils.containsByWord("HelloWorld", "hello"))
+        self.assertTrue(QgsStringUtils.containsByWord("WorldHello", "hello"))
+        self.assertTrue(QgsStringUtils.containsByWord("TheHelloWorld", "hello world"))
 
 
 if __name__ == "__main__":
