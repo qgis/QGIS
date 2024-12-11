@@ -714,7 +714,7 @@ void QgsMdalProvider::makeLastDatasetGroupNameUnique()
       match = reEndsNumber.match( lastAddedGroupName );
       if ( match.hasMatch() )
       {
-        const int number = match.capturedTexts().last().toInt();
+        const int number = match.capturedTexts().constLast().toInt();
         lastAddedGroupName = lastAddedGroupName.left( lastAddedGroupName.length() - match.capturedLength() + 1 ) + QString::number( number + 1 );
       }
       else

@@ -146,7 +146,7 @@ void QgsMeshDatasetGroupStore::reindexDatasetGroups()
 
   for ( int i = 0; i < mPersistentProvider->datasetGroupCount(); i++ )
   {
-    QString name = mPersistentProvider->datasetGroupMetadata( i ).name();
+    const QString name = mPersistentProvider->datasetGroupMetadata( i ).name();
     mRegistry[globalIndex] = DatasetGroup{mPersistentProvider, i};
     mPersistentExtraDatasetGroupIndexes.append( globalIndex );
     mGroupNameToGlobalIndex.insert( name, globalIndex );
@@ -156,7 +156,7 @@ void QgsMeshDatasetGroupStore::reindexDatasetGroups()
   for ( int i = 0; i < mExtraDatasets.datasetGroupCount(); i++ )
   {
     QgsMeshDatasetSourceInterface *source = &mExtraDatasets;
-    QString name = source->datasetGroupMetadata( i ).name();
+    const QString name = source->datasetGroupMetadata( i ).name();
     mRegistry[globalIndex] = DatasetGroup{source, i};
     mGroupNameToGlobalIndex.insert( name, globalIndex );
     globalIndex++;

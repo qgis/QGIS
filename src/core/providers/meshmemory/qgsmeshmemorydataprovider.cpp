@@ -438,7 +438,7 @@ bool QgsMeshMemoryDataProvider::removeDatasetGroup( int index )
   }
   else
   {
-    QgsMeshDatasetGroupMetadata datasetGroupMeta = datasetGroupMetadata( index );
+    const QgsMeshDatasetGroupMetadata datasetGroupMeta = datasetGroupMetadata( index );
 
     mDatasetGroups.removeAt( index );
 
