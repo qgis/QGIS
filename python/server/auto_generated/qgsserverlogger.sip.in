@@ -21,7 +21,6 @@ Writes message log into server logfile
 #include "qgsserverlogger.h"
 %End
   public:
-
     static QgsServerLogger *instance();
 %Docstring
 Gets the singleton instance

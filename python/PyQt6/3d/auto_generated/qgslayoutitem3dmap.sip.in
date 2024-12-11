@@ -43,7 +43,6 @@ Implements support of 3D map views in print layouts
     }
 %End
   public:
-
     QgsLayoutItem3DMap( QgsLayout *layout /TransferThis/ );
 %Docstring
 Constructor for QgsLayoutItem3DMap, with the specified parent ``layout``.

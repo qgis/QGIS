@@ -29,7 +29,7 @@ namespace Qt3DCore
   class QAspectEngine;
   class QAbstractAspect;
   class QEntity;
-}
+} // namespace Qt3DCore
 
 namespace Qt3DRender
 {
@@ -37,7 +37,7 @@ namespace Qt3DRender
   class QFrameGraphNode;
   class QRenderAspect;
   class QRenderSettings;
-}
+} // namespace Qt3DRender
 
 namespace Qt3DExtras
 {
@@ -48,7 +48,7 @@ namespace Qt3DInput
 {
   class QInputAspect;
   class QInputSettings;
-}
+} // namespace Qt3DInput
 
 namespace Qt3DLogic
 {
@@ -83,7 +83,6 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
 {
     Q_OBJECT
   public:
-
     Qgs3DMapCanvas();
     ~Qgs3DMapCanvas();
 
@@ -206,7 +205,6 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     void updateHighlightSizes();
 
   protected:
-
     /**
      * Manages the display events specified in e.
      */
@@ -220,7 +218,6 @@ class _3D_EXPORT Qgs3DMapCanvas : public QWindow
     bool eventFilter( QObject *watched, QEvent *event ) override;
 
   private:
-
     Qt3DCore::QAspectEngine *m_aspectEngine;
 
     // Aspects

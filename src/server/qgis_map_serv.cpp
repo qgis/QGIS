@@ -86,9 +86,9 @@ int main( int argc, char *argv[] )
   // Starts FCGI loop
   while ( fcgi_accept() >= 0 )
   {
-    QgsFcgiServerRequest  request;
+    QgsFcgiServerRequest request;
     QgsFcgiServerResponse response( request.method() );
-    if ( ! request.hasError() )
+    if ( !request.hasError() )
     {
       server.handleRequest( request, response );
     }
@@ -100,4 +100,3 @@ int main( int argc, char *argv[] )
   QgsApplication::exitQgis();
   return 0;
 }
-

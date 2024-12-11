@@ -132,7 +132,7 @@ it may be useful to temporarily disable scene updates.
 .. versionadded:: 3.40
 %End
 
- static QMap< QString, Qgs3DMapScene * > openScenes() /Deprecated/;
+ static QMap<QString, Qgs3DMapScene *> openScenes() /Deprecated/;
 %Docstring
 Returns a map of 3D map scenes (by name) open in the QGIS application.
 

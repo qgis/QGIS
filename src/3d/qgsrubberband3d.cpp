@@ -28,7 +28,7 @@
 
 #include <Qt3DCore/QEntity>
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
@@ -74,8 +74,7 @@ QgsRubberBand3D::QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engi
     mLineMaterial->setLineWidth( mWidth );
     mLineMaterial->setLineColor( mColor );
 
-    QObject::connect( engine, &QgsAbstract3DEngine::sizeChanged, mLineMaterial, [this, engine]
-    {
+    QObject::connect( engine, &QgsAbstract3DEngine::sizeChanged, mLineMaterial, [this, engine] {
       mLineMaterial->setViewportSize( engine->size() );
     } );
     mLineMaterial->setViewportSize( engine->size() );
@@ -152,8 +151,7 @@ void QgsRubberBand3D::setMarkerType( MarkerType marker )
 {
   mMarkerType = marker;
 
-  const QVariantMap props
-  {
+  const QVariantMap props {
     { QStringLiteral( "color" ), mGeometryType == Qgis::GeometryType::Line ? mColor.lighter( 130 ).name() : mColor.name() },
     { QStringLiteral( "size_unit" ), QStringLiteral( "pixel" ) },
     { QStringLiteral( "size" ), QString::number( mGeometryType == Qgis::GeometryType::Line ? mWidth * 3.f : mWidth ) },
@@ -229,8 +227,7 @@ void QgsRubberBand3D::updateMarkerMaterial()
   mMarkerEntity->addComponent( mMarkerMaterial );
 
   //TODO: QgsAbstract3DEngine::sizeChanged should have const QSize &size param
-  QObject::connect( mEngine, &QgsAbstract3DEngine::sizeChanged, mMarkerMaterial, [this]
-  {
+  QObject::connect( mEngine, &QgsAbstract3DEngine::sizeChanged, mMarkerMaterial, [this] {
     mMarkerMaterial->setViewportSize( mEngine->size() );
   } );
   mMarkerMaterial->setViewportSize( mEngine->size() );

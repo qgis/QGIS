@@ -36,7 +36,6 @@ class QDomElement;
 class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSettings
 {
   public:
-
     QgsPhongTexturedMaterialSettings() = default;
 
     QString type() const override;
@@ -134,24 +133,17 @@ class _3D_EXPORT QgsPhongTexturedMaterialSettings : public QgsAbstractMaterialSe
     // TODO c++20 - replace with = default
     bool operator==( const QgsPhongTexturedMaterialSettings &other ) const
     {
-      return mAmbient == other.mAmbient &&
-             mSpecular == other.mSpecular &&
-             mShininess == other.mShininess &&
-             mOpacity == other.mOpacity &&
-             mDiffuseTexturePath == other.mDiffuseTexturePath &&
-             mTextureScale == other.mTextureScale &&
-             mTextureRotation == other.mTextureRotation &&
-             dataDefinedProperties() == other.dataDefinedProperties();
+      return mAmbient == other.mAmbient && mSpecular == other.mSpecular && mShininess == other.mShininess && mOpacity == other.mOpacity && mDiffuseTexturePath == other.mDiffuseTexturePath && mTextureScale == other.mTextureScale && mTextureRotation == other.mTextureRotation && dataDefinedProperties() == other.dataDefinedProperties();
     }
 
   private:
-    QColor mAmbient{ QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) };
-    QColor mSpecular{ QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
+    QColor mAmbient { QColor::fromRgbF( 0.1f, 0.1f, 0.1f, 1.0f ) };
+    QColor mSpecular { QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
     double mShininess = 0.0;
     double mOpacity = 1.0;
     QString mDiffuseTexturePath;
-    double mTextureScale{ 1.0f };
-    double mTextureRotation{ 0.0f };
+    double mTextureScale { 1.0f };
+    double mTextureRotation { 0.0f };
 };
 
 

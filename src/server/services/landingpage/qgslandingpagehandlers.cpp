@@ -36,7 +36,7 @@ QgsLandingPageHandler::QgsLandingPageHandler( const QgsServerSettings *settings 
 void QgsLandingPageHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   const QString requestPrefix { prefix( context.serverInterface()->serverSettings() ) };
-  auto urlPath { context.request()->url().path( ) };
+  auto urlPath { context.request()->url().path() };
 
   while ( urlPath.endsWith( '/' ) )
   {
@@ -47,21 +47,19 @@ void QgsLandingPageHandler::handleRequest( const QgsServerApiContext &context ) 
   {
     QUrl url { context.request()->url() };
     url.setPath( QStringLiteral( "%1/index.%2" )
-                 .arg( requestPrefix,
-                       QgsServerOgcApi::contentTypeToExtension( contentTypeFromRequest( context.request() ) ) ) );
+                   .arg( requestPrefix, QgsServerOgcApi::contentTypeToExtension( contentTypeFromRequest( context.request() ) ) ) );
     context.response()->setStatusCode( 302 );
     context.response()->setHeader( QStringLiteral( "Location" ), url.toString() );
   }
   else
   {
-    const json projects = projectsData( *context.request() ) ;
-    json data
-    {
+    const json projects = projectsData( *context.request() );
+    json data {
       { "links", links( context ) },
       { "projects", projects },
       { "projects_count", projects.size() }
     };
-    write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", json::array() }} );
+    write( data, context, { { "pageTitle", linkTitle() }, { "navigation", json::array() } } );
   }
 }
 
@@ -81,7 +79,7 @@ QString QgsLandingPageHandler::prefix( const QgsServerSettings *settings )
     prefix.chop( 1 );
   }
 
-  if ( ! prefix.isEmpty() && ! prefix.startsWith( '/' ) )
+  if ( !prefix.isEmpty() && !prefix.startsWith( '/' ) )
   {
     prefix.prepend( '/' );
   }
@@ -116,14 +114,14 @@ QgsLandingPageMapHandler::QgsLandingPageMapHandler( const QgsServerSettings *set
 void QgsLandingPageMapHandler::handleRequest( const QgsServerApiContext &context ) const
 {
   json data;
-  data[ "links" ] = json::array();
+  data["links"] = json::array();
   const QString projectPath { QgsLandingPageUtils::projectUriFromUrl( context.request()->url().path(), *mSettings ) };
   if ( projectPath.isEmpty() )
   {
     throw QgsServerApiNotFoundError( QStringLiteral( "Requested project hash not found!" ) );
   }
-  data[ "project" ] = QgsLandingPageUtils::projectInfo( projectPath, mSettings, *context.request() );
-  write( data, context, {{ "pageTitle", linkTitle() }, { "navigation", json::array() }} );
+  data["project"] = QgsLandingPageUtils::projectInfo( projectPath, mSettings, *context.request() );
+  write( data, context, { { "pageTitle", linkTitle() }, { "navigation", json::array() } } );
 }
 
 QRegularExpression QgsLandingPageMapHandler::path() const

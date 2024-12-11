@@ -49,9 +49,8 @@ Qt3DCore::QEntity *QgsMeshTerrainTileLoader::createEntity( Qt3DCore::QEntity *pa
 //
 
 QgsMeshTerrainGenerator::QgsMeshTerrainGenerator()
-  : mSymbol( std::make_unique< QgsMesh3DSymbol >() )
+  : mSymbol( std::make_unique<QgsMesh3DSymbol>() )
 {
-
 }
 
 QgsChunkLoader *QgsMeshTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
@@ -71,7 +70,7 @@ void QgsMeshTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) c
 
   for ( int i = 0; i < mTriangularMesh.vertices().count(); ++i )
   {
-    const float zValue = static_cast< float >( mTriangularMesh.vertices().at( i ).z() );
+    const float zValue = static_cast<float>( mTriangularMesh.vertices().at( i ).z() );
     if ( min > zValue )
       min = zValue;
     if ( max < zValue )
@@ -120,7 +119,7 @@ QgsTerrainGenerator *QgsMeshTerrainGenerator::clone() const
   return cloned;
 }
 
-QgsTerrainGenerator::Type QgsMeshTerrainGenerator::type() const {return QgsTerrainGenerator::Mesh;}
+QgsTerrainGenerator::Type QgsMeshTerrainGenerator::type() const { return QgsTerrainGenerator::Mesh; }
 
 QgsRectangle QgsMeshTerrainGenerator::rootChunkExtent() const
 {

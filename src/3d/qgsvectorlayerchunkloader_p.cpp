@@ -91,8 +91,7 @@ QgsVectorLayerChunkLoader::QgsVectorLayerChunkLoader( const QgsVectorLayerChunkL
   mFutureWatcher = new QFutureWatcher<void>( this );
   connect( mFutureWatcher, &QFutureWatcher<void>::finished, this, &QgsChunkQueueJob::finished );
 
-  const QFuture<void> future = QtConcurrent::run( [req, this]
-  {
+  const QFuture<void> future = QtConcurrent::run( [req, this] {
     const QgsEventTracing::ScopedEvent e( QStringLiteral( "3D" ), QStringLiteral( "VL chunk load" ) );
 
     QgsFeature f;
@@ -128,7 +127,7 @@ Qt3DCore::QEntity *QgsVectorLayerChunkLoader::createEntity( Qt3DCore::QEntity *p
 {
   if ( mNode->level() < mFactory->mLeafLevel )
   {
-    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent );  // dummy entity
+    Qt3DCore::QEntity *entity = new Qt3DCore::QEntity( parent ); // dummy entity
     entity->setObjectName( mLayerName + "_CONTAINER_" + mNode->tileId().text() );
     return entity;
   }
@@ -172,7 +171,7 @@ QgsVectorLayerChunkLoaderFactory::QgsVectorLayerChunkLoaderFactory( const Qgs3DR
   QgsBox3D rootBox3D( context.extent(), zMin, zMax );
   // add small padding to avoid clipping of point features located at the edge of the bounding box
   rootBox3D.grow( 1.0 );
-  setupQuadtree( rootBox3D, -1, leafLevel );  // negative root error means that the node does not contain anything
+  setupQuadtree( rootBox3D, -1, leafLevel ); // negative root error means that the node does not contain anything
 }
 
 QgsChunkLoader *QgsVectorLayerChunkLoaderFactory::createChunkLoader( QgsChunkNode *node ) const
@@ -286,9 +285,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsVectorLayerChunkedEntity::rayIntersection
 
     QgsAABB nodeBbox = Qgs3DUtils::mapToWorldExtent( node->box3D(), origin );
 
-    if ( node->entity() &&
-         ( minDist < 0 || nodeBbox.distanceFromPoint( ray.origin() ) < minDist ) &&
-         QgsRayCastingUtils::rayBoxIntersection( ray, nodeBbox ) )
+    if ( node->entity() && ( minDist < 0 || nodeBbox.distanceFromPoint( ray.origin() ) < minDist ) && QgsRayCastingUtils::rayBoxIntersection( ray, nodeBbox ) )
     {
 #ifdef QGISDEBUG
       nodeUsed++;

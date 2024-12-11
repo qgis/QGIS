@@ -45,22 +45,22 @@ class QgsPoint3DBillboardMaterial;
 namespace Qt3DCore
 {
   class QEntity;
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
   class QBuffer;
   class QGeometry;
   class QAttribute;
 #endif
-}
+} // namespace Qt3DCore
 
 namespace Qt3DRender
 {
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
   class QBuffer;
   class QGeometry;
   class QAttribute;
 #endif
   class QGeometryRenderer;
-}
+} // namespace Qt3DRender
 
 /**
  * \ingroup 3d
@@ -76,7 +76,6 @@ namespace Qt3DRender
 class _3D_EXPORT QgsRubberBand3D
 {
   public:
-
     //! Icons
     enum MarkerType
     {
@@ -136,7 +135,7 @@ class _3D_EXPORT QgsRubberBand3D
     QgsLineString mLineString;
     bool mHideLastMarker = false;
 
-    Qgs3DMapSettings *mMapSettings = nullptr;  // not owned
+    Qgs3DMapSettings *mMapSettings = nullptr; // not owned
     QgsWindow3DEngine *mEngine = nullptr;
     Qgis::GeometryType mGeometryType = Qgis::GeometryType::Line;
 
@@ -145,12 +144,12 @@ class _3D_EXPORT QgsRubberBand3D
     float mWidth = 3.f;
     QColor mColor = Qt::red;
 
-    Qt3DCore::QEntity *mLineEntity = nullptr;  // owned by parentEntity (from constructor)
+    Qt3DCore::QEntity *mLineEntity = nullptr;   // owned by parentEntity (from constructor)
     Qt3DCore::QEntity *mMarkerEntity = nullptr; // owned by parentEntity (from constructor)
 
     // all these are owned by mLineEntity
     Qt3DRender::QGeometryRenderer *mLineGeomRenderer = nullptr;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     Qt3DRender::QGeometry *mGeometry = nullptr;
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
     Qt3DRender::QAttribute *mIndexAttribute = nullptr;
@@ -170,7 +169,7 @@ class _3D_EXPORT QgsRubberBand3D
 
     // Disable copying as we have pointer members.
     QgsRubberBand3D( const QgsRubberBand3D & ) = delete;
-    QgsRubberBand3D &operator= ( const QgsRubberBand3D & ) = delete;
+    QgsRubberBand3D &operator=( const QgsRubberBand3D & ) = delete;
 };
 
 /// @endcond

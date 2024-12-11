@@ -26,7 +26,6 @@
 class QgsTiledSceneLayer;
 
 
-
 /**
  * \ingroup 3d
  * \brief Metadata for tiled scene layer 3D renderer to allow creation of its instances from XML
@@ -51,7 +50,6 @@ class _3D_EXPORT QgsTiledSceneLayer3DRendererMetadata : public Qgs3DRendererAbst
  */
 class _3D_EXPORT QgsTiledSceneLayer3DRenderer : public QgsAbstract3DRenderer
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->type() == QLatin1String( "tiledscene" ) )

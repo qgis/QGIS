@@ -28,7 +28,6 @@ Stores metadata about one 3D material settings class.
 #include "qgsmaterialregistry.h"
 %End
   public:
-
     QgsMaterialSettingsAbstractMetadata( const QString &type, const QString &visibleName, const QIcon &icon = QIcon() );
 %Docstring
 Constructor for QgsMaterialSettingsAbstractMetadata, with the specified ``type`` and ``visibleName``.
@@ -88,7 +87,6 @@ Qgs3D.materialRegistry().
 #include "qgsmaterialregistry.h"
 %End
   public:
-
     QgsMaterialRegistry();
     ~QgsMaterialRegistry();
 

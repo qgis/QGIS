@@ -38,7 +38,6 @@ class QgsAbstractMaterialSettings;
 class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
 {
   public:
-
     /**
      * How to render the color of the mesh
      *
@@ -46,8 +45,8 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
      */
     enum class RenderingStyle : int
     {
-      SingleColor = 0, //!< Render the mesh with a single color
-      ColorRamp, //!< Render the mesh with a color ramp
+      SingleColor = 0,      //!< Render the mesh with a single color
+      ColorRamp,            //!< Render the mesh with a color ramp
       ColorRamp2DRendering, //!< Render the mesh with the color ramp shader of the 2D rendering
     };
 
@@ -58,7 +57,7 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
      */
     enum class ZValueType : int
     {
-      VerticesZValue = 0, //!< Use the Z value of the vertices
+      VerticesZValue = 0,  //!< Use the Z value of the vertices
       ScalarDatasetZvalue, //!< Use the value from a dataset (for example, water surface value)
     };
 
@@ -356,8 +355,8 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
 
     //! how to handle altitude of vector features
     Qgis::AltitudeClamping mAltClamping = Qgis::AltitudeClamping::Relative;
-    float mHeight = 0.0f;           //!< Base height of triangles
-    std::unique_ptr< QgsAbstractMaterialSettings > mMaterialSettings;  //!< Defines appearance of objects
+    float mHeight = 0.0f;                                           //!< Base height of triangles
+    std::unique_ptr<QgsAbstractMaterialSettings> mMaterialSettings; //!< Defines appearance of objects
     bool mAddBackFaces = false;
 
     bool mEnabled = true;
