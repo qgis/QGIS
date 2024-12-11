@@ -165,6 +165,8 @@ Sets the underlying geometry store. Ownership of geometry is transferred.
 .. seealso:: :py:func:`get`
 
 .. seealso:: :py:func:`constGet`
+
+.. deprecated:: 3.0
 %End
 
     bool isNull() const /HoldGIL/;

@@ -109,6 +109,10 @@ If ``color`` is an invalid color then the default icon color will be used.
 
  virtual QWidget *paramWidget() /Factory,Deprecated/;
 
+%Docstring
+
+.. deprecated:: 3.20
+%End
     virtual bool hasDragEnabled() const;
     virtual QgsMimeDataUtils::UriList mimeUris() const;
 
@@ -214,8 +218,6 @@ Browser parameter widget implementation for directory items.
   public slots:
     void showHideColumn();
 };
-
-
 
 
 
