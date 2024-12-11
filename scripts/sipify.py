@@ -42,6 +42,7 @@ class MultiLineType(Enum):
 parser = argparse.ArgumentParser(description="Convert header file to SIP and Python")
 parser.add_argument("-debug", action="store_true", help="Enable debug mode")
 parser.add_argument("-qt6", action="store_true", help="Enable Qt6 mode")
+parser.add_argument("-generate_deprecated_message", action="store_true", help="Generate sip files with deprecated messages (supported only in SIP > 6.9.0)")
 parser.add_argument("-sip_output", help="SIP output file")
 parser.add_argument("-python_output", help="Python output file")
 parser.add_argument("-class_map", help="Class map file")
@@ -79,7 +80,7 @@ class Context:
         self.debug: bool = False
         self.is_qt6: bool = False
         self.header_file: str = ""
-
+        self.generate_deprecated_message = False
         self.current_line: str = ""
         self.sip_run: bool = False
         self.header_code: bool = False
@@ -127,6 +128,7 @@ class Context:
         self.static_methods = defaultdict(dict)
         self.current_signal_args = []
         self.signal_arguments = defaultdict(dict)
+        self.deprecated_message = None
 
     def current_fully_qualified_class_name(self) -> str:
         return ".".join(
@@ -145,6 +147,7 @@ class Context:
 CONTEXT = Context()
 CONTEXT.debug = args.debug
 CONTEXT.is_qt6 = args.qt6
+CONTEXT.generate_deprecated_message = args.generate_deprecated_message
 CONTEXT.header_file = args.headerfile
 CONTEXT.input_lines = input_lines
 CONTEXT.line_count = len(input_lines)
@@ -715,6 +718,14 @@ def create_class_links(line):
     return line
 
 
+def process_deprecated_message(message: str) -> str:
+    """
+    Remove all doxygen specific command from deprecated message
+    """
+    # SIP issue with ':' , see https://github.com/Python-SIP/sip/issues/59
+    return message.replace("\\see", "").replace(":", "")
+
+
 def process_doxygen_line(line: str) -> str:
     global CONTEXT
 
@@ -880,6 +891,7 @@ def process_doxygen_line(line: str) -> str:
             version = version[:-1]
         depr_line = f"\n.. deprecated:: {version}"
         message = deprecated_match.group("DEPR_MESSAGE")
+        CONTEXT.deprecated_message = f"Since {version}. {process_deprecated_message(message)}"
         if message:
             depr_line += "\n"
             depr_line += "\n".join(f"\n   {_m}" for _m in message.split("\n"))
@@ -1157,6 +1169,11 @@ def fix_annotations(line):
         CONTEXT.skipped_params_out.append(param)
         dbg_info(f"caught removed param: {CONTEXT.skipped_params_out[-1]}")
 
+    if "SIP_DEPRECATED" in line:
+
+        if CONTEXT.deprecated_message is None:
+            exit_with_error(f"Error in file {CONTEXT.header_file}: missing deprecated message for SIP_DEPRECATED instruction on line {CONTEXT.line_idx}. Please add \\deprecated instruction")
+
     # Printed annotations
     replacements = {
         r"//\s*SIP_ABSTRACT\b": "/Abstract/",
@@ -1164,7 +1181,6 @@ def fix_annotations(line):
         r"\bSIP_ALLOWNONE\b": "/AllowNone/",
         r"\bSIP_ARRAY\b": "/Array/",
         r"\bSIP_ARRAYSIZE\b": "/ArraySize/",
-        r"\bSIP_DEPRECATED\b": "/Deprecated/",
         r"\bSIP_CONSTRAINED\b": "/Constrained/",
         r"\bSIP_EXTERNAL\b": "/External/",
         r"\bSIP_FACTORY\b": "/Factory/",
@@ -1190,16 +1206,21 @@ def fix_annotations(line):
         # these have no effect (and aren't required) on sip >= 6
         replacements[r"SIP_THROW\(\s*([\w\s,]+?)\s*\)"] = ""
 
+    if CONTEXT.generate_deprecated_message:
+        # check deprecated message is not empty
+        replacements[r"\bSIP_DEPRECATED\b"] = f'/Deprecated="{CONTEXT.deprecated_message}"/'
+    else:
+        replacements[r"\bSIP_DEPRECATED\b"] = f"/Deprecated/"
+
     for _pattern, replacement in replacements.items():
         line = re.sub(_pattern, replacement, line)
 
     # Combine multiple annotations
     while True:
         new_line = re.sub(
-            r'/([\w,]+(="?[\w, \[\]]+"?)?)/\s*/([\w,]+(="?[\w, \[\]]+"?)?]?)/',
+            r'/([\w,]+(="?[^"]+"?)?)/\s*/([\w,]+(="?[^"]+"?)?]?)/',
             r"/\1,\3/",
-            line,
-        )
+            line)
         if new_line == line:
             break
         line = new_line
