@@ -245,8 +245,6 @@ QgsMeshEditDigitizingAction::QgsMeshEditDigitizingAction( QObject *parent )
   QWidget *w = new QWidget();
   w->setLayout( gLayout );
   setDefaultWidget( w );
-
-  //connect( mCheckBoxNewVertex, &QCheckBox::toggled, this, &QgsMeshEditForceByLineAction::updateSettings );
 }
 
 void QgsMeshEditDigitizingAction::updateSettings()
