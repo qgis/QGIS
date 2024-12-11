@@ -2920,7 +2920,7 @@ void QgsMapToolEditMeshFrame::showSelectByExpressionDialog()
   connect( dialog, &QgsMeshSelectByExpressionDialog::zoomToSelected, this, &QgsMapToolEditMeshFrame::onZoomToSelected );
 }
 
-void QgsMapToolEditMeshFrame::setZValueType( QgsMeshEditDigitizingAction::ZValueSource zValueSource )
+void QgsMapToolEditMeshFrame::setZValueSourceType( QgsMeshEditDigitizingAction::ZValueSource zValueSource )
 {
   mWidgetActionDigitizing->setZValueType( zValueSource );
 }

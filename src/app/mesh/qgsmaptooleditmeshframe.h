@@ -286,7 +286,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void forceByLineBySelectedFeature( QgsMapMouseEvent *e );
     void forceByLine( const QgsGeometry &lineGeometry );
 
-    void setZValueType( QgsMeshEditDigitizingAction::ZValueSource zValueSource );
+    void setZValueSourceType( QgsMeshEditDigitizingAction::ZValueSource zValueSource );
 
     // members
     struct SelectedVertexData
