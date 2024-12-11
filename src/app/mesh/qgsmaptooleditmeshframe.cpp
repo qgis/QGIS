@@ -2740,7 +2740,7 @@ void QgsMapToolEditMeshFrame::addVertex(
 
   bool isOnMesh = mCurrentFaceIndex != -1 || ( mCurrentEdge.first != -1 && mCurrentEdge.second != -1 );
 
-  if ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::Terrain || ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::InMeshUseMeshTerrainOtherwise && !isOnMesh ) )
+  if ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::Terrain || ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::PreferMeshThenTerrain && !isOnMesh ) )
   {
     const QgsAbstractTerrainProvider *terrainProvider = QgsProject::instance()->elevationProperties()->terrainProvider();
     const QgsCoordinateTransform transformation = QgsCoordinateTransform( mCurrentLayer->crs(), terrainProvider->crs(), QgsProject::instance() );
@@ -2768,7 +2768,7 @@ void QgsMapToolEditMeshFrame::addVertex(
       zValue = mZValueWidget->getDefaultValue();
     }
   }
-  else if ( isOnMesh && ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::InMeshUseMeshZWidgetOtherwise || mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::InMeshUseMeshTerrainOtherwise ) )
+  else if ( isOnMesh && ( mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::PreferMeshThenZWidget || mWidgetActionDigitizing->zValueSourceType() == QgsMeshEditDigitizingAction::PreferMeshThenTerrain ) )
   {
     if ( mCurrentEdge.first != -1 && mCurrentEdge.second != -1 ) //we are on a edge -->interpolate the z value
     {

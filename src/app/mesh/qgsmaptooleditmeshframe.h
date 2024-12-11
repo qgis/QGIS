@@ -130,8 +130,8 @@ class QgsMeshEditDigitizingAction : public QWidgetAction
     {
       ZWidget,
       Terrain,
-      InMeshUseMeshTerrainOtherwise,
-      InMeshUseMeshZWidgetOtherwise
+      PreferMeshThenTerrain,
+      PreferMeshThenZWidget
     };
     Q_ENUM( ZValueSource )
 
