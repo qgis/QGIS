@@ -25,6 +25,9 @@
 #include "qgsexpressionbuilderdialog.h"
 #include "qgsexpressioncontextutils.h"
 #include "qgsunittypes.h"
+#include "qgsapplication.h"
+#include "qgsrasterrendererregistry.h"
+#include "qgsrasterrenderer.h"
 
 #include <QMenu>
 #include <QAction>
@@ -153,6 +156,12 @@ void QgsRasterLayerTemporalPropertiesWidget::syncToLayer()
     case Qgis::RasterTemporalMode::RepresentsTemporalValues:
       mStackedWidget->setCurrentWidget( mPageRepresentsTemporalValues );
       break;
+  }
+
+  if ( mLayer->renderer() && QgsApplication::rasterRendererRegistry()->rendererCapabilities( mLayer->renderer()->type() ) & Qgis::RasterRendererCapability::UsesMultipleBands )
+  {
+    mWidgetFixedRangePerBand->hide();
+    mFixedRangePerBandLabel->setText( tr( "This mode cannot be used with a multi-band renderer." ) );
   }
 
   mBandComboBox->setLayer( mLayer );
