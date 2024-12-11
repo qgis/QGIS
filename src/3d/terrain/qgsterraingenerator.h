@@ -69,9 +69,6 @@ class _3D_EXPORT QgsTerrainGenerator : public QgsQuadtreeChunkLoaderFactory
     //! What texture generator implementation is this
     virtual Type type() const = 0;
 
-    //! extent of the terrain in terrain's CRS, might be non-square and smaller than rootChunkExtent()
-    virtual QgsRectangle extent() const { return mExtent; }
-
     //! sets the extent of the terrain in terrain's CRS
     virtual void setExtent( const QgsRectangle &extent ) { Q_UNUSED( extent ) }
 
