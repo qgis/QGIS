@@ -86,30 +86,25 @@ void QgsMeshTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) c
   hMax = max;
 }
 
-void QgsMeshTerrainGenerator::resolveReferences( const QgsProject &project )
-{
-  setLayer( qobject_cast<QgsMeshLayer *>( project.mapLayer( mLayer.layerId ) ) );
-}
-
 void QgsMeshTerrainGenerator::setLayer( QgsMeshLayer *layer )
 {
-  if ( mLayer.get() )
-    disconnect( mLayer.get(), &QgsMeshLayer::request3DUpdate, this, &QgsMeshTerrainGenerator::terrainChanged );
+  if ( mLayer )
+    disconnect( mLayer, &QgsMeshLayer::request3DUpdate, this, &QgsMeshTerrainGenerator::terrainChanged );
 
-  mLayer = QgsMapLayerRef( layer );
+  mLayer = layer;
   mIsValid = layer;
   updateTriangularMesh();
   if ( mIsValid )
   {
-    connect( mLayer.get(), &QgsMeshLayer::request3DUpdate, this, &QgsMeshTerrainGenerator::updateTriangularMesh );
-    connect( mLayer.get(), &QgsMeshLayer::request3DUpdate, this, &QgsMeshTerrainGenerator::terrainChanged );
+    connect( mLayer, &QgsMeshLayer::request3DUpdate, this, &QgsMeshTerrainGenerator::updateTriangularMesh );
+    connect( mLayer, &QgsMeshLayer::request3DUpdate, this, &QgsMeshTerrainGenerator::terrainChanged );
   }
 }
 
 
 QgsMeshLayer *QgsMeshTerrainGenerator::meshLayer() const
 {
-  return qobject_cast<QgsMeshLayer *>( mLayer.layer.data() );
+  return mLayer;
 }
 
 QgsTerrainGenerator *QgsMeshTerrainGenerator::clone() const

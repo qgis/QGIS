@@ -228,7 +228,7 @@ QgsTerrainGenerator *QgsQuantizedMeshTerrainGenerator::clone() const
   if ( mIsValid )
     clone->setLayer( layer() );
   else
-    clone->mLayerRef = mLayerRef; // Copy just the reference
+    clone->mLayer = mLayer; // Copy just the reference
   return clone;
 }
 
@@ -287,12 +287,6 @@ float QgsQuantizedMeshTerrainGenerator::heightAt( double x, double y, const Qgs3
   triMesh.update( &mesh );
 
   return QgsMeshLayerUtils::interpolateZForPoint( triMesh, point.x(), point.y() );
-}
-
-void QgsQuantizedMeshTerrainGenerator::resolveReferences( const QgsProject &project )
-{
-  mLayerRef.resolve( &project );
-  setLayer( layer() );
 }
 
 QgsChunkLoader *QgsQuantizedMeshTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
@@ -354,7 +348,7 @@ bool QgsQuantizedMeshTerrainGenerator::setLayer( QgsTiledSceneLayer *layer )
     return false;
   }
 
-  mLayerRef = layer;
+  mLayer = layer;
   const QgsQuantizedMeshDataProvider *provider = qobject_cast<const QgsQuantizedMeshDataProvider *>( layer->dataProvider() );
   if ( !provider )
   {
@@ -372,13 +366,7 @@ bool QgsQuantizedMeshTerrainGenerator::setLayer( QgsTiledSceneLayer *layer )
 
 QgsTiledSceneLayer *QgsQuantizedMeshTerrainGenerator::layer() const
 {
-  return qobject_cast<QgsTiledSceneLayer *>( mLayerRef.get() );
-}
-
-QgsQuantizedMeshTerrainGenerator::QgsQuantizedMeshTerrainGenerator( QgsMapLayerRef layerRef, const QgsQuantizedMeshMetadata &metadata )
-  : mLayerRef( layerRef )
-  , mMetadata( metadata )
-{
+  return mLayer;
 }
 
 QgsTileXYZ QgsQuantizedMeshTerrainGenerator::nodeIdToTile( QgsChunkNodeId nodeId ) const

@@ -439,11 +439,12 @@ void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
   }
 
   mTerrainSettings->resolveReferences( &project );
-  mTerrainGenerator->resolveReferences( project );
+
+  // TODO -- update generator??
 
   // Set extent now that layer-based generators actually have a chance to know their CRS
-  QgsRectangle terrainExtent = Qgs3DUtils::tryReprojectExtent2D( mExtent, mCrs, mTerrainGenerator->crs(), mTransformContext );
-  mTerrainGenerator->setExtent( terrainExtent );
+  //QgsRectangle terrainExtent = Qgs3DUtils::tryReprojectExtent2D( mExtent, mCrs, mTerrainGenerator->crs(), mTransformContext );
+  //mTerrainGenerator->setExtent( terrainExtent );
 }
 
 QgsRectangle Qgs3DMapSettings::extent() const
