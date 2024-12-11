@@ -235,7 +235,7 @@ QgsMeshEditDigitizingAction::QgsMeshEditDigitizingAction( QObject *parent )
   mComboZValueType->addItem( tr( "Z Widget" ), ZWidget );
   mComboZValueType->setItemData( 3, tr( "Always use the value set in the Z value widget" ), Qt::ToolTipRole );
 
-  int interpolateFromValue = settings.enumValue( QStringLiteral( "UI/Mesh/ZValueFrom" ), InMeshUseMeshZWidgetOtherwise );
+  int interpolateFromValue = settings.enumValue( QStringLiteral( "UI/Mesh/zValueFrom" ), PreferMeshThenZWidget );
   mComboZValueType->setCurrentIndex( interpolateFromValue );
 
   gLayout->addWidget( labelZValueType, 2, 0, 1, 3 );
@@ -253,7 +253,7 @@ void QgsMeshEditDigitizingAction::updateSettings()
 {
   QgsSettings settings;
 
-  settings.setEnumValue( QStringLiteral( "UI/Mesh/ZValueFrom" ), static_cast<ZValueSource>( mComboZValueType->currentData().toInt() ) );
+  settings.setEnumValue( QStringLiteral( "UI/Mesh/zValueFrom" ), static_cast<ZValueSource>( mComboZValueType->currentData().toInt() ) );
 }
 
 QgsMeshEditDigitizingAction::ZValueSource QgsMeshEditDigitizingAction::zValueSourceType() const
