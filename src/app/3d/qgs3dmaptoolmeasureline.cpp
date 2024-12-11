@@ -42,6 +42,7 @@ Qgs3DMapToolMeasureLine::~Qgs3DMapToolMeasureLine() = default;
 void Qgs3DMapToolMeasureLine::activate()
 {
   mRubberBand.reset( new QgsRubberBand3D( *mCanvas->mapSettings(), mCanvas->engine(), mCanvas->engine()->frameGraph()->rubberBandsRootEntity() ) );
+  mRubberBand->setHideLastMarker( true );
 
   if ( mIsAlreadyActivated )
   {
@@ -216,7 +217,7 @@ void Qgs3DMapToolMeasureLine::mouseReleaseEvent( QMouseEvent *event )
     }
 
     // Finish measurement
-    mRubberBand->setShowLastMarker( true );
+    mRubberBand->setHideLastMarker( false );
     mRubberBand->removeLastPoint();
     mDone = true;
   }

@@ -13,7 +13,7 @@
 class QgsProjectMetadata : QgsAbstractMetadataBase
 {
 %Docstring(signature="appended")
-A structured metadata store for a map layer.
+A structured metadata store for a project.
 
 :py:class:`QgsProjectMetadata` handles storage and management of the metadata
 for a :py:class:`QgsProject`. This class is an internal QGIS format with a common

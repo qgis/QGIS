@@ -1395,7 +1395,8 @@ void QgsIdentifyResultsDialog::addFeature( QgsPointCloudLayer *layer, const QStr
     feature.setAttribute( fieldIndex, v );
   }
 
-  const QgsGeometry selectionGeometry( QgsGeometry::fromPointXY( QgsPointXY( attributes[QStringLiteral( "X" )].toDouble(), attributes[QStringLiteral( "Y" )].toDouble() ) ) );
+  const QString zAttribute = attributes.contains( tr( "Z (adjusted)" ) ) ? tr( "Z (adjusted)" ) : QStringLiteral( "Z" );
+  const QgsGeometry selectionGeometry( QgsGeometry::fromPoint( QgsPoint( attributes[QStringLiteral( "X" )].toDouble(), attributes[QStringLiteral( "Y" )].toDouble(), attributes[zAttribute].toDouble() ) ) );
   feature.setGeometry( selectionGeometry );
 
   QgsIdentifyResultsFeatureItem *featItem = new QgsIdentifyResultsFeatureItem( fields, feature, layer->crs(), QStringList() << label << QString() );
@@ -1856,6 +1857,7 @@ void QgsIdentifyResultsDialog::clearHighlights()
   }
 
   mHighlights.clear();
+  emit highlightsCleared();
 }
 
 void QgsIdentifyResultsDialog::activate()
@@ -2366,6 +2368,7 @@ void QgsIdentifyResultsDialog::highlightFeature( QTreeWidgetItem *item )
   highlight->applyDefaultStyle();
   highlight->show();
   mHighlights.insert( featItem, highlight );
+  emit featureHighlighted( featItem->feature(), layer );
 }
 
 void QgsIdentifyResultsDialog::zoomToFeature()

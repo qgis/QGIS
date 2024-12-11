@@ -10,16 +10,8 @@
 #include <QTimer>
 #include <QVariantMap>
 #include <QUuid>
-
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 #include <QUrlQuery>
-#endif
-
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
 #include <QRegularExpression>
-#else
-#include <QRegExp>
-#endif
 
 #include "o2.h"
 #include "o2pollserver.h"
@@ -197,12 +189,8 @@ void O2::link() {
 
     if (grantFlow_ == GrantFlowAuthorizationCode || grantFlow_ == GrantFlowImplicit || grantFlow_ == GrantFlowPkce) {
 
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
         const thread_local QRegularExpression rx("([^a-zA-Z0-9]|[-])");
         QString uniqueState = QUuid::createUuid().toString().remove(rx);
-#else
-        QString uniqueState = QUuid::createUuid().toString().remove(QRegExp("([^a-zA-Z0-9]|[-])"));
-#endif
         if (useExternalWebInterceptor_) {
             // Save redirect URI, as we have to reuse it when requesting the access token
             redirectUri_ = localhostPolicy_.arg(localPort());
