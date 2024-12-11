@@ -212,6 +212,7 @@ set(QGIS_CORE_SRCS
   auth/qgsauthmethod.cpp
   auth/qgsauthmethodmetadata.cpp
   auth/qgsauthmethodregistry.cpp
+  auth/qgsauthorizationsettings.cpp
 
   auth/qgsauthconfigurationstoragesqlite.cpp
   auth/qgsauthconfigurationstoragedb.cpp
