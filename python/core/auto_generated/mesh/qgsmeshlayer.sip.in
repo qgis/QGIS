@@ -184,7 +184,7 @@ Adds datasets to the mesh from file with ``path``. Use the the time ``defaultRef
 %Docstring
 Removes datasets from the mesh with given ``name``.
 
-:param name: of dataset group to remove
+:param name: name of dataset group to remove
 
 :return: whether the dataset is removed
 
