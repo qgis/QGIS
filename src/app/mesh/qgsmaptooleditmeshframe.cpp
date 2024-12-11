@@ -261,7 +261,7 @@ QgsMeshEditDigitizingAction::ZValueSource QgsMeshEditDigitizingAction::zValueSou
 
 void QgsMeshEditDigitizingAction::setZValueType( QgsMeshEditDigitizingAction::ZValueSource zValueSource )
 {
-  mComboZValueType->setCurrentIndex( static_cast<int>( zValueSource ) );
+  mComboZValueType->setCurrentIndex( mComboZValueType->findData( zValueSource ) );
 }
 
 //
