@@ -128,7 +128,7 @@ QVariantMap QgsMeshSurfaceToPolygonAlgorithm::processAlgorithm( const QVariantMa
   std::pair<int, int> edge;
 
   if ( feedback )
-    feedback->setProgressText( "Parsing mesh faces to extract edges." );
+    feedback->setProgressText( QObject::tr( "Parsing mesh faces to extract edges." ) );
 
   for ( int i = 0; i < mNativeMesh.faceCount(); i++ )
   {
