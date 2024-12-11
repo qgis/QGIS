@@ -37,8 +37,18 @@ QString QgsOnlineDemTerrainSettings::type() const
 
 void QgsOnlineDemTerrainSettings::readXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  mResolution = element.attribute( QStringLiteral( "resolution" ) ).toInt();
-  mSkirtHeight = element.attribute( QStringLiteral( "skirt-height" ) ).toDouble();
+  if ( element.hasAttribute( QStringLiteral( "resolution" ) ) )
+  {
+    mResolution = element.attribute( QStringLiteral( "resolution" ) ).toInt();
+    mSkirtHeight = element.attribute( QStringLiteral( "skirt-height" ) ).toDouble();
+  }
+  else
+  {
+    // restore old project
+    const QDomElement elemTerrainGenerator = element.firstChildElement( QStringLiteral( "generator" ) );
+    mResolution = elemTerrainGenerator.attribute( QStringLiteral( "resolution" ) ).toInt();
+    mSkirtHeight = elemTerrainGenerator.attribute( QStringLiteral( "skirt-height" ) ).toDouble();
+  }
 
   readCommonProperties( element, context );
 }

@@ -243,7 +243,7 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   std::unique_ptr<QgsAbstractTerrainSettings> terrainSettings( Qgs3D::terrainRegistry()->createTerrainSettings( terrainGenType ) );
   if ( terrainSettings )
   {
-    terrainSettings->readXml( elemTerrainGenerator, context );
+    terrainSettings->readXml( elemTerrain, context );
     setTerrainSettings( terrainSettings.release() );
   }
 
@@ -369,7 +369,7 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
 
   QDomElement elemTerrainGenerator = doc.createElement( QStringLiteral( "generator" ) );
   elemTerrainGenerator.setAttribute( QStringLiteral( "type" ), mTerrainSettings->type() );
-  mTerrainSettings->writeXml( elemTerrainGenerator, context );
+  mTerrainSettings->writeXml( elemTerrain, context );
   elemTerrain.appendChild( elemTerrainGenerator );
   elem.appendChild( elemTerrain );
 
