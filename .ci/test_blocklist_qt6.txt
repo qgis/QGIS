@@ -52,7 +52,6 @@ PyQgsRasterAttributeTable
 PyQgsRasterLayerRenderer
 PyQgsSymbolLayerReadSld
 PyQgsVectorLayerEditBuffer
-PyQgsVectorLayerEditUtils
 PyQgsLayerDefinition
 PyQgsSettings
 PyQgsSettingsEntry
