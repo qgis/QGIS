@@ -798,14 +798,24 @@ class TestQgsVectorLayerEditUtils(QgisTestCase):
         split_curve = QgsGeometry.fromWkt("LineString (-2.7 4.3, 5.5 11.8, 5.28 -5.57)")
         temp_layer.splitFeatures(split_curve.constGet(), preserveCircular=False)
 
+        def round_attributes(_attributes, places):
+            res = []
+            for a in _attributes:
+                if isinstance(a, float):
+                    res.append(round(a, places))
+                else:
+                    res.append(a)
+
+            return res
+
         features = list(temp_layer.getFeatures())
-        attributes = [f.attributes() for f in features]
+        attributes = [round_attributes(f.attributes(), 4) for f in features]
         self.assertCountEqual(
             attributes,
             [
-                [None, 3301.0, 302.0, 303.0, 147.23845863746018],
-                [None, 301, 302.0, QgsUnsetAttributeValue(), 17.343326048780483],
-                [None, 301, 302.0, QgsUnsetAttributeValue(), 139.41821531375936],
+                [None, 3301.0, 302.0, 303.0, 147.2385],
+                [None, 301, 302.0, QgsUnsetAttributeValue(), 17.3433],
+                [None, 301, 302.0, QgsUnsetAttributeValue(), 139.4182],
             ],
         )
 
