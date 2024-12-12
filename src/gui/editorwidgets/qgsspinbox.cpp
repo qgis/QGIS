@@ -53,7 +53,7 @@ QgsSpinBox::QgsSpinBox( QWidget *parent )
 
   mLastEditTimer = new QTimer( this );
   mLastEditTimer->setSingleShot( true );
-  mLastEditTimer->setInterval( 2000 );
+  mLastEditTimer->setInterval( 1000 );
   connect( mLastEditTimer, &QTimer::timeout, this, &QgsSpinBox::onLastEditTimeout );
 }
 
@@ -255,6 +255,16 @@ void QgsSpinBox::stepBy( int steps )
     whileBlocking( this )->setValue( 0 );
   }
   QSpinBox::stepBy( steps );
+}
+
+int QgsSpinBox::editingTimeoutInterval() const
+{
+  return mLastEditTimer->interval();
+}
+
+void QgsSpinBox::setEditingTimeoutInterval( int timeout )
+{
+  mLastEditTimer->setInterval( timeout );
 }
 
 int QgsSpinBox::frameWidth() const

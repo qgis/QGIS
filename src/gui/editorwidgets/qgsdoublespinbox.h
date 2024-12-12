@@ -148,6 +148,29 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     void paintEvent( QPaintEvent *e ) override;
     void stepBy( int steps ) override;
 
+    /**
+     * Returns the timeout (in milliseconds) threshold for the editingTimeout() signal to be emitted
+     * after an edit.
+     *
+     * \see setEditingTimeoutInterval()
+     *
+     * \since QGIS 3.42
+     */
+    int editingTimeoutInterval() const;
+
+  public slots:
+
+    /**
+     * Sets the \a timeout (in milliseconds) threshold for the editingTimeout() signal to be emitted
+     * after an edit.
+     *
+     * \see editingTimeoutInterval()
+     * \see editingTimeout()
+     *
+     * \since QGIS 3.42
+     */
+    void setEditingTimeoutInterval( int timeout );
+
   signals:
 
     /**
@@ -170,6 +193,8 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      *
      * This signal can be used to respond semi-instantly to changes in the spin box, without responding too quickly
      * while the user in the middle of setting the value.
+     *
+     * \see editingTimeoutInterval()
      *
      * \since QGIS 3.42
      */
