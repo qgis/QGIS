@@ -67,7 +67,7 @@ class _3D_EXPORT QgsQuantizedMeshTerrainGenerator : public QgsTerrainGenerator
     QgsTiledSceneLayer *layer() const;
 
   private:
-    QPointer< QgsTiledSceneLayer > mLayer;
+    QPointer<QgsTiledSceneLayer> mLayer;
     std::optional<QgsQuantizedMeshMetadata> mMetadata;
     QgsCoordinateTransform mTileCrsToMapCrs;
     QgsTiledSceneIndex mIndex;

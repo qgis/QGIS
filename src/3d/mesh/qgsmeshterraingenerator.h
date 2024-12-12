@@ -67,7 +67,7 @@ class _3D_EXPORT QgsMeshTerrainGenerator : public QgsTerrainGenerator
     void updateTriangularMesh();
 
   private:
-    QPointer< QgsMeshLayer > mLayer;
+    QPointer<QgsMeshLayer> mLayer;
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
     std::unique_ptr<QgsMesh3DSymbol> mSymbol;
