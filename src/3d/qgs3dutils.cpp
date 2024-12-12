@@ -32,7 +32,7 @@
 #include "qgschunkedentity.h"
 #include "qgsterrainentity.h"
 #include "qgsraycastingutils_p.h"
-#include "qgsterrainsettings.h"
+#include "qgsabstractterrainsettings.h"
 #include "qgspointcloudrenderer.h"
 #include "qgspointcloud3dsymbol.h"
 #include "qgspointcloudlayer3drenderer.h"

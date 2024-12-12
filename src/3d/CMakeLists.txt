@@ -98,6 +98,7 @@ set(QGIS_3D_SRCS
   symbols/qgspointcloud3dsymbol_p.cpp
 
   terrain/qgs3dterrainregistry.cpp
+  terrain/qgsabstractterrainsettings.cpp
   terrain/qgsdemterraingenerator.cpp
   terrain/qgsdemterrainsettings.cpp
   terrain/qgsdemterraintilegeometry_p.cpp
@@ -112,7 +113,6 @@ set(QGIS_3D_SRCS
   terrain/qgsterraindownloader.cpp
   terrain/qgsterrainentity.cpp
   terrain/qgsterraingenerator.cpp
-  terrain/qgsterrainsettings.cpp
   terrain/qgsterraintexturegenerator_p.cpp
   terrain/qgsterraintextureimage_p.cpp
   terrain/qgsterraintileloader.cpp
@@ -196,6 +196,7 @@ set(QGIS_3D_HDRS
   symbols/qgspointcloud3dsymbol.h
 
   terrain/qgs3dterrainregistry.h
+  terrain/qgsabstractterrainsettings.h
   terrain/qgsdemterraingenerator.h
   terrain/qgsdemterrainsettings.h
   terrain/qgsflatterraingenerator.h
@@ -207,7 +208,6 @@ set(QGIS_3D_HDRS
   terrain/qgsquantizedmeshterrainsettings.h
   terrain/qgsterraindownloader.h
   terrain/qgsterraingenerator.h
-  terrain/qgsterrainsettings.h
   terrain/qgsterraintileloader.h
   terrain/qgsterrainentity.h
 

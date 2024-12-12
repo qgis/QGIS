@@ -16,7 +16,7 @@
 #include "qgs3drendercontext.h"
 #include "qgs3dutils.h"
 #include "qgsthreadingutils.h"
-#include "qgsterrainsettings.h"
+#include "qgsabstractterrainsettings.h"
 
 Qgs3DRenderContext::Qgs3DRenderContext( const Qgs3DRenderContext &other )
   : mCrs( other.mCrs )

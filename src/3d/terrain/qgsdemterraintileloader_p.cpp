@@ -27,7 +27,7 @@
 #include "qgsterraintexturegenerator_p.h"
 #include "qgsterraintileentity_p.h"
 #include "qgsterraingenerator.h"
-#include "qgsterrainsettings.h"
+#include "qgsabstractterrainsettings.h"
 
 #include <Qt3DRender/QGeometryRenderer>
 #include <Qt3DCore/QTransform>

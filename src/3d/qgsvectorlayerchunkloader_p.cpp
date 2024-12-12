@@ -30,7 +30,7 @@
 #include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgsabstract3dsymbol.h"
-#include "qgsterrainsettings.h"
+#include "qgsabstractterrainsettings.h"
 
 #include <QtConcurrent>
 #include <Qt3DCore/QTransform>

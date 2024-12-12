@@ -39,7 +39,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgsvector3d.h"
 #include "qgsapplication.h"
-#include "qgsterrainsettings.h"
+#include "qgsabstractterrainsettings.h"
 
 #include <QComponent>
 #include <QDiffuseSpecularMaterial>

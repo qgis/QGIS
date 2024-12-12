@@ -36,7 +36,7 @@
 #include "qgs3dmapcanvas.h"
 #include "qgsterraingenerator.h"
 #include "qgstiledscenelayer.h"
-#include "qgsterrainsettings.h"
+#include "qgsabstractterrainsettings.h"
 
 Qgs3DMapConfigWidget::Qgs3DMapConfigWidget( Qgs3DMapSettings *map, QgsMapCanvas *mainCanvas, Qgs3DMapCanvas *mapCanvas3D, QWidget *parent )
   : QWidget( parent )

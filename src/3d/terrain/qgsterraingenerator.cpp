@@ -19,7 +19,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgscoordinatetransform.h"
-#include "qgsterrainsettings.h"
+#include "qgsabstractterrainsettings.h"
 
 QgsBox3D QgsTerrainGenerator::rootChunkBox3D( const Qgs3DMapSettings &map ) const
 {
