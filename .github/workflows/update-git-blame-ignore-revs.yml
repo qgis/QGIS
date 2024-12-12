@@ -1,0 +1,31 @@
+name: 🙈 Update git-blame-ignore-revs
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - release-*
+
+jobs:
+  sipify:
+    runs-on: [ubuntu-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+            fetch-depth: 200
+
+      - name: update
+        run: |
+          for f in $(git log --oneline --reverse --grep="\[pre-commit.ci\] auto fixes from pre-commit.com hooks" | cut -d' ' -f1); do
+            ggrep -q "^${f}" .git-blame-ignore-revs || echo "${f}" >> .git-blame-ignore-revs
+          done
+
+      - name: commit
+        run: |
+          git config user.name qgis-bot
+          git config user.email bot@qgis.org
+          git add .git-blame-ignore-revs
+          git commit -m "auto update .git-blame-ignore-revs 🙈" || echo "nothing to commit 🍺"
+          git push
