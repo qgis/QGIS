@@ -90,7 +90,7 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     QgsCoordinateTransformContext mTransformContext;
 
     //! source layer for heights
-    QPointer< QgsRasterLayer > mLayer;
+    QPointer<QgsRasterLayer> mLayer;
     //! how many vertices to place on one side of the tile
     int mResolution = 16;
     //! height of the "skirts" at the edges of tiles to hide cracks between adjacent cracks
