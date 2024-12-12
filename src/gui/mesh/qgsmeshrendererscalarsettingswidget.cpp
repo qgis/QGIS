@@ -23,6 +23,7 @@
 #include "qgsmeshvariablestrokewidthwidget.h"
 #include "qgsmapcanvas.h"
 #include <QPointer>
+#include "qgsmessagelog.h"
 
 QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidget *parent )
   : QWidget( parent )
@@ -287,7 +288,16 @@ void QgsMeshRendererScalarSettingsWidget::recalculateMinMax()
     {
       QgsCoordinateTransform ct = QgsCoordinateTransform( mCanvas->mapSettings().destinationCrs(), mMeshLayer->crs(), QgsProject::instance() );
       searchExtent = mCanvas->extent();
-      searchExtent = ct.transform( searchExtent );
+      try
+      {
+        searchExtent = ct.transform( searchExtent );
+      }
+      catch ( const QgsCsException &e )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Transform error caught: %1" ).arg( e.what() ), QObject::tr( "CRS" ) );
+        // can properly transform canvas extent to meshlayer crs, use full mesh layer extent
+        searchExtent = mMeshLayer->extent();
+      }
       break;
     }
     default:
