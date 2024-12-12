@@ -41,6 +41,7 @@ class TestQgsAdvancedDigitizing : public QObject
 
     void angleConstraint();
     void angleConstraintWithGeographicCrs();
+    void commonAngleConstraint();
     void distanceConstraintWithAngleConstraint();
 
     void coordinateConstraint();
@@ -433,6 +434,38 @@ void TestQgsAdvancedDigitizing::angleConstraintWithGeographicCrs()
   QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (1 1, 1 2)" ) );
 
   setCanvasCrs( QStringLiteral( "EPSG:3950" ) );
+}
+
+void TestQgsAdvancedDigitizing::commonAngleConstraint()
+{
+  auto utils = getMapToolDigitizingUtils( mLayer3950 );
+  QVERIFY( mAdvancedDigitizingDockWidget->cadEnabled() );
+
+  // Enable common angle constraint (90°)
+  mAdvancedDigitizingDockWidget->mCommonAngleConstraint = 90.0;
+  mAdvancedDigitizingDockWidget->mSnappingPrioritizeFeatures = false;
+  QVERIFY( mAdvancedDigitizingDockWidget->commonAngleConstraint() );
+
+  QSet<QgsFeatureId> oldFeatures = utils.existingFeatureIds();
+
+  utils.mouseClick( 0, 0, Qt::LeftButton );
+
+  // Check if the SoftLock contraint remains active while moving (no flickering)
+  utils.mouseMove( 0, 10 );
+  QVERIFY( mAdvancedDigitizingDockWidget->mAngleConstraint->lockMode() == QgsAdvancedDigitizingDockWidget::CadConstraint::SoftLock );
+  utils.mouseMove( 0, 11 );
+  QVERIFY( mAdvancedDigitizingDockWidget->mAngleConstraint->lockMode() == QgsAdvancedDigitizingDockWidget::CadConstraint::SoftLock );
+  utils.mouseMove( 0.01, 12 );
+  QVERIFY( mAdvancedDigitizingDockWidget->mAngleConstraint->lockMode() == QgsAdvancedDigitizingDockWidget::CadConstraint::SoftLock );
+
+  // Check if position is correctly snapped to 90°
+  utils.mouseClick( 0.01, 12, Qt::LeftButton );
+  utils.mouseClick( 0.01, 12, Qt::RightButton );
+  QCOMPARE( getWktFromLastAddedFeature( utils, oldFeatures ), QStringLiteral( "LineString (0 0, 0 12)" ) );
+
+  // Disable common angle constraint
+  mAdvancedDigitizingDockWidget->mCommonAngleConstraint = 0.0;
+  QVERIFY( !mAdvancedDigitizingDockWidget->commonAngleConstraint() );
 }
 
 void TestQgsAdvancedDigitizing::distanceConstraintWithAngleConstraint()
