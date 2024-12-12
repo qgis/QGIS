@@ -299,6 +299,16 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
                 epsg_3577_index, QgsCoordinateReferenceSystemModel.Roles.RoleProj
             )
         )
+        self.assertEqual(
+            model.data(epsg_3577_index, QgsCoordinateReferenceSystemModel.Roles.Group),
+            "Projected",
+        )
+        self.assertEqual(
+            model.data(
+                epsg_3577_index, QgsCoordinateReferenceSystemModel.Roles.Projection
+            ),
+            "Albers Equal Area",
+        )
 
         # check that same result is returned by authIdToIndex
         self.assertEqual(model.authIdToIndex("EPSG:3577"), epsg_3577_index)
@@ -764,6 +774,35 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             == "EPSG:4347"
         ][0]
         self.assertTrue(epsg_4347_index.isValid())
+
+        model.setFilterString("equal gda2020 Area")
+        projected_index = [
+            model.index(row, 0, QModelIndex())
+            for row in range(model.rowCount(QModelIndex()))
+            if model.data(
+                model.index(row, 0, QModelIndex()),
+                QgsCoordinateReferenceSystemModel.Roles.RoleGroupId,
+            )
+            == "Projected"
+        ][0]
+        aae_index = [
+            model.index(row, 0, projected_index)
+            for row in range(model.rowCount(projected_index))
+            if model.data(
+                model.index(row, 0, projected_index),
+                Qt.ItemDataRole.DisplayRole,
+            )
+            == "Albers Equal Area"
+        ][0]
+        epsg_9473_index = [
+            model.index(row, 0, aae_index)
+            for row in range(model.rowCount(aae_index))
+            if model.data(
+                model.index(row, 0, aae_index),
+                QgsCoordinateReferenceSystemModel.Roles.RoleAuthId,
+            )
+            == "EPSG:9473"
+        ][0]
 
         model.setFilterString("")
 

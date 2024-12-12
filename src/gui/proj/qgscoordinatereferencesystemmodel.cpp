@@ -18,6 +18,7 @@
 #include "moc_qgscoordinatereferencesystemmodel.cpp"
 #include "qgscoordinatereferencesystemutils.h"
 #include "qgsapplication.h"
+#include "qgsstringutils.h"
 
 #include <QFont>
 
@@ -156,6 +157,12 @@ QVariant QgsCoordinateReferenceSystemModel::data( const QModelIndex &index, int 
 
         case static_cast<int>( CustomRole::Proj ):
           return crsNode->proj();
+
+        case static_cast<int>( CustomRole::Group ):
+          return crsNode->group();
+
+        case static_cast<int>( CustomRole::Projection ):
+          return crsNode->projection();
 
         default:
           break;
@@ -423,6 +430,7 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
         break;
     }
   }
+  crsNode->setGroup( groupName );
 
   if ( QgsCoordinateReferenceSystemModelGroupNode *group = parentNode->getChildGroupNode( groupId ) )
   {
@@ -440,6 +448,8 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
     QString projectionName = QgsCoordinateReferenceSystemUtils::translateProjection( record.projectionAcronym );
     if ( projectionName.isEmpty() )
       projectionName = tr( "Other" );
+    else
+      crsNode->setProjection( projectionName );
 
     if ( QgsCoordinateReferenceSystemModelGroupNode *group = parentNode->getChildGroupNode( record.projectionAcronym ) )
     {
@@ -706,7 +716,15 @@ bool QgsCoordinateReferenceSystemProxyModel::filterAcceptsRow( int sourceRow, co
   if ( !mFilterString.trimmed().isEmpty() )
   {
     const QString name = sourceModel()->data( sourceIndex, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::Name ) ).toString();
-    if ( !( name.contains( mFilterString, Qt::CaseInsensitive )
+    QString candidate = name;
+    const QString groupName = sourceModel()->data( sourceIndex, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::Group ) ).toString();
+    if ( !groupName.isEmpty() )
+      candidate += ' ' + groupName;
+    const QString projectionName = sourceModel()->data( sourceIndex, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::Projection ) ).toString();
+    if ( !projectionName.isEmpty() )
+      candidate += ' ' + projectionName;
+
+    if ( !( QgsStringUtils::containsByWord( candidate, mFilterString )
             || authid.contains( mFilterString, Qt::CaseInsensitive ) ) )
       return false;
   }
