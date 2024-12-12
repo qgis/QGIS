@@ -271,7 +271,10 @@ tests:
         pk: id
 
   - algorithm: native:voronoipolygons
-    name: Vornoi with buffer region
+    name: Voronoi with buffer region (GEOS < 3.12)
+    condition:
+      geos:
+        less_than: 31200
     params:
       BUFFER: 10.0
       INPUT:
@@ -282,6 +285,28 @@ tests:
         name: expected/voronoi_buffer.gml
         type: vector
         pk: id
+        compare:
+          geometry:
+            normalize: True
+
+  - algorithm: native:voronoipolygons
+    name: Voronoi with buffer region (GEOS 3.12+)
+    condition:
+      geos:
+        at_least: 31200
+    params:
+      BUFFER: 10.0
+      INPUT:
+        name: points.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/voronoi_buffer_geos312.gml
+        type: vector
+        pk: id
+        compare:
+          geometry:
+            normalize: True
 
   - algorithm: native:voronoipolygons
     name: Voronoi without source attributes
