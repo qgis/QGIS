@@ -140,7 +140,7 @@ class QgsMeshEditDigitizingAction : public QWidgetAction
 
     //! Returns type of z value obtaining
     QgsMeshEditDigitizingAction::ZValueSource zValueSourceType() const;
-    
+
     //! Returns if neighboring faces should be refined when adding vertex inside mesh
     bool refineNeighboringFaces() const;
 

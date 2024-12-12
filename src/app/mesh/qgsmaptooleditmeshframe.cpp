@@ -237,13 +237,13 @@ QgsMeshEditDigitizingAction::QgsMeshEditDigitizingAction( QObject *parent )
 
   int interpolateFromValue = settings.enumValue( QStringLiteral( "UI/Mesh/zValueFrom" ), PreferMeshThenZWidget );
   mComboZValueType->setCurrentIndex( interpolateFromValue );
-  
+
   mCheckBoxRefineNeighboringFaces = new QCheckBox( tr( "On add vertex in face refine neighboring faces" ) );
 
   bool refineNeighboringFaces = settings.value( QStringLiteral( "UI/Mesh/refineNeighboringFaces" ) ).toBool();
   mCheckBoxRefineNeighboringFaces->setChecked( refineNeighboringFaces );
   layout->addWidget( mCheckBoxRefineNeighboringFaces );
-    
+
   gLayout->addWidget( labelZValueType, 1, 0, 1, 1 );
   gLayout->addWidget( mComboZValueType, 1, 1, 1, 1 );
   gLayout->addWidget( mCheckBoxRefineNeighboringFaces, 2, 0, 1, 2 );
@@ -251,8 +251,8 @@ QgsMeshEditDigitizingAction::QgsMeshEditDigitizingAction( QObject *parent )
   QWidget *w = new QWidget();
   w->setLayout( gLayout );
   setDefaultWidget( w );
-    
-  connect( mCheckBoxRefineNeighboringFaces, &QCheckBox::toggled, this, &QgsMeshEditDelaunayRefinementAction::updateSettings );  
+
+  connect( mCheckBoxRefineNeighboringFaces, &QCheckBox::toggled, this, &QgsMeshEditDelaunayRefinementAction::updateSettings );
 }
 
 void QgsMeshEditDigitizingAction::updateSettings()
@@ -272,10 +272,10 @@ void QgsMeshEditDigitizingAction::setZValueType( QgsMeshEditDigitizingAction::ZV
 {
   mComboZValueType->setCurrentIndex( mComboZValueType->findData( zValueSource ) );
 }
-  
+
 bool QgsMeshEditDigitizingAction::refineNeighboringFaces() const
 {
-  return mCheckBoxRefineNeighboringFaces->isChecked();  
+  return mCheckBoxRefineNeighboringFaces->isChecked();
 }
 
 //
