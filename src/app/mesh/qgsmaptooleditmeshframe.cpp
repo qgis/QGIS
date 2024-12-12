@@ -242,8 +242,7 @@ QgsMeshEditDigitizingAction::QgsMeshEditDigitizingAction( QObject *parent )
 
   bool refineNeighboringFaces = settings.value( QStringLiteral( "UI/Mesh/refineNeighboringFaces" ) ).toBool();
   mCheckBoxRefineNeighboringFaces->setChecked( refineNeighboringFaces );
-  layout->addWidget( mCheckBoxRefineNeighboringFaces );
-
+    
   gLayout->addWidget( labelZValueType, 1, 0, 1, 1 );
   gLayout->addWidget( mComboZValueType, 1, 1, 1, 1 );
   gLayout->addWidget( mCheckBoxRefineNeighboringFaces, 2, 0, 1, 2 );
@@ -251,8 +250,8 @@ QgsMeshEditDigitizingAction::QgsMeshEditDigitizingAction( QObject *parent )
   QWidget *w = new QWidget();
   w->setLayout( gLayout );
   setDefaultWidget( w );
-
-  connect( mCheckBoxRefineNeighboringFaces, &QCheckBox::toggled, this, &QgsMeshEditDelaunayRefinementAction::updateSettings );
+    
+  connect( mCheckBoxRefineNeighboringFaces, &QCheckBox::toggled, this, &QgsMeshEditDigitizingAction::updateSettings );  
 }
 
 void QgsMeshEditDigitizingAction::updateSettings()
