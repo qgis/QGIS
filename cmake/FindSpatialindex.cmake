@@ -19,7 +19,13 @@ FIND_PATH(SPATIALINDEX_INCLUDE_DIR spatialindex/SpatialIndex.h PATHS
   "$ENV{OSGEO4W_ROOT}/include"
   )
 
-FIND_LIBRARY(SPATIALINDEX_LIBRARY NAMES spatialindex_i spatialindex spatialindex-64 PATHS
+set(SPATIALINDEX_LIB_SUFFIX "")
+if (MSVC AND QGISDEBUG)
+  set(SPATIALINDEX_LIB_SUFFIX "d")
+endif()
+
+FIND_LIBRARY(SPATIALINDEX_LIBRARY NAMES spatialindex_i${SPATIALINDEX_LIB_SUFFIX}
+  spatialindex${SPATIALINDEX_LIB_SUFFIX} spatialindex-64${SPATIALINDEX_LIB_SUFFIX} PATHS
   /usr/lib
   /usr/local/lib
   "$ENV{LIB_DIR}/lib"

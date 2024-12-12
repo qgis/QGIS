@@ -210,6 +210,13 @@ endif()
 set (WITH_CORE TRUE CACHE BOOL "Determines whether QGIS core should be built.")
 mark_as_advanced(WITH_CORE)
 
+if (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
+  message (STATUS "Debug output enabled")
+  set(QGISDEBUG TRUE)
+else()
+  set(QGISDEBUG FALSE)
+endif()
+
 if(WITH_CORE)
   # Try to configure and build GRASS plugin by default
   foreach (GRASS_SEARCH_VERSION 7 8)
@@ -857,13 +864,6 @@ endif()
 if(CMAKE_SYSTEM_PROCESSOR MATCHES "^(powerpc|ppc)")
   # spatialite crashes on ppc - see bugs.debian.org/603986
   add_definitions( -fno-strict-aliasing )
-endif()
-
-if (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
-  message (STATUS "Debug output enabled")
-  set(QGISDEBUG TRUE)
-else()
-  set(QGISDEBUG FALSE)
 endif()
 
 set (AGGRESSIVE_SAFE_MODE FALSE CACHE BOOL "Forces a aggressive safe mode where issues like unsafe thread access will resort in fatal exceptions")

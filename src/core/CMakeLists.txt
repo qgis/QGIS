@@ -2185,14 +2185,7 @@ if (HAVE_WEBENGINE)
 endif()
 
 if(MSVC)
-  set_source_files_properties(
-      ${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp
-      ${CMAKE_CURRENT_BINARY_DIR}/qgis_core_autogen/mocs_compilation.cpp
-      expression/qgsexpressionfunction.cpp
-      proj/qgscoordinatereferencesystem.cpp
-      textrenderer/qgsfontmanager.cpp
-      PROPERTIES COMPILE_FLAGS "/bigobj"
-  )
+  add_compile_options("/bigobj")
 else()
   if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang" AND (CMAKE_BUILD_TYPE MATCHES Release OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo))
     set_source_files_properties(${CMAKE_CURRENT_BINARY_DIR}/qgsexpression_texts.cpp PROPERTIES COMPILE_FLAGS "-O1")

@@ -3,12 +3,17 @@ if(NOT WITH_VCPKG)
 endif()
 
 set(VCPKG_BASE_DIR "${_VCPKG_INSTALLED_DIR}/${VCPKG_TARGET_TRIPLET}")
+set(VCPKG_BIN_BASE_DIR "${VCPKG_BASE_DIR}")
+
+if (MSVC AND QGISDEBUG)
+  set(VCPKG_BIN_BASE_DIR "${VCPKG_BASE_DIR}/debug")
+endif()
 
 if(MSVC)
   # At least python3.dll, qgis_analysis.dll and gsl.dll are missing
   # Copy everything
   file(GLOB ALL_LIBS
-    "${VCPKG_BASE_DIR}/bin/*.dll"
+    "${VCPKG_BIN_BASE_DIR}/bin/*.dll"
   )
   install(FILES ${ALL_LIBS} DESTINATION "bin")
 endif()
@@ -21,8 +26,8 @@ endif()
 
 install(DIRECTORY "${PROJ_DATA_PATH}/" DESTINATION "${CMAKE_INSTALL_DATADIR}/proj")
 install(DIRECTORY "${VCPKG_BASE_DIR}/share/gdal/" DESTINATION "${CMAKE_INSTALL_DATADIR}/gdal")
-install(DIRECTORY "${VCPKG_BASE_DIR}/bin/Qca/" DESTINATION "bin/Qca") # QCA plugins
-install(DIRECTORY "${VCPKG_BASE_DIR}/Qt6/" DESTINATION "bin/Qt6") # qt plugins (qml and others)
+install(DIRECTORY "${VCPKG_BIN_BASE_DIR}/bin/Qca/" DESTINATION "bin/Qca") # QCA plugins
+install(DIRECTORY "${VCPKG_BIN_BASE_DIR}/Qt6/" DESTINATION "bin/Qt6") # qt plugins (qml and others)
 if(WITH_BINDINGS)
   install(DIRECTORY "${VCPKG_BASE_DIR}/tools/python3/"
     DESTINATION "bin"
