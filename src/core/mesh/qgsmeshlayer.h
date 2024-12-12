@@ -959,7 +959,7 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      * \since QGIS 3.42
      */
     QgsMeshDatasetIndex activeScalarDatasetIndex( QgsRenderContext &rendererContext );
-    
+
     /**
      * Checks whether that datasets path is already added to this mesh layer. Return TRUE if the
      * dataset path is not already added.

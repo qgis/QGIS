@@ -934,6 +934,9 @@ Extracts minimum and maximum value for active scalar dataset on mesh faces.
 %Docstring
 Returns current active scalar dataset index for current renderer context.
 
+.. versionadded:: 3.42
+%End
+
     bool datasetsPathUnique( const QString &path );
 %Docstring
 Checks whether that datasets path is already added to this mesh layer. Return ``True`` if the
