@@ -222,15 +222,15 @@ QString QgsMeshRendererScalarSettings::extentString( Qgis::MeshRangeExtent exten
 
 Qgis::MeshRangeExtent QgsMeshRendererScalarSettings::extentFromString( const QString &extent )
 {
-  if ( extent == "WholeMesh" )
+  if ( extent == QLatin1String( "WholeMesh" ) )
   {
     return Qgis::MeshRangeExtent::WholeMesh;
   }
-  else if ( extent == "CurrentCanvas" )
+  else if ( extent == QLatin1String( "CurrentCanvas" ) )
   {
     return Qgis::MeshRangeExtent::FixedCanvas;
   }
-  else if ( extent == "UpdatedCanvas" )
+  else if ( extent == QLatin1String( "UpdatedCanvas" ) )
   {
     return Qgis::MeshRangeExtent::UpdatedCanvas;
   }
