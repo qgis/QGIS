@@ -104,7 +104,7 @@ QgsMeshRendererScalarSettings QgsMeshRendererScalarSettingsWidget::settings() co
 
   settings.setClassificationMinimumMaximum( spinBoxValue( mScalarMinSpinBox ), spinBoxValue( mScalarMaxSpinBox ) );
 
-  settings.setExtent( mMinMaxValueTypeComboBox->currentData().value< Qgis::MeshRangeExtent >() );
+  settings.setExtent( mMinMaxValueTypeComboBox->currentData().value<Qgis::MeshRangeExtent>() );
 
   if ( mUserDefinedRadioButton->isChecked() )
   {
@@ -140,8 +140,8 @@ void QgsMeshRendererScalarSettingsWidget::syncToLayer()
   const QgsMeshRendererScalarSettings settings = rendererSettings.scalarSettings( mActiveDatasetGroup );
   const QgsColorRampShader shader = settings.colorRampShader();
 
-  const double  min = settings.classificationMinimum();
-  const double  max = settings.classificationMaximum();
+  const double min = settings.classificationMinimum();
+  const double max = settings.classificationMaximum();
 
   whileBlocking( mScalarMinSpinBox )->setValue( min );
   whileBlocking( mScalarMaxSpinBox )->setValue( max );
@@ -273,7 +273,7 @@ void QgsMeshRendererScalarSettingsWidget::recalculateMinMax()
 {
   QgsRectangle searchExtent;
 
-  Qgis::MeshRangeExtent extentRange = mMinMaxValueTypeComboBox->currentData().value< Qgis::MeshRangeExtent >();
+  Qgis::MeshRangeExtent extentRange = mMinMaxValueTypeComboBox->currentData().value<Qgis::MeshRangeExtent>();
 
   switch ( extentRange )
   {

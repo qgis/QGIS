@@ -2469,7 +2469,7 @@ void TestQgsMeshLayer::testMinimumMaximumActiveScalarDataset()
   QCOMPARE( min, 400 );
   QCOMPARE( max, 460 );
 }
-  
+
 void TestQgsMeshLayer::testDatasetsUniquePath()
 {
   QgsMeshLayer layer(
