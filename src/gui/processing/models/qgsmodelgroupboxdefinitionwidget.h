@@ -41,16 +41,14 @@ class QgsProcessingModelGroupBox;
  * \note Not available in Python bindings.
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsModelGroupBoxDefinitionDialog: public QDialog
+class GUI_EXPORT QgsModelGroupBoxDefinitionDialog : public QDialog
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsModelGroupBoxDefinitionWidget, for the specified group \a box.
      */
-    QgsModelGroupBoxDefinitionDialog( const QgsProcessingModelGroupBox &box,
-                                      QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsModelGroupBoxDefinitionDialog( const QgsProcessingModelGroupBox &box, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns a new instance of the group box, using the current settings defined in the dialog.
@@ -58,11 +56,9 @@ class GUI_EXPORT QgsModelGroupBoxDefinitionDialog: public QDialog
     QgsProcessingModelGroupBox groupBox() const;
 
   private:
-
     QTextEdit *mCommentEdit = nullptr;
     QgsColorButton *mCommentColorButton = nullptr;
     QgsProcessingModelGroupBox mBox;
-
 };
 
 

@@ -41,9 +41,9 @@ QgsMaterialSettingsRenderingTechnique.__doc__ = """Material rendering techniques
 # --
 try:
     QgsMaterialContext.__group__ = ['materials']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsAbstractMaterialSettings.__group__ = ['materials']
-except NameError:
+except (NameError, AttributeError):
     pass

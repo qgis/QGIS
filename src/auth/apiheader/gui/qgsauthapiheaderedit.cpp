@@ -93,7 +93,7 @@ void QgsAuthApiHeaderEdit::removeHeaderPair()
 
 void QgsAuthApiHeaderEdit::clearHeaderPairs()
 {
-  for ( int i = tblwdgHeaderPairs->rowCount(); i > 0 ; --i )
+  for ( int i = tblwdgHeaderPairs->rowCount(); i > 0; --i )
   {
     tblwdgHeaderPairs->removeRow( i - 1 );
   }

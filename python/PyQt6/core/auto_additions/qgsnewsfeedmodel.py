@@ -43,9 +43,9 @@ QgsNewsFeedModel.CustomRole.__doc__ = """Custom model roles.
 QgsNewsFeedModel.CustomRole.baseClass = QgsNewsFeedModel
 try:
     QgsNewsFeedModel.__group__ = ['network']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsNewsFeedProxyModel.__group__ = ['network']
-except NameError:
+except (NameError, AttributeError):
     pass

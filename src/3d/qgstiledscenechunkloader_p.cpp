@@ -21,6 +21,7 @@
 #include "qgsapplication.h"
 #include "qgscesiumutils.h"
 #include "qgscoordinatetransform.h"
+#include "qgsgeotransform.h"
 #include "qgsgltf3dutils.h"
 #include "qgsquantizedmeshtiles.h"
 #include "qgsraycastingutils_p.h"
@@ -63,8 +64,8 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
   const QgsCoordinateTransform &boundsTransform = factory.mBoundsTransform;
 
   const QgsChunkNodeId tileId = node->tileId();
-  const QFuture<void> future = QtConcurrent::run( [this, tileId, zValueScale, zValueOffset, boundsTransform]
-  {
+  const QgsVector3D chunkOrigin = node->box3D().center();
+  const QFuture<void> future = QtConcurrent::run( [this, tileId, zValueScale, zValueOffset, boundsTransform, chunkOrigin] {
     const QgsTiledSceneTile tile = mIndex.getTile( tileId.uniqueId );
 
     // we do not load tiles that are too big - at least for the time being
@@ -92,11 +93,11 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
 
     QgsGltf3DUtils::EntityTransform entityTransform;
     entityTransform.tileTransform = ( tile.transform() ? *tile.transform() : QgsMatrix4x4() );
-    entityTransform.sceneOriginTargetCrs = mFactory.mRenderContext.origin();
+    entityTransform.chunkOriginTargetCrs = chunkOrigin;
     entityTransform.ecefToTargetCrs = &mFactory.mBoundsTransform;
     entityTransform.zValueScale = zValueScale;
     entityTransform.zValueOffset = zValueOffset;
-    entityTransform.gltfUpAxis = static_cast< Qgis::Axis >( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast< int >( Qgis::Axis::Y ) ).toInt() );
+    entityTransform.gltfUpAxis = static_cast<Qgis::Axis>( tile.metadata().value( QStringLiteral( "gltfUpAxis" ), static_cast<int>( Qgis::Axis::Y ) ).toInt() );
 
     const QString &format = tile.metadata().value( QStringLiteral( "contentFormat" ) ).value<QString>();
     QStringList errors;
@@ -122,7 +123,8 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
       entityTransform.tileTransform.translate( tileContent.rtcCenter );
       mEntity = QgsGltf3DUtils::gltfToEntity( tileContent.gltf, entityTransform, uri, &errors );
     }
-    else return; // unsupported tile content type
+    else
+      return; // unsupported tile content type
 
     // TODO: report errors somewhere?
     if ( !errors.isEmpty() )
@@ -131,7 +133,13 @@ QgsTiledSceneChunkLoader::QgsTiledSceneChunkLoader( QgsChunkNode *node, const Qg
     }
 
     if ( mEntity )
+    {
+      QgsGeoTransform *transform = new QgsGeoTransform;
+      transform->setGeoTranslation( chunkOrigin );
+      mEntity->addComponent( transform );
+
       mEntity->moveToThread( QgsApplication::instance()->thread() );
+    }
   } );
 
   // emit finished() as soon as the handler is populated with features
@@ -210,7 +218,7 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
   // fetching of hierarchy is handled by canCreateChildren() + prepareChildren()
   Q_ASSERT( mIndex.childAvailability( indexTileId ) != Qgis::TileChildrenAvailability::NeedFetching );
 
-  const QVector< long long > childIds = mIndex.childTileIds( indexTileId );
+  const QVector<long long> childIds = mIndex.childTileIds( indexTileId );
   for ( long long childId : childIds )
   {
     const QgsChunkNodeId chId( childId );
@@ -236,10 +244,10 @@ QVector<QgsChunkNode *> QgsTiledSceneChunkLoaderFactory::createChildren( QgsChun
         half[0], half[3], half[6], 0,
         half[1], half[4], half[7], 0,
         half[2], half[5], half[8], 0,
-        0, 0, 0, 1 );
+        0, 0, 0, 1
+      );
       QVector3D aaa = rot.inverted().map( ecef2.toVector3D() );
-      if ( aaa.x() > 1 || aaa.y() > 1 || aaa.z() > 1 ||
-           aaa.x() < -1 || aaa.y() < -1 || aaa.z() < -1 )
+      if ( aaa.x() > 1 || aaa.y() > 1 || aaa.z() > 1 || aaa.x() < -1 || aaa.y() < -1 || aaa.z() < -1 )
       {
         continue;
       }
@@ -270,7 +278,7 @@ bool QgsTiledSceneChunkLoaderFactory::canCreateChildren( QgsChunkNode *node )
   // we fetch its hierarchy before a chunk node is created for such child tile - otherwise we
   // end up trying to load tileset JSON file instead of the actual content
 
-  const QVector< long long > childIds = mIndex.childTileIds( nodeId );
+  const QVector<long long> childIds = mIndex.childTileIds( nodeId );
   for ( long long childId : childIds )
   {
     if ( mFutureHierarchyFetches.contains( childId ) || mPendingHierarchyFetches.contains( childId ) )
@@ -292,14 +300,12 @@ void QgsTiledSceneChunkLoaderFactory::fetchHierarchyForNode( long long nodeId, Q
   mPendingHierarchyFetches.insert( nodeId );
 
   QFutureWatcher<void> *futureWatcher = new QFutureWatcher<void>( this );
-  connect( futureWatcher, &QFutureWatcher<void>::finished, this, [this, origNode, nodeId, futureWatcher]
-  {
+  connect( futureWatcher, &QFutureWatcher<void>::finished, this, [this, origNode, nodeId, futureWatcher] {
     mPendingHierarchyFetches.remove( nodeId );
     emit childrenPrepared( origNode );
     futureWatcher->deleteLater();
   } );
-  futureWatcher->setFuture( QtConcurrent::run( [this, nodeId]
-  {
+  futureWatcher->setFuture( QtConcurrent::run( [this, nodeId] {
     mIndex.fetchHierarchy( nodeId );
   } ) );
 }
@@ -317,7 +323,7 @@ void QgsTiledSceneChunkLoaderFactory::prepareChildren( QgsChunkNode *node )
   // we fetch its hierarchy before a chunk node is created for such child tile - otherwise we
   // end up trying to load tileset JSON file instead of the actual content
 
-  const QVector< long long > childIds = mIndex.childTileIds( nodeId );
+  const QVector<long long> childIds = mIndex.childTileIds( nodeId );
   for ( long long childId : childIds )
   {
     if ( mFutureHierarchyFetches.contains( childId ) )
@@ -373,9 +379,7 @@ QVector<QgsRayCastingUtils::RayHit> QgsTiledSceneLayerChunkedEntity::rayIntersec
 
     QgsAABB nodeBbox = Qgs3DUtils::mapToWorldExtent( node->box3D(), mMapSettings->origin() );
 
-    if ( node->entity() &&
-         ( minDist < 0 || nodeBbox.distanceFromPoint( ray.origin() ) < minDist ) &&
-         QgsRayCastingUtils::rayBoxIntersection( ray, nodeBbox ) )
+    if ( node->entity() && ( minDist < 0 || nodeBbox.distanceFromPoint( ray.origin() ) < minDist ) && QgsRayCastingUtils::rayBoxIntersection( ray, nodeBbox ) )
     {
 #ifdef QGISDEBUG
       nodeUsed++;
@@ -409,10 +413,10 @@ QVector<QgsRayCastingUtils::RayHit> QgsTiledSceneLayerChunkedEntity::rayIntersec
     QVariantMap vm;
     QgsTiledSceneTile tile = mIndex.getTile( minNode->tileId().uniqueId );
     // at this point this is mostly for debugging - we may want to change/rename what's returned here
-    vm[ QStringLiteral( "node_id" ) ] = tile.id();
-    vm[ QStringLiteral( "node_error" ) ] = tile.geometricError();
-    vm[ QStringLiteral( "node_content" ) ] = tile.resources().value( QStringLiteral( "content" ) );
-    vm[ QStringLiteral( "triangle_index" ) ] = minTriangleIndex;
+    vm[QStringLiteral( "node_id" )] = tile.id();
+    vm[QStringLiteral( "node_error" )] = tile.geometricError();
+    vm[QStringLiteral( "node_content" )] = tile.resources().value( QStringLiteral( "content" ) );
+    vm[QStringLiteral( "triangle_index" )] = minTriangleIndex;
     QgsRayCastingUtils::RayHit hit( minDist, intersectionPoint, FID_NULL, vm );
     result.append( hit );
   }

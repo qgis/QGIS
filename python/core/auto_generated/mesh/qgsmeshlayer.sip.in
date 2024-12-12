@@ -172,12 +172,23 @@ Returns the provider type for this layer
 %Docstring
 Adds datasets to the mesh from file with ``path``. Use the the time ``defaultReferenceTime`` as reference time is not provided in the file
 
-:param path: the path to the atasets file
+:param path: the path to the datasets file
 :param defaultReferenceTime: reference time used if not provided in the file
 
 :return: whether the dataset is added
 
 .. versionadded:: 3.14
+%End
+
+    bool removeDatasets( const QString &name );
+%Docstring
+Removes datasets from the mesh with given ``name``.
+
+:param name: name of dataset group to remove
+
+:return: whether the dataset is removed
+
+.. versionadded:: 3.42
 %End
 
     bool addDatasets( QgsMeshDatasetGroup *datasetGroup /Transfer/ );
@@ -905,6 +916,17 @@ Sets labeling configuration. Takes ownership of the object.
 .. versionadded:: 3.36
 %End
 
+    bool datasetsPathUnique( const QString &path );
+%Docstring
+Checks whether that datasets path is already added to this mesh layer. Return ``True`` if the
+dataset path is not already added.
+
+:param path: the path to the datasets file
+
+:return: whether the datasets path is unique
+
+.. versionadded:: 3.42
+%End
 
   public slots:
 

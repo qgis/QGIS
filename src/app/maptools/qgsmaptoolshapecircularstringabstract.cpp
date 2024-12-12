@@ -63,7 +63,7 @@ void QgsMapToolShapeCircularStringAbstract::undo()
     mPoints.removeLast();
     std::unique_ptr<QgsCircularString> geomRubberBand( new QgsCircularString() );
     std::unique_ptr<QgsLineString> geomTempRubberBand( new QgsLineString() );
-    const int lastPositionCompleteCircularString = mPoints.size() - 1 - ( mPoints.size() + 1 ) % 2 ;
+    const int lastPositionCompleteCircularString = mPoints.size() - 1 - ( mPoints.size() + 1 ) % 2;
 
     geomTempRubberBand->setPoints( mPoints.mid( lastPositionCompleteCircularString ) );
     if ( mTempRubberBand )
@@ -205,7 +205,7 @@ void QgsMapToolShapeCircularStringAbstract::addCurveToParentTool()
 
   if ( drawAsPolygon )
   {
-    std::unique_ptr<QgsLineString> ls( c->curveToLine( ) );
+    std::unique_ptr<QgsLineString> ls( c->curveToLine() );
     mParentTool->addCurve( ls.release() );
     delete c;
   }

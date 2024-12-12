@@ -21,7 +21,6 @@ It will be used as a search widget and produces expression to look for in the la
 #include "qgsvaluemapsearchwidgetwrapper.h"
 %End
   public:
-
     explicit QgsValueMapSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsValueMapSearchWidgetWrapper

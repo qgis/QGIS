@@ -43,7 +43,7 @@ QgsMapCanvasAnnotationItem::QgsMapCanvasAnnotationItem( QgsAnnotation *annotatio
   connect( mAnnotation, &QgsAnnotation::appearanceChanged, this, [this] { update(); } );
   connect( mAnnotation, &QgsAnnotation::moved, this, [this] { updatePosition(); } );
   connect( mAnnotation, &QgsAnnotation::moved, this, &QgsMapCanvasAnnotationItem::setFeatureForMapPosition );
-  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ] { updatePosition(); } );
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [=] { updatePosition(); } );
 
   connect( mAnnotation, &QgsAnnotation::appearanceChanged, this, &QgsMapCanvasAnnotationItem::updateBoundingRect );
 
@@ -95,16 +95,13 @@ void QgsMapCanvasAnnotationItem::updateBoundingRect()
   prepareGeometryChange();
 
   const QgsRenderContext rc = QgsRenderContext::fromQPainter( nullptr );
-  const double fillSymbolBleed = mAnnotation && mAnnotation->fillSymbol() ?
-                                 QgsSymbolLayerUtils::estimateMaxSymbolBleed( mAnnotation->fillSymbol(), rc ) : 0;
+  const double fillSymbolBleed = mAnnotation && mAnnotation->fillSymbol() ? QgsSymbolLayerUtils::estimateMaxSymbolBleed( mAnnotation->fillSymbol(), rc ) : 0;
 
   const double mmToPixelScale = mMapCanvas->physicalDpiX() / 25.4;
 
   if ( mAnnotation && !mAnnotation->hasFixedMapPosition() )
   {
-    mBoundingRect = QRectF( - fillSymbolBleed, -fillSymbolBleed,
-                            mmToPixelScale * mAnnotation->frameSizeMm().width() + fillSymbolBleed * 2,
-                            mmToPixelScale * mAnnotation->frameSizeMm().height() + fillSymbolBleed * 2 );
+    mBoundingRect = QRectF( -fillSymbolBleed, -fillSymbolBleed, mmToPixelScale * mAnnotation->frameSizeMm().width() + fillSymbolBleed * 2, mmToPixelScale * mAnnotation->frameSizeMm().height() + fillSymbolBleed * 2 );
   }
   else
   {
@@ -114,11 +111,9 @@ void QgsMapCanvasAnnotationItem::updateBoundingRect()
       halfSymbolSize = scaledSymbolSize() / 2.0;
     }
 
-    const QPointF offset = mAnnotation ? QPointF( mAnnotation->frameOffsetFromReferencePointMm().x() * mmToPixelScale,
-                           mAnnotation->frameOffsetFromReferencePointMm().y() * mmToPixelScale ) : QPointF( 0, 0 );
+    const QPointF offset = mAnnotation ? QPointF( mAnnotation->frameOffsetFromReferencePointMm().x() * mmToPixelScale, mAnnotation->frameOffsetFromReferencePointMm().y() * mmToPixelScale ) : QPointF( 0, 0 );
 
-    const QSizeF frameSize = mAnnotation ? QSizeF( mAnnotation->frameSizeMm().width() * mmToPixelScale,
-                             mAnnotation->frameSizeMm().height() * mmToPixelScale ) : QSizeF( 0.0, 0.0 );
+    const QSizeF frameSize = mAnnotation ? QSizeF( mAnnotation->frameSizeMm().width() * mmToPixelScale, mAnnotation->frameSizeMm().height() * mmToPixelScale ) : QSizeF( 0.0, 0.0 );
 
     const double xMinPos = std::min( -halfSymbolSize, offset.x() - fillSymbolBleed );
     const double xMaxPos = std::max( halfSymbolSize, offset.x() + frameSize.width() + fillSymbolBleed );
@@ -151,7 +146,7 @@ void QgsMapCanvasAnnotationItem::setFeatureForMapPosition()
   if ( !mAnnotation || !mAnnotation->hasFixedMapPosition() )
     return;
 
-  QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer * >( mAnnotation->mapLayer() );
+  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( mAnnotation->mapLayer() );
   if ( !vectorLayer )
     return;
 
@@ -168,15 +163,14 @@ void QgsMapCanvasAnnotationItem::setFeatureForMapPosition()
   {
   }
 
-  QgsRectangle searchRect( mapPosition.x() - halfIdentifyWidth, mapPosition.y() - halfIdentifyWidth,
-                           mapPosition.x() + halfIdentifyWidth, mapPosition.y() + halfIdentifyWidth );
+  QgsRectangle searchRect( mapPosition.x() - halfIdentifyWidth, mapPosition.y() - halfIdentifyWidth, mapPosition.x() + halfIdentifyWidth, mapPosition.y() + halfIdentifyWidth );
 
   searchRect = mMapCanvas->mapSettings().mapToLayerCoordinates( vectorLayer, searchRect );
 
   QgsFeatureIterator fit = vectorLayer->getFeatures( QgsFeatureRequest().setFilterRect( searchRect ).setFlags( Qgis::FeatureRequestFlag::ExactIntersect ).setLimit( 1 ) );
 
   QgsFeature currentFeature;
-  ( void )fit.nextFeature( currentFeature );
+  ( void ) fit.nextFeature( currentFeature );
   mAnnotation->setAssociatedFeature( currentFeature );
 }
 
@@ -208,8 +202,7 @@ QgsMapCanvasAnnotationItem::MouseMoveAction QgsMapCanvasAnnotationItem::moveActi
 
   const int cursorSensitivity = 7;
 
-  if ( mAnnotation && mAnnotation->hasFixedMapPosition() &&
-       std::fabs( itemPos.x() ) < cursorSensitivity && std::fabs( itemPos.y() ) < cursorSensitivity ) //move map point if position is close to the origin
+  if ( mAnnotation && mAnnotation->hasFixedMapPosition() && std::fabs( itemPos.x() ) < cursorSensitivity && std::fabs( itemPos.y() ) < cursorSensitivity ) //move map point if position is close to the origin
   {
     return MoveMapPosition;
   }
@@ -224,11 +217,7 @@ QgsMapCanvasAnnotationItem::MouseMoveAction QgsMapCanvasAnnotationItem::moveActi
   right = std::fabs( itemPos.x() - ( offset.x() + frameSize.width() ) ) < cursorSensitivity;
   up = std::fabs( itemPos.y() - offset.y() ) < cursorSensitivity;
   down = std::fabs( itemPos.y() - ( offset.y() + frameSize.height() ) ) < cursorSensitivity;
-  inframe = (
-              itemPos.x() + cursorSensitivity >= offset.x() &&
-              itemPos.x() - cursorSensitivity <= ( offset.x() + frameSize.width() ) &&
-              itemPos.y() + cursorSensitivity >= offset.y() &&
-              itemPos.y() - cursorSensitivity <= ( offset.y() + frameSize.height() ) );
+  inframe = ( itemPos.x() + cursorSensitivity >= offset.x() && itemPos.x() - cursorSensitivity <= ( offset.x() + frameSize.width() ) && itemPos.y() + cursorSensitivity >= offset.y() && itemPos.y() - cursorSensitivity <= ( offset.y() + frameSize.height() ) );
 
   // Resize actions are only available if the item is selected
   // Otherwise, mouse handles are not visible

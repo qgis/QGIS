@@ -23,16 +23,9 @@
 #include "qgsrastershader.h"
 #include "qgsrasterminmaxwidget.h"
 #include "qgsdoublevalidator.h"
-#include "qgstreewidgetitem.h"
 #include "qgssettings.h"
 #include "qgsmapcanvas.h"
 #include "qgsguiutils.h"
-
-// for color ramps - todo add rasterStyle and refactor raster vs. vector ramps
-#include "qgsstyle.h"
-#include "qgscolorramp.h"
-#include "qgscolorrampbutton.h"
-#include "qgscolordialog.h"
 
 #include <QCursor>
 #include <QPushButton>
@@ -94,9 +87,9 @@ QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( 
   if ( mMinLineEdit->text().isEmpty() || mMaxLineEdit->text().isEmpty() )
   {
     QgsRasterMinMaxOrigin minMaxOrigin = mMinMaxWidget->minMaxOrigin();
-    if ( minMaxOrigin.limits() == QgsRasterMinMaxOrigin::None )
+    if ( minMaxOrigin.limits() == Qgis::RasterRangeLimit::NotSet )
     {
-      minMaxOrigin.setLimits( QgsRasterMinMaxOrigin::MinMax );
+      minMaxOrigin.setLimits( Qgis::RasterRangeLimit::MinimumMaximum );
       mMinMaxWidget->setFromMinMaxOrigin( minMaxOrigin );
     }
     mMinMaxWidget->doComputations();
@@ -147,7 +140,7 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
   if ( pr )
   {
     mBandComboBox->setBand( pr->inputBand() );
-    mMinMaxWidget->setBands( QList< int >() << pr->inputBand() );
+    mMinMaxWidget->setBands( QList<int>() << pr->inputBand() );
     mColorRampShaderWidget->setRasterBand( pr->inputBand() );
 
     // need to set min/max properties here because if we use the raster shader below,
@@ -168,7 +161,7 @@ void QgsSingleBandPseudoColorRendererWidget::setFromRenderer( const QgsRasterRen
   }
   else
   {
-    mMinMaxWidget->setBands( QList< int >() << mBandComboBox->currentBand() );
+    mMinMaxWidget->setBands( QList<int>() << mBandComboBox->currentBand() );
     mColorRampShaderWidget->setRasterBand( mBandComboBox->currentBand() );
   }
 }

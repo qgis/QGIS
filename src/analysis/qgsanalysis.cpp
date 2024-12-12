@@ -40,7 +40,7 @@ QgsGeometryCheckRegistry *QgsAnalysis::geometryCheckRegistry()
 QgsAnalysis::QgsAnalysis()
   : mGeometryCheckRegistry( std::make_unique<QgsGeometryCheckRegistry>() )
 {
-  qRegisterMetaType< QList<std::shared_ptr<QgsGeometryCheckError> > >( "QList<std::shared_ptr<QgsGeometryCheckError>>" );
+  qRegisterMetaType<QList<std::shared_ptr<QgsGeometryCheckError>>>( "QList<std::shared_ptr<QgsGeometryCheckError>>" );
 
   mGeometryCheckRegistry->registerGeometryCheck( new QgsGeometryCheckFactoryT<QgsGeometrySelfIntersectionCheck>() );
   mGeometryCheckRegistry->registerGeometryCheck( new QgsGeometryCheckFactoryT<QgsGeometryIsValidCheck>() );

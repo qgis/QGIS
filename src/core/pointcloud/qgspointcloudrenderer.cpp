@@ -61,6 +61,16 @@ void QgsPointCloudRenderContext::setAttributes( const QgsPointCloudAttributeColl
   attributes.find( QStringLiteral( "Z" ), mZOffset );
 }
 
+QgsPointCloudRenderer::QgsPointCloudRenderer()
+{
+  QgsTextFormat textFormat = QgsStyle::defaultStyle()->defaultTextFormat();
+  QgsTextBufferSettings settings;
+  settings.setEnabled( true );
+  settings.setSize( 1 );
+  textFormat.setBuffer( settings );
+  mLabelTextFormat = ( textFormat );
+}
+
 QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
 {
   if ( element.isNull() )
@@ -205,9 +215,12 @@ void QgsPointCloudRenderer::copyCommonProperties( QgsPointCloudRenderer *destina
   destination->setHorizontalTriangleFilter( mHorizontalTriangleFilter );
   destination->setHorizontalTriangleFilterThreshold( mHorizontalTriangleFilterThreshold );
   destination->setHorizontalTriangleFilterUnit( mHorizontalTriangleFilterUnit );
+
+  destination->setShowLabels( mShowLabels );
+  destination->setLabelTextFormat( mLabelTextFormat );
 }
 
-void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext & )
+void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext &context )
 {
   mPointSize = element.attribute( QStringLiteral( "pointSize" ), QStringLiteral( "1" ) ).toDouble();
   mPointSizeUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "pointSizeUnit" ), QStringLiteral( "MM" ) ) );
@@ -222,9 +235,16 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
   mHorizontalTriangleFilter = element.attribute( QStringLiteral( "horizontalTriangleFilter" ), QStringLiteral( "0" ) ).toInt();
   mHorizontalTriangleFilterThreshold = element.attribute( QStringLiteral( "horizontalTriangleFilterThreshold" ), QStringLiteral( "5" ) ).toDouble();
   mHorizontalTriangleFilterUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "horizontalTriangleFilterUnit" ), QStringLiteral( "MM" ) ) );
+
+  mShowLabels = element.attribute( QStringLiteral( "showLabels" ), QStringLiteral( "0" ) ).toInt();
+  if ( !element.firstChildElement( QStringLiteral( "text-style" ) ).isNull() )
+  {
+    mLabelTextFormat = QgsTextFormat();
+    mLabelTextFormat.readXml( element.firstChildElement( QStringLiteral( "text-style" ) ), context );
+  }
 }
 
-void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const QgsReadWriteContext & ) const
+void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const
 {
   element.setAttribute( QStringLiteral( "pointSize" ), qgsDoubleToString( mPointSize ) );
   element.setAttribute( QStringLiteral( "pointSizeUnit" ), QgsUnitTypes::encodeUnit( mPointSizeUnit ) );
@@ -239,6 +259,13 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
   element.setAttribute( QStringLiteral( "horizontalTriangleFilter" ), QString::number( static_cast< int >( mHorizontalTriangleFilter ) ) );
   element.setAttribute( QStringLiteral( "horizontalTriangleFilterThreshold" ), qgsDoubleToString( mHorizontalTriangleFilterThreshold ) );
   element.setAttribute( QStringLiteral( "horizontalTriangleFilterUnit" ), QgsUnitTypes::encodeUnit( mHorizontalTriangleFilterUnit ) );
+
+  element.setAttribute( QStringLiteral( "showLabels" ), QString::number( mShowLabels ) );
+  if ( mLabelTextFormat.isValid() )
+  {
+    QDomDocument doc = element.ownerDocument();
+    element.appendChild( mLabelTextFormat.writeXml( doc, context ) );
+  }
 }
 
 Qgis::PointCloudSymbol QgsPointCloudRenderer::pointSymbol() const

@@ -2225,7 +2225,7 @@ QgsAbstractGeometry *QgsGeos::convexHull( QString *errorMsg ) const
   CATCH_GEOS_WITH_ERRMSG( nullptr )
 }
 
-QgsAbstractGeometry *QgsGeos::concaveHull( double targetPercent, bool allowHoles, QString *errorMsg ) const
+std::unique_ptr< QgsAbstractGeometry > QgsGeos::concaveHull( double targetPercent, bool allowHoles, QString *errorMsg ) const
 {
 #if GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR<11
   ( void )allowHoles;
@@ -2242,7 +2242,7 @@ QgsAbstractGeometry *QgsGeos::concaveHull( double targetPercent, bool allowHoles
   {
     geos::unique_ptr concaveHull( GEOSConcaveHull_r( QgsGeosContext::get(), mGeos.get(), targetPercent, allowHoles ) );
     std::unique_ptr< QgsAbstractGeometry > concaveHullGeom = fromGeos( concaveHull.get() );
-    return concaveHullGeom.release();
+    return concaveHullGeom;
   }
   CATCH_GEOS_WITH_ERRMSG( nullptr )
 #endif
@@ -3028,37 +3028,37 @@ std::unique_ptr<QgsAbstractGeometry> QgsGeos::reshapeGeometry( const QgsLineStri
   }
 }
 
-QgsGeometry QgsGeos::mergeLines( QString *errorMsg ) const
+std::unique_ptr< QgsAbstractGeometry > QgsGeos::mergeLines( QString *errorMsg ) const
 {
   if ( !mGeos )
   {
-    return QgsGeometry();
+    return nullptr;
   }
 
   GEOSContextHandle_t context = QgsGeosContext::get();
   if ( GEOSGeomTypeId_r( context, mGeos.get() ) != GEOS_MULTILINESTRING )
-    return QgsGeometry();
+    return nullptr;
 
   geos::unique_ptr geos;
   try
   {
     geos.reset( GEOSLineMerge_r( context, mGeos.get() ) );
   }
-  CATCH_GEOS_WITH_ERRMSG( QgsGeometry() )
-  return QgsGeometry( fromGeos( geos.get() ) );
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
+  return fromGeos( geos.get() );
 }
 
-QgsGeometry QgsGeos::closestPoint( const QgsGeometry &other, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::closestPoint( const QgsGeometry &other, QString *errorMsg ) const
 {
   if ( !mGeos || isEmpty() || other.isEmpty() )
   {
-    return QgsGeometry();
+    return nullptr;
   }
 
   geos::unique_ptr otherGeom( asGeos( other.constGet(), mPrecision ) );
   if ( !otherGeom )
   {
-    return QgsGeometry();
+    return nullptr;
   }
 
   GEOSContextHandle_t context = QgsGeosContext::get();
@@ -3086,31 +3086,31 @@ QgsGeometry QgsGeos::closestPoint( const QgsGeometry &other, QString *errorMsg )
     {
       *errorMsg = e.what();
     }
-    return QgsGeometry();
+    return nullptr;
   }
 
-  return QgsGeometry( new QgsPoint( nx, ny ) );
+  return std::make_unique< QgsPoint >( nx, ny );
 }
 
-QgsGeometry QgsGeos::shortestLine( const QgsGeometry &other, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::shortestLine( const QgsGeometry &other, QString *errorMsg ) const
 {
   if ( !mGeos || other.isEmpty() )
   {
-    return QgsGeometry();
+    return nullptr;
   }
 
   return shortestLine( other.constGet(), errorMsg );
 }
 
-QgsGeometry QgsGeos::shortestLine( const QgsAbstractGeometry *other, QString *errorMsg ) const
+std::unique_ptr< QgsAbstractGeometry > QgsGeos::shortestLine( const QgsAbstractGeometry *other, QString *errorMsg ) const
 {
   if ( !other || other->isEmpty() )
-    return QgsGeometry();
+    return nullptr;
 
   geos::unique_ptr otherGeom( asGeos( other, mPrecision ) );
   if ( !otherGeom )
   {
-    return QgsGeometry();
+    return nullptr;
   }
 
   GEOSContextHandle_t context = QgsGeosContext::get();
@@ -3126,7 +3126,7 @@ QgsGeometry QgsGeos::shortestLine( const QgsAbstractGeometry *other, QString *er
     {
       if ( errorMsg )
         *errorMsg = QStringLiteral( "GEOS returned no nearest points" );
-      return QgsGeometry();
+      return nullptr;
     }
 
     ( void )GEOSCoordSeq_getX_r( context, nearestCoord.get(), 0, &nx1 );
@@ -3141,13 +3141,13 @@ QgsGeometry QgsGeos::shortestLine( const QgsAbstractGeometry *other, QString *er
     {
       *errorMsg = e.what();
     }
-    return QgsGeometry();
+    return nullptr;
   }
 
-  QgsLineString *line = new QgsLineString();
+  std::unique_ptr< QgsLineString > line = std::make_unique< QgsLineString >();
   line->addVertex( QgsPoint( nx1, ny1 ) );
   line->addVertex( QgsPoint( nx2, ny2 ) );
-  return QgsGeometry( line );
+  return line;
 }
 
 double QgsGeos::lineLocatePoint( const QgsPoint &point, QString *errorMsg ) const
@@ -3250,11 +3250,11 @@ QgsGeometry QgsGeos::polygonize( const QVector<const QgsAbstractGeometry *> &geo
   }
 }
 
-QgsGeometry QgsGeos::voronoiDiagram( const QgsAbstractGeometry *extent, double tolerance, bool edgesOnly, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::voronoiDiagram( const QgsAbstractGeometry *extent, double tolerance, bool edgesOnly, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
-    return QgsGeometry();
+    return nullptr;
   }
 
   geos::unique_ptr extentGeosGeom;
@@ -3263,7 +3263,7 @@ QgsGeometry QgsGeos::voronoiDiagram( const QgsAbstractGeometry *extent, double t
     extentGeosGeom = asGeos( extent, mPrecision );
     if ( !extentGeosGeom )
     {
-      return QgsGeometry();
+      return nullptr;
     }
   }
 
@@ -3275,19 +3275,19 @@ QgsGeometry QgsGeos::voronoiDiagram( const QgsAbstractGeometry *extent, double t
 
     if ( !geos || GEOSisEmpty_r( context, geos.get() ) != 0 )
     {
-      return QgsGeometry();
+      return nullptr;
     }
 
-    return QgsGeometry( fromGeos( geos.get() ) );
+    return fromGeos( geos.get() );
   }
-  CATCH_GEOS_WITH_ERRMSG( QgsGeometry() )
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
 }
 
-QgsGeometry QgsGeos::delaunayTriangulation( double tolerance, bool edgesOnly, QString *errorMsg ) const
+std::unique_ptr<QgsAbstractGeometry> QgsGeos::delaunayTriangulation( double tolerance, bool edgesOnly, QString *errorMsg ) const
 {
   if ( !mGeos )
   {
-    return QgsGeometry();
+    return nullptr;
   }
 
   GEOSContextHandle_t context = QgsGeosContext::get();
@@ -3298,12 +3298,12 @@ QgsGeometry QgsGeos::delaunayTriangulation( double tolerance, bool edgesOnly, QS
 
     if ( !geos || GEOSisEmpty_r( context, geos.get() ) != 0 )
     {
-      return QgsGeometry();
+      return nullptr;
     }
 
-    return QgsGeometry( fromGeos( geos.get() ) );
+    return fromGeos( geos.get() );
   }
-  CATCH_GEOS_WITH_ERRMSG( QgsGeometry() )
+  CATCH_GEOS_WITH_ERRMSG( nullptr )
 }
 
 std::unique_ptr<QgsAbstractGeometry> QgsGeos::constrainedDelaunayTriangulation( QString *errorMsg ) const

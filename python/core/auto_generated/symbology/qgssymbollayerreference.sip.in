@@ -136,7 +136,7 @@ The symbol layer's id
 
 .. deprecated:: 3.30
 
-   Use symbolLayerIdV2 instead.
+   Use :py:func:`~QgsSymbolLayerReference.symbolLayerIdV2` instead.
 %End
 
     QString symbolLayerIdV2() const;

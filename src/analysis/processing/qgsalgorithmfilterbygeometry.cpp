@@ -46,20 +46,15 @@ QString QgsFilterByGeometryAlgorithm::groupId() const
 
 void QgsFilterByGeometryAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ),
-                QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "POINTS" ),  QObject::tr( "Point features" ),
-                Qgis::ProcessingSourceType::VectorPoint, QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "POINTS" ), QObject::tr( "Point features" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true, true ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "LINES" ),  QObject::tr( "Line features" ),
-                Qgis::ProcessingSourceType::VectorLine, QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "LINES" ), QObject::tr( "Line features" ), Qgis::ProcessingSourceType::VectorLine, QVariant(), true, true ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "POLYGONS" ),  QObject::tr( "Polygon features" ),
-                Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "POLYGONS" ), QObject::tr( "Polygon features" ), Qgis::ProcessingSourceType::VectorPolygon, QVariant(), true, true ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "NO_GEOMETRY" ),  QObject::tr( "Features with no geometry" ),
-                Qgis::ProcessingSourceType::Vector, QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "NO_GEOMETRY" ), QObject::tr( "Features with no geometry" ), Qgis::ProcessingSourceType::Vector, QVariant(), true, true ) );
 
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "POINT_COUNT" ), QObject::tr( "Total count of point features" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "LINE_COUNT" ), QObject::tr( "Total count of line features" ) ) );
@@ -85,7 +80,7 @@ QgsFilterByGeometryAlgorithm *QgsFilterByGeometryAlgorithm::createInstance() con
 
 QVariantMap QgsFilterByGeometryAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
@@ -109,26 +104,22 @@ QVariantMap QgsFilterByGeometryAlgorithm::processAlgorithm( const QVariantMap &p
   }
 
   QString pointSinkId;
-  std::unique_ptr< QgsFeatureSink > pointSink( parameterAsSink( parameters, QStringLiteral( "POINTS" ), context, pointSinkId, source->fields(),
-      pointType, source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> pointSink( parameterAsSink( parameters, QStringLiteral( "POINTS" ), context, pointSinkId, source->fields(), pointType, source->sourceCrs() ) );
   if ( parameters.value( QStringLiteral( "POINTS" ), QVariant() ).isValid() && !pointSink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "POINTS" ) ) );
 
   QString lineSinkId;
-  std::unique_ptr< QgsFeatureSink > lineSink( parameterAsSink( parameters, QStringLiteral( "LINES" ), context, lineSinkId, source->fields(),
-      lineType, source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> lineSink( parameterAsSink( parameters, QStringLiteral( "LINES" ), context, lineSinkId, source->fields(), lineType, source->sourceCrs() ) );
   if ( parameters.value( QStringLiteral( "LINES" ), QVariant() ).isValid() && !lineSink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "LINES" ) ) );
 
   QString polygonSinkId;
-  std::unique_ptr< QgsFeatureSink > polygonSink( parameterAsSink( parameters, QStringLiteral( "POLYGONS" ), context, polygonSinkId, source->fields(),
-      polygonType, source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> polygonSink( parameterAsSink( parameters, QStringLiteral( "POLYGONS" ), context, polygonSinkId, source->fields(), polygonType, source->sourceCrs() ) );
   if ( parameters.value( QStringLiteral( "POLYGONS" ), QVariant() ).isValid() && !polygonSink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "POLYGONS" ) ) );
 
   QString noGeomSinkId;
-  std::unique_ptr< QgsFeatureSink > noGeomSink( parameterAsSink( parameters, QStringLiteral( "NO_GEOMETRY" ), context, noGeomSinkId, source->fields(),
-      Qgis::WkbType::NoGeometry ) );
+  std::unique_ptr<QgsFeatureSink> noGeomSink( parameterAsSink( parameters, QStringLiteral( "NO_GEOMETRY" ), context, noGeomSinkId, source->fields(), Qgis::WkbType::NoGeometry ) );
   if ( parameters.value( QStringLiteral( "NO_GEOMETRY" ), QVariant() ).isValid() && !noGeomSink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "NO_GEOMETRY" ) ) );
 
@@ -200,13 +191,25 @@ QVariantMap QgsFilterByGeometryAlgorithm::processAlgorithm( const QVariantMap &p
   QVariantMap outputs;
 
   if ( pointSink )
+  {
+    pointSink->finalize();
     outputs.insert( QStringLiteral( "POINTS" ), pointSinkId );
+  }
   if ( lineSink )
+  {
+    lineSink->finalize();
     outputs.insert( QStringLiteral( "LINES" ), lineSinkId );
+  }
   if ( polygonSink )
+  {
+    polygonSink->finalize();
     outputs.insert( QStringLiteral( "POLYGONS" ), polygonSinkId );
+  }
   if ( noGeomSink )
+  {
+    noGeomSink->finalize();
     outputs.insert( QStringLiteral( "NO_GEOMETRY" ), noGeomSinkId );
+  }
 
   outputs.insert( QStringLiteral( "POINT_COUNT" ), pointCount );
   outputs.insert( QStringLiteral( "LINE_COUNT" ), lineCount );
@@ -215,7 +218,6 @@ QVariantMap QgsFilterByGeometryAlgorithm::processAlgorithm( const QVariantMap &p
 
   return outputs;
 }
-
 
 
 //
@@ -258,10 +260,9 @@ void QgsFilterByLayerTypeAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
 
-  addParameter( new QgsProcessingParameterVectorDestination( QStringLiteral( "VECTOR" ),  QObject::tr( "Vector features" ),
-                Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false ) );
+  addParameter( new QgsProcessingParameterVectorDestination( QStringLiteral( "VECTOR" ), QObject::tr( "Vector features" ), Qgis::ProcessingSourceType::VectorAnyGeometry, QVariant(), true, false ) );
 
-  addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "RASTER" ),  QObject::tr( "Raster layer" ), QVariant(), true, false ) );
+  addParameter( new QgsProcessingParameterRasterDestination( QStringLiteral( "RASTER" ), QObject::tr( "Raster layer" ), QVariant(), true, false ) );
 }
 
 QString QgsFilterByLayerTypeAlgorithm::shortHelpString() const
@@ -312,4 +313,3 @@ QVariantMap QgsFilterByLayerTypeAlgorithm::processAlgorithm( const QVariantMap &
 }
 
 ///@endcond
-

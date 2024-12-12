@@ -1,5 +1,5 @@
 # The following has been generated automatically from src/analysis/processing/qgsnativealgorithms.h
 try:
     QgsNativeAlgorithms.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass

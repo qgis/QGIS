@@ -15,7 +15,7 @@
 
 #include <Qt3DCore/QAspectEngine>
 #include <Qt3DCore/QEntity>
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DCore/QCoreAspect>
 #endif
 #include <Qt3DExtras/QForwardRenderer>
@@ -25,16 +25,19 @@
 #include <Qt3DInput/QInputSettings>
 #include <Qt3DLogic/QLogicAspect>
 #include <Qt3DRender/QCamera>
+#include <Qt3DLogic/QFrameAction>
 
 #include "qgs3dmapcanvas.h"
+#include "moc_qgs3dmapcanvas.cpp"
 
-#include <Qt3DLogic/QFrameAction>
 #include "qgs3dmapscene.h"
 #include "qgswindow3dengine.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dmaptool.h"
 #include "qgstemporalcontroller.h"
-#include "moc_qgs3dmapcanvas.cpp"
+#include "qgsframegraph.h"
+#include "qgspointcloudlayer3drenderer.h"
+#include "qgsrubberband3d.h"
 
 Qgs3DMapCanvas::Qgs3DMapCanvas()
   : m_aspectEngine( new Qt3DCore::QAspectEngine )
@@ -51,7 +54,7 @@ Qgs3DMapCanvas::Qgs3DMapCanvas()
   setSurfaceType( QSurface::OpenGLSurface );
 
   // register aspects
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
   m_aspectEngine->registerAspect( new Qt3DCore::QCoreAspect );
 #endif
   m_aspectEngine->registerAspect( m_renderAspect );
@@ -64,8 +67,7 @@ Qgs3DMapCanvas::Qgs3DMapCanvas()
   const QgsSettings setting;
   mEngine = new QgsWindow3DEngine( this );
 
-  connect( mEngine, &QgsAbstract3DEngine::imageCaptured, this, [ = ]( const QImage & image )
-  {
+  connect( mEngine, &QgsAbstract3DEngine::imageCaptured, this, [=]( const QImage &image ) {
     image.save( mCaptureFileName, mCaptureFileFormat.toLocal8Bit().data() );
     mEngine->setRenderCaptureEnabled( false );
     emit savedAsImage( mCaptureFileName );
@@ -84,7 +86,8 @@ Qgs3DMapCanvas::~Qgs3DMapCanvas()
   mScene = nullptr;
   mMapSettings->deleteLater();
   mMapSettings = nullptr;
-
+  qDeleteAll( mHighlights );
+  mHighlights.clear();
 
   delete m_aspectEngine;
 }
@@ -166,8 +169,7 @@ void Qgs3DMapCanvas::setMapSettings( Qgs3DMapSettings *mapSettings )
 
   resetView();
 
-  connect( cameraController(), &QgsCameraController::setCursorPosition, this, [ = ]( QPoint point )
-  {
+  connect( cameraController(), &QgsCameraController::setCursorPosition, this, [=]( QPoint point ) {
     QCursor::setPos( mapToGlobal( point ) );
   } );
   connect( cameraController(), &QgsCameraController::cameraMovementSpeedChanged, mMapSettings, &Qgs3DMapSettings::setCameraMovementSpeed );
@@ -215,8 +217,7 @@ void Qgs3DMapCanvas::saveAsImage( const QString &fileName, const QString &fileFo
   Qt3DLogic::QFrameAction *screenCaptureFrameAction = new Qt3DLogic::QFrameAction;
   mScene->addComponent( screenCaptureFrameAction );
   // Wait to have the render capture enabled in the next frame
-  connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, this, [ = ]( float )
-  {
+  connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, this, [=]( float ) {
     mEngine->requestCaptureImage();
     mScene->removeComponent( screenCaptureFrameAction );
     screenCaptureFrameAction->deleteLater();
@@ -232,8 +233,7 @@ void Qgs3DMapCanvas::captureDepthBuffer()
   Qt3DLogic::QFrameAction *screenCaptureFrameAction = new Qt3DLogic::QFrameAction;
   mScene->addComponent( screenCaptureFrameAction );
   // Wait to have the render capture enabled in the next frame
-  connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, this, [ = ]( float )
-  {
+  connect( screenCaptureFrameAction, &Qt3DLogic::QFrameAction::triggered, this, [=]( float ) {
     mEngine->requestDepthBufferCapture();
     mScene->removeComponent( screenCaptureFrameAction );
     screenCaptureFrameAction->deleteLater();
@@ -269,7 +269,6 @@ void Qgs3DMapCanvas::setMapTool( Qgs3DMapTool *tool )
     mMapTool->activate();
     setCursor( mMapTool->cursor() );
   }
-
 }
 
 bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
@@ -282,7 +281,7 @@ bool Qgs3DMapCanvas::eventFilter( QObject *watched, QEvent *event )
     // if the camera controller will handle a key event, don't allow it to propagate
     // outside of the 3d window or it may be grabbed by a parent window level shortcut
     // and accordingly never be received by the camera controller
-    if ( cameraController() && cameraController()->willHandleKeyEvent( static_cast< QKeyEvent * >( event ) ) )
+    if ( cameraController() && cameraController()->willHandleKeyEvent( static_cast<QKeyEvent *>( event ) ) )
     {
       event->accept();
       return true;
@@ -347,4 +346,57 @@ void Qgs3DMapCanvas::setViewFrom2DExtent( const QgsRectangle &extent )
 QVector<QgsPointXY> Qgs3DMapCanvas::viewFrustum2DExtent()
 {
   return mScene ? mScene->viewFrustum2DExtent() : QVector<QgsPointXY>();
+}
+
+void Qgs3DMapCanvas::highlightFeature( const QgsFeature &feature, QgsMapLayer *layer )
+{
+  // we only support point clouds for now
+  if ( layer->type() != Qgis::LayerType::PointCloud )
+    return;
+
+  const QgsGeometry geom = feature.geometry();
+  const QgsPoint pt( geom.vertexAt( 0 ) );
+
+  if ( !mHighlights.contains( layer ) )
+  {
+    QgsRubberBand3D *band = new QgsRubberBand3D( *mMapSettings, mEngine, mEngine->frameGraph()->rubberBandsRootEntity(), Qgis::GeometryType::Point );
+
+    const QgsSettings settings;
+    const QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+    band->setColor( color );
+    band->setMarkerType( QgsRubberBand3D::MarkerType::Square );
+    if ( QgsPointCloudLayer3DRenderer *pcRenderer = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
+    {
+      band->setWidth( pcRenderer->symbol()->pointSize() + 1 );
+    }
+    mHighlights.insert( layer, band );
+
+    connect( layer, &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapCanvas::updateHighlightSizes );
+  }
+  mHighlights[layer]->addPoint( pt );
+}
+
+void Qgs3DMapCanvas::updateHighlightSizes()
+{
+  if ( QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() ) )
+  {
+    if ( QgsPointCloudLayer3DRenderer *rnd = dynamic_cast<QgsPointCloudLayer3DRenderer *>( layer->renderer3D() ) )
+    {
+      if ( mHighlights.contains( layer ) )
+      {
+        mHighlights[layer]->setWidth( rnd->symbol()->pointSize() + 1 );
+      }
+    }
+  }
+}
+
+void Qgs3DMapCanvas::clearHighlights()
+{
+  for ( auto it = mHighlights.keyBegin(); it != mHighlights.keyEnd(); it++ )
+  {
+    disconnect( it.base().key(), &QgsMapLayer::renderer3DChanged, this, &Qgs3DMapCanvas::updateHighlightSizes );
+  }
+
+  qDeleteAll( mHighlights );
+  mHighlights.clear();
 }

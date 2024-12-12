@@ -24,7 +24,6 @@ related to 3D classes.
 %End
   public:
 
-
     static Qgs3D *instance();
 %Docstring
 Returns a pointer to the singleton instance.

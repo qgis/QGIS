@@ -34,15 +34,13 @@ namespace QgsWmts
   class QgsServiceException : public QgsOgcServiceException
   {
     public:
-
       /**
        * Constructor for QgsServiceException (empty locator attribute).
        * \param code Error code name
        * \param message Exception message to return to the client
        * \param responseCode HTTP error code
        */
-      QgsServiceException( const QString &code, const QString &message,
-                           int responseCode = 200 )
+      QgsServiceException( const QString &code, const QString &message, int responseCode = 200 )
         : QgsOgcServiceException( code, message, QString(), responseCode, QStringLiteral( "1.0.0" ) )
       {}
 
@@ -53,11 +51,9 @@ namespace QgsWmts
        * \param locator Locator attribute according to OGC specifications
        * \param responseCode HTTP error code
        */
-      QgsServiceException( const QString &code, const QString &message, const QString &locator,
-                           int responseCode = 200 )
+      QgsServiceException( const QString &code, const QString &message, const QString &locator, int responseCode = 200 )
         : QgsOgcServiceException( code, message, locator, responseCode, QStringLiteral( "1.0.0" ) )
       {}
-
   };
 
   /**
@@ -66,10 +62,9 @@ namespace QgsWmts
    * \brief Exception thrown when data access violates access controls
    * \since QGIS 3.4
    */
-  class QgsSecurityAccessException: public QgsServiceException
+  class QgsSecurityAccessException : public QgsServiceException
   {
     public:
-
       /**
        * Constructor for QgsSecurityAccessException (Security code name).
        * \param message Exception message to return to the client
@@ -86,10 +81,9 @@ namespace QgsWmts
    * \brief Exception thrown in case of malformed request
    * \since QGIS 3.4
    */
-  class QgsRequestNotWellFormedException: public QgsServiceException
+  class QgsRequestNotWellFormedException : public QgsServiceException
   {
     public:
-
       /**
        * Constructor for QgsRequestNotWellFormedException (RequestNotWellFormed code name).
        * \param message Exception message to return to the client
@@ -102,4 +96,3 @@ namespace QgsWmts
 } // namespace QgsWmts
 
 #endif
-

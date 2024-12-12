@@ -44,4 +44,4 @@ class QgsHanaDriver
     QString mDriver;
 };
 
-#endif  // QGSHANADRIVER_H
+#endif // QGSHANADRIVER_H

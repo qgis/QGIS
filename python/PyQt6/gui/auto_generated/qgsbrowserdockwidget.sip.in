@@ -18,7 +18,6 @@ A dock widget containing a :py:class:`QgsBrowserWidget` for navigating and manag
 #include "qgsbrowserdockwidget.h"
 %End
   public:
-
     explicit QgsBrowserDockWidget( const QString &name, QgsBrowserGuiModel *browserModel, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBrowserDockWidget

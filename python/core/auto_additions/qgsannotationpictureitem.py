@@ -2,5 +2,5 @@
 try:
     QgsAnnotationPictureItem.create = staticmethod(QgsAnnotationPictureItem.create)
     QgsAnnotationPictureItem.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass

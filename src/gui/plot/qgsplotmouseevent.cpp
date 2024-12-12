@@ -27,7 +27,6 @@ QgsPlotMouseEvent::QgsPlotMouseEvent( QgsPlotCanvas *canvas, QEvent::Type type, 
   , mCanvas( canvas )
   , mMapPoint( mCanvas->toMapCoordinates( pos ) )
 {
-
 }
 
 QgsPoint QgsPlotMouseEvent::mapPoint() const

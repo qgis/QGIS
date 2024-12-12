@@ -46,18 +46,11 @@ QString QgsRasterMinMaxAlgorithm::groupId() const
 
 void QgsRasterMinMaxAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ),
-                QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ),
-                QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT" ) ) );
-  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "EXTRACT" ),
-                QObject::tr( "Extract extrema" ), QStringList()
-                << QObject::tr( "Minimum and Maximum" )
-                << QObject::tr( "Minimum" )
-                << QObject::tr( "Maximum" ), false, 0 ) );
+  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT" ) ) );
+  addParameter( new QgsProcessingParameterEnum( QStringLiteral( "EXTRACT" ), QObject::tr( "Extract extrema" ), QStringList() << QObject::tr( "Minimum and Maximum" ) << QObject::tr( "Minimum" ) << QObject::tr( "Maximum" ), false, 0 ) );
 
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ),
-                QObject::tr( "Output" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Output" ), Qgis::ProcessingSourceType::VectorPoint, QVariant(), true, true ) );
 
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MINIMUM" ), QObject::tr( "Minimum" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "MAXIMUM" ), QObject::tr( "Maximum" ) ) );
@@ -89,8 +82,7 @@ bool QgsRasterMinMaxAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 
   mBand = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
   if ( mBand < 1 || mBand > layer->bandCount() )
-    throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand )
-                                  .arg( layer->bandCount() ) );
+    throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand ).arg( layer->bandCount() ) );
 
   mInterface.reset( layer->dataProvider()->clone() );
   mHasNoDataValue = layer->dataProvider()->sourceHasNoDataValue( mBand );
@@ -106,12 +98,12 @@ bool QgsRasterMinMaxAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
 QVariantMap QgsRasterMinMaxAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink;
+  std::unique_ptr<QgsFeatureSink> sink;
   if ( parameters.value( QStringLiteral( "OUTPUT" ) ).isValid() )
   {
     QgsFields outFields;
     outFields.append( QgsField( QStringLiteral( "value" ), QMetaType::Type::Double, QString(), 20, 8 ) );
-    outFields.append( QgsField( QStringLiteral( "extremum" ), QMetaType::Type::QString ) );
+    outFields.append( QgsField( QStringLiteral( "extremum_type" ), QMetaType::Type::QString ) );
     sink.reset( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields, Qgis::WkbType::Point, mCrs ) );
     if ( !sink )
       throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
@@ -126,17 +118,15 @@ QVariantMap QgsRasterMinMaxAlgorithm::processAlgorithm( const QVariantMap &param
   int iterTop = 0;
   int iterCols = 0;
   int iterRows = 0;
-  std::unique_ptr< QgsRasterBlock > rasterBlock;
+  std::unique_ptr<QgsRasterBlock> rasterBlock;
 
-  double rasterMinimum = std::numeric_limits< double >::quiet_NaN();
-  double rasterMaximum = std::numeric_limits< double >::quiet_NaN();
+  double rasterMinimum = std::numeric_limits<double>::quiet_NaN();
+  double rasterMaximum = std::numeric_limits<double>::quiet_NaN();
   QgsPointXY rasterMinPoint;
   QgsPointXY rasterMaxPoint;
 
-  auto blockRowColToXY = [this]( const QgsRectangle & blockExtent, int row, int col ) -> QgsPointXY
-  {
-    return QgsPointXY( blockExtent.xMinimum() + mRasterUnitsPerPixelX * ( col + 0.5 ),
-                       blockExtent.yMaximum() - mRasterUnitsPerPixelY * ( row + 0.5 ) );
+  auto blockRowColToXY = [this]( const QgsRectangle &blockExtent, int row, int col ) -> QgsPointXY {
+    return QgsPointXY( blockExtent.xMinimum() + mRasterUnitsPerPixelX * ( col + 0.5 ), blockExtent.yMaximum() - mRasterUnitsPerPixelY * ( row + 0.5 ) );
   };
 
   QgsRectangle blockExtent;
@@ -145,8 +135,8 @@ QVariantMap QgsRasterMinMaxAlgorithm::processAlgorithm( const QVariantMap &param
     if ( feedback->isCanceled() )
       break;
 
-    double blockMinimum = std::numeric_limits< double >::quiet_NaN();
-    double blockMaximum = std::numeric_limits< double >::quiet_NaN();
+    double blockMinimum = std::numeric_limits<double>::quiet_NaN();
+    double blockMaximum = std::numeric_limits<double>::quiet_NaN();
     int blockMinRow = 0;
     int blockMinCol = 0;
     int blockMaxRow = 0;
@@ -208,7 +198,6 @@ QVariantMap QgsRasterMinMaxAlgorithm::processAlgorithm( const QVariantMap &param
     QgsFeature f;
     if ( !std::isnan( rasterMinimum ) )
     {
-
       f.setAttributes( QgsAttributes() << rasterMinimum << QStringLiteral( "minimum" ) );
       f.setGeometry( QgsGeometry::fromPointXY( rasterMinPoint ) );
       if ( !sink->addFeature( f, QgsFeatureSink::FastInsert ) )

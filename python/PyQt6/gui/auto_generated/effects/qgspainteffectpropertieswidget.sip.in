@@ -21,7 +21,6 @@ A widget which modifies the properties of a :py:class:`QgsPaintEffect`
 #include "qgspainteffectpropertieswidget.h"
 %End
   public:
-
     QgsPaintEffectPropertiesWidget( QgsPaintEffect *effect, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsPaintEffectPropertiesWidget constructor

@@ -149,7 +149,6 @@ void QgsOWSSourceSelect::clearFormats()
 
 void QgsOWSSourceSelect::populateFormats()
 {
-
   // A server may offer more similar formats, which are mapped
   // to the same GDAL format, e.g. GeoTIFF and TIFF
   // -> recreate always buttons for all available formats, enable supported
@@ -268,7 +267,7 @@ QgsNewHttpConnection::ConnectionType connectionTypeFromServiceString( const QStr
 void QgsOWSSourceSelect::mNewButton_clicked()
 {
   const QgsNewHttpConnection::ConnectionType type = connectionTypeFromServiceString( mService );
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, type, mService.toUpper() );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, type, mService.toUpper(), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
 
   if ( nc->exec() )
   {
@@ -282,7 +281,7 @@ void QgsOWSSourceSelect::mNewButton_clicked()
 void QgsOWSSourceSelect::mEditButton_clicked()
 {
   const QgsNewHttpConnection::ConnectionType type = connectionTypeFromServiceString( mService );
-  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, type, mService.toUpper(), mConnectionsComboBox->currentText() );
+  QgsNewHttpConnection *nc = new QgsNewHttpConnection( this, type, mService.toUpper(), mConnectionsComboBox->currentText(), QgsNewHttpConnection::FlagShowHttpSettings );
 
   if ( nc->exec() )
   {
@@ -296,12 +295,12 @@ void QgsOWSSourceSelect::mEditButton_clicked()
 void QgsOWSSourceSelect::mDeleteButton_clicked()
 {
   const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                      .arg( mConnectionsComboBox->currentText() );
+                        .arg( mConnectionsComboBox->currentText() );
   const QMessageBox::StandardButton result = QMessageBox::question( this, tr( "Remove Connection" ), msg, QMessageBox::Yes | QMessageBox::No );
   if ( result == QMessageBox::Yes )
   {
     QgsOwsConnection::deleteConnection( mService, mConnectionsComboBox->currentText() );
-    mConnectionsComboBox->removeItem( mConnectionsComboBox->currentIndex() );  // populateConnectionList();
+    mConnectionsComboBox->removeItem( mConnectionsComboBox->currentIndex() ); // populateConnectionList();
     setConnectionListPosition();
     emit connectionsChanged();
   }
@@ -315,8 +314,7 @@ void QgsOWSSourceSelect::mSaveButton_clicked()
 
 void QgsOWSSourceSelect::mLoadButton_clicked()
 {
-  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
-                           tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -334,7 +332,8 @@ QgsTreeWidgetItem *QgsOWSSourceSelect::createItem(
   QMap<int, QgsTreeWidgetItem *> &items,
   int &layerAndStyleCount,
   const QMap<int, int> &layerParents,
-  const QMap<int, QStringList> &layerParentNames )
+  const QMap<int, QStringList> &layerParentNames
+)
 {
   QgsDebugMsgLevel( QStringLiteral( "id = %1 layerAndStyleCount = %2 names = %3 " ).arg( id ).arg( layerAndStyleCount ).arg( names.join( "," ) ), 2 );
   if ( items.contains( id ) )
@@ -345,8 +344,8 @@ QgsTreeWidgetItem *QgsOWSSourceSelect::createItem(
   if ( layerParents.contains( id ) )
   {
     // it has parent -> create first its parent
-    const int parent = layerParents[ id ];
-    item = new QgsTreeWidgetItem( createItem( parent, layerParentNames[ parent ], items, layerAndStyleCount, layerParents, layerParentNames ) );
+    const int parent = layerParents[id];
+    item = new QgsTreeWidgetItem( createItem( parent, layerParentNames[parent], items, layerAndStyleCount, layerParents, layerParentNames ) );
   }
   else
     item = new QgsTreeWidgetItem( mLayersTreeWidget );
@@ -355,9 +354,9 @@ QgsTreeWidgetItem *QgsOWSSourceSelect::createItem(
   item->setText( 1, names[0].simplified() );
   item->setText( 2, names[1].simplified() );
   item->setText( 3, names[2].simplified() );
-  item->setToolTip( 3, "<font color=black>" + names[2].simplified()  + "</font>" );
+  item->setToolTip( 3, "<font color=black>" + names[2].simplified() + "</font>" );
 
-  items[ id ] = item;
+  items[id] = item;
 
   return item;
 }
@@ -368,7 +367,6 @@ void QgsOWSSourceSelect::populateLayerList()
 
 void QgsOWSSourceSelect::mConnectButton_clicked()
 {
-
   mLayersTreeWidget->clear();
   clearFormats();
   clearTimes();
@@ -516,7 +514,6 @@ void QgsOWSSourceSelect::mTilesetsTableWidget_itemClicked( QTableWidgetItem *ite
 }
 
 
-
 QString QgsOWSSourceSelect::connName()
 {
   return mConnName;
@@ -621,7 +618,7 @@ void QgsOWSSourceSelect::mAddDefaultButton_clicked()
 QString QgsOWSSourceSelect::descriptionForAuthId( const QString &authId )
 {
   if ( mCrsNames.contains( authId ) )
-    return mCrsNames[ authId ];
+    return mCrsNames[authId];
 
   const QgsCoordinateReferenceSystem qgisSrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( authId );
   mCrsNames.insert( authId, qgisSrs.userFriendlyIdentifier() );
@@ -653,9 +650,10 @@ void QgsOWSSourceSelect::addDefaultServers()
   populateConnectionList();
 
   QMessageBox::information( this, tr( "Add WMS Servers" ), "<p>" + tr( "Several WMS servers have "
-                            "been added to the server list. Note that if "
-                            "you access the Internet via a web proxy, you will "
-                            "need to set the proxy settings in the QGIS options dialog." ) + "</p>" );
+                                                                       "been added to the server list. Note that if "
+                                                                       "you access the Internet via a web proxy, you will "
+                                                                       "need to set the proxy settings in the QGIS options dialog." )
+                                                             + "</p>" );
 }
 
 void QgsOWSSourceSelect::mLayerUpButton_clicked()

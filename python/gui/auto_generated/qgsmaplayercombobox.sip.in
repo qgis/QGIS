@@ -21,7 +21,6 @@ The :py:class:`QgsMapLayerComboBox` class is a combo box which displays the list
 #include "qgsmaplayercombobox.h"
 %End
   public:
-
     explicit QgsMapLayerComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsMapLayerComboBox creates a combo box to display the list of layers (currently in the registry).
@@ -155,7 +154,7 @@ layers, into the combobox.
 .. versionadded:: 3.22
 %End
 
-    QList< QgsMapLayer * > additionalLayers() const;
+    QList<QgsMapLayer *> additionalLayers() const;
 %Docstring
 Returns the list of additional layers added to the combobox.
 
@@ -194,7 +193,6 @@ Emitted whenever the currently selected layer changes.
 %End
 
   protected:
-
     virtual void dragEnterEvent( QDragEnterEvent *event );
 
     virtual void dragLeaveEvent( QDragLeaveEvent *event );

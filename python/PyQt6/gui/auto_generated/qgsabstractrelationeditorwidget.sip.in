@@ -34,8 +34,6 @@ Base class to build new relation widgets.
       sipType = 0;
 %End
   public:
-
-
     QgsAbstractRelationEditorWidget( const QVariantMap &config, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
@@ -95,7 +93,7 @@ Sets the editor ``context``
    the geometry of a referencing feature from this widget
 %End
 
-    QgsAttributeEditorContext editorContext( ) const;
+    QgsAttributeEditorContext editorContext() const;
 %Docstring
 Returns the attribute editor context.
 %End
@@ -260,7 +258,6 @@ Duplicates features
 
 
 
-
     void showEvent( QShowEvent * );
 %Docstring
 Refresh the UI when the widget becomes visible
@@ -351,7 +348,6 @@ It will only be instantiated by {:py:class:`QgsAbstractRelationEditorWidgetFacto
       sipType = 0;
 %End
   public:
-
     explicit QgsAbstractRelationEditorConfigWidget( const QgsRelation &relation, QWidget *parent /TransferThis/ );
 %Docstring
 Create a new configuration widget
@@ -419,7 +415,6 @@ Factory class for creating relation widgets and their corresponding config widge
 #include "qgsabstractrelationeditorwidget.h"
 %End
   public:
-
     QgsAbstractRelationEditorWidgetFactory();
 %Docstring
 Creates a new relation widget factory with given ``name``

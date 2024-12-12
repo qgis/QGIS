@@ -98,7 +98,7 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
      *
      * \since QGIS 3.20
      */
-    static QgsPrecalculatedTextMetrics calculateTextMetrics( const QgsMapToPixel *xform, const QgsRenderContext &context, const QFont &baseFont, const QFontMetricsF &fontMetrics, double letterSpacing,
+    static QgsPrecalculatedTextMetrics calculateTextMetrics( const QgsMapToPixel *xform, const QgsRenderContext &context, const QgsTextFormat &format, const QFont &baseFont, const QFontMetricsF &fontMetrics, double letterSpacing,
         double wordSpacing, const QString &text = QString(), QgsTextDocument *document = nullptr, QgsTextDocumentMetrics *metrics = nullptr );
 
     /**

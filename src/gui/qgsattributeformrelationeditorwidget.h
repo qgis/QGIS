@@ -34,7 +34,6 @@ class GUI_EXPORT QgsAttributeFormRelationEditorWidget : public QgsAttributeFormW
     Q_OBJECT
 
   public:
-
     /**
      * Constructor
      */

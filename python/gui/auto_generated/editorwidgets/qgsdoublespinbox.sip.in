@@ -36,7 +36,6 @@ This value can then be handled by a special value text.
       sipType = NULL;
 %End
   public:
-
     enum ClearValueMode
     {
       MinimumValue,
@@ -113,6 +112,16 @@ Defines if the clear value should be the minimum or maximum values of the widget
 Returns the value used when :py:func:`~QgsDoubleSpinBox.clear` is called.
 
 .. seealso:: :py:func:`setClearValue`
+%End
+
+    bool isCleared() const;
+%Docstring
+
+:return: ``True`` if the value is equal to the clear value.
+
+.. seealso:: :py:func:`clearValue`
+
+.. versionadded:: 3.42
 %End
 
     void setLineEditAlignment( Qt::Alignment alignment );

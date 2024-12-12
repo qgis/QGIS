@@ -25,7 +25,6 @@ The :py:class:`QgsServerApiUtils` class contains helper functions to handle comm
 #include "qgsserverapiutils.h"
 %End
   public:
-
     static QgsRectangle parseBbox( const QString &bbox );
 %Docstring
 Parses a comma separated ``bbox`` into a (possibly empty) :py:class:`QgsRectangle`.
@@ -35,7 +34,7 @@ Parses a comma separated ``bbox`` into a (possibly empty) :py:class:`QgsRectangl
    Z values (i.e. a 6 elements bbox) are silently discarded
 %End
 
-    static QList< QgsServerWmsDimensionProperties::WmsDimensionInfo > temporalDimensions( const QgsVectorLayer *layer );
+    static QList<QgsServerWmsDimensionProperties::WmsDimensionInfo> temporalDimensions( const QgsVectorLayer *layer );
 %Docstring
 Returns a list of temporal dimensions information for the given ``layer`` (either configured in wmsDimensions or the first date/datetime field)
 
@@ -151,7 +150,6 @@ Returns an empty string on failure.
 %Docstring
 Appends MAP query string parameter from current ``requestUrl`` to the given ``path``
 %End
-
 };
 /************************************************************************
  * This file has been generated automatically from                      *

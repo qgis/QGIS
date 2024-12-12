@@ -33,6 +33,11 @@
 #include <tchar.h>
 #endif
 
+#if defined(_MSC_VER)
+#include <windows.h>
+#include <excpt.h>
+#endif
+
 QLatin1String QgsOpenClUtils::SETTINGS_GLOBAL_ENABLED_KEY = QLatin1String( "OpenClEnabled" );
 QLatin1String QgsOpenClUtils::SETTINGS_DEFAULT_DEVICE_KEY = QLatin1String( "OpenClDefaultDevice" );
 QLatin1String QgsOpenClUtils::LOGMESSAGE_TAG = QLatin1String( "OpenCL" );
@@ -336,13 +341,41 @@ QString QgsOpenClUtils::deviceId( const cl::Device device )
          .arg( deviceInfo( QgsOpenClUtils::Info::Type, device ) );
 }
 
+#if defined(_MSC_VER)
+static void emitLogMessageForSEHException( int exceptionCode )
+{
+  QgsMessageLog::logMessage( QObject::tr( "Unexpected exception of code %1 occurred while searching for OpenCL device. Note that the application may become unreliable and may need to be restarted." ).arg( exceptionCode ),
+                             QgsOpenClUtils::LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
+}
+#endif
+
 bool QgsOpenClUtils::activate( const QString &preferredDeviceId )
+{
+#if defined(_MSC_VER)
+  // Try to capture hard crashes such as https://github.com/qgis/QGIS/issues/59617
+  __try
+  {
+    // We cannot combine together __try and try in the same function.
+    return activateInternal( preferredDeviceId );
+  }
+  __except ( EXCEPTION_EXECUTE_HANDLER )
+  {
+    emitLogMessageForSEHException( GetExceptionCode() );
+    return false;
+  }
+#else
+  return activateInternal( preferredDeviceId );
+#endif
+}
+
+bool QgsOpenClUtils::activateInternal( const QString &preferredDeviceId )
 {
   if ( deviceId( activeDevice() ) == preferredDeviceId )
   {
     sAvailable = true;
     return false;
   }
+
   try
   {
     std::vector<cl::Platform> platforms;
@@ -455,6 +488,7 @@ bool QgsOpenClUtils::activate( const QString &preferredDeviceId )
                                LOGMESSAGE_TAG, Qgis::MessageLevel::Warning );
     sAvailable = false;
   }
+
   return sAvailable;
 }
 

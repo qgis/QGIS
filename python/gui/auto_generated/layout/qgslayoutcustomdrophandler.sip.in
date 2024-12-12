@@ -19,7 +19,6 @@ Abstract base class that may be implemented to handle new types of data to be dr
 #include "qgslayoutcustomdrophandler.h"
 %End
   public:
-
     QgsLayoutCustomDropHandler( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLayoutCustomDropHandler.
@@ -52,7 +51,7 @@ The base class implementation does nothing.
 .. versionadded:: 3.12
 %End
 
-    virtual bool handlePaste( QgsLayoutDesignerInterface *iface, QPointF pastePoint, const QMimeData *data, QList< QgsLayoutItem * > &pastedItems /Out/ );
+    virtual bool handlePaste( QgsLayoutDesignerInterface *iface, QPointF pastePoint, const QMimeData *data, QList<QgsLayoutItem *> &pastedItems /Out/ );
 %Docstring
 Called when the specified MIME ``data`` has been pasted onto a QGIS layout. If ``True``
 is returned, then the handler has accepted this data and it should not

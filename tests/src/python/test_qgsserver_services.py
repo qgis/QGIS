@@ -18,9 +18,9 @@ From build dir, run: ctest -R PyQgsServerServices -V
 ***************************************************************************
 """
 
-__author__ = 'David Marteau'
-__date__ = 'December 2016'
-__copyright__ = '(C) 2016, David Marteau'
+__author__ = "David Marteau"
+__date__ = "December 2016"
+__copyright__ = "(C) 2016, David Marteau"
 
 """ QGIS test for server services
 """
@@ -90,8 +90,7 @@ class MyService(QgsService):
 
 
 class TestServices(unittest.TestCase):
-    """
-    """
+    """ """
 
     @classmethod
     def setUpClass(cls):
@@ -178,5 +177,5 @@ class TestServices(unittest.TestCase):
         self.assertIsNone(service)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

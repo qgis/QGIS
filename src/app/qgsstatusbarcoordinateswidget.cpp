@@ -166,7 +166,7 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
   }
 
   bool xOk = false;
-  bool  yOk = false;
+  bool yOk = false;
   double first = 0;
   double second = 0;
   QString coordText = mLineEdit->text();
@@ -198,7 +198,7 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
     if ( parts.size() == 2 )
     {
       first = QLocale().toDouble( parts.at( 0 ), &xOk );
-      second = QLocale().toDouble( parts.at( 1 ),  &yOk );
+      second = QLocale().toDouble( parts.at( 1 ), &yOk );
     }
   }
 
@@ -223,12 +223,11 @@ void QgsStatusBarCoordinatesWidget::validateCoordinates()
 
   const QgsCoordinateReferenceSystem displayCrs = QgsProject::instance()->displaySettings()->coordinateCrs();
   const QgsCoordinateReferenceSystem canvasCrs = mMapCanvas->mapSettings().destinationCrs();
-  if ( displayCrs.isValid() && canvasCrs.isValid() &&  displayCrs != canvasCrs )
+  if ( displayCrs.isValid() && canvasCrs.isValid() && displayCrs != canvasCrs )
   {
     const QgsCoordinateTransform ct { displayCrs, canvasCrs, QgsProject::instance()->transformContext() };
     try
     {
-
       centerPoint = ct.transform( centerPoint );
     }
     catch ( const QgsCsException & )
@@ -256,10 +255,10 @@ void QgsStatusBarCoordinatesWidget::dizzy()
   if ( rect.x() < -d || rect.x() > d || rect.y() < -d || rect.y() > d )
     return; // do not affect panning
 
-  rect.moveTo( static_cast< int >( QRandomGenerator::global()->generate() % ( 2 * d ) ) - d, static_cast< int >( QRandomGenerator::global()->generate() % ( 2 * d ) ) - d );
+  rect.moveTo( static_cast<int>( QRandomGenerator::global()->generate() % ( 2 * d ) ) - d, static_cast<int>( QRandomGenerator::global()->generate() % ( 2 * d ) ) - d );
   mMapCanvas->setSceneRect( rect );
   QTransform matrix;
-  matrix.rotate( static_cast<int >( QRandomGenerator::global()->generate() % ( 2 * r ) ) - r );
+  matrix.rotate( static_cast<int>( QRandomGenerator::global()->generate() % ( 2 * r ) ) - r );
   mMapCanvas->setTransform( matrix );
 }
 
@@ -272,8 +271,7 @@ void QgsStatusBarCoordinatesWidget::contributors()
   const QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/contributors.json" );
   const QFileInfo fileInfo = QFileInfo( fileName );
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
-      tr( "QGIS Contributors" ), QStringLiteral( "ogr" ), options );
+  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(), tr( "QGIS Contributors" ), QStringLiteral( "ogr" ), options );
   // Register this layer with the layers registry
   QgsProject::instance()->addMapLayer( layer );
   layer->setAutoRefreshInterval( 500 );
@@ -290,8 +288,7 @@ void QgsStatusBarCoordinatesWidget::world()
   const QFileInfo fileInfo = QFileInfo( fileName );
   QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
   options.forceReadOnly = true;
-  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
-      tr( "World Map" ), QStringLiteral( "ogr" ), options );
+  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(), tr( "World Map" ), QStringLiteral( "ogr" ), options );
   // Register this layer with the layers registry
   QgsProject::instance()->addMapLayer( layer );
 }
@@ -305,8 +302,7 @@ void QgsStatusBarCoordinatesWidget::hackfests()
   const QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/qgis-hackfests.json" );
   const QFileInfo fileInfo = QFileInfo( fileName );
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
-      tr( "QGIS Hackfests" ), QStringLiteral( "ogr" ), options );
+  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(), tr( "QGIS Hackfests" ), QStringLiteral( "ogr" ), options );
   // Register this layer with the layers registry
   QgsProject::instance()->addMapLayer( layer );
 }
@@ -320,13 +316,11 @@ void QgsStatusBarCoordinatesWidget::userGroups()
   const QString fileName = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/world_map.gpkg|layername=countries" );
   const QFileInfo fileInfo = QFileInfo( fileName );
   const QgsVectorLayer::LayerOptions options { QgsProject::instance()->transformContext() };
-  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(),
-      tr( "User Groups" ), QStringLiteral( "ogr" ), options );
+  QgsVectorLayer *layer = new QgsVectorLayer( fileInfo.absoluteFilePath(), tr( "User Groups" ), QStringLiteral( "ogr" ), options );
 
   const QString fileNameData = QgsApplication::pkgDataPath() + QStringLiteral( "/resources/data/user_groups_data.json" );
   const QFileInfo fileInfoData = QFileInfo( fileNameData );
-  QgsVectorLayer *layerData = new QgsVectorLayer( fileInfoData.absoluteFilePath(),
-      tr( "user_groups_data" ), QStringLiteral( "ogr" ), options );
+  QgsVectorLayer *layerData = new QgsVectorLayer( fileInfoData.absoluteFilePath(), tr( "user_groups_data" ), QStringLiteral( "ogr" ), options );
 
   // Register layers with the layers registry
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer << layerData );
@@ -338,7 +332,7 @@ void QgsStatusBarCoordinatesWidget::userGroups()
   joinInfo.setJoinFieldName( QStringLiteral( "country" ) );
   joinInfo.setUsingMemoryCache( true );
   joinInfo.setPrefix( QStringLiteral( "ug_" ) );
-  joinInfo.setJoinFieldNamesSubset( nullptr );  // Use all join fields
+  joinInfo.setJoinFieldNamesSubset( nullptr ); // Use all join fields
   layer->addJoin( joinInfo );
 
   // Load QML for polygon symbology and maptips
@@ -380,6 +374,7 @@ void QgsStatusBarCoordinatesWidget::refreshMapCanvas()
 void QgsStatusBarCoordinatesWidget::showMouseCoordinates( const QgsPointXY &p )
 {
   mLastCoordinate = p;
+  mLastCoordinateCrs = mMapCanvas->mapSettings().destinationCrs();
   updateCoordinateDisplay();
 }
 
@@ -391,8 +386,7 @@ void QgsStatusBarCoordinatesWidget::showExtent()
   }
 
   mLabel->setText( tr( "Extents" ) );
-  mLineEdit->setText( QgsCoordinateUtils::formatExtentForProject( QgsProject::instance(), mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs(),
-                      mMousePrecisionDecimalPlaces ) );
+  mLineEdit->setText( QgsCoordinateUtils::formatExtentForProject( QgsProject::instance(), mMapCanvas->extent(), mMapCanvas->mapSettings().destinationCrs(), mMousePrecisionDecimalPlaces ) );
 
   ensureCoordinatesVisible();
 }
@@ -438,8 +432,7 @@ void QgsStatusBarCoordinatesWidget::updateCoordinateDisplay()
   if ( mLastCoordinate.isEmpty() )
     mLineEdit->clear();
   else
-    mLineEdit->setText( QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), mLastCoordinate, mMapCanvas->mapSettings().destinationCrs(),
-                        static_cast< int >( mMousePrecisionDecimalPlaces ) ) );
+    mLineEdit->setText( QgsCoordinateUtils::formatCoordinateForProject( QgsProject::instance(), mLastCoordinate, mLastCoordinateCrs, static_cast<int>( mMousePrecisionDecimalPlaces ) ) );
 
   ensureCoordinatesVisible();
 }
@@ -450,8 +443,8 @@ void QgsStatusBarCoordinatesWidget::coordinateDisplaySettingsChanged()
 
   const Qgis::CoordinateOrder projectOrder = QgsProject::instance()->displaySettings()->coordinateAxisOrder();
   const Qgis::CoordinateOrder order = projectOrder == Qgis::CoordinateOrder::Default
-                                      ? QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( coordinateCrs )
-                                      : projectOrder;
+                                        ? QgsCoordinateReferenceSystemUtils::defaultCoordinateOrderForCrs( coordinateCrs )
+                                        : projectOrder;
 
   switch ( order )
   {

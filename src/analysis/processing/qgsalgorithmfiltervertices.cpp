@@ -44,20 +44,19 @@ QString QgsFilterVerticesAlgorithmBase::shortHelpString() const
                       "If the minimum value is not specified then only the maximum value is tested, "
                       "and similarly if the maximum value is not specified then only the minimum value is tested.\n\n"
                       "Depending on the input geometry attributes and the filters used, "
-                      "the resultant geometries created by this algorithm may no longer be valid." ).arg( componentString() );
+                      "the resultant geometries created by this algorithm may no longer be valid." )
+    .arg( componentString() );
 }
 
 void QgsFilterVerticesAlgorithmBase::initParameters( const QVariantMap & )
 {
-  auto min = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MIN" ),
-             QObject::tr( "Minimum" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  auto min = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MIN" ), QObject::tr( "Minimum" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   min->setIsDynamic( true );
   min->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Minimum" ), QObject::tr( "Minimum value" ), QgsPropertyDefinition::Double ) );
   min->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( min.release() );
 
-  auto max = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MAX" ),
-             QObject::tr( "Maximum" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
+  auto max = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MAX" ), QObject::tr( "Maximum" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true );
   max->setIsDynamic( true );
   max->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Maximum" ), QObject::tr( "Maximum value" ), QgsPropertyDefinition::Double ) );
   max->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -73,7 +72,7 @@ bool QgsFilterVerticesAlgorithmBase::prepareAlgorithm( const QVariantMap &parame
 
   mDynamicMin = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "MIN" ) );
   if ( mDynamicMin )
-    mMinProperty = parameters.value( QStringLiteral( "MIN" ) ).value< QgsProperty >();
+    mMinProperty = parameters.value( QStringLiteral( "MIN" ) ).value<QgsProperty>();
 
   if ( parameters.contains( QStringLiteral( "MAX" ) ) && parameters.value( QStringLiteral( "MAX" ) ).isValid() )
     mMax = parameterAsDouble( parameters, QStringLiteral( "MAX" ), context );
@@ -82,7 +81,7 @@ bool QgsFilterVerticesAlgorithmBase::prepareAlgorithm( const QVariantMap &parame
 
   mDynamicMax = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "MAX" ) );
   if ( mDynamicMax )
-    mMaxProperty = parameters.value( QStringLiteral( "MAX" ) ).value< QgsProperty >();
+    mMaxProperty = parameters.value( QStringLiteral( "MAX" ) ).value<QgsProperty>();
 
   return true;
 }
@@ -133,12 +132,12 @@ QgsFilterVerticesByM *QgsFilterVerticesByM::createInstance() const
 
 bool QgsFilterVerticesByM::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );
   if ( !layer )
     return false;
 
-  if ( ! QgsFilterVerticesAlgorithmBase::supportInPlaceEdit( layer ) )
-    return  false;
+  if ( !QgsFilterVerticesAlgorithmBase::supportInPlaceEdit( layer ) )
+    return false;
   return QgsWkbTypes::hasM( layer->wkbType() );
 }
 
@@ -149,10 +148,9 @@ QString QgsFilterVerticesByM::componentString() const
 
 void QgsFilterVerticesByM::filter( QgsGeometry &geometry, double min, double max ) const
 {
-  geometry.filterVertices( [min, max]( const QgsPoint & point )->bool
-  {
+  geometry.filterVertices( [min, max]( const QgsPoint &point ) -> bool {
     return ( std::isnan( min ) || point.m() >= min )
-    && ( std::isnan( max ) || point.m() <= max );
+           && ( std::isnan( max ) || point.m() <= max );
   } );
 }
 
@@ -183,11 +181,11 @@ QgsFilterVerticesByZ *QgsFilterVerticesByZ::createInstance() const
 
 bool QgsFilterVerticesByZ::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
+  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );
   if ( !layer )
     return false;
 
-  if ( ! QgsFilterVerticesAlgorithmBase::supportInPlaceEdit( layer ) )
+  if ( !QgsFilterVerticesAlgorithmBase::supportInPlaceEdit( layer ) )
     return false;
   return QgsWkbTypes::hasZ( layer->wkbType() );
 }
@@ -199,10 +197,9 @@ QString QgsFilterVerticesByZ::componentString() const
 
 void QgsFilterVerticesByZ::filter( QgsGeometry &geometry, double min, double max ) const
 {
-  geometry.filterVertices( [min, max]( const QgsPoint & point )->bool
-  {
+  geometry.filterVertices( [min, max]( const QgsPoint &point ) -> bool {
     return ( std::isnan( min ) || point.z() >= min )
-    && ( std::isnan( max ) || point.z() <= max );
+           && ( std::isnan( max ) || point.z() <= max );
   } );
 }
 

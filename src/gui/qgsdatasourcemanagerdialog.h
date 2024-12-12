@@ -48,7 +48,6 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     Q_OBJECT
 
   public:
-
     /**
      * QgsDataSourceManagerDialog constructor
       * \param browserModel instance of the (shared) browser model
@@ -175,7 +174,6 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
     QgsBrowserGuiModel *mBrowserModel = nullptr;
-
 };
 
 #endif // QGSDATASOURCEMANAGERDIALOG_H

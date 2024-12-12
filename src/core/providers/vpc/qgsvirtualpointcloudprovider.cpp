@@ -22,8 +22,6 @@
 #include "moc_qgsvirtualpointcloudprovider.cpp"
 #include "qgscopcpointcloudindex.h"
 #include "qgseptpointcloudindex.h"
-#include "qgsremotecopcpointcloudindex.h"
-#include "qgsremoteeptpointcloudindex.h"
 #include "qgspointcloudsubindex.h"
 #include "qgspointcloudclassifiedrenderer.h"
 #include "qgspointcloudextentrenderer.h"
@@ -392,20 +390,10 @@ void QgsVirtualPointCloudProvider::loadSubIndex( int i )
   if ( sl.index() )
     return;
 
-  if ( sl.uri().startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive ) )
-  {
-    if ( sl.uri().endsWith( QStringLiteral( "copc.laz" ), Qt::CaseSensitivity::CaseInsensitive ) )
-      sl.setIndex( new QgsRemoteCopcPointCloudIndex() );
-    else if ( sl.uri().endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) )
-      sl.setIndex( new QgsRemoteEptPointCloudIndex() );
-  }
-  else
-  {
-    if ( sl.uri().endsWith( QStringLiteral( "copc.laz" ), Qt::CaseSensitivity::CaseInsensitive ) )
-      sl.setIndex( new QgsCopcPointCloudIndex() );
-    else if ( sl.uri().endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) )
-      sl.setIndex( new QgsEptPointCloudIndex() );
-  }
+  if ( sl.uri().endsWith( QStringLiteral( "copc.laz" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    sl.setIndex( new QgsCopcPointCloudIndex() );
+  else if ( sl.uri().endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) )
+    sl.setIndex( new QgsEptPointCloudIndex() );
 
   if ( !sl.index() )
     return;
@@ -627,5 +615,9 @@ QgsProviderMetadata::ProviderMetadataCapabilities QgsVirtualPointCloudProviderMe
          | ProviderMetadataCapability::PriorityForUri
          | ProviderMetadataCapability::QuerySublayers;
 }
+
+#undef PROVIDER_KEY
+#undef PROVIDER_DESCRIPTION
+
 ///@endcond
 

@@ -53,7 +53,6 @@ class GUI_EXPORT QgsMapTip : public QWidget
 {
     Q_OBJECT
   public:
-
     /**
      * Default constructor
      */
@@ -69,10 +68,7 @@ class GUI_EXPORT QgsMapTip : public QWidget
      *        in pixel coordinates.
      * \param mpMapCanvas a map canvas on which the tip is drawn
      */
-    void showMapTip( QgsMapLayer *thepLayer,
-                     QgsPointXY &mapPosition,
-                     const QPoint &pixelPosition,
-                     QgsMapCanvas *mpMapCanvas );
+    void showMapTip( QgsMapLayer *thepLayer, QgsPointXY &mapPosition, const QPoint &pixelPosition, QgsMapCanvas *mpMapCanvas );
 
     /**
      * Clear the current maptip if it exists
@@ -102,14 +98,10 @@ class GUI_EXPORT QgsMapTip : public QWidget
   private:
     // Fetch the feature to use for the maptip text.
     // Only the first feature in the search radius is used
-    QString fetchFeature( QgsMapLayer *thepLayer,
-                          QgsPointXY &mapPosition,
-                          QgsMapCanvas *mapCanvas );
+    QString fetchFeature( QgsMapLayer *thepLayer, QgsPointXY &mapPosition, QgsMapCanvas *mapCanvas );
 
     // Sample the raster and get the maptip text
-    QString fetchRaster( QgsMapLayer *layer,
-                         QgsPointXY &mapPosition,
-                         QgsMapCanvas *mapCanvas );
+    QString fetchRaster( QgsMapLayer *layer, QgsPointXY &mapPosition, QgsMapCanvas *mapCanvas );
 
     // Insert the raw map tip text into an HTML template and return the result
     static QString htmlText( const QString &text, int maxWidth = -1 );

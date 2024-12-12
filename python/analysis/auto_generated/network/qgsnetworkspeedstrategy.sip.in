@@ -19,7 +19,6 @@ used for finding fastest path between two points.
 #include "qgsnetworkspeedstrategy.h"
 %End
   public:
-
     QgsNetworkSpeedStrategy( int attributeId, double defaultValue, double toMetricFactor );
 %Docstring
 Default constructor
@@ -27,7 +26,7 @@ Default constructor
 
     virtual QVariant cost( double distance, const QgsFeature &f ) const;
 
-    virtual QSet< int > requiredAttributes() const;
+    virtual QSet<int> requiredAttributes() const;
 
 
 };

@@ -1,0 +1,102 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/labeling/qgstabpositionwidget.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsTabPositionWidget : QgsPanelWidget
+{
+%Docstring(signature="appended")
+A widget for configuring :py:class:`QgsTextFormat` tab positions.
+
+.. versionadded:: 3.42
+%End
+
+%TypeHeaderCode
+#include "qgstabpositionwidget.h"
+%End
+  public:
+    QgsTabPositionWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsTabPositionWidget, with the specified ``parent`` widget
+%End
+
+    void setPositions( const QList<QgsTextFormat::Tab> &positions );
+%Docstring
+Sets the tab ``positions`` to show in the widget.
+
+.. seealso:: :py:func:`positions`
+%End
+
+    QList<QgsTextFormat::Tab> positions() const;
+%Docstring
+Returns the tab positions defined in the widget.
+
+.. seealso:: :py:func:`setPositions`
+%End
+
+    void setUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the unit type used for the tab positions (used to update interface labels).
+%End
+
+  signals:
+
+    void positionsChanged( const QList<QgsTextFormat::Tab> &positions );
+%Docstring
+Emitted when positions are changed in the widget.
+%End
+
+};
+
+class QgsTabPositionDialog : QDialog
+{
+%Docstring(signature="appended")
+A dialog to enter a custom dash space pattern for lines
+
+.. versionadded:: 3.42
+%End
+
+%TypeHeaderCode
+#include "qgstabpositionwidget.h"
+%End
+  public:
+    QgsTabPositionDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags f = Qt::WindowFlags() );
+%Docstring
+Constructor for QgsTabPositionDialog
+%End
+
+    void setPositions( const QList<QgsTextFormat::Tab> &positions );
+%Docstring
+Sets the tab ``positions`` to show in the dialog.
+
+.. seealso:: :py:func:`positions`
+%End
+
+    QList<QgsTextFormat::Tab> positions() const;
+%Docstring
+Returns the tab positions defined in the dialog.
+
+.. seealso:: :py:func:`setPositions`
+%End
+
+    void setUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the unit type used for the tab positions (used to update interface labels).
+%End
+
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/labeling/qgstabpositionwidget.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

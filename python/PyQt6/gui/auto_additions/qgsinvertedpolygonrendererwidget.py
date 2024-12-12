@@ -2,5 +2,5 @@
 try:
     QgsInvertedPolygonRendererWidget.create = staticmethod(QgsInvertedPolygonRendererWidget.create)
     QgsInvertedPolygonRendererWidget.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

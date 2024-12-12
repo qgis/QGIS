@@ -57,11 +57,11 @@ void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
   if ( mMouseHandles->isVisible() )
   {
     //selection handles are being shown, get mouse action for current cursor position
-    QgsLayoutMouseHandles::MouseAction mouseAction = mMouseHandles->mouseActionForScenePos( event->layoutPoint() );
+    Qgis::MouseHandlesAction mouseAction = mMouseHandles->mouseActionForScenePos( event->layoutPoint() );
 
-    if ( mouseAction != QgsLayoutMouseHandles::MoveItem
-         && mouseAction != QgsLayoutMouseHandles::NoAction
-         && mouseAction != QgsLayoutMouseHandles::SelectItem )
+    if ( mouseAction != Qgis::MouseHandlesAction::MoveItem
+         && mouseAction != Qgis::MouseHandlesAction::NoAction
+         && mouseAction != Qgis::MouseHandlesAction::SelectItem )
     {
       //mouse is over a resize handle, so propagate event onward
       event->ignore();
@@ -149,7 +149,7 @@ void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
   }
   else
   {
-    if ( ( !selectedItem->isSelected() ) &&       //keep selection if an already selected item pressed
+    if ( ( !selectedItem->isSelected() ) &&            //keep selection if an already selected item pressed
          !( event->modifiers() & Qt::ShiftModifier ) ) //keep selection if shift key pressed
     {
       layout()->setSelectedItem( selectedItem ); // clears existing selection

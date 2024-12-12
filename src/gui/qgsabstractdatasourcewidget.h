@@ -47,7 +47,6 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Sets a browser \a model to use with the widget.
      *
@@ -61,7 +60,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
      * \see setMapCanvas()
      *
      */
-    virtual QgsMapCanvas *mapCanvas() {return mMapCanvas; }
+    virtual QgsMapCanvas *mapCanvas() { return mMapCanvas; }
 
     /**
      * Sets the dialog map canvas
@@ -210,7 +209,6 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     void pushMessage( const QString &title, const QString &message, const Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 
   protected:
-
     //! Constructor
     QgsAbstractDataSourceWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone );
 
@@ -228,14 +226,13 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
     void setupButtons( QDialogButtonBox *buttonBox );
 
     //! Returns the add Button
-    QPushButton *addButton( ) const { return mAddButton; }
+    QPushButton *addButton() const { return mAddButton; }
 
   private:
-    QPushButton *mAddButton  = nullptr;
+    QPushButton *mAddButton = nullptr;
     QgsProviderRegistry::WidgetMode mWidgetMode;
     QgsBrowserModel *mBrowserModel = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
-
 };
 
 #endif // QGSABSTRACTDATASOURCEWIDGET_H

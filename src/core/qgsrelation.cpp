@@ -276,7 +276,7 @@ QgsFeature QgsRelation::getReferencedFeature( const QgsFeature &feature ) const
   QgsFeatureRequest request = getReferencedFeatureRequest( feature );
 
   QgsFeature f;
-  d->mReferencedLayer->getFeatures( request ).nextFeature( f );
+  ( void )d->mReferencedLayer->getFeatures( request ).nextFeature( f );
   return f;
 }
 

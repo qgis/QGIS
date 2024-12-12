@@ -10,7 +10,7 @@
 
 
 
-class QgsRasterPyramidsOptionsWidget: QWidget
+class QgsRasterPyramidsOptionsWidget : QWidget
 {
 %Docstring(signature="appended")
 A widget to select format-specific raster saving options
@@ -20,7 +20,6 @@ A widget to select format-specific raster saving options
 #include "qgsrasterpyramidsoptionswidget.h"
 %End
   public:
-
     QgsRasterPyramidsOptionsWidget( QWidget *parent /TransferThis/ = 0, const QString &provider = "gdal" );
 %Docstring
 Constructor for QgsRasterPyramidsOptionsWidget

@@ -65,8 +65,7 @@ void QgsLayoutViewToolMoveItemContent::layoutMoveEvent( QgsLayoutViewMouseEvent 
   }
 
   //update item preview
-  mMoveContentItem->setMoveContentPreviewOffset( event->layoutPoint().x() - mMoveContentStartPos.x(),
-      event->layoutPoint().y() - mMoveContentStartPos.y() );
+  mMoveContentItem->setMoveContentPreviewOffset( event->layoutPoint().x() - mMoveContentStartPos.x(), event->layoutPoint().y() - mMoveContentStartPos.y() );
   mMoveContentItem->update();
 }
 

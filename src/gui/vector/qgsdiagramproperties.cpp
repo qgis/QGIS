@@ -90,15 +90,10 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
 
   const int iconSize = QgsGuiUtils::scaleIconSize( 20 );
   mOptionsTab->setIconSize( QSize( iconSize, iconSize ) );
-  mDiagramOptionsListWidget->setIconSize( QSize( iconSize, iconSize ) ) ;
+  mDiagramOptionsListWidget->setIconSize( QSize( iconSize, iconSize ) );
 
   mBarSpacingSpinBox->setClearValue( 0 );
-  mBarSpacingUnitComboBox->setUnits( { Qgis::RenderUnit::Millimeters,
-                                       Qgis::RenderUnit::MetersInMapUnits,
-                                       Qgis::RenderUnit::MapUnits,
-                                       Qgis::RenderUnit::Pixels,
-                                       Qgis::RenderUnit::Points,
-                                       Qgis::RenderUnit::Inches } );
+  mBarSpacingUnitComboBox->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
 
   mDiagramFontButton->setMode( QgsFontButton::ModeQFont );
 
@@ -141,16 +136,8 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   connect( mFixedSizeRadio, &QRadioButton::toggled, this, &QgsDiagramProperties::scalingTypeChanged );
   connect( mAttributeBasedScalingRadio, &QRadioButton::toggled, this, &QgsDiagramProperties::scalingTypeChanged );
 
-  mDiagramUnitComboBox->setUnits( {Qgis::RenderUnit::Millimeters,
-                                   Qgis::RenderUnit::MapUnits,
-                                   Qgis::RenderUnit::Pixels,
-                                   Qgis::RenderUnit::Points,
-                                   Qgis::RenderUnit::Inches } );
-  mDiagramLineUnitComboBox->setUnits( { Qgis::RenderUnit::Millimeters,
-                                        Qgis::RenderUnit::MapUnits,
-                                        Qgis::RenderUnit::Pixels,
-                                        Qgis::RenderUnit::Points,
-                                        Qgis::RenderUnit::Inches } );
+  mDiagramUnitComboBox->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
+  mDiagramLineUnitComboBox->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
 
   const Qgis::GeometryType layerType = layer->geometryType();
   if ( layerType == Qgis::GeometryType::Unknown || layerType == Qgis::GeometryType::Null )
@@ -187,14 +174,14 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mPlacePointBtnGrp->addButton( radAroundPoint );
   mPlacePointBtnGrp->addButton( radOverPoint );
   mPlacePointBtnGrp->setExclusive( true );
-  connect( mPlacePointBtnGrp, qOverload< QAbstractButton * >( &QButtonGroup::buttonClicked ), this, &QgsDiagramProperties::updatePlacementWidgets );
+  connect( mPlacePointBtnGrp, qOverload<QAbstractButton *>( &QButtonGroup::buttonClicked ), this, &QgsDiagramProperties::updatePlacementWidgets );
 
   // setup line placement button group
   mPlaceLineBtnGrp = new QButtonGroup( this );
   mPlaceLineBtnGrp->addButton( radAroundLine );
   mPlaceLineBtnGrp->addButton( radOverLine );
   mPlaceLineBtnGrp->setExclusive( true );
-  connect( mPlaceLineBtnGrp, qOverload< QAbstractButton * >( &QButtonGroup::buttonClicked ), this, &QgsDiagramProperties::updatePlacementWidgets );
+  connect( mPlaceLineBtnGrp, qOverload<QAbstractButton *>( &QButtonGroup::buttonClicked ), this, &QgsDiagramProperties::updatePlacementWidgets );
 
   // setup polygon placement button group
   mPlacePolygonBtnGrp = new QButtonGroup( this );
@@ -203,7 +190,7 @@ QgsDiagramProperties::QgsDiagramProperties( QgsVectorLayer *layer, QWidget *pare
   mPlacePolygonBtnGrp->addButton( radPolygonPerimeter );
   mPlacePolygonBtnGrp->addButton( radInsidePolygon );
   mPlacePolygonBtnGrp->setExclusive( true );
-  connect( mPlacePolygonBtnGrp, qOverload< QAbstractButton * >( &QButtonGroup::buttonClicked ), this, &QgsDiagramProperties::updatePlacementWidgets );
+  connect( mPlacePolygonBtnGrp, qOverload<QAbstractButton *>( &QButtonGroup::buttonClicked ), this, &QgsDiagramProperties::updatePlacementWidgets );
 
   mLabelPlacementComboBox->addItem( tr( "Height" ), QgsDiagramSettings::Height );
   mLabelPlacementComboBox->addItem( tr( "x-height" ), QgsDiagramSettings::XHeight );
@@ -424,7 +411,7 @@ void QgsDiagramProperties::syncToLayer()
   const QgsDiagramRenderer *renderer = mLayer->diagramRenderer();
   if ( renderer && renderer->rendererName() == QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED )
   {
-    const QgsStackedDiagramRenderer *stackedRenderer = static_cast< const QgsStackedDiagramRenderer *>( renderer );
+    const QgsStackedDiagramRenderer *stackedRenderer = static_cast<const QgsStackedDiagramRenderer *>( renderer );
     if ( stackedRenderer->rendererCount() > 0 )
     {
       // If layer has a stacked diagram renderer, take its first sub
@@ -473,8 +460,7 @@ void QgsDiagramProperties::syncToRenderer( const QgsDiagramRenderer *dr )
       mDiagramPenColorButton->setColor( settingList.at( 0 ).penColor );
       mPenWidthSpinBox->setValue( settingList.at( 0 ).penWidth );
       mDiagramSizeSpinBox->setValue( ( size.width() + size.height() ) / 2.0 );
-      mScaleRangeWidget->setScaleRange( ( settingList.at( 0 ).minimumScale > 0 ? settingList.at( 0 ).minimumScale : mLayer->minimumScale() ),
-                                        ( settingList.at( 0 ).maximumScale > 0 ? settingList.at( 0 ).maximumScale : mLayer->maximumScale() ) );
+      mScaleRangeWidget->setScaleRange( ( settingList.at( 0 ).minimumScale > 0 ? settingList.at( 0 ).minimumScale : mLayer->minimumScale() ), ( settingList.at( 0 ).maximumScale > 0 ? settingList.at( 0 ).maximumScale : mLayer->maximumScale() ) );
       mScaleVisibilityGroupBox->setChecked( settingList.at( 0 ).scaleBasedVisibility );
       mDiagramUnitComboBox->setUnit( settingList.at( 0 ).sizeType );
       mDiagramUnitComboBox->setMapUnitScale( settingList.at( 0 ).sizeScale );
@@ -536,12 +522,12 @@ void QgsDiagramProperties::syncToRenderer( const QgsDiagramRenderer *dr )
         mScaleDependencyComboBox->setCurrentIndex( 1 );
       }
 
-      const QList< QColor > categoryColors = settingList.at( 0 ).categoryColors;
-      const QList< QString > categoryAttributes = settingList.at( 0 ).categoryAttributes;
-      const QList< QString > categoryLabels = settingList.at( 0 ).categoryLabels;
-      QList< QString >::const_iterator catIt = categoryAttributes.constBegin();
-      QList< QColor >::const_iterator coIt = categoryColors.constBegin();
-      QList< QString >::const_iterator labIt = categoryLabels.constBegin();
+      const QList<QColor> categoryColors = settingList.at( 0 ).categoryColors;
+      const QList<QString> categoryAttributes = settingList.at( 0 ).categoryAttributes;
+      const QList<QString> categoryLabels = settingList.at( 0 ).categoryLabels;
+      QList<QString>::const_iterator catIt = categoryAttributes.constBegin();
+      QList<QColor>::const_iterator coIt = categoryColors.constBegin();
+      QList<QString>::const_iterator labIt = categoryLabels.constBegin();
       for ( ; catIt != categoryAttributes.constEnd(); ++catIt, ++coIt, ++labIt )
       {
         QTreeWidgetItem *newItem = new QTreeWidgetItem( mDiagramAttributesTreeWidget );
@@ -646,7 +632,7 @@ QgsDiagramProperties::~QgsDiagramProperties()
 
 void QgsDiagramProperties::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsDiagramLayerSettings::Property key )
 {
-  button->init( static_cast< int >( key ), mDataDefinedProperties, QgsDiagramLayerSettings::propertyDefinitions(), mLayer, true );
+  button->init( static_cast<int>( key ), mDataDefinedProperties, QgsDiagramLayerSettings::propertyDefinitions(), mLayer, true );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsDiagramProperties::updateProperty );
   connect( button, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsDiagramProperties::createAuxiliaryField );
   button->registerExpressionContextGenerator( this );
@@ -655,7 +641,7 @@ void QgsDiagramProperties::registerDataDefinedButton( QgsPropertyOverrideButton 
 void QgsDiagramProperties::updateProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  const QgsDiagramLayerSettings::Property key = static_cast<  QgsDiagramLayerSettings::Property >( button->propertyKey() );
+  const QgsDiagramLayerSettings::Property key = static_cast<QgsDiagramLayerSettings::Property>( button->propertyKey() );
   mDataDefinedProperties.setProperty( key, button->toProperty() );
   emit widgetChanged();
 }
@@ -863,32 +849,32 @@ void QgsDiagramProperties::mDiagramAttributesTreeWidget_itemDoubleClicked( QTree
   }
 }
 
-std::unique_ptr< QgsDiagram > QgsDiagramProperties::createDiagramObject()
+std::unique_ptr<QgsDiagram> QgsDiagramProperties::createDiagramObject()
 {
-  std::unique_ptr< QgsDiagram > diagram;
+  std::unique_ptr<QgsDiagram> diagram;
 
   if ( mDiagramType == QgsTextDiagram::DIAGRAM_NAME_TEXT )
   {
-    diagram = std::make_unique< QgsTextDiagram >();
+    diagram = std::make_unique<QgsTextDiagram>();
   }
   else if ( mDiagramType == QgsPieDiagram::DIAGRAM_NAME_PIE )
   {
-    diagram = std::make_unique< QgsPieDiagram >();
+    diagram = std::make_unique<QgsPieDiagram>();
   }
   else if ( mDiagramType == QgsStackedBarDiagram::DIAGRAM_NAME_STACKED_BAR )
   {
-    diagram = std::make_unique< QgsStackedBarDiagram >();
+    diagram = std::make_unique<QgsStackedBarDiagram>();
   }
   else // if ( diagramType == QgsHistogramDiagram::DIAGRAM_NAME_HISTOGRAM )
   {
-    diagram = std::make_unique< QgsHistogramDiagram >();
+    diagram = std::make_unique<QgsHistogramDiagram>();
   }
   return diagram;
 }
 
 std::unique_ptr<QgsDiagramSettings> QgsDiagramProperties::createDiagramSettings()
 {
-  std::unique_ptr< QgsDiagramSettings > ds = std::make_unique< QgsDiagramSettings>();
+  std::unique_ptr<QgsDiagramSettings> ds = std::make_unique<QgsDiagramSettings>();
   ds->enabled = isDiagramEnabled();
   ds->font = mDiagramFontButton->currentFont();
   ds->opacity = mOpacityWidget->opacity();
@@ -935,14 +921,14 @@ std::unique_ptr<QgsDiagramSettings> QgsDiagramProperties::createDiagramSettings(
 
   // Diagram angle offset (pie)
   ds->rotationOffset = mAngleOffsetComboBox->currentData().toInt();
-  ds->setDirection( static_cast< QgsDiagramSettings::Direction>( mAngleDirectionComboBox->currentData().toInt() ) );
+  ds->setDirection( static_cast<QgsDiagramSettings::Direction>( mAngleDirectionComboBox->currentData().toInt() ) );
 
   // Diagram orientation (histogram)
   ds->diagramOrientation = static_cast<QgsDiagramSettings::DiagramOrientation>( mOrientationButtonGroup->checkedButton()->property( "direction" ).toInt() );
 
   ds->barWidth = mBarWidthSpinBox->value();
 
-  ds->setAxisLineSymbol( mAxisLineStyleButton->clonedSymbol< QgsLineSymbol >() );
+  ds->setAxisLineSymbol( mAxisLineStyleButton->clonedSymbol<QgsLineSymbol>() );
   ds->setShowAxis( mShowAxisGroupBox->isChecked() );
 
   ds->setSpacing( mBarSpacingSpinBox->value() );
@@ -959,18 +945,18 @@ std::unique_ptr<QgsDiagramSettings> QgsDiagramProperties::createDiagramSettings(
 
 std::unique_ptr<QgsDiagramRenderer> QgsDiagramProperties::createRenderer()
 {
-  std::unique_ptr< QgsDiagramSettings > ds = createDiagramSettings();
+  std::unique_ptr<QgsDiagramSettings> ds = createDiagramSettings();
 
-  std::unique_ptr< QgsDiagramRenderer > renderer;
+  std::unique_ptr<QgsDiagramRenderer> renderer;
   if ( mFixedSizeRadio->isChecked() )
   {
-    std::unique_ptr< QgsSingleCategoryDiagramRenderer > dr = std::make_unique< QgsSingleCategoryDiagramRenderer >();
+    std::unique_ptr<QgsSingleCategoryDiagramRenderer> dr = std::make_unique<QgsSingleCategoryDiagramRenderer>();
     dr->setDiagramSettings( *ds );
     renderer = std::move( dr );
   }
   else
   {
-    std::unique_ptr< QgsLinearlyInterpolatedDiagramRenderer > dr = std::make_unique< QgsLinearlyInterpolatedDiagramRenderer >();
+    std::unique_ptr<QgsLinearlyInterpolatedDiagramRenderer> dr = std::make_unique<QgsLinearlyInterpolatedDiagramRenderer>();
     dr->setLowerValue( 0.0 );
     dr->setLowerSize( QSizeF( 0.0, 0.0 ) );
     dr->setUpperValue( mMaxValueSpinBox->value() );
@@ -996,7 +982,7 @@ std::unique_ptr<QgsDiagramRenderer> QgsDiagramProperties::createRenderer()
 
   renderer->setAttributeLegend( mCheckBoxAttributeLegend->isChecked() );
 
-  std::unique_ptr< QgsDiagram > diagram = createDiagramObject();
+  std::unique_ptr<QgsDiagram> diagram = createDiagramObject();
   renderer->setDiagram( diagram.release() );
 
   return renderer;
@@ -1044,7 +1030,7 @@ QgsDiagramLayerSettings QgsDiagramProperties::createDiagramLayerSettings()
     flags |= QgsDiagramLayerSettings::BelowLine;
   if ( chkLineOn->isChecked() )
     flags |= QgsDiagramLayerSettings::OnLine;
-  if ( ! chkLineOrientationDependent->isChecked() )
+  if ( !chkLineOrientationDependent->isChecked() )
     flags |= QgsDiagramLayerSettings::MapOrientation;
   dls.setLinePlacementFlags( flags );
 
@@ -1059,12 +1045,11 @@ void QgsDiagramProperties::apply()
   {
     if ( isDiagramEnabled() && 0 == mDiagramAttributesTreeWidget->topLevelItemCount() )
     {
-      QMessageBox::warning( this, tr( "Diagrams: No attributes added." ),
-                            tr( "You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams." ) );
+      QMessageBox::warning( this, tr( "Diagrams: No attributes added." ), tr( "You did not add any attributes to this diagram layer. Please specify the attributes to visualize on the diagrams or disable diagrams." ) );
     }
   }
 
-  std::unique_ptr< QgsDiagramRenderer > renderer = createRenderer();
+  std::unique_ptr<QgsDiagramRenderer> renderer = createRenderer();
   mLayer->setDiagramRenderer( renderer.release() );
 
   QgsDiagramLayerSettings dls = createDiagramLayerSettings();
@@ -1200,8 +1185,7 @@ void QgsDiagramProperties::showSizeLegendDialog()
   const QString sizeFieldNameOrExp = mSizeFieldExpressionWidget->currentField( &isExpression );
   QgsProperty ddSize = isExpression ? QgsProperty::fromExpression( sizeFieldNameOrExp ) : QgsProperty::fromField( sizeFieldNameOrExp );
   const bool scaleByArea = mScaleDependencyComboBox->currentData().toBool();
-  ddSize.setTransformer( new QgsSizeScaleTransformer( scaleByArea ? QgsSizeScaleTransformer::Area : QgsSizeScaleTransformer::Linear,
-                         0.0, mMaxValueSpinBox->value(), 0.0, mSizeSpinBox->value() ) );
+  ddSize.setTransformer( new QgsSizeScaleTransformer( scaleByArea ? QgsSizeScaleTransformer::Area : QgsSizeScaleTransformer::Linear, 0.0, mMaxValueSpinBox->value(), 0.0, mSizeSpinBox->value() ) );
 
   QgsDataDefinedSizeLegendWidget *panel = new QgsDataDefinedSizeLegendWidget( mSizeLegend.get(), ddSize, nullptr, mMapCanvas );
 
@@ -1237,8 +1221,8 @@ void QgsDiagramProperties::createAuxiliaryField()
     return;
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  const QgsDiagramLayerSettings::Property key = static_cast< QgsDiagramLayerSettings::Property >( button->propertyKey() );
-  const QgsPropertyDefinition def = QgsDiagramLayerSettings::propertyDefinitions()[static_cast< int >( key )];
+  const QgsDiagramLayerSettings::Property key = static_cast<QgsDiagramLayerSettings::Property>( button->propertyKey() );
+  const QgsPropertyDefinition def = QgsDiagramLayerSettings::propertyDefinitions()[static_cast<int>( key )];
 
   // create property in auxiliary storage if necessary
   if ( !mLayer->auxiliaryLayer()->exists( def ) )
@@ -1264,11 +1248,11 @@ void QgsDiagramProperties::connectValueChanged( const QList<QWidget *> &widgets 
     {
       connect( w, &QgsSymbolButton::changed, this, &QgsDiagramProperties::widgetChanged );
     }
-    else if ( QgsFieldExpressionWidget *w = qobject_cast< QgsFieldExpressionWidget *>( widget ) )
+    else if ( QgsFieldExpressionWidget *w = qobject_cast<QgsFieldExpressionWidget *>( widget ) )
     {
-      connect( w, qOverload< const QString & >( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsDiagramProperties::widgetChanged );
+      connect( w, qOverload<const QString &>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsDiagramProperties::widgetChanged );
     }
-    else if ( QgsOpacityWidget *w = qobject_cast< QgsOpacityWidget *>( widget ) )
+    else if ( QgsOpacityWidget *w = qobject_cast<QgsOpacityWidget *>( widget ) )
     {
       connect( w, &QgsOpacityWidget::opacityChanged, this, &QgsDiagramProperties::widgetChanged );
     }
@@ -1278,15 +1262,15 @@ void QgsDiagramProperties::connectValueChanged( const QList<QWidget *> &widgets 
     }
     else if ( QComboBox *w = qobject_cast<QComboBox *>( widget ) )
     {
-      connect( w, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsDiagramProperties::widgetChanged );
+      connect( w, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsDiagramProperties::widgetChanged );
     }
     else if ( QSpinBox *w = qobject_cast<QSpinBox *>( widget ) )
     {
-      connect( w, qOverload< int >( &QSpinBox::valueChanged ), this, &QgsDiagramProperties::widgetChanged );
+      connect( w, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsDiagramProperties::widgetChanged );
     }
     else if ( QDoubleSpinBox *w = qobject_cast<QDoubleSpinBox *>( widget ) )
     {
-      connect( w, qOverload< double >( &QDoubleSpinBox::valueChanged ), this, &QgsDiagramProperties::widgetChanged );
+      connect( w, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsDiagramProperties::widgetChanged );
     }
     else if ( QgsColorButton *w = qobject_cast<QgsColorButton *>( widget ) )
     {

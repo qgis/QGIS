@@ -35,11 +35,10 @@ class QgsSettingsEntryString;
 
 #ifndef SIP_RUN
 ///@cond PRIVATE
-class QgsCheckableStyleModel: public QgsStyleProxyModel
+class QgsCheckableStyleModel : public QgsStyleProxyModel
 {
     Q_OBJECT
   public:
-
     explicit QgsCheckableStyleModel( QgsStyleModel *sourceModel, QObject *parent = nullptr, bool readOnly = false );
     explicit QgsCheckableStyleModel( QgsStyle *style, QObject *parent = nullptr, bool readOnly = false );
 
@@ -51,12 +50,10 @@ class QgsCheckableStyleModel: public QgsStyleProxyModel
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
   private:
-
     QgsStyle *mStyle = nullptr;
     bool mCheckable = false;
     QString mCheckTag;
     bool mReadOnly = false;
-
 };
 #endif
 ///@endcond
@@ -90,8 +87,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
      * this style will be shown in the dialog, and changes made within the dialog will be applied to \a style.
      * The \a style object must last for the lifetime of the dialog.
      */
-    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags(),
-                           bool readOnly = false );
+    QgsStyleManagerDialog( QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags(), bool readOnly = false );
 
     /**
      * Constructor for QgsStyleManagerDialog, with the specified \a parent widget and window \a flags.
@@ -109,8 +105,7 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
      *
      * The \a RampType argument should be set to a string representing a valid QgsColorRamp::type() value.
      */
-    static QString addColorRampStatic( QWidget *parent, QgsStyle *style,
-                                       const QString &RampType = QString() );
+    static QString addColorRampStatic( QWidget *parent, QgsStyle *style, const QString &RampType = QString() );
 
     /**
      * Sets whether the favorites group should be shown. The default is to show the group.
@@ -300,7 +295,6 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void detagSelectedSymbols();
 
   protected:
-
     /**
      * Populate combo box with known style items (symbols, color ramps).
      *
@@ -374,7 +368,6 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
     void currentStyleAboutToBeDestroyed();
 
   private:
-
     void init();
 
     void setCurrentStyle( QgsStyle *style );
@@ -389,9 +382,9 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
 
     struct ItemDetails
     {
-      QgsStyle::StyleEntity entityType;
-      Qgis::SymbolType symbolType;
-      QString name;
+        QgsStyle::StyleEntity entityType;
+        Qgis::SymbolType symbolType;
+        QString name;
     };
 
     enum GroupModelRoles
@@ -400,14 +393,12 @@ class GUI_EXPORT QgsStyleManagerDialog : public QDialog, private Ui::QgsStyleMan
       TagName
     };
 
-    QList< ItemDetails > selectedItems();
+    QList<ItemDetails> selectedItems();
 
     /**
      * Returns count of items copied, excluding skipped items.
      */
-    static int copyItems( const QList< ItemDetails > &items, QgsStyle *src, QgsStyle *dst,
-                          QWidget *parentWidget, std::unique_ptr<QgsTemporaryCursorOverride> &cursorOverride,
-                          bool isImport, const QStringList &importTags, bool addToFavorites, bool ignoreSourceTags );
+    static int copyItems( const QList<ItemDetails> &items, QgsStyle *src, QgsStyle *dst, QWidget *parentWidget, std::unique_ptr<QgsTemporaryCursorOverride> &cursorOverride, bool isImport, const QStringList &importTags, bool addToFavorites, bool ignoreSourceTags );
 
     QgsMessageBar *mMessageBar = nullptr;
 

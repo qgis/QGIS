@@ -51,8 +51,8 @@ class TestQgsMapRotation : public QgsTest
     ~TestQgsMapRotation() override;
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void rasterLayer();
     void pointsLayer();
@@ -80,22 +80,19 @@ void TestQgsMapRotation::initTestCase()
 
   //create a raster layer that will be used in all tests...
   const QFileInfo rasterFileInfo( mTestDataDir + "rgb256x256.png" );
-  mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
-                                     rasterFileInfo.completeBaseName() );
+  mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(), rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
   mRasterLayer->setRenderer( rasterRenderer );
 
   //create a point layer that will be used in all tests...
   const QString myPointsFileName = mTestDataDir + "points.shp";
   const QFileInfo myPointFileInfo( myPointsFileName );
-  mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
-                                     myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   //create a line layer that will be used in all tests...
   const QString myLinesFileName = mTestDataDir + "lines_cardinals.shp";
   const QFileInfo myLinesFileInfo( myLinesFileName );
-  mLinesLayer = new QgsVectorLayer( myLinesFileInfo.filePath(),
-                                    myLinesFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mLinesLayer = new QgsVectorLayer( myLinesFileInfo.filePath(), myLinesFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // This is needed to correctly set rotation center,
   // the actual size doesn't matter as QgsRenderChecker will

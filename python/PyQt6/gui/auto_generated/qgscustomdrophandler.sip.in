@@ -36,7 +36,6 @@ Implementations have three approaches they can use to handle drops.
 #include "qgscustomdrophandler.h"
 %End
   public:
-
     virtual QString customUriProviderKey() const;
 %Docstring
 Type of custom URI recognized by the handler. This must match

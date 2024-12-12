@@ -17,7 +17,6 @@ class QgsDial : QDial
 #include "qgsdial.h"
 %End
   public:
-
     QgsDial( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDial

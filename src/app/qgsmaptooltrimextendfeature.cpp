@@ -94,7 +94,6 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
         mRubberBandLimit->addPoint( p1 );
         mRubberBandLimit->addPoint( p2 );
         mRubberBandLimit->show();
-
       }
       else if ( mRubberBandLimit )
       {
@@ -154,7 +153,7 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
         if ( mIsIntersection )
         {
           mRubberBandIntersection.reset( createRubberBand( Qgis::GeometryType::Point ) );
-          mRubberBandIntersection->addPoint( QgsPointXY( mIntersection ) );
+          mRubberBandIntersection->addPoint( toMapCoordinates( mVlayer, QgsPointXY( mIntersection ) ) );
           mRubberBandIntersection->show();
 
           mRubberBandExtend.reset( createRubberBand( match.layer()->geometryType() ) );
@@ -195,7 +194,7 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
           if ( mIsModified )
           {
             mGeom.removeDuplicateNodes();
-            mRubberBandExtend->setToGeometry( mGeom );
+            mRubberBandExtend->setToGeometry( mGeom, mVlayer );
             mRubberBandExtend->show();
           }
         }
@@ -248,7 +247,6 @@ void QgsMapToolTrimExtendFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 
           if ( auto *lLayer = match.layer() )
           {
-
             lLayer->beginEditCommand( tr( "Trim/Extend feature" ) );
             lLayer->changeGeometry( match.featureId(), mGeom );
             if ( QgsProject::instance()->topologicalEditing() )
@@ -266,7 +264,10 @@ void QgsMapToolTrimExtendFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
         {
           emit messageEmitted( tr( "Couldn't trim or extend the feature." ) );
         }
-        deactivate();
+
+        // If Ctrl or Shift is pressed, keep the tool active with its reference feature
+        if ( !( e->modifiers() & ( Qt::ControlModifier | Qt::ShiftModifier ) ) )
+          deactivate();
         break;
     }
   }
@@ -274,7 +275,6 @@ void QgsMapToolTrimExtendFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     deactivate();
   }
-
 }
 
 void QgsMapToolTrimExtendFeature::keyPressEvent( QKeyEvent *e )

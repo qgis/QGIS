@@ -32,9 +32,7 @@
  */
 class QgsDeleteDuplicateGeometriesAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsDeleteDuplicateGeometriesAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -47,20 +45,13 @@ class QgsDeleteDuplicateGeometriesAlgorithm : public QgsProcessingAlgorithm
     QgsDeleteDuplicateGeometriesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
-    std::unique_ptr< QgsProcessingFeatureSource > mSource;
-
-
+    std::unique_ptr<QgsProcessingFeatureSource> mSource;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMDELETEDUPLICATEGEOMETRIES_H
-
-

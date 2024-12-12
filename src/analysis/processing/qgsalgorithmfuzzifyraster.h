@@ -37,7 +37,6 @@ class QgsFuzzifyRasterAlgorithmBase : public QgsProcessingAlgorithm
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) final;
 
   protected:
-
     /**
      * Adds specific subclass algorithm parameters. The common parameters, such as raster destination, are automatically
      * added by the base class.
@@ -63,7 +62,7 @@ class QgsFuzzifyRasterAlgorithmBase : public QgsProcessingAlgorithm
 
     QgsRasterLayer *mInputRaster = nullptr;
     int mBand = 1;
-    std::unique_ptr< QgsRasterInterface > mInterface;
+    std::unique_ptr<QgsRasterInterface> mInterface;
     QgsRectangle mExtent;
     QgsCoordinateReferenceSystem mCrs;
     int mLayerWidth = 0;
@@ -76,11 +75,8 @@ class QgsFuzzifyRasterAlgorithmBase : public QgsProcessingAlgorithm
 };
 
 
-
-
 class QgsFuzzifyRasterLinearMembershipAlgorithm : public QgsFuzzifyRasterAlgorithmBase
 {
-
   public:
     QgsFuzzifyRasterLinearMembershipAlgorithm() = default;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyLinear.svg" ) ); }
@@ -99,13 +95,11 @@ class QgsFuzzifyRasterLinearMembershipAlgorithm : public QgsFuzzifyRasterAlgorit
   private:
     double mFuzzifyLowBound = 0;
     double mFuzzifyHighBound = 0;
-
 };
 
 
 class QgsFuzzifyRasterPowerMembershipAlgorithm : public QgsFuzzifyRasterAlgorithmBase
 {
-
   public:
     QgsFuzzifyRasterPowerMembershipAlgorithm() = default;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyPower.svg" ) ); }
@@ -125,13 +119,11 @@ class QgsFuzzifyRasterPowerMembershipAlgorithm : public QgsFuzzifyRasterAlgorith
     double mFuzzifyLowBound = 0;
     double mFuzzifyHighBound = 0;
     double mFuzzifyExponent = 0;
-
 };
 
 
 class QgsFuzzifyRasterLargeMembershipAlgorithm : public QgsFuzzifyRasterAlgorithmBase
 {
-
   public:
     QgsFuzzifyRasterLargeMembershipAlgorithm() = default;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyLarge.svg" ) ); }
@@ -150,13 +142,11 @@ class QgsFuzzifyRasterLargeMembershipAlgorithm : public QgsFuzzifyRasterAlgorith
   private:
     double mFuzzifyMidpoint = 0;
     double mFuzzifySpread = 0;
-
 };
 
 
 class QgsFuzzifyRasterSmallMembershipAlgorithm : public QgsFuzzifyRasterAlgorithmBase
 {
-
   public:
     QgsFuzzifyRasterSmallMembershipAlgorithm() = default;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifySmall.svg" ) ); }
@@ -175,13 +165,11 @@ class QgsFuzzifyRasterSmallMembershipAlgorithm : public QgsFuzzifyRasterAlgorith
   private:
     double mFuzzifyMidpoint = 0;
     double mFuzzifySpread = 0;
-
 };
 
 
 class QgsFuzzifyRasterGaussianMembershipAlgorithm : public QgsFuzzifyRasterAlgorithmBase
 {
-
   public:
     QgsFuzzifyRasterGaussianMembershipAlgorithm() = default;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyGaussian.svg" ) ); }
@@ -200,13 +188,11 @@ class QgsFuzzifyRasterGaussianMembershipAlgorithm : public QgsFuzzifyRasterAlgor
   private:
     double mFuzzifyMidpoint = 0;
     double mFuzzifySpread = 0;
-
 };
 
 
 class QgsFuzzifyRasterNearMembershipAlgorithm : public QgsFuzzifyRasterAlgorithmBase
 {
-
   public:
     QgsFuzzifyRasterNearMembershipAlgorithm() = default;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmFuzzifyNear.svg" ) ); }
@@ -225,12 +211,9 @@ class QgsFuzzifyRasterNearMembershipAlgorithm : public QgsFuzzifyRasterAlgorithm
   private:
     double mFuzzifyMidpoint = 0;
     double mFuzzifySpread = 0;
-
 };
 
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMFUZZIFYRASTER_H
-
-

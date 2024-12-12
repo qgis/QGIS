@@ -23,7 +23,6 @@ users to select an individual character.
 #include "characterwidget.h"
 %End
   public:
-
     CharacterWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for CharacterWidget.

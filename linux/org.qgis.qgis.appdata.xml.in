@@ -8,15 +8,19 @@
     <screenshot type="default"><caption>3D Map View</caption><image type="source">https://docs.qgis.org/testing/en/_images/3dmapview.png</image></screenshot>
     <screenshot type="default"><caption>QGIS Project Properties</caption><image type="source">https://docs.qgis.org/testing/en/_images/selectCRS.png</image></screenshot>
   </screenshots>
-  <developer id="qgis.org"><name>QGIS Development Team</name></developer>
-  <description><p>QGIS is a user friendly Open Source Geographic Information System (GIS) licensed under the GNU General Public License. QGIS is an official project of the Open Source Geospatial Foundation (OSGeo). It runs on Linux, Unix, Mac OSX, Windows and Android and supports numerous vector, raster, and database formats and functionalities.</p></description>
+  <developer id="org.qgis">
+    <name>QGIS Development Team</name>
+  </developer>
+  <description>
+    <p>QGIS is a user friendly Open Source Geographic Information System (GIS) licensed under the GNU General Public License. QGIS is an official project of the Open Source Geospatial Foundation (OSGeo). It runs on Linux, Unix, Mac OSX, Windows and Android and supports numerous vector, raster, and database formats and functionalities.</p>
+  </description>
 
   <metadata_license>CC-BY-3.0</metadata_license>
   <project_license>GPL-2.0+</project_license>
   <url type="bugtracker">https://github.com/qgis/QGIS/issues</url>
-  <url type="donation">https://qgis.org/en/site/getinvolved/donations.html</url>
-  <url type="faq">https://qgis.org/en/site/getinvolved/faq/index.html</url>
-  <url type="help">https://qgis.org/en/docs/index.html</url>
+  <url type="donation">https://qgis.org/funding/donate/</url>
+  <url type="faq">https://qgis.org/resources/support/faq/</url>
+  <url type="help">https://qgis.org/resources/hub/#documentation</url>
   <url type="homepage">https://qgis.org</url>
 
   <project_group>QGIS</project_group>

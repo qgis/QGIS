@@ -71,4 +71,3 @@ QString QgsLayerTreeViewNotesIndicatorProvider::tooltipText( QgsMapLayer *layer 
 {
   return QgsLayerNotesUtils::layerNotes( layer );
 }
-

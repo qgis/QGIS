@@ -137,7 +137,7 @@ Transforms device coordinates to map (world) coordinates.
 
 .. deprecated:: 3.4
 
-   Use toMapCoordinates instead.
+   Use :py:func:`~QgsMapToPixel.toMapCoordinates` instead.
 %End
 
     void setMapUnitsPerPixel( double mapUnitsPerPixel );

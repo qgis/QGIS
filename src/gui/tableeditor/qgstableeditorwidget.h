@@ -56,14 +56,12 @@ class QgsTableEditorTextEdit : public QPlainTextEdit
     void keyPressEvent( QKeyEvent *e ) override;
 
   private:
-
     void updateMinimumSize();
 
     bool mWeakEditorMode = false;
     int mOriginalWidth = -1;
     int mOriginalHeight = -1;
     bool mWidgetOwnsGeometry = false;
-
 };
 
 class QgsTableEditorDelegate : public QStyledItemDelegate
@@ -88,7 +86,6 @@ class QgsTableEditorDelegate : public QStyledItemDelegate
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 
   private:
-
     bool mWeakEditorMode = false;
     mutable QModelIndex mLastIndex;
 };
@@ -112,7 +109,6 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsTableEditorWidget with the specified \a parent widget.
      */
@@ -489,7 +485,6 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
     void updateNumericFormatForIndex( const QModelIndex &index );
 
   private:
-
     //! Custom roles
     enum Roles
     {
@@ -507,20 +502,19 @@ class GUI_EXPORT QgsTableEditorWidget : public QTableWidget
 
     bool collectConsecutiveRowRange( const QModelIndexList &list, int &minRow, int &maxRow ) const;
     bool collectConsecutiveColumnRange( const QModelIndexList &list, int &minColumn, int &maxColumn ) const;
-    QList< int > collectUniqueRows( const QModelIndexList &list ) const;
-    QList< int > collectUniqueColumns( const QModelIndexList &list ) const;
+    QList<int> collectUniqueRows( const QModelIndexList &list ) const;
+    QList<int> collectUniqueColumns( const QModelIndexList &list ) const;
     bool isRectangularSelection( const QModelIndexList &list ) const;
     bool hasMergedCells( const QModelIndexList &list ) const;
 
     int mBlockSignals = 0;
-    QHash< QTableWidgetItem *, QgsNumericFormat * > mNumericFormats;
+    QHash<QTableWidgetItem *, QgsNumericFormat *> mNumericFormats;
     QMenu *mHeaderMenu = nullptr;
     QMenu *mCellMenu = nullptr;
     bool mIncludeHeader = false;
     bool mFirstSet = true;
 
     friend class QgsTableEditorDelegate;
-
 };
 
 #endif // QGSTABLEEDITORWIDGET_H

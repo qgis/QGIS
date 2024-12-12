@@ -22,12 +22,7 @@ An item model representing history entries in a hierarchical tree structure.
 #include "qgshistoryentrymodel.h"
 %End
   public:
-
-    QgsHistoryEntryModel( const QString &providerId = QString(),
-                          Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile,
-                          QgsHistoryProviderRegistry *registry = 0,
-                          const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(),
-                          QObject *parent /TransferThis/ = 0 );
+    QgsHistoryEntryModel( const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile, QgsHistoryProviderRegistry *registry = 0, const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(), QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsHistoryEntryModel, with the specified ``parent`` object.
 
@@ -56,9 +51,6 @@ Returns node for given index. Returns root node for invalid index.
 %End
 
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

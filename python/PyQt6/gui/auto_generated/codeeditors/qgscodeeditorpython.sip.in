@@ -27,9 +27,7 @@ code autocompletion.
 %End
   public:
 
-
-    QgsCodeEditorPython( QWidget *parent /TransferThis/ = 0, const QList<QString> &filenames = QList<QString>(),
-                         QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor, QgsCodeEditor::Flags flags = QgsCodeEditor::Flag::CodeFolding );
+    QgsCodeEditorPython( QWidget *parent /TransferThis/ = 0, const QList<QString> &filenames = QList<QString>(), QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor, QgsCodeEditor::Flags flags = QgsCodeEditor::Flag::CodeFolding );
 %Docstring
 Construct a new Python editor.
 
@@ -96,6 +94,13 @@ Searches the selected text in the official PyQGIS online documentation.
 .. versionadded:: 3.16
 %End
 
+    virtual void showApiDocumentation( const QString &item );
+%Docstring
+Displays the given text in the official APIs (PyQGIS, C++ QGIS or Qt) documentation.
+
+.. versionadded:: 3.42
+%End
+
     virtual void toggleComment();
 
 %Docstring
@@ -105,7 +110,6 @@ Toggle comment for the selected text.
 %End
 
   protected:
-
     virtual void initializeLexer();
 
     virtual void keyPressEvent( QKeyEvent *event );

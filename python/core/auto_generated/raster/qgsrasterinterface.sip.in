@@ -109,24 +109,21 @@ Base class for processing filters like renderers, reprojector, resampler etc.
 
 %TypeHeaderCode
 #include "qgsrasterinterface.h"
-// QgsRasterInterface subclasses
-#include <qgsbrightnesscontrastfilter.h>
-#include <qgshuesaturationfilter.h>
-#include <qgsrasterdataprovider.h>
-#include <qgsrasternuller.h>
-#include <qgsrasterprojector.h>
-#include <qgsrasterrenderer.h>
-#include <qgsrasterresamplefilter.h>
-
-// QgsRasterRenderer subclasses
-#include <qgshillshaderenderer.h>
-#include <qgsmultibandcolorrenderer.h>
-#include <qgspalettedrasterrenderer.h>
-#include <qgssinglebandcolordatarenderer.h>
-#include <qgssinglebandgrayrenderer.h>
-#include <qgssinglebandpseudocolorrenderer.h>
-#include <qgsrastersinglecolorrenderer.h>
-#include <qgsrastercontourrenderer.h>
+#include "qgsbrightnesscontrastfilter.h"
+#include "qgshuesaturationfilter.h"
+#include "qgsrasterdataprovider.h"
+#include "qgsrasternuller.h"
+#include "qgsrasterprojector.h"
+#include "qgsrasterrenderer.h"
+#include "qgsrasterresamplefilter.h"
+#include "qgshillshaderenderer.h"
+#include "qgsmultibandcolorrenderer.h"
+#include "qgspalettedrasterrenderer.h"
+#include "qgssinglebandcolordatarenderer.h"
+#include "qgssinglebandgrayrenderer.h"
+#include "qgssinglebandpseudocolorrenderer.h"
+#include "qgsrastersinglecolorrenderer.h"
+#include "qgsrastercontourrenderer.h"
 %End
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsBrightnessContrastFilter *>( sipCpp ) )

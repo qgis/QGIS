@@ -3,5 +3,5 @@ try:
     QgsNullMaterialSettings.supportsTechnique = staticmethod(QgsNullMaterialSettings.supportsTechnique)
     QgsNullMaterialSettings.create = staticmethod(QgsNullMaterialSettings.create)
     QgsNullMaterialSettings.__group__ = ['materials']
-except NameError:
+except (NameError, AttributeError):
     pass

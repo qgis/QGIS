@@ -17,10 +17,7 @@
 #include "qgsexpressionnodeimpl.h"
 
 QgsMssqlExpressionCompiler::QgsMssqlExpressionCompiler( QgsMssqlFeatureSource *source, bool ignoreStaticNodes )
-  : QgsSqlExpressionCompiler( source->mFields,
-                              QgsSqlExpressionCompiler::LikeIsCaseInsensitive |
-                              QgsSqlExpressionCompiler::CaseInsensitiveStringMatch |
-                              QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger, ignoreStaticNodes )
+  : QgsSqlExpressionCompiler( source->mFields, QgsSqlExpressionCompiler::LikeIsCaseInsensitive | QgsSqlExpressionCompiler::CaseInsensitiveStringMatch | QgsSqlExpressionCompiler::IntegerDivisionResultsInInteger, ignoreStaticNodes )
 {
 }
 
@@ -140,8 +137,7 @@ QString QgsMssqlExpressionCompiler::castToInt( const QString &value ) const
   return QStringLiteral( "CAST((%1) AS integer)" ).arg( value );
 }
 
-static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP
-{
+static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP {
   { "sqrt", "sqrt" },
   { "abs", "abs" },
   { "cos", "cos" },
@@ -183,24 +179,15 @@ QStringList QgsMssqlExpressionCompiler::sqlArgumentsFromFunctionName( const QStr
   QStringList args( fnArgs );
   if ( fnName == QLatin1String( "make_datetime" ) )
   {
-    args = QStringList( QStringLiteral( "'%1-%2-%3T%4:%5:%6Z'" ).arg( args[0].rightJustified( 4, '0' ) )
-                        .arg( args[1].rightJustified( 2, '0' ) )
-                        .arg( args[2].rightJustified( 2, '0' ) )
-                        .arg( args[3].rightJustified( 2, '0' ) )
-                        .arg( args[4].rightJustified( 2, '0' ) )
-                        .arg( args[5].rightJustified( 2, '0' ) ) );
+    args = QStringList( QStringLiteral( "'%1-%2-%3T%4:%5:%6Z'" ).arg( args[0].rightJustified( 4, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ).arg( args[3].rightJustified( 2, '0' ) ).arg( args[4].rightJustified( 2, '0' ) ).arg( args[5].rightJustified( 2, '0' ) ) );
   }
   else if ( fnName == QLatin1String( "make_date" ) )
   {
-    args = QStringList( QStringLiteral( "'%1-%2-%3'" ).arg( args[0].rightJustified( 4, '0' ) )
-                        .arg( args[1].rightJustified( 2, '0' ) )
-                        .arg( args[2].rightJustified( 2, '0' ) ) );
+    args = QStringList( QStringLiteral( "'%1-%2-%3'" ).arg( args[0].rightJustified( 4, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ) );
   }
   else if ( fnName == QLatin1String( "make_time" ) )
   {
-    args = QStringList( QStringLiteral( "'%1:%2:%3'" ).arg( args[0].rightJustified( 2, '0' ) )
-                        .arg( args[1].rightJustified( 2, '0' ) )
-                        .arg( args[2].rightJustified( 2, '0' ) ) );
+    args = QStringList( QStringLiteral( "'%1:%2:%3'" ).arg( args[0].rightJustified( 2, '0' ) ).arg( args[1].rightJustified( 2, '0' ) ).arg( args[2].rightJustified( 2, '0' ) ) );
   }
   return args;
 }

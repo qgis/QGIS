@@ -23,7 +23,6 @@ QgsGeocoderLocatorFilter::QgsGeocoderLocatorFilter( const QString &name, const Q
   : QgsAbstractGeocoderLocatorFilter( name, displayName, prefix, geocoder, boundingBox )
   , mCanvas( canvas )
 {
-
 }
 
 QgsLocatorFilter *QgsGeocoderLocatorFilter::clone() const
@@ -54,11 +53,10 @@ void QgsGeocoderLocatorFilter::handleGeocodeResult( const QgsGeocoderResult &res
     }
     mCanvas->zoomToFeatureExtent( bounds );
 
-    mCanvas->flashGeometries( QList< QgsGeometry >() << g );
+    mCanvas->flashGeometries( QList<QgsGeometry>() << g );
   }
   catch ( QgsCsException & )
   {
     QgsMessageLog::logMessage( tr( "Could not transform result to canvas CRS" ) );
   }
 }
-

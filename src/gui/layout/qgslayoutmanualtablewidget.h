@@ -28,6 +28,7 @@
 
 class QgsLayoutItemManualTable;
 class QgsLayoutFrame;
+class QgsTableEditorDialog;
 
 /**
  * \ingroup gui
@@ -36,7 +37,7 @@ class QgsLayoutFrame;
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutManualTableWidgetBase
+class GUI_EXPORT QgsLayoutManualTableWidget : public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutManualTableWidgetBase
 {
     Q_OBJECT
   public:
@@ -46,19 +47,22 @@ class GUI_EXPORT QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, pub
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
     QgsExpressionContext createExpressionContext() const override;
 
-  protected:
+    //! Creates and open the table editor dialog
+    static void openTableDesigner( QgsLayoutFrame *frame, QWidget *parent = nullptr );
 
+
+  protected:
     bool setNewItem( QgsLayoutItem *item ) override;
 
   private:
-    QPointer< QgsLayoutItemManualTable > mTable;
-    QPointer< QgsLayoutFrame > mFrame;
+    QPointer<QgsLayoutItemManualTable> mTable;
+    QPointer<QgsLayoutFrame> mFrame;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
-
-    QPointer< QgsTableEditorDialog > mEditorDialog;
 
     //! Blocks / unblocks the signals of all GUI elements
     void blockAllSignals( bool b );
+
+    static QPointer<QgsTableEditorDialog> sEditorDialog;
 
   private slots:
 
@@ -82,7 +86,6 @@ class GUI_EXPORT QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, pub
     void mWrapBehaviorComboBox_currentIndexChanged( int index );
     void mAdvancedCustomizationButton_clicked();
     void updateGuiElements();
-
 };
 
 #endif // QGSLAYOUTMANUALTABLEWIDGET_H

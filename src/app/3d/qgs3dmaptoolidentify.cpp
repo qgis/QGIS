@@ -50,8 +50,7 @@ void Qgs3DMapToolIdentify::mousePressEvent( QMouseEvent *event )
 
 void Qgs3DMapToolIdentify::mouseMoveEvent( QMouseEvent *event )
 {
-  if ( !mMouseHasMoved &&
-       ( event->pos() - mMouseClickPos ).manhattanLength() >= QApplication::startDragDistance() )
+  if ( !mMouseHasMoved && ( event->pos() - mMouseClickPos ).manhattanLength() >= QApplication::startDragDistance() )
   {
     mMouseHasMoved = true;
   }
@@ -70,21 +69,35 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
   QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
   identifyTool2D->clearResults();
 
+  QgsMapCanvas *canvas2D = identifyTool2D->canvas();
+  const QgsCoordinateTransform ct( mCanvas->mapSettings()->crs(), canvas2D->mapSettings().destinationCrs(), canvas2D->mapSettings().transformContext() );
+
   bool showTerrainResults = true;
 
   for ( auto it = allHits.constKeyValueBegin(); it != allHits.constKeyValueEnd(); ++it )
   {
     //  We can directly show vector layer results
-    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer * >( it->first ) )
+    if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( it->first ) )
     {
       const QgsRayCastingUtils::RayHit hit = it->second.first();
       const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hit.pos, mCanvas->mapSettings()->origin() );
-      const QgsPoint pt( mapCoords.x(), mapCoords.y(), mapCoords.z() );
+      QgsVector3D mapCoordsCanvas2D;
+      try
+      {
+        mapCoordsCanvas2D = ct.transform( mapCoords );
+      }
+      catch ( QgsCsException &e )
+      {
+        Q_UNUSED( e )
+        QgsDebugError( QStringLiteral( "Could not transform identified coordinates to project crs: %1" ).arg( e.what() ) );
+      }
+
+      const QgsPoint pt( mapCoordsCanvas2D.x(), mapCoordsCanvas2D.y(), mapCoordsCanvas2D.z() );
       identifyTool2D->showResultsForFeature( vlayer, hit.fid, pt );
       showTerrainResults = false;
     }
     // We need to restructure point cloud layer results to display them later. We may have multiple hits for each layer.
-    else if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer * >( it->first ) )
+    else if ( QgsPointCloudLayer *pclayer = qobject_cast<QgsPointCloudLayer *>( it->first ) )
     {
       QVector<QVariantMap> pointCloudResults;
       for ( const QgsRayCastingUtils::RayHit &hit : it->second )
@@ -100,13 +113,13 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       const QgsRayCastingUtils::RayHit hit = it->second.first();
       const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hit.pos, mCanvas->mapSettings()->origin() );
 
-      QMap< QString, QString > derivedAttributes;
+      QMap<QString, QString> derivedAttributes;
       QString x;
       QString y;
       QgsCoordinateUtils::formatCoordinatePartsForProject(
         QgsProject::instance(),
         QgsPointXY( mapCoords.x(), mapCoords.y() ),
-        QgsProject::instance()->crs(),
+        mCanvas->mapSettings()->crs(),
         6, x, y
       );
 
@@ -119,7 +132,7 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       {
         derivedAttributes[key] = hit.attributes[key].toString();
       }
-      QString nodeId = derivedAttributes[ QStringLiteral( "node_id" ) ];
+      QString nodeId = derivedAttributes[QStringLiteral( "node_id" )];
       // only derived attributes are supported for now, so attributes is empty
       QgsMapToolIdentify::IdentifyResult res( it->first, nodeId, {}, derivedAttributes );
       tiledSceneIdentifyResults.append( res );
@@ -140,14 +153,10 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
     const double searchRadiusPx = searchRadiusMM * pixelsPerMM;
     const double searchRadiusMapUnits = scene->worldSpaceError( searchRadiusPx, hit.distance );
 
-    QgsMapCanvas *canvas2D = identifyTool2D->canvas();
-
-    // transform the point and search radius to CRS of the map canvas (if they are different)
-    const QgsCoordinateTransform ct( mCanvas->mapSettings()->crs(), canvas2D->mapSettings().destinationCrs(), canvas2D->mapSettings().transformContext() );
-
     const QgsVector3D mapCoords = Qgs3DUtils::worldToMapCoordinates( hit.pos, mCanvas->mapSettings()->origin() );
     const QgsPointXY mapPoint( mapCoords.x(), mapCoords.y() );
 
+    // transform the point and search radius to CRS of the map canvas (if they are different)
     QgsPointXY mapPointCanvas2D = mapPoint;
     double searchRadiusCanvas2D = searchRadiusMapUnits;
     try
@@ -157,10 +166,10 @@ void Qgs3DMapToolIdentify::mouseReleaseEvent( QMouseEvent *event )
       const QgsPointXY mapPointSearchRadiusCanvas2D = ct.transform( mapPointSearchRadius );
       searchRadiusCanvas2D = mapPointCanvas2D.distance( mapPointSearchRadiusCanvas2D );
     }
-    catch ( QgsException &e )
+    catch ( QgsCsException &e )
     {
       Q_UNUSED( e )
-      QgsDebugError( QStringLiteral( "Caught exception %1" ).arg( e.what() ) );
+      QgsDebugError( QStringLiteral( "Could not transform identified coordinates to project crs: %1" ).arg( e.what() ) );
     }
 
     identifyTool2D->identifyAndShowResults( QgsGeometry::fromPointXY( mapPointCanvas2D ), searchRadiusCanvas2D );

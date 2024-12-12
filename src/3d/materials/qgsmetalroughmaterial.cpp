@@ -201,18 +201,12 @@ void QgsMetalRoughMaterial::setTextureScale( float textureScale )
 
 void QgsMetalRoughMaterial::init()
 {
-  QObject::connect( mBaseColorParameter, &Qt3DRender::QParameter::valueChanged,
-                    this, &QgsMetalRoughMaterial::baseColorChanged );
-  QObject::connect( mMetalnessParameter, &Qt3DRender::QParameter::valueChanged,
-                    this, &QgsMetalRoughMaterial::metalnessChanged );
-  QObject::connect( mRoughnessParameter, &Qt3DRender::QParameter::valueChanged,
-                    this, &QgsMetalRoughMaterial::roughnessChanged );
-  QObject::connect( mAmbientOcclusionMapParameter, &Qt3DRender::QParameter::valueChanged,
-                    this, &QgsMetalRoughMaterial::ambientOcclusionChanged );
-  QObject::connect( mNormalMapParameter, &Qt3DRender::QParameter::valueChanged,
-                    this, &QgsMetalRoughMaterial::normalChanged );
-  connect( mTextureScaleParameter, &Qt3DRender::QParameter::valueChanged,
-           this, &QgsMetalRoughMaterial::handleTextureScaleChanged );
+  QObject::connect( mBaseColorParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::baseColorChanged );
+  QObject::connect( mMetalnessParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::metalnessChanged );
+  QObject::connect( mRoughnessParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::roughnessChanged );
+  QObject::connect( mAmbientOcclusionMapParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::ambientOcclusionChanged );
+  QObject::connect( mNormalMapParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::normalChanged );
+  connect( mTextureScaleParameter, &Qt3DRender::QParameter::valueChanged, this, &QgsMetalRoughMaterial::handleTextureScaleChanged );
 
   mMetalRoughGL3Shader->setVertexShaderCode( Qt3DRender::QShaderProgram::loadSource( QUrl( QStringLiteral( "qrc:/shaders/default.vert" ) ) ) );
 

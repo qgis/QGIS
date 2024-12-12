@@ -35,10 +35,10 @@ class APP_EXPORT QgsPluginMetadata
     QString name() const;
     QString library() const;
     QgisPlugin *plugin();
+
   private:
     QString m_name;
     QString libraryPath;
     QgisPlugin *m_plugin = nullptr;
 };
 #endif //QGSPLUGINMETADATA_H
-

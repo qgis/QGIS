@@ -36,8 +36,7 @@ QgsPlotToolTemporaryKeyPan::QgsPlotToolTemporaryKeyPan( QgsPlotCanvas *canvas )
 
 void QgsPlotToolTemporaryKeyPan::plotMoveEvent( QgsPlotMouseEvent *event )
 {
-  canvas()->panContentsBy( event->x() - mLastMousePos.x(),
-                           event->y() - mLastMousePos.y() );
+  canvas()->panContentsBy( event->x() - mLastMousePos.x(), event->y() - mLastMousePos.y() );
   mLastMousePos = event->pos();
 }
 
@@ -69,8 +68,7 @@ QgsPlotToolTemporaryMousePan::QgsPlotToolTemporaryMousePan( QgsPlotCanvas *canva
 
 void QgsPlotToolTemporaryMousePan::plotMoveEvent( QgsPlotMouseEvent *event )
 {
-  canvas()->panContentsBy( event->x() - mLastMousePos.x(),
-                           event->y() - mLastMousePos.y() );
+  canvas()->panContentsBy( event->x() - mLastMousePos.x(), event->y() - mLastMousePos.y() );
   mLastMousePos = event->pos();
 }
 
@@ -181,7 +179,5 @@ void QgsPlotToolTemporaryKeyZoom::activate()
 
 void QgsPlotToolTemporaryKeyZoom::updateCursor( Qt::KeyboardModifiers modifiers )
 {
-  canvas()->viewport()->setCursor( ( modifiers & Qt::AltModifier ) ?
-                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) :
-                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
+  canvas()->viewport()->setCursor( ( modifiers & Qt::AltModifier ) ? QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) : QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
 }

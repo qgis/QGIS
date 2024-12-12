@@ -36,10 +36,10 @@ class Qgs3DAnimationExportDialog : public QDialog, private Ui::AnimationExport3D
     ~Qgs3DAnimationExportDialog() override;
 
     //! Returns output directory for frames
-    QString outputDirectory( ) const;
+    QString outputDirectory() const;
 
     //! Returns filename template for frames
-    QString fileNameExpression( ) const;
+    QString fileNameExpression() const;
 
     //! Returns frames per second
     int fps() const;

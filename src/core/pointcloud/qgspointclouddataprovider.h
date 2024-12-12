@@ -24,8 +24,6 @@
 #include "qgspointcloudindex.h"
 #include "qgspointcloudsubindex.h"
 
-class IndexedPointCloudNode;
-class QgsPointCloudIndex;
 class QgsPointCloudRenderer;
 class QgsGeometry;
 class QgsPointCloudStatistics;
@@ -228,111 +226,6 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     virtual QgsPointCloudRenderer *createRenderer( const QVariantMap &configuration = QVariantMap() ) const SIP_FACTORY;
 
     /**
-     * Returns whether the dataset contains statistics metadata
-     *
-     * \since QGIS 3.26
-     */
-    virtual bool hasStatisticsMetadata() const;
-
-#ifndef SIP_RUN
-
-    /**
-     * Returns a statistic for the specified \a attribute, taken only from the metadata of the point cloud
-     * data source.
-     *
-     * This method will not perform any statistical calculations, rather it will return only precomputed attribute
-     * statistics which are included in the data source's metadata. Not all data sources include this information
-     * in the metadata, and even for sources with statistical metadata only some \a statistic values may be available.
-     *
-     * If no matching precalculated statistic is available then an invalid variant will be returned.
-     */
-    virtual QVariant metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const;
-#else
-
-    /**
-     * Returns a statistic for the specified \a attribute, taken only from the metadata of the point cloud
-     * data source.
-     *
-     * This method will not perform any statistical calculations, rather it will return only precomputed attribute
-     * statistics which are included in the data source's metadata. Not all data sources include this information
-     * in the metadata, and even for sources with statistical metadata only some \a statistic values may be available.
-     *
-     * \throws ValueError if no matching precalculated statistic is available for the attribute.
-     */
-    SIP_PYOBJECT metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const;
-    % MethodCode
-    {
-      const QVariant res = sipCpp->metadataStatistic( *a0, a1 );
-      if ( !res.isValid() )
-      {
-        PyErr_SetString( PyExc_ValueError, QStringLiteral( "Statistic is not available" ).toUtf8().constData() );
-        sipIsErr = 1;
-      }
-      else
-      {
-        QVariant *v = new QVariant( res );
-        sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
-      }
-    }
-    % End
-#endif
-
-    /**
-     * Returns a list of existing classes which are present for the specified \a attribute, taken only from the
-     * metadata of the point cloud data source.
-     *
-     * This method will not perform any classification or scan for available classes, rather it will return only
-     * precomputed classes which are included in the data source's metadata. Not all data sources include this information
-     * in the metadata.
-     */
-    virtual QVariantList metadataClasses( const QString &attribute ) const;
-
-
-#ifndef SIP_RUN
-
-    /**
-     * Returns a statistic for one class \a value from the specified \a attribute, taken only from the metadata of the point cloud
-     * data source.
-     *
-     * This method will not perform any statistical calculations, rather it will return only precomputed class
-     * statistics which are included in the data source's metadata. Not all data sources include this information
-     * in the metadata, and even for sources with statistical metadata only some \a statistic values may be available.
-     *
-     * If no matching precalculated statistic is available then an invalid variant will be returned.
-     */
-    virtual QVariant metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const;
-
-#else
-
-    /**
-     * Returns a statistic for one class \a value from the specified \a attribute, taken only from the metadata of the point cloud
-     * data source.
-     * This method will not perform any statistical calculations, rather it will return only precomputed class
-     * statistics which are included in the data source's metadata. Not all data sources include this information
-     * in the metadata, and even for sources with statistical metadata only some \a statistic values may be available.
-     *
-     * \throws ValueError if no matching precalculated statistic is available for the attribute.
-     */
-    SIP_PYOBJECT metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const;
-    % MethodCode
-    {
-      const QVariant res = sipCpp->metadataClassStatistic( *a0, *a1, a2 );
-      if ( !res.isValid() )
-      {
-        PyErr_SetString( PyExc_ValueError, QStringLiteral( "Statistic is not available" ).toUtf8().constData() );
-        sipIsErr = 1;
-      }
-      else
-      {
-        QVariant *v = new QVariant( res );
-        sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
-      }
-    }
-    % End
-#endif
-
-
-    /**
      * Returns the object containing the statistics metadata extracted from the dataset
      * \since QGIS 3.26
      */
@@ -389,7 +282,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     QVector<QVariantMap> identify( QgsPointCloudIndex *index, double maxError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange, int pointsLimit ) SIP_SKIP ;
 
   private:
-    QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
+    QVector<QgsPointCloudNodeId> traverseTree( const QgsPointCloudIndex *pc, QgsPointCloudNode node, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
 
 };
 

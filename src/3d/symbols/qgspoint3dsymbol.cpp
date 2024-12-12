@@ -38,9 +38,13 @@ QgsAbstract3DSymbol *QgsPoint3DSymbol::create()
 }
 
 QgsPoint3DSymbol::QgsPoint3DSymbol()
-  : mMaterialSettings( std::make_unique< QgsPhongMaterialSettings >() )
+  : mMaterialSettings( std::make_unique<QgsPhongMaterialSettings>() )
 {
   setBillboardSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
+
+  // our built-in 3D geometries (e.g. cylinder, plane, ...) assume Y axis going "up",
+  // let's rotate them by default so that their Z axis goes "up" (like the rest of the scene)
+  mTransform.rotate( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), 90 ) );
 }
 
 QgsPoint3DSymbol::QgsPoint3DSymbol( const QgsPoint3DSymbol &other )
@@ -113,26 +117,26 @@ void QgsPoint3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteConte
 
   const QDomElement symbolElem = elem.firstChildElement( QStringLiteral( "symbol" ) );
 
-  setBillboardSymbol( QgsSymbolLayerUtils::loadSymbol< QgsMarkerSymbol >( symbolElem, context ) );
+  setBillboardSymbol( QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem, context ) );
 }
 
 QList<Qgis::GeometryType> QgsPoint3DSymbol::compatibleGeometryTypes() const
 {
-  return QList< Qgis::GeometryType >() << Qgis::GeometryType::Point;
+  return QList<Qgis::GeometryType>() << Qgis::GeometryType::Point;
 }
 
 void QgsPoint3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *layer )
 {
-  const QgsVectorLayerElevationProperties *props = qgis::down_cast< const QgsVectorLayerElevationProperties * >( const_cast< QgsVectorLayer *>( layer )->elevationProperties() );
+  const QgsVectorLayerElevationProperties *props = qgis::down_cast<const QgsVectorLayerElevationProperties *>( const_cast<QgsVectorLayer *>( layer )->elevationProperties() );
 
   mAltClamping = props->clamping();
-  mTransform.data()[13] = static_cast< float >( props->zOffset() );
-  mShapeProperties[QStringLiteral( "length" )] = props->extrusionEnabled() ? static_cast< float>( props->extrusionHeight() ) : 0.0f;
+  mTransform.data()[13] = static_cast<float>( props->zOffset() );
+  mShapeProperties[QStringLiteral( "length" )] = props->extrusionEnabled() ? static_cast<float>( props->extrusionHeight() ) : 0.0f;
 }
 
 Qgis::Point3DShape QgsPoint3DSymbol::shapeFromString( const QString &shape )
 {
-  if ( shape ==  QStringLiteral( "sphere" ) )
+  if ( shape == QStringLiteral( "sphere" ) )
     return Qgis::Point3DShape::Sphere;
   else if ( shape == QLatin1String( "cone" ) )
     return Qgis::Point3DShape::Cone;
@@ -148,7 +152,7 @@ Qgis::Point3DShape QgsPoint3DSymbol::shapeFromString( const QString &shape )
     return Qgis::Point3DShape::Model;
   else if ( shape == QLatin1String( "billboard" ) )
     return Qgis::Point3DShape::Billboard;
-  else   // "cylinder" (default)
+  else // "cylinder" (default)
     return Qgis::Point3DShape::Cylinder;
 }
 
@@ -156,16 +160,27 @@ QString QgsPoint3DSymbol::shapeToString( Qgis::Point3DShape shape )
 {
   switch ( shape )
   {
-    case Qgis::Point3DShape::Cylinder: return QStringLiteral( "cylinder" );
-    case Qgis::Point3DShape::Sphere: return QStringLiteral( "sphere" );
-    case Qgis::Point3DShape::Cone: return QStringLiteral( "cone" );
-    case Qgis::Point3DShape::Cube: return QStringLiteral( "cube" );
-    case Qgis::Point3DShape::Torus: return QStringLiteral( "torus" );
-    case Qgis::Point3DShape::Plane: return QStringLiteral( "plane" );
-    case Qgis::Point3DShape::ExtrudedText: return QStringLiteral( "extruded-text" );
-    case Qgis::Point3DShape::Model: return QStringLiteral( "model" );
-    case Qgis::Point3DShape::Billboard: return QStringLiteral( "billboard" );
-    default: Q_ASSERT( false ); return QString();
+    case Qgis::Point3DShape::Cylinder:
+      return QStringLiteral( "cylinder" );
+    case Qgis::Point3DShape::Sphere:
+      return QStringLiteral( "sphere" );
+    case Qgis::Point3DShape::Cone:
+      return QStringLiteral( "cone" );
+    case Qgis::Point3DShape::Cube:
+      return QStringLiteral( "cube" );
+    case Qgis::Point3DShape::Torus:
+      return QStringLiteral( "torus" );
+    case Qgis::Point3DShape::Plane:
+      return QStringLiteral( "plane" );
+    case Qgis::Point3DShape::ExtrudedText:
+      return QStringLiteral( "extruded-text" );
+    case Qgis::Point3DShape::Model:
+      return QStringLiteral( "model" );
+    case Qgis::Point3DShape::Billboard:
+      return QStringLiteral( "billboard" );
+    default:
+      Q_ASSERT( false );
+      return QString();
   }
 }
 
@@ -274,7 +289,7 @@ QVariant QgsPoint3DSymbol::shapeProperty( const QString &property ) const
 
 float QgsPoint3DSymbol::billboardHeight() const
 {
-  return mTransform.data()[13];
+  return mTransform.data()[14];
 }
 
 QgsAbstractMaterialSettings *QgsPoint3DSymbol::materialSettings() const

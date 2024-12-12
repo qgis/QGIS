@@ -45,7 +45,7 @@ namespace QgsRayCastingUtils
   class Ray3D;
   struct RayCastContext;
   struct RayHit;
-}
+} // namespace QgsRayCastingUtils
 
 #include <QVector3D>
 #include <QMatrix4x4>
@@ -65,9 +65,7 @@ class QgsChunkedEntity : public Qgs3DMapSceneEntity
     Q_OBJECT
   public:
     //! Constructs a chunked entity
-    QgsChunkedEntity( Qgs3DMapSettings *mapSettings, float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory,
-                      int primitivesBudget = std::numeric_limits<int>::max(),
-                      Qt3DCore::QNode *parent = nullptr );
+    QgsChunkedEntity( Qgs3DMapSettings *mapSettings, float tau, QgsChunkLoaderFactory *loaderFactory, bool ownsFactory, int primitivesBudget = std::numeric_limits<int>::max(), Qt3DCore::QNode *parent = nullptr );
     ~QgsChunkedEntity() override;
 
     //! Called when e.g. camera changes and entity may need updated

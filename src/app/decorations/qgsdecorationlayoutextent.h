@@ -34,7 +34,6 @@ class APP_EXPORT QgsDecorationLayoutExtent : public QgsDecorationItem
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsDecorationLayoutExtent.
     */
@@ -91,7 +90,7 @@ class APP_EXPORT QgsDecorationLayoutExtent : public QgsDecorationItem
     void render( const QgsMapSettings &mapSettings, QgsRenderContext &context ) override;
 
   private:
-    std::unique_ptr< QgsFillSymbol > mSymbol;
+    std::unique_ptr<QgsFillSymbol> mSymbol;
     QgsTextFormat mTextFormat;
     bool mLabelExtents = true;
 

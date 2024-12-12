@@ -2,5 +2,5 @@
 try:
     QgsInterpolatedLineSymbolLayerWidget.create = staticmethod(QgsInterpolatedLineSymbolLayerWidget.create)
     QgsInterpolatedLineSymbolLayerWidget.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

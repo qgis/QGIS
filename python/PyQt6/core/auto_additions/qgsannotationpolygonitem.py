@@ -2,5 +2,5 @@
 try:
     QgsAnnotationPolygonItem.create = staticmethod(QgsAnnotationPolygonItem.create)
     QgsAnnotationPolygonItem.__group__ = ['annotations']
-except NameError:
+except (NameError, AttributeError):
     pass

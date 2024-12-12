@@ -51,7 +51,6 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
     Q_OBJECT
 
   public:
-
     /**
      * QgsEffectStackPropertiesWidget constructor
      * \param stack QgsEffectStack to modify in the widget
@@ -112,7 +111,6 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
     void changeEffect( QgsPaintEffect *newEffect );
 
   protected:
-
     QgsEffectStack *mStack = nullptr;
     QStandardItemModel *mModel = nullptr;
     QWidget *mPresentWidget = nullptr;
@@ -149,7 +147,6 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
      * Sets the effect properties widget
      */
     void setWidget( QWidget *widget );
-
 };
 
 
@@ -164,12 +161,11 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
  * \see QgsEffectStackCompactWidget
  */
 
-class GUI_EXPORT QgsEffectStackPropertiesDialog: public QgsDialog
+class GUI_EXPORT QgsEffectStackPropertiesDialog : public QgsDialog
 {
     Q_OBJECT
 
   public:
-
     /**
      * QgsEffectStackPropertiesDialog constructor
      * \param stack QgsEffectStack to modify in the dialog
@@ -191,13 +187,11 @@ class GUI_EXPORT QgsEffectStackPropertiesDialog: public QgsDialog
     void setPreviewPicture( const QPicture &picture );
 
   protected:
-
     QgsEffectStackPropertiesWidget *mPropertiesWidget = nullptr;
 
   private slots:
 
     void showHelp();
-
 };
 
 
@@ -212,12 +206,11 @@ class GUI_EXPORT QgsEffectStackPropertiesDialog: public QgsDialog
  * \see QgsEffectStackPropertiesDialog
  */
 
-class GUI_EXPORT QgsEffectStackCompactWidget: public QgsPanelWidget
+class GUI_EXPORT QgsEffectStackCompactWidget : public QgsPanelWidget
 {
     Q_OBJECT
 
   public:
-
     /**
      * QgsEffectStackCompactWidget constructor
      * \param parent parent widget
@@ -271,7 +264,6 @@ class GUI_EXPORT QgsEffectStackCompactWidget: public QgsPanelWidget
     QCheckBox *mEnabledCheckBox = nullptr;
     QToolButton *mButton = nullptr;
     QPicture mPreviewPicture;
-
 };
 
 #endif //QGSEFFECTSTACKPROPERTIESWIDGET_H

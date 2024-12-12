@@ -35,7 +35,6 @@
 class QgsGridAlgorithm : public QgsProcessingAlgorithm
 {
   public:
-
     QgsGridAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCreateGrid.svg" ) ); }
@@ -50,9 +49,7 @@ class QgsGridAlgorithm : public QgsProcessingAlgorithm
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context,
-                                  QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 
   private:
@@ -65,11 +62,11 @@ class QgsGridAlgorithm : public QgsProcessingAlgorithm
     double mVOverlay = 0;
 
     //define grid creation methods
-    void createPointGrid( std::unique_ptr< QgsFeatureSink > &sink, QgsProcessingFeedback *feedback );
-    void createLineGrid( std::unique_ptr< QgsFeatureSink > &sink, QgsProcessingFeedback *feedback );
-    void createRectangleGrid( std::unique_ptr< QgsFeatureSink > &sink, QgsProcessingFeedback *feedback );
-    void createDiamondGrid( std::unique_ptr< QgsFeatureSink> &sink, QgsProcessingFeedback *feedback );
-    void createHexagonGrid( std::unique_ptr< QgsFeatureSink> &sink, QgsProcessingFeedback *feedback );
+    void createPointGrid( std::unique_ptr<QgsFeatureSink> &sink, QgsProcessingFeedback *feedback );
+    void createLineGrid( std::unique_ptr<QgsFeatureSink> &sink, QgsProcessingFeedback *feedback );
+    void createRectangleGrid( std::unique_ptr<QgsFeatureSink> &sink, QgsProcessingFeedback *feedback );
+    void createDiamondGrid( std::unique_ptr<QgsFeatureSink> &sink, QgsProcessingFeedback *feedback );
+    void createHexagonGrid( std::unique_ptr<QgsFeatureSink> &sink, QgsProcessingFeedback *feedback );
 };
 
 

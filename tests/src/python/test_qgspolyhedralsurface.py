@@ -5,14 +5,20 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Jean Felder'
-__date__ = '12/08/2024'
-__copyright__ = 'Copyright 2024, The QGIS Project'
+
+__author__ = "Jean Felder"
+__date__ = "12/08/2024"
+__copyright__ = "Copyright 2024, The QGIS Project"
 
 import qgis  # NOQA
 
 from qgis.core import (
-    QgsLineString, QgsPoint, QgsPolygon, QgsPolyhedralSurface, QgsWkbTypes)
+    QgsLineString,
+    QgsPoint,
+    QgsPolygon,
+    QgsPolyhedralSurface,
+    QgsWkbTypes,
+)
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -35,7 +41,7 @@ class TestQgsPolyhedralSurface(QgisTestCase):
     def test_wkt(self):
         # 2D
         surface = QgsPolyhedralSurface()
-        surface.fromWkt('POLYHEDRALSURFACE (((0 0,0 1,1 1,1 0,0 0)))')
+        surface.fromWkt("POLYHEDRALSURFACE (((0 0,0 1,1 1,1 0,0 0)))")
         self.assertFalse(surface.isEmpty())
         self.assertEqual(surface.numPatches(), 1)
         self.assertFalse(surface.is3D())
@@ -48,7 +54,7 @@ class TestQgsPolyhedralSurface(QgisTestCase):
 
         # 3D
         surfaceZ = QgsPolyhedralSurface()
-        surfaceZ.fromWkt('POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 1 0,0 0 0)))')
+        surfaceZ.fromWkt("POLYHEDRALSURFACE Z (((0 0 0,0 1 0,1 1 0,0 0 0)))")
         self.assertFalse(surfaceZ.isEmpty())
         self.assertEqual(surfaceZ.numPatches(), 1)
         self.assertTrue(surfaceZ.is3D())
@@ -61,7 +67,7 @@ class TestQgsPolyhedralSurface(QgisTestCase):
 
         # Measure
         surfaceM = QgsPolyhedralSurface()
-        surfaceM.fromWkt('POLYHEDRALSURFACE M (((0 0 3,0 1 3,1 1 3,0 0 3)))')
+        surfaceM.fromWkt("POLYHEDRALSURFACE M (((0 0 3,0 1 3,1 1 3,0 0 3)))")
         self.assertFalse(surfaceM.isEmpty())
         self.assertEqual(surfaceM.numPatches(), 1)
         self.assertFalse(surfaceM.is3D())
@@ -74,9 +80,11 @@ class TestQgsPolyhedralSurface(QgisTestCase):
 
         # ZM
         surfaceZM = QgsPolyhedralSurface()
-        surfaceZM.fromWkt('POLYHEDRALSURFACE ZM '
-                          '(((0 0 1 2,0 1 1 2,1 1 1 2,0 0 1 2)),'
-                          '((10 10 0 0,10 11 0 0,11 11 0 0,10 10 0 0)))')
+        surfaceZM.fromWkt(
+            "POLYHEDRALSURFACE ZM "
+            "(((0 0 1 2,0 1 1 2,1 1 1 2,0 0 1 2)),"
+            "((10 10 0 0,10 11 0 0,11 11 0 0,10 10 0 0)))"
+        )
         self.assertFalse(surfaceZM.isEmpty())
         self.assertEqual(surfaceZM.numPatches(), 2)
         self.assertTrue(surfaceZM.is3D())
@@ -96,12 +104,24 @@ class TestQgsPolyhedralSurface(QgisTestCase):
 
         patch1 = QgsPolygon()
         patchExterior1 = QgsLineString(
-            [QgsPoint(0, 0), QgsPoint(0, 10), QgsPoint(10, 10), QgsPoint(10, 0),
-             QgsPoint(0, 0)])
+            [
+                QgsPoint(0, 0),
+                QgsPoint(0, 10),
+                QgsPoint(10, 10),
+                QgsPoint(10, 0),
+                QgsPoint(0, 0),
+            ]
+        )
         patch1.setExteriorRing(patchExterior1)
         patchInteriorRing = QgsLineString(
-            [QgsPoint(1, 1), QgsPoint(1, 9), QgsPoint(9, 9), QgsPoint(9, 1),
-             QgsPoint(1, 1)])
+            [
+                QgsPoint(1, 1),
+                QgsPoint(1, 9),
+                QgsPoint(9, 9),
+                QgsPoint(9, 1),
+                QgsPoint(1, 1),
+            ]
+        )
         patch1.addInteriorRing(patchInteriorRing)
         surface.addPatch(patch1)
         self.assertEqual(surface.numPatches(), 1)
@@ -110,8 +130,14 @@ class TestQgsPolyhedralSurface(QgisTestCase):
 
         patch2 = QgsPolygon()
         patchExterior2 = QgsLineString(
-            [QgsPoint(10, 0), QgsPoint(10, 10), QgsPoint(20, 10), QgsPoint(20, 0),
-             QgsPoint(10, 0)])
+            [
+                QgsPoint(10, 0),
+                QgsPoint(10, 10),
+                QgsPoint(20, 10),
+                QgsPoint(20, 0),
+                QgsPoint(10, 0),
+            ]
+        )
         patch2.setExteriorRing(patchExterior2)
         surface.addPatch(patch2)
         self.assertEqual(surface.numPatches(), 2)
@@ -130,21 +156,35 @@ class TestQgsPolyhedralSurface(QgisTestCase):
 
         patch1 = QgsPolygon()
         patchExterior1 = QgsLineString(
-            [QgsPoint(0, 0), QgsPoint(0, 10), QgsPoint(10, 10), QgsPoint(10, 0),
-             QgsPoint(0, 0)])
+            [
+                QgsPoint(0, 0),
+                QgsPoint(0, 10),
+                QgsPoint(10, 10),
+                QgsPoint(10, 0),
+                QgsPoint(0, 0),
+            ]
+        )
         patch1.setExteriorRing(patchExterior1)
         patchInteriorRing = QgsLineString(
-            [QgsPoint(1, 1), QgsPoint(1, 9), QgsPoint(9, 9), QgsPoint(9, 1),
-             QgsPoint(1, 1)])
+            [
+                QgsPoint(1, 1),
+                QgsPoint(1, 9),
+                QgsPoint(9, 9),
+                QgsPoint(9, 1),
+                QgsPoint(1, 1),
+            ]
+        )
         patch1.addInteriorRing(patchInteriorRing)
         surface1.addPatch(patch1)
         self.assertEqual(surface1.numPatches(), 1)
         self.assertEqual(len(surface1), 1)
 
         surface2 = QgsPolyhedralSurface()
-        surface2.fromWkt('POLYHEDRALSURFACE ZM '
-                         '(((0 0 1 2,0 1 1 2,1 1 1 2,0 0 1 2)),'
-                         '((10 10 0 0,10 11 0 0,11 11 0 0,10 10 0 0)))')
+        surface2.fromWkt(
+            "POLYHEDRALSURFACE ZM "
+            "(((0 0 1 2,0 1 1 2,1 1 1 2,0 0 1 2)),"
+            "((10 10 0 0,10 11 0 0,11 11 0 0,10 10 0 0)))"
+        )
         self.assertTrue(surface2.numPatches(), 2)
         self.assertTrue(len(surface2), 2)
 
@@ -157,12 +197,24 @@ class TestQgsPolyhedralSurface(QgisTestCase):
 
         patch1 = QgsPolygon()
         patchExterior1 = QgsLineString(
-            [QgsPoint(0, 0), QgsPoint(0, 10), QgsPoint(10, 10), QgsPoint(10, 0),
-             QgsPoint(0, 0)])
+            [
+                QgsPoint(0, 0),
+                QgsPoint(0, 10),
+                QgsPoint(10, 10),
+                QgsPoint(10, 0),
+                QgsPoint(0, 0),
+            ]
+        )
         patch1.setExteriorRing(patchExterior1)
         patchInteriorRing = QgsLineString(
-            [QgsPoint(1, 1), QgsPoint(1, 9), QgsPoint(9, 9), QgsPoint(9, 1),
-             QgsPoint(1, 1)])
+            [
+                QgsPoint(1, 1),
+                QgsPoint(1, 9),
+                QgsPoint(9, 9),
+                QgsPoint(9, 1),
+                QgsPoint(1, 1),
+            ]
+        )
         patch1.addInteriorRing(patchInteriorRing)
         surface.addPatch(patch1)
         self.assertEqual(surface.numPatches(), 1)
@@ -175,8 +227,14 @@ class TestQgsPolyhedralSurface(QgisTestCase):
 
         patch2 = QgsPolygon()
         patchExterior2 = QgsLineString(
-            [QgsPoint(10, 0), QgsPoint(10, 10), QgsPoint(20, 10), QgsPoint(20, 0),
-             QgsPoint(10, 0)])
+            [
+                QgsPoint(10, 0),
+                QgsPoint(10, 10),
+                QgsPoint(20, 10),
+                QgsPoint(20, 0),
+                QgsPoint(10, 0),
+            ]
+        )
         patch2.setExteriorRing(patchExterior2)
         surface.addPatch(patch2)
         self.assertEqual(surface.numPatches(), 2)
@@ -190,5 +248,5 @@ class TestQgsPolyhedralSurface(QgisTestCase):
             surface[-3]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -536,7 +536,7 @@ class CORE_EXPORT QgsFeatureRenderer
      *
      * \since QGIS 3.38
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
 
     /**
     * Sets the renderer's property collection, used for data defined overrides.
@@ -652,6 +652,14 @@ class CORE_EXPORT QgsFeatureRenderer
      * \since QGIS 3.22
      */
     void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
+
+    /**
+     * Returns the maximum extent buffer found in this renderer's symbols.
+     *
+     * \note Returns 0 if the renderer doesn't have any symbols.
+     * \since QGIS 3.42
+     */
+    double maximumExtentBuffer( QgsRenderContext &context ) const;
 
   protected:
     QgsFeatureRenderer( const QString &type );

@@ -46,7 +46,7 @@ QgsFormAnnotation::QgsFormAnnotation( QObject *parent )
 
 QgsFormAnnotation *QgsFormAnnotation::clone() const
 {
-  std::unique_ptr< QgsFormAnnotation > c( new QgsFormAnnotation() );
+  std::unique_ptr<QgsFormAnnotation> c( new QgsFormAnnotation() );
   copyCommonProperties( c.get() );
   c->setDesignerForm( mDesignerForm );
   return c.release();
@@ -87,7 +87,7 @@ QWidget *QgsFormAnnotation::createDesignerWidget( const QString &filePath )
 
   //get feature and set attribute information
   const QgsAttributeEditorContext context;
-  QgsVectorLayer *vectorLayer = qobject_cast< QgsVectorLayer * >( mapLayer() );
+  QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( mapLayer() );
   if ( vectorLayer && associatedFeature().isValid() )
   {
     const QgsFields fields = vectorLayer->fields();
@@ -140,8 +140,7 @@ QSizeF QgsFormAnnotation::minimumFrameSize() const
   if ( mDesignerWidget )
   {
     const QSizeF widgetMinSize = mMinimumSize;
-    return QSizeF( contentsMargin().left() + contentsMargin().right() + widgetMinSize.width(),
-                   contentsMargin().top() + contentsMargin().bottom() + widgetMinSize.height() );
+    return QSizeF( contentsMargin().left() + contentsMargin().right() + widgetMinSize.width(), contentsMargin().top() + contentsMargin().bottom() + widgetMinSize.height() );
   }
   else
   {
@@ -206,6 +205,3 @@ void QgsFormAnnotation::setAssociatedFeature( const QgsFeature &feature )
   }
   emit appearanceChanged();
 }
-
-
-

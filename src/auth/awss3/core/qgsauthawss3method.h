@@ -29,7 +29,6 @@ class QgsAuthAwsS3Method : public QgsAuthMethod
     Q_OBJECT
 
   public:
-
     static const QString AUTH_METHOD_KEY;
     static const QString AUTH_METHOD_DESCRIPTION;
     static const QString AUTH_METHOD_DISPLAY_DESCRIPTION;
@@ -43,14 +42,13 @@ class QgsAuthAwsS3Method : public QgsAuthMethod
 
     QString displayDescription() const override;
 
-    bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
-                               const QString &dataprovider = QString() ) override;
+    bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider = QString() ) override;
 
     void clearCachedConfig( const QString &authcfg ) override;
     void updateMethodConfig( QgsAuthMethodConfig &mconfig ) override;
 
 #ifdef HAVE_GUI
-    QWidget *editWidget( QWidget *parent )const override;
+    QWidget *editWidget( QWidget *parent ) const override;
 #endif
 
   private:
@@ -61,7 +59,6 @@ class QgsAuthAwsS3Method : public QgsAuthMethod
     void removeMethodConfig( const QString &authcfg );
 
     static QMap<QString, QgsAuthMethodConfig> sAuthConfigCache;
-
 };
 
 
@@ -71,7 +68,7 @@ class QgsAuthAwsS3MethodMetadata : public QgsAuthMethodMetadata
     QgsAuthAwsS3MethodMetadata()
       : QgsAuthMethodMetadata( QgsAuthAwsS3Method::AUTH_METHOD_KEY, QgsAuthAwsS3Method::AUTH_METHOD_DESCRIPTION )
     {}
-    QgsAuthAwsS3Method *createAuthMethod() const override {return new QgsAuthAwsS3Method;}
+    QgsAuthAwsS3Method *createAuthMethod() const override { return new QgsAuthAwsS3Method; }
 };
 
 #endif // QGSAUTHAWSS3METHOD_H

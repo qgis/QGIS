@@ -44,6 +44,7 @@ cppcheck --library=qt.cfg --inline-suppr \
          -DQ_DECLARE_SQLDRIVER_PRIVATE = \
          -DSIP_MONKEYPATCH_SCOPEENUM_UNNEST = \
          -DSIP_ENUM_BASETYPE = \
+         -DSIP_TYPEHEADER_INCLUDE = \
          -DQT3D_FUNCTOR = \
          -DQgsSetCPLHTTPFetchOverriderInitiatorClass = \
          -DQgsSetRequestInitiatorClass = \

@@ -6,9 +6,9 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-__author__ = 'Benjamin Jakimow'
-__date__ = '14/01/2022'
-__copyright__ = 'Copyright 2022, The QGIS Project'
+__author__ = "Benjamin Jakimow"
+__date__ = "14/01/2022"
+__copyright__ = "Copyright 2022, The QGIS Project"
 
 import pathlib
 import typing
@@ -50,7 +50,9 @@ class TestQgsRasterLayerProperties(QgisTestCase):
 
             COUNT = 0
 
-            def __init__(self, layer: QgsMapLayer, canvas: QgsMapCanvas, parent: QWidget = None):
+            def __init__(
+                self, layer: QgsMapLayer, canvas: QgsMapCanvas, parent: QWidget = None
+            ):
                 super().__init__(layer, canvas, parent=parent)
 
             def apply(self) -> None:
@@ -72,21 +74,25 @@ class TestQgsRasterLayerProperties(QgisTestCase):
             def supportLayerPropertiesDialog(self):
                 return True
 
-            def createWidget(self,
-                             layer: QgsMapLayer,
-                             canvas: QgsMapCanvas,
-                             dockWidget: bool = ..., parent:
-                             typing.Optional[QWidget] = ...) -> QgsMapLayerConfigWidget:
+            def createWidget(
+                self,
+                layer: QgsMapLayer,
+                canvas: QgsMapCanvas,
+                dockWidget: bool = ...,
+                parent: typing.Optional[QWidget] = ...,
+            ) -> QgsMapLayerConfigWidget:
                 MyFactory.COUNT += 1
                 w = MyWidget(layer, canvas, parent=parent)
                 return w
 
-        myFactory = MyFactory('Dummy Factory', QIcon())
+        myFactory = MyFactory("Dummy Factory", QIcon())
         myCanvas = QgsMapCanvas()
-        myPath = pathlib.Path(unitTestDataPath('raster')) / 'band1_float32_noct_epsg4326.tif'
+        myPath = (
+            pathlib.Path(unitTestDataPath("raster")) / "band1_float32_noct_epsg4326.tif"
+        )
         myRasterLayer = QgsRasterLayer(myPath.as_posix(), myPath.name)
 
-        assert myRasterLayer.isValid(), f'Raster not loaded {myPath}'
+        assert myRasterLayer.isValid(), f"Raster not loaded {myPath}"
 
         dialog = QgsRasterLayerProperties(myRasterLayer, myCanvas)
 
@@ -95,21 +101,29 @@ class TestQgsRasterLayerProperties(QgisTestCase):
 
         # this should trigger
         dialog.accept()
-        self.assertEqual(MyFactory.COUNT, 1, msg='Custom QgsMapLayerConfigWidget::createWidget(...) not called')
-        self.assertEqual(MyWidget.COUNT, 1, msg='Custom QgsMapLayerConfigWidget::apply() not called')
+        self.assertEqual(
+            MyFactory.COUNT,
+            1,
+            msg="Custom QgsMapLayerConfigWidget::createWidget(...) not called",
+        )
+        self.assertEqual(
+            MyWidget.COUNT, 1, msg="Custom QgsMapLayerConfigWidget::apply() not called"
+        )
 
     def test_transparency_load(self):
         """Test issue GH #54496"""
 
         myCanvas = QgsMapCanvas()
-        myPath = pathlib.Path(unitTestDataPath('raster')) / 'band1_float32_noct_epsg4326.tif'
+        myPath = (
+            pathlib.Path(unitTestDataPath("raster")) / "band1_float32_noct_epsg4326.tif"
+        )
         myRasterLayer = QgsRasterLayer(myPath.as_posix(), myPath.name)
 
-        assert myRasterLayer.isValid(), f'Raster not loaded {myPath}'
+        assert myRasterLayer.isValid(), f"Raster not loaded {myPath}"
 
         dialog = QgsRasterLayerProperties(myRasterLayer, myCanvas)
 
-        with tempfile.NamedTemporaryFile(suffix='.qml') as qml_file_object:
+        with tempfile.NamedTemporaryFile(suffix=".qml") as qml_file_object:
             renderer = myRasterLayer.renderer()
             renderer.setOpacity(0.5)
             self.assertTrue(myRasterLayer.saveNamedStyle(qml_file_object.name)[1])
@@ -122,5 +136,5 @@ class TestQgsRasterLayerProperties(QgisTestCase):
             self.assertEqual(renderer.opacity(), 0.5)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

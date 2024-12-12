@@ -25,11 +25,11 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QW
 {
   setupUi( this );
   connect( mShapeListWidget, &QListWidget::itemSelectionChanged, this, &QgsEllipseSymbolLayerWidget::mShapeListWidget_itemSelectionChanged );
-  connect( mWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::mWidthSpinBox_valueChanged );
-  connect( mHeightSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::mHeightSpinBox_valueChanged );
-  connect( mRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::mRotationSpinBox_valueChanged );
+  connect( mWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::mWidthSpinBox_valueChanged );
+  connect( mHeightSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::mHeightSpinBox_valueChanged );
+  connect( mRotationSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::mRotationSpinBox_valueChanged );
   connect( mStrokeStyleComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEllipseSymbolLayerWidget::mStrokeStyleComboBox_currentIndexChanged );
-  connect( mStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::mStrokeWidthSpinBox_valueChanged );
+  connect( mStrokeWidthSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::mStrokeWidthSpinBox_valueChanged );
   connect( btnChangeColorStroke, &QgsColorButton::colorChanged, this, &QgsEllipseSymbolLayerWidget::btnChangeColorStroke_colorChanged );
   connect( btnChangeColorFill, &QgsColorButton::colorChanged, this, &QgsEllipseSymbolLayerWidget::btnChangeColorFill_colorChanged );
   connect( mSymbolWidthUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsEllipseSymbolLayerWidget::mSymbolWidthUnitWidget_changed );
@@ -39,14 +39,10 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QW
   connect( mHorizontalAnchorComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEllipseSymbolLayerWidget::mHorizontalAnchorComboBox_currentIndexChanged );
   connect( mVerticalAnchorComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEllipseSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged );
 
-  mSymbolWidthUnitWidget->setUnits( {Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels,
-                                     Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches} );
-  mSymbolHeightUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels,
-                                       Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches} );
-  mStrokeWidthUnitWidget->setUnits( {Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels,
-                                     Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
-  mOffsetUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels,
-                                 Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches} );
+  mSymbolWidthUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
+  mSymbolHeightUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
+  mStrokeWidthUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
+  mOffsetUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
 
   btnChangeColorFill->setAllowOpacity( true );
   btnChangeColorFill->setColorDialogTitle( tr( "Select Fill Color" ) );
@@ -67,7 +63,7 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QW
   mRotationSpinBox->setClearValue( 0.0 );
 
   int size = mShapeListWidget->iconSize().width();
-  size = std::max( 30, static_cast< int >( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 3 ) ) );
+  size = std::max( 30, static_cast<int>( std::round( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 3 ) ) );
   mShapeListWidget->setGridSize( QSize( size * 1.2, size * 1.2 ) );
   mShapeListWidget->setIconSize( QSize( size, size ) );
 
@@ -85,15 +81,15 @@ QgsEllipseSymbolLayerWidget::QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QW
     lyr->setSymbolHeight( markerSize * 0.75 );
     const QIcon icon = QgsSymbolLayerUtils::symbolLayerPreviewIcon( lyr, Qgis::RenderUnit::Pixels, QSize( size, size ), QgsMapUnitScale(), Qgis::SymbolType::Hybrid, nullptr, QgsScreenProperties( screen() ) );
     QListWidgetItem *item = new QListWidgetItem( icon, QString(), mShapeListWidget );
-    item->setData( Qt::UserRole, static_cast< int >( shape ) );
+    item->setData( Qt::UserRole, static_cast<int>( shape ) );
     item->setToolTip( QgsEllipseSymbolLayer::encodeShape( shape ) );
     delete lyr;
   }
   // show at least 2 rows (only 1 row is required, but looks too cramped)
   mShapeListWidget->setMinimumHeight( mShapeListWidget->gridSize().height() * 2.1 );
 
-  connect( spinOffsetX, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::setOffset );
-  connect( spinOffsetY, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::setOffset );
+  connect( spinOffsetX, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::setOffset );
+  connect( spinOffsetY, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsEllipseSymbolLayerWidget::setOffset );
   connect( cboJoinStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEllipseSymbolLayerWidget::penJoinStyleChanged );
   connect( cboCapStyle, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEllipseSymbolLayerWidget::penCapStyleChanged );
 }
@@ -117,7 +113,7 @@ void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   const QgsEllipseSymbolLayer::Shape shape = mLayer->shape();
   for ( int i = 0; i < mShapeListWidget->count(); ++i )
   {
-    if ( static_cast< QgsEllipseSymbolLayer::Shape >( mShapeListWidget->item( i )->data( Qt::UserRole ).toInt() ) == shape )
+    if ( static_cast<QgsEllipseSymbolLayer::Shape>( mShapeListWidget->item( i )->data( Qt::UserRole ).toInt() ) == shape )
     {
       mShapeListWidget->setCurrentRow( i );
       break;
@@ -157,7 +153,6 @@ void QgsEllipseSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
   registerDataDefinedButton( mOffsetDDBtn, QgsSymbolLayer::Property::Offset );
   registerDataDefinedButton( mHorizontalAnchorDDBtn, QgsSymbolLayer::Property::HorizontalAnchor );
   registerDataDefinedButton( mVerticalAnchorDDBtn, QgsSymbolLayer::Property::VerticalAnchor );
-
 }
 
 QgsSymbolLayer *QgsEllipseSymbolLayerWidget::symbolLayer()
@@ -169,7 +164,7 @@ void QgsEllipseSymbolLayerWidget::mShapeListWidget_itemSelectionChanged()
 {
   if ( mLayer )
   {
-    mLayer->setShape( static_cast< QgsEllipseSymbolLayer::Shape>( mShapeListWidget->currentItem()->data( Qt::UserRole ).toInt() ) );
+    mLayer->setShape( static_cast<QgsEllipseSymbolLayer::Shape>( mShapeListWidget->currentItem()->data( Qt::UserRole ).toInt() ) );
     btnChangeColorFill->setEnabled( QgsEllipseSymbolLayer::shapeIsFilled( mLayer->shape() ) );
     emit changed();
   }
@@ -334,5 +329,3 @@ void QgsEllipseSymbolLayerWidget::setOffset()
   mLayer->setOffset( QPointF( spinOffsetX->value(), spinOffsetY->value() ) );
   emit changed();
 }
-
-

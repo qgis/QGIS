@@ -28,7 +28,6 @@ Definition of the world.
 #include "qgs3dmapsettings.h"
 %End
   public:
-
     Qgs3DMapSettings();
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
     ~Qgs3DMapSettings();
@@ -442,6 +441,24 @@ Sets the eye dome lighting distance value (contributes to the contrast of the im
 Returns the eye dome lighting distance value (contributes to the contrast of the image)
 %End
 
+    void setStopUpdates( bool enabled );
+%Docstring
+Sets whether scene updates on camera movement should be enabled
+
+.. note::
+
+   By default, scene is updating on camera movement. Useful for debugging purposes.
+
+.. versionadded:: 3.42
+%End
+
+    bool stopUpdates() const;
+%Docstring
+Returns whether the scene updates on camera movement
+
+.. versionadded:: 3.42
+%End
+
     void setDebugShadowMapSettings( bool enabled, Qt::Corner corner, double size );
 %Docstring
 Sets the debugging settings of the shadow map
@@ -705,6 +722,20 @@ Sets whether the extent is displayed on the main 2D map canvas
 .. versionadded:: 3.32
 %End
 
+    void setShowDebugPanel( bool enabled );
+%Docstring
+Sets whether the debug side panel is shown
+
+.. versionadded:: 3.42
+%End
+
+    bool showDebugPanel() const;
+%Docstring
+Returns whether the debug side panel is shown
+
+.. versionadded:: 3.42
+%End
+
   signals:
 
     void settingsChanged();
@@ -814,6 +845,13 @@ Emitted when the flag whether light source origins are shown has changed.
     void showLabelsChanged();
 %Docstring
 Emitted when the flag whether labels are displayed on terrain tiles has changed
+%End
+
+    void stopUpdatesChanged();
+%Docstring
+Emitted when the flag whether to keep updating scene has changed
+
+.. versionadded:: 3.42
 %End
 
     void eyeDomeLightingEnabledChanged();
@@ -966,6 +1004,24 @@ Emitted when the parameter to display 3d view's extent in the 2D canvas has chan
 .. seealso:: :py:func:`setShowExtentIn2DView`
 
 .. versionadded:: 3.32
+%End
+
+    void showDebugPanelChanged( bool shown );
+%Docstring
+Emitted when the Show debug panel checkbox changes value
+
+.. seealso:: :py:func:`setShowDebugPanel`
+
+.. versionadded:: 3.42
+%End
+
+    void originChanged();
+%Docstring
+Emitted when the world's origin point has been shifted
+
+.. seealso:: :py:func:`setOrigin`
+
+.. versionadded:: 3.42
 %End
 
   private:

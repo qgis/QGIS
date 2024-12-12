@@ -22,7 +22,6 @@ Encapsulates the context in which a :py:class:`QgsDataItem` is shown within the 
 #include "qgsdataitemguiprovider.h"
 %End
   public:
-
     QgsDataItemGuiContext();
 
     QgsMessageBar *messageBar() const;
@@ -80,7 +79,6 @@ Providers must be registered via :py:class:`QgsDataItemGuiProviderRegistry`.
 #include "qgsdataitemguiprovider.h"
 %End
   public:
-
     virtual ~QgsDataItemGuiProvider();
 
     virtual QString name() = 0;
@@ -88,8 +86,7 @@ Providers must be registered via :py:class:`QgsDataItemGuiProviderRegistry`.
 Returns the provider's name.
 %End
 
-    virtual void populateContextMenu( QgsDataItem *item, QMenu *menu,
-                                      const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context );
+    virtual void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context );
 %Docstring
 Called when the given context ``menu`` is being populated for the given ``item``, allowing the provider
 to add its own actions and submenus to the context menu. Additionally,

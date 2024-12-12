@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = '(C) 2019 by Nyall Dawson'
-__date__ = '11/03/2019'
-__copyright__ = 'Copyright 2019, The QGIS Project'
+
+__author__ = "(C) 2019 by Nyall Dawson"
+__date__ = "11/03/2019"
+__copyright__ = "Copyright 2019, The QGIS Project"
 
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import (
@@ -42,22 +43,22 @@ class TestQgsLayoutComboBox(QgisTestCase):
         project = QgsProject()
         manager = QgsLayoutManager(project)
         layout = QgsPrintLayout(project)
-        layout.setName('ccc')
+        layout.setName("ccc")
         self.assertTrue(manager.addLayout(layout))
         layout2 = QgsPrintLayout(project)
-        layout2.setName('bbb')
+        layout2.setName("bbb")
         self.assertTrue(manager.addLayout(layout2))
         r = QgsReport(project)
-        r.setName('ddd')
+        r.setName("ddd")
         manager.addLayout(r)
 
         combo = QgsLayoutComboBox(None, manager)
         spy = QSignalSpy(combo.layoutChanged)
         self.assertEqual(combo.count(), 3)
 
-        self.assertEqual(combo.itemText(0), 'bbb')
-        self.assertEqual(combo.itemText(1), 'ccc')
-        self.assertEqual(combo.itemText(2), 'ddd')
+        self.assertEqual(combo.itemText(0), "bbb")
+        self.assertEqual(combo.itemText(1), "ccc")
+        self.assertEqual(combo.itemText(2), "ddd")
 
         self.assertEqual(combo.layout(0), layout2)
         self.assertEqual(combo.layout(1), layout)
@@ -78,25 +79,27 @@ class TestQgsLayoutComboBox(QgisTestCase):
 
         combo.setAllowEmptyLayout(True)
         self.assertEqual(combo.count(), 4)
-        self.assertEqual(combo.itemText(0), '')
-        self.assertEqual(combo.itemText(1), 'bbb')
-        self.assertEqual(combo.itemText(2), 'ccc')
-        self.assertEqual(combo.itemText(3), 'ddd')
+        self.assertEqual(combo.itemText(0), "")
+        self.assertEqual(combo.itemText(1), "bbb")
+        self.assertEqual(combo.itemText(2), "ccc")
+        self.assertEqual(combo.itemText(3), "ddd")
         combo.setCurrentLayout(None)
         self.assertEqual(combo.currentIndex(), 0)
 
         combo.setFilters(QgsLayoutManagerProxyModel.Filter.FilterPrintLayouts)
         self.assertEqual(combo.count(), 3)
-        self.assertEqual(combo.itemText(0), '')
-        self.assertEqual(combo.itemText(1), 'bbb')
-        self.assertEqual(combo.itemText(2), 'ccc')
+        self.assertEqual(combo.itemText(0), "")
+        self.assertEqual(combo.itemText(1), "bbb")
+        self.assertEqual(combo.itemText(2), "ccc")
 
         combo.setFilters(QgsLayoutManagerProxyModel.Filter.FilterReports)
-        self.assertEqual(combo.filters(), QgsLayoutManagerProxyModel.Filter.FilterReports)
+        self.assertEqual(
+            combo.filters(), QgsLayoutManagerProxyModel.Filter.FilterReports
+        )
         self.assertEqual(combo.count(), 2)
-        self.assertEqual(combo.itemText(0), '')
-        self.assertEqual(combo.itemText(1), 'ddd')
+        self.assertEqual(combo.itemText(0), "")
+        self.assertEqual(combo.itemText(1), "ddd")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -5,15 +5,13 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '03.02.2016'
-__copyright__ = 'Copyright 2016, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "03.02.2016"
+__copyright__ = "Copyright 2016, The QGIS Project"
 
 from qgis.PyQt.QtCore import QLocale
-from qgis.core import (
-    Qgis,
-    QgsUnitTypes
-)
+from qgis.core import Qgis, QgsUnitTypes
 from qgis.testing import unittest
 
 
@@ -27,11 +25,13 @@ class TestQgsUnitTypes(unittest.TestCase):
 
     def testEncodeDecodeUnitType(self):
         """Test encoding and decoding unit type"""
-        units = [QgsUnitTypes.UnitType.TypeDistance,
-                 QgsUnitTypes.UnitType.TypeArea,
-                 QgsUnitTypes.UnitType.TypeVolume,
-                 QgsUnitTypes.UnitType.TypeTemporal,
-                 QgsUnitTypes.UnitType.TypeUnknown]
+        units = [
+            QgsUnitTypes.UnitType.TypeDistance,
+            QgsUnitTypes.UnitType.TypeArea,
+            QgsUnitTypes.UnitType.TypeVolume,
+            QgsUnitTypes.UnitType.TypeTemporal,
+            QgsUnitTypes.UnitType.TypeUnknown,
+        ]
 
         for u in units:
             res, ok = QgsUnitTypes.decodeUnitType(QgsUnitTypes.encodeUnitType(u))
@@ -39,125 +39,127 @@ class TestQgsUnitTypes(unittest.TestCase):
             self.assertEqual(res, u)
 
         # Test decoding bad units
-        res, ok = QgsUnitTypes.decodeUnitType('bad')
+        res, ok = QgsUnitTypes.decodeUnitType("bad")
         self.assertFalse(ok)
         self.assertEqual(res, QgsUnitTypes.UnitType.TypeUnknown)
 
         # Test that string is cleaned before decoding
-        res, ok = QgsUnitTypes.decodeUnitType(' volUme  ')
+        res, ok = QgsUnitTypes.decodeUnitType(" volUme  ")
         assert ok
         self.assertEqual(res, QgsUnitTypes.UnitType.TypeVolume)
 
     def testDistanceUnitType(self):
-        """Test QgsUnitTypes::unitType() """
-        expected = {QgsUnitTypes.DistanceUnit.DistanceMeters: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.DistanceUnit.DistanceKilometers: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.DistanceUnit.DistanceFeet: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.DistanceUnit.DistanceYards: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.DistanceUnit.DistanceMiles: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.DistanceUnit.DistanceDegrees: QgsUnitTypes.DistanceUnitType.Geographic,
-                    QgsUnitTypes.DistanceUnit.DistanceCentimeters: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.DistanceUnit.DistanceMillimeters: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.DistanceUnit.DistanceUnknownUnit: QgsUnitTypes.DistanceUnitType.UnknownType,
-                    QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.Inches: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.ChainsInternational: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.ChainsBritishBenoit1895A: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.ChainsBritishBenoit1895B: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.ChainsBritishSears1922Truncated: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.ChainsBritishSears1922: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.ChainsClarkes: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.ChainsUSSurvey: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.FeetBritish1865: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.FeetBritish1936: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.FeetBritishBenoit1895A: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.FeetBritishBenoit1895B: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.FeetBritishSears1922Truncated: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.FeetBritishSears1922: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.FeetClarkes: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.FeetGoldCoast: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.FeetIndian: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.FeetIndian1937: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.FeetIndian1962: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.FeetIndian1975: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.FeetUSSurvey: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.LinksInternational: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.LinksBritishBenoit1895A: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.LinksBritishBenoit1895B: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.LinksBritishSears1922Truncated: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.LinksBritishSears1922: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.LinksClarkes: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.LinksUSSurvey: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.YardsBritishBenoit1895A: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.YardsBritishBenoit1895B: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.YardsBritishSears1922Truncated: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.YardsBritishSears1922: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.YardsClarkes: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.YardsIndian: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.YardsIndian1937: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.YardsIndian1962: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.YardsIndian1975: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.MilesUSSurvey: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.Fathoms: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.DistanceUnit.MetersGermanLegal: QgsUnitTypes.DistanceUnitType.Standard,
-                    }
+        """Test QgsUnitTypes::unitType()"""
+        expected = {
+            QgsUnitTypes.DistanceUnit.DistanceMeters: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.DistanceUnit.DistanceKilometers: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.DistanceUnit.DistanceFeet: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.DistanceUnit.DistanceYards: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.DistanceUnit.DistanceMiles: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.DistanceUnit.DistanceDegrees: QgsUnitTypes.DistanceUnitType.Geographic,
+            QgsUnitTypes.DistanceUnit.DistanceCentimeters: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.DistanceUnit.DistanceMillimeters: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.DistanceUnit.DistanceUnknownUnit: QgsUnitTypes.DistanceUnitType.UnknownType,
+            QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.Inches: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.ChainsInternational: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.ChainsBritishBenoit1895A: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.ChainsBritishBenoit1895B: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.ChainsBritishSears1922Truncated: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.ChainsBritishSears1922: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.ChainsClarkes: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.ChainsUSSurvey: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.FeetBritish1865: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.FeetBritish1936: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.FeetBritishBenoit1895A: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.FeetBritishBenoit1895B: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.FeetBritishSears1922Truncated: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.FeetBritishSears1922: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.FeetClarkes: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.FeetGoldCoast: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.FeetIndian: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.FeetIndian1937: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.FeetIndian1962: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.FeetIndian1975: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.FeetUSSurvey: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.LinksInternational: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.LinksBritishBenoit1895A: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.LinksBritishBenoit1895B: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.LinksBritishSears1922Truncated: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.LinksBritishSears1922: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.LinksClarkes: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.LinksUSSurvey: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.YardsBritishBenoit1895A: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.YardsBritishBenoit1895B: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.YardsBritishSears1922Truncated: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.YardsBritishSears1922: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.YardsClarkes: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.YardsIndian: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.YardsIndian1937: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.YardsIndian1962: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.YardsIndian1975: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.MilesUSSurvey: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.Fathoms: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.DistanceUnit.MetersGermanLegal: QgsUnitTypes.DistanceUnitType.Standard,
+        }
 
         for t in list(expected.keys()):
             self.assertEqual(QgsUnitTypes.unitType(t), expected[t])
 
     def testEncodeDecodeDistanceUnits(self):
         """Test encoding and decoding distance units"""
-        units = [QgsUnitTypes.DistanceUnit.DistanceMeters,
-                 QgsUnitTypes.DistanceUnit.DistanceKilometers,
-                 QgsUnitTypes.DistanceUnit.DistanceFeet,
-                 QgsUnitTypes.DistanceUnit.DistanceYards,
-                 QgsUnitTypes.DistanceUnit.DistanceMiles,
-                 QgsUnitTypes.DistanceUnit.DistanceDegrees,
-                 QgsUnitTypes.DistanceUnit.DistanceCentimeters,
-                 QgsUnitTypes.DistanceUnit.DistanceMillimeters,
-                 QgsUnitTypes.DistanceUnit.DistanceUnknownUnit,
-                 QgsUnitTypes.DistanceUnit.DistanceNauticalMiles,
-                 Qgis.DistanceUnit.Inches,
-                 Qgis.DistanceUnit.ChainsInternational,
-                 Qgis.DistanceUnit.ChainsBritishBenoit1895A,
-                 Qgis.DistanceUnit.ChainsBritishBenoit1895B,
-                 Qgis.DistanceUnit.ChainsBritishSears1922Truncated,
-                 Qgis.DistanceUnit.ChainsBritishSears1922,
-                 Qgis.DistanceUnit.ChainsClarkes,
-                 Qgis.DistanceUnit.ChainsUSSurvey,
-                 Qgis.DistanceUnit.FeetBritish1865,
-                 Qgis.DistanceUnit.FeetBritish1936,
-                 Qgis.DistanceUnit.FeetBritishBenoit1895A,
-                 Qgis.DistanceUnit.FeetBritishBenoit1895B,
-                 Qgis.DistanceUnit.FeetBritishSears1922Truncated,
-                 Qgis.DistanceUnit.FeetBritishSears1922,
-                 Qgis.DistanceUnit.FeetClarkes,
-                 Qgis.DistanceUnit.FeetGoldCoast,
-                 Qgis.DistanceUnit.FeetIndian,
-                 Qgis.DistanceUnit.FeetIndian1937,
-                 Qgis.DistanceUnit.FeetIndian1962,
-                 Qgis.DistanceUnit.FeetIndian1975,
-                 Qgis.DistanceUnit.FeetUSSurvey,
-                 Qgis.DistanceUnit.LinksInternational,
-                 Qgis.DistanceUnit.LinksBritishBenoit1895A,
-                 Qgis.DistanceUnit.LinksBritishBenoit1895B,
-                 Qgis.DistanceUnit.LinksBritishSears1922Truncated,
-                 Qgis.DistanceUnit.LinksBritishSears1922,
-                 Qgis.DistanceUnit.LinksClarkes,
-                 Qgis.DistanceUnit.LinksUSSurvey,
-                 Qgis.DistanceUnit.YardsBritishBenoit1895A,
-                 Qgis.DistanceUnit.YardsBritishBenoit1895B,
-                 Qgis.DistanceUnit.YardsBritishSears1922Truncated,
-                 Qgis.DistanceUnit.YardsBritishSears1922,
-                 Qgis.DistanceUnit.YardsClarkes,
-                 Qgis.DistanceUnit.YardsIndian,
-                 Qgis.DistanceUnit.YardsIndian1937,
-                 Qgis.DistanceUnit.YardsIndian1962,
-                 Qgis.DistanceUnit.YardsIndian1975,
-                 Qgis.DistanceUnit.MilesUSSurvey,
-                 Qgis.DistanceUnit.Fathoms,
-                 Qgis.DistanceUnit.MetersGermanLegal,
-                 ]
+        units = [
+            QgsUnitTypes.DistanceUnit.DistanceMeters,
+            QgsUnitTypes.DistanceUnit.DistanceKilometers,
+            QgsUnitTypes.DistanceUnit.DistanceFeet,
+            QgsUnitTypes.DistanceUnit.DistanceYards,
+            QgsUnitTypes.DistanceUnit.DistanceMiles,
+            QgsUnitTypes.DistanceUnit.DistanceDegrees,
+            QgsUnitTypes.DistanceUnit.DistanceCentimeters,
+            QgsUnitTypes.DistanceUnit.DistanceMillimeters,
+            QgsUnitTypes.DistanceUnit.DistanceUnknownUnit,
+            QgsUnitTypes.DistanceUnit.DistanceNauticalMiles,
+            Qgis.DistanceUnit.Inches,
+            Qgis.DistanceUnit.ChainsInternational,
+            Qgis.DistanceUnit.ChainsBritishBenoit1895A,
+            Qgis.DistanceUnit.ChainsBritishBenoit1895B,
+            Qgis.DistanceUnit.ChainsBritishSears1922Truncated,
+            Qgis.DistanceUnit.ChainsBritishSears1922,
+            Qgis.DistanceUnit.ChainsClarkes,
+            Qgis.DistanceUnit.ChainsUSSurvey,
+            Qgis.DistanceUnit.FeetBritish1865,
+            Qgis.DistanceUnit.FeetBritish1936,
+            Qgis.DistanceUnit.FeetBritishBenoit1895A,
+            Qgis.DistanceUnit.FeetBritishBenoit1895B,
+            Qgis.DistanceUnit.FeetBritishSears1922Truncated,
+            Qgis.DistanceUnit.FeetBritishSears1922,
+            Qgis.DistanceUnit.FeetClarkes,
+            Qgis.DistanceUnit.FeetGoldCoast,
+            Qgis.DistanceUnit.FeetIndian,
+            Qgis.DistanceUnit.FeetIndian1937,
+            Qgis.DistanceUnit.FeetIndian1962,
+            Qgis.DistanceUnit.FeetIndian1975,
+            Qgis.DistanceUnit.FeetUSSurvey,
+            Qgis.DistanceUnit.LinksInternational,
+            Qgis.DistanceUnit.LinksBritishBenoit1895A,
+            Qgis.DistanceUnit.LinksBritishBenoit1895B,
+            Qgis.DistanceUnit.LinksBritishSears1922Truncated,
+            Qgis.DistanceUnit.LinksBritishSears1922,
+            Qgis.DistanceUnit.LinksClarkes,
+            Qgis.DistanceUnit.LinksUSSurvey,
+            Qgis.DistanceUnit.YardsBritishBenoit1895A,
+            Qgis.DistanceUnit.YardsBritishBenoit1895B,
+            Qgis.DistanceUnit.YardsBritishSears1922Truncated,
+            Qgis.DistanceUnit.YardsBritishSears1922,
+            Qgis.DistanceUnit.YardsClarkes,
+            Qgis.DistanceUnit.YardsIndian,
+            Qgis.DistanceUnit.YardsIndian1937,
+            Qgis.DistanceUnit.YardsIndian1962,
+            Qgis.DistanceUnit.YardsIndian1975,
+            Qgis.DistanceUnit.MilesUSSurvey,
+            Qgis.DistanceUnit.Fathoms,
+            Qgis.DistanceUnit.MetersGermanLegal,
+        ]
 
         for u in units:
             res, ok = QgsUnitTypes.decodeDistanceUnit(QgsUnitTypes.encodeUnit(u))
@@ -165,120 +167,130 @@ class TestQgsUnitTypes(unittest.TestCase):
             self.assertEqual(res, u)
 
         # Test decoding bad units
-        res, ok = QgsUnitTypes.decodeDistanceUnit('bad')
+        res, ok = QgsUnitTypes.decodeDistanceUnit("bad")
         self.assertFalse(ok)
         self.assertEqual(res, QgsUnitTypes.DistanceUnit.DistanceUnknownUnit)
 
         # Test that string is cleaned before decoding
-        res, ok = QgsUnitTypes.decodeDistanceUnit(' FeEt  ')
+        res, ok = QgsUnitTypes.decodeDistanceUnit(" FeEt  ")
         assert ok
         self.assertEqual(res, QgsUnitTypes.DistanceUnit.DistanceFeet)
 
     def testDistanceUnitsToFromString(self):
         """Test converting distance units to and from translated strings"""
-        units = [QgsUnitTypes.DistanceUnit.DistanceMeters,
-                 QgsUnitTypes.DistanceUnit.DistanceKilometers,
-                 QgsUnitTypes.DistanceUnit.DistanceFeet,
-                 QgsUnitTypes.DistanceUnit.DistanceYards,
-                 QgsUnitTypes.DistanceUnit.DistanceMiles,
-                 QgsUnitTypes.DistanceUnit.DistanceDegrees,
-                 QgsUnitTypes.DistanceUnit.DistanceCentimeters,
-                 QgsUnitTypes.DistanceUnit.DistanceMillimeters,
-                 QgsUnitTypes.DistanceUnit.DistanceUnknownUnit,
-                 QgsUnitTypes.DistanceUnit.DistanceNauticalMiles,
-                 Qgis.DistanceUnit.Inches,
-                 Qgis.DistanceUnit.ChainsInternational,
-                 Qgis.DistanceUnit.ChainsBritishBenoit1895A,
-                 Qgis.DistanceUnit.ChainsBritishBenoit1895B,
-                 Qgis.DistanceUnit.ChainsBritishSears1922Truncated,
-                 Qgis.DistanceUnit.ChainsBritishSears1922,
-                 Qgis.DistanceUnit.ChainsClarkes,
-                 Qgis.DistanceUnit.ChainsUSSurvey,
-                 Qgis.DistanceUnit.FeetBritish1865,
-                 Qgis.DistanceUnit.FeetBritish1936,
-                 Qgis.DistanceUnit.FeetBritishBenoit1895A,
-                 Qgis.DistanceUnit.FeetBritishBenoit1895B,
-                 Qgis.DistanceUnit.FeetBritishSears1922Truncated,
-                 Qgis.DistanceUnit.FeetBritishSears1922,
-                 Qgis.DistanceUnit.FeetClarkes,
-                 Qgis.DistanceUnit.FeetGoldCoast,
-                 Qgis.DistanceUnit.FeetIndian,
-                 Qgis.DistanceUnit.FeetIndian1937,
-                 Qgis.DistanceUnit.FeetIndian1962,
-                 Qgis.DistanceUnit.FeetIndian1975,
-                 Qgis.DistanceUnit.FeetUSSurvey,
-                 Qgis.DistanceUnit.LinksInternational,
-                 Qgis.DistanceUnit.LinksBritishBenoit1895A,
-                 Qgis.DistanceUnit.LinksBritishBenoit1895B,
-                 Qgis.DistanceUnit.LinksBritishSears1922Truncated,
-                 Qgis.DistanceUnit.LinksBritishSears1922,
-                 Qgis.DistanceUnit.LinksClarkes,
-                 Qgis.DistanceUnit.LinksUSSurvey,
-                 Qgis.DistanceUnit.YardsBritishBenoit1895A,
-                 Qgis.DistanceUnit.YardsBritishBenoit1895B,
-                 Qgis.DistanceUnit.YardsBritishSears1922Truncated,
-                 Qgis.DistanceUnit.YardsBritishSears1922,
-                 Qgis.DistanceUnit.YardsClarkes,
-                 Qgis.DistanceUnit.YardsIndian,
-                 Qgis.DistanceUnit.YardsIndian1937,
-                 Qgis.DistanceUnit.YardsIndian1962,
-                 Qgis.DistanceUnit.YardsIndian1975,
-                 Qgis.DistanceUnit.MilesUSSurvey,
-                 Qgis.DistanceUnit.Fathoms,
-                 Qgis.DistanceUnit.MetersGermanLegal,
-                 ]
+        units = [
+            QgsUnitTypes.DistanceUnit.DistanceMeters,
+            QgsUnitTypes.DistanceUnit.DistanceKilometers,
+            QgsUnitTypes.DistanceUnit.DistanceFeet,
+            QgsUnitTypes.DistanceUnit.DistanceYards,
+            QgsUnitTypes.DistanceUnit.DistanceMiles,
+            QgsUnitTypes.DistanceUnit.DistanceDegrees,
+            QgsUnitTypes.DistanceUnit.DistanceCentimeters,
+            QgsUnitTypes.DistanceUnit.DistanceMillimeters,
+            QgsUnitTypes.DistanceUnit.DistanceUnknownUnit,
+            QgsUnitTypes.DistanceUnit.DistanceNauticalMiles,
+            Qgis.DistanceUnit.Inches,
+            Qgis.DistanceUnit.ChainsInternational,
+            Qgis.DistanceUnit.ChainsBritishBenoit1895A,
+            Qgis.DistanceUnit.ChainsBritishBenoit1895B,
+            Qgis.DistanceUnit.ChainsBritishSears1922Truncated,
+            Qgis.DistanceUnit.ChainsBritishSears1922,
+            Qgis.DistanceUnit.ChainsClarkes,
+            Qgis.DistanceUnit.ChainsUSSurvey,
+            Qgis.DistanceUnit.FeetBritish1865,
+            Qgis.DistanceUnit.FeetBritish1936,
+            Qgis.DistanceUnit.FeetBritishBenoit1895A,
+            Qgis.DistanceUnit.FeetBritishBenoit1895B,
+            Qgis.DistanceUnit.FeetBritishSears1922Truncated,
+            Qgis.DistanceUnit.FeetBritishSears1922,
+            Qgis.DistanceUnit.FeetClarkes,
+            Qgis.DistanceUnit.FeetGoldCoast,
+            Qgis.DistanceUnit.FeetIndian,
+            Qgis.DistanceUnit.FeetIndian1937,
+            Qgis.DistanceUnit.FeetIndian1962,
+            Qgis.DistanceUnit.FeetIndian1975,
+            Qgis.DistanceUnit.FeetUSSurvey,
+            Qgis.DistanceUnit.LinksInternational,
+            Qgis.DistanceUnit.LinksBritishBenoit1895A,
+            Qgis.DistanceUnit.LinksBritishBenoit1895B,
+            Qgis.DistanceUnit.LinksBritishSears1922Truncated,
+            Qgis.DistanceUnit.LinksBritishSears1922,
+            Qgis.DistanceUnit.LinksClarkes,
+            Qgis.DistanceUnit.LinksUSSurvey,
+            Qgis.DistanceUnit.YardsBritishBenoit1895A,
+            Qgis.DistanceUnit.YardsBritishBenoit1895B,
+            Qgis.DistanceUnit.YardsBritishSears1922Truncated,
+            Qgis.DistanceUnit.YardsBritishSears1922,
+            Qgis.DistanceUnit.YardsClarkes,
+            Qgis.DistanceUnit.YardsIndian,
+            Qgis.DistanceUnit.YardsIndian1937,
+            Qgis.DistanceUnit.YardsIndian1962,
+            Qgis.DistanceUnit.YardsIndian1975,
+            Qgis.DistanceUnit.MilesUSSurvey,
+            Qgis.DistanceUnit.Fathoms,
+            Qgis.DistanceUnit.MetersGermanLegal,
+        ]
 
         for u in units:
             res, ok = QgsUnitTypes.stringToDistanceUnit(QgsUnitTypes.toString(u))
-            self.assertTrue(ok, f'QgsUnitTypes.stringToDistanceUnit failed for {u.name}')
+            self.assertTrue(
+                ok, f"QgsUnitTypes.stringToDistanceUnit failed for {u.name}"
+            )
             self.assertEqual(res, u)
 
         # Test converting bad strings
-        res, ok = QgsUnitTypes.stringToDistanceUnit('bad')
+        res, ok = QgsUnitTypes.stringToDistanceUnit("bad")
         self.assertFalse(ok)
         self.assertEqual(res, QgsUnitTypes.DistanceUnit.DistanceUnknownUnit)
 
         # Test that string is cleaned before conversion
-        res, ok = QgsUnitTypes.stringToDistanceUnit(f' {QgsUnitTypes.toString(QgsUnitTypes.DistanceUnit.DistanceFeet).upper()}  ')
-        print(f' {QgsUnitTypes.toString(QgsUnitTypes.DistanceUnit.DistanceFeet).upper()}  ')
+        res, ok = QgsUnitTypes.stringToDistanceUnit(
+            f" {QgsUnitTypes.toString(QgsUnitTypes.DistanceUnit.DistanceFeet).upper()}  "
+        )
+        print(
+            f" {QgsUnitTypes.toString(QgsUnitTypes.DistanceUnit.DistanceFeet).upper()}  "
+        )
         assert ok
         self.assertEqual(res, QgsUnitTypes.DistanceUnit.DistanceFeet)
 
     def testAreaUnitType(self):
-        """Test QgsUnitTypes::unitType() for area units """
-        expected = {QgsUnitTypes.AreaUnit.AreaSquareMeters: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.AreaUnit.AreaSquareKilometers: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.AreaUnit.AreaSquareFeet: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.AreaUnit.AreaSquareYards: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.AreaUnit.AreaSquareMiles: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.AreaUnit.AreaHectares: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.AreaUnit.AreaAcres: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.AreaUnit.AreaSquareNauticalMiles: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.AreaUnit.AreaSquareDegrees: QgsUnitTypes.DistanceUnitType.Geographic,
-                    QgsUnitTypes.AreaUnit.AreaSquareCentimeters: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.AreaUnit.AreaSquareMillimeters: QgsUnitTypes.DistanceUnitType.Standard,
-                    Qgis.AreaUnit.SquareInches: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.AreaUnit.AreaUnknownUnit: QgsUnitTypes.DistanceUnitType.UnknownType,
-                    }
+        """Test QgsUnitTypes::unitType() for area units"""
+        expected = {
+            QgsUnitTypes.AreaUnit.AreaSquareMeters: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.AreaUnit.AreaSquareKilometers: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.AreaUnit.AreaSquareFeet: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.AreaUnit.AreaSquareYards: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.AreaUnit.AreaSquareMiles: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.AreaUnit.AreaHectares: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.AreaUnit.AreaAcres: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.AreaUnit.AreaSquareNauticalMiles: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.AreaUnit.AreaSquareDegrees: QgsUnitTypes.DistanceUnitType.Geographic,
+            QgsUnitTypes.AreaUnit.AreaSquareCentimeters: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.AreaUnit.AreaSquareMillimeters: QgsUnitTypes.DistanceUnitType.Standard,
+            Qgis.AreaUnit.SquareInches: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.AreaUnit.AreaUnknownUnit: QgsUnitTypes.DistanceUnitType.UnknownType,
+        }
 
         for t in list(expected.keys()):
             self.assertEqual(QgsUnitTypes.unitType(t), expected[t])
 
     def testEncodeDecodeAreaUnits(self):
         """Test encoding and decoding area units"""
-        units = [QgsUnitTypes.AreaUnit.AreaSquareMeters,
-                 QgsUnitTypes.AreaUnit.AreaSquareKilometers,
-                 QgsUnitTypes.AreaUnit.AreaSquareFeet,
-                 QgsUnitTypes.AreaUnit.AreaSquareYards,
-                 QgsUnitTypes.AreaUnit.AreaSquareMiles,
-                 QgsUnitTypes.AreaUnit.AreaHectares,
-                 QgsUnitTypes.AreaUnit.AreaAcres,
-                 QgsUnitTypes.AreaUnit.AreaSquareNauticalMiles,
-                 QgsUnitTypes.AreaUnit.AreaSquareDegrees,
-                 QgsUnitTypes.AreaUnit.AreaSquareCentimeters,
-                 QgsUnitTypes.AreaUnit.AreaSquareMillimeters,
-                 Qgis.AreaUnit.SquareInches,
-                 QgsUnitTypes.AreaUnit.AreaUnknownUnit]
+        units = [
+            QgsUnitTypes.AreaUnit.AreaSquareMeters,
+            QgsUnitTypes.AreaUnit.AreaSquareKilometers,
+            QgsUnitTypes.AreaUnit.AreaSquareFeet,
+            QgsUnitTypes.AreaUnit.AreaSquareYards,
+            QgsUnitTypes.AreaUnit.AreaSquareMiles,
+            QgsUnitTypes.AreaUnit.AreaHectares,
+            QgsUnitTypes.AreaUnit.AreaAcres,
+            QgsUnitTypes.AreaUnit.AreaSquareNauticalMiles,
+            QgsUnitTypes.AreaUnit.AreaSquareDegrees,
+            QgsUnitTypes.AreaUnit.AreaSquareCentimeters,
+            QgsUnitTypes.AreaUnit.AreaSquareMillimeters,
+            Qgis.AreaUnit.SquareInches,
+            QgsUnitTypes.AreaUnit.AreaUnknownUnit,
+        ]
 
         for u in units:
             res, ok = QgsUnitTypes.decodeAreaUnit(QgsUnitTypes.encodeUnit(u))
@@ -286,30 +298,32 @@ class TestQgsUnitTypes(unittest.TestCase):
             self.assertEqual(res, u)
 
         # Test decoding bad units
-        res, ok = QgsUnitTypes.decodeAreaUnit('bad')
+        res, ok = QgsUnitTypes.decodeAreaUnit("bad")
         self.assertFalse(ok)
         self.assertEqual(res, QgsUnitTypes.AreaUnit.AreaUnknownUnit)
 
         # Test that string is cleaned before decoding
-        res, ok = QgsUnitTypes.decodeAreaUnit(' Ha  ')
+        res, ok = QgsUnitTypes.decodeAreaUnit(" Ha  ")
         assert ok
         self.assertEqual(res, QgsUnitTypes.AreaUnit.AreaHectares)
 
     def testAreaUnitsToFromString(self):
         """Test converting area units to and from translated strings"""
-        units = [QgsUnitTypes.AreaUnit.AreaSquareMeters,
-                 QgsUnitTypes.AreaUnit.AreaSquareKilometers,
-                 QgsUnitTypes.AreaUnit.AreaSquareFeet,
-                 QgsUnitTypes.AreaUnit.AreaSquareYards,
-                 QgsUnitTypes.AreaUnit.AreaSquareMiles,
-                 QgsUnitTypes.AreaUnit.AreaHectares,
-                 QgsUnitTypes.AreaUnit.AreaAcres,
-                 QgsUnitTypes.AreaUnit.AreaSquareNauticalMiles,
-                 QgsUnitTypes.AreaUnit.AreaSquareDegrees,
-                 QgsUnitTypes.AreaUnit.AreaSquareCentimeters,
-                 QgsUnitTypes.AreaUnit.AreaSquareMillimeters,
-                 Qgis.AreaUnit.SquareInches,
-                 QgsUnitTypes.AreaUnit.AreaUnknownUnit]
+        units = [
+            QgsUnitTypes.AreaUnit.AreaSquareMeters,
+            QgsUnitTypes.AreaUnit.AreaSquareKilometers,
+            QgsUnitTypes.AreaUnit.AreaSquareFeet,
+            QgsUnitTypes.AreaUnit.AreaSquareYards,
+            QgsUnitTypes.AreaUnit.AreaSquareMiles,
+            QgsUnitTypes.AreaUnit.AreaHectares,
+            QgsUnitTypes.AreaUnit.AreaAcres,
+            QgsUnitTypes.AreaUnit.AreaSquareNauticalMiles,
+            QgsUnitTypes.AreaUnit.AreaSquareDegrees,
+            QgsUnitTypes.AreaUnit.AreaSquareCentimeters,
+            QgsUnitTypes.AreaUnit.AreaSquareMillimeters,
+            Qgis.AreaUnit.SquareInches,
+            QgsUnitTypes.AreaUnit.AreaUnknownUnit,
+        ]
 
         for u in units:
             res, ok = QgsUnitTypes.stringToAreaUnit(QgsUnitTypes.toString(u))
@@ -317,46 +331,51 @@ class TestQgsUnitTypes(unittest.TestCase):
             self.assertEqual(res, u)
 
         # Test converting bad strings
-        res, ok = QgsUnitTypes.stringToAreaUnit('bad')
+        res, ok = QgsUnitTypes.stringToAreaUnit("bad")
         self.assertFalse(ok)
         self.assertEqual(res, QgsUnitTypes.AreaUnit.AreaUnknownUnit)
 
         # Test that string is cleaned before conversion
-        res, ok = QgsUnitTypes.stringToAreaUnit(f' {QgsUnitTypes.toString(QgsUnitTypes.AreaUnit.AreaSquareMiles).upper()}  ')
+        res, ok = QgsUnitTypes.stringToAreaUnit(
+            f" {QgsUnitTypes.toString(QgsUnitTypes.AreaUnit.AreaSquareMiles).upper()}  "
+        )
         assert ok
         self.assertEqual(res, QgsUnitTypes.AreaUnit.AreaSquareMiles)
 
     def testVolumeUnitType(self):
-        """Test QgsUnitTypes::unitType() for volume units """
-        expected = {QgsUnitTypes.VolumeUnit.VolumeCubicMeters: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.VolumeUnit.VolumeCubicFeet: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.VolumeUnit.VolumeCubicYards: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.VolumeUnit.VolumeBarrel: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.VolumeUnit.VolumeCubicDecimeter: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.VolumeUnit.VolumeLiters: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.VolumeUnit.VolumeGallonUS: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.VolumeUnit.VolumeCubicInch: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter: QgsUnitTypes.DistanceUnitType.Standard,
-                    QgsUnitTypes.VolumeUnit.VolumeCubicDegrees: QgsUnitTypes.DistanceUnitType.Geographic,
-                    QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: QgsUnitTypes.DistanceUnitType.UnknownType,
-                    }
+        """Test QgsUnitTypes::unitType() for volume units"""
+        expected = {
+            QgsUnitTypes.VolumeUnit.VolumeCubicMeters: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.VolumeUnit.VolumeCubicFeet: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.VolumeUnit.VolumeCubicYards: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.VolumeUnit.VolumeBarrel: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.VolumeUnit.VolumeCubicDecimeter: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.VolumeUnit.VolumeLiters: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.VolumeUnit.VolumeGallonUS: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.VolumeUnit.VolumeCubicInch: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter: QgsUnitTypes.DistanceUnitType.Standard,
+            QgsUnitTypes.VolumeUnit.VolumeCubicDegrees: QgsUnitTypes.DistanceUnitType.Geographic,
+            QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: QgsUnitTypes.DistanceUnitType.UnknownType,
+        }
 
         for t in list(expected.keys()):
             self.assertEqual(QgsUnitTypes.unitType(t), expected[t])
 
     def testEncodeDecodeVolumeUnits(self):
         """Test encoding and decoding volume units"""
-        units = [QgsUnitTypes.VolumeUnit.VolumeCubicMeters,
-                 QgsUnitTypes.VolumeUnit.VolumeCubicFeet,
-                 QgsUnitTypes.VolumeUnit.VolumeCubicYards,
-                 QgsUnitTypes.VolumeUnit.VolumeBarrel,
-                 QgsUnitTypes.VolumeUnit.VolumeCubicDecimeter,
-                 QgsUnitTypes.VolumeUnit.VolumeLiters,
-                 QgsUnitTypes.VolumeUnit.VolumeGallonUS,
-                 QgsUnitTypes.VolumeUnit.VolumeCubicInch,
-                 QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter,
-                 QgsUnitTypes.VolumeUnit.VolumeCubicDegrees,
-                 QgsUnitTypes.VolumeUnit.VolumeUnknownUnit]
+        units = [
+            QgsUnitTypes.VolumeUnit.VolumeCubicMeters,
+            QgsUnitTypes.VolumeUnit.VolumeCubicFeet,
+            QgsUnitTypes.VolumeUnit.VolumeCubicYards,
+            QgsUnitTypes.VolumeUnit.VolumeBarrel,
+            QgsUnitTypes.VolumeUnit.VolumeCubicDecimeter,
+            QgsUnitTypes.VolumeUnit.VolumeLiters,
+            QgsUnitTypes.VolumeUnit.VolumeGallonUS,
+            QgsUnitTypes.VolumeUnit.VolumeCubicInch,
+            QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter,
+            QgsUnitTypes.VolumeUnit.VolumeCubicDegrees,
+            QgsUnitTypes.VolumeUnit.VolumeUnknownUnit,
+        ]
 
         for u in units:
             res, ok = QgsUnitTypes.decodeVolumeUnit(QgsUnitTypes.encodeUnit(u))
@@ -364,28 +383,30 @@ class TestQgsUnitTypes(unittest.TestCase):
             self.assertEqual(res, u)
 
         # Test decoding bad units
-        res, ok = QgsUnitTypes.decodeVolumeUnit('bad')
+        res, ok = QgsUnitTypes.decodeVolumeUnit("bad")
         self.assertFalse(ok)
         self.assertEqual(res, QgsUnitTypes.VolumeUnit.VolumeUnknownUnit)
 
         # Test that string is cleaned before decoding
-        res, ok = QgsUnitTypes.decodeVolumeUnit(' bbl  ')
+        res, ok = QgsUnitTypes.decodeVolumeUnit(" bbl  ")
         assert ok
         self.assertEqual(res, QgsUnitTypes.VolumeUnit.VolumeBarrel)
 
     def testVolumeUnitsToFromString(self):
         """Test converting volume units to and from translated strings"""
-        units = [QgsUnitTypes.VolumeUnit.VolumeCubicMeters,
-                 QgsUnitTypes.VolumeUnit.VolumeCubicFeet,
-                 QgsUnitTypes.VolumeUnit.VolumeCubicYards,
-                 QgsUnitTypes.VolumeUnit.VolumeBarrel,
-                 QgsUnitTypes.VolumeUnit.VolumeCubicDecimeter,
-                 QgsUnitTypes.VolumeUnit.VolumeLiters,
-                 QgsUnitTypes.VolumeUnit.VolumeGallonUS,
-                 QgsUnitTypes.VolumeUnit.VolumeCubicInch,
-                 QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter,
-                 QgsUnitTypes.VolumeUnit.VolumeCubicDegrees,
-                 QgsUnitTypes.VolumeUnit.VolumeUnknownUnit]
+        units = [
+            QgsUnitTypes.VolumeUnit.VolumeCubicMeters,
+            QgsUnitTypes.VolumeUnit.VolumeCubicFeet,
+            QgsUnitTypes.VolumeUnit.VolumeCubicYards,
+            QgsUnitTypes.VolumeUnit.VolumeBarrel,
+            QgsUnitTypes.VolumeUnit.VolumeCubicDecimeter,
+            QgsUnitTypes.VolumeUnit.VolumeLiters,
+            QgsUnitTypes.VolumeUnit.VolumeGallonUS,
+            QgsUnitTypes.VolumeUnit.VolumeCubicInch,
+            QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter,
+            QgsUnitTypes.VolumeUnit.VolumeCubicDegrees,
+            QgsUnitTypes.VolumeUnit.VolumeUnknownUnit,
+        ]
 
         for u in units:
             res, ok = QgsUnitTypes.stringToVolumeUnit(QgsUnitTypes.toString(u))
@@ -393,29 +414,33 @@ class TestQgsUnitTypes(unittest.TestCase):
             self.assertEqual(res, u)
 
         # Test converting bad strings
-        res, ok = QgsUnitTypes.stringToVolumeUnit('bad')
+        res, ok = QgsUnitTypes.stringToVolumeUnit("bad")
         self.assertFalse(ok)
         self.assertEqual(res, QgsUnitTypes.VolumeUnit.VolumeUnknownUnit)
 
         # Test that string is cleaned before conversion
-        res, ok = QgsUnitTypes.stringToVolumeUnit(f' {QgsUnitTypes.toString(QgsUnitTypes.VolumeUnit.VolumeBarrel).upper()}  ')
+        res, ok = QgsUnitTypes.stringToVolumeUnit(
+            f" {QgsUnitTypes.toString(QgsUnitTypes.VolumeUnit.VolumeBarrel).upper()}  "
+        )
         assert ok
         self.assertEqual(res, QgsUnitTypes.VolumeUnit.VolumeBarrel)
 
     def testEncodeDecodeTemporalUnits(self):
         """Test encoding and decoding temporal units"""
-        units = [QgsUnitTypes.TemporalUnit.TemporalMilliseconds,
-                 QgsUnitTypes.TemporalUnit.TemporalSeconds,
-                 QgsUnitTypes.TemporalUnit.TemporalMinutes,
-                 QgsUnitTypes.TemporalUnit.TemporalHours,
-                 QgsUnitTypes.TemporalUnit.TemporalDays,
-                 QgsUnitTypes.TemporalUnit.TemporalWeeks,
-                 QgsUnitTypes.TemporalUnit.TemporalMonths,
-                 QgsUnitTypes.TemporalUnit.TemporalYears,
-                 QgsUnitTypes.TemporalUnit.TemporalDecades,
-                 QgsUnitTypes.TemporalUnit.TemporalCenturies,
-                 QgsUnitTypes.TemporalUnit.TemporalIrregularStep,
-                 QgsUnitTypes.TemporalUnit.TemporalUnknownUnit]
+        units = [
+            QgsUnitTypes.TemporalUnit.TemporalMilliseconds,
+            QgsUnitTypes.TemporalUnit.TemporalSeconds,
+            QgsUnitTypes.TemporalUnit.TemporalMinutes,
+            QgsUnitTypes.TemporalUnit.TemporalHours,
+            QgsUnitTypes.TemporalUnit.TemporalDays,
+            QgsUnitTypes.TemporalUnit.TemporalWeeks,
+            QgsUnitTypes.TemporalUnit.TemporalMonths,
+            QgsUnitTypes.TemporalUnit.TemporalYears,
+            QgsUnitTypes.TemporalUnit.TemporalDecades,
+            QgsUnitTypes.TemporalUnit.TemporalCenturies,
+            QgsUnitTypes.TemporalUnit.TemporalIrregularStep,
+            QgsUnitTypes.TemporalUnit.TemporalUnknownUnit,
+        ]
 
         for u in units:
             res, ok = QgsUnitTypes.decodeTemporalUnit(QgsUnitTypes.encodeUnit(u))
@@ -423,29 +448,31 @@ class TestQgsUnitTypes(unittest.TestCase):
             self.assertEqual(res, u)
 
         # Test decoding bad units
-        res, ok = QgsUnitTypes.decodeTemporalUnit('bad')
+        res, ok = QgsUnitTypes.decodeTemporalUnit("bad")
         self.assertFalse(ok)
         self.assertEqual(res, QgsUnitTypes.TemporalUnit.TemporalUnknownUnit)
 
         # Test that string is cleaned before decoding
-        res, ok = QgsUnitTypes.decodeTemporalUnit(' min  ')
+        res, ok = QgsUnitTypes.decodeTemporalUnit(" min  ")
         assert ok
         self.assertEqual(res, QgsUnitTypes.TemporalUnit.TemporalMinutes)
 
     def testTemporalUnitsToFromString(self):
         """Test converting temporal units to and from translated strings"""
-        units = [QgsUnitTypes.TemporalUnit.TemporalMilliseconds,
-                 QgsUnitTypes.TemporalUnit.TemporalSeconds,
-                 QgsUnitTypes.TemporalUnit.TemporalMinutes,
-                 QgsUnitTypes.TemporalUnit.TemporalHours,
-                 QgsUnitTypes.TemporalUnit.TemporalDays,
-                 QgsUnitTypes.TemporalUnit.TemporalWeeks,
-                 QgsUnitTypes.TemporalUnit.TemporalMonths,
-                 QgsUnitTypes.TemporalUnit.TemporalYears,
-                 QgsUnitTypes.TemporalUnit.TemporalDecades,
-                 QgsUnitTypes.TemporalUnit.TemporalCenturies,
-                 QgsUnitTypes.TemporalUnit.TemporalIrregularStep,
-                 QgsUnitTypes.TemporalUnit.TemporalUnknownUnit]
+        units = [
+            QgsUnitTypes.TemporalUnit.TemporalMilliseconds,
+            QgsUnitTypes.TemporalUnit.TemporalSeconds,
+            QgsUnitTypes.TemporalUnit.TemporalMinutes,
+            QgsUnitTypes.TemporalUnit.TemporalHours,
+            QgsUnitTypes.TemporalUnit.TemporalDays,
+            QgsUnitTypes.TemporalUnit.TemporalWeeks,
+            QgsUnitTypes.TemporalUnit.TemporalMonths,
+            QgsUnitTypes.TemporalUnit.TemporalYears,
+            QgsUnitTypes.TemporalUnit.TemporalDecades,
+            QgsUnitTypes.TemporalUnit.TemporalCenturies,
+            QgsUnitTypes.TemporalUnit.TemporalIrregularStep,
+            QgsUnitTypes.TemporalUnit.TemporalUnknownUnit,
+        ]
 
         for u in units:
             res, ok = QgsUnitTypes.stringToTemporalUnit(QgsUnitTypes.toString(u))
@@ -453,24 +480,28 @@ class TestQgsUnitTypes(unittest.TestCase):
             self.assertEqual(res, u)
 
         # Test converting bad strings
-        res, ok = QgsUnitTypes.stringToTemporalUnit('bad')
+        res, ok = QgsUnitTypes.stringToTemporalUnit("bad")
         self.assertFalse(ok)
         self.assertEqual(res, QgsUnitTypes.TemporalUnit.TemporalUnknownUnit)
 
         # Test that string is cleaned before conversion
-        res, ok = QgsUnitTypes.stringToTemporalUnit(f' {QgsUnitTypes.toString(QgsUnitTypes.TemporalUnit.TemporalDecades).upper()}  ')
+        res, ok = QgsUnitTypes.stringToTemporalUnit(
+            f" {QgsUnitTypes.toString(QgsUnitTypes.TemporalUnit.TemporalDecades).upper()}  "
+        )
         assert ok
         self.assertEqual(res, QgsUnitTypes.TemporalUnit.TemporalDecades)
 
     def testEncodeDecodeRenderUnits(self):
         """Test encoding and decoding render units"""
-        units = [QgsUnitTypes.RenderUnit.RenderMillimeters,
-                 QgsUnitTypes.RenderUnit.RenderMetersInMapUnits,
-                 QgsUnitTypes.RenderUnit.RenderMapUnits,
-                 QgsUnitTypes.RenderUnit.RenderPixels,
-                 QgsUnitTypes.RenderUnit.RenderPercentage,
-                 QgsUnitTypes.RenderUnit.RenderPoints,
-                 QgsUnitTypes.RenderUnit.RenderInches]
+        units = [
+            QgsUnitTypes.RenderUnit.RenderMillimeters,
+            QgsUnitTypes.RenderUnit.RenderMetersInMapUnits,
+            QgsUnitTypes.RenderUnit.RenderMapUnits,
+            QgsUnitTypes.RenderUnit.RenderPixels,
+            QgsUnitTypes.RenderUnit.RenderPercentage,
+            QgsUnitTypes.RenderUnit.RenderPoints,
+            QgsUnitTypes.RenderUnit.RenderInches,
+        ]
 
         for u in units:
             res, ok = QgsUnitTypes.decodeRenderUnit(QgsUnitTypes.encodeUnit(u))
@@ -478,37 +509,39 @@ class TestQgsUnitTypes(unittest.TestCase):
             self.assertEqual(res, u)
 
         # Test decoding bad units
-        res, ok = QgsUnitTypes.decodeRenderUnit('bad')
+        res, ok = QgsUnitTypes.decodeRenderUnit("bad")
         self.assertFalse(ok)
         # default units should be MM
         self.assertEqual(res, QgsUnitTypes.RenderUnit.RenderMillimeters)
 
         # Test that string is cleaned before decoding
-        res, ok = QgsUnitTypes.decodeRenderUnit(' PiXeL  ')
+        res, ok = QgsUnitTypes.decodeRenderUnit(" PiXeL  ")
         assert ok
         self.assertEqual(res, QgsUnitTypes.RenderUnit.RenderPixels)
 
         # check some aliases - used in data defined labeling
-        res, ok = QgsUnitTypes.decodeRenderUnit('Meters')
+        res, ok = QgsUnitTypes.decodeRenderUnit("Meters")
         assert ok
-        res, ok = QgsUnitTypes.decodeRenderUnit('MapUnits')
+        res, ok = QgsUnitTypes.decodeRenderUnit("MapUnits")
         assert ok
         self.assertEqual(res, QgsUnitTypes.RenderUnit.RenderMapUnits)
-        res, ok = QgsUnitTypes.decodeRenderUnit('Percent')
+        res, ok = QgsUnitTypes.decodeRenderUnit("Percent")
         assert ok
         self.assertEqual(res, QgsUnitTypes.RenderUnit.RenderPercentage)
-        res, ok = QgsUnitTypes.decodeRenderUnit('Points')
+        res, ok = QgsUnitTypes.decodeRenderUnit("Points")
         assert ok
         self.assertEqual(res, QgsUnitTypes.RenderUnit.RenderPoints)
 
     def testRenderUnitsString(self):
         """Test converting render units to strings"""
-        units = [QgsUnitTypes.RenderUnit.RenderMillimeters,
-                 QgsUnitTypes.RenderUnit.RenderMapUnits,
-                 QgsUnitTypes.RenderUnit.RenderPixels,
-                 QgsUnitTypes.RenderUnit.RenderPercentage,
-                 QgsUnitTypes.RenderUnit.RenderPoints,
-                 QgsUnitTypes.RenderUnit.RenderInches]
+        units = [
+            QgsUnitTypes.RenderUnit.RenderMillimeters,
+            QgsUnitTypes.RenderUnit.RenderMapUnits,
+            QgsUnitTypes.RenderUnit.RenderPixels,
+            QgsUnitTypes.RenderUnit.RenderPercentage,
+            QgsUnitTypes.RenderUnit.RenderPoints,
+            QgsUnitTypes.RenderUnit.RenderInches,
+        ]
 
         for u in units:
             self.assertTrue(QgsUnitTypes.toString(u))
@@ -578,7 +611,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: 0.53995682073432482717,
                 QgsUnitTypes.DistanceUnit.DistanceMillimeters: 1000000.0,
                 QgsUnitTypes.DistanceUnit.DistanceCentimeters: 100000.0,
-                Qgis.DistanceUnit.Inches: 39370.078740157485
+                Qgis.DistanceUnit.Inches: 39370.078740157485,
             },
             QgsUnitTypes.DistanceUnit.DistanceFeet: {
                 QgsUnitTypes.DistanceUnit.DistanceMeters: 0.3048,
@@ -586,11 +619,11 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceUnit.DistanceFeet: 1.0,
                 QgsUnitTypes.DistanceUnit.DistanceYards: 0.3333333,
                 QgsUnitTypes.DistanceUnit.DistanceMiles: 0.00018939375,
-                QgsUnitTypes.DistanceUnit.DistanceDegrees: 2.73806498599629E-06,
+                QgsUnitTypes.DistanceUnit.DistanceDegrees: 2.73806498599629e-06,
                 QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: 0.000164579,
                 QgsUnitTypes.DistanceUnit.DistanceMillimeters: 304.8,
                 QgsUnitTypes.DistanceUnit.DistanceCentimeters: 30.48,
-                Qgis.DistanceUnit.Inches: 12
+                Qgis.DistanceUnit.Inches: 12,
             },
             QgsUnitTypes.DistanceUnit.DistanceYards: {
                 QgsUnitTypes.DistanceUnit.DistanceMeters: 0.9144,
@@ -602,7 +635,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: 0.0004937366590756,
                 QgsUnitTypes.DistanceUnit.DistanceMillimeters: 914.4,
                 QgsUnitTypes.DistanceUnit.DistanceCentimeters: 91.44,
-                Qgis.DistanceUnit.Inches: 36
+                Qgis.DistanceUnit.Inches: 36,
             },
             QgsUnitTypes.DistanceUnit.DistanceDegrees: {
                 QgsUnitTypes.DistanceUnit.DistanceMeters: 111319.49079327358,
@@ -614,7 +647,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: 60.1077164,
                 QgsUnitTypes.DistanceUnit.DistanceMillimeters: 111319490.79327358,
                 QgsUnitTypes.DistanceUnit.DistanceCentimeters: 11131949.079327358,
-                Qgis.DistanceUnit.Inches: 4382657.117845417
+                Qgis.DistanceUnit.Inches: 4382657.117845417,
             },
             QgsUnitTypes.DistanceUnit.DistanceMiles: {
                 QgsUnitTypes.DistanceUnit.DistanceMeters: 1609.3440000,
@@ -626,7 +659,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: 0.8689762,
                 QgsUnitTypes.DistanceUnit.DistanceMillimeters: 1609344.0,
                 QgsUnitTypes.DistanceUnit.DistanceCentimeters: 160934.4,
-                Qgis.DistanceUnit.Inches: 63360
+                Qgis.DistanceUnit.Inches: 63360,
             },
             QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: {
                 QgsUnitTypes.DistanceUnit.DistanceMeters: 1852.0,
@@ -638,7 +671,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: 1.0,
                 QgsUnitTypes.DistanceUnit.DistanceMillimeters: 1852000.0,
                 QgsUnitTypes.DistanceUnit.DistanceCentimeters: 185200.0,
-                Qgis.DistanceUnit.Inches: 72913.38582677166
+                Qgis.DistanceUnit.Inches: 72913.38582677166,
             },
             QgsUnitTypes.DistanceUnit.DistanceMillimeters: {
                 QgsUnitTypes.DistanceUnit.DistanceMeters: 0.001,
@@ -650,7 +683,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: 0.000000539957,
                 QgsUnitTypes.DistanceUnit.DistanceMillimeters: 1.0,
                 QgsUnitTypes.DistanceUnit.DistanceCentimeters: 0.1,
-                Qgis.DistanceUnit.Inches: 0.039370086377953
+                Qgis.DistanceUnit.Inches: 0.039370086377953,
             },
             QgsUnitTypes.DistanceUnit.DistanceCentimeters: {
                 QgsUnitTypes.DistanceUnit.DistanceMeters: 0.01,
@@ -662,7 +695,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: 0.00000539957,
                 QgsUnitTypes.DistanceUnit.DistanceMillimeters: 10.0,
                 QgsUnitTypes.DistanceUnit.DistanceCentimeters: 1.0,
-                Qgis.DistanceUnit.Inches: 0.3937007874015748
+                Qgis.DistanceUnit.Inches: 0.3937007874015748,
             },
             Qgis.DistanceUnit.Inches: {
                 QgsUnitTypes.DistanceUnit.DistanceMeters: 0.0254,
@@ -674,86 +707,93 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: 1.371489732183071538e-5,
                 QgsUnitTypes.DistanceUnit.DistanceMillimeters: 25.4,
                 QgsUnitTypes.DistanceUnit.DistanceCentimeters: 2.54,
-                Qgis.DistanceUnit.Inches: 1.0
+                Qgis.DistanceUnit.Inches: 1.0,
             },
-            Qgis.DistanceUnit.ChainsInternational: {
-                Qgis.DistanceUnit.Meters: 20.1168},
+            Qgis.DistanceUnit.ChainsInternational: {Qgis.DistanceUnit.Meters: 20.1168},
             Qgis.DistanceUnit.ChainsBritishBenoit1895A: {
-                Qgis.DistanceUnit.Meters: 20.1167824},
+                Qgis.DistanceUnit.Meters: 20.1167824
+            },
             Qgis.DistanceUnit.ChainsBritishBenoit1895B: {
-                Qgis.DistanceUnit.Meters: 20.116782494376},
+                Qgis.DistanceUnit.Meters: 20.116782494376
+            },
             Qgis.DistanceUnit.ChainsBritishSears1922Truncated: {
-                Qgis.DistanceUnit.Meters: 20.116756},
+                Qgis.DistanceUnit.Meters: 20.116756
+            },
             Qgis.DistanceUnit.ChainsBritishSears1922: {
-                Qgis.DistanceUnit.Meters: 20.11676512155},
-            Qgis.DistanceUnit.ChainsClarkes: {
-                Qgis.DistanceUnit.Meters: 20.1166195164},
+                Qgis.DistanceUnit.Meters: 20.11676512155
+            },
+            Qgis.DistanceUnit.ChainsClarkes: {Qgis.DistanceUnit.Meters: 20.1166195164},
             Qgis.DistanceUnit.ChainsUSSurvey: {
-                Qgis.DistanceUnit.Meters: 20.11684023368},
+                Qgis.DistanceUnit.Meters: 20.11684023368
+            },
             Qgis.DistanceUnit.FeetBritish1865: {
-                Qgis.DistanceUnit.Meters: 0.30480083333333},
-            Qgis.DistanceUnit.FeetBritish1936: {
-                Qgis.DistanceUnit.Meters: 0.3048007491},
+                Qgis.DistanceUnit.Meters: 0.30480083333333
+            },
+            Qgis.DistanceUnit.FeetBritish1936: {Qgis.DistanceUnit.Meters: 0.3048007491},
             Qgis.DistanceUnit.FeetBritishBenoit1895A: {
-                Qgis.DistanceUnit.Meters: 0.30479973333333},
+                Qgis.DistanceUnit.Meters: 0.30479973333333
+            },
             Qgis.DistanceUnit.FeetBritishBenoit1895B: {
-                Qgis.DistanceUnit.Meters: 0.30479973476327},
+                Qgis.DistanceUnit.Meters: 0.30479973476327
+            },
             Qgis.DistanceUnit.FeetBritishSears1922Truncated: {
-                Qgis.DistanceUnit.Meters: 0.30479933333333},
+                Qgis.DistanceUnit.Meters: 0.30479933333333
+            },
             Qgis.DistanceUnit.FeetBritishSears1922: {
-                Qgis.DistanceUnit.Meters: 0.30479947153868},
-            Qgis.DistanceUnit.FeetClarkes: {
-                Qgis.DistanceUnit.Meters: 0.3047972654},
+                Qgis.DistanceUnit.Meters: 0.30479947153868
+            },
+            Qgis.DistanceUnit.FeetClarkes: {Qgis.DistanceUnit.Meters: 0.3047972654},
             Qgis.DistanceUnit.FeetGoldCoast: {
-                Qgis.DistanceUnit.Meters: 0.30479971018151},
-            Qgis.DistanceUnit.FeetIndian: {
-                Qgis.DistanceUnit.Meters: 0.30479951024815},
-            Qgis.DistanceUnit.FeetIndian1937: {
-                Qgis.DistanceUnit.Meters: 0.30479841},
-            Qgis.DistanceUnit.FeetIndian1962: {
-                Qgis.DistanceUnit.Meters: 0.3047996},
-            Qgis.DistanceUnit.FeetIndian1975: {
-                Qgis.DistanceUnit.Meters: 0.3047995},
+                Qgis.DistanceUnit.Meters: 0.30479971018151
+            },
+            Qgis.DistanceUnit.FeetIndian: {Qgis.DistanceUnit.Meters: 0.30479951024815},
+            Qgis.DistanceUnit.FeetIndian1937: {Qgis.DistanceUnit.Meters: 0.30479841},
+            Qgis.DistanceUnit.FeetIndian1962: {Qgis.DistanceUnit.Meters: 0.3047996},
+            Qgis.DistanceUnit.FeetIndian1975: {Qgis.DistanceUnit.Meters: 0.3047995},
             Qgis.DistanceUnit.FeetUSSurvey: {
-                Qgis.DistanceUnit.Meters: 0.30480060960122},
-            Qgis.DistanceUnit.LinksInternational: {
-                Qgis.DistanceUnit.Meters: 0.201168},
+                Qgis.DistanceUnit.Meters: 0.30480060960122
+            },
+            Qgis.DistanceUnit.LinksInternational: {Qgis.DistanceUnit.Meters: 0.201168},
             Qgis.DistanceUnit.LinksBritishBenoit1895A: {
-                Qgis.DistanceUnit.Meters: 0.201167824},
+                Qgis.DistanceUnit.Meters: 0.201167824
+            },
             Qgis.DistanceUnit.LinksBritishBenoit1895B: {
-                Qgis.DistanceUnit.Meters: 0.20116782494376},
+                Qgis.DistanceUnit.Meters: 0.20116782494376
+            },
             Qgis.DistanceUnit.LinksBritishSears1922Truncated: {
-                Qgis.DistanceUnit.Meters: 0.20116756},
+                Qgis.DistanceUnit.Meters: 0.20116756
+            },
             Qgis.DistanceUnit.LinksBritishSears1922: {
-                Qgis.DistanceUnit.Meters: 0.20116765121553},
-            Qgis.DistanceUnit.LinksClarkes: {
-                Qgis.DistanceUnit.Meters: 0.20116619516},
+                Qgis.DistanceUnit.Meters: 0.20116765121553
+            },
+            Qgis.DistanceUnit.LinksClarkes: {Qgis.DistanceUnit.Meters: 0.20116619516},
             Qgis.DistanceUnit.LinksUSSurvey: {
-                Qgis.DistanceUnit.Meters: 0.2011684023368},
+                Qgis.DistanceUnit.Meters: 0.2011684023368
+            },
             Qgis.DistanceUnit.YardsBritishBenoit1895A: {
-                Qgis.DistanceUnit.Meters: 0.9143992},
+                Qgis.DistanceUnit.Meters: 0.9143992
+            },
             Qgis.DistanceUnit.YardsBritishBenoit1895B: {
-                Qgis.DistanceUnit.Meters: 0.9143992042898},
+                Qgis.DistanceUnit.Meters: 0.9143992042898
+            },
             Qgis.DistanceUnit.YardsBritishSears1922Truncated: {
-                Qgis.DistanceUnit.Meters: 0.914398},
+                Qgis.DistanceUnit.Meters: 0.914398
+            },
             Qgis.DistanceUnit.YardsBritishSears1922: {
-                Qgis.DistanceUnit.Meters: 0.91439841461603},
-            Qgis.DistanceUnit.YardsClarkes: {
-                Qgis.DistanceUnit.Meters: 0.9143917962},
-            Qgis.DistanceUnit.YardsIndian: {
-                Qgis.DistanceUnit.Meters: 0.91439853074444},
-            Qgis.DistanceUnit.YardsIndian1937: {
-                Qgis.DistanceUnit.Meters: 0.91439523},
-            Qgis.DistanceUnit.YardsIndian1962: {
-                Qgis.DistanceUnit.Meters: 0.9143988},
-            Qgis.DistanceUnit.YardsIndian1975: {
-                Qgis.DistanceUnit.Meters: 0.9143985},
+                Qgis.DistanceUnit.Meters: 0.91439841461603
+            },
+            Qgis.DistanceUnit.YardsClarkes: {Qgis.DistanceUnit.Meters: 0.9143917962},
+            Qgis.DistanceUnit.YardsIndian: {Qgis.DistanceUnit.Meters: 0.91439853074444},
+            Qgis.DistanceUnit.YardsIndian1937: {Qgis.DistanceUnit.Meters: 0.91439523},
+            Qgis.DistanceUnit.YardsIndian1962: {Qgis.DistanceUnit.Meters: 0.9143988},
+            Qgis.DistanceUnit.YardsIndian1975: {Qgis.DistanceUnit.Meters: 0.9143985},
             Qgis.DistanceUnit.MilesUSSurvey: {
-                Qgis.DistanceUnit.Meters: 1609.3472186944},
-            Qgis.DistanceUnit.Fathoms: {
-                Qgis.DistanceUnit.Meters: 1.8288},
+                Qgis.DistanceUnit.Meters: 1609.3472186944
+            },
+            Qgis.DistanceUnit.Fathoms: {Qgis.DistanceUnit.Meters: 1.8288},
             Qgis.DistanceUnit.MetersGermanLegal: {
-                Qgis.DistanceUnit.Meters: 1.0000135965},
+                Qgis.DistanceUnit.Meters: 1.0000135965
+            },
             QgsUnitTypes.DistanceUnit.DistanceUnknownUnit: {
                 QgsUnitTypes.DistanceUnit.DistanceMeters: 1.0,
                 QgsUnitTypes.DistanceUnit.DistanceKilometers: 1.0,
@@ -764,7 +804,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: 1.0,
                 QgsUnitTypes.DistanceUnit.DistanceMillimeters: 1.0,
                 QgsUnitTypes.DistanceUnit.DistanceCentimeters: 1.0,
-                Qgis.DistanceUnit.Inches: 1.0
+                Qgis.DistanceUnit.Inches: 1.0,
             },
         }
 
@@ -772,16 +812,25 @@ class TestQgsUnitTypes(unittest.TestCase):
             for to_unit in list(expected[from_unit].keys()):
                 expected_factor = expected[from_unit][to_unit]
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, to_unit)
-                self.assertAlmostEqual(res,
-                                       expected_factor,
-                                       msg='got {:.7f}, expected {:.7f} when converting from {} to {}'.format(res, expected_factor,
-                                                                                                              QgsUnitTypes.toString(from_unit),
-                                                                                                              QgsUnitTypes.toString(to_unit)))
+                self.assertAlmostEqual(
+                    res,
+                    expected_factor,
+                    msg="got {:.7f}, expected {:.7f} when converting from {} to {}".format(
+                        res,
+                        expected_factor,
+                        QgsUnitTypes.toString(from_unit),
+                        QgsUnitTypes.toString(to_unit),
+                    ),
+                )
                 # test conversion to unknown units
-                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.DistanceUnit.DistanceUnknownUnit)
-                self.assertAlmostEqual(res,
-                                       1.0,
-                                       msg=f'got {res:.7f}, expected 1.0 when converting from {QgsUnitTypes.toString(from_unit)} to unknown units')
+                res = QgsUnitTypes.fromUnitToUnitFactor(
+                    from_unit, QgsUnitTypes.DistanceUnit.DistanceUnknownUnit
+                )
+                self.assertAlmostEqual(
+                    res,
+                    1.0,
+                    msg=f"got {res:.7f}, expected 1.0 when converting from {QgsUnitTypes.toString(from_unit)} to unknown units",
+                )
 
     def testAreaFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between areal units"""
@@ -800,7 +849,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.AreaUnit.AreaSquareMillimeters: 1e6,
                 QgsUnitTypes.AreaUnit.AreaSquareCentimeters: 1e4,
                 Qgis.AreaUnit.SquareInches: 1550.0031000062002,
-                QgsUnitTypes.AreaUnit.AreaUnknownUnit: 1.0
+                QgsUnitTypes.AreaUnit.AreaUnknownUnit: 1.0,
             },
             QgsUnitTypes.AreaUnit.AreaSquareKilometers: {
                 QgsUnitTypes.AreaUnit.AreaSquareMeters: 1e6,
@@ -838,7 +887,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.AreaUnit.AreaSquareFeet: 9.0,
                 QgsUnitTypes.AreaUnit.AreaSquareYards: 1.0,
                 QgsUnitTypes.AreaUnit.AreaSquareMiles: 3.22831e-7,
-                QgsUnitTypes.AreaUnit.AreaHectares: 8.3612736E-5,
+                QgsUnitTypes.AreaUnit.AreaHectares: 8.3612736e-5,
                 QgsUnitTypes.AreaUnit.AreaAcres: 0.00020661157,
                 QgsUnitTypes.AreaUnit.AreaSquareNauticalMiles: 2.43776e-7,
                 QgsUnitTypes.AreaUnit.AreaSquareDegrees: 0.000000000067473,
@@ -920,7 +969,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.AreaUnit.AreaSquareMillimeters: 12392029030500000.0,
                 QgsUnitTypes.AreaUnit.AreaSquareCentimeters: 123920290305000.0,
                 QgsUnitTypes.AreaUnit.AreaUnknownUnit: 1.0,
-                Qgis.AreaUnit.SquareInches: 19207683412641.824
+                Qgis.AreaUnit.SquareInches: 19207683412641.824,
             },
             QgsUnitTypes.AreaUnit.AreaSquareMillimeters: {
                 QgsUnitTypes.AreaUnit.AreaSquareMeters: 1e-6,
@@ -935,7 +984,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.AreaUnit.AreaSquareMillimeters: 1.0,
                 QgsUnitTypes.AreaUnit.AreaSquareCentimeters: 0.01,
                 QgsUnitTypes.AreaUnit.AreaUnknownUnit: 1.0,
-                Qgis.AreaUnit.SquareInches: 0.0015500031000062
+                Qgis.AreaUnit.SquareInches: 0.0015500031000062,
             },
             QgsUnitTypes.AreaUnit.AreaSquareCentimeters: {
                 QgsUnitTypes.AreaUnit.AreaSquareMeters: 1e-4,
@@ -950,7 +999,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.AreaUnit.AreaSquareMillimeters: 100,
                 QgsUnitTypes.AreaUnit.AreaSquareCentimeters: 1.0,
                 QgsUnitTypes.AreaUnit.AreaUnknownUnit: 1.0,
-                Qgis.AreaUnit.SquareInches: 0.15500031000062
+                Qgis.AreaUnit.SquareInches: 0.15500031000062,
             },
             Qgis.AreaUnit.SquareInches: {
                 QgsUnitTypes.AreaUnit.AreaSquareMeters: 0.00064516,
@@ -965,98 +1014,109 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.AreaUnit.AreaSquareMillimeters: 645.16,
                 QgsUnitTypes.AreaUnit.AreaSquareCentimeters: 6.451599999999999,
                 QgsUnitTypes.AreaUnit.AreaUnknownUnit: 1.0,
-                Qgis.AreaUnit.SquareInches: 1
-            }
+                Qgis.AreaUnit.SquareInches: 1,
+            },
         }
 
         for from_unit in list(expected.keys()):
             for to_unit in list(expected[from_unit].keys()):
                 expected_factor = expected[from_unit][to_unit]
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, to_unit)
-                self.assertAlmostEqual(res,
-                                       expected_factor,
-                                       msg='got {:.15f}, expected {:.15f} when converting from {} to {}'.format(res, expected_factor,
-                                                                                                                QgsUnitTypes.toString(from_unit),
-                                                                                                                QgsUnitTypes.toString(to_unit)))
+                self.assertAlmostEqual(
+                    res,
+                    expected_factor,
+                    msg="got {:.15f}, expected {:.15f} when converting from {} to {}".format(
+                        res,
+                        expected_factor,
+                        QgsUnitTypes.toString(from_unit),
+                        QgsUnitTypes.toString(to_unit),
+                    ),
+                )
                 # test conversion to unknown units
-                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.AreaUnit.AreaUnknownUnit)
-                self.assertAlmostEqual(res,
-                                       1.0,
-                                       msg=f'got {res:.7f}, expected 1.0 when converting from {QgsUnitTypes.toString(from_unit)} to unknown units')
+                res = QgsUnitTypes.fromUnitToUnitFactor(
+                    from_unit, QgsUnitTypes.AreaUnit.AreaUnknownUnit
+                )
+                self.assertAlmostEqual(
+                    res,
+                    1.0,
+                    msg=f"got {res:.7f}, expected 1.0 when converting from {QgsUnitTypes.toString(from_unit)} to unknown units",
+                )
 
     def testDistanceToAreaUnit(self):
         """Test distanceToAreaUnit conversion"""
-        expected = {QgsUnitTypes.DistanceUnit.DistanceMeters: QgsUnitTypes.AreaUnit.AreaSquareMeters,
-                    QgsUnitTypes.DistanceUnit.DistanceKilometers: QgsUnitTypes.AreaUnit.AreaSquareKilometers,
-                    QgsUnitTypes.DistanceUnit.DistanceFeet: QgsUnitTypes.AreaUnit.AreaSquareFeet,
-                    QgsUnitTypes.DistanceUnit.DistanceYards: QgsUnitTypes.AreaUnit.AreaSquareYards,
-                    QgsUnitTypes.DistanceUnit.DistanceMiles: QgsUnitTypes.AreaUnit.AreaSquareMiles,
-                    QgsUnitTypes.DistanceUnit.DistanceDegrees: QgsUnitTypes.AreaUnit.AreaSquareDegrees,
-                    QgsUnitTypes.DistanceUnit.DistanceCentimeters: QgsUnitTypes.AreaUnit.AreaSquareCentimeters,
-                    QgsUnitTypes.DistanceUnit.DistanceMillimeters: QgsUnitTypes.AreaUnit.AreaSquareMillimeters,
-                    QgsUnitTypes.DistanceUnit.DistanceUnknownUnit: QgsUnitTypes.AreaUnit.AreaUnknownUnit,
-                    QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: QgsUnitTypes.AreaUnit.AreaSquareNauticalMiles,
-                    Qgis.DistanceUnit.Inches: Qgis.AreaUnit.SquareInches,
-                    Qgis.DistanceUnit.ChainsInternational: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.ChainsBritishBenoit1895A: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.ChainsBritishBenoit1895B: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.ChainsBritishSears1922Truncated: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.ChainsBritishSears1922: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.ChainsClarkes: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.ChainsUSSurvey: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.FeetBritish1865: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.FeetBritish1936: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.FeetBritishBenoit1895A: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.FeetBritishBenoit1895B: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.FeetBritishSears1922Truncated: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.FeetBritishSears1922: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.FeetClarkes: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.FeetGoldCoast: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.FeetIndian: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.FeetIndian1937: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.FeetIndian1962: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.FeetIndian1975: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.FeetUSSurvey: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.LinksInternational: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.LinksBritishBenoit1895A: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.LinksBritishBenoit1895B: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.LinksBritishSears1922Truncated: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.LinksBritishSears1922: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.LinksClarkes: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.LinksUSSurvey: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.YardsBritishBenoit1895A: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.YardsBritishBenoit1895B: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.YardsBritishSears1922Truncated: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.YardsBritishSears1922: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.YardsClarkes: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.YardsIndian: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.YardsIndian1937: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.YardsIndian1962: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.YardsIndian1975: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.MilesUSSurvey: Qgis.AreaUnit.SquareMiles,
-                    Qgis.DistanceUnit.Fathoms: Qgis.AreaUnit.SquareFeet,
-                    Qgis.DistanceUnit.MetersGermanLegal: Qgis.AreaUnit.SquareMeters,
-                    }
+        expected = {
+            QgsUnitTypes.DistanceUnit.DistanceMeters: QgsUnitTypes.AreaUnit.AreaSquareMeters,
+            QgsUnitTypes.DistanceUnit.DistanceKilometers: QgsUnitTypes.AreaUnit.AreaSquareKilometers,
+            QgsUnitTypes.DistanceUnit.DistanceFeet: QgsUnitTypes.AreaUnit.AreaSquareFeet,
+            QgsUnitTypes.DistanceUnit.DistanceYards: QgsUnitTypes.AreaUnit.AreaSquareYards,
+            QgsUnitTypes.DistanceUnit.DistanceMiles: QgsUnitTypes.AreaUnit.AreaSquareMiles,
+            QgsUnitTypes.DistanceUnit.DistanceDegrees: QgsUnitTypes.AreaUnit.AreaSquareDegrees,
+            QgsUnitTypes.DistanceUnit.DistanceCentimeters: QgsUnitTypes.AreaUnit.AreaSquareCentimeters,
+            QgsUnitTypes.DistanceUnit.DistanceMillimeters: QgsUnitTypes.AreaUnit.AreaSquareMillimeters,
+            QgsUnitTypes.DistanceUnit.DistanceUnknownUnit: QgsUnitTypes.AreaUnit.AreaUnknownUnit,
+            QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: QgsUnitTypes.AreaUnit.AreaSquareNauticalMiles,
+            Qgis.DistanceUnit.Inches: Qgis.AreaUnit.SquareInches,
+            Qgis.DistanceUnit.ChainsInternational: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.ChainsBritishBenoit1895A: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.ChainsBritishBenoit1895B: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.ChainsBritishSears1922Truncated: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.ChainsBritishSears1922: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.ChainsClarkes: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.ChainsUSSurvey: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.FeetBritish1865: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.FeetBritish1936: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.FeetBritishBenoit1895A: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.FeetBritishBenoit1895B: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.FeetBritishSears1922Truncated: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.FeetBritishSears1922: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.FeetClarkes: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.FeetGoldCoast: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.FeetIndian: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.FeetIndian1937: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.FeetIndian1962: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.FeetIndian1975: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.FeetUSSurvey: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.LinksInternational: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.LinksBritishBenoit1895A: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.LinksBritishBenoit1895B: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.LinksBritishSears1922Truncated: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.LinksBritishSears1922: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.LinksClarkes: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.LinksUSSurvey: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.YardsBritishBenoit1895A: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.YardsBritishBenoit1895B: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.YardsBritishSears1922Truncated: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.YardsBritishSears1922: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.YardsClarkes: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.YardsIndian: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.YardsIndian1937: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.YardsIndian1962: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.YardsIndian1975: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.MilesUSSurvey: Qgis.AreaUnit.SquareMiles,
+            Qgis.DistanceUnit.Fathoms: Qgis.AreaUnit.SquareFeet,
+            Qgis.DistanceUnit.MetersGermanLegal: Qgis.AreaUnit.SquareMeters,
+        }
 
         for t in list(expected.keys()):
             self.assertEqual(QgsUnitTypes.distanceToAreaUnit(t), expected[t])
 
     def testAreaToDistanceUnit(self):
         """Test areaToDistanceUnit conversion"""
-        expected = {QgsUnitTypes.AreaUnit.AreaSquareMeters: QgsUnitTypes.DistanceUnit.DistanceMeters,
-                    QgsUnitTypes.AreaUnit.AreaSquareKilometers: QgsUnitTypes.DistanceUnit.DistanceKilometers,
-                    QgsUnitTypes.AreaUnit.AreaSquareFeet: QgsUnitTypes.DistanceUnit.DistanceFeet,
-                    QgsUnitTypes.AreaUnit.AreaSquareYards: QgsUnitTypes.DistanceUnit.DistanceYards,
-                    QgsUnitTypes.AreaUnit.AreaSquareMiles: QgsUnitTypes.DistanceUnit.DistanceMiles,
-                    QgsUnitTypes.AreaUnit.AreaHectares: QgsUnitTypes.DistanceUnit.DistanceMeters,
-                    QgsUnitTypes.AreaUnit.AreaAcres: QgsUnitTypes.DistanceUnit.DistanceYards,
-                    QgsUnitTypes.AreaUnit.AreaSquareDegrees: QgsUnitTypes.DistanceUnit.DistanceDegrees,
-                    QgsUnitTypes.AreaUnit.AreaSquareCentimeters: QgsUnitTypes.DistanceUnit.DistanceCentimeters,
-                    QgsUnitTypes.AreaUnit.AreaSquareMillimeters: QgsUnitTypes.DistanceUnit.DistanceMillimeters,
-                    QgsUnitTypes.AreaUnit.AreaUnknownUnit: QgsUnitTypes.DistanceUnit.DistanceUnknownUnit,
-                    QgsUnitTypes.AreaUnit.AreaSquareNauticalMiles: QgsUnitTypes.DistanceUnit.DistanceNauticalMiles,
-                    Qgis.AreaUnit.SquareInches: Qgis.DistanceUnit.Inches
-                    }
+        expected = {
+            QgsUnitTypes.AreaUnit.AreaSquareMeters: QgsUnitTypes.DistanceUnit.DistanceMeters,
+            QgsUnitTypes.AreaUnit.AreaSquareKilometers: QgsUnitTypes.DistanceUnit.DistanceKilometers,
+            QgsUnitTypes.AreaUnit.AreaSquareFeet: QgsUnitTypes.DistanceUnit.DistanceFeet,
+            QgsUnitTypes.AreaUnit.AreaSquareYards: QgsUnitTypes.DistanceUnit.DistanceYards,
+            QgsUnitTypes.AreaUnit.AreaSquareMiles: QgsUnitTypes.DistanceUnit.DistanceMiles,
+            QgsUnitTypes.AreaUnit.AreaHectares: QgsUnitTypes.DistanceUnit.DistanceMeters,
+            QgsUnitTypes.AreaUnit.AreaAcres: QgsUnitTypes.DistanceUnit.DistanceYards,
+            QgsUnitTypes.AreaUnit.AreaSquareDegrees: QgsUnitTypes.DistanceUnit.DistanceDegrees,
+            QgsUnitTypes.AreaUnit.AreaSquareCentimeters: QgsUnitTypes.DistanceUnit.DistanceCentimeters,
+            QgsUnitTypes.AreaUnit.AreaSquareMillimeters: QgsUnitTypes.DistanceUnit.DistanceMillimeters,
+            QgsUnitTypes.AreaUnit.AreaUnknownUnit: QgsUnitTypes.DistanceUnit.DistanceUnknownUnit,
+            QgsUnitTypes.AreaUnit.AreaSquareNauticalMiles: QgsUnitTypes.DistanceUnit.DistanceNauticalMiles,
+            Qgis.AreaUnit.SquareInches: Qgis.DistanceUnit.Inches,
+        }
 
         for t in list(expected.keys()):
             self.assertEqual(QgsUnitTypes.areaToDistanceUnit(t), expected[t])
@@ -1076,7 +1136,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.VolumeUnit.VolumeCubicInch: 61023.7438368,
                 QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter: 1000000,
                 QgsUnitTypes.VolumeUnit.VolumeCubicDegrees: 7.24913798948971e-16,
-                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0
+                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0,
             },
             QgsUnitTypes.VolumeUnit.VolumeCubicFeet: {
                 QgsUnitTypes.VolumeUnit.VolumeCubicMeters: 0.0283168,
@@ -1089,7 +1149,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.VolumeUnit.VolumeCubicInch: 1728.000629765,
                 QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter: 28316.85,
                 QgsUnitTypes.VolumeUnit.VolumeCubicDegrees: 2.0527272837261945e-17,
-                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0
+                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0,
             },
             QgsUnitTypes.VolumeUnit.VolumeCubicYards: {
                 QgsUnitTypes.VolumeUnit.VolumeCubicMeters: 0.7645549,
@@ -1102,7 +1162,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.VolumeUnit.VolumeCubicInch: 46656.013952472,
                 QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter: 764554.9,
                 QgsUnitTypes.VolumeUnit.VolumeCubicDegrees: 5.542363970640507e-16,
-                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0
+                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0,
             },
             QgsUnitTypes.VolumeUnit.VolumeBarrel: {
                 QgsUnitTypes.VolumeUnit.VolumeCubicMeters: 0.158987294928,
@@ -1115,7 +1175,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.VolumeUnit.VolumeCubicInch: 9702.002677722,
                 QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter: 158987.3,
                 QgsUnitTypes.VolumeUnit.VolumeCubicDegrees: 1.1525208762763973e-16,
-                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0
+                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0,
             },
             QgsUnitTypes.VolumeUnit.VolumeCubicDecimeter: {
                 QgsUnitTypes.VolumeUnit.VolumeCubicMeters: 0.001,
@@ -1128,7 +1188,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.VolumeUnit.VolumeCubicInch: 61.02375899,
                 QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter: 1000,
                 QgsUnitTypes.VolumeUnit.VolumeCubicDegrees: 7.24913798948971e-19,
-                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0
+                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0,
             },
             QgsUnitTypes.VolumeUnit.VolumeLiters: {
                 QgsUnitTypes.VolumeUnit.VolumeCubicMeters: 0.001,
@@ -1141,7 +1201,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.VolumeUnit.VolumeCubicInch: 61.02375899,
                 QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter: 1000,
                 QgsUnitTypes.VolumeUnit.VolumeCubicDegrees: 7.24913798948971e-19,
-                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0
+                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0,
             },
             QgsUnitTypes.VolumeUnit.VolumeGallonUS: {
                 QgsUnitTypes.VolumeUnit.VolumeCubicMeters: 0.00378541,
@@ -1154,7 +1214,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.VolumeUnit.VolumeCubicInch: 231.000069567,
                 QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter: 3785.412,
                 QgsUnitTypes.VolumeUnit.VolumeCubicDegrees: 2.7440973935070226e-18,
-                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0
+                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0,
             },
             QgsUnitTypes.VolumeUnit.VolumeCubicInch: {
                 QgsUnitTypes.VolumeUnit.VolumeCubicMeters: 1.63871e-5,
@@ -1167,7 +1227,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.VolumeUnit.VolumeCubicInch: 1.0,
                 QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter: 16.38706,
                 QgsUnitTypes.VolumeUnit.VolumeCubicDegrees: 1.187916242337679e-20,
-                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0
+                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0,
             },
             QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter: {
                 QgsUnitTypes.VolumeUnit.VolumeCubicMeters: 1e-6,
@@ -1180,7 +1240,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.VolumeUnit.VolumeCubicInch: 0.061023759,
                 QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter: 1.0,
                 QgsUnitTypes.VolumeUnit.VolumeCubicDegrees: 7.24913798948971e-22,
-                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0
+                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0,
             },
             QgsUnitTypes.VolumeUnit.VolumeCubicDegrees: {
                 QgsUnitTypes.VolumeUnit.VolumeCubicMeters: 1379474361572186.2500000,
@@ -1193,24 +1253,33 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.VolumeUnit.VolumeCubicInch: 22605446363.083416,
                 QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter: 1379474361.5721862,
                 QgsUnitTypes.VolumeUnit.VolumeCubicDegrees: 1.0,
-                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0
-            }
+                QgsUnitTypes.VolumeUnit.VolumeUnknownUnit: 1.0,
+            },
         }
 
         for from_unit in list(expected.keys()):
             for to_unit in list(expected[from_unit].keys()):
                 expected_factor = expected[from_unit][to_unit]
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, to_unit)
-                self.assertAlmostEqual(res,
-                                       expected_factor,
-                                       msg='got {:.15f}, expected {:.15f} when converting from {} to {}'.format(res, expected_factor,
-                                                                                                                QgsUnitTypes.toString(from_unit),
-                                                                                                                QgsUnitTypes.toString(to_unit)))
+                self.assertAlmostEqual(
+                    res,
+                    expected_factor,
+                    msg="got {:.15f}, expected {:.15f} when converting from {} to {}".format(
+                        res,
+                        expected_factor,
+                        QgsUnitTypes.toString(from_unit),
+                        QgsUnitTypes.toString(to_unit),
+                    ),
+                )
                 # test conversion to unknown units
-                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.VolumeUnit.VolumeUnknownUnit)
-                self.assertAlmostEqual(res,
-                                       1.0,
-                                       msg=f'got {res:.7f}, expected 1.0 when converting from {QgsUnitTypes.toString(from_unit)} to unknown units')
+                res = QgsUnitTypes.fromUnitToUnitFactor(
+                    from_unit, QgsUnitTypes.VolumeUnit.VolumeUnknownUnit
+                )
+                self.assertAlmostEqual(
+                    res,
+                    1.0,
+                    msg=f"got {res:.7f}, expected 1.0 when converting from {QgsUnitTypes.toString(from_unit)} to unknown units",
+                )
 
     def testTemporalFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between temporal units"""
@@ -1273,7 +1342,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.TemporalUnit.TemporalIrregularStep: 1.0,
             },
             QgsUnitTypes.TemporalUnit.TemporalDays: {
-                QgsUnitTypes.TemporalUnit.TemporalMilliseconds: 8.64e+7,
+                QgsUnitTypes.TemporalUnit.TemporalMilliseconds: 8.64e7,
                 QgsUnitTypes.TemporalUnit.TemporalSeconds: 86400,
                 QgsUnitTypes.TemporalUnit.TemporalMinutes: 1440,
                 QgsUnitTypes.TemporalUnit.TemporalHours: 24,
@@ -1287,7 +1356,7 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.TemporalUnit.TemporalIrregularStep: 1.0,
             },
             QgsUnitTypes.TemporalUnit.TemporalWeeks: {
-                QgsUnitTypes.TemporalUnit.TemporalMilliseconds: 6.048e+8,
+                QgsUnitTypes.TemporalUnit.TemporalMilliseconds: 6.048e8,
                 QgsUnitTypes.TemporalUnit.TemporalSeconds: 604800,
                 QgsUnitTypes.TemporalUnit.TemporalMinutes: 10080,
                 QgsUnitTypes.TemporalUnit.TemporalHours: 168,
@@ -1355,141 +1424,160 @@ class TestQgsUnitTypes(unittest.TestCase):
                 QgsUnitTypes.TemporalUnit.TemporalCenturies: 1,
                 QgsUnitTypes.TemporalUnit.TemporalUnknownUnit: 1.0,
                 QgsUnitTypes.TemporalUnit.TemporalIrregularStep: 1.0,
-            }
+            },
         }
 
         for from_unit in list(expected.keys()):
             for to_unit in list(expected[from_unit].keys()):
                 expected_factor = expected[from_unit][to_unit]
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, to_unit)
-                self.assertAlmostEqual(res,
-                                       expected_factor,
-                                       places=10,
-                                       msg='got {:.15f}, expected {:.15f} when converting from {} to {}'.format(res, expected_factor,
-                                                                                                                QgsUnitTypes.toString(from_unit),
-                                                                                                                QgsUnitTypes.toString(to_unit)))
+                self.assertAlmostEqual(
+                    res,
+                    expected_factor,
+                    places=10,
+                    msg="got {:.15f}, expected {:.15f} when converting from {} to {}".format(
+                        res,
+                        expected_factor,
+                        QgsUnitTypes.toString(from_unit),
+                        QgsUnitTypes.toString(to_unit),
+                    ),
+                )
                 # test conversion to unknown units
-                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.TemporalUnit.TemporalUnknownUnit)
-                self.assertAlmostEqual(res,
-                                       1.0,
-                                       msg=f'got {res:.7f}, expected 1.0 when converting from {QgsUnitTypes.toString(from_unit)} to unknown units')
-                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.TemporalUnit.TemporalIrregularStep)
-                self.assertAlmostEqual(res,
-                                       1.0,
-                                       msg=f'got {res:.7f}, expected 1.0 when converting from {QgsUnitTypes.toString(from_unit)} to unknown units')
+                res = QgsUnitTypes.fromUnitToUnitFactor(
+                    from_unit, QgsUnitTypes.TemporalUnit.TemporalUnknownUnit
+                )
+                self.assertAlmostEqual(
+                    res,
+                    1.0,
+                    msg=f"got {res:.7f}, expected 1.0 when converting from {QgsUnitTypes.toString(from_unit)} to unknown units",
+                )
+                res = QgsUnitTypes.fromUnitToUnitFactor(
+                    from_unit, QgsUnitTypes.TemporalUnit.TemporalIrregularStep
+                )
+                self.assertAlmostEqual(
+                    res,
+                    1.0,
+                    msg=f"got {res:.7f}, expected 1.0 when converting from {QgsUnitTypes.toString(from_unit)} to unknown units",
+                )
 
     def testDistanceToVolumeUnit(self):
         """Test distanceToVolumeUnit conversion"""
-        expected = {QgsUnitTypes.DistanceUnit.DistanceMeters: QgsUnitTypes.VolumeUnit.VolumeCubicMeters,
-                    QgsUnitTypes.DistanceUnit.DistanceKilometers: QgsUnitTypes.VolumeUnit.VolumeCubicMeters,
-                    QgsUnitTypes.DistanceUnit.DistanceFeet: QgsUnitTypes.VolumeUnit.VolumeCubicFeet,
-                    QgsUnitTypes.DistanceUnit.DistanceYards: QgsUnitTypes.VolumeUnit.VolumeCubicYards,
-                    QgsUnitTypes.DistanceUnit.DistanceMiles: QgsUnitTypes.VolumeUnit.VolumeCubicFeet,
-                    QgsUnitTypes.DistanceUnit.DistanceDegrees: QgsUnitTypes.VolumeUnit.VolumeCubicDegrees,
-                    QgsUnitTypes.DistanceUnit.DistanceCentimeters: QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter,
-                    QgsUnitTypes.DistanceUnit.DistanceMillimeters: QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter,
-                    QgsUnitTypes.DistanceUnit.DistanceUnknownUnit: QgsUnitTypes.VolumeUnit.VolumeUnknownUnit,
-                    QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: QgsUnitTypes.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.Inches: QgsUnitTypes.VolumeUnit.VolumeCubicInch,
-                    Qgis.DistanceUnit.ChainsInternational: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.ChainsBritishBenoit1895A: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.ChainsBritishBenoit1895B: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.ChainsBritishSears1922Truncated: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.ChainsBritishSears1922: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.ChainsClarkes: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.ChainsUSSurvey: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.FeetBritish1865: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.FeetBritish1936: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.FeetBritishBenoit1895A: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.FeetBritishBenoit1895B: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.FeetBritishSears1922Truncated: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.FeetBritishSears1922: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.FeetClarkes: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.FeetGoldCoast: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.FeetIndian: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.FeetIndian1937: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.FeetIndian1962: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.FeetIndian1975: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.FeetUSSurvey: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.LinksInternational: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.LinksBritishBenoit1895A: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.LinksBritishBenoit1895B: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.LinksBritishSears1922Truncated: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.LinksBritishSears1922: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.LinksClarkes: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.LinksUSSurvey: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.YardsBritishBenoit1895A: Qgis.VolumeUnit.VolumeCubicYards,
-                    Qgis.DistanceUnit.YardsBritishBenoit1895B: Qgis.VolumeUnit.VolumeCubicYards,
-                    Qgis.DistanceUnit.YardsBritishSears1922Truncated: Qgis.VolumeUnit.VolumeCubicYards,
-                    Qgis.DistanceUnit.YardsBritishSears1922: Qgis.VolumeUnit.VolumeCubicYards,
-                    Qgis.DistanceUnit.YardsClarkes: Qgis.VolumeUnit.VolumeCubicYards,
-                    Qgis.DistanceUnit.YardsIndian: Qgis.VolumeUnit.VolumeCubicYards,
-                    Qgis.DistanceUnit.YardsIndian1937: Qgis.VolumeUnit.VolumeCubicYards,
-                    Qgis.DistanceUnit.YardsIndian1962: Qgis.VolumeUnit.VolumeCubicYards,
-                    Qgis.DistanceUnit.YardsIndian1975: Qgis.VolumeUnit.VolumeCubicYards,
-                    Qgis.DistanceUnit.MilesUSSurvey: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.Fathoms: Qgis.VolumeUnit.VolumeCubicFeet,
-                    Qgis.DistanceUnit.MetersGermanLegal: Qgis.VolumeUnit.VolumeCubicMeters,
-                    }
+        expected = {
+            QgsUnitTypes.DistanceUnit.DistanceMeters: QgsUnitTypes.VolumeUnit.VolumeCubicMeters,
+            QgsUnitTypes.DistanceUnit.DistanceKilometers: QgsUnitTypes.VolumeUnit.VolumeCubicMeters,
+            QgsUnitTypes.DistanceUnit.DistanceFeet: QgsUnitTypes.VolumeUnit.VolumeCubicFeet,
+            QgsUnitTypes.DistanceUnit.DistanceYards: QgsUnitTypes.VolumeUnit.VolumeCubicYards,
+            QgsUnitTypes.DistanceUnit.DistanceMiles: QgsUnitTypes.VolumeUnit.VolumeCubicFeet,
+            QgsUnitTypes.DistanceUnit.DistanceDegrees: QgsUnitTypes.VolumeUnit.VolumeCubicDegrees,
+            QgsUnitTypes.DistanceUnit.DistanceCentimeters: QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter,
+            QgsUnitTypes.DistanceUnit.DistanceMillimeters: QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter,
+            QgsUnitTypes.DistanceUnit.DistanceUnknownUnit: QgsUnitTypes.VolumeUnit.VolumeUnknownUnit,
+            QgsUnitTypes.DistanceUnit.DistanceNauticalMiles: QgsUnitTypes.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.Inches: QgsUnitTypes.VolumeUnit.VolumeCubicInch,
+            Qgis.DistanceUnit.ChainsInternational: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.ChainsBritishBenoit1895A: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.ChainsBritishBenoit1895B: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.ChainsBritishSears1922Truncated: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.ChainsBritishSears1922: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.ChainsClarkes: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.ChainsUSSurvey: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.FeetBritish1865: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.FeetBritish1936: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.FeetBritishBenoit1895A: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.FeetBritishBenoit1895B: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.FeetBritishSears1922Truncated: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.FeetBritishSears1922: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.FeetClarkes: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.FeetGoldCoast: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.FeetIndian: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.FeetIndian1937: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.FeetIndian1962: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.FeetIndian1975: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.FeetUSSurvey: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.LinksInternational: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.LinksBritishBenoit1895A: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.LinksBritishBenoit1895B: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.LinksBritishSears1922Truncated: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.LinksBritishSears1922: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.LinksClarkes: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.LinksUSSurvey: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.YardsBritishBenoit1895A: Qgis.VolumeUnit.VolumeCubicYards,
+            Qgis.DistanceUnit.YardsBritishBenoit1895B: Qgis.VolumeUnit.VolumeCubicYards,
+            Qgis.DistanceUnit.YardsBritishSears1922Truncated: Qgis.VolumeUnit.VolumeCubicYards,
+            Qgis.DistanceUnit.YardsBritishSears1922: Qgis.VolumeUnit.VolumeCubicYards,
+            Qgis.DistanceUnit.YardsClarkes: Qgis.VolumeUnit.VolumeCubicYards,
+            Qgis.DistanceUnit.YardsIndian: Qgis.VolumeUnit.VolumeCubicYards,
+            Qgis.DistanceUnit.YardsIndian1937: Qgis.VolumeUnit.VolumeCubicYards,
+            Qgis.DistanceUnit.YardsIndian1962: Qgis.VolumeUnit.VolumeCubicYards,
+            Qgis.DistanceUnit.YardsIndian1975: Qgis.VolumeUnit.VolumeCubicYards,
+            Qgis.DistanceUnit.MilesUSSurvey: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.Fathoms: Qgis.VolumeUnit.VolumeCubicFeet,
+            Qgis.DistanceUnit.MetersGermanLegal: Qgis.VolumeUnit.VolumeCubicMeters,
+        }
 
         for t in list(expected.keys()):
             self.assertEqual(QgsUnitTypes.distanceToVolumeUnit(t), expected[t])
 
     def testVolumeToDistanceUnit(self):
         """Test volumeToDistanceUnit conversion"""
-        expected = {QgsUnitTypes.VolumeUnit.VolumeCubicMeters: QgsUnitTypes.DistanceUnit.DistanceMeters,
-                    QgsUnitTypes.VolumeUnit.VolumeCubicFeet: QgsUnitTypes.DistanceUnit.DistanceFeet,
-                    QgsUnitTypes.VolumeUnit.VolumeCubicYards: QgsUnitTypes.DistanceUnit.DistanceYards,
-                    QgsUnitTypes.VolumeUnit.VolumeBarrel: QgsUnitTypes.DistanceUnit.DistanceFeet,
-                    QgsUnitTypes.VolumeUnit.VolumeCubicDecimeter: QgsUnitTypes.DistanceUnit.DistanceCentimeters,
-                    QgsUnitTypes.VolumeUnit.VolumeLiters: QgsUnitTypes.DistanceUnit.DistanceMeters,
-                    QgsUnitTypes.VolumeUnit.VolumeGallonUS: QgsUnitTypes.DistanceUnit.DistanceFeet,
-                    QgsUnitTypes.VolumeUnit.VolumeCubicInch: Qgis.DistanceUnit.Inches,
-                    QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter: QgsUnitTypes.DistanceUnit.DistanceCentimeters,
-                    QgsUnitTypes.VolumeUnit.VolumeCubicDegrees: QgsUnitTypes.DistanceUnit.DistanceDegrees
-                    }
+        expected = {
+            QgsUnitTypes.VolumeUnit.VolumeCubicMeters: QgsUnitTypes.DistanceUnit.DistanceMeters,
+            QgsUnitTypes.VolumeUnit.VolumeCubicFeet: QgsUnitTypes.DistanceUnit.DistanceFeet,
+            QgsUnitTypes.VolumeUnit.VolumeCubicYards: QgsUnitTypes.DistanceUnit.DistanceYards,
+            QgsUnitTypes.VolumeUnit.VolumeBarrel: QgsUnitTypes.DistanceUnit.DistanceFeet,
+            QgsUnitTypes.VolumeUnit.VolumeCubicDecimeter: QgsUnitTypes.DistanceUnit.DistanceCentimeters,
+            QgsUnitTypes.VolumeUnit.VolumeLiters: QgsUnitTypes.DistanceUnit.DistanceMeters,
+            QgsUnitTypes.VolumeUnit.VolumeGallonUS: QgsUnitTypes.DistanceUnit.DistanceFeet,
+            QgsUnitTypes.VolumeUnit.VolumeCubicInch: Qgis.DistanceUnit.Inches,
+            QgsUnitTypes.VolumeUnit.VolumeCubicCentimeter: QgsUnitTypes.DistanceUnit.DistanceCentimeters,
+            QgsUnitTypes.VolumeUnit.VolumeCubicDegrees: QgsUnitTypes.DistanceUnit.DistanceDegrees,
+        }
 
         for t in list(expected.keys()):
             self.assertEqual(QgsUnitTypes.volumeToDistanceUnit(t), expected[t])
 
     def testEncodeDecodeAngleUnits(self):
         """Test encoding and decoding angle units"""
-        units = [QgsUnitTypes.AngleUnit.AngleDegrees,
-                 QgsUnitTypes.AngleUnit.AngleRadians,
-                 QgsUnitTypes.AngleUnit.AngleGon,
-                 QgsUnitTypes.AngleUnit.AngleMinutesOfArc,
-                 QgsUnitTypes.AngleUnit.AngleSecondsOfArc,
-                 QgsUnitTypes.AngleUnit.AngleTurn,
-                 QgsUnitTypes.AngleUnit.AngleMilliradiansSI,
-                 QgsUnitTypes.AngleUnit.AngleMilNATO,
-                 QgsUnitTypes.AngleUnit.AngleUnknownUnit]
+        units = [
+            QgsUnitTypes.AngleUnit.AngleDegrees,
+            QgsUnitTypes.AngleUnit.AngleRadians,
+            QgsUnitTypes.AngleUnit.AngleGon,
+            QgsUnitTypes.AngleUnit.AngleMinutesOfArc,
+            QgsUnitTypes.AngleUnit.AngleSecondsOfArc,
+            QgsUnitTypes.AngleUnit.AngleTurn,
+            QgsUnitTypes.AngleUnit.AngleMilliradiansSI,
+            QgsUnitTypes.AngleUnit.AngleMilNATO,
+            QgsUnitTypes.AngleUnit.AngleUnknownUnit,
+        ]
 
         for u in units:
             res, ok = QgsUnitTypes.decodeAngleUnit(QgsUnitTypes.encodeUnit(u))
-            assert ok, f'could not decode unit {QgsUnitTypes.toString(u)}'
+            assert ok, f"could not decode unit {QgsUnitTypes.toString(u)}"
             self.assertEqual(res, u)
 
         # Test decoding bad units
-        res, ok = QgsUnitTypes.decodeAngleUnit('bad')
+        res, ok = QgsUnitTypes.decodeAngleUnit("bad")
         self.assertFalse(ok)
         self.assertEqual(res, QgsUnitTypes.AngleUnit.AngleUnknownUnit)
 
         # Test that string is cleaned before decoding
-        res, ok = QgsUnitTypes.decodeAngleUnit(' MoA  ')
+        res, ok = QgsUnitTypes.decodeAngleUnit(" MoA  ")
         assert ok
         self.assertEqual(res, QgsUnitTypes.AngleUnit.AngleMinutesOfArc)
 
     def testAngleToString(self):
         """Test converting angle unit to string"""
-        units = [QgsUnitTypes.AngleUnit.AngleDegrees,
-                 QgsUnitTypes.AngleUnit.AngleRadians,
-                 QgsUnitTypes.AngleUnit.AngleGon,
-                 QgsUnitTypes.AngleUnit.AngleMinutesOfArc,
-                 QgsUnitTypes.AngleUnit.AngleSecondsOfArc,
-                 QgsUnitTypes.AngleUnit.AngleTurn,
-                 QgsUnitTypes.AngleUnit.AngleMilliradiansSI,
-                 QgsUnitTypes.AngleUnit.AngleMilNATO,
-                 QgsUnitTypes.AngleUnit.AngleUnknownUnit]
+        units = [
+            QgsUnitTypes.AngleUnit.AngleDegrees,
+            QgsUnitTypes.AngleUnit.AngleRadians,
+            QgsUnitTypes.AngleUnit.AngleGon,
+            QgsUnitTypes.AngleUnit.AngleMinutesOfArc,
+            QgsUnitTypes.AngleUnit.AngleSecondsOfArc,
+            QgsUnitTypes.AngleUnit.AngleTurn,
+            QgsUnitTypes.AngleUnit.AngleMilliradiansSI,
+            QgsUnitTypes.AngleUnit.AngleMilNATO,
+            QgsUnitTypes.AngleUnit.AngleUnknownUnit,
+        ]
 
         dupes = set()
 
@@ -1503,175 +1591,651 @@ class TestQgsUnitTypes(unittest.TestCase):
     def testAngleFromUnitToUnitFactor(self):
         """Test calculation of conversion factor between angular units"""
 
-        expected = {QgsUnitTypes.AngleUnit.AngleDegrees: {QgsUnitTypes.AngleUnit.AngleDegrees: 1.0, QgsUnitTypes.AngleUnit.AngleRadians: 0.0174533, QgsUnitTypes.AngleUnit.AngleGon: 1.1111111, QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 60, QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 3600, QgsUnitTypes.AngleUnit.AngleTurn: 0.00277777777778, QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 17.453292519943297, QgsUnitTypes.AngleUnit.AngleMilNATO: 17.77777777777778},
-                    QgsUnitTypes.AngleUnit.AngleRadians: {QgsUnitTypes.AngleUnit.AngleDegrees: 57.2957795, QgsUnitTypes.AngleUnit.AngleRadians: 1.0, QgsUnitTypes.AngleUnit.AngleGon: 63.6619772, QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 3437.7467708, QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 206264.8062471, QgsUnitTypes.AngleUnit.AngleTurn: 0.159154943092, QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 1000.0, QgsUnitTypes.AngleUnit.AngleMilNATO: 1018.5916357881301},
-                    QgsUnitTypes.AngleUnit.AngleGon: {QgsUnitTypes.AngleUnit.AngleDegrees: 0.9000000, QgsUnitTypes.AngleUnit.AngleRadians: 0.015707968623450838802, QgsUnitTypes.AngleUnit.AngleGon: 1.0, QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 54.0000000, QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 3240.0000000, QgsUnitTypes.AngleUnit.AngleTurn: 0.0025, QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 15.707963267948967, QgsUnitTypes.AngleUnit.AngleMilNATO: 16},
-                    QgsUnitTypes.AngleUnit.AngleMinutesOfArc: {QgsUnitTypes.AngleUnit.AngleDegrees: 0.016666672633390722247, QgsUnitTypes.AngleUnit.AngleRadians: 0.00029088831280398030638, QgsUnitTypes.AngleUnit.AngleGon: 0.018518525464057963154, QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 1.0, QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 60.0, QgsUnitTypes.AngleUnit.AngleTurn: 4.62962962962963e-05, QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 0.29088820866572157, QgsUnitTypes.AngleUnit.AngleMilNATO: 0.29629629629629634},
-                    QgsUnitTypes.AngleUnit.AngleSecondsOfArc: {QgsUnitTypes.AngleUnit.AngleDegrees: 0.00027777787722304257169, QgsUnitTypes.AngleUnit.AngleRadians: 4.848138546730629518e-6, QgsUnitTypes.AngleUnit.AngleGon: 0.0003086420910674814405, QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 0.016666672633325253783, QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 1.0, QgsUnitTypes.AngleUnit.AngleTurn: 7.71604938271605e-07, QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 0.0048481482527009582897, QgsUnitTypes.AngleUnit.AngleMilNATO: 0.0049382716049382715},
-                    QgsUnitTypes.AngleUnit.AngleTurn: {QgsUnitTypes.AngleUnit.AngleDegrees: 360.0, QgsUnitTypes.AngleUnit.AngleRadians: 6.2831853071795, QgsUnitTypes.AngleUnit.AngleGon: 400.0, QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 21600, QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 1296000, QgsUnitTypes.AngleUnit.AngleTurn: 1, QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 6283.185307179586, QgsUnitTypes.AngleUnit.AngleMilNATO: 6400},
-                    QgsUnitTypes.AngleUnit.AngleMilliradiansSI: {QgsUnitTypes.AngleUnit.AngleDegrees: 0.057295779513082325, QgsUnitTypes.AngleUnit.AngleRadians: 0.001, QgsUnitTypes.AngleUnit.AngleGon: 0.06366197723675814, QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 3.4377467707849396, QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 206.26480624709637, QgsUnitTypes.AngleUnit.AngleTurn: 0.0015707963267948967, QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 1.0, QgsUnitTypes.AngleUnit.AngleMilNATO: 1.0185916357881302},
-                    QgsUnitTypes.AngleUnit.AngleMilNATO: {QgsUnitTypes.AngleUnit.AngleDegrees: 0.05625,
-                                                          QgsUnitTypes.AngleUnit.AngleRadians: 0.0009817477042468104,
-                                                          QgsUnitTypes.AngleUnit.AngleGon: 0.0625,
-                                                          QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 3.375,
-                                                          QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 202.5,
-                                                          QgsUnitTypes.AngleUnit.AngleTurn: 0.000015625,
-                                                          QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 0.9817477042468102,
-                                                          QgsUnitTypes.AngleUnit.AngleMilNATO: 1.0}
-                    }
+        expected = {
+            QgsUnitTypes.AngleUnit.AngleDegrees: {
+                QgsUnitTypes.AngleUnit.AngleDegrees: 1.0,
+                QgsUnitTypes.AngleUnit.AngleRadians: 0.0174533,
+                QgsUnitTypes.AngleUnit.AngleGon: 1.1111111,
+                QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 60,
+                QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 3600,
+                QgsUnitTypes.AngleUnit.AngleTurn: 0.00277777777778,
+                QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 17.453292519943297,
+                QgsUnitTypes.AngleUnit.AngleMilNATO: 17.77777777777778,
+            },
+            QgsUnitTypes.AngleUnit.AngleRadians: {
+                QgsUnitTypes.AngleUnit.AngleDegrees: 57.2957795,
+                QgsUnitTypes.AngleUnit.AngleRadians: 1.0,
+                QgsUnitTypes.AngleUnit.AngleGon: 63.6619772,
+                QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 3437.7467708,
+                QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 206264.8062471,
+                QgsUnitTypes.AngleUnit.AngleTurn: 0.159154943092,
+                QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 1000.0,
+                QgsUnitTypes.AngleUnit.AngleMilNATO: 1018.5916357881301,
+            },
+            QgsUnitTypes.AngleUnit.AngleGon: {
+                QgsUnitTypes.AngleUnit.AngleDegrees: 0.9000000,
+                QgsUnitTypes.AngleUnit.AngleRadians: 0.015707968623450838802,
+                QgsUnitTypes.AngleUnit.AngleGon: 1.0,
+                QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 54.0000000,
+                QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 3240.0000000,
+                QgsUnitTypes.AngleUnit.AngleTurn: 0.0025,
+                QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 15.707963267948967,
+                QgsUnitTypes.AngleUnit.AngleMilNATO: 16,
+            },
+            QgsUnitTypes.AngleUnit.AngleMinutesOfArc: {
+                QgsUnitTypes.AngleUnit.AngleDegrees: 0.016666672633390722247,
+                QgsUnitTypes.AngleUnit.AngleRadians: 0.00029088831280398030638,
+                QgsUnitTypes.AngleUnit.AngleGon: 0.018518525464057963154,
+                QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 1.0,
+                QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 60.0,
+                QgsUnitTypes.AngleUnit.AngleTurn: 4.62962962962963e-05,
+                QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 0.29088820866572157,
+                QgsUnitTypes.AngleUnit.AngleMilNATO: 0.29629629629629634,
+            },
+            QgsUnitTypes.AngleUnit.AngleSecondsOfArc: {
+                QgsUnitTypes.AngleUnit.AngleDegrees: 0.00027777787722304257169,
+                QgsUnitTypes.AngleUnit.AngleRadians: 4.848138546730629518e-6,
+                QgsUnitTypes.AngleUnit.AngleGon: 0.0003086420910674814405,
+                QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 0.016666672633325253783,
+                QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 1.0,
+                QgsUnitTypes.AngleUnit.AngleTurn: 7.71604938271605e-07,
+                QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 0.0048481482527009582897,
+                QgsUnitTypes.AngleUnit.AngleMilNATO: 0.0049382716049382715,
+            },
+            QgsUnitTypes.AngleUnit.AngleTurn: {
+                QgsUnitTypes.AngleUnit.AngleDegrees: 360.0,
+                QgsUnitTypes.AngleUnit.AngleRadians: 6.2831853071795,
+                QgsUnitTypes.AngleUnit.AngleGon: 400.0,
+                QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 21600,
+                QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 1296000,
+                QgsUnitTypes.AngleUnit.AngleTurn: 1,
+                QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 6283.185307179586,
+                QgsUnitTypes.AngleUnit.AngleMilNATO: 6400,
+            },
+            QgsUnitTypes.AngleUnit.AngleMilliradiansSI: {
+                QgsUnitTypes.AngleUnit.AngleDegrees: 0.057295779513082325,
+                QgsUnitTypes.AngleUnit.AngleRadians: 0.001,
+                QgsUnitTypes.AngleUnit.AngleGon: 0.06366197723675814,
+                QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 3.4377467707849396,
+                QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 206.26480624709637,
+                QgsUnitTypes.AngleUnit.AngleTurn: 0.0015707963267948967,
+                QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 1.0,
+                QgsUnitTypes.AngleUnit.AngleMilNATO: 1.0185916357881302,
+            },
+            QgsUnitTypes.AngleUnit.AngleMilNATO: {
+                QgsUnitTypes.AngleUnit.AngleDegrees: 0.05625,
+                QgsUnitTypes.AngleUnit.AngleRadians: 0.0009817477042468104,
+                QgsUnitTypes.AngleUnit.AngleGon: 0.0625,
+                QgsUnitTypes.AngleUnit.AngleMinutesOfArc: 3.375,
+                QgsUnitTypes.AngleUnit.AngleSecondsOfArc: 202.5,
+                QgsUnitTypes.AngleUnit.AngleTurn: 0.000015625,
+                QgsUnitTypes.AngleUnit.AngleMilliradiansSI: 0.9817477042468102,
+                QgsUnitTypes.AngleUnit.AngleMilNATO: 1.0,
+            },
+        }
 
         for from_unit in list(expected.keys()):
             for to_unit in list(expected[from_unit].keys()):
                 expected_factor = expected[from_unit][to_unit]
                 res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, to_unit)
-                self.assertAlmostEqual(res,
-                                       expected_factor,
-                                       msg='got {:.7f}, expected {:.7f} when converting from {} to {}'.format(res, expected_factor,
-                                                                                                              QgsUnitTypes.toString(from_unit),
-                                                                                                              QgsUnitTypes.toString(to_unit)))
+                self.assertAlmostEqual(
+                    res,
+                    expected_factor,
+                    msg="got {:.7f}, expected {:.7f} when converting from {} to {}".format(
+                        res,
+                        expected_factor,
+                        QgsUnitTypes.toString(from_unit),
+                        QgsUnitTypes.toString(to_unit),
+                    ),
+                )
                 # test conversion to unknown units
-                res = QgsUnitTypes.fromUnitToUnitFactor(from_unit, QgsUnitTypes.AngleUnit.AngleUnknownUnit)
-                self.assertAlmostEqual(res,
-                                       1.0,
-                                       msg=f'got {res:.7f}, expected 1.0 when converting from {QgsUnitTypes.toString(from_unit)} to unknown units')
+                res = QgsUnitTypes.fromUnitToUnitFactor(
+                    from_unit, QgsUnitTypes.AngleUnit.AngleUnknownUnit
+                )
+                self.assertAlmostEqual(
+                    res,
+                    1.0,
+                    msg=f"got {res:.7f}, expected 1.0 when converting from {QgsUnitTypes.toString(from_unit)} to unknown units",
+                )
 
     def testFormatAngle(self):
         """Test formatting angles"""
-        self.assertEqual(QgsUnitTypes.formatAngle(45, 3, QgsUnitTypes.AngleUnit.AngleDegrees), '45.000°')
-        self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleUnit.AngleRadians), '1.00 rad')
-        self.assertEqual(QgsUnitTypes.formatAngle(1, 0, QgsUnitTypes.AngleUnit.AngleGon), '1 gon')
-        self.assertEqual(QgsUnitTypes.formatAngle(1.11111111, 4, QgsUnitTypes.AngleUnit.AngleMinutesOfArc), '1.1111′')
-        self.assertEqual(QgsUnitTypes.formatAngle(1.99999999, 2, QgsUnitTypes.AngleUnit.AngleSecondsOfArc), '2.00″')
-        self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleUnit.AngleTurn), '1.00 tr')
-        self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleUnit.AngleMilliradiansSI), '1.00 millirad')
-        self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleUnit.AngleMilNATO), '1.00 mil')
-        self.assertEqual(QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleUnit.AngleUnknownUnit), '1.00')
+        self.assertEqual(
+            QgsUnitTypes.formatAngle(45, 3, QgsUnitTypes.AngleUnit.AngleDegrees),
+            "45.000°",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleUnit.AngleRadians),
+            "1.00 rad",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatAngle(1, 0, QgsUnitTypes.AngleUnit.AngleGon), "1 gon"
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatAngle(
+                1.11111111, 4, QgsUnitTypes.AngleUnit.AngleMinutesOfArc
+            ),
+            "1.1111′",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatAngle(
+                1.99999999, 2, QgsUnitTypes.AngleUnit.AngleSecondsOfArc
+            ),
+            "2.00″",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleUnit.AngleTurn), "1.00 tr"
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleUnit.AngleMilliradiansSI),
+            "1.00 millirad",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleUnit.AngleMilNATO),
+            "1.00 mil",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatAngle(1, 2, QgsUnitTypes.AngleUnit.AngleUnknownUnit),
+            "1.00",
+        )
 
-        self.assertEqual(QgsUnitTypes.formatAngle(45, -1, QgsUnitTypes.AngleUnit.AngleDegrees), '45°')
-        self.assertEqual(QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleUnit.AngleRadians), '1.00 rad')
-        self.assertEqual(QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleUnit.AngleGon), '1 gon')
-        self.assertEqual(QgsUnitTypes.formatAngle(1.11111111, -1, QgsUnitTypes.AngleUnit.AngleMinutesOfArc), '1′')
-        self.assertEqual(QgsUnitTypes.formatAngle(1.99999999, -1, QgsUnitTypes.AngleUnit.AngleSecondsOfArc), '2″')
-        self.assertEqual(QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleUnit.AngleTurn), '1.000 tr')
-        self.assertEqual(QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleUnit.AngleMilliradiansSI), '1 millirad')
-        self.assertEqual(QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleUnit.AngleMilNATO), '1 mil')
-        self.assertEqual(QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleUnit.AngleUnknownUnit), '1.00')
+        self.assertEqual(
+            QgsUnitTypes.formatAngle(45, -1, QgsUnitTypes.AngleUnit.AngleDegrees), "45°"
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleUnit.AngleRadians),
+            "1.00 rad",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleUnit.AngleGon), "1 gon"
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatAngle(
+                1.11111111, -1, QgsUnitTypes.AngleUnit.AngleMinutesOfArc
+            ),
+            "1′",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatAngle(
+                1.99999999, -1, QgsUnitTypes.AngleUnit.AngleSecondsOfArc
+            ),
+            "2″",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleUnit.AngleTurn),
+            "1.000 tr",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleUnit.AngleMilliradiansSI),
+            "1 millirad",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleUnit.AngleMilNATO),
+            "1 mil",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatAngle(1, -1, QgsUnitTypes.AngleUnit.AngleUnknownUnit),
+            "1.00",
+        )
 
     def testFormatDistance(self):
         """Test formatting distances"""
         # keep base unit
-        self.assertEqual(QgsUnitTypes.formatDistance(100, 3, QgsUnitTypes.DistanceUnit.DistanceMeters, True), '100.000 m')
-        self.assertEqual(QgsUnitTypes.formatDistance(10, 2, QgsUnitTypes.DistanceUnit.DistanceKilometers, True), '10.00 km')
-        self.assertEqual(QgsUnitTypes.formatDistance(1, 0, QgsUnitTypes.DistanceUnit.DistanceFeet, True), '1 ft')
-        self.assertEqual(QgsUnitTypes.formatDistance(1.11111111, 4, QgsUnitTypes.DistanceUnit.DistanceNauticalMiles, True), '1.1111 NM')
-        self.assertEqual(QgsUnitTypes.formatDistance(1.99999999, 2, QgsUnitTypes.DistanceUnit.DistanceYards, True), '2.00 yd')
-        self.assertEqual(QgsUnitTypes.formatDistance(1, 2, QgsUnitTypes.DistanceUnit.DistanceMiles, True), '1.00 mi')
-        self.assertEqual(QgsUnitTypes.formatDistance(1, 2, QgsUnitTypes.DistanceUnit.DistanceDegrees, True), '1.00 deg')
-        self.assertEqual(QgsUnitTypes.formatDistance(1, 2, QgsUnitTypes.DistanceUnit.DistanceCentimeters, True), '1.00 cm')
-        self.assertEqual(QgsUnitTypes.formatDistance(1, 2, QgsUnitTypes.DistanceUnit.DistanceMillimeters, True), '1.00 mm')
         self.assertEqual(
-            QgsUnitTypes.formatDistance(1, 2, Qgis.DistanceUnit.Inches,
-                                        True), '1.00 in')
-        self.assertEqual(QgsUnitTypes.formatDistance(1, 2, QgsUnitTypes.DistanceUnit.DistanceUnknownUnit, True), '1.00')
+            QgsUnitTypes.formatDistance(
+                100, 3, QgsUnitTypes.DistanceUnit.DistanceMeters, True
+            ),
+            "100.000 m",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                10, 2, QgsUnitTypes.DistanceUnit.DistanceKilometers, True
+            ),
+            "10.00 km",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                1, 0, QgsUnitTypes.DistanceUnit.DistanceFeet, True
+            ),
+            "1 ft",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                1.11111111, 4, QgsUnitTypes.DistanceUnit.DistanceNauticalMiles, True
+            ),
+            "1.1111 NM",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                1.99999999, 2, QgsUnitTypes.DistanceUnit.DistanceYards, True
+            ),
+            "2.00 yd",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                1, 2, QgsUnitTypes.DistanceUnit.DistanceMiles, True
+            ),
+            "1.00 mi",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                1, 2, QgsUnitTypes.DistanceUnit.DistanceDegrees, True
+            ),
+            "1.00 deg",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                1, 2, QgsUnitTypes.DistanceUnit.DistanceCentimeters, True
+            ),
+            "1.00 cm",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                1, 2, QgsUnitTypes.DistanceUnit.DistanceMillimeters, True
+            ),
+            "1.00 mm",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(1, 2, Qgis.DistanceUnit.Inches, True), "1.00 in"
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                1, 2, QgsUnitTypes.DistanceUnit.DistanceUnknownUnit, True
+            ),
+            "1.00",
+        )
 
         # don't keep base unit
-        self.assertEqual(QgsUnitTypes.formatDistance(10, 3, QgsUnitTypes.DistanceUnit.DistanceMeters, False), '10.000 m')
-        self.assertEqual(QgsUnitTypes.formatDistance(1001, 3, QgsUnitTypes.DistanceUnit.DistanceMeters, False), '1.001 km')
-        self.assertEqual(QgsUnitTypes.formatDistance(0.05, 2, QgsUnitTypes.DistanceUnit.DistanceMeters, False), '5.00 cm')
-        self.assertEqual(QgsUnitTypes.formatDistance(0.005, 2, QgsUnitTypes.DistanceUnit.DistanceMeters, False), '5.00 mm')
-        self.assertEqual(QgsUnitTypes.formatDistance(10, 2, QgsUnitTypes.DistanceUnit.DistanceKilometers, False), '10.00 km')
-        self.assertEqual(QgsUnitTypes.formatDistance(0.5, 2, QgsUnitTypes.DistanceUnit.DistanceKilometers, False), '500.00 m')
-        self.assertEqual(QgsUnitTypes.formatDistance(10, 2, QgsUnitTypes.DistanceUnit.DistanceFeet, False), '10.00 ft')
-        self.assertEqual(QgsUnitTypes.formatDistance(6000, 2, QgsUnitTypes.DistanceUnit.DistanceFeet, False), '1.14 mi')
-        self.assertEqual(QgsUnitTypes.formatDistance(10, 2, QgsUnitTypes.DistanceUnit.DistanceYards, False), '10.00 yd')
-        self.assertEqual(QgsUnitTypes.formatDistance(2500, 2, QgsUnitTypes.DistanceUnit.DistanceYards, False), '1.42 mi')
-        self.assertEqual(QgsUnitTypes.formatDistance(1, 2, QgsUnitTypes.DistanceUnit.DistanceMiles, False), '1.00 mi')
-        self.assertEqual(QgsUnitTypes.formatDistance(0.5, 2, QgsUnitTypes.DistanceUnit.DistanceMiles, False), '2640.00 ft')
-        self.assertEqual(QgsUnitTypes.formatDistance(1.11111111, 4, QgsUnitTypes.DistanceUnit.DistanceNauticalMiles, False), '1.1111 NM')
-        self.assertEqual(QgsUnitTypes.formatDistance(0.001, 4, QgsUnitTypes.DistanceUnit.DistanceDegrees, False), '0.0010 deg')
-        self.assertEqual(QgsUnitTypes.formatDistance(100, 2, QgsUnitTypes.DistanceUnit.DistanceCentimeters, False), '100.00 cm')
-        self.assertEqual(QgsUnitTypes.formatDistance(1000, 2, QgsUnitTypes.DistanceUnit.DistanceMillimeters, False), '1000.00 mm')
-        self.assertEqual(QgsUnitTypes.formatDistance(1000, 2,
-                                                     Qgis.DistanceUnit.Inches,
-                                                     False), '1000.00 in')
-        self.assertEqual(QgsUnitTypes.formatDistance(1, 2, QgsUnitTypes.DistanceUnit.DistanceUnknownUnit, False), '1.00')
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                10, 3, QgsUnitTypes.DistanceUnit.DistanceMeters, False
+            ),
+            "10.000 m",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                1001, 3, QgsUnitTypes.DistanceUnit.DistanceMeters, False
+            ),
+            "1.001 km",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                0.05, 2, QgsUnitTypes.DistanceUnit.DistanceMeters, False
+            ),
+            "5.00 cm",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                0.005, 2, QgsUnitTypes.DistanceUnit.DistanceMeters, False
+            ),
+            "5.00 mm",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                10, 2, QgsUnitTypes.DistanceUnit.DistanceKilometers, False
+            ),
+            "10.00 km",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                0.5, 2, QgsUnitTypes.DistanceUnit.DistanceKilometers, False
+            ),
+            "500.00 m",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                10, 2, QgsUnitTypes.DistanceUnit.DistanceFeet, False
+            ),
+            "10.00 ft",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                6000, 2, QgsUnitTypes.DistanceUnit.DistanceFeet, False
+            ),
+            "1.14 mi",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                10, 2, QgsUnitTypes.DistanceUnit.DistanceYards, False
+            ),
+            "10.00 yd",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                2500, 2, QgsUnitTypes.DistanceUnit.DistanceYards, False
+            ),
+            "1.42 mi",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                1, 2, QgsUnitTypes.DistanceUnit.DistanceMiles, False
+            ),
+            "1.00 mi",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                0.5, 2, QgsUnitTypes.DistanceUnit.DistanceMiles, False
+            ),
+            "2640.00 ft",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                1.11111111, 4, QgsUnitTypes.DistanceUnit.DistanceNauticalMiles, False
+            ),
+            "1.1111 NM",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                0.001, 4, QgsUnitTypes.DistanceUnit.DistanceDegrees, False
+            ),
+            "0.0010 deg",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                100, 2, QgsUnitTypes.DistanceUnit.DistanceCentimeters, False
+            ),
+            "100.00 cm",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                1000, 2, QgsUnitTypes.DistanceUnit.DistanceMillimeters, False
+            ),
+            "1000.00 mm",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(1000, 2, Qgis.DistanceUnit.Inches, False),
+            "1000.00 in",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                1, 2, QgsUnitTypes.DistanceUnit.DistanceUnknownUnit, False
+            ),
+            "1.00",
+        )
 
         # small values should not be displayed as zeroes, instead fallback to scientific notation
-        self.assertEqual(QgsUnitTypes.formatDistance(0.00168478, 2, QgsUnitTypes.DistanceUnit.DistanceMeters, False), '1.68 mm')
-        self.assertEqual(QgsUnitTypes.formatDistance(0.00000168478, 2, QgsUnitTypes.DistanceUnit.DistanceMeters, False), '1.68e-06 m')
-        self.assertEqual(QgsUnitTypes.formatDistance(0.00168478, 2, QgsUnitTypes.DistanceUnit.DistanceMeters, True), '1.68e-03 m')
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                0.00168478, 2, QgsUnitTypes.DistanceUnit.DistanceMeters, False
+            ),
+            "1.68 mm",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                0.00000168478, 2, QgsUnitTypes.DistanceUnit.DistanceMeters, False
+            ),
+            "1.68e-06 m",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                0.00168478, 2, QgsUnitTypes.DistanceUnit.DistanceMeters, True
+            ),
+            "1.68e-03 m",
+        )
 
         # test different locales
         QLocale.setDefault(QLocale(QLocale.Language.Italian))
-        self.assertEqual(QgsUnitTypes.formatDistance(10, 3, QgsUnitTypes.DistanceUnit.DistanceMeters, False), '10,000 m')
-        self.assertEqual(QgsUnitTypes.formatDistance(0.5, 2, QgsUnitTypes.DistanceUnit.DistanceMiles, False), '2.640,00 ft')
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                10, 3, QgsUnitTypes.DistanceUnit.DistanceMeters, False
+            ),
+            "10,000 m",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatDistance(
+                0.5, 2, QgsUnitTypes.DistanceUnit.DistanceMiles, False
+            ),
+            "2.640,00 ft",
+        )
 
     def testFormatArea(self):
         """Test formatting areas"""
         # keep base unit
-        self.assertEqual(QgsUnitTypes.formatArea(100, 3, QgsUnitTypes.AreaUnit.AreaSquareMeters, True), '100.000 m²')
-        self.assertEqual(QgsUnitTypes.formatArea(10, 2, QgsUnitTypes.AreaUnit.AreaSquareKilometers, True), '10.00 km²')
-        self.assertEqual(QgsUnitTypes.formatArea(1, 0, QgsUnitTypes.AreaUnit.AreaSquareFeet, True), '1 ft²')
-        self.assertEqual(QgsUnitTypes.formatArea(1.11111111, 4, QgsUnitTypes.AreaUnit.AreaSquareYards, True), '1.1111 yd²')
-        self.assertEqual(QgsUnitTypes.formatArea(1.99999999, 2, QgsUnitTypes.AreaUnit.AreaSquareMiles, True), '2.00 mi²')
-        self.assertEqual(QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaUnit.AreaHectares, True), '1.00 ha')
-        self.assertEqual(QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaUnit.AreaAcres, True), '1.00 ac')
-        self.assertEqual(QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaUnit.AreaSquareNauticalMiles, True), '1.00 NM²')
-        self.assertEqual(QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaUnit.AreaSquareDegrees, True), '1.00 deg²')
-        self.assertEqual(QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaUnit.AreaSquareCentimeters, True), '1.00 cm²')
-        self.assertEqual(QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaUnit.AreaSquareMillimeters, True), '1.00 mm²')
         self.assertEqual(
-            QgsUnitTypes.formatArea(1, 2, Qgis.AreaUnit.SquareInches,
-                                    True), '1.00 in²')
-        self.assertEqual(QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaUnit.AreaUnknownUnit, True), '1.00')
+            QgsUnitTypes.formatArea(
+                100, 3, QgsUnitTypes.AreaUnit.AreaSquareMeters, True
+            ),
+            "100.000 m²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                10, 2, QgsUnitTypes.AreaUnit.AreaSquareKilometers, True
+            ),
+            "10.00 km²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(1, 0, QgsUnitTypes.AreaUnit.AreaSquareFeet, True),
+            "1 ft²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                1.11111111, 4, QgsUnitTypes.AreaUnit.AreaSquareYards, True
+            ),
+            "1.1111 yd²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                1.99999999, 2, QgsUnitTypes.AreaUnit.AreaSquareMiles, True
+            ),
+            "2.00 mi²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaUnit.AreaHectares, True),
+            "1.00 ha",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaUnit.AreaAcres, True),
+            "1.00 ac",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                1, 2, QgsUnitTypes.AreaUnit.AreaSquareNauticalMiles, True
+            ),
+            "1.00 NM²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                1, 2, QgsUnitTypes.AreaUnit.AreaSquareDegrees, True
+            ),
+            "1.00 deg²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                1, 2, QgsUnitTypes.AreaUnit.AreaSquareCentimeters, True
+            ),
+            "1.00 cm²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                1, 2, QgsUnitTypes.AreaUnit.AreaSquareMillimeters, True
+            ),
+            "1.00 mm²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(1, 2, Qgis.AreaUnit.SquareInches, True), "1.00 in²"
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(1, 2, QgsUnitTypes.AreaUnit.AreaUnknownUnit, True),
+            "1.00",
+        )
 
         # don't keep base unit
-        self.assertEqual(QgsUnitTypes.formatArea(100, 2, QgsUnitTypes.AreaUnit.AreaSquareMeters, False), '100.00 m²')
-        self.assertEqual(QgsUnitTypes.formatArea(2000000, 2, QgsUnitTypes.AreaUnit.AreaSquareMeters, False), '2.00 km²')
-        self.assertEqual(QgsUnitTypes.formatArea(10001, 2, QgsUnitTypes.AreaUnit.AreaSquareMeters, False), '1.00 ha')
-        self.assertEqual(QgsUnitTypes.formatArea(100, 2, QgsUnitTypes.AreaUnit.AreaSquareKilometers, False), '100.00 km²')
-        self.assertEqual(QgsUnitTypes.formatArea(0.5, 2, QgsUnitTypes.AreaUnit.AreaSquareKilometers, False), '0.50 km²')
-        self.assertEqual(QgsUnitTypes.formatArea(27879000, 2, QgsUnitTypes.AreaUnit.AreaSquareFeet, False), '1.00 mi²')
-        self.assertEqual(QgsUnitTypes.formatArea(2787, 2, QgsUnitTypes.AreaUnit.AreaSquareFeet, False), '2787.00 ft²')
-        self.assertEqual(QgsUnitTypes.formatArea(3099000, 2, QgsUnitTypes.AreaUnit.AreaSquareYards, False), '1.00 mi²')
-        self.assertEqual(QgsUnitTypes.formatArea(309, 2, QgsUnitTypes.AreaUnit.AreaSquareYards, False), '309.00 yd²')
-        self.assertEqual(QgsUnitTypes.formatArea(10, 2, QgsUnitTypes.AreaUnit.AreaSquareMiles, False), '10.00 mi²')
-        self.assertEqual(QgsUnitTypes.formatArea(0.05, 2, QgsUnitTypes.AreaUnit.AreaSquareMiles, False), '0.05 mi²')
-        self.assertEqual(QgsUnitTypes.formatArea(10, 2, QgsUnitTypes.AreaUnit.AreaHectares, False), '10.00 ha')
-        self.assertEqual(QgsUnitTypes.formatArea(110, 2, QgsUnitTypes.AreaUnit.AreaHectares, False), '1.10 km²')
-        self.assertEqual(QgsUnitTypes.formatArea(10, 2, QgsUnitTypes.AreaUnit.AreaAcres, False), '10.00 ac')
-        self.assertEqual(QgsUnitTypes.formatArea(650, 2, QgsUnitTypes.AreaUnit.AreaAcres, False), '1.02 mi²')
-        self.assertEqual(QgsUnitTypes.formatArea(0.01, 2, QgsUnitTypes.AreaUnit.AreaSquareNauticalMiles, False), '0.01 NM²')
-        self.assertEqual(QgsUnitTypes.formatArea(100, 2, QgsUnitTypes.AreaUnit.AreaSquareNauticalMiles, False), '100.00 NM²')
-        self.assertEqual(QgsUnitTypes.formatArea(0.0001, 4, QgsUnitTypes.AreaUnit.AreaSquareDegrees, False), '0.0001 deg²')
-        self.assertEqual(QgsUnitTypes.formatArea(0.0001, 4, QgsUnitTypes.AreaUnit.AreaSquareDegrees, False), '0.0001 deg²')
-        self.assertEqual(QgsUnitTypes.formatArea(1000, 4, QgsUnitTypes.AreaUnit.AreaSquareMillimeters, False), '0.0010 m²')
-        self.assertEqual(QgsUnitTypes.formatArea(100, 3, QgsUnitTypes.AreaUnit.AreaSquareCentimeters, False), '0.010 m²')
-        self.assertEqual(QgsUnitTypes.formatArea(10, 2, QgsUnitTypes.AreaUnit.AreaUnknownUnit, False), '10.00')
         self.assertEqual(
-            QgsUnitTypes.formatArea(1000, 2, Qgis.AreaUnit.SquareInches,
-                                    False), '1000.00 in²')
+            QgsUnitTypes.formatArea(
+                100, 2, QgsUnitTypes.AreaUnit.AreaSquareMeters, False
+            ),
+            "100.00 m²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                2000000, 2, QgsUnitTypes.AreaUnit.AreaSquareMeters, False
+            ),
+            "2.00 km²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                10001, 2, QgsUnitTypes.AreaUnit.AreaSquareMeters, False
+            ),
+            "1.00 ha",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                100, 2, QgsUnitTypes.AreaUnit.AreaSquareKilometers, False
+            ),
+            "100.00 km²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                0.5, 2, QgsUnitTypes.AreaUnit.AreaSquareKilometers, False
+            ),
+            "0.50 km²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                27879000, 2, QgsUnitTypes.AreaUnit.AreaSquareFeet, False
+            ),
+            "1.00 mi²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                2787, 2, QgsUnitTypes.AreaUnit.AreaSquareFeet, False
+            ),
+            "2787.00 ft²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                3099000, 2, QgsUnitTypes.AreaUnit.AreaSquareYards, False
+            ),
+            "1.00 mi²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                309, 2, QgsUnitTypes.AreaUnit.AreaSquareYards, False
+            ),
+            "309.00 yd²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                10, 2, QgsUnitTypes.AreaUnit.AreaSquareMiles, False
+            ),
+            "10.00 mi²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                0.05, 2, QgsUnitTypes.AreaUnit.AreaSquareMiles, False
+            ),
+            "0.05 mi²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(10, 2, QgsUnitTypes.AreaUnit.AreaHectares, False),
+            "10.00 ha",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(110, 2, QgsUnitTypes.AreaUnit.AreaHectares, False),
+            "1.10 km²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(10, 2, QgsUnitTypes.AreaUnit.AreaAcres, False),
+            "10.00 ac",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(650, 2, QgsUnitTypes.AreaUnit.AreaAcres, False),
+            "1.02 mi²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                0.01, 2, QgsUnitTypes.AreaUnit.AreaSquareNauticalMiles, False
+            ),
+            "0.01 NM²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                100, 2, QgsUnitTypes.AreaUnit.AreaSquareNauticalMiles, False
+            ),
+            "100.00 NM²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                0.0001, 4, QgsUnitTypes.AreaUnit.AreaSquareDegrees, False
+            ),
+            "0.0001 deg²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                0.0001, 4, QgsUnitTypes.AreaUnit.AreaSquareDegrees, False
+            ),
+            "0.0001 deg²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                1000, 4, QgsUnitTypes.AreaUnit.AreaSquareMillimeters, False
+            ),
+            "0.0010 m²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                100, 3, QgsUnitTypes.AreaUnit.AreaSquareCentimeters, False
+            ),
+            "0.010 m²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                10, 2, QgsUnitTypes.AreaUnit.AreaUnknownUnit, False
+            ),
+            "10.00",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(1000, 2, Qgis.AreaUnit.SquareInches, False),
+            "1000.00 in²",
+        )
 
         # small values should not be displayed as zeroes, instead fallback to scientific notation
-        self.assertEqual(QgsUnitTypes.formatArea(0.00168478, 4, QgsUnitTypes.AreaUnit.AreaSquareMeters, False), '0.0017 m²')
-        self.assertEqual(QgsUnitTypes.formatArea(0.00168478, 2, QgsUnitTypes.AreaUnit.AreaSquareMeters, False), '1.68e-03 m²')
-        self.assertEqual(QgsUnitTypes.formatArea(0.00168478, 2, QgsUnitTypes.AreaUnit.AreaSquareMeters, True), '1.68e-03 m²')
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                0.00168478, 4, QgsUnitTypes.AreaUnit.AreaSquareMeters, False
+            ),
+            "0.0017 m²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                0.00168478, 2, QgsUnitTypes.AreaUnit.AreaSquareMeters, False
+            ),
+            "1.68e-03 m²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                0.00168478, 2, QgsUnitTypes.AreaUnit.AreaSquareMeters, True
+            ),
+            "1.68e-03 m²",
+        )
 
         # test different locales
         QLocale.setDefault(QLocale(QLocale.Language.Italian))
-        self.assertEqual(QgsUnitTypes.formatArea(100, 2, QgsUnitTypes.AreaUnit.AreaSquareKilometers, False), '100,00 km²')
-        self.assertEqual(QgsUnitTypes.formatArea(2787, 2, QgsUnitTypes.AreaUnit.AreaSquareFeet, False), '2.787,00 ft²')
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                100, 2, QgsUnitTypes.AreaUnit.AreaSquareKilometers, False
+            ),
+            "100,00 km²",
+        )
+        self.assertEqual(
+            QgsUnitTypes.formatArea(
+                2787, 2, QgsUnitTypes.AreaUnit.AreaSquareFeet, False
+            ),
+            "2.787,00 ft²",
+        )
 
     def testEncodeDecodeLayoutUnits(self):
         """Test encoding and decoding layout units"""
-        units = [QgsUnitTypes.LayoutUnit.LayoutMillimeters,
-                 QgsUnitTypes.LayoutUnit.LayoutCentimeters,
-                 QgsUnitTypes.LayoutUnit.LayoutMeters,
-                 QgsUnitTypes.LayoutUnit.LayoutInches,
-                 QgsUnitTypes.LayoutUnit.LayoutFeet,
-                 QgsUnitTypes.LayoutUnit.LayoutPoints,
-                 QgsUnitTypes.LayoutUnit.LayoutPicas,
-                 QgsUnitTypes.LayoutUnit.LayoutPixels]
+        units = [
+            QgsUnitTypes.LayoutUnit.LayoutMillimeters,
+            QgsUnitTypes.LayoutUnit.LayoutCentimeters,
+            QgsUnitTypes.LayoutUnit.LayoutMeters,
+            QgsUnitTypes.LayoutUnit.LayoutInches,
+            QgsUnitTypes.LayoutUnit.LayoutFeet,
+            QgsUnitTypes.LayoutUnit.LayoutPoints,
+            QgsUnitTypes.LayoutUnit.LayoutPicas,
+            QgsUnitTypes.LayoutUnit.LayoutPixels,
+        ]
 
         for u in units:
             res, ok = QgsUnitTypes.decodeLayoutUnit(QgsUnitTypes.encodeUnit(u))
@@ -1679,26 +2243,28 @@ class TestQgsUnitTypes(unittest.TestCase):
             self.assertEqual(res, u)
 
         # Test decoding bad units
-        res, ok = QgsUnitTypes.decodeLayoutUnit('bad')
+        res, ok = QgsUnitTypes.decodeLayoutUnit("bad")
         self.assertFalse(ok)
         # default units should be MM
         self.assertEqual(res, QgsUnitTypes.LayoutUnit.LayoutMillimeters)
 
         # Test that string is cleaned before decoding
-        res, ok = QgsUnitTypes.decodeLayoutUnit(' px  ')
+        res, ok = QgsUnitTypes.decodeLayoutUnit(" px  ")
         assert ok
         self.assertEqual(res, QgsUnitTypes.LayoutUnit.LayoutPixels)
 
     def testAbbreviateRenderUnits(self):
         """Test abbreviating render units"""
-        units = [QgsUnitTypes.RenderUnit.RenderMillimeters,
-                 QgsUnitTypes.RenderUnit.RenderMapUnits,
-                 QgsUnitTypes.RenderUnit.RenderPixels,
-                 QgsUnitTypes.RenderUnit.RenderPercentage,
-                 QgsUnitTypes.RenderUnit.RenderPoints,
-                 QgsUnitTypes.RenderUnit.RenderInches,
-                 QgsUnitTypes.RenderUnit.RenderUnknownUnit,
-                 QgsUnitTypes.RenderUnit.RenderMetersInMapUnits]
+        units = [
+            QgsUnitTypes.RenderUnit.RenderMillimeters,
+            QgsUnitTypes.RenderUnit.RenderMapUnits,
+            QgsUnitTypes.RenderUnit.RenderPixels,
+            QgsUnitTypes.RenderUnit.RenderPercentage,
+            QgsUnitTypes.RenderUnit.RenderPoints,
+            QgsUnitTypes.RenderUnit.RenderInches,
+            QgsUnitTypes.RenderUnit.RenderUnknownUnit,
+            QgsUnitTypes.RenderUnit.RenderMetersInMapUnits,
+        ]
 
         used = set()
         for u in units:
@@ -1709,14 +2275,16 @@ class TestQgsUnitTypes(unittest.TestCase):
 
     def testAbbreviateLayoutUnits(self):
         """Test abbreviating layout units"""
-        units = [QgsUnitTypes.LayoutUnit.LayoutMillimeters,
-                 QgsUnitTypes.LayoutUnit.LayoutCentimeters,
-                 QgsUnitTypes.LayoutUnit.LayoutMeters,
-                 QgsUnitTypes.LayoutUnit.LayoutInches,
-                 QgsUnitTypes.LayoutUnit.LayoutFeet,
-                 QgsUnitTypes.LayoutUnit.LayoutPoints,
-                 QgsUnitTypes.LayoutUnit.LayoutPicas,
-                 QgsUnitTypes.LayoutUnit.LayoutPixels]
+        units = [
+            QgsUnitTypes.LayoutUnit.LayoutMillimeters,
+            QgsUnitTypes.LayoutUnit.LayoutCentimeters,
+            QgsUnitTypes.LayoutUnit.LayoutMeters,
+            QgsUnitTypes.LayoutUnit.LayoutInches,
+            QgsUnitTypes.LayoutUnit.LayoutFeet,
+            QgsUnitTypes.LayoutUnit.LayoutPoints,
+            QgsUnitTypes.LayoutUnit.LayoutPicas,
+            QgsUnitTypes.LayoutUnit.LayoutPixels,
+        ]
 
         used = set()
         for u in units:

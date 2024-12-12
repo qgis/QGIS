@@ -30,7 +30,7 @@ class ANALYSIS_EXPORT QgsGeometryDuplicateNodesCheck : public QgsGeometryCheck
   public:
     explicit QgsGeometryDuplicateNodesCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
       : QgsGeometryCheck( context, configuration ) {}
-    static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() {return {Qgis::GeometryType::Line, Qgis::GeometryType::Polygon}; }
+    static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() { return { Qgis::GeometryType::Line, Qgis::GeometryType::Polygon }; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback, const LayerFeatureIds &ids = LayerFeatureIds() ) const override;
@@ -43,7 +43,11 @@ class ANALYSIS_EXPORT QgsGeometryDuplicateNodesCheck : public QgsGeometryCheck
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
     static QgsGeometryCheck::CheckType factoryCheckType() SIP_SKIP;
 
-    enum ResolutionMethod { RemoveDuplicates, NoChange };
+    enum ResolutionMethod
+    {
+      RemoveDuplicates,
+      NoChange
+    };
 };
 
 #endif // QGS_GEOMETRY_DUPLICATENODES_CHECK_H

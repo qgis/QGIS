@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '2016-09'
-__copyright__ = 'Copyright 2016, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "2016-09"
+__copyright__ = "Copyright 2016, The QGIS Project"
 
 from qgis.PyQt.QtCore import QPointF, QSizeF, Qt
 from qgis.PyQt.QtGui import QColor, QPainter
@@ -46,11 +47,21 @@ class PyQgsTextFormatWidget(QgisTestCase):
         s.setOpacity(0.5)
         s.setJoinStyle(Qt.PenJoinStyle.RoundJoin)
         s.setBlendMode(QPainter.CompositionMode.CompositionMode_Difference)
-        s.setPaintEffect(QgsBlurEffect.create({'blur_level': '2.0', 'blur_unit': QgsUnitTypes.encodeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters), 'enabled': '1'}))
+        s.setPaintEffect(
+            QgsBlurEffect.create(
+                {
+                    "blur_level": "2.0",
+                    "blur_unit": QgsUnitTypes.encodeUnit(
+                        QgsUnitTypes.RenderUnit.RenderMillimeters
+                    ),
+                    "enabled": "1",
+                }
+            )
+        )
         return s
 
     def checkBufferSettings(self, s):
-        """ test QgsTextBufferSettings """
+        """test QgsTextBufferSettings"""
         self.assertTrue(s.enabled())
         self.assertEqual(s.size(), 5)
         self.assertEqual(s.sizeUnit(), QgsUnitTypes.RenderUnit.RenderPixels)
@@ -59,7 +70,9 @@ class PyQgsTextFormatWidget(QgisTestCase):
         self.assertTrue(s.fillBufferInterior())
         self.assertEqual(s.opacity(), 0.5)
         self.assertEqual(s.joinStyle(), Qt.PenJoinStyle.RoundJoin)
-        self.assertEqual(s.blendMode(), QPainter.CompositionMode.CompositionMode_Difference)
+        self.assertEqual(
+            s.blendMode(), QPainter.CompositionMode.CompositionMode_Difference
+        )
         self.assertTrue(s.paintEffect())
         self.assertEqual(s.paintEffect().blurLevel(), 2.0)
 
@@ -71,13 +84,27 @@ class PyQgsTextFormatWidget(QgisTestCase):
         s.setSizeMapUnitScale(QgsMapUnitScale(1, 2))
         s.setOpacity(0.5)
         s.setJoinStyle(Qt.PenJoinStyle.BevelJoin)
-        s.setPaintEffect(QgsBlurEffect.create({'blur_level': '2.0', 'blur_unit': QgsUnitTypes.encodeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters), 'enabled': '1'}))
-        s.setMaskedSymbolLayers([QgsSymbolLayerReference("layerid1", QgsSymbolLayerId("symbol", 1)),
-                                 QgsSymbolLayerReference("layerid2", QgsSymbolLayerId("symbol2", 2))])
+        s.setPaintEffect(
+            QgsBlurEffect.create(
+                {
+                    "blur_level": "2.0",
+                    "blur_unit": QgsUnitTypes.encodeUnit(
+                        QgsUnitTypes.RenderUnit.RenderMillimeters
+                    ),
+                    "enabled": "1",
+                }
+            )
+        )
+        s.setMaskedSymbolLayers(
+            [
+                QgsSymbolLayerReference("layerid1", QgsSymbolLayerId("symbol", 1)),
+                QgsSymbolLayerReference("layerid2", QgsSymbolLayerId("symbol2", 2)),
+            ]
+        )
         return s
 
     def checkMaskSettings(self, s):
-        """ test QgsTextMaskSettings """
+        """test QgsTextMaskSettings"""
         self.assertTrue(s.enabled())
         self.assertEqual(s.size(), 5)
         self.assertEqual(s.sizeUnit(), QgsUnitTypes.RenderUnit.RenderPixels)
@@ -86,14 +113,19 @@ class PyQgsTextFormatWidget(QgisTestCase):
         self.assertEqual(s.joinStyle(), Qt.PenJoinStyle.BevelJoin)
         self.assertTrue(s.paintEffect())
         self.assertEqual(s.paintEffect().blurLevel(), 2.0)
-        self.assertEqual(s.maskedSymbolLayers(), [QgsSymbolLayerReference("layerid1", QgsSymbolLayerId("symbol", 1)),
-                                                  QgsSymbolLayerReference("layerid2", QgsSymbolLayerId("symbol2", 2))])
+        self.assertEqual(
+            s.maskedSymbolLayers(),
+            [
+                QgsSymbolLayerReference("layerid1", QgsSymbolLayerId("symbol", 1)),
+                QgsSymbolLayerReference("layerid2", QgsSymbolLayerId("symbol2", 2)),
+            ],
+        )
 
     def createBackgroundSettings(self):
         s = QgsTextBackgroundSettings()
         s.setEnabled(True)
         s.setType(QgsTextBackgroundSettings.ShapeType.ShapeEllipse)
-        s.setSvgFile('svg.svg')
+        s.setSvgFile("svg.svg")
         s.setSizeType(QgsTextBackgroundSettings.SizeType.SizeFixed)
         s.setSize(QSizeF(1, 2))
         s.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPixels)
@@ -114,7 +146,17 @@ class PyQgsTextFormatWidget(QgisTestCase):
         s.setStrokeWidth(7)
         s.setStrokeWidthUnit(QgsUnitTypes.RenderUnit.RenderMapUnits)
         s.setStrokeWidthMapUnitScale(QgsMapUnitScale(QgsMapUnitScale(25, 26)))
-        s.setPaintEffect(QgsBlurEffect.create({'blur_level': '6.0', 'blur_unit': QgsUnitTypes.encodeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters), 'enabled': '1'}))
+        s.setPaintEffect(
+            QgsBlurEffect.create(
+                {
+                    "blur_level": "6.0",
+                    "blur_unit": QgsUnitTypes.encodeUnit(
+                        QgsUnitTypes.RenderUnit.RenderMillimeters
+                    ),
+                    "enabled": "1",
+                }
+            )
+        )
 
         marker = QgsMarkerSymbol()
         marker.setColor(QColor(100, 112, 134))
@@ -123,15 +165,17 @@ class PyQgsTextFormatWidget(QgisTestCase):
         return s
 
     def checkBackgroundSettings(self, s):
-        """ test QgsTextBackgroundSettings """
+        """test QgsTextBackgroundSettings"""
         self.assertTrue(s.enabled())
         self.assertEqual(s.type(), QgsTextBackgroundSettings.ShapeType.ShapeEllipse)
-        self.assertEqual(s.svgFile(), 'svg.svg')
+        self.assertEqual(s.svgFile(), "svg.svg")
         self.assertEqual(s.sizeType(), QgsTextBackgroundSettings.SizeType.SizeFixed)
         self.assertEqual(s.size(), QSizeF(1, 2))
         self.assertEqual(s.sizeUnit(), QgsUnitTypes.RenderUnit.RenderPixels)
         self.assertEqual(s.sizeMapUnitScale(), QgsMapUnitScale(1, 2))
-        self.assertEqual(s.rotationType(), QgsTextBackgroundSettings.RotationType.RotationFixed)
+        self.assertEqual(
+            s.rotationType(), QgsTextBackgroundSettings.RotationType.RotationFixed
+        )
         self.assertEqual(s.rotation(), 45)
         self.assertEqual(s.offset(), QPointF(3, 4))
         self.assertEqual(s.offsetUnit(), QgsUnitTypes.RenderUnit.RenderMapUnits)
@@ -142,7 +186,9 @@ class PyQgsTextFormatWidget(QgisTestCase):
         self.assertEqual(s.fillColor(), QColor(255, 0, 0))
         self.assertEqual(s.strokeColor(), QColor(0, 255, 0))
         self.assertEqual(s.opacity(), 0.5)
-        self.assertEqual(s.blendMode(), QPainter.CompositionMode.CompositionMode_Difference)
+        self.assertEqual(
+            s.blendMode(), QPainter.CompositionMode.CompositionMode_Difference
+        )
         self.assertEqual(s.strokeWidth(), 7)
         self.assertEqual(s.strokeWidthUnit(), QgsUnitTypes.RenderUnit.RenderMapUnits)
         self.assertEqual(s.strokeWidthMapUnitScale(), QgsMapUnitScale(25, 26))
@@ -169,9 +215,11 @@ class PyQgsTextFormatWidget(QgisTestCase):
         return s
 
     def checkShadowSettings(self, s):
-        """ test QgsTextShadowSettings """
+        """test QgsTextShadowSettings"""
         self.assertTrue(s.enabled())
-        self.assertEqual(s.shadowPlacement(), QgsTextShadowSettings.ShadowPlacement.ShadowBuffer)
+        self.assertEqual(
+            s.shadowPlacement(), QgsTextShadowSettings.ShadowPlacement.ShadowBuffer
+        )
         self.assertEqual(s.offsetAngle(), 45)
         self.assertEqual(s.offsetDistance(), 75)
         self.assertEqual(s.offsetUnit(), QgsUnitTypes.RenderUnit.RenderMapUnits)
@@ -184,7 +232,9 @@ class PyQgsTextFormatWidget(QgisTestCase):
         self.assertEqual(s.color(), QColor(255, 0, 0))
         self.assertEqual(s.opacity(), 0.5)
         self.assertEqual(s.scale(), 123)
-        self.assertEqual(s.blendMode(), QPainter.CompositionMode.CompositionMode_Difference)
+        self.assertEqual(
+            s.blendMode(), QPainter.CompositionMode.CompositionMode_Difference
+        )
 
     def createFormatSettings(self):
         s = QgsTextFormat()
@@ -195,7 +245,7 @@ class PyQgsTextFormatWidget(QgisTestCase):
         font = getTestFont()
         font.setKerning(False)
         s.setFont(font)
-        s.setNamedStyle('Roman')
+        s.setNamedStyle("Roman")
         s.setSize(5)
         s.setSizeUnit(QgsUnitTypes.RenderUnit.RenderPoints)
         s.setSizeMapUnitScale(QgsMapUnitScale(1, 2))
@@ -209,23 +259,27 @@ class PyQgsTextFormatWidget(QgisTestCase):
         return s
 
     def checkTextFormat(self, s):
-        """ test QgsTextFormat """
+        """test QgsTextFormat"""
         self.checkBufferSettings(s.buffer())
         self.checkMaskSettings(s.mask())
         self.checkShadowSettings(s.shadow())
         self.checkBackgroundSettings(s.background())
-        self.assertEqual(s.font().family(), 'QGIS Vera Sans')
+        self.assertEqual(s.font().family(), "QGIS Vera Sans")
         self.assertFalse(s.font().kerning())
-        self.assertEqual(s.namedStyle(), 'Roman')
+        self.assertEqual(s.namedStyle(), "Roman")
         self.assertEqual(s.size(), 5)
         self.assertEqual(s.sizeUnit(), QgsUnitTypes.RenderUnit.RenderPoints)
         self.assertEqual(s.sizeMapUnitScale(), QgsMapUnitScale(1, 2))
         self.assertEqual(s.color(), QColor(255, 0, 0))
         self.assertEqual(s.opacity(), 0.5)
-        self.assertEqual(s.blendMode(), QPainter.CompositionMode.CompositionMode_Difference)
+        self.assertEqual(
+            s.blendMode(), QPainter.CompositionMode.CompositionMode_Difference
+        )
         self.assertEqual(s.lineHeight(), 5)
-        self.assertEqual(s.orientation(), QgsTextFormat.TextOrientation.VerticalOrientation)
-        self.assertEqual(s.previewBackgroundColor().name(), '#6496c8')
+        self.assertEqual(
+            s.orientation(), QgsTextFormat.TextOrientation.VerticalOrientation
+        )
+        self.assertEqual(s.previewBackgroundColor().name(), "#6496c8")
         self.assertTrue(s.allowHtmlFormatting())
 
     def testSettings(self):
@@ -241,5 +295,5 @@ class PyQgsTextFormatWidget(QgisTestCase):
         self.checkTextFormat(d.format())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -46,7 +46,6 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
     Q_OBJECT
 
   public:
-
     /**
      * Creates a new empty history provider registry.
      *
@@ -100,7 +99,6 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
     class HistoryEntryOptions
     {
       public:
-
         /**
          * Constructor for HistoryEntryOptions.
          */
@@ -146,7 +144,7 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
      * \see addEntry()
      * \see entryAdded()
      */
-    bool addEntries( const QList< QgsHistoryEntry > &entries, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
+    bool addEntries( const QList<QgsHistoryEntry> &entries, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
 
     /**
      * Returns the entry with matching ID, from the specified \a backend.
@@ -172,8 +170,7 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
      *
      * The optional \a providerId and \a backends arguments can be used to filter entries.
      */
-    QList< QgsHistoryEntry > queryEntries( const QDateTime &start = QDateTime(), const QDateTime &end = QDateTime(),
-                                           const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile ) const;
+    QList<QgsHistoryEntry> queryEntries( const QDateTime &start = QDateTime(), const QDateTime &end = QDateTime(), const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile ) const;
 
     /**
      * Returns the path to user's local history database.
@@ -214,7 +211,6 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
     void historyCleared( Qgis::HistoryProviderBackend backend, const QString &providerId );
 
   private:
-
     /**
      * Creates an on-disk history database.
      */
@@ -236,10 +232,9 @@ class GUI_EXPORT QgsHistoryProviderRegistry : public QObject
      */
     bool runEmptyQuery( const QString &query );
 
-    QMap< QString, QgsAbstractHistoryProvider * > mProviders;
+    QMap<QString, QgsAbstractHistoryProvider *> mProviders;
 
     sqlite3_database_unique_ptr mLocalDB;
-
 };
 
 #endif //QGSHISTORYPROVIDERREGISTRY_H

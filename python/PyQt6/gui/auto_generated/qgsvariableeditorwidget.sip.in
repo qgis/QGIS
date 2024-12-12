@@ -22,7 +22,6 @@ variables from a :py:class:`QgsExpressionContext`.
 #include "qgsvariableeditorwidget.h"
 %End
   public:
-
     QgsVariableEditorWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsVariableEditorWidget.
@@ -118,7 +117,6 @@ Emitted when the user has modified a scope using the widget.
 %End
 
   protected:
-
     virtual void showEvent( QShowEvent *event );
 
 

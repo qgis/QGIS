@@ -31,6 +31,8 @@ namespace Qt3DExtras
   class QPhongMaterial;
 }
 
+class QSurface;
+
 #include "qgs3dmapsettings.h"
 #include "qgs3danimationsettings.h"
 #include "qgs3dtypes.h"
@@ -56,7 +58,6 @@ class Qgs3DRenderContext;
 class _3D_EXPORT Qgs3DUtils
 {
   public:
-
     /**
      * Captures image of the current 3D scene of a 3D engine. The function waits
      * until the scene is not fully loaded/updated before capturing the image.
@@ -99,15 +100,7 @@ class _3D_EXPORT Qgs3DUtils
      *
      * \since QGIS 3.8
      */
-    static bool exportAnimation( const Qgs3DAnimationSettings &animationSettings,
-                                 Qgs3DMapSettings &mapSettings,
-                                 int framesPerSecond,
-                                 const QString &outputDirectory,
-                                 const QString &fileNameTemplate,
-                                 const QSize &outputSize,
-                                 QString &error,
-                                 QgsFeedback *feedback = nullptr
-                               );
+    static bool exportAnimation( const Qgs3DAnimationSettings &animationSettings, Qgs3DMapSettings &mapSettings, int framesPerSecond, const QString &outputDirectory, const QString &fileNameTemplate, const QSize &outputSize, QString &error, QgsFeedback *feedback = nullptr );
 
     /**
      * Calculates the highest needed zoom level for tiles in quad-tree given width of the base tile (zoom level 0)
@@ -187,8 +180,7 @@ class _3D_EXPORT Qgs3DUtils
     static QgsRectangle worldToMapExtent( const QgsAABB &bbox, const QgsVector3D &mapOrigin );
 
     //! Transforms a world point from (origin1, crs1) to (origin2, crs2)
-    static QgsVector3D transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2,
-        const QgsCoordinateTransformContext &context );
+    static QgsVector3D transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2, const QgsCoordinateTransformContext &context );
 
     /**
      * Try to estimate range of Z values used in the given vector layer and store that in zMin and zMax.
@@ -252,7 +244,7 @@ class _3D_EXPORT Qgs3DUtils
      * \note This function was formerly in Qgs3DAppUtils
      * \since QGIS 3.26
      */
-    static std::unique_ptr< QgsPointCloudLayer3DRenderer > convert2DPointCloudRendererTo3D( QgsPointCloudRenderer *renderer );
+    static std::unique_ptr<QgsPointCloudLayer3DRenderer> convert2DPointCloudRendererTo3D( QgsPointCloudRenderer *renderer );
 
     /**
      * Casts a \a ray through the \a scene and returns information about the intersecting entities (ray uses World coordinates).
@@ -331,6 +323,23 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.40
      */
     static QByteArray removeDefinesFromShaderCode( const QByteArray &shaderCode, const QStringList &defines );
+
+    /**
+     * Tries to decompose a 4x4 transform matrix into translation, rotation and scale components.
+     * It is expected that the matrix has been created by only applying these transforms, otherwise
+     * the results are undefined.
+     *
+     * \since QGIS 3.42
+     */
+    static void decomposeTransformMatrix( const QMatrix4x4 &matrix, QVector3D &translation, QQuaternion &rotation, QVector3D &scale );
+
+    /**
+     * Gets the maximum number of clip planes that can be used.
+     * This value depends on the OpenGL implementation. It should be at least 6.
+     *
+     * \since QGIS 3.42
+     */
+    static int openGlMaxClipPlanes( QSurface *surface );
 };
 
 #endif // QGS3DUTILS_H

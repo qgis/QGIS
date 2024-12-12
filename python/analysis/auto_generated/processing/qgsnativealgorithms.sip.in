@@ -9,7 +9,7 @@
 
 
 
-class QgsNativeAlgorithms: QgsProcessingProvider
+class QgsNativeAlgorithms : QgsProcessingProvider
 {
 %Docstring(signature="appended")
 Native c++ processing algorithm provider.
@@ -19,7 +19,6 @@ Native c++ processing algorithm provider.
 #include "qgsnativealgorithms.h"
 %End
   public:
-
     QgsNativeAlgorithms( QObject *parent = 0 );
 %Docstring
 Constructor for QgsNativeAlgorithms.
@@ -41,13 +40,9 @@ Constructor for QgsNativeAlgorithms.
 
 
   protected:
-
     virtual void loadAlgorithms();
 
-
 };
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -83,6 +83,7 @@ jobs:
     permissions:
       issues: write
       pull-requests: write
+      contents: read
     uses: ./.github/workflows/pr-auto-milestone.yml
 
   create-doc-issue:

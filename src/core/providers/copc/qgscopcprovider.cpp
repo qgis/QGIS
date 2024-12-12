@@ -19,7 +19,6 @@
 #include "qgscopcprovider.h"
 #include "moc_qgscopcprovider.cpp"
 #include "qgscopcpointcloudindex.h"
-#include "qgsremotecopcpointcloudindex.h"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
 #include "qgsprovidersublayerdetails.h"
@@ -39,11 +38,7 @@ QgsCopcProvider::QgsCopcProvider(
   Qgis::DataProviderReadFlags flags )
   : QgsPointCloudDataProvider( uri, options, flags )
 {
-  bool isRemote = uri.startsWith( QStringLiteral( "http" ), Qt::CaseSensitivity::CaseInsensitive );
-  if ( isRemote )
-    mIndex.reset( new QgsRemoteCopcPointCloudIndex );
-  else
-    mIndex.reset( new QgsCopcPointCloudIndex );
+  mIndex.reset( new QgsCopcPointCloudIndex );
 
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
@@ -248,5 +243,9 @@ QgsProviderMetadata::ProviderMetadataCapabilities QgsCopcProviderMetadata::capab
          | ProviderMetadataCapability::PriorityForUri
          | ProviderMetadataCapability::QuerySublayers;
 }
+
+#undef PROVIDER_KEY
+#undef PROVIDER_DESCRIPTION
+
 ///@endcond
 

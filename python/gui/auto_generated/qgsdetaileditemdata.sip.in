@@ -20,7 +20,6 @@ This class is the data only representation of a
 #include "qgsdetaileditemdata.h"
 %End
   public:
-
     QgsDetailedItemData();
 
     void setTitle( const QString &title );

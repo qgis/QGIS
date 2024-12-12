@@ -129,6 +129,7 @@ Ownership of the enhancement is transferred.
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
 
+
   private:
     QgsMultiBandColorRenderer( const QgsMultiBandColorRenderer & );
     const QgsMultiBandColorRenderer &operator=( const QgsMultiBandColorRenderer & );

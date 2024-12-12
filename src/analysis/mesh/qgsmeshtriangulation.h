@@ -43,7 +43,6 @@ class ANALYSIS_EXPORT QgsMeshTriangulation : public QObject
 {
     Q_OBJECT
   public:
-
     QgsMeshTriangulation();
     ~QgsMeshTriangulation();
 
@@ -105,10 +104,9 @@ class ANALYSIS_EXPORT QgsMeshTriangulation : public QObject
  *
  * \since QGIS 3.16
  */
-class QgsMeshZValueDataset: public QgsMeshDataset
+class QgsMeshZValueDataset : public QgsMeshDataset
 {
   public:
-
     //! Constructor with the mesh
     QgsMeshZValueDataset( const QgsMesh &mesh );
 
@@ -135,10 +133,9 @@ class QgsMeshZValueDataset: public QgsMeshDataset
  *
  * \since QGIS 3.16
  */
-class ANALYSIS_EXPORT QgsMeshZValueDatasetGroup: public QgsMeshDatasetGroup
+class ANALYSIS_EXPORT QgsMeshZValueDatasetGroup : public QgsMeshDatasetGroup
 {
   public:
-
     /**
      * Constructor
      *
@@ -151,7 +148,7 @@ class ANALYSIS_EXPORT QgsMeshZValueDatasetGroup: public QgsMeshDatasetGroup
     QgsMeshDatasetMetadata datasetMetadata( int datasetIndex ) const override;
     int datasetCount() const override;
     QgsMeshDataset *dataset( int index ) const override;
-    QgsMeshDatasetGroup::Type type() const override {return QgsMeshDatasetGroup::Virtual;}
+    QgsMeshDatasetGroup::Type type() const override { return QgsMeshDatasetGroup::Virtual; }
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
   private:
@@ -174,7 +171,6 @@ class ANALYSIS_EXPORT QgsMeshZValueDatasetGroup: public QgsMeshDatasetGroup
 class ANALYSIS_EXPORT QgsMeshEditingDelaunayTriangulation : public QgsMeshAdvancedEditing
 {
   public:
-
     QgsMeshEditingDelaunayTriangulation();
 
     QString text() const override;

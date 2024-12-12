@@ -244,6 +244,7 @@ Returns the default symbol type required for the specified geometry ``type``.
     enum class Property /BaseType=IntEnum/
     {
       Opacity,
+      ExtentBuffer,
     };
 
     static const QgsPropertiesDefinition &propertyDefinitions();
@@ -534,7 +535,7 @@ Returns a large (roughly 100x100 pixel) preview image for the symbol.
 
 .. deprecated:: 3.40
 
-   Use bigSymbolPreviewImageV2 instead.
+   Use :py:func:`~QgsSymbol.bigSymbolPreviewImageV2` instead.
 %End
 
     QString dump() const;
@@ -865,6 +866,54 @@ Internally, this notifies all symbol layers which were used via a call to
 .. versionadded:: 3.20
 %End
 
+    double extentBuffer() const;
+%Docstring
+Returns the symbol's extent buffer.
+
+Units are retrieved via :py:func:`~QgsSymbol.extentBufferSizeUnit`.
+
+.. versionadded:: 3.42
+%End
+
+    void setExtentBuffer( double extentBuffer );
+%Docstring
+Sets the symbol's extent buffer.
+
+Units are set via :py:func:`~QgsSymbol.setExtentBufferSizeUnit`.
+
+:param extentBuffer: buffer distance.
+
+.. seealso:: :py:func:`extentBuffer`
+
+.. note::
+
+   Negative values are not supported and will be changed to 0.
+
+.. versionadded:: 3.42
+%End
+
+    Qgis::RenderUnit extentBufferSizeUnit() const;
+%Docstring
+Returns the units for the buffer size.
+
+.. seealso:: :py:func:`extentBuffer`
+
+.. seealso:: :py:func:`setExtentBufferSizeUnit`
+
+.. versionadded:: 3.42
+%End
+
+    void setExtentBufferSizeUnit( Qgis::RenderUnit unit );
+%Docstring
+Sets the ``unit`` used for the extent buffer.
+
+.. seealso:: :py:func:`setExtentBuffer`
+
+.. seealso:: :py:func:`extentBufferSizeUnit`
+
+.. versionadded:: 3.42
+%End
+
   protected:
 
     QgsSymbol( Qgis::SymbolType type, const QgsSymbolLayerList &layers /Transfer/ ); // can't be instantiated
@@ -926,6 +975,7 @@ geometry type, points and rings in which are being rendered by the parent symbol
 %Docstring
 Render editing vertex marker at specified point
 %End
+
 
 
 

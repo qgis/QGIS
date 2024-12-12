@@ -28,32 +28,27 @@ QgsAmbientOcclusionRenderEntity::QgsAmbientOcclusionRenderEntity( Qt3DRender::QT
 
   mFarPlaneParameter = new Qt3DRender::QParameter( QStringLiteral( "farPlane" ), camera->farPlane() );
   mMaterial->addParameter( mFarPlaneParameter );
-  connect( camera, &Qt3DRender::QCamera::farPlaneChanged, mFarPlaneParameter, [&]( float farPlane )
-  {
+  connect( camera, &Qt3DRender::QCamera::farPlaneChanged, mFarPlaneParameter, [&]( float farPlane ) {
     mFarPlaneParameter->setValue( farPlane );
   } );
   mNearPlaneParameter = new Qt3DRender::QParameter( QStringLiteral( "nearPlane" ), camera->nearPlane() );
   mMaterial->addParameter( mNearPlaneParameter );
-  connect( camera, &Qt3DRender::QCamera::nearPlaneChanged, mNearPlaneParameter, [&]( float nearPlane )
-  {
+  connect( camera, &Qt3DRender::QCamera::nearPlaneChanged, mNearPlaneParameter, [&]( float nearPlane ) {
     mNearPlaneParameter->setValue( nearPlane );
   } );
   mProjMatrixParameter = new Qt3DRender::QParameter( QStringLiteral( "origProjMatrix" ), camera->projectionMatrix() );
   mMaterial->addParameter( mProjMatrixParameter );
-  connect( camera, &Qt3DRender::QCamera::projectionMatrixChanged, mProjMatrixParameter, [&]( const QMatrix4x4 & projectionMatrix )
-  {
+  connect( camera, &Qt3DRender::QCamera::projectionMatrixChanged, mProjMatrixParameter, [&]( const QMatrix4x4 &projectionMatrix ) {
     mProjMatrixParameter->setValue( projectionMatrix );
   } );
   mAspectRatioParameter = new Qt3DRender::QParameter( QStringLiteral( "uAspectRatio" ), camera->aspectRatio() );
   mMaterial->addParameter( mAspectRatioParameter );
-  connect( camera, &Qt3DRender::QCamera::aspectRatioChanged, mAspectRatioParameter, [&]( float ratio )
-  {
+  connect( camera, &Qt3DRender::QCamera::aspectRatioChanged, mAspectRatioParameter, [&]( float ratio ) {
     mAspectRatioParameter->setValue( ratio );
   } );
   mTanHalfFovParameter = new Qt3DRender::QParameter( QStringLiteral( "uTanHalfFov" ), tan( camera->fieldOfView() / 2 * M_PI / 180 ) );
   mMaterial->addParameter( mTanHalfFovParameter );
-  connect( camera, &Qt3DRender::QCamera::fieldOfViewChanged, mTanHalfFovParameter, [&]( float fov )
-  {
+  connect( camera, &Qt3DRender::QCamera::fieldOfViewChanged, mTanHalfFovParameter, [&]( float fov ) {
     mTanHalfFovParameter->setValue( tan( fov / 2 * M_PI / 180 ) );
   } );
 
@@ -70,7 +65,7 @@ QgsAmbientOcclusionRenderEntity::QgsAmbientOcclusionRenderEntity( Qt3DRender::QT
       randomFloats( generator ) * 2.0 - 1.0
     );
     sample.normalize();
-    float scale = i / kernelSize;
+    float scale = static_cast<float>( i ) / static_cast<float>( kernelSize );
     scale = 0.1 + 0.9 * scale * scale;
     sample *= scale;
     ssaoKernelValues.push_back( sample );

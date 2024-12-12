@@ -35,7 +35,6 @@ class QDomElement;
 class _3D_EXPORT QgsAmbientOcclusionSettings
 {
   public:
-
     QgsAmbientOcclusionSettings() = default;
     QgsAmbientOcclusionSettings( const QgsAmbientOcclusionSettings &other );
     QgsAmbientOcclusionSettings &operator=( QgsAmbientOcclusionSettings const &rhs );

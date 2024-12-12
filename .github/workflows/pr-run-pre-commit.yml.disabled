@@ -1,0 +1,22 @@
+# this doesn't seem to work on PRs from forks
+# so we use pre-commit.ci instead
+
+name: 🤸 Run pre-commit on PR
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+      - release-3_40
+
+jobs:
+  main:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
+      with:
+        python-version: 3.x
+    - uses: pre-commit/action@v3.0.1
+    - uses: pre-commit-ci/lite-action@v1.1.0
+      if: always()

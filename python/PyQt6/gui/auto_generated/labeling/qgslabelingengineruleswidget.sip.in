@@ -11,8 +11,6 @@
 
 
 
-
-
 class QgsLabelingEngineRulesWidget : QgsPanelWidget
 {
 %Docstring(signature="appended")
@@ -30,20 +28,19 @@ list of :py:class:`QgsAbstractLabelingEngineRule` objects.
 #include "qgslabelingengineruleswidget.h"
 %End
   public:
-
     QgsLabelingEngineRulesWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLabelingEngineRulesWidget.
 %End
 
-    void setRules( const QList< QgsAbstractLabelingEngineRule * > &rules );
+    void setRules( const QList<QgsAbstractLabelingEngineRule *> &rules );
 %Docstring
 Sets the ``rules`` to show in the widget.
 
 Ownership is not transferred, an internal copy will be made.
 %End
 
-    QList<QgsAbstractLabelingEngineRule * > rules() const /TransferBack/;
+    QList<QgsAbstractLabelingEngineRule *> rules() const /TransferBack/;
 %Docstring
 Returns the rules shown in the widget.
 
@@ -77,7 +74,6 @@ list of :py:class:`QgsAbstractLabelingEngineRule` objects.
 #include "qgslabelingengineruleswidget.h"
 %End
   public:
-
     QgsLabelingEngineRulesDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor for QgsLabelingEngineRulesDialog.
@@ -86,14 +82,14 @@ Constructor for QgsLabelingEngineRulesDialog.
 :param flags: window flags for dialog
 %End
 
-    void setRules( const QList< QgsAbstractLabelingEngineRule * > &rules );
+    void setRules( const QList<QgsAbstractLabelingEngineRule *> &rules );
 %Docstring
 Sets the ``rules`` to show in the dialog.
 
 Ownership is not transferred, an internal copy will be made.
 %End
 
-    QList<QgsAbstractLabelingEngineRule * > rules() const /TransferBack/;
+    QList<QgsAbstractLabelingEngineRule *> rules() const /TransferBack/;
 %Docstring
 Returns the rules shown in the dialog.
 
@@ -101,7 +97,6 @@ The caller takes ownership of all returned rules.
 %End
 
 };
-
 
 
 /************************************************************************

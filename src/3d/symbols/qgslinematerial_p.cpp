@@ -35,7 +35,7 @@
 
 QgsLineMaterial::QgsLineMaterial()
   : mParameterThickness( new Qt3DRender::QParameter( "THICKNESS", 10, this ) )
-  , mParameterMiterLimit( new Qt3DRender::QParameter( "MITER_LIMIT", -1, this ) )  // 0.75
+  , mParameterMiterLimit( new Qt3DRender::QParameter( "MITER_LIMIT", -1, this ) ) // 0.75
   , mParameterLineColor( new Qt3DRender::QParameter( "lineColor", QColor( 0, 255, 0 ), this ) )
   , mParameterUseVertexColors( new Qt3DRender::QParameter( "useVertexColors", false, this ) )
   , mParameterWindowScale( new Qt3DRender::QParameter( "WIN_SCALE", QSizeF(), this ) )

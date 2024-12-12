@@ -26,7 +26,7 @@ class QgsRubberBand;
 class QgsSnapIndicator;
 
 //! Map tool to measure angle between two segments
-class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
+class APP_EXPORT QgsMapToolMeasureAngle : public QgsMapTool
 {
     Q_OBJECT
   public:
@@ -64,7 +64,6 @@ class APP_EXPORT QgsMapToolMeasureAngle: public QgsMapTool
 
     //! Configures distance area objects with ellipsoid / output crs
     void configureDistanceArea();
-
 };
 
 #endif // QGSMAPTOOLMEASUREANGLE_H

@@ -103,7 +103,7 @@ Qt3DRender::QTexture2D *QgsTerrainTileLoader::createTexture( QgsTerrainTileEntit
 {
   Qt3DRender::QTexture2D *texture = new Qt3DRender::QTexture2D;
   QgsTerrainTextureImage *textureImage = new QgsTerrainTextureImage( mTextureImage, mExtentMapCrs, mTileDebugText );
-  texture->addTextureImage( textureImage );//texture take the ownership of textureImage if has no parant
+  texture->addTextureImage( textureImage ); //texture take the ownership of textureImage if has no parant
   texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
   texture->setMagnificationFilter( Qt3DRender::QTexture2D::Linear );
 

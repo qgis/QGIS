@@ -510,7 +510,7 @@ class CORE_EXPORT QgsFeatureRequest
      * \note not available in Python bindings
      * \see setInvalidGeometryCallback()
      */
-    std::function< void( const QgsFeature & ) > invalidGeometryCallback() const { return mInvalidGeometryCallback; } SIP_SKIP
+    std::function< void( const QgsFeature & ) > invalidGeometryCallback() const SIP_SKIP { return mInvalidGeometryCallback; }
 
     /**
      * Set the filter \a expression. {\see QgsExpression}
@@ -863,7 +863,7 @@ class CORE_EXPORT QgsFeatureRequest
      * \see setTransformErrorCallback()
      * \see destinationCrs()
      */
-    std::function< void( const QgsFeature & ) > transformErrorCallback() const { return mTransformErrorCallback; } SIP_SKIP
+    std::function< void( const QgsFeature & ) > transformErrorCallback() const SIP_SKIP { return mTransformErrorCallback; }
 
 
     /**

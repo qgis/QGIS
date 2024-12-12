@@ -56,8 +56,8 @@ QgsPointCloudRenderer *QgsPointCloudExtentRendererWidget::renderer()
     return nullptr;
   }
 
-  std::unique_ptr< QgsPointCloudExtentRenderer > renderer = std::make_unique< QgsPointCloudExtentRenderer >();
-  renderer->setFillSymbol( mSymbolButton->clonedSymbol< QgsFillSymbol >() );
+  std::unique_ptr<QgsPointCloudExtentRenderer> renderer = std::make_unique<QgsPointCloudExtentRenderer>();
+  renderer->setFillSymbol( mSymbolButton->clonedSymbol<QgsFillSymbol>() );
   return renderer.release();
 }
 

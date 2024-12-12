@@ -253,6 +253,30 @@ QString QgsMeshLayer::loadDefaultStyle( bool &resultFlag )
   return QgsMapLayer::loadDefaultStyle( resultFlag );
 }
 
+bool QgsMeshLayer::removeDatasets( const QString &name )
+{
+  const int index = mDatasetGroupStore->indexFromGroupName( name );
+
+  if ( index == -1 )
+  {
+    return false;
+  }
+
+  const QgsMeshDatasetGroupMetadata groupMetadata =  datasetGroupMetadata( index );
+
+  mDatasetGroupStore->removeDatasetGroup( index );
+
+  if ( mExtraDatasetUri.contains( groupMetadata.uri() ) )
+  {
+    mExtraDatasetUri.removeOne( groupMetadata.uri() );
+  }
+
+  resetDatasetGroupTreeItem();
+
+  emit dataSourceChanged();
+  return true;
+}
+
 bool QgsMeshLayer::addDatasets( const QString &path, const QDateTime &defaultReferenceTime )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -2209,4 +2233,18 @@ void QgsMeshLayer::setLabeling( QgsAbstractMeshLayerLabeling *labeling )
   delete mLabeling;
   mLabeling = labeling;
   triggerRepaint();
+}
+
+bool QgsMeshLayer::datasetsPathUnique( const QString &path )
+{
+  if ( ! mDataProvider )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Unable to get mesh data provider" ), 2 );
+    return false;
+  }
+
+  if ( mDataProvider->dataSourceUri().contains( path ) )
+    return false;
+
+  return !mExtraDatasetUri.contains( path );
 }

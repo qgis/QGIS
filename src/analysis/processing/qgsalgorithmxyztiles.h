@@ -37,50 +37,49 @@ void extent2TileXY( const QgsRectangle extent, const int zoom, int &xMin, int &y
 
 struct Tile
 {
-  Tile( const int x, const int y, const int z )
-    : x( x )
-    , y( y )
-    , z( z )
-  {}
+    Tile( const int x, const int y, const int z )
+      : x( x )
+      , y( y )
+      , z( z )
+    {}
 
-  int x;
-  int y;
-  int z;
+    int x;
+    int y;
+    int z;
 };
 
 struct MetaTile
 {
-  MetaTile()
-    : rows( 0 )
-    , cols( 0 )
-  {}
+    MetaTile()
+      : rows( 0 )
+      , cols( 0 )
+    {}
 
-  void addTile( const int row, const int col, Tile tileToAdd )
-  {
-    tiles.insert( QPair<int, int>( row, col ), tileToAdd );
-    if ( row >= rows )
+    void addTile( const int row, const int col, Tile tileToAdd )
     {
-      rows = row + 1;
+      tiles.insert( QPair<int, int>( row, col ), tileToAdd );
+      if ( row >= rows )
+      {
+        rows = row + 1;
+      }
+      if ( col >= cols )
+      {
+        cols = col + 1;
+      }
     }
-    if ( col >= cols )
+
+    QgsRectangle extent()
     {
-      cols = col + 1;
+      const Tile first = tiles.first();
+      const Tile last = tiles.last();
+      return QgsRectangle( tileX2lon( first.x, first.z ), tileY2lat( last.y + 1, last.z ), tileX2lon( last.x + 1, last.z ), tileY2lat( first.y, first.z ) );
     }
-  }
 
-  QgsRectangle extent()
-  {
-    const Tile first = tiles.first();
-    const Tile last = tiles.last();
-    return QgsRectangle( tileX2lon( first.x, first.z ), tileY2lat( last.y + 1, last.z ),
-                         tileX2lon( last.x + 1, last.z ), tileY2lat( first.y, first.z ) );
-  }
-
-  QMap< QPair<int, int>, Tile > tiles;
-  int rows;
-  int cols;
+    QMap<QPair<int, int>, Tile> tiles;
+    int rows;
+    int cols;
 };
-QList< MetaTile > getMetatiles( const QgsRectangle extent, const int zoom, const int tileSize = 4 );
+QList<MetaTile> getMetatiles( const QgsRectangle extent, const int zoom, const int tileSize = 4 );
 
 
 /**
@@ -88,15 +87,12 @@ QList< MetaTile > getMetatiles( const QgsRectangle extent, const int zoom, const
  */
 class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QString group() const override;
     QString groupId() const override;
     Qgis::ProcessingAlgorithmFlags flags() const override;
 
   protected:
-
     /**
      * Creates common parameters used in all algorithms
      */
@@ -121,7 +117,7 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     int mTileWidth = 256;
     int mTileHeight = 256;
     QString mTileFormat;
-    QList< QgsMapLayer * > mLayers;
+    QList<QgsMapLayer *> mLayers;
     QgsCoordinateReferenceSystem mWgs84Crs;
     QgsCoordinateReferenceSystem mMercatorCrs;
     QgsCoordinateTransform mSrc2Wgs;
@@ -132,8 +128,8 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
     long long mProcessedTiles = 0;
     QgsCoordinateTransformContext mTransformContext;
     QPointer<QEventLoop> mEventLoop;
-    QList< MetaTile > mMetaTiles;
-    QMap< QgsMapRendererSequentialJob *, MetaTile > mRendererJobs;
+    QList<MetaTile> mMetaTiles;
+    QMap<QgsMapRendererSequentialJob *, MetaTile> mRendererJobs;
 };
 
 
@@ -142,9 +138,7 @@ class QgsXyzTilesBaseAlgorithm : public QgsProcessingAlgorithm
  */
 class QgsXyzTilesDirectoryAlgorithm : public QgsXyzTilesBaseAlgorithm
 {
-
   public:
-
     QgsXyzTilesDirectoryAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -154,15 +148,13 @@ class QgsXyzTilesDirectoryAlgorithm : public QgsXyzTilesBaseAlgorithm
     QgsXyzTilesDirectoryAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
     void processMetaTile( QgsMapRendererSequentialJob *job ) override;
 
   private:
     bool mTms = false;
     QString mOutputDir;
-
 };
 
 /**
@@ -170,9 +162,7 @@ class QgsXyzTilesDirectoryAlgorithm : public QgsXyzTilesBaseAlgorithm
  */
 class QgsXyzTilesMbtilesAlgorithm : public QgsXyzTilesBaseAlgorithm
 {
-
   public:
-
     QgsXyzTilesMbtilesAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -182,14 +172,12 @@ class QgsXyzTilesMbtilesAlgorithm : public QgsXyzTilesBaseAlgorithm
     QgsXyzTilesMbtilesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
     void processMetaTile( QgsMapRendererSequentialJob *job ) override;
 
   private:
     std::unique_ptr<QgsMbTiles> mMbtilesWriter;
-
 };
 
 ///@endcond PRIVATE

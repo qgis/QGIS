@@ -3,5 +3,5 @@ try:
     QgsInvertedPolygonRenderer.create = staticmethod(QgsInvertedPolygonRenderer.create)
     QgsInvertedPolygonRenderer.convertFromRenderer = staticmethod(QgsInvertedPolygonRenderer.convertFromRenderer)
     QgsInvertedPolygonRenderer.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

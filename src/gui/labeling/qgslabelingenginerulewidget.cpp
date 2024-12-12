@@ -79,24 +79,24 @@ QgsLabelingEngineRuleAvoidLabelOverlapWithFeatureWidget::QgsLabelingEngineRuleAv
 
 void QgsLabelingEngineRuleAvoidLabelOverlapWithFeatureWidget::setRule( const QgsAbstractLabelingEngineRule *rule )
 {
-  const QgsLabelingEngineRuleAvoidLabelOverlapWithFeature *castRule = dynamic_cast< const QgsLabelingEngineRuleAvoidLabelOverlapWithFeature * >( rule );
+  const QgsLabelingEngineRuleAvoidLabelOverlapWithFeature *castRule = dynamic_cast<const QgsLabelingEngineRuleAvoidLabelOverlapWithFeature *>( rule );
   if ( !castRule )
     return;
 
   mBlockSignals = true;
   mEditName->setText( castRule->name() );
-  mComboLabeledLayer->setLayer( const_cast< QgsLabelingEngineRuleAvoidLabelOverlapWithFeature * >( castRule )->labeledLayer() );
-  mComboTargetLayer->setLayer( const_cast< QgsLabelingEngineRuleAvoidLabelOverlapWithFeature * >( castRule )->targetLayer() );
+  mComboLabeledLayer->setLayer( const_cast<QgsLabelingEngineRuleAvoidLabelOverlapWithFeature *>( castRule )->labeledLayer() );
+  mComboTargetLayer->setLayer( const_cast<QgsLabelingEngineRuleAvoidLabelOverlapWithFeature *>( castRule )->targetLayer() );
 
   mBlockSignals = false;
 }
 
 QgsAbstractLabelingEngineRule *QgsLabelingEngineRuleAvoidLabelOverlapWithFeatureWidget::rule()
 {
-  std::unique_ptr< QgsLabelingEngineRuleAvoidLabelOverlapWithFeature > res = std::make_unique< QgsLabelingEngineRuleAvoidLabelOverlapWithFeature >();
+  std::unique_ptr<QgsLabelingEngineRuleAvoidLabelOverlapWithFeature> res = std::make_unique<QgsLabelingEngineRuleAvoidLabelOverlapWithFeature>();
   res->setName( mEditName->text() );
   res->setLabeledLayer( mComboLabeledLayer->currentLayer() );
-  res->setTargetLayer( qobject_cast< QgsVectorLayer * >( mComboTargetLayer->currentLayer() ) );
+  res->setTargetLayer( qobject_cast<QgsVectorLayer *>( mComboTargetLayer->currentLayer() ) );
   return res.release();
 }
 
@@ -121,44 +121,43 @@ QgsLabelingEngineRuleMinimumDistanceLabelToFeatureWidget::QgsLabelingEngineRuleM
   mComboLabeledLayer->setFilters( Qgis::LayerFilter::SpatialLayer );
   mComboTargetLayer->setFilters( Qgis::LayerFilter::HasGeometry );
 
-  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
-                                 << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
   connect( mEditName, &QLineEdit::textChanged, this, &QgsLabelingEngineRuleMinimumDistanceLabelToFeatureWidget::onChanged );
   connect( mComboLabeledLayer, &QgsMapLayerComboBox::layerChanged, this, &QgsLabelingEngineRuleMinimumDistanceLabelToFeatureWidget::onChanged );
   connect( mComboTargetLayer, &QgsMapLayerComboBox::layerChanged, this, &QgsLabelingEngineRuleMinimumDistanceLabelToFeatureWidget::onChanged );
 
-  connect( mSpinDistance, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, &QgsLabelingEngineRuleMinimumDistanceLabelToFeatureWidget::onChanged );
+  connect( mSpinDistance, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLabelingEngineRuleMinimumDistanceLabelToFeatureWidget::onChanged );
   connect( mDistanceUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsLabelingEngineRuleMinimumDistanceLabelToFeatureWidget::onChanged );
   connect( mCostSlider, &QSlider::valueChanged, this, &QgsLabelingEngineRuleMinimumDistanceLabelToFeatureWidget::onChanged );
 }
 
 void QgsLabelingEngineRuleMinimumDistanceLabelToFeatureWidget::setRule( const QgsAbstractLabelingEngineRule *rule )
 {
-  const QgsLabelingEngineRuleMinimumDistanceLabelToFeature *castRule = dynamic_cast< const QgsLabelingEngineRuleMinimumDistanceLabelToFeature * >( rule );
+  const QgsLabelingEngineRuleMinimumDistanceLabelToFeature *castRule = dynamic_cast<const QgsLabelingEngineRuleMinimumDistanceLabelToFeature *>( rule );
   if ( !castRule )
     return;
 
   mBlockSignals = true;
   mEditName->setText( castRule->name() );
-  mComboLabeledLayer->setLayer( const_cast< QgsLabelingEngineRuleMinimumDistanceLabelToFeature * >( castRule )->labeledLayer() );
-  mComboTargetLayer->setLayer( const_cast< QgsLabelingEngineRuleMinimumDistanceLabelToFeature * >( castRule )->targetLayer() );
+  mComboLabeledLayer->setLayer( const_cast<QgsLabelingEngineRuleMinimumDistanceLabelToFeature *>( castRule )->labeledLayer() );
+  mComboTargetLayer->setLayer( const_cast<QgsLabelingEngineRuleMinimumDistanceLabelToFeature *>( castRule )->targetLayer() );
 
   mSpinDistance->setValue( castRule->distance() );
   mDistanceUnitWidget->setUnit( castRule->distanceUnit() );
   mDistanceUnitWidget->setMapUnitScale( castRule->distanceUnitScale() );
 
-  mCostSlider->setValue( static_cast< int >( castRule->cost() * 10 ) );
+  mCostSlider->setValue( static_cast<int>( castRule->cost() * 10 ) );
 
   mBlockSignals = false;
 }
 
 QgsAbstractLabelingEngineRule *QgsLabelingEngineRuleMinimumDistanceLabelToFeatureWidget::rule()
 {
-  std::unique_ptr< QgsLabelingEngineRuleMinimumDistanceLabelToFeature > res = std::make_unique< QgsLabelingEngineRuleMinimumDistanceLabelToFeature >();
+  std::unique_ptr<QgsLabelingEngineRuleMinimumDistanceLabelToFeature> res = std::make_unique<QgsLabelingEngineRuleMinimumDistanceLabelToFeature>();
   res->setName( mEditName->text() );
   res->setLabeledLayer( mComboLabeledLayer->currentLayer() );
-  res->setTargetLayer( qobject_cast< QgsVectorLayer * >( mComboTargetLayer->currentLayer() ) );
+  res->setTargetLayer( qobject_cast<QgsVectorLayer *>( mComboTargetLayer->currentLayer() ) );
 
   res->setDistance( mSpinDistance->value() );
   res->setDistanceUnit( mDistanceUnitWidget->unit() );
@@ -190,44 +189,43 @@ QgsLabelingEngineRuleMaximumDistanceLabelToFeatureWidget::QgsLabelingEngineRuleM
   mComboLabeledLayer->setFilters( Qgis::LayerFilter::SpatialLayer );
   mComboTargetLayer->setFilters( Qgis::LayerFilter::HasGeometry );
 
-  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
-                                 << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
   connect( mEditName, &QLineEdit::textChanged, this, &QgsLabelingEngineRuleMaximumDistanceLabelToFeatureWidget::onChanged );
   connect( mComboLabeledLayer, &QgsMapLayerComboBox::layerChanged, this, &QgsLabelingEngineRuleMaximumDistanceLabelToFeatureWidget::onChanged );
   connect( mComboTargetLayer, &QgsMapLayerComboBox::layerChanged, this, &QgsLabelingEngineRuleMaximumDistanceLabelToFeatureWidget::onChanged );
 
-  connect( mSpinDistance, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, &QgsLabelingEngineRuleMaximumDistanceLabelToFeatureWidget::onChanged );
+  connect( mSpinDistance, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLabelingEngineRuleMaximumDistanceLabelToFeatureWidget::onChanged );
   connect( mDistanceUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsLabelingEngineRuleMaximumDistanceLabelToFeatureWidget::onChanged );
   connect( mCostSlider, &QSlider::valueChanged, this, &QgsLabelingEngineRuleMaximumDistanceLabelToFeatureWidget::onChanged );
 }
 
 void QgsLabelingEngineRuleMaximumDistanceLabelToFeatureWidget::setRule( const QgsAbstractLabelingEngineRule *rule )
 {
-  const QgsLabelingEngineRuleMaximumDistanceLabelToFeature *castRule = dynamic_cast< const QgsLabelingEngineRuleMaximumDistanceLabelToFeature * >( rule );
+  const QgsLabelingEngineRuleMaximumDistanceLabelToFeature *castRule = dynamic_cast<const QgsLabelingEngineRuleMaximumDistanceLabelToFeature *>( rule );
   if ( !castRule )
     return;
 
   mBlockSignals = true;
   mEditName->setText( castRule->name() );
-  mComboLabeledLayer->setLayer( const_cast< QgsLabelingEngineRuleMaximumDistanceLabelToFeature * >( castRule )->labeledLayer() );
-  mComboTargetLayer->setLayer( const_cast< QgsLabelingEngineRuleMaximumDistanceLabelToFeature * >( castRule )->targetLayer() );
+  mComboLabeledLayer->setLayer( const_cast<QgsLabelingEngineRuleMaximumDistanceLabelToFeature *>( castRule )->labeledLayer() );
+  mComboTargetLayer->setLayer( const_cast<QgsLabelingEngineRuleMaximumDistanceLabelToFeature *>( castRule )->targetLayer() );
 
   mSpinDistance->setValue( castRule->distance() );
   mDistanceUnitWidget->setUnit( castRule->distanceUnit() );
   mDistanceUnitWidget->setMapUnitScale( castRule->distanceUnitScale() );
 
-  mCostSlider->setValue( static_cast< int >( castRule->cost() * 10 ) );
+  mCostSlider->setValue( static_cast<int>( castRule->cost() * 10 ) );
 
   mBlockSignals = false;
 }
 
 QgsAbstractLabelingEngineRule *QgsLabelingEngineRuleMaximumDistanceLabelToFeatureWidget::rule()
 {
-  std::unique_ptr< QgsLabelingEngineRuleMaximumDistanceLabelToFeature > res = std::make_unique< QgsLabelingEngineRuleMaximumDistanceLabelToFeature >();
+  std::unique_ptr<QgsLabelingEngineRuleMaximumDistanceLabelToFeature> res = std::make_unique<QgsLabelingEngineRuleMaximumDistanceLabelToFeature>();
   res->setName( mEditName->text() );
   res->setLabeledLayer( mComboLabeledLayer->currentLayer() );
-  res->setTargetLayer( qobject_cast< QgsVectorLayer * >( mComboTargetLayer->currentLayer() ) );
+  res->setTargetLayer( qobject_cast<QgsVectorLayer *>( mComboTargetLayer->currentLayer() ) );
 
   res->setDistance( mSpinDistance->value() );
   res->setDistanceUnit( mDistanceUnitWidget->unit() );
@@ -260,27 +258,26 @@ QgsLabelingEngineRuleMinimumDistanceLabelToLabelWidget::QgsLabelingEngineRuleMin
   mComboLabeledLayer->setFilters( Qgis::LayerFilter::SpatialLayer );
   mComboTargetLayer->setFilters( Qgis::LayerFilter::SpatialLayer );
 
-  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels
-                                 << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
+  mDistanceUnitWidget->setUnits( QgsUnitTypes::RenderUnitList() << Qgis::RenderUnit::Millimeters << Qgis::RenderUnit::MetersInMapUnits << Qgis::RenderUnit::MapUnits << Qgis::RenderUnit::Pixels << Qgis::RenderUnit::Points << Qgis::RenderUnit::Inches );
 
   connect( mEditName, &QLineEdit::textChanged, this, &QgsLabelingEngineRuleMinimumDistanceLabelToLabelWidget::onChanged );
   connect( mComboLabeledLayer, &QgsMapLayerComboBox::layerChanged, this, &QgsLabelingEngineRuleMinimumDistanceLabelToLabelWidget::onChanged );
   connect( mComboTargetLayer, &QgsMapLayerComboBox::layerChanged, this, &QgsLabelingEngineRuleMinimumDistanceLabelToLabelWidget::onChanged );
 
-  connect( mSpinDistance, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, &QgsLabelingEngineRuleMinimumDistanceLabelToLabelWidget::onChanged );
+  connect( mSpinDistance, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLabelingEngineRuleMinimumDistanceLabelToLabelWidget::onChanged );
   connect( mDistanceUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsLabelingEngineRuleMinimumDistanceLabelToLabelWidget::onChanged );
 }
 
 void QgsLabelingEngineRuleMinimumDistanceLabelToLabelWidget::setRule( const QgsAbstractLabelingEngineRule *rule )
 {
-  const QgsLabelingEngineRuleMinimumDistanceLabelToLabel *castRule = dynamic_cast< const QgsLabelingEngineRuleMinimumDistanceLabelToLabel * >( rule );
+  const QgsLabelingEngineRuleMinimumDistanceLabelToLabel *castRule = dynamic_cast<const QgsLabelingEngineRuleMinimumDistanceLabelToLabel *>( rule );
   if ( !castRule )
     return;
 
   mBlockSignals = true;
   mEditName->setText( castRule->name() );
-  mComboLabeledLayer->setLayer( const_cast< QgsLabelingEngineRuleMinimumDistanceLabelToLabel * >( castRule )->labeledLayer() );
-  mComboTargetLayer->setLayer( const_cast< QgsLabelingEngineRuleMinimumDistanceLabelToLabel * >( castRule )->targetLayer() );
+  mComboLabeledLayer->setLayer( const_cast<QgsLabelingEngineRuleMinimumDistanceLabelToLabel *>( castRule )->labeledLayer() );
+  mComboTargetLayer->setLayer( const_cast<QgsLabelingEngineRuleMinimumDistanceLabelToLabel *>( castRule )->targetLayer() );
 
   mSpinDistance->setValue( castRule->distance() );
   mDistanceUnitWidget->setUnit( castRule->distanceUnit() );
@@ -291,7 +288,7 @@ void QgsLabelingEngineRuleMinimumDistanceLabelToLabelWidget::setRule( const QgsA
 
 QgsAbstractLabelingEngineRule *QgsLabelingEngineRuleMinimumDistanceLabelToLabelWidget::rule()
 {
-  std::unique_ptr< QgsLabelingEngineRuleMinimumDistanceLabelToLabel > res = std::make_unique< QgsLabelingEngineRuleMinimumDistanceLabelToLabel >();
+  std::unique_ptr<QgsLabelingEngineRuleMinimumDistanceLabelToLabel> res = std::make_unique<QgsLabelingEngineRuleMinimumDistanceLabelToLabel>();
   res->setName( mEditName->text() );
   res->setLabeledLayer( mComboLabeledLayer->currentLayer() );
   res->setTargetLayer( mComboTargetLayer->currentLayer() );
@@ -308,7 +305,6 @@ void QgsLabelingEngineRuleMinimumDistanceLabelToLabelWidget::onChanged()
   if ( !mBlockSignals )
     emit changed();
 }
-
 
 
 ///@endcond

@@ -35,15 +35,13 @@ could provide their own implementation to be able to use plugins.
 #include "qgisinterface.h"
 %End
   public:
-
     QgisInterface();
 
     virtual QgsPluginManagerInterface *pluginManagerInterface() = 0;
 
     virtual QgsLayerTreeView *layerTreeView() = 0;
 
-    virtual void addCustomActionForLayerType( QAction *action, QString menu,
-        Qgis::LayerType type, bool allLayers ) = 0;
+    virtual void addCustomActionForLayerType( QAction *action, QString menu, Qgis::LayerType type, bool allLayers ) = 0;
 %Docstring
 Add action to context menu for layers in the layer tree.
 If allLayers is ``True``, then the action will be available for all layers of given type,
@@ -74,7 +72,7 @@ Remove action for layers in the layer tree previously added with :py:func:`~Qgis
 .. seealso:: :py:func:`addCustomActionForLayerType`
 %End
 
-    virtual QList< QgsMapCanvas * > mapCanvases() = 0;
+    virtual QList<QgsMapCanvas *> mapCanvases() = 0;
 %Docstring
 Returns a list of all map canvases open in the app.
 %End
@@ -93,7 +91,7 @@ Closes the additional map canvas with matching ``name``.
 .. seealso:: :py:func:`createNewMapCanvas`
 %End
 
-    virtual QList< Qgs3DMapCanvas * > mapCanvases3D() = 0;
+    virtual QList<Qgs3DMapCanvas *> mapCanvases3D() = 0;
 %Docstring
 Returns a list of all 3D map canvases open in the app.
 
@@ -245,6 +243,20 @@ Adds an ``action`` to the QGIS "Export project" menu.
 .. seealso:: :py:func:`removeProjectImportAction`
 
 .. versionadded:: 3.30
+%End
+
+    virtual QMenu *projectModelsMenu() = 0;
+%Docstring
+Returns a reference to the main window "Projects" - "Models" submenu.
+
+.. versionadded:: 3.42
+%End
+
+    virtual QMenu *createProjectModelSubMenu( const QString &title ) = 0;
+%Docstring
+Creates a new project model submenu in the "Projects" - "Models" submenu.
+
+.. versionadded:: 3.42
 %End
 
     virtual QMenu *editMenu() = 0;
@@ -1037,7 +1049,7 @@ Since QGIS 3.10.1, returns ``True`` if a new project was created, or ``False`` i
 the user opted to cancel when prompted to save the current project).
 %End
 
-    virtual void reloadConnections( ) = 0;
+    virtual void reloadConnections() = 0;
 %Docstring
 Triggered when connections have changed.
 This calls reloadConnections in the main application and triggers a signal that is
@@ -1492,6 +1504,18 @@ Unregister a previously registered tool factory from the development/debugging t
 .. versionadded:: 3.14
 %End
 
+    virtual void showApiDocumentation( Qgis::DocumentationApi api = Qgis::DocumentationApi::PyQgis, Qgis::DocumentationBrowser browser = Qgis::DocumentationBrowser::DeveloperToolsPanel, const QString &object = QString(), const QString &module = QString() ) = 0;
+%Docstring
+Show a page of the API documentation
+
+:param api: Which API to display
+:param browser: Web browser used to display the API documentation
+:param object: object to show in the documentation
+:param module: used only if api = :py:class:`Qgis`.DocumentationApi.PyQgis
+
+.. versionadded:: 3.42
+%End
+
     virtual void registerApplicationExitBlocker( QgsApplicationExitBlockerInterface *blocker ) = 0;
 %Docstring
 Register a new application exit blocker, which can be used to prevent the QGIS application
@@ -1827,7 +1851,6 @@ Emitted when starting an entirely new project.
 %Docstring
 Emitted when a layer has been saved using save as.
 %End
-
 };
 
 /************************************************************************

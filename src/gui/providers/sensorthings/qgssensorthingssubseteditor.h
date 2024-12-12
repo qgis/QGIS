@@ -36,10 +36,7 @@ class QgsSensorThingsSubsetEditor : public QgsSubsetStringEditorInterface, prote
     Q_OBJECT
 
   public:
-    QgsSensorThingsSubsetEditor( QgsVectorLayer *layer = nullptr,
-                                 const QgsFields &fields = QgsFields(),
-                                 QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                                 Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsSensorThingsSubsetEditor( QgsVectorLayer *layer = nullptr, const QgsFields &fields = QgsFields(), QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     QString subsetString() const override;
     void setSubsetString( const QString &subsetString ) override;
 
@@ -47,11 +44,11 @@ class QgsSensorThingsSubsetEditor : public QgsSubsetStringEditorInterface, prote
     void accept() override;
     void reset();
     void lstFieldsDoubleClicked( const QModelIndex &index );
-  private:
 
+  private:
     QgsCodeEditor *mSubsetEditor = nullptr;
 
-    QPointer< QgsVectorLayer > mLayer;
+    QPointer<QgsVectorLayer> mLayer;
     QgsFields mFields;
 
     QgsFieldProxyModel *mModelFields = nullptr;

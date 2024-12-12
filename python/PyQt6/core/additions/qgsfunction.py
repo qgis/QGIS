@@ -15,13 +15,18 @@
 ***************************************************************************
 """
 
-
 import inspect
 import string
 import traceback
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis._core import QgsExpressionFunction, QgsExpression, QgsMessageLog, QgsFeatureRequest, Qgis
+from qgis._core import (
+    QgsExpressionFunction,
+    QgsExpression,
+    QgsMessageLog,
+    QgsFeatureRequest,
+    Qgis,
+)
 
 
 class QgsPyExpressionFunction(QgsExpressionFunction):
@@ -143,7 +148,8 @@ def register_function(
         if not QgsExpression.unregisterFunction(name):
             msgtitle = QCoreApplication.translate("UserExpressions", "User expressions")
             msg = QCoreApplication.translate(
-                "UserExpressions", "The user expression {0} already exists and could not be unregistered."
+                "UserExpressions",
+                "The user expression {0} already exists and could not be unregistered.",
             ).format(name)
             QgsMessageLog.logMessage(msg + "\n", msgtitle, Qgis.MessageLevel.Warning)
             return None
@@ -154,7 +160,14 @@ def register_function(
     # Legacy: if args was not 'auto', parameters were passed as a list
     params_as_list = params_as_list or args != "auto"
     f = QgsPyExpressionFunction(
-        function, name, group, helptext, usesgeometry, referenced_columns, handlesnull, params_as_list
+        function,
+        name,
+        group,
+        helptext,
+        usesgeometry,
+        referenced_columns,
+        handlesnull,
+        params_as_list,
     )
 
     if register:

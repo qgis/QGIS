@@ -2,5 +2,5 @@
 try:
     QgsLayerTreeGroup.readXml = staticmethod(QgsLayerTreeGroup.readXml)
     QgsLayerTreeGroup.__group__ = ['layertree']
-except NameError:
+except (NameError, AttributeError):
     pass

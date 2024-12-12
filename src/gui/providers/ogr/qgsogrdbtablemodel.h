@@ -31,7 +31,6 @@ class QgsOgrDbTableModel : public QgsAbstractDbTableModel
     Q_OBJECT
 
   public:
-
     QgsOgrDbTableModel( QObject *parent = nullptr );
 
     QStringList columns() const override;

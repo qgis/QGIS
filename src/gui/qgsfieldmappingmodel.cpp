@@ -20,10 +20,7 @@
 #include "qgsexpressionnodeimpl.h"
 #include "qgsvariantutils.h"
 
-QgsFieldMappingModel::QgsFieldMappingModel( const QgsFields &sourceFields,
-    const QgsFields &destinationFields,
-    const QMap<QString, QString> &expressions,
-    QObject *parent )
+QgsFieldMappingModel::QgsFieldMappingModel( const QgsFields &sourceFields, const QgsFields &destinationFields, const QMap<QString, QString> &expressions, QObject *parent )
   : QAbstractTableModel( parent )
   , mSourceFields( sourceFields )
   , mExpressionContextGenerator( new ExpressionContextGenerator( mSourceFields ) )
@@ -157,8 +154,7 @@ QVariant QgsFieldMappingModel::data( const QModelIndex &index, int role ) const
       }
       case Qt::ToolTipRole:
       {
-        if ( col == ColumnDataIndex::DestinationConstraints &&
-             constraints != 0 )
+        if ( col == ColumnDataIndex::DestinationConstraints && constraints != 0 )
         {
           QStringList constraintDescription;
           if ( constraints.testFlag( QgsFieldConstraints::Constraint::ConstraintUnique ) )
@@ -192,13 +188,9 @@ QVariant QgsFieldMappingModel::data( const QModelIndex &index, int role ) const
 
 Qt::ItemFlags QgsFieldMappingModel::flags( const QModelIndex &index ) const
 {
-  if ( index.isValid() &&
-       index.column() != static_cast<int>( ColumnDataIndex::DestinationConstraints ) &&
-       ( index.column() == static_cast<int>( ColumnDataIndex::SourceExpression ) || destinationEditable() ) )
+  if ( index.isValid() && index.column() != static_cast<int>( ColumnDataIndex::DestinationConstraints ) && ( index.column() == static_cast<int>( ColumnDataIndex::SourceExpression ) || destinationEditable() ) )
   {
-    return Qt::ItemFlags( Qt::ItemIsSelectable |
-                          Qt::ItemIsEditable |
-                          Qt::ItemIsEnabled );
+    return Qt::ItemFlags( Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled );
   }
   return Qt::ItemFlags();
 }
@@ -259,7 +251,6 @@ bool QgsFieldMappingModel::setData( const QModelIndex &index, const QVariant &va
           f.field.setComment( value.toString() );
           break;
         }
-
       }
       emit dataChanged( index, index );
     }
@@ -277,16 +268,13 @@ QgsFieldConstraints::Constraints QgsFieldMappingModel::fieldConstraints( const Q
 
   const QgsFieldConstraints fieldConstraints { field.constraints() };
 
-  if ( fieldConstraints.constraints() & QgsFieldConstraints::ConstraintNotNull &&
-       fieldConstraints.constraintStrength( QgsFieldConstraints::ConstraintNotNull ) & QgsFieldConstraints::ConstraintStrengthHard )
+  if ( fieldConstraints.constraints() & QgsFieldConstraints::ConstraintNotNull && fieldConstraints.constraintStrength( QgsFieldConstraints::ConstraintNotNull ) & QgsFieldConstraints::ConstraintStrengthHard )
     constraints.setFlag( QgsFieldConstraints::ConstraintNotNull );
 
-  if ( fieldConstraints.constraints() & QgsFieldConstraints::ConstraintUnique &&
-       fieldConstraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) & QgsFieldConstraints::ConstraintStrengthHard )
+  if ( fieldConstraints.constraints() & QgsFieldConstraints::ConstraintUnique && fieldConstraints.constraintStrength( QgsFieldConstraints::ConstraintUnique ) & QgsFieldConstraints::ConstraintStrengthHard )
     constraints.setFlag( QgsFieldConstraints::ConstraintUnique );
 
-  if ( fieldConstraints.constraints() & QgsFieldConstraints::ConstraintExpression &&
-       fieldConstraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) & QgsFieldConstraints::ConstraintStrengthHard )
+  if ( fieldConstraints.constraints() & QgsFieldConstraints::ConstraintExpression && fieldConstraints.constraintStrength( QgsFieldConstraints::ConstraintExpression ) & QgsFieldConstraints::ConstraintStrengthHard )
     constraints.setFlag( QgsFieldConstraints::ConstraintExpression );
 
   return constraints;
@@ -294,7 +282,7 @@ QgsFieldConstraints::Constraints QgsFieldMappingModel::fieldConstraints( const Q
 
 bool QgsFieldMappingModel::moveUpOrDown( const QModelIndex &index, bool up )
 {
-  if ( ! index.isValid() && index.model() == this )
+  if ( !index.isValid() && index.model() == this )
     return false;
 
   // Always swap down
@@ -304,7 +292,7 @@ bool QgsFieldMappingModel::moveUpOrDown( const QModelIndex &index, bool up )
   {
     return false;
   }
-  beginMoveRows( QModelIndex( ), row, row, QModelIndex(), row + 2 );
+  beginMoveRows( QModelIndex(), row, row, QModelIndex(), row + 2 );
   mMapping.swapItemsAt( row, row + 1 );
   endMoveRows();
   return true;
@@ -352,7 +340,7 @@ void QgsFieldMappingModel::setSourceFields( const QgsFields &sourceFields )
     if ( it->expression.isEmpty() )
     {
       const QString expression { findExpressionForDestinationField( *it, usedFields ) };
-      if ( ! expression.isEmpty() )
+      if ( !expression.isEmpty() )
         it->expression = expression;
     }
   }
@@ -369,8 +357,7 @@ void QgsFieldMappingModel::setBaseExpressionContextGenerator( const QgsExpressio
   mExpressionContextGenerator->setBaseExpressionContextGenerator( generator );
 }
 
-void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFields,
-    const QMap<QString, QString> &expressions )
+void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions )
 {
   beginResetModel();
   mMapping.clear();
@@ -387,8 +374,7 @@ void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFie
       f.expression = expressions.value( f.field.name() );
       const QgsExpression exp { f.expression };
       // if it's source field
-      if ( exp.isField() &&
-           mSourceFields.names().contains( qgis::setToList( exp.referencedColumns() ).first() ) )
+      if ( exp.isField() && mSourceFields.names().contains( qgis::setToList( exp.referencedColumns() ).first() ) )
       {
         usedFields.push_back( qgis::setToList( exp.referencedColumns() ).first() );
       }
@@ -396,7 +382,7 @@ void QgsFieldMappingModel::setDestinationFields( const QgsFields &destinationFie
     else
     {
       const QString expression { findExpressionForDestinationField( f, usedFields ) };
-      if ( ! expression.isEmpty() )
+      if ( !expression.isEmpty() )
         f.expression = expression;
     }
     mMapping.push_back( f );
@@ -416,8 +402,7 @@ void QgsFieldMappingModel::setDestinationEditable( bool destinationEditable )
 
 const QMap<QMetaType::Type, QString> QgsFieldMappingModel::dataTypes()
 {
-  static const QMap<QMetaType::Type, QString> sDataTypes
-  {
+  static const QMap<QMetaType::Type, QString> sDataTypes {
     { QMetaType::Type::Int, QgsVariantUtils::typeToDisplayString( QMetaType::Type::Int ) },
     { QMetaType::Type::LongLong, QgsVariantUtils::typeToDisplayString( QMetaType::Type::LongLong ) },
     { QMetaType::Type::Double, QgsVariantUtils::typeToDisplayString( QMetaType::Type::Double ) },
@@ -433,20 +418,19 @@ const QMap<QMetaType::Type, QString> QgsFieldMappingModel::dataTypes()
 
 const QList<QgsVectorDataProvider::NativeType> QgsFieldMappingModel::supportedDataTypes()
 {
-  static const QList<QgsVectorDataProvider::NativeType> sDataTypes =
-    QList<QgsVectorDataProvider::NativeType>() << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Int ), QStringLiteral( "integer" ), QMetaType::Type::Int )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::LongLong ), QStringLiteral( "int8" ), QMetaType::Type::LongLong )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Double ), QStringLiteral( "double precision" ), QMetaType::Type::Double )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QString ), QStringLiteral( "text" ), QMetaType::Type::QString )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), QStringLiteral( "date" ), QMetaType::Type::QDate )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QTime ), QStringLiteral( "time" ), QMetaType::Type::QTime )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), QStringLiteral( "datetime" ), QMetaType::Type::QDateTime )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Bool ), QStringLiteral( "boolean" ), QMetaType::Type::Bool )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QByteArray ), QStringLiteral( "binary" ), QMetaType::Type::QByteArray )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QStringList ), QStringLiteral( "stringlist" ), QMetaType::Type::QStringList, 0, 0, 0, 0, QMetaType::Type::QString )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::Int ), QStringLiteral( "integerlist" ), QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::Int )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::Double ), QStringLiteral( "doublelist" ), QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::Double )
-    << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::LongLong ), QStringLiteral( "integer64list" ), QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::LongLong );
+  static const QList<QgsVectorDataProvider::NativeType> sDataTypes = QList<QgsVectorDataProvider::NativeType>() << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Int ), QStringLiteral( "integer" ), QMetaType::Type::Int )
+                                                                                                                << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::LongLong ), QStringLiteral( "int8" ), QMetaType::Type::LongLong )
+                                                                                                                << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Double ), QStringLiteral( "double precision" ), QMetaType::Type::Double )
+                                                                                                                << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QString ), QStringLiteral( "text" ), QMetaType::Type::QString )
+                                                                                                                << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDate ), QStringLiteral( "date" ), QMetaType::Type::QDate )
+                                                                                                                << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QTime ), QStringLiteral( "time" ), QMetaType::Type::QTime )
+                                                                                                                << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QDateTime ), QStringLiteral( "datetime" ), QMetaType::Type::QDateTime )
+                                                                                                                << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Bool ), QStringLiteral( "boolean" ), QMetaType::Type::Bool )
+                                                                                                                << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QByteArray ), QStringLiteral( "binary" ), QMetaType::Type::QByteArray )
+                                                                                                                << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QStringList ), QStringLiteral( "stringlist" ), QMetaType::Type::QStringList, 0, 0, 0, 0, QMetaType::Type::QString )
+                                                                                                                << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::Int ), QStringLiteral( "integerlist" ), QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::Int )
+                                                                                                                << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::Double ), QStringLiteral( "doublelist" ), QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::Double )
+                                                                                                                << QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::QVariantList, QMetaType::Type::LongLong ), QStringLiteral( "integer64list" ), QMetaType::Type::QVariantList, 0, 0, 0, 0, QMetaType::Type::LongLong );
   return sDataTypes;
 }
 
@@ -485,14 +469,12 @@ QList<QgsFieldMappingModel::Field> QgsFieldMappingModel::mapping() const
 
 QMap<QString, QgsProperty> QgsFieldMappingModel::fieldPropertyMap() const
 {
-  QMap< QString, QgsProperty > fieldMap;
+  QMap<QString, QgsProperty> fieldMap;
   for ( const QgsFieldMappingModel::Field &field : mMapping )
   {
     const QgsExpression exp( field.expression );
     const bool isField = exp.isField();
-    fieldMap.insert( field.originalName, isField
-                     ? QgsProperty::fromField( static_cast<const QgsExpressionNodeColumnRef *>( exp.rootNode() )->name() )
-                     : QgsProperty::fromExpression( field.expression ) );
+    fieldMap.insert( field.originalName, isField ? QgsProperty::fromField( static_cast<const QgsExpressionNodeColumnRef *>( exp.rootNode() )->name() ) : QgsProperty::fromExpression( field.expression ) );
   }
   return fieldMap;
 }
@@ -535,7 +517,7 @@ void QgsFieldMappingModel::setFieldPropertyMap( const QMap<QString, QgsProperty>
 
 void QgsFieldMappingModel::appendField( const QgsField &field, const QString &expression )
 {
-  const int lastRow { rowCount( QModelIndex( ) ) };
+  const int lastRow { rowCount( QModelIndex() ) };
   beginInsertRows( QModelIndex(), lastRow, lastRow );
   Field f;
   f.field = field;
@@ -543,7 +525,7 @@ void QgsFieldMappingModel::appendField( const QgsField &field, const QString &ex
   f.expression = expression;
   f.originalName = field.name();
   mMapping.push_back( f );
-  endInsertRows( );
+  endInsertRows();
 }
 
 bool QgsFieldMappingModel::removeField( const QModelIndex &index )
@@ -581,7 +563,7 @@ QgsExpressionContext QgsFieldMappingModel::ExpressionContextGenerator::createExp
   if ( mBaseGenerator )
   {
     QgsExpressionContext ctx = mBaseGenerator->createExpressionContext();
-    std::unique_ptr< QgsExpressionContextScope > fieldMappingScope = std::make_unique< QgsExpressionContextScope >( tr( "Field Mapping" ) );
+    std::unique_ptr<QgsExpressionContextScope> fieldMappingScope = std::make_unique<QgsExpressionContextScope>( tr( "Field Mapping" ) );
     fieldMappingScope->setFields( mSourceFields );
     ctx.appendScope( fieldMappingScope.release() );
     return ctx;

@@ -36,9 +36,7 @@
  */
 class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
 {
-
   public:
-
     /**
      * Creates a new feature pool for \a layer.
      *
@@ -157,7 +155,6 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     QString layerName() const;
 
   protected:
-
     /**
      * Inserts a feature into the cache and the spatial index.
      * To be used by implementations of ``addFeature``.
@@ -171,10 +168,14 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
      * Changes a feature in the cache and the spatial index.
      * To be used by implementations of ``updateFeature``.
      *
+     * \param feature the new feature to put in the cache and index
+     * \param origFeature the original feature to remove from the index
+     *
      * \note This method can safely be called from a different thread vs the object's creation thread or
      * the original layer's thread.
+     * \since QGIS 3.42
      */
-    void refreshCache( const QgsFeature &feature );
+    void refreshCache( QgsFeature feature, const QgsFeature &origFeature );
 
     /**
      * Removes a feature from the cache and the spatial index.
@@ -219,6 +220,20 @@ class ANALYSIS_EXPORT QgsFeaturePool : public QgsFeatureSink SIP_ABSTRACT
     QString mLayerId;
     QString mLayerName;
     QgsCoordinateReferenceSystem mCrs;
+
+    /**
+    * Hash containing features whose geometry has been updated
+    * but which are not accessible if we get them
+    * from the layer (not thread-safe).
+    *
+    * The philosophy is that as soon as a feature geometry has
+    * changed, it will be in this hash, and the cache will not
+    * be used any more.
+    * \since QGIS 3.42
+    */
+    QHash<QgsFeatureId, QgsFeature> mUpdatedFeatures;
+
+    friend class TestQgsVectorLayerFeaturePool;
 };
 
 #endif // QGS_FEATUREPOOL_H

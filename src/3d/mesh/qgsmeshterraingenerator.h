@@ -31,7 +31,7 @@
  * \brief Implementation of terrain generator that uses the Z values of a mesh layer to build a terrain
  * \since QGIS 3.12
  */
-class _3D_EXPORT QgsMeshTerrainGenerator: public QgsTerrainGenerator
+class _3D_EXPORT QgsMeshTerrainGenerator : public QgsTerrainGenerator
 {
     Q_OBJECT
   public:
@@ -70,10 +70,8 @@ class _3D_EXPORT QgsMeshTerrainGenerator: public QgsTerrainGenerator
     QgsMapLayerRef mLayer;
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransformContext mTransformContext;
-    std::unique_ptr< QgsMesh3DSymbol > mSymbol;
+    std::unique_ptr<QgsMesh3DSymbol> mSymbol;
     QgsTriangularMesh mTriangularMesh;
-
-
 };
 
 #endif // QGSMESHTERRAINGENERATOR_H

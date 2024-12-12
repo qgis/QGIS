@@ -59,7 +59,7 @@ QString QgsAddTableFieldAlgorithm::outputName() const
 
 QList<int> QgsAddTableFieldAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector );
 }
 
 Qgis::ProcessingFeatureSourceFlags QgsAddTableFieldAlgorithm::sourceFlags() const
@@ -81,43 +81,32 @@ void QgsAddTableFieldAlgorithm::initParameters( const QVariantMap & )
   typeStrings.reserve( 11 );
   icons.reserve( 11 );
   for ( const auto &type :
-        std::vector < std::pair< QMetaType::Type, QMetaType::Type > >
-{
-  {QMetaType::Type::Int, QMetaType::Type::UnknownType },
-  {QMetaType::Type::Double, QMetaType::Type::UnknownType },
-  {QMetaType::Type::QString, QMetaType::Type::UnknownType },
-  {QMetaType::Type::Bool, QMetaType::Type::UnknownType },
-  {QMetaType::Type::QDate, QMetaType::Type::UnknownType },
-  {QMetaType::Type::QTime, QMetaType::Type::UnknownType },
-  {QMetaType::Type::QDateTime, QMetaType::Type::UnknownType },
-  {QMetaType::Type::QByteArray, QMetaType::Type::UnknownType },
-  {QMetaType::Type::QStringList, QMetaType::Type::UnknownType },
-  {QMetaType::Type::QVariantList, QMetaType::Type::Int },
-  {QMetaType::Type::QVariantList, QMetaType::Type::Double }
-} )
+        std::vector<std::pair<QMetaType::Type, QMetaType::Type>> {
+          { QMetaType::Type::Int, QMetaType::Type::UnknownType },
+          { QMetaType::Type::Double, QMetaType::Type::UnknownType },
+          { QMetaType::Type::QString, QMetaType::Type::UnknownType },
+          { QMetaType::Type::Bool, QMetaType::Type::UnknownType },
+          { QMetaType::Type::QDate, QMetaType::Type::UnknownType },
+          { QMetaType::Type::QTime, QMetaType::Type::UnknownType },
+          { QMetaType::Type::QDateTime, QMetaType::Type::UnknownType },
+          { QMetaType::Type::QByteArray, QMetaType::Type::UnknownType },
+          { QMetaType::Type::QStringList, QMetaType::Type::UnknownType },
+          { QMetaType::Type::QVariantList, QMetaType::Type::Int },
+          { QMetaType::Type::QVariantList, QMetaType::Type::Double }
+        } )
   {
     typeStrings << QgsVariantUtils::typeToDisplayString( type.first, type.second );
     icons << QgsFields::iconForFieldType( type.first, type.second );
   }
 
-  std::unique_ptr< QgsProcessingParameterEnum> fieldTypes = std::make_unique< QgsProcessingParameterEnum> ( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Field type" ),
-      typeStrings, false, 0 );
+  std::unique_ptr<QgsProcessingParameterEnum> fieldTypes = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "FIELD_TYPE" ), QObject::tr( "Field type" ), typeStrings, false, 0 );
   fieldTypes->setMetadata(
-  {
-    QVariantMap( {{
-        QStringLiteral( "widget_wrapper" ),
-        QVariantMap(
-        { {
-            QStringLiteral( "icons" ), icons
-          }}
-        )
-      }} )
-  } );
+    { QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "icons" ), icons } } ) } } )
+    }
+  );
   addParameter( fieldTypes.release() );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Field length" ),
-                Qgis::ProcessingNumberParameterType::Integer, 10, false, 1, 255 ) );
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Field precision" ),
-                Qgis::ProcessingNumberParameterType::Integer, 0, false, 0, 10 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FIELD_LENGTH" ), QObject::tr( "Field length" ), Qgis::ProcessingNumberParameterType::Integer, 10, false, 1, 255 ) );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "FIELD_PRECISION" ), QObject::tr( "Field precision" ), Qgis::ProcessingNumberParameterType::Integer, 0, false, 0, 10 ) );
 
   addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_ALIAS" ), QObject::tr( "Field alias" ), QVariant(), false, true ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "FIELD_COMMENT" ), QObject::tr( "Field comment" ), QVariant(), false, true ) );

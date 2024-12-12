@@ -25,8 +25,6 @@
 #include "qgstextrenderer.h"
 #include "qgsscaleutils.h"
 
-#include "pal/labelposition.h"
-
 #include <cmath>
 
 #include <QApplication>
@@ -60,6 +58,7 @@
 #include "qgsvectortilebasiclabeling.h"
 #include "qgsfontmanager.h"
 #include "qgsvariantutils.h"
+#include "qgsmeshlayer.h"
 
 using namespace pal;
 
@@ -128,7 +127,7 @@ void QgsPalLayerSettings::initPropertyDefinitions()
     { static_cast< int >( QgsPalLayerSettings::Property::AutoWrapLength ), QgsPropertyDefinition( "AutoWrapLength", QObject::tr( "Automatic word wrap line length" ), QgsPropertyDefinition::IntegerPositive, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::MultiLineHeight ), QgsPropertyDefinition( "MultiLineHeight", QObject::tr( "Line height" ), QgsPropertyDefinition::DoublePositive, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::MultiLineAlignment ), QgsPropertyDefinition( "MultiLineAlignment", QgsPropertyDefinition::DataTypeString, QObject::tr( "Line alignment" ), QObject::tr( "string " ) + "[<b>Left</b>|<b>Center</b>|<b>Right</b>|<b>Follow</b>]", origin ) },
-    { static_cast< int >( QgsPalLayerSettings::Property::TabStopDistance ), QgsPropertyDefinition( "TabStopDistance", QObject::tr( "Tab stop distance" ), QgsPropertyDefinition::DoublePositive, origin ) },
+    { static_cast< int >( QgsPalLayerSettings::Property::TabStopDistance ), QgsPropertyDefinition( "TabStopDistance", QgsPropertyDefinition::DataTypeNumeric, QObject::tr( "Tab stop distance(s)" ), QObject::tr( "Numeric distance or array of distances" ), origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::TextOrientation ), QgsPropertyDefinition( "TextOrientation", QgsPropertyDefinition::DataTypeString, QObject::tr( "Text orientation" ), QObject::tr( "string " ) + "[<b>horizontal</b>|<b>vertical</b>]", origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::DirSymbDraw ), QgsPropertyDefinition( "DirSymbDraw", QObject::tr( "Draw direction symbol" ), QgsPropertyDefinition::Boolean, origin ) },
     { static_cast< int >( QgsPalLayerSettings::Property::DirSymbLeft ), QgsPropertyDefinition( "DirSymbLeft", QObject::tr( "Left direction symbol" ), QgsPropertyDefinition::String, origin ) },
@@ -2967,7 +2966,7 @@ std::unique_ptr<QgsLabelFeature> QgsPalLayerSettings::registerFeatureWithDetails
 
     case Qgis::LabelPlacement::Curved:
     case Qgis::LabelPlacement::PerimeterCurved:
-      labelFeature->setTextMetrics( QgsTextLabelFeature::calculateTextMetrics( xform, context, labelFont, labelFontMetrics, labelFont.letterSpacing(), labelFont.wordSpacing(), labelText, evaluatedFormat.allowHtmlFormatting() ? &doc : nullptr, evaluatedFormat.allowHtmlFormatting() ? &documentMetrics : nullptr ) );
+      labelFeature->setTextMetrics( QgsTextLabelFeature::calculateTextMetrics( xform, context, evaluatedFormat, labelFont, labelFontMetrics, labelFont.letterSpacing(), labelFont.wordSpacing(), labelText, evaluatedFormat.allowHtmlFormatting() ? &doc : nullptr, evaluatedFormat.allowHtmlFormatting() ? &documentMetrics : nullptr ) );
       break;
   }
 
@@ -4090,9 +4089,14 @@ bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
       return false;
     }
 
+    case Qgis::LayerType::Mesh:
+    {
+      const QgsMeshLayer *ml = qobject_cast< const QgsMeshLayer * >( layer );
+      return ml->labeling() && ml->labelsEnabled();
+    }
+
     case Qgis::LayerType::Raster:
     case Qgis::LayerType::Plugin:
-    case Qgis::LayerType::Mesh:
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
@@ -4830,63 +4834,4 @@ void QgsPalLabeling::dataDefinedDropShadow( QgsPalLayerSettings &tmpLyr,
     format.setShadow( shadow );
     tmpLyr.setFormat( format );
   }
-}
-
-void QgsPalLabeling::drawLabelCandidateRect( pal::LabelPosition *lp, QPainter *painter, const QgsMapToPixel *xform, QList<QgsLabelCandidate> *candidates )
-{
-  QgsPointXY outPt = xform->transform( lp->getX(), lp->getY() );
-
-  painter->save();
-
-#if 0 // TODO: generalize some of this
-  double w = lp->getWidth();
-  double h = lp->getHeight();
-  double cx = lp->getX() + w / 2.0;
-  double cy = lp->getY() + h / 2.0;
-  double scale = 1.0 / xform->mapUnitsPerPixel();
-  double rotation = xform->mapRotation();
-  double sw = w * scale;
-  double sh = h * scale;
-  QRectF rect( -sw / 2, -sh / 2, sw, sh );
-
-  painter->translate( xform->transform( QPointF( cx, cy ) ).toQPointF() );
-  if ( rotation )
-  {
-    // Only if not horizontal
-    if ( lp->getFeaturePart()->getLayer()->getArrangement() != P_POINT &&
-         lp->getFeaturePart()->getLayer()->getArrangement() != P_POINT_OVER &&
-         lp->getFeaturePart()->getLayer()->getArrangement() != P_HORIZ )
-    {
-      painter->rotate( rotation );
-    }
-  }
-  painter->translate( rect.bottomLeft() );
-  painter->rotate( -lp->getAlpha() * 180 / M_PI );
-  painter->translate( -rect.bottomLeft() );
-#else
-  QgsPointXY outPt2 = xform->transform( lp->getX() + lp->getWidth(), lp->getY() + lp->getHeight() );
-  QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
-  painter->translate( QPointF( outPt.x(), outPt.y() ) );
-  painter->rotate( -lp->getAlpha() * 180 / M_PI );
-#endif
-
-  if ( lp->conflictsWithObstacle() )
-  {
-    painter->setPen( QColor( 255, 0, 0, 64 ) );
-  }
-  else
-  {
-    painter->setPen( QColor( 0, 0, 0, 64 ) );
-  }
-  painter->drawRect( rect );
-  painter->restore();
-
-  // save the rect
-  rect.moveTo( outPt.x(), outPt.y() );
-  if ( candidates )
-    candidates->append( QgsLabelCandidate( rect, lp->cost() * 1000 ) );
-
-  // show all parts of the multipart label
-  if ( lp->nextPart() )
-    drawLabelCandidateRect( lp->nextPart(), painter, xform, candidates );
 }

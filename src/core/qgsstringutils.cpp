@@ -745,6 +745,23 @@ QString QgsStringUtils::truncateMiddleOfString( const QString &string, int maxLe
 #endif
 }
 
+bool QgsStringUtils::containsByWord( const QString &candidate, const QString &words, Qt::CaseSensitivity sensitivity )
+{
+  if ( candidate.trimmed().isEmpty() )
+    return false;
+
+  const thread_local QRegularExpression rxWhitespace( QStringLiteral( "\\s+" ) );
+  const QStringList parts = words.split( rxWhitespace, Qt::SkipEmptyParts );
+  if ( parts.empty() )
+    return false;
+  for ( const QString &word : parts )
+  {
+    if ( !candidate.contains( word, sensitivity ) )
+      return false;
+  }
+  return true;
+}
+
 QgsStringReplacement::QgsStringReplacement( const QString &match, const QString &replacement, bool caseSensitive, bool wholeWordOnly )
   : mMatch( match )
   , mReplacement( replacement )

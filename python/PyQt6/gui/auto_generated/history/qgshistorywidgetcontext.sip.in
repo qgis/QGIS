@@ -21,7 +21,6 @@ Contains settings which reflect the context in which a history widget is shown, 
 #include "qgshistorywidgetcontext.h"
 %End
   public:
-
     QgsHistoryWidgetContext();
 
     void setMessageBar( QgsMessageBar *bar );

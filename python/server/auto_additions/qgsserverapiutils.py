@@ -12,5 +12,5 @@ try:
     QgsServerApiUtils.publishedCrsList = staticmethod(QgsServerApiUtils.publishedCrsList)
     QgsServerApiUtils.crsToOgcUri = staticmethod(QgsServerApiUtils.crsToOgcUri)
     QgsServerApiUtils.appendMapParameter = staticmethod(QgsServerApiUtils.appendMapParameter)
-except NameError:
+except (NameError, AttributeError):
     pass

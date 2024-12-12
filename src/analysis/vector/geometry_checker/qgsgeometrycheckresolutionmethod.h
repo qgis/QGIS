@@ -28,7 +28,6 @@
 class ANALYSIS_EXPORT QgsGeometryCheckResolutionMethod
 {
   public:
-
     /**
      * Creates a new method with the specified parameters.
      */

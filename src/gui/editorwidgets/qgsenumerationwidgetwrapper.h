@@ -33,7 +33,6 @@ class GUI_EXPORT QgsEnumerationWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsEnumerationWidgetWrapper.
      *
@@ -57,7 +56,7 @@ class GUI_EXPORT QgsEnumerationWidgetWrapper : public QgsEditorWidgetWrapper
     bool valid() const override;
 
   private:
-    void updateValues( const QVariant &value, const QVariantList  & = QVariantList() ) override;
+    void updateValues( const QVariant &value, const QVariantList & = QVariantList() ) override;
 
     QComboBox *mComboBox = nullptr;
 };

@@ -160,6 +160,7 @@
 %Include auto_generated/qgsrenderchecker.sip
 %Include auto_generated/qgsrendercontext.sip
 %Include auto_generated/qgsrenderedfeaturehandlerinterface.sip
+%Include auto_generated/qgsrenderedlayerstatistics.sip
 %Include auto_generated/qgsrendereditemdetails.sip
 %Include auto_generated/qgsrunprocess.sip
 %Include auto_generated/qgsruntimeprofiler.sip
@@ -347,6 +348,7 @@
 %Include auto_generated/geometry/qgsgeometrytransformer.sip
 %Include auto_generated/geometry/qgsgeometryutils.sip
 %Include auto_generated/geometry/qgsgeometryutils_base.sip
+%Include auto_generated/geometry/qgsgeos.sip
 %Include auto_generated/geometry/qgslinesegment.sip
 %Include auto_generated/geometry/qgslinestring.sip
 %Include auto_generated/geometry/qgsmulticurve.sip
@@ -383,6 +385,7 @@
 %Include auto_generated/gps/qgsvectorlayergpslogger.sip
 %Include auto_generated/labeling/qgscalloutposition.sip
 %Include auto_generated/labeling/qgslabeling.sip
+%Include auto_generated/labeling/qgslabelingengine.sip
 %Include auto_generated/labeling/qgslabelingenginesettings.sip
 %Include auto_generated/labeling/qgslabelingresults.sip
 %Include auto_generated/labeling/qgslabellinesettings.sip

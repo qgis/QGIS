@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '07/06/2018'
-__copyright__ = 'Copyright 2018, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "07/06/2018"
+__copyright__ = "Copyright 2018, The QGIS Project"
 
 
 from qgis.core import QgsRasterRange
@@ -131,25 +132,39 @@ class TestQgsRasterRange(unittest.TestCase):
         self.assertTrue(range.overlaps(QgsRasterRange(-1, 0)))
         self.assertFalse(range.overlaps(QgsRasterRange(-10, -1)))
         self.assertFalse(range.overlaps(QgsRasterRange(11, 12)))
-        self.assertTrue(range.overlaps(QgsRasterRange(-1, float('NaN'))))
-        self.assertTrue(range.overlaps(QgsRasterRange(0, float('NaN'))))
-        self.assertTrue(range.overlaps(QgsRasterRange(1, float('NaN'))))
-        self.assertTrue(range.overlaps(QgsRasterRange(10, float('NaN'))))
-        self.assertFalse(range.overlaps(QgsRasterRange(11, float('NaN'))))
-        self.assertFalse(range.overlaps(QgsRasterRange(float('NaN'), -1)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 0)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 1)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 10)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 11)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), float('NaN'))))
-        self.assertFalse(range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.Exclusive)))
-        self.assertFalse(range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMin)))
-        self.assertTrue(range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMax)))
-        self.assertFalse(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.Exclusive)))
-        self.assertTrue(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMin)))
-        self.assertFalse(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMax)))
+        self.assertTrue(range.overlaps(QgsRasterRange(-1, float("NaN"))))
+        self.assertTrue(range.overlaps(QgsRasterRange(0, float("NaN"))))
+        self.assertTrue(range.overlaps(QgsRasterRange(1, float("NaN"))))
+        self.assertTrue(range.overlaps(QgsRasterRange(10, float("NaN"))))
+        self.assertFalse(range.overlaps(QgsRasterRange(11, float("NaN"))))
+        self.assertFalse(range.overlaps(QgsRasterRange(float("NaN"), -1)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 0)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 1)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 10)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 11)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), float("NaN"))))
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.Exclusive))
+        )
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMin))
+        )
+        self.assertTrue(
+            range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMax))
+        )
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.Exclusive))
+        )
+        self.assertTrue(
+            range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMin))
+        )
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMax))
+        )
 
-        range = QgsRasterRange(float('NaN'), 10, QgsRasterRange.BoundsType.IncludeMinAndMax)
+        range = QgsRasterRange(
+            float("NaN"), 10, QgsRasterRange.BoundsType.IncludeMinAndMax
+        )
         self.assertTrue(range.overlaps(QgsRasterRange(1, 9)))
         self.assertTrue(range.overlaps(QgsRasterRange(1, 10)))
         self.assertTrue(range.overlaps(QgsRasterRange(1, 11)))
@@ -164,25 +179,39 @@ class TestQgsRasterRange(unittest.TestCase):
         self.assertTrue(range.overlaps(QgsRasterRange(-1, 0)))
         self.assertTrue(range.overlaps(QgsRasterRange(-10, -1)))
         self.assertFalse(range.overlaps(QgsRasterRange(11, 12)))
-        self.assertTrue(range.overlaps(QgsRasterRange(-1, float('NaN'))))
-        self.assertTrue(range.overlaps(QgsRasterRange(0, float('NaN'))))
-        self.assertTrue(range.overlaps(QgsRasterRange(1, float('NaN'))))
-        self.assertTrue(range.overlaps(QgsRasterRange(10, float('NaN'))))
-        self.assertFalse(range.overlaps(QgsRasterRange(11, float('NaN'))))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), -1)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 0)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 1)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 10)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 11)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), float('NaN'))))
-        self.assertTrue(range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.Exclusive)))
-        self.assertTrue(range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMin)))
-        self.assertTrue(range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMax)))
-        self.assertFalse(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.Exclusive)))
-        self.assertTrue(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMin)))
-        self.assertFalse(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMax)))
+        self.assertTrue(range.overlaps(QgsRasterRange(-1, float("NaN"))))
+        self.assertTrue(range.overlaps(QgsRasterRange(0, float("NaN"))))
+        self.assertTrue(range.overlaps(QgsRasterRange(1, float("NaN"))))
+        self.assertTrue(range.overlaps(QgsRasterRange(10, float("NaN"))))
+        self.assertFalse(range.overlaps(QgsRasterRange(11, float("NaN"))))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), -1)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 0)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 1)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 10)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 11)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), float("NaN"))))
+        self.assertTrue(
+            range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.Exclusive))
+        )
+        self.assertTrue(
+            range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMin))
+        )
+        self.assertTrue(
+            range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMax))
+        )
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.Exclusive))
+        )
+        self.assertTrue(
+            range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMin))
+        )
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMax))
+        )
 
-        range = QgsRasterRange(0, float('NaN'), QgsRasterRange.BoundsType.IncludeMinAndMax)
+        range = QgsRasterRange(
+            0, float("NaN"), QgsRasterRange.BoundsType.IncludeMinAndMax
+        )
         self.assertTrue(range.overlaps(QgsRasterRange(1, 9)))
         self.assertTrue(range.overlaps(QgsRasterRange(1, 10)))
         self.assertTrue(range.overlaps(QgsRasterRange(1, 11)))
@@ -197,23 +226,35 @@ class TestQgsRasterRange(unittest.TestCase):
         self.assertTrue(range.overlaps(QgsRasterRange(-1, 0)))
         self.assertFalse(range.overlaps(QgsRasterRange(-10, -1)))
         self.assertTrue(range.overlaps(QgsRasterRange(11, 12)))
-        self.assertTrue(range.overlaps(QgsRasterRange(-1, float('NaN'))))
-        self.assertTrue(range.overlaps(QgsRasterRange(0, float('NaN'))))
-        self.assertTrue(range.overlaps(QgsRasterRange(1, float('NaN'))))
-        self.assertTrue(range.overlaps(QgsRasterRange(10, float('NaN'))))
-        self.assertTrue(range.overlaps(QgsRasterRange(11, float('NaN'))))
-        self.assertFalse(range.overlaps(QgsRasterRange(float('NaN'), -1)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 0)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 1)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 10)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 11)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), float('NaN'))))
-        self.assertFalse(range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.Exclusive)))
-        self.assertFalse(range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMin)))
-        self.assertTrue(range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMax)))
-        self.assertTrue(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.Exclusive)))
-        self.assertTrue(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMin)))
-        self.assertTrue(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMax)))
+        self.assertTrue(range.overlaps(QgsRasterRange(-1, float("NaN"))))
+        self.assertTrue(range.overlaps(QgsRasterRange(0, float("NaN"))))
+        self.assertTrue(range.overlaps(QgsRasterRange(1, float("NaN"))))
+        self.assertTrue(range.overlaps(QgsRasterRange(10, float("NaN"))))
+        self.assertTrue(range.overlaps(QgsRasterRange(11, float("NaN"))))
+        self.assertFalse(range.overlaps(QgsRasterRange(float("NaN"), -1)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 0)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 1)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 10)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 11)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), float("NaN"))))
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.Exclusive))
+        )
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMin))
+        )
+        self.assertTrue(
+            range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMax))
+        )
+        self.assertTrue(
+            range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.Exclusive))
+        )
+        self.assertTrue(
+            range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMin))
+        )
+        self.assertTrue(
+            range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMax))
+        )
 
         # includes left end
         range = QgsRasterRange(0, 10, QgsRasterRange.BoundsType.IncludeMin)
@@ -231,23 +272,35 @@ class TestQgsRasterRange(unittest.TestCase):
         self.assertTrue(range.overlaps(QgsRasterRange(-1, 0)))
         self.assertFalse(range.overlaps(QgsRasterRange(-10, -1)))
         self.assertFalse(range.overlaps(QgsRasterRange(11, 12)))
-        self.assertTrue(range.overlaps(QgsRasterRange(-1, float('NaN'))))
-        self.assertTrue(range.overlaps(QgsRasterRange(0, float('NaN'))))
-        self.assertTrue(range.overlaps(QgsRasterRange(1, float('NaN'))))
-        self.assertFalse(range.overlaps(QgsRasterRange(10, float('NaN'))))
-        self.assertFalse(range.overlaps(QgsRasterRange(11, float('NaN'))))
-        self.assertFalse(range.overlaps(QgsRasterRange(float('NaN'), -1)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 0)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 1)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 10)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 11)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), float('NaN'))))
-        self.assertFalse(range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.Exclusive)))
-        self.assertFalse(range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMin)))
-        self.assertTrue(range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMax)))
-        self.assertFalse(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.Exclusive)))
-        self.assertFalse(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMin)))
-        self.assertFalse(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMax)))
+        self.assertTrue(range.overlaps(QgsRasterRange(-1, float("NaN"))))
+        self.assertTrue(range.overlaps(QgsRasterRange(0, float("NaN"))))
+        self.assertTrue(range.overlaps(QgsRasterRange(1, float("NaN"))))
+        self.assertFalse(range.overlaps(QgsRasterRange(10, float("NaN"))))
+        self.assertFalse(range.overlaps(QgsRasterRange(11, float("NaN"))))
+        self.assertFalse(range.overlaps(QgsRasterRange(float("NaN"), -1)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 0)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 1)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 10)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 11)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), float("NaN"))))
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.Exclusive))
+        )
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMin))
+        )
+        self.assertTrue(
+            range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMax))
+        )
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.Exclusive))
+        )
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMin))
+        )
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMax))
+        )
 
         # includes right end
         range = QgsRasterRange(0, 10, QgsRasterRange.BoundsType.IncludeMax)
@@ -265,23 +318,35 @@ class TestQgsRasterRange(unittest.TestCase):
         self.assertFalse(range.overlaps(QgsRasterRange(-1, 0)))
         self.assertFalse(range.overlaps(QgsRasterRange(-10, -1)))
         self.assertFalse(range.overlaps(QgsRasterRange(11, 12)))
-        self.assertTrue(range.overlaps(QgsRasterRange(-1, float('NaN'))))
+        self.assertTrue(range.overlaps(QgsRasterRange(-1, float("NaN"))))
         self.assertTrue(range.overlaps(QgsRasterRange(0, 50)))
-        self.assertTrue(range.overlaps(QgsRasterRange(1, float('NaN'))))
-        self.assertTrue(range.overlaps(QgsRasterRange(10, float('NaN'))))
-        self.assertFalse(range.overlaps(QgsRasterRange(11, float('NaN'))))
-        self.assertFalse(range.overlaps(QgsRasterRange(float('NaN'), -1)))
-        self.assertFalse(range.overlaps(QgsRasterRange(float('NaN'), 0)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 1)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 10)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 11)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), float('NaN'))))
-        self.assertFalse(range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.Exclusive)))
-        self.assertFalse(range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMin)))
-        self.assertFalse(range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMax)))
-        self.assertFalse(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.Exclusive)))
-        self.assertTrue(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMin)))
-        self.assertFalse(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMax)))
+        self.assertTrue(range.overlaps(QgsRasterRange(1, float("NaN"))))
+        self.assertTrue(range.overlaps(QgsRasterRange(10, float("NaN"))))
+        self.assertFalse(range.overlaps(QgsRasterRange(11, float("NaN"))))
+        self.assertFalse(range.overlaps(QgsRasterRange(float("NaN"), -1)))
+        self.assertFalse(range.overlaps(QgsRasterRange(float("NaN"), 0)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 1)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 10)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 11)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), float("NaN"))))
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.Exclusive))
+        )
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMin))
+        )
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMax))
+        )
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.Exclusive))
+        )
+        self.assertTrue(
+            range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMin))
+        )
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMax))
+        )
 
         # includes neither end
         range = QgsRasterRange(0, 10, QgsRasterRange.BoundsType.Exclusive)
@@ -298,41 +363,112 @@ class TestQgsRasterRange(unittest.TestCase):
         self.assertFalse(range.overlaps(QgsRasterRange(-1, 0)))
         self.assertFalse(range.overlaps(QgsRasterRange(-10, -1)))
         self.assertFalse(range.overlaps(QgsRasterRange(11, 12)))
-        self.assertTrue(range.overlaps(QgsRasterRange(-1, float('NaN'))))
-        self.assertTrue(range.overlaps(QgsRasterRange(1, float('NaN'))))
-        self.assertFalse(range.overlaps(QgsRasterRange(10, float('NaN'))))
-        self.assertFalse(range.overlaps(QgsRasterRange(11, float('NaN'))))
-        self.assertFalse(range.overlaps(QgsRasterRange(float('NaN'), -1)))
-        self.assertFalse(range.overlaps(QgsRasterRange(float('NaN'), 0)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 1)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 10)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), 11)))
-        self.assertTrue(range.overlaps(QgsRasterRange(float('NaN'), float('NaN'))))
-        self.assertFalse(range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.Exclusive)))
-        self.assertFalse(range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMin)))
-        self.assertFalse(range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMax)))
-        self.assertFalse(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.Exclusive)))
-        self.assertFalse(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMin)))
-        self.assertFalse(range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMax)))
+        self.assertTrue(range.overlaps(QgsRasterRange(-1, float("NaN"))))
+        self.assertTrue(range.overlaps(QgsRasterRange(1, float("NaN"))))
+        self.assertFalse(range.overlaps(QgsRasterRange(10, float("NaN"))))
+        self.assertFalse(range.overlaps(QgsRasterRange(11, float("NaN"))))
+        self.assertFalse(range.overlaps(QgsRasterRange(float("NaN"), -1)))
+        self.assertFalse(range.overlaps(QgsRasterRange(float("NaN"), 0)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 1)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 10)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), 11)))
+        self.assertTrue(range.overlaps(QgsRasterRange(float("NaN"), float("NaN"))))
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.Exclusive))
+        )
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMin))
+        )
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(-1, 0, QgsRasterRange.BoundsType.IncludeMax))
+        )
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.Exclusive))
+        )
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMin))
+        )
+        self.assertFalse(
+            range.overlaps(QgsRasterRange(10, 11, QgsRasterRange.BoundsType.IncludeMax))
+        )
 
     def testAsText(self):
-        self.assertEqual(QgsRasterRange(0, 10, QgsRasterRange.BoundsType.IncludeMinAndMax).asText(), '0 ≤ x ≤ 10')
-        self.assertEqual(QgsRasterRange(-1, float('NaN')).asText(), '-1 ≤ x ≤ ∞')
-        self.assertEqual(QgsRasterRange(float('NaN'), 5).asText(), '-∞ ≤ x ≤ 5')
-        self.assertEqual(QgsRasterRange(float('NaN'), float('NaN')).asText(), '-∞ ≤ x ≤ ∞')
-        self.assertEqual(QgsRasterRange(0, 10, QgsRasterRange.BoundsType.IncludeMin).asText(), '0 ≤ x < 10')
-        self.assertEqual(QgsRasterRange(-1, float('NaN'), QgsRasterRange.BoundsType.IncludeMin).asText(), '-1 ≤ x < ∞')
-        self.assertEqual(QgsRasterRange(float('NaN'), 5, QgsRasterRange.BoundsType.IncludeMin).asText(), '-∞ ≤ x < 5')
-        self.assertEqual(QgsRasterRange(float('NaN'), float('NaN'), QgsRasterRange.BoundsType.IncludeMin).asText(), '-∞ ≤ x < ∞')
-        self.assertEqual(QgsRasterRange(0, 10, QgsRasterRange.BoundsType.IncludeMax).asText(), '0 < x ≤ 10')
-        self.assertEqual(QgsRasterRange(-1, float('NaN'), QgsRasterRange.BoundsType.IncludeMax).asText(), '-1 < x ≤ ∞')
-        self.assertEqual(QgsRasterRange(float('NaN'), 5, QgsRasterRange.BoundsType.IncludeMax).asText(), '-∞ < x ≤ 5')
-        self.assertEqual(QgsRasterRange(float('NaN'), float('NaN'), QgsRasterRange.BoundsType.IncludeMax).asText(), '-∞ < x ≤ ∞')
-        self.assertEqual(QgsRasterRange(0, 10, QgsRasterRange.BoundsType.Exclusive).asText(), '0 < x < 10')
-        self.assertEqual(QgsRasterRange(-1, float('NaN'), QgsRasterRange.BoundsType.Exclusive).asText(), '-1 < x < ∞')
-        self.assertEqual(QgsRasterRange(float('NaN'), 5, QgsRasterRange.BoundsType.Exclusive).asText(), '-∞ < x < 5')
-        self.assertEqual(QgsRasterRange(float('NaN'), float('NaN'), QgsRasterRange.BoundsType.Exclusive).asText(), '-∞ < x < ∞')
+        self.assertEqual(
+            QgsRasterRange(0, 10, QgsRasterRange.BoundsType.IncludeMinAndMax).asText(),
+            "0 ≤ x ≤ 10",
+        )
+        self.assertEqual(QgsRasterRange(-1, float("NaN")).asText(), "-1 ≤ x ≤ ∞")
+        self.assertEqual(QgsRasterRange(float("NaN"), 5).asText(), "-∞ ≤ x ≤ 5")
+        self.assertEqual(
+            QgsRasterRange(float("NaN"), float("NaN")).asText(), "-∞ ≤ x ≤ ∞"
+        )
+        self.assertEqual(
+            QgsRasterRange(0, 10, QgsRasterRange.BoundsType.IncludeMin).asText(),
+            "0 ≤ x < 10",
+        )
+        self.assertEqual(
+            QgsRasterRange(
+                -1, float("NaN"), QgsRasterRange.BoundsType.IncludeMin
+            ).asText(),
+            "-1 ≤ x < ∞",
+        )
+        self.assertEqual(
+            QgsRasterRange(
+                float("NaN"), 5, QgsRasterRange.BoundsType.IncludeMin
+            ).asText(),
+            "-∞ ≤ x < 5",
+        )
+        self.assertEqual(
+            QgsRasterRange(
+                float("NaN"), float("NaN"), QgsRasterRange.BoundsType.IncludeMin
+            ).asText(),
+            "-∞ ≤ x < ∞",
+        )
+        self.assertEqual(
+            QgsRasterRange(0, 10, QgsRasterRange.BoundsType.IncludeMax).asText(),
+            "0 < x ≤ 10",
+        )
+        self.assertEqual(
+            QgsRasterRange(
+                -1, float("NaN"), QgsRasterRange.BoundsType.IncludeMax
+            ).asText(),
+            "-1 < x ≤ ∞",
+        )
+        self.assertEqual(
+            QgsRasterRange(
+                float("NaN"), 5, QgsRasterRange.BoundsType.IncludeMax
+            ).asText(),
+            "-∞ < x ≤ 5",
+        )
+        self.assertEqual(
+            QgsRasterRange(
+                float("NaN"), float("NaN"), QgsRasterRange.BoundsType.IncludeMax
+            ).asText(),
+            "-∞ < x ≤ ∞",
+        )
+        self.assertEqual(
+            QgsRasterRange(0, 10, QgsRasterRange.BoundsType.Exclusive).asText(),
+            "0 < x < 10",
+        )
+        self.assertEqual(
+            QgsRasterRange(
+                -1, float("NaN"), QgsRasterRange.BoundsType.Exclusive
+            ).asText(),
+            "-1 < x < ∞",
+        )
+        self.assertEqual(
+            QgsRasterRange(
+                float("NaN"), 5, QgsRasterRange.BoundsType.Exclusive
+            ).asText(),
+            "-∞ < x < 5",
+        )
+        self.assertEqual(
+            QgsRasterRange(
+                float("NaN"), float("NaN"), QgsRasterRange.BoundsType.Exclusive
+            ).asText(),
+            "-∞ < x < ∞",
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

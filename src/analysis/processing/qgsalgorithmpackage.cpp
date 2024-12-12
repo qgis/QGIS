@@ -54,7 +54,7 @@ void QgsPackageAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::Vector ) );
   QgsProcessingParameterFileDestination *outputParameter = new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Destination GeoPackage" ), QObject::tr( "GeoPackage files (*.gpkg)" ) );
-  outputParameter->setMetadata( QVariantMap( {{QStringLiteral( "widget_wrapper" ), QVariantMap( {{QStringLiteral( "dontconfirmoverwrite" ), true }} ) }} ) );
+  outputParameter->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "dontconfirmoverwrite" ), true } } ) } } ) );
   addParameter( outputParameter );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "OVERWRITE" ), QObject::tr( "Overwrite existing GeoPackage" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "SAVE_STYLES" ), QObject::tr( "Save layer styles into GeoPackage" ), true ) );
@@ -76,13 +76,12 @@ QgsPackageAlgorithm *QgsPackageAlgorithm::createInstance() const
 
 bool QgsPackageAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-
-  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
 
   for ( const QgsMapLayer *layer : std::as_const( layers ) )
   {
     QgsMapLayer *clonedLayer { layer->clone() };
-    mClonedLayerIds.insert( clonedLayer->id(), layer->id( ) );
+    mClonedLayerIds.insert( clonedLayer->id(), layer->id() );
     mLayers.emplace_back( clonedLayer );
   }
 
@@ -102,7 +101,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
   const bool selectedFeaturesOnly = parameterAsBoolean( parameters, QStringLiteral( "SELECTED_FEATURES_ONLY" ), context );
   const bool exportRelatedLayers = parameterAsBoolean( parameters, QStringLiteral( "EXPORT_RELATED_LAYERS" ), context );
   const QString packagePath = parameterAsString( parameters, QStringLiteral( "OUTPUT" ), context );
-  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
 
   if ( packagePath.isEmpty() )
     throw QgsProcessingException( QObject::tr( "No output file specified." ) );
@@ -128,22 +127,19 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
   if ( exportRelatedLayers )
   {
     const QgsProject *project { context.project() };
-    if ( project && ! project->relationManager()->relations().isEmpty() )
+    if ( project && !project->relationManager()->relations().isEmpty() )
     {
-
       // Infinite recursion should not happen in the real world but better safe than sorry
       const int maxRecursion { 10 };
       int recursionGuard { 0 };
 
       // This function recursively finds referenced layers
-      const auto findReferenced = [ =, &project, &feedback, &recursionGuard, &layers ]( const QgsVectorLayer * vLayer, bool onlySaveSelected, auto &&findReferenced ) -> void
-      {
+      const auto findReferenced = [=, &project, &feedback, &recursionGuard, &layers]( const QgsVectorLayer *vLayer, bool onlySaveSelected, auto &&findReferenced ) -> void {
         const QgsVectorLayer *originalLayer { qobject_cast<QgsVectorLayer *>( project->mapLayer( mClonedLayerIds.value( vLayer->id(), vLayer->id() ) ) ) };
         Q_ASSERT( originalLayer );
         const QList<QgsRelation> relations { project->relationManager()->referencingRelations( originalLayer ) };
         for ( const QgsRelation &relation : std::as_const( relations ) )
         {
-
           QgsVectorLayer *referencedLayer { relation.referencedLayer() };
           QgsVectorLayer *relatedLayer { nullptr };
 
@@ -172,7 +168,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
           // in that case the user explicitly marked the layer for export and it is supposed to be exported fully.
           if ( onlySaveSelected )
           {
-            if ( ! layers.contains( qobject_cast<QgsMapLayer *>( referencedLayer ) ) || referencedLayer->selectedFeatureCount() > 0 )
+            if ( !layers.contains( qobject_cast<QgsMapLayer *>( referencedLayer ) ) || referencedLayer->selectedFeatureCount() > 0 )
             {
               Q_ASSERT( relatedLayer );
               QgsFeatureIds selected;
@@ -201,18 +197,15 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
             findReferenced( relatedLayer, onlySaveSelected, findReferenced );
           }
         }
-
       };
 
       // This function recursively finds referencing layers
-      const auto findReferencing = [ =, &project, &feedback, &recursionGuard, &layers ]( const QgsVectorLayer * vLayer, bool onlySaveSelected, auto &&findReferencing ) -> void
-      {
+      const auto findReferencing = [=, &project, &feedback, &recursionGuard, &layers]( const QgsVectorLayer *vLayer, bool onlySaveSelected, auto &&findReferencing ) -> void {
         const QgsVectorLayer *originalLayer { qobject_cast<QgsVectorLayer *>( project->mapLayer( mClonedLayerIds.value( vLayer->id(), vLayer->id() ) ) ) };
         Q_ASSERT( originalLayer );
         const QList<QgsRelation> relations { project->relationManager()->referencedRelations( originalLayer ) };
         for ( const QgsRelation &relation : std::as_const( relations ) )
         {
-
           QgsVectorLayer *referencingLayer { relation.referencingLayer() };
           QgsVectorLayer *relatedLayer { nullptr };
           const bool layerWasExplicitlyAdded { layers.contains( qobject_cast<QgsMapLayer *>( referencingLayer ) ) };
@@ -234,9 +227,9 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
           // in that case the user explicitly marked the layer for export and it is supposed to be exported fully.
           QgsFeatureIds selected;
 
-          if ( onlySaveSelected && ( ! layerWasExplicitlyAdded || referencingLayer->selectedFeatureCount() > 0 ) )
+          if ( onlySaveSelected && ( !layerWasExplicitlyAdded || referencingLayer->selectedFeatureCount() > 0 ) )
           {
-            if ( ! layers.contains( qobject_cast<QgsMapLayer *>( referencingLayer ) ) || referencingLayer->selectedFeatureCount() > 0 )
+            if ( !layers.contains( qobject_cast<QgsMapLayer *>( referencingLayer ) ) || referencingLayer->selectedFeatureCount() > 0 )
             {
               QgsFeatureIterator it { vLayer->getSelectedFeatures() };
               QgsFeature selectedFeature;
@@ -255,7 +248,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
             }
           }
 
-          if ( ! alreadyAdded && ( ! onlySaveSelected || ! selected.isEmpty() ) )
+          if ( !alreadyAdded && ( !onlySaveSelected || !selected.isEmpty() ) )
           {
             feedback->pushInfo( QObject::tr( "Adding referencing layer '%1'" ).arg( referencingLayer->name() ) );
             relatedLayer = referencingLayer->clone();
@@ -263,7 +256,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
             mClonedLayerIds.insert( relatedLayer->id(), referencingLayer->id() );
           }
 
-          if ( relatedLayer && ! selected.isEmpty() )
+          if ( relatedLayer && !selected.isEmpty() )
           {
             relatedLayer->selectByIds( selected, Qgis::SelectBehavior::AddToSelection );
           }
@@ -276,10 +269,9 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
           else if ( relatedLayer )
           {
             recursionGuard++;
-            findReferencing( relatedLayer, onlySaveSelected, findReferencing ) ;
+            findReferencing( relatedLayer, onlySaveSelected, findReferencing );
           }
         }
-
       };
 
       for ( const QgsMapLayer *layer : std::as_const( layers ) )
@@ -294,7 +286,6 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
           findReferencing( vLayer, onlySaveSelected, findReferencing );
         }
       }
-
     }
   }
 
@@ -412,8 +403,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
   return outputs;
 }
 
-bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context,
-    QgsProcessingFeedback *feedback, bool saveStyles, bool saveMetadata, bool selectedFeaturesOnly )
+bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context, QgsProcessingFeedback *feedback, bool saveStyles, bool saveMetadata, bool selectedFeaturesOnly )
 {
   QgsVectorFileWriter::SaveVectorOptions options;
   options.driverName = QStringLiteral( "GPKG" );
@@ -438,8 +428,8 @@ bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QStri
   if ( fidIndex >= 0 )
   {
     const QMetaType::Type fidType { layer->fields().field( fidIndex ).type() };
-    if ( ! layer->fieldConstraints( fidIndex ).testFlag( QgsFieldConstraints::Constraint::ConstraintUnique )
-         && ! layer->fieldConstraints( fidIndex ).testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull )
+    if ( !layer->fieldConstraints( fidIndex ).testFlag( QgsFieldConstraints::Constraint::ConstraintUnique )
+         && !layer->fieldConstraints( fidIndex ).testFlag( QgsFieldConstraints::Constraint::ConstraintNotNull )
          && fidType != QMetaType::Type::Int
          && fidType != QMetaType::Type::UInt
          && fidType != QMetaType::Type::LongLong
@@ -467,7 +457,7 @@ bool QgsPackageAlgorithm::packageVectorLayer( QgsVectorLayer *layer, const QStri
   {
     if ( saveStyles )
     {
-      std::unique_ptr< QgsVectorLayer > res = std::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layername=%2" ).arg( newFilename, newLayer ) );
+      std::unique_ptr<QgsVectorLayer> res = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layername=%2" ).arg( newFilename, newLayer ) );
       if ( res )
       {
         QString errorMsg;

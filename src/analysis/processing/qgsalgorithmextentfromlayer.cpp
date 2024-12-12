@@ -73,7 +73,7 @@ void QgsExtentFromLayerAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
 
-  auto roundParam = std::make_unique < QgsProcessingParameterDistance >( QStringLiteral( "ROUND_TO" ), QObject::tr( "Round values to" ), 0, QStringLiteral( "INPUT" ), 0 );
+  auto roundParam = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "ROUND_TO" ), QObject::tr( "Round values to" ), 0, QStringLiteral( "INPUT" ), 0 );
   roundParam->setFlags( Qgis::ProcessingParameterFlag::Advanced );
   addParameter( roundParam.release() );
 
@@ -102,11 +102,11 @@ QVariantMap QgsExtentFromLayerAlgorithm::processAlgorithm( const QVariantMap &pa
   fields.append( QgsField( QStringLiteral( "WIDTH" ), QMetaType::Type::Double ) );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, layer->crs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, layer->crs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
-  if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
+  if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
   {
     vl->updateExtents();
   }
@@ -139,6 +139,8 @@ QVariantMap QgsExtentFromLayerAlgorithm::processAlgorithm( const QVariantMap &pa
   feat.setAttributes( QgsAttributes() << minX << minY << maxX << maxY << cntX << cntY << area << perim << height << width );
   if ( !sink->addFeature( feat, QgsFeatureSink::FastInsert ) )
     throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
+
+  sink->finalize();
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );

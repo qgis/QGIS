@@ -98,7 +98,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
      * Returns the dynamic key parts
      * \since QGIS 3.40
      */
-    QStringList dynamicKeyPartList() const {return mDynamicKeyPartList;}
+    QStringList dynamicKeyPartList() const { return mDynamicKeyPartList; }
 
 
   protected:
@@ -117,7 +117,6 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
 
     QStringList mDynamicKeyPartList;
 };
-
 
 
 #endif // QGSSETTINGSEDITORWIDGETWRAPPER_H

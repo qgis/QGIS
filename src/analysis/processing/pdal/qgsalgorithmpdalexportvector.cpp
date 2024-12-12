@@ -76,10 +76,11 @@ QStringList QgsPdalExportVectorAlgorithm::createArgumentLists( const QVariantMap
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
-  QStringList args = { QStringLiteral( "to_vector" ),
-                       QStringLiteral( "--input=%1" ).arg( layer->source() ),
-                       QStringLiteral( "--output=%1" ).arg( outputFile ),
-                     };
+  QStringList args = {
+    QStringLiteral( "to_vector" ),
+    QStringLiteral( "--input=%1" ).arg( layer->source() ),
+    QStringLiteral( "--output=%1" ).arg( outputFile ),
+  };
 
   if ( parameters.value( QStringLiteral( "ATTRIBUTE" ) ).isValid() )
   {

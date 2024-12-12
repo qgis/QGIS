@@ -62,8 +62,8 @@ class SERVER_EXPORT QgsCapabilitiesCache : public QObject
     void removeCapabilitiesDocument( const QString &path );
 
   private:
-    QHash< QString, QHash< QString, QDomDocument > > mCachedCapabilities;
-    QHash< QString, QDateTime> mCachedCapabilitiesTimestamps;
+    QHash<QString, QHash<QString, QDomDocument>> mCachedCapabilities;
+    QHash<QString, QDateTime> mCachedCapabilitiesTimestamps;
     QFileSystemWatcher mFileSystemWatcher;
     QTimer mTimer;
     int mCacheSize;

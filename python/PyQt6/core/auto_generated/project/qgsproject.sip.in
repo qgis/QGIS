@@ -969,7 +969,7 @@ transaction.
 
 .. deprecated:: 3.26
 
-   Use transactionMode instead.
+   Use :py:func:`~QgsProject.transactionMode` instead.
 %End
 
  void setAutoTransaction( bool autoTransaction ) /Deprecated/;
@@ -984,7 +984,7 @@ transaction.
 
 .. deprecated:: 3.26
 
-   Use setTransactionMode instead.
+   Use :py:func:`~QgsProject.setTransactionMode` instead.
 %End
 
     Qgis::TransactionMode transactionMode() const;

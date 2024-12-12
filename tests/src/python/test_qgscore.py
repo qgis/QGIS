@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Loïc Bartoletti'
-__date__ = '28.6.2019'
-__copyright__ = 'Copyright 2019, The QGIS Project'
+
+__author__ = "Loïc Bartoletti"
+__date__ = "28.6.2019"
+__copyright__ = "Copyright 2019, The QGIS Project"
 
 
 from qgis.core import qgsDoubleNear, qgsRound
@@ -40,11 +41,20 @@ class TestCoreAdditions(QgisTestCase):
         qgsDoubleNear(qgsRound(-9.8765432198765, 7), -9.8765432, 0.0000001)
         qgsDoubleNear(qgsRound(9876543.2198765, 5), 9876543.219880, 0.000001)
         qgsDoubleNear(qgsRound(-9876543.2198765, 5), -9876543.219880, 0.000001)
-        qgsDoubleNear(qgsRound(9.87654321987654321, 13), 9.87654321987654, 0.0000000000001)
-        qgsDoubleNear(qgsRound(9.87654321987654321, 14), 9.876543219876543, 0.00000000000001)
-        qgsDoubleNear(qgsRound(9998.87654321987654321, 14), 9998.876543219876543, 0.00000000000001)
-        qgsDoubleNear(qgsRound(9999999.87654321987654321, 14),
-                      9999999.876543219876543, 0.00000000000001)
+        qgsDoubleNear(
+            qgsRound(9.87654321987654321, 13), 9.87654321987654, 0.0000000000001
+        )
+        qgsDoubleNear(
+            qgsRound(9.87654321987654321, 14), 9.876543219876543, 0.00000000000001
+        )
+        qgsDoubleNear(
+            qgsRound(9998.87654321987654321, 14), 9998.876543219876543, 0.00000000000001
+        )
+        qgsDoubleNear(
+            qgsRound(9999999.87654321987654321, 14),
+            9999999.876543219876543,
+            0.00000000000001,
+        )
 
 
 if __name__ == "__main__":

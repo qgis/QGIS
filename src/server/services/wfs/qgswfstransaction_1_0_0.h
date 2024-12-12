@@ -29,60 +29,60 @@ namespace QgsWfs
   {
     struct transactionInsert
     {
-      QString typeName;
+        QString typeName;
 
-      QString handle;
+        QString handle;
 
-      QDomNodeList featureNodeList;
+        QDomNodeList featureNodeList;
 
-      QStringList insertFeatureIds;
+        QStringList insertFeatureIds;
 
-      bool error = false;
+        bool error = false;
 
-      QString errorMsg;
+        QString errorMsg;
     };
 
     struct transactionUpdate
     {
-      QString typeName;
+        QString typeName;
 
-      QString handle;
+        QString handle;
 
-      QMap<QString, QString> propertyMap;
+        QMap<QString, QString> propertyMap;
 
-      QDomElement geometryElement;
+        QDomElement geometryElement;
 
-      QgsFeatureRequest featureRequest;
+        QgsFeatureRequest featureRequest;
 
-      QStringList serverFids;
+        QStringList serverFids;
 
-      bool error = false;
+        bool error = false;
 
-      QString errorMsg;
+        QString errorMsg;
     };
 
     struct transactionDelete
     {
-      QString typeName;
+        QString typeName;
 
-      QString handle;
+        QString handle;
 
-      QgsFeatureRequest featureRequest;
+        QgsFeatureRequest featureRequest;
 
-      QStringList serverFids;
+        QStringList serverFids;
 
-      bool error = false;
+        bool error = false;
 
-      QString errorMsg;
+        QString errorMsg;
     };
 
     struct transactionRequest
     {
-      QList< transactionInsert > inserts;
+        QList<transactionInsert> inserts;
 
-      QList< transactionUpdate > updates;
+        QList<transactionUpdate> updates;
 
-      QList< transactionDelete > deletes;
+        QList<transactionDelete> deletes;
     };
 
     /**
@@ -120,19 +120,15 @@ namespace QgsWfs
     /**
      * Output WFS  transaction response
      */
-    void writeTransaction( QgsServerInterface *serverIface, const QgsProject *project,
-                           const QString &version, const QgsServerRequest &request,
-                           QgsServerResponse &response );
+    void writeTransaction( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response );
 
 
     /**
      * Create a wfs transaction document
      */
-    QDomDocument createTransactionDocument( QgsServerInterface *serverIface, const QgsProject *project,
-                                            const QString &version, const QgsServerRequest &request );
+    QDomDocument createTransactionDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request );
 
   } // namespace v1_0_0
 } // namespace QgsWfs
 
 #endif
-

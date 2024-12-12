@@ -35,11 +35,6 @@
 #include "qgstemporalutils.h"
 #include "qgsunittypes.h"
 
-// %%% copied from qgswmsprovider.cpp
-static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
-
-
-
 bool QgsWmsSettings::parseUri( const QString &uriString )
 {
   QgsDebugMsgLevel( "uriString = " + uriString, 2 );
@@ -56,7 +51,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   }
 
   mAuth.mHttpHeaders = uri.httpHeaders();
-  mXyz = false;  // assume WMS / WMTS
+  mXyz = false; // assume WMS / WMTS
 
   if ( uri.hasParam( QStringLiteral( "interpretation" ) ) )
   {
@@ -64,8 +59,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   }
 
   mTiled = false;
-  if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "xyz" ) ||
-       uri.param( QStringLiteral( "type" ) ) == QLatin1String( "mbtiles" ) )
+  if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "xyz" ) || uri.param( QStringLiteral( "type" ) ) == QLatin1String( "mbtiles" ) )
   {
     // for XYZ tiles most of the things do not apply
     mTiled = true;
@@ -89,9 +83,9 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mIgnoreGetMapUrl = false;
     mIgnoreGetFeatureInfoUrl = false;
     mSmoothPixmapTransform = mInterpretation.isEmpty();
-    mDpiMode = DpiNone; // does not matter what we set here
-    mActiveSubLayers = QStringList( QStringLiteral( "xyz" ) );  // just a placeholder to have one sub-layer
-    mActiveSubStyles = QStringList( QStringLiteral( "xyz" ) );  // just a placeholder to have one sub-style
+    mDpiMode = DpiNone;                                        // does not matter what we set here
+    mActiveSubLayers = QStringList( QStringLiteral( "xyz" ) ); // just a placeholder to have one sub-layer
+    mActiveSubStyles = QStringList( QStringLiteral( "xyz" ) ); // just a placeholder to have one sub-style
     mActiveSubLayerVisibility.clear();
     mFeatureCount = 0;
     mImageMimeType.clear();
@@ -108,8 +102,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mTemporalExtent = uri.param( QStringLiteral( "timeDimensionExtent" ) );
     mTimeDimensionExtent = parseTemporalExtent( mTemporalExtent );
 
-    if ( !mTimeDimensionExtent.datesResolutionList.isEmpty() &&
-         !mTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.empty() )
+    if ( !mTimeDimensionExtent.datesResolutionList.isEmpty() && !mTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.empty() )
     {
       QDateTime begin = mTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.first();
       QDateTime end = mTimeDimensionExtent.datesResolutionList.constLast().dates.dateTimes.last();
@@ -132,7 +125,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
       if ( !extent.resolution.isNull() )
       {
         bool maxValuesExceeded = false;
-        const QList< QDateTime > dates = QgsTemporalUtils::calculateDateTimesUsingDuration( begin, end, extent.resolution, maxValuesExceeded, 1000 );
+        const QList<QDateTime> dates = QgsTemporalUtils::calculateDateTimesUsingDuration( begin, end, extent.resolution, maxValuesExceeded, 1000 );
         // if we have a manageable number of distinct dates, then we'll use those. If not we just use the overall range.
         // (some servers eg may have data for every minute for decades!)
         if ( !maxValuesExceeded )
@@ -165,7 +158,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
         QDateTime begin = mReferenceTimeDimensionExtent.datesResolutionList.constFirst().dates.dateTimes.first();
         QDateTime end = mReferenceTimeDimensionExtent.datesResolutionList.constLast().dates.dateTimes.last();
 
-        mFixedReferenceRange =  QgsDateTimeRange( begin, end );
+        mFixedReferenceRange = QgsDateTimeRange( begin, end );
       }
       else
         mFixedReferenceRange = QgsDateTimeRange();
@@ -191,7 +184,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   mParserSettings.invertAxisOrientation = uri.hasParam( QStringLiteral( "InvertAxisOrientation" ) ); // must be before parsing!
   mSmoothPixmapTransform = uri.hasParam( QStringLiteral( "SmoothPixmapTransform" ) );
 
-  mDpiMode = uri.hasParam( QStringLiteral( "dpiMode" ) ) ? static_cast< QgsWmsDpiMode >( uri.param( QStringLiteral( "dpiMode" ) ).toInt() ) : DpiAll;
+  mDpiMode = uri.hasParam( QStringLiteral( "dpiMode" ) ) ? static_cast<QgsWmsDpiMode>( uri.param( QStringLiteral( "dpiMode" ) ).toInt() ) : DpiAll;
 
   mActiveSubLayers = uri.params( QStringLiteral( "layers" ) );
   mActiveSubStyles = uri.params( QStringLiteral( "styles" ) );
@@ -205,7 +198,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     for ( const QString &opacity : opacities )
     {
       bool ok = false;
-      ( void )opacity.toInt( &ok );
+      ( void ) opacity.toInt( &ok );
       if ( ok )
       {
         mOpacities.append( opacity );
@@ -247,7 +240,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     // tileMatrixSet may be empty if URI was converted from < 1.9 project file URI
     // in that case it means that the source is WMS-C
     mTileMatrixSetId = uri.param( QStringLiteral( "tileMatrixSet" ) );
-    mTilePixelRatio = uri.hasParam( QStringLiteral( "tilePixelRatio" ) ) ? static_cast< Qgis::TilePixelRatio >( uri.param( QStringLiteral( "tilePixelRatio" ) ).toInt() ) : Qgis::TilePixelRatio::Undefined;
+    mTilePixelRatio = uri.hasParam( QStringLiteral( "tilePixelRatio" ) ) ? static_cast<Qgis::TilePixelRatio>( uri.param( QStringLiteral( "tilePixelRatio" ) ).toInt() ) : Qgis::TilePixelRatio::Undefined;
   }
 
   if ( uri.hasParam( QStringLiteral( "tileDimensions" ) ) )
@@ -437,7 +430,7 @@ QgsDateTimeRange QgsWmsSettings::parseWmtsTimeValue( const QString &value, QgsWm
     const QDate date( match.captured( 1 ).toInt(), match.captured( 2 ).toInt(), match.captured( 3 ).toInt() );
     format = QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMdd;
 
-    return QgsDateTimeRange( date.startOfDay(), date.endOfDay( ) );
+    return QgsDateTimeRange( date.startOfDay(), date.endOfDay() );
   }
 
   // YYYY-MM-DD format, eg
@@ -449,7 +442,7 @@ QgsDateTimeRange QgsWmsSettings::parseWmtsTimeValue( const QString &value, QgsWm
     const QDate date( match.captured( 1 ).toInt(), match.captured( 2 ).toInt(), match.captured( 3 ).toInt() );
     format = QgsWmtsTileLayer::WmtsTimeFormat::yyyy_MM_dd;
 
-    return QgsDateTimeRange( date.startOfDay(), date.endOfDay( ) );
+    return QgsDateTimeRange( date.startOfDay(), date.endOfDay() );
   }
 
   // YYYY format, eg
@@ -461,7 +454,7 @@ QgsDateTimeRange QgsWmsSettings::parseWmtsTimeValue( const QString &value, QgsWm
     const QDate startDate( match.captured( 1 ).toInt(), 1, 1 );
     const QDate endDate( match.captured( 1 ).toInt(), 12, 31 );
     format = QgsWmtsTileLayer::WmtsTimeFormat::yyyy;
-    return QgsDateTimeRange( startDate.startOfDay(), endDate.endOfDay( ) );
+    return QgsDateTimeRange( startDate.startOfDay(), endDate.endOfDay() );
   }
 
   // YYYY-MM-DDTHH:mm:ss.SSSZ
@@ -482,11 +475,9 @@ QgsDateTimeRange QgsWmsSettings::parseWmtsTimeValue( const QString &value, QgsWm
 // ----------------------
 
 
-QgsWmsCapabilities::QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext, const QString &baseUrl ):
-  mCoordinateTransformContext( coordinateTransformContext ),
-  mBaseUrl( baseUrl )
+QgsWmsCapabilities::QgsWmsCapabilities( const QgsCoordinateTransformContext &coordinateTransformContext, const QString &baseUrl )
+  : mCoordinateTransformContext( coordinateTransformContext ), mBaseUrl( baseUrl )
 {
-
 }
 
 bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParserSettings settings )
@@ -505,8 +496,7 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
     return false;
   }
 
-  if ( response.startsWith( "<html>" ) ||
-       response.startsWith( "<HTML>" ) )
+  if ( response.startsWith( "<html>" ) || response.startsWith( "<HTML>" ) )
   {
     mErrorFormat = QStringLiteral( "text/html" );
     mError = response;
@@ -560,7 +550,6 @@ bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParser
 
 bool QgsWmsCapabilities::parseCapabilitiesDom( const QByteArray &xml, QgsWmsCapabilitiesProperty &capabilitiesProperty )
 {
-
 #ifdef QGISDEBUG
   QFile file( QDir::tempPath() + "/qgis-wmsprovider-capabilities.xml" );
   if ( file.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
@@ -582,10 +571,10 @@ bool QgsWmsCapabilities::parseCapabilitiesDom( const QByteArray &xml, QgsWmsCapa
     mErrorCaption = QObject::tr( "Dom Exception" );
     mErrorFormat = QStringLiteral( "text/plain" );
     mError = QObject::tr( "Could not get WMS capabilities: %1 at line %2 column %3\nThis is probably due to an incorrect WMS Server URL.\nResponse was:\n\n%4" )
-             .arg( errorMsg )
-             .arg( errorLine )
-             .arg( errorColumn )
-             .arg( QString( xml ) );
+               .arg( errorMsg )
+               .arg( errorLine )
+               .arg( errorColumn )
+               .arg( QString( xml ) );
 
     QgsLogger::debug( "Dom Exception: " + mError );
 
@@ -598,18 +587,15 @@ bool QgsWmsCapabilities::parseCapabilitiesDom( const QByteArray &xml, QgsWmsCapa
   QgsDebugMsgLevel( "testing tagName " + docElement.tagName(), 2 );
 
   if (
-    docElement.tagName() != QLatin1String( "WMS_Capabilities" )  && // (1.3 vintage)
+    docElement.tagName() != QLatin1String( "WMS_Capabilities" ) &&    // (1.3 vintage)
     docElement.tagName() != QLatin1String( "WMT_MS_Capabilities" ) && // (1.1.1 vintage)
-    docElement.tagName() != QLatin1String( "Capabilities" )         // WMTS
+    docElement.tagName() != QLatin1String( "Capabilities" )           // WMTS
   )
   {
     mErrorCaption = QObject::tr( "Dom Exception" );
     mErrorFormat = QStringLiteral( "text/plain" );
     mError = QObject::tr( "Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found.\nThis might be due to an incorrect WMS Server URL.\nTag: %3\nResponse was:\n%4" )
-             .arg( QStringLiteral( "WMS_Capabilities" ),
-                   QStringLiteral( "WMT_MS_Capabilities" ),
-                   docElement.tagName(),
-                   QString( xml ) );
+               .arg( QStringLiteral( "WMS_Capabilities" ), QStringLiteral( "WMT_MS_Capabilities" ), docElement.tagName(), QString( xml ) );
 
     QgsLogger::debug( "Dom Exception: " + mError );
 
@@ -653,7 +639,6 @@ bool QgsWmsCapabilities::parseCapabilitiesDom( const QByteArray &xml, QgsWmsCapa
 
 void QgsWmsCapabilities::parseService( const QDomElement &element, QgsWmsServiceProperty &serviceProperty )
 {
-
   QDomNode node = element.firstChild();
   while ( !node.isNull() )
   {
@@ -726,7 +711,6 @@ void QgsWmsCapabilities::parseOnlineResource( const QDomElement &element, QgsWms
 
 void QgsWmsCapabilities::parseKeywordList( const QDomElement &element, QStringList &keywordListProperty )
 {
-
   QDomNode node = element.firstChild();
   while ( !node.isNull() )
   {
@@ -751,7 +735,6 @@ void QgsWmsCapabilities::parseKeywordList( const QDomElement &element, QStringLi
 
 void QgsWmsCapabilities::parseContactInformation( const QDomElement &element, QgsWmsContactInformationProperty &contactInformationProperty )
 {
-
   QDomNode node = element.firstChild();
   while ( !node.isNull() )
   {
@@ -797,16 +780,16 @@ void QgsWmsCapabilities::parseContactInformation( const QDomElement &element, Qg
       else if ( tagName == QLatin1String( "ows:ContactInfo" ) )
       {
         QDomNode tempNode = node.firstChildElement( QStringLiteral( "ows:Phone" ) );
-        contactInformationProperty.contactVoiceTelephone        = tempNode.firstChildElement( QStringLiteral( "ows:Voice" ) ).toElement().text();
-        contactInformationProperty.contactFacsimileTelephone    = tempNode.firstChildElement( QStringLiteral( "ows:Facsimile" ) ).toElement().text();
+        contactInformationProperty.contactVoiceTelephone = tempNode.firstChildElement( QStringLiteral( "ows:Voice" ) ).toElement().text();
+        contactInformationProperty.contactFacsimileTelephone = tempNode.firstChildElement( QStringLiteral( "ows:Facsimile" ) ).toElement().text();
 
         tempNode = node.firstChildElement( QStringLiteral( "ows:Address" ) );
-        contactInformationProperty.contactElectronicMailAddress   = tempNode.firstChildElement( QStringLiteral( "ows:ElectronicMailAddress" ) ).toElement().text();
-        contactInformationProperty.contactAddress.address         = tempNode.firstChildElement( QStringLiteral( "ows:DeliveryPoint" ) ).toElement().text();
-        contactInformationProperty.contactAddress.city            = tempNode.firstChildElement( QStringLiteral( "ows:City" ) ).toElement().text();
+        contactInformationProperty.contactElectronicMailAddress = tempNode.firstChildElement( QStringLiteral( "ows:ElectronicMailAddress" ) ).toElement().text();
+        contactInformationProperty.contactAddress.address = tempNode.firstChildElement( QStringLiteral( "ows:DeliveryPoint" ) ).toElement().text();
+        contactInformationProperty.contactAddress.city = tempNode.firstChildElement( QStringLiteral( "ows:City" ) ).toElement().text();
         contactInformationProperty.contactAddress.stateOrProvince = tempNode.firstChildElement( QStringLiteral( "ows:AdministrativeArea" ) ).toElement().text();
-        contactInformationProperty.contactAddress.postCode        = tempNode.firstChildElement( QStringLiteral( "ows:PostalCode" ) ).toElement().text();
-        contactInformationProperty.contactAddress.country         = tempNode.firstChildElement( QStringLiteral( "ows:Country" ) ).toElement().text();
+        contactInformationProperty.contactAddress.postCode = tempNode.firstChildElement( QStringLiteral( "ows:PostalCode" ) ).toElement().text();
+        contactInformationProperty.contactAddress.country = tempNode.firstChildElement( QStringLiteral( "ows:Country" ) ).toElement().text();
       }
     }
     node = node.nextSibling();
@@ -815,7 +798,6 @@ void QgsWmsCapabilities::parseContactInformation( const QDomElement &element, Qg
 
 void QgsWmsCapabilities::parseContactPersonPrimary( const QDomElement &element, QgsWmsContactPersonPrimaryProperty &contactPersonPrimaryProperty )
 {
-
   QDomNode node = element.firstChild();
   while ( !node.isNull() )
   {
@@ -841,7 +823,6 @@ void QgsWmsCapabilities::parseContactPersonPrimary( const QDomElement &element, 
 
 void QgsWmsCapabilities::parseContactAddress( const QDomElement &element, QgsWmsContactAddressProperty &contactAddressProperty )
 {
-
   QDomNode node = element.firstChild();
   while ( !node.isNull() )
   {
@@ -884,7 +865,6 @@ void QgsWmsCapabilities::parseContactAddress( const QDomElement &element, QgsWms
 
 void QgsWmsCapabilities::parseCapability( const QDomElement &element, QgsWmsCapabilityProperty &capabilityProperty )
 {
-
   for ( QDomNode node = element.firstChild(); !node.isNull(); node = node.nextSibling() )
   {
     QDomElement nodeElement = node.toElement();
@@ -895,7 +875,7 @@ void QgsWmsCapabilities::parseCapability( const QDomElement &element, QgsWmsCapa
     if ( tagName.startsWith( QLatin1String( "wms:" ) ) )
       tagName = tagName.mid( 4 );
 
-    QgsDebugMsgLevel( "  "  + nodeElement.tagName(), 2 ); // the node really is an element.
+    QgsDebugMsgLevel( "  " + nodeElement.tagName(), 2 ); // the node really is an element.
 
     if ( tagName == QLatin1String( "Request" ) )
     {
@@ -928,8 +908,8 @@ void QgsWmsCapabilities::parseCapability( const QDomElement &element, QgsWmsCapa
     {
       QString name = nodeElement.attribute( QStringLiteral( "name" ) );
       QDomElement get = node.firstChildElement( QStringLiteral( "ows:DCP" ) )
-                        .firstChildElement( QStringLiteral( "ows:HTTP" ) )
-                        .firstChildElement( QStringLiteral( "ows:Get" ) );
+                          .firstChildElement( QStringLiteral( "ows:HTTP" ) )
+                          .firstChildElement( QStringLiteral( "ows:Get" ) );
 
       QString href = get.attribute( QStringLiteral( "xlink:href" ) );
 
@@ -1015,7 +995,6 @@ void QgsWmsCapabilities::parseCapability( const QDomElement &element, QgsWmsCapa
 
 void QgsWmsCapabilities::parseRequest( const QDomElement &element, QgsWmsRequestProperty &requestProperty )
 {
-
   QDomNode node = element.firstChild();
   while ( !node.isNull() )
   {
@@ -1048,11 +1027,9 @@ void QgsWmsCapabilities::parseRequest( const QDomElement &element, QgsWmsRequest
 }
 
 
-
 void QgsWmsCapabilities::parseLegendUrl( const QDomElement &element, QgsWmsLegendUrlProperty &legendUrlProperty )
 {
-
-  legendUrlProperty.width  = element.attribute( QStringLiteral( "width" ) ).toUInt();
+  legendUrlProperty.width = element.attribute( QStringLiteral( "width" ) ).toUInt();
   legendUrlProperty.height = element.attribute( QStringLiteral( "height" ) ).toUInt();
 
   QDomNode node = element.firstChild();
@@ -1141,7 +1118,6 @@ void QgsWmsCapabilities::parseExtent( const QDomElement &element, QVector<QgsWms
 
 void QgsWmsCapabilities::parseMetadataUrl( const QDomElement &element, QgsWmsMetadataUrlProperty &metadataUrlProperty )
 {
-
   QDomNode node = element.firstChild();
   while ( !node.isNull() )
   {
@@ -1166,10 +1142,8 @@ void QgsWmsCapabilities::parseMetadataUrl( const QDomElement &element, QgsWmsMet
 }
 
 
-void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProperty &layerProperty,
-                                     QgsWmsLayerProperty *parentProperty )
+void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProperty &layerProperty, QgsWmsLayerProperty *parentProperty )
 {
-
 // TODO: Delete this stanza completely, depending on success of "Inherit things into the sublayer" below.
 #if 0
   // enforce WMS non-inheritance rules
@@ -1179,12 +1153,12 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
   layerProperty.keywordList.clear();
 #endif
 
-  layerProperty.orderId     = ++mLayerCount;
+  layerProperty.orderId = ++mLayerCount;
 
   QString queryableAttribute = element.attribute( QStringLiteral( "queryable" ) );
   layerProperty.queryable = queryableAttribute == QLatin1String( "1" ) || queryableAttribute.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
 
-  layerProperty.cascaded    = element.attribute( QStringLiteral( "cascaded" ) ).toUInt();
+  layerProperty.cascaded = element.attribute( QStringLiteral( "cascaded" ) ).toUInt();
 
   QString opaqueAttribute = element.attribute( QStringLiteral( "opaque" ) );
   layerProperty.opaque = opaqueAttribute == QLatin1String( "1" ) || opaqueAttribute.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
@@ -1192,7 +1166,7 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
   QString noSubsetsAttribute = element.attribute( QStringLiteral( "noSubsets" ) );
   layerProperty.noSubsets = noSubsetsAttribute == QLatin1String( "1" ) || noSubsetsAttribute.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0;
 
-  layerProperty.fixedWidth  = element.attribute( QStringLiteral( "fixedWidth" ) ).toUInt();
+  layerProperty.fixedWidth = element.attribute( QStringLiteral( "fixedWidth" ) ).toUInt();
   layerProperty.fixedHeight = element.attribute( QStringLiteral( "fixedHeight" ) ).toUInt();
 
   QDomNode node = element.firstChild();
@@ -1214,7 +1188,7 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
 
         // Cleanup inherited styles, replace layer name with current layer name
         QVector<QgsWmsStyleProperty> inheritedStyles { layerProperty.style };
-        if ( ! nodeElement.firstChildElement( QStringLiteral( "Name" ) ).isNull() )
+        if ( !nodeElement.firstChildElement( QStringLiteral( "Name" ) ).isNull() )
         {
           const QString layerName { nodeElement.firstChildElement( QStringLiteral( "Name" ) ).text() };
           for ( auto stylesIt = inheritedStyles.begin(); stylesIt != inheritedStyles.end(); ++stylesIt )
@@ -1236,15 +1210,15 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
                   query.addQueryItem( QStringLiteral( "layer" ), layerName );
                 }
                 legendUrl.setQuery( query );
-                legendUriIt->onlineResource.xlinkHref = legendUrl.url( );
+                legendUriIt->onlineResource.xlinkHref = legendUrl.url();
               }
             }
           }
         }
 
-        subLayerProperty.style                    = inheritedStyles;
-        subLayerProperty.crs                      = layerProperty.crs;
-        subLayerProperty.boundingBoxes            = layerProperty.boundingBoxes;
+        subLayerProperty.style = inheritedStyles;
+        subLayerProperty.crs = layerProperty.crs;
+        subLayerProperty.boundingBoxes = layerProperty.boundingBoxes;
         subLayerProperty.ex_GeographicBoundingBox = layerProperty.ex_GeographicBoundingBox;
         // TODO
 
@@ -1279,23 +1253,23 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
             layerProperty.crs.push_back( srs );
         }
       }
-      else if ( tagName == QLatin1String( "LatLonBoundingBox" ) )    // legacy from earlier versions of WMS
+      else if ( tagName == QLatin1String( "LatLonBoundingBox" ) ) // legacy from earlier versions of WMS
       {
         // boundingBox element can contain comma as decimal separator and layer extent is not
         // calculated at all. Fixing by replacing comma with point.
         layerProperty.ex_GeographicBoundingBox = QgsRectangle(
-              nodeElement.attribute( QStringLiteral( "minx" ) ).replace( ',', '.' ).toDouble(),
-              nodeElement.attribute( QStringLiteral( "miny" ) ).replace( ',', '.' ).toDouble(),
-              nodeElement.attribute( QStringLiteral( "maxx" ) ).replace( ',', '.' ).toDouble(),
-              nodeElement.attribute( QStringLiteral( "maxy" ) ).replace( ',', '.' ).toDouble()
-            );
+          nodeElement.attribute( QStringLiteral( "minx" ) ).replace( ',', '.' ).toDouble(),
+          nodeElement.attribute( QStringLiteral( "miny" ) ).replace( ',', '.' ).toDouble(),
+          nodeElement.attribute( QStringLiteral( "maxx" ) ).replace( ',', '.' ).toDouble(),
+          nodeElement.attribute( QStringLiteral( "maxy" ) ).replace( ',', '.' ).toDouble()
+        );
 
-        if ( nodeElement.hasAttribute( QStringLiteral( "SRS" ) ) && nodeElement.attribute( QStringLiteral( "SRS" ) ) != DEFAULT_LATLON_CRS )
+        if ( nodeElement.hasAttribute( QStringLiteral( "SRS" ) ) && nodeElement.attribute( QStringLiteral( "SRS" ) ) != QgsWmsProvider::DEFAULT_LATLON_CRS )
         {
           try
           {
             QgsCoordinateReferenceSystem src = QgsCoordinateReferenceSystem::fromOgcWmsCrs( nodeElement.attribute( QStringLiteral( "SRS" ) ) );
-            QgsCoordinateReferenceSystem dst = QgsCoordinateReferenceSystem::fromOgcWmsCrs( DEFAULT_LATLON_CRS );
+            QgsCoordinateReferenceSystem dst = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QgsWmsProvider::DEFAULT_LATLON_CRS );
             QgsCoordinateTransform ct( src, dst, mCoordinateTransformContext );
             ct.setBallparkTransformsAreAppropriate( true );
             layerProperty.ex_GeographicBoundingBox = ct.transformBoundingBox( layerProperty.ex_GeographicBoundingBox );
@@ -1341,11 +1315,7 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
       else if ( tagName == QLatin1String( "BoundingBox" ) )
       {
         QgsWmsBoundingBoxProperty bbox;
-        bbox.box = QgsRectangle( nodeElement.attribute( QStringLiteral( "minx" ) ).replace( ',', '.' ).toDouble(),
-                                 nodeElement.attribute( QStringLiteral( "miny" ) ).replace( ',', '.' ).toDouble(),
-                                 nodeElement.attribute( QStringLiteral( "maxx" ) ).replace( ',', '.' ).toDouble(),
-                                 nodeElement.attribute( QStringLiteral( "maxy" ) ).replace( ',', '.' ).toDouble()
-                               );
+        bbox.box = QgsRectangle( nodeElement.attribute( QStringLiteral( "minx" ) ).replace( ',', '.' ).toDouble(), nodeElement.attribute( QStringLiteral( "miny" ) ).replace( ',', '.' ).toDouble(), nodeElement.attribute( QStringLiteral( "maxx" ) ).replace( ',', '.' ).toDouble(), nodeElement.attribute( QStringLiteral( "maxy" ) ).replace( ',', '.' ).toDouble() );
         if ( nodeElement.hasAttribute( QStringLiteral( "CRS" ) ) || nodeElement.hasAttribute( QStringLiteral( "SRS" ) ) )
         {
           if ( nodeElement.hasAttribute( QStringLiteral( "CRS" ) ) )
@@ -1355,8 +1325,7 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
 
           if ( shouldInvertAxisOrientation( bbox.crs ) )
           {
-            QgsRectangle invAxisBbox( bbox.box.yMinimum(), bbox.box.xMinimum(),
-                                      bbox.box.yMaximum(), bbox.box.xMaximum() );
+            QgsRectangle invAxisBbox( bbox.box.yMinimum(), bbox.box.xMinimum(), bbox.box.yMaximum(), bbox.box.xMaximum() );
             bbox.box = invAxisBbox;
           }
 
@@ -1370,7 +1339,7 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
               inheritedOverwritten = true;
             }
           }
-          if ( ! inheritedOverwritten )
+          if ( !inheritedOverwritten )
             layerProperty.boundingBoxes << bbox;
         }
         else
@@ -1441,14 +1410,13 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
         // TODO
       }
       // If we got here then it's not in the WMS 1.3 standard
-
     }
     node = node.nextSibling();
   }
 
   if ( parentProperty )
   {
-    mLayerParents[ layerProperty.orderId ] = parentProperty->orderId;
+    mLayerParents[layerProperty.orderId] = parentProperty->orderId;
   }
 
   if ( !layerProperty.name.isEmpty() )
@@ -1457,7 +1425,7 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
     // TODO: Save this somewhere
 
     // Store if the layer is queryable
-    mQueryableForLayer[ layerProperty.name ] = layerProperty.queryable;
+    mQueryableForLayer[layerProperty.name] = layerProperty.queryable;
 
     // Insert into the local class' registry
     mLayersSupported.push_back( layerProperty );
@@ -1471,15 +1439,13 @@ void QgsWmsCapabilities::parseLayer( const QDomElement &element, QgsWmsLayerProp
 
   if ( !layerProperty.layer.empty() )
   {
-    mLayerParentNames[ layerProperty.orderId ] = QStringList() << layerProperty.name << layerProperty.title << layerProperty.abstract;
+    mLayerParentNames[layerProperty.orderId] = QStringList() << layerProperty.name << layerProperty.title << layerProperty.abstract;
   }
-
 }
 
 
 void QgsWmsCapabilities::parseStyle( const QDomElement &element, QgsWmsStyleProperty &styleProperty )
 {
-
   QDomNode node = element.firstChild();
   while ( !node.isNull() )
   {
@@ -1523,7 +1489,6 @@ void QgsWmsCapabilities::parseStyle( const QDomElement &element, QgsWmsStyleProp
 
 void QgsWmsCapabilities::parseOperationType( const QDomElement &element, QgsWmsOperationType &operationType )
 {
-
   QDomNode node = element.firstChild();
   while ( !node.isNull() )
   {
@@ -1554,7 +1519,6 @@ void QgsWmsCapabilities::parseOperationType( const QDomElement &element, QgsWmsO
 
 void QgsWmsCapabilities::parseDcpType( const QDomElement &element, QgsWmsDcpTypeProperty &dcpType )
 {
-
   QDomNode node = element.firstChild();
   while ( !node.isNull() )
   {
@@ -1573,7 +1537,6 @@ void QgsWmsCapabilities::parseDcpType( const QDomElement &element, QgsWmsDcpType
 
 void QgsWmsCapabilities::parseHttp( const QDomElement &element, QgsWmsHttpProperty &httpProperty )
 {
-
   QDomNode node = element.firstChild();
   while ( !node.isNull() )
   {
@@ -1601,7 +1564,6 @@ void QgsWmsCapabilities::parseHttp( const QDomElement &element, QgsWmsHttpProper
 
 void QgsWmsCapabilities::parseGet( const QDomElement &element, QgsWmsGetProperty &getProperty )
 {
-
   QDomNode node = element.firstChild();
   while ( !node.isNull() )
   {
@@ -1624,7 +1586,6 @@ void QgsWmsCapabilities::parseGet( const QDomElement &element, QgsWmsGetProperty
 
 void QgsWmsCapabilities::parsePost( const QDomElement &element, QgsWmsPostProperty &postProperty )
 {
-
   QDomNode node = element.firstChild();
   while ( !node.isNull() )
   {
@@ -1656,8 +1617,8 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
   tileLayer.timeFormat = QgsWmtsTileLayer::WmtsTimeFormat::yyyyMMdd;
 
   // don't allow duplicate format/style/ strings
-  QSet< QString > uniqueFormats;
-  QSet< QString > uniqueStyles;
+  QSet<QString> uniqueFormats;
+  QSet<QString> uniqueStyles;
 
   tileLayer.tileMode = WMSC;
 
@@ -1666,7 +1627,7 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
   {
     QDomElement nodeElement = node.toElement();
     {
-      QgsDebugMsgLevel( "    "  + nodeElement.tagName(), 2 ); // the node really is an element.
+      QgsDebugMsgLevel( "    " + nodeElement.tagName(), 2 ); // the node really is an element.
 
       QString tagName = nodeElement.tagName();
       if ( tagName.startsWith( QLatin1String( "wms:" ) ) )
@@ -1712,11 +1673,11 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
         // boundingBox element can contain comma as decimal separator and layer extent is not
         // calculated at all. Fixing by replacing comma with point.
         boundingBoxProperty.box = QgsRectangle(
-                                    nodeElement.attribute( QStringLiteral( "minx" ) ).replace( ',', '.' ).toDouble(),
-                                    nodeElement.attribute( QStringLiteral( "miny" ) ).replace( ',', '.' ).toDouble(),
-                                    nodeElement.attribute( QStringLiteral( "maxx" ) ).replace( ',', '.' ).toDouble(),
-                                    nodeElement.attribute( QStringLiteral( "maxy" ) ).replace( ',', '.' ).toDouble()
-                                  );
+          nodeElement.attribute( QStringLiteral( "minx" ) ).replace( ',', '.' ).toDouble(),
+          nodeElement.attribute( QStringLiteral( "miny" ) ).replace( ',', '.' ).toDouble(),
+          nodeElement.attribute( QStringLiteral( "maxx" ) ).replace( ',', '.' ).toDouble(),
+          nodeElement.attribute( QStringLiteral( "maxy" ) ).replace( ',', '.' ).toDouble()
+        );
         if ( nodeElement.hasAttribute( QStringLiteral( "SRS" ) ) )
           boundingBoxProperty.crs = nodeElement.attribute( QStringLiteral( "SRS" ) );
         else if ( nodeElement.hasAttribute( QStringLiteral( "srs" ) ) )
@@ -1770,7 +1731,7 @@ void QgsWmsCapabilities::parseTileSetProfile( const QDomElement &element )
     double r = rS.toDouble();
     tileMatrix.identifier = QString::number( i );
     Q_ASSERT( tileLayer.boundingBoxes.size() == 1 );
-    tileMatrix.matrixWidth  = std::ceil( tileLayer.boundingBoxes.at( 0 ).box.width() / tileMatrix.tileWidth / r );
+    tileMatrix.matrixWidth = std::ceil( tileLayer.boundingBoxes.at( 0 ).box.width() / tileMatrix.tileWidth / r );
     tileMatrix.matrixHeight = std::ceil( tileLayer.boundingBoxes.at( 0 ).box.height() / tileMatrix.tileHeight / r );
     tileMatrix.topLeft = QgsPointXY( tileLayer.boundingBoxes.at( 0 ).box.xMinimum(), tileLayer.boundingBoxes.at( 0 ).box.yMinimum() + tileMatrix.matrixHeight * tileMatrix.tileHeight * r );
     tileMatrix.tres = r;
@@ -1794,8 +1755,8 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
   {
     QgsWmtsTileMatrixSet set;
     set.identifier = childElement.firstChildElement( QStringLiteral( "ows:Identifier" ) ).text();
-    set.title      = childElement.firstChildElement( QStringLiteral( "ows:Title" ) ).text();
-    set.abstract   = childElement.firstChildElement( QStringLiteral( "ows:Abstract" ) ).text();
+    set.title = childElement.firstChildElement( QStringLiteral( "ows:Title" ) ).text();
+    set.abstract = childElement.firstChildElement( QStringLiteral( "ows:Abstract" ) ).text();
     parseKeywords( childElement, set.keywords );
 
     QString supportedCRS = childElement.firstChildElement( QStringLiteral( "ows:SupportedCRS" ) ).text();
@@ -1812,13 +1773,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
     if ( mParserSettings.invertAxisOrientation )
       invert = !invert;
 
-    QgsDebugMsgLevel( QStringLiteral( "tilematrix set: %1 (supportedCRS:%2 crs:%3; metersPerUnit:%4 axisInverted:%5)" )
-                      .arg( set.identifier,
-                            supportedCRS,
-                            set.crs )
-                      .arg( metersPerUnit, 0, 'f' )
-                      .arg( invert ? "yes" : "no" ), 2
-                    );
+    QgsDebugMsgLevel( QStringLiteral( "tilematrix set: %1 (supportedCRS:%2 crs:%3; metersPerUnit:%4 axisInverted:%5)" ).arg( set.identifier, supportedCRS, set.crs ).arg( metersPerUnit, 0, 'f' ).arg( invert ? "yes" : "no" ), 2 );
 
     for ( QDomElement secondChildElement = childElement.firstChildElement( QStringLiteral( "TileMatrix" ) );
           !secondChildElement.isNull();
@@ -1827,8 +1782,8 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
       QgsWmtsTileMatrix tileMatrix;
 
       tileMatrix.identifier = secondChildElement.firstChildElement( QStringLiteral( "ows:Identifier" ) ).text();
-      tileMatrix.title      = secondChildElement.firstChildElement( QStringLiteral( "ows:Title" ) ).text();
-      tileMatrix.abstract   = secondChildElement.firstChildElement( QStringLiteral( "ows:Abstract" ) ).text();
+      tileMatrix.title = secondChildElement.firstChildElement( QStringLiteral( "ows:Title" ) ).text();
+      tileMatrix.abstract = secondChildElement.firstChildElement( QStringLiteral( "ows:Abstract" ) ).text();
       parseKeywords( secondChildElement, tileMatrix.keywords );
 
       tileMatrix.scaleDenom = secondChildElement.firstChildElement( QStringLiteral( "ScaleDenominator" ) ).text().toDouble();
@@ -1851,22 +1806,16 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
         continue;
       }
 
-      tileMatrix.tileWidth    = secondChildElement.firstChildElement( QStringLiteral( "TileWidth" ) ).text().toInt();
-      tileMatrix.tileHeight   = secondChildElement.firstChildElement( QStringLiteral( "TileHeight" ) ).text().toInt();
-      tileMatrix.matrixWidth  = secondChildElement.firstChildElement( QStringLiteral( "MatrixWidth" ) ).text().toInt();
+      tileMatrix.tileWidth = secondChildElement.firstChildElement( QStringLiteral( "TileWidth" ) ).text().toInt();
+      tileMatrix.tileHeight = secondChildElement.firstChildElement( QStringLiteral( "TileHeight" ) ).text().toInt();
+      tileMatrix.matrixWidth = secondChildElement.firstChildElement( QStringLiteral( "MatrixWidth" ) ).text().toInt();
       tileMatrix.matrixHeight = secondChildElement.firstChildElement( QStringLiteral( "MatrixHeight" ) ).text().toInt();
 
       // the magic number below is "standardized rendering pixel size" defined
       // in WMTS (and WMS 1.3) standard, being 0.28 pixel
       tileMatrix.tres = tileMatrix.scaleDenom * 0.00028 / metersPerUnit;
 
-      QgsDebugMsgLevel( QStringLiteral( " %1: scale=%2 res=%3 tile=%4x%5 matrix=%6x%7 topLeft=%8" )
-                        .arg( tileMatrix.identifier )
-                        .arg( tileMatrix.scaleDenom ).arg( tileMatrix.tres )
-                        .arg( tileMatrix.tileWidth ).arg( tileMatrix.tileHeight )
-                        .arg( tileMatrix.matrixWidth ).arg( tileMatrix.matrixHeight )
-                        .arg( tileMatrix.topLeft.toString() ), 2
-                      );
+      QgsDebugMsgLevel( QStringLiteral( " %1: scale=%2 res=%3 tile=%4x%5 matrix=%6x%7 topLeft=%8" ).arg( tileMatrix.identifier ).arg( tileMatrix.scaleDenom ).arg( tileMatrix.tres ).arg( tileMatrix.tileWidth ).arg( tileMatrix.tileHeight ).arg( tileMatrix.matrixWidth ).arg( tileMatrix.matrixHeight ).arg( tileMatrix.topLeft.toString() ), 2 );
 
       set.tileMatrices.insert( tileMatrix.tres, tileMatrix );
     }
@@ -1886,15 +1835,15 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
         childElement = childElement.nextSiblingElement( QStringLiteral( "Layer" ) ) )
   {
 #ifdef QGISDEBUG
-    QString id = childElement.firstChildElement( QStringLiteral( "ows:Identifier" ) ).text();  // clazy:exclude=unused-non-trivial-variable
+    QString id = childElement.firstChildElement( QStringLiteral( "ows:Identifier" ) ).text(); // clazy:exclude=unused-non-trivial-variable
     QgsDebugMsgLevel( QStringLiteral( "Layer %1" ).arg( id ), 2 );
 #endif
 
     QgsWmtsTileLayer tileLayer;
-    tileLayer.tileMode   = WMTS;
+    tileLayer.tileMode = WMTS;
     tileLayer.identifier = childElement.firstChildElement( QStringLiteral( "ows:Identifier" ) ).text();
-    tileLayer.title      = childElement.firstChildElement( QStringLiteral( "ows:Title" ) ).text();
-    tileLayer.abstract   = childElement.firstChildElement( QStringLiteral( "ows:Abstract" ) ).text();
+    tileLayer.title = childElement.firstChildElement( QStringLiteral( "ows:Title" ) ).text();
+    tileLayer.abstract = childElement.firstChildElement( QStringLiteral( "ows:Abstract" ) ).text();
     parseKeywords( childElement, tileLayer.keywords );
 
     QgsWmsBoundingBoxProperty boundingBoxProperty;
@@ -1907,9 +1856,8 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
 
       if ( ll.size() == 2 && ur.size() == 2 )
       {
-        boundingBoxProperty.crs = DEFAULT_LATLON_CRS;
-        boundingBoxProperty.box = QgsRectangle( QgsPointXY( ll[0].toDouble(), ll[1].toDouble() ),
-                                                QgsPointXY( ur[0].toDouble(), ur[1].toDouble() ) );
+        boundingBoxProperty.crs = QgsWmsProvider::DEFAULT_LATLON_CRS;
+        boundingBoxProperty.box = QgsRectangle( QgsPointXY( ll[0].toDouble(), ll[1].toDouble() ), QgsPointXY( ur[0].toDouble(), ur[1].toDouble() ) );
 
         tileLayer.boundingBoxes << boundingBoxProperty;
       }
@@ -1924,8 +1872,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
 
       if ( ll.size() == 2 && ur.size() == 2 )
       {
-        boundingBoxProperty.box = QgsRectangle( QgsPointXY( ll[0].toDouble(), ll[1].toDouble() ),
-                                                QgsPointXY( ur[0].toDouble(), ur[1].toDouble() ) );
+        boundingBoxProperty.box = QgsRectangle( QgsPointXY( ll[0].toDouble(), ll[1].toDouble() ), QgsPointXY( ur[0].toDouble(), ur[1].toDouble() ) );
 
         if ( bbox.hasAttribute( QStringLiteral( "SRS" ) ) )
           boundingBoxProperty.crs = bbox.attribute( QStringLiteral( "SRS" ) );
@@ -1966,8 +1913,8 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
     {
       QgsWmtsStyle style;
       style.identifier = secondChildElement.firstChildElement( QStringLiteral( "ows:Identifier" ) ).text();
-      style.title      = secondChildElement.firstChildElement( QStringLiteral( "ows:Title" ) ).text();
-      style.abstract   = secondChildElement.firstChildElement( QStringLiteral( "ows:Abstract" ) ).text();
+      style.title = secondChildElement.firstChildElement( QStringLiteral( "ows:Title" ) ).text();
+      style.abstract = secondChildElement.firstChildElement( QStringLiteral( "ows:Abstract" ) ).text();
       parseKeywords( secondChildElement, style.keywords );
 
       for ( QDomElement thirdChildElement = secondChildElement.firstChildElement( QStringLiteral( "ows:legendURL" ) );
@@ -1976,12 +1923,12 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
       {
         QgsWmtsLegendURL legendURL;
 
-        legendURL.format   = thirdChildElement.firstChildElement( QStringLiteral( "format" ) ).text();
+        legendURL.format = thirdChildElement.firstChildElement( QStringLiteral( "format" ) ).text();
         legendURL.minScale = thirdChildElement.firstChildElement( QStringLiteral( "minScale" ) ).text().toDouble();
         legendURL.maxScale = thirdChildElement.firstChildElement( QStringLiteral( "maxScale" ) ).text().toDouble();
-        legendURL.href     = thirdChildElement.firstChildElement( QStringLiteral( "href" ) ).text();
-        legendURL.width    = thirdChildElement.firstChildElement( QStringLiteral( "width" ) ).text().toInt();
-        legendURL.height   = thirdChildElement.firstChildElement( QStringLiteral( "height" ) ).text().toInt();
+        legendURL.href = thirdChildElement.firstChildElement( QStringLiteral( "href" ) ).text();
+        legendURL.width = thirdChildElement.firstChildElement( QStringLiteral( "width" ) ).text().toInt();
+        legendURL.height = thirdChildElement.firstChildElement( QStringLiteral( "height" ) ).text().toInt();
 
         style.legendURLs << legendURL;
       }
@@ -1990,12 +1937,12 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
       {
         QgsWmtsLegendURL legendURL;
 
-        legendURL.format   = thirdChildElement.attribute( QStringLiteral( "format" ) );
+        legendURL.format = thirdChildElement.attribute( QStringLiteral( "format" ) );
         legendURL.minScale = thirdChildElement.attribute( QStringLiteral( "minScaleDenominator" ) ).toDouble();
         legendURL.maxScale = thirdChildElement.attribute( QStringLiteral( "maxScaleDenominator" ) ).toDouble();
-        legendURL.href     = thirdChildElement.attribute( QStringLiteral( "xlink:href" ) );
-        legendURL.width    = thirdChildElement.attribute( QStringLiteral( "width" ) ).toInt();
-        legendURL.height   = thirdChildElement.attribute( QStringLiteral( "height" ) ).toInt();
+        legendURL.href = thirdChildElement.attribute( QStringLiteral( "xlink:href" ) );
+        legendURL.width = thirdChildElement.attribute( QStringLiteral( "width" ) ).toInt();
+        legendURL.height = thirdChildElement.attribute( QStringLiteral( "height" ) ).toInt();
 
         style.legendURLs << legendURL;
       }
@@ -2012,13 +1959,13 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
     {
       QgsWmtsStyle style;
       style.identifier = QStringLiteral( "default" );
-      style.title      = QObject::tr( "Generated default style" );
-      style.abstract   = QObject::tr( "Style was missing in capabilities" );
+      style.title = QObject::tr( "Generated default style" );
+      style.abstract = QObject::tr( "Style was missing in capabilities" );
       tileLayer.styles.insert( style.identifier, style );
     }
 
     {
-      QSet< QString > uniqueFormats;
+      QSet<QString> uniqueFormats;
       for ( QDomElement secondChildElement = childElement.firstChildElement( QStringLiteral( "Format" ) ); !secondChildElement.isNull(); secondChildElement = secondChildElement.nextSiblingElement( QStringLiteral( "Format" ) ) )
       {
         const QString format = secondChildElement.text();
@@ -2066,18 +2013,18 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
     {
       QgsWmtsDimension dimension;
 
-      dimension.identifier   = secondChildElement.firstChildElement( QStringLiteral( "ows:Identifier" ) ).text();
+      dimension.identifier = secondChildElement.firstChildElement( QStringLiteral( "ows:Identifier" ) ).text();
       if ( dimension.identifier.isEmpty() )
         continue;
 
-      dimension.title        = secondChildElement.firstChildElement( QStringLiteral( "ows:Title" ) ).text();
-      dimension.abstract     = secondChildElement.firstChildElement( QStringLiteral( "ows:Abstract" ) ).text();
+      dimension.title = secondChildElement.firstChildElement( QStringLiteral( "ows:Title" ) ).text();
+      dimension.abstract = secondChildElement.firstChildElement( QStringLiteral( "ows:Abstract" ) ).text();
       parseKeywords( secondChildElement, dimension.keywords );
 
-      dimension.UOM          = secondChildElement.firstChildElement( QStringLiteral( "UOM" ) ).text();
-      dimension.unitSymbol   = secondChildElement.firstChildElement( QStringLiteral( "unitSymbol" ) ).text();
+      dimension.UOM = secondChildElement.firstChildElement( QStringLiteral( "UOM" ) ).text();
+      dimension.unitSymbol = secondChildElement.firstChildElement( QStringLiteral( "unitSymbol" ) ).text();
       dimension.defaultValue = secondChildElement.firstChildElement( QStringLiteral( "Default" ) ).text();
-      dimension.current      = secondChildElement.firstChildElement( QStringLiteral( "current" ) ).text() == QLatin1String( "true" );
+      dimension.current = secondChildElement.firstChildElement( QStringLiteral( "current" ) ).text() == QLatin1String( "true" );
 
       for ( QDomElement thirdChildElement = secondChildElement.firstChildElement( QStringLiteral( "Value" ) );
             !thirdChildElement.isNull();
@@ -2088,8 +2035,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
 
       tileLayer.dimensions.insert( dimension.identifier, dimension );
 
-      if ( ( dimension.title.compare( QLatin1String( "time" ), Qt::CaseInsensitive ) == 0 ||
-             dimension.identifier.compare( QLatin1String( "time" ), Qt::CaseInsensitive ) == 0 )
+      if ( ( dimension.title.compare( QLatin1String( "time" ), Qt::CaseInsensitive ) == 0 || dimension.identifier.compare( QLatin1String( "time" ), Qt::CaseInsensitive ) == 0 )
            && !dimension.values.empty() )
       {
         // we will use temporal framework if there's multiple time dimension values, OR if a single time dimension value is itself an interval
@@ -2126,7 +2072,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
                 const QgsTimeDuration itemResolution = QgsWmsSettings::parseWmstResolution( valueParts.at( 2 ) );
 
                 bool maxValuesExceeded = false;
-                const QList< QDateTime > dates = QgsTemporalUtils::calculateDateTimesUsingDuration( begin, end, itemResolution, maxValuesExceeded, 1000 );
+                const QList<QDateTime> dates = QgsTemporalUtils::calculateDateTimesUsingDuration( begin, end, itemResolution, maxValuesExceeded, 1000 );
                 // if we have a manageable number of distinct dates, then we'll use those. If not we just use the overall range.
                 // (some servers eg may have data for every minute for decades!)
                 if ( !maxValuesExceeded )
@@ -2201,7 +2147,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
         continue;
       }
 
-      const QgsWmtsTileMatrixSet &tms = mTileMatrixSets[ setLink.tileMatrixSet ];
+      const QgsWmtsTileMatrixSet &tms = mTileMatrixSets[setLink.tileMatrixSet];
 
       for ( QDomElement thirdChildElement = secondChildElement.firstChildElement( QStringLiteral( "TileMatrixSetLimits" ) ); !thirdChildElement.isNull(); thirdChildElement = thirdChildElement.nextSiblingElement( QStringLiteral( "TileMatrixSetLimits" ) ) )
       {
@@ -2231,26 +2177,14 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
             limit.minTileCol = fourthChildElement.firstChildElement( QStringLiteral( "MinTileCol" ) ).text().toInt();
             limit.maxTileCol = fourthChildElement.firstChildElement( QStringLiteral( "MaxTileCol" ) ).text().toInt();
 
-            isValid =
-              limit.minTileCol >= 0 && limit.minTileCol < matrixWidth &&
-              limit.maxTileCol >= 0 && limit.maxTileCol < matrixWidth &&
-              limit.minTileCol <= limit.maxTileCol &&
-              limit.minTileRow >= 0 && limit.minTileRow < matrixHeight &&
-              limit.maxTileRow >= 0 && limit.maxTileRow < matrixHeight &&
-              limit.minTileRow <= limit.maxTileRow;
+            isValid = limit.minTileCol >= 0 && limit.minTileCol < matrixWidth && limit.maxTileCol >= 0 && limit.maxTileCol < matrixWidth && limit.minTileCol <= limit.maxTileCol && limit.minTileRow >= 0 && limit.minTileRow < matrixHeight && limit.maxTileRow >= 0 && limit.maxTileRow < matrixHeight && limit.minTileRow <= limit.maxTileRow;
           }
           else
           {
             QgsDebugError( QStringLiteral( "   TileMatrix id:%1 not found." ).arg( id ) );
           }
 
-          QgsDebugMsgLevel( QStringLiteral( "   TileMatrixLimit id:%1 row:%2-%3 col:%4-%5 matrix:%6x%7 %8" )
-                            .arg( id )
-                            .arg( limit.minTileRow ).arg( limit.maxTileRow )
-                            .arg( limit.minTileCol ).arg( limit.maxTileCol )
-                            .arg( matrixWidth ).arg( matrixHeight )
-                            .arg( isValid ? "valid" : "INVALID" ), 2
-                          );
+          QgsDebugMsgLevel( QStringLiteral( "   TileMatrixLimit id:%1 row:%2-%3 col:%4-%5 matrix:%6x%7 %8" ).arg( id ).arg( limit.minTileRow ).arg( limit.maxTileRow ).arg( limit.minTileCol ).arg( limit.maxTileCol ).arg( matrixWidth ).arg( matrixHeight ).arg( isValid ? "valid" : "INVALID" ), 2 );
 
           if ( isValid )
           {
@@ -2264,16 +2198,13 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
 
     for ( QDomElement secondChildElement = childElement.firstChildElement( QStringLiteral( "ResourceURL" ) ); !secondChildElement.isNull(); secondChildElement = secondChildElement.nextSiblingElement( QStringLiteral( "ResourceURL" ) ) )
     {
-      QString format       = nodeAttribute( secondChildElement, QStringLiteral( "format" ) );
+      QString format = nodeAttribute( secondChildElement, QStringLiteral( "format" ) );
       QString resourceType = nodeAttribute( secondChildElement, QStringLiteral( "resourceType" ) );
-      QString tmpl         = nodeAttribute( secondChildElement, QStringLiteral( "template" ) );
+      QString tmpl = nodeAttribute( secondChildElement, QStringLiteral( "template" ) );
 
       if ( format.isEmpty() || resourceType.isEmpty() || tmpl.isEmpty() )
       {
-        QgsDebugMsgLevel( QStringLiteral( "SKIPPING ResourceURL format=%1 resourceType=%2 template=%3" )
-                          .arg( format,
-                                resourceType,
-                                tmpl ), 2 );
+        QgsDebugMsgLevel( QStringLiteral( "SKIPPING ResourceURL format=%1 resourceType=%2 template=%3" ).arg( format, resourceType, tmpl ), 2 );
         continue;
       }
 
@@ -2294,7 +2225,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
           fmt = Qgis::RasterIdentifyFormat::Text;
         else if ( format == QLatin1String( "text/html" ) )
           fmt = Qgis::RasterIdentifyFormat::Html;
-        else if ( format.startsWith( QLatin1String( "GML." ) )  // 1.0
+        else if ( format.startsWith( QLatin1String( "GML." ) ) // 1.0
                   || ( format == QLatin1String( "application/vnd.ogc.gml" ) )
                   || ( format.contains( QLatin1String( "gml" ), Qt::CaseInsensitive ) )
                   || ( format == QLatin1String( "application/json" ) )
@@ -2313,9 +2244,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
       else
       {
         QgsDebugError( QStringLiteral( "UNEXPECTED resourceType in ResourcURL format=%1 resourceType=%2 template=%3" )
-                       .arg( format,
-                             resourceType,
-                             tmpl ) );
+                         .arg( format, resourceType, tmpl ) );
       }
     }
 
@@ -2347,7 +2276,7 @@ void QgsWmsCapabilities::parseWMTSContents( const QDomElement &element )
         QgsDebugError( "failed to detect bounding box for " + tileLayer.identifier + " - using extent of the whole world" );
 
         QgsWmsBoundingBoxProperty boundingBoxProperty;
-        boundingBoxProperty.crs = DEFAULT_LATLON_CRS;
+        boundingBoxProperty.crs = QgsWmsProvider::DEFAULT_LATLON_CRS;
         boundingBoxProperty.box = QgsRectangle( -180.0, -90.0, 180.0, 90.0 );
         tileLayer.boundingBoxes << boundingBoxProperty;
       }
@@ -2371,8 +2300,8 @@ void QgsWmsCapabilities::parseKeywords( const QDomNode &node, QStringList &keywo
 void QgsWmsCapabilities::parseTheme( const QDomElement &element, QgsWmtsTheme &theme )
 {
   theme.identifier = element.firstChildElement( QStringLiteral( "ows:Identifier" ) ).text();
-  theme.title      = element.firstChildElement( QStringLiteral( "ows:Title" ) ).text();
-  theme.abstract   = element.firstChildElement( QStringLiteral( "ows:Abstract" ) ).text();
+  theme.title = element.firstChildElement( QStringLiteral( "ows:Title" ) ).text();
+  theme.abstract = element.firstChildElement( QStringLiteral( "ows:Abstract" ) ).text();
   parseKeywords( element, theme.keywords );
 
   QDomElement themeElement = element.firstChildElement( QStringLiteral( "ows:Theme" ) );
@@ -2439,11 +2368,9 @@ bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer &tileLayer
     // the magic number below is "standardized rendering pixel size" defined
     // in WMTS (and WMS 1.3) standard, being 0.28 pixel
     double res = tm.scaleDenom * 0.00028 / metersPerUnit;
-    QgsPointXY bottomRight( tm.topLeft.x() + res * tm.tileWidth * tm.matrixWidth,
-                            tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
+    QgsPointXY bottomRight( tm.topLeft.x() + res * tm.tileWidth * tm.matrixWidth, tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
 
-    QgsDebugMsgLevel( QStringLiteral( "detecting WMTS layer bounding box: tileset %1 matrix %2 crs %3 res %4" )
-                      .arg( tmsIt->identifier, tm.identifier, tmsIt->crs ).arg( res ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "detecting WMTS layer bounding box: tileset %1 matrix %2 crs %3 res %4" ).arg( tmsIt->identifier, tm.identifier, tmsIt->crs ).arg( res ), 2 );
 
     QgsRectangle extent( tm.topLeft, bottomRight );
     extent.normalize();
@@ -2468,7 +2395,7 @@ bool QgsWmsCapabilities::shouldInvertAxisOrientation( const QString &ogcCrs )
     if ( mCrsInvertAxis.contains( ogcCrs ) )
     {
       //if so, return previous result to save time
-      return mCrsInvertAxis[ ogcCrs ];
+      return mCrsInvertAxis[ogcCrs];
     }
 
     //create CRS from string
@@ -2479,7 +2406,7 @@ bool QgsWmsCapabilities::shouldInvertAxisOrientation( const QString &ogcCrs )
     }
 
     //cache result to speed up future checks
-    mCrsInvertAxis[ ogcCrs ] = changeXY;
+    mCrsInvertAxis[ogcCrs] = changeXY;
   }
 
   if ( mParserSettings.invertAxisOrientation )
@@ -2501,7 +2428,6 @@ Qgis::RasterInterfaceCapabilities QgsWmsCapabilities::identifyCapabilities() con
 }
 
 
-
 // -----------------
 
 QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( bool forceRefresh, QObject *parent )
@@ -2511,7 +2437,7 @@ QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( bool forceRefresh, QObje
 {
 }
 
-QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString &baseUrl, const QgsWmsAuthorization &auth, bool forceRefresh, QObject *parent )
+QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString &baseUrl, const QgsAuthorizationSettings &auth, bool forceRefresh, QObject *parent )
   : QObject( parent )
   , mBaseUrl( baseUrl )
   , mAuth( auth )
@@ -2535,7 +2461,7 @@ void QgsWmsCapabilitiesDownload::setForceRefresh( bool forceRefresh )
   mForceRefresh = forceRefresh;
 }
 
-bool QgsWmsCapabilitiesDownload::downloadCapabilities( const QString &baseUrl, const QgsWmsAuthorization &auth )
+bool QgsWmsCapabilitiesDownload::downloadCapabilities( const QString &baseUrl, const QgsAuthorizationSettings &auth )
 {
   mBaseUrl = baseUrl;
   mAuth = auth;
@@ -2745,10 +2671,11 @@ QgsRectangle QgsWmtsTileMatrix::tileBBox( int col, int row ) const
   double twMap = tileWidth * tres;
   double thMap = tileHeight * tres;
   return QgsRectangle(
-           topLeft.x() +         col * twMap,
-           topLeft.y() - ( row + 1 ) * thMap,
-           topLeft.x() + ( col + 1 ) * twMap,
-           topLeft.y() -         row * thMap );
+    topLeft.x() + col * twMap,
+    topLeft.y() - ( row + 1 ) * thMap,
+    topLeft.x() + ( col + 1 ) * twMap,
+    topLeft.y() - row * thMap
+  );
 }
 
 void QgsWmtsTileMatrix::viewExtentIntersection( const QgsRectangle &viewExtent, const QgsWmtsTileMatrixLimits *tml, int &col0, int &row0, int &col1, int &row1 ) const
@@ -2769,10 +2696,10 @@ void QgsWmtsTileMatrix::viewExtentIntersection( const QgsRectangle &viewExtent, 
     maxTileRow = tml->maxTileRow;
   }
 
-  col0 = std::clamp( ( int ) std::floor( ( viewExtent.xMinimum() - topLeft.x() ) / twMap ),  minTileCol, maxTileCol );
-  row0 = std::clamp( ( int ) std::floor( ( topLeft.y() - viewExtent.yMaximum() ) / thMap ),  minTileRow, maxTileRow );
-  col1 = std::clamp( ( int ) std::floor( ( viewExtent.xMaximum() - topLeft.x() ) / twMap ),  minTileCol, maxTileCol );
-  row1 = std::clamp( ( int ) std::floor( ( topLeft.y() - viewExtent.yMinimum() ) / thMap ),  minTileRow, maxTileRow );
+  col0 = std::clamp( ( int ) std::floor( ( viewExtent.xMinimum() - topLeft.x() ) / twMap ), minTileCol, maxTileCol );
+  row0 = std::clamp( ( int ) std::floor( ( topLeft.y() - viewExtent.yMaximum() ) / thMap ), minTileRow, maxTileRow );
+  col1 = std::clamp( ( int ) std::floor( ( viewExtent.xMaximum() - topLeft.x() ) / twMap ), minTileCol, maxTileCol );
+  row1 = std::clamp( ( int ) std::floor( ( topLeft.y() - viewExtent.yMinimum() ) / thMap ), minTileRow, maxTileRow );
 }
 
 const QgsWmtsTileMatrix *QgsWmtsTileMatrixSet::findNearestResolution( double vres ) const
@@ -2784,8 +2711,7 @@ const QgsWmtsTileMatrix *QgsWmtsTileMatrixSet::findNearestResolution( double vre
     ++it;
   }
 
-  if ( it == tileMatrices.constEnd() ||
-       ( it != tileMatrices.constBegin() && vres - prev.key() < it.key() - vres ) )
+  if ( it == tileMatrices.constEnd() || ( it != tileMatrices.constBegin() && vres - prev.key() < it.key() - vres ) )
   {
     it = prev;
   }

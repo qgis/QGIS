@@ -24,6 +24,7 @@
 #include "qgschunklist_p.h"
 #include "qgschunkloader.h"
 #include "qgschunknode.h"
+#include "qgsgeotransform.h"
 
 #include "qgseventtracing.h"
 
@@ -72,8 +73,7 @@ QgsChunkedEntity::QgsChunkedEntity( Qgs3DMapSettings *mapSettings, float tau, Qg
   mReplacementQueue = new QgsChunkList;
 
   // in case the chunk loader factory supports fetching of hierarchy in background (to avoid GUI freezes)
-  connect( loaderFactory, &QgsChunkLoaderFactory::childrenPrepared, this, [this]
-  {
+  connect( loaderFactory, &QgsChunkLoaderFactory::childrenPrepared, this, [this] {
     setNeedsUpdate( true );
     emit pendingJobsCountChanged();
   } );
@@ -98,7 +98,7 @@ QgsChunkedEntity::~QgsChunkedEntity()
     else if ( node->state() == QgsChunkNode::QueuedForUpdate )
       node->cancelQueuedForUpdate();
     else
-      Q_ASSERT( false );  // impossible!
+      Q_ASSERT( false ); // impossible!
   }
 
   delete mChunkLoaderQueue;
@@ -163,6 +163,14 @@ void QgsChunkedEntity::handleSceneUpdate( const SceneContext &sceneContext )
         continue;
       }
       node->entity()->setEnabled( true );
+
+      // let's make sure that any entity we're about to show has the right scene origin set
+      const QList<QgsGeoTransform *> transforms = node->entity()->findChildren<QgsGeoTransform *>();
+      for ( QgsGeoTransform *transform : transforms )
+      {
+        transform->setOrigin( mMapSettings->origin() );
+      }
+
 #ifdef QGISDEBUG
       ++enabled;
 #endif
@@ -202,19 +210,12 @@ void QgsChunkedEntity::handleSceneUpdate( const SceneContext &sceneContext )
   // start a job from queue if there is anything waiting
   startJobs();
 
-  mNeedsUpdate = false;  // just updated
+  mNeedsUpdate = false; // just updated
 
   if ( pendingJobsCount() != oldJobsCount )
     emit pendingJobsCountChanged();
 
-  QgsDebugMsgLevel( QStringLiteral( "update: active %1 enabled %2 disabled %3 | culled %4 | loading %5 loaded %6 | unloaded %7 elapsed %8ms" ).arg( mActiveNodes.count() )
-                    .arg( enabled )
-                    .arg( disabled )
-                    .arg( mFrustumCulled )
-                    .arg( mChunkLoaderQueue->count() )
-                    .arg( mReplacementQueue->count() )
-                    .arg( unloaded )
-                    .arg( t.elapsed() ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "update: active %1 enabled %2 disabled %3 | culled %4 | loading %5 loaded %6 | unloaded %7 elapsed %8ms" ).arg( mActiveNodes.count() ).arg( enabled ).arg( disabled ).arg( mFrustumCulled ).arg( mChunkLoaderQueue->count() ).arg( mReplacementQueue->count() ).arg( unloaded ).arg( t.elapsed() ), 2 );
 }
 
 
@@ -246,7 +247,7 @@ int QgsChunkedEntity::unloadNodes()
       mReplacementQueue->takeEntry( entry );
       usedGpuMemory -= Qgs3DUtils::calculateEntityGpuMemorySize( entry->chunk->entity() );
       mActiveNodes.removeOne( entry->chunk );
-      entry->chunk->unloadChunk();  // also deletes the entry
+      entry->chunk->unloadChunk(); // also deletes the entry
       ++unloaded;
       entry = entryPrev;
     }
@@ -361,7 +362,7 @@ void QgsChunkedEntity::pruneLoaderQueue( const SceneContext &sceneContext )
     {
       n->cancelQueuedForLoad();
     }
-    else  // queued for update
+    else // queued for update
     {
       n->cancelQueuedForUpdate();
       mReplacementQueue->takeEntry( n->replacementQueueEntry() );
@@ -383,28 +384,29 @@ int QgsChunkedEntity::pendingJobsCount() const
 
 struct ResidencyRequest
 {
-  QgsChunkNode *node = nullptr;
-  float dist = 0.0;
-  int level = -1;
-  ResidencyRequest() = default;
-  ResidencyRequest(
-    QgsChunkNode *n,
-    float d,
-    int l )
-    : node( n )
-    , dist( d )
-    , level( l )
-  {}
+    QgsChunkNode *node = nullptr;
+    float dist = 0.0;
+    int level = -1;
+    ResidencyRequest() = default;
+    ResidencyRequest(
+      QgsChunkNode *n,
+      float d,
+      int l
+    )
+      : node( n )
+      , dist( d )
+      , level( l )
+    {}
 };
 
 struct
 {
-  bool operator()( const ResidencyRequest &request, const ResidencyRequest &otherRequest ) const
-  {
-    if ( request.level == otherRequest.level )
-      return request.dist > otherRequest.dist;
-    return request.level > otherRequest.level;
-  }
+    bool operator()( const ResidencyRequest &request, const ResidencyRequest &otherRequest ) const
+    {
+      if ( request.level == otherRequest.level )
+        return request.dist > otherRequest.dist;
+      return request.level > otherRequest.level;
+    }
 } ResidencyRequestSorter;
 
 void QgsChunkedEntity::update( QgsChunkNode *root, const SceneContext &sceneContext )
@@ -413,8 +415,7 @@ void QgsChunkedEntity::update( QgsChunkNode *root, const SceneContext &sceneCont
   QVector<ResidencyRequest> residencyRequests;
 
   using slotItem = std::pair<QgsChunkNode *, float>;
-  auto cmp_funct = []( const slotItem & p1, const slotItem & p2 )
-  {
+  auto cmp_funct = []( const slotItem &p1, const slotItem &p2 ) {
     return p1.second <= p2.second;
   };
   int renderedCount = 0;
@@ -589,7 +590,7 @@ void QgsChunkedEntity::requestResidency( QgsChunkNode *node )
   else if ( node->state() == QgsChunkNode::Skeleton )
   {
     if ( !node->hasData() )
-      return;   // no need to load (we already tried but got nothing back)
+      return; // no need to load (we already tried but got nothing back)
 
     // add to the loading queue
     QgsChunkListEntry *entry = new QgsChunkListEntry( node );
@@ -703,7 +704,7 @@ QgsChunkQueueJob *QgsChunkedEntity::startJob( QgsChunkNode *node )
   }
   else
   {
-    Q_ASSERT( false );  // not possible
+    Q_ASSERT( false ); // not possible
     return nullptr;
   }
 }

@@ -24,7 +24,7 @@
 
 #include "qgsproviderguimetadata.h"
 
-class QgsVectorTileProviderGuiMetadata: public QgsProviderGuiMetadata
+class QgsVectorTileProviderGuiMetadata : public QgsProviderGuiMetadata
 {
   public:
     QgsVectorTileProviderGuiMetadata();

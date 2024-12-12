@@ -3,5 +3,5 @@ try:
     QgsZonalStatistics.displayName = staticmethod(QgsZonalStatistics.displayName)
     QgsZonalStatistics.shortName = staticmethod(QgsZonalStatistics.shortName)
     QgsZonalStatistics.__group__ = ['vector']
-except NameError:
+except (NameError, AttributeError):
     pass

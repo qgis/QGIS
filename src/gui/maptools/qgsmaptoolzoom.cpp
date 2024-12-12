@@ -29,7 +29,6 @@
 #include "qgsapplication.h"
 
 
-
 QgsMapToolZoom::QgsMapToolZoom( QgsMapCanvas *canvas, bool zoomOut )
   : QgsMapTool( canvas )
   , mZoomOut( zoomOut )

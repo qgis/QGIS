@@ -36,8 +36,7 @@ class QgsDxfExportAlgorithm : public QgsProcessingAlgorithm
     QgsDxfExportAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:

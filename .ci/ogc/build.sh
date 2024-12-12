@@ -13,6 +13,9 @@ ccache -M 2.0G
 # export CCACHE_LOGFILE=/tmp/cache.debug
 ccache -z
 
+# To make ccache work properly with precompiled headers
+ccache --set-config sloppiness=pch_defines,time_macros,include_file_mtime,include_file_ctime
+
 cmake -GNinja \
  -DUSE_CCACHE=ON \
  -DWITH_QUICK=OFF \

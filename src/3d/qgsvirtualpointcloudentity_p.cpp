@@ -32,7 +32,8 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
   bool showBoundingBoxes,
   double zValueScale,
   double zValueOffset,
-  int pointBudget )
+  int pointBudget
+)
   : Qgs3DMapSceneEntity( map, nullptr )
   , mLayer( layer )
   , mCoordinateTransform( coordinateTransform )
@@ -59,7 +60,6 @@ QgsVirtualPointCloudEntity::QgsVirtualPointCloudEntity(
   updateBboxEntity();
   connect( this, &QgsVirtualPointCloudEntity::subIndexNeedsLoading, provider(), &QgsVirtualPointCloudProvider::loadSubIndex, Qt::QueuedConnection );
   connect( provider(), &QgsVirtualPointCloudProvider::subIndexLoaded, this, &QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex );
-
 }
 
 QList<QgsChunkedEntity *> QgsVirtualPointCloudEntity::chunkedEntities() const
@@ -90,12 +90,13 @@ void QgsVirtualPointCloudEntity::createChunkedEntityForSubIndex( int i )
     mapSettings(),
     si.index(),
     mCoordinateTransform,
-    static_cast< QgsPointCloud3DSymbol * >( mSymbol->clone() ),
+    static_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ),
     mMaximumScreenSpaceError,
     mShowBoundingBoxes,
     mZValueScale,
     mZValueOffset,
-    mPointBudget );
+    mPointBudget
+  );
 
   mChunkedEntitiesMap.insert( i, newChunkedEntity );
   newChunkedEntity->setParent( this );

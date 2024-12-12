@@ -36,10 +36,10 @@ class TestQgsMapToolSelect : public QObject
     TestQgsMapToolSelect() = default;
 
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void selectInvalidPolygons(); // test selecting invalid polygons
 
@@ -50,7 +50,7 @@ class TestQgsMapToolSelect : public QObject
 
     // Release return with delete []
     unsigned char *
-    hex2bytes( const char *hex, int *size )
+      hex2bytes( const char *hex, int *size )
     {
       QByteArray ba = QByteArray::fromHex( hex );
       unsigned char *out = new unsigned char[ba.size()];
@@ -69,7 +69,6 @@ class TestQgsMapToolSelect : public QObject
       geom.fromWkb( wkb, wkbsize );
       return geom;
     }
-
 };
 
 void TestQgsMapToolSelect::initTestCase()
@@ -105,19 +104,19 @@ void TestQgsMapToolSelect::cleanup()
 
 // private
 QgsFeatureList
-TestQgsMapToolSelect::testSelectVector( QgsVectorLayer *layer, double xGeoref, double yGeoref )
+  TestQgsMapToolSelect::testSelectVector( QgsVectorLayer *layer, double xGeoref, double yGeoref )
 {
-  std::unique_ptr< QgsMapToolSelect > tool( new QgsMapToolSelect( canvas ) );
+  std::unique_ptr<QgsMapToolSelect> tool( new QgsMapToolSelect( canvas ) );
   const QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
 
   // make given vector layer current
   canvas->setCurrentLayer( layer );
 
-  const std::unique_ptr< QgsMapMouseEvent > event( new QgsMapMouseEvent(
-        canvas,
-        QEvent::MouseButtonRelease,
-        QPoint( mapPoint.x(), mapPoint.y() )
-      ) );
+  const std::unique_ptr<QgsMapMouseEvent> event( new QgsMapMouseEvent(
+    canvas,
+    QEvent::MouseButtonRelease,
+    QPoint( mapPoint.x(), mapPoint.y() )
+  ) );
 
   // trigger mouseRelease handler
   tool->canvasReleaseEvent( event.get() );
@@ -129,15 +128,15 @@ TestQgsMapToolSelect::testSelectVector( QgsVectorLayer *layer, double xGeoref, d
 void TestQgsMapToolSelect::selectInvalidPolygons()
 {
   //create a temporary layer
-  std::unique_ptr< QgsVectorLayer > memoryLayer( new QgsVectorLayer( QStringLiteral( "Polygon?field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+  std::unique_ptr<QgsVectorLayer> memoryLayer( new QgsVectorLayer( QStringLiteral( "Polygon?field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
   QVERIFY( memoryLayer->isValid() );
   QgsFeature f1( memoryLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "pk" ), 1 );
   // This geometry is an invalid polygon (3 distinct vertices).
   // GEOS reported invalidity: Points of LinearRing do not form a closed linestring
   f1.setGeometry( geomFromHexWKB(
-                    "010300000001000000030000000000000000000000000000000000000000000000000024400000000000000000000000000000244000000000000024400000000000000000"
-                  ) );
+    "010300000001000000030000000000000000000000000000000000000000000000000024400000000000000000000000000000244000000000000024400000000000000000"
+  ) );
   memoryLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   canvas->setExtent( QgsRectangle( 0, 0, 10, 10 ) );
@@ -147,7 +146,6 @@ void TestQgsMapToolSelect::selectInvalidPolygons()
   selected = testSelectVector( memoryLayer.get(), 6, 4 );
   QCOMPARE( selected.length(), 1 );
   QCOMPARE( selected[0].attribute( "pk" ), QVariant( 1 ) );
-
 }
 
 

@@ -2,5 +2,5 @@
 try:
     QgsEffectStack.create = staticmethod(QgsEffectStack.create)
     QgsEffectStack.__group__ = ['effects']
-except NameError:
+except (NameError, AttributeError):
     pass

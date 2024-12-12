@@ -4,5 +4,5 @@ try:
     QgsMessageBar.createMessage = staticmethod(QgsMessageBar.createMessage)
     QgsMessageBar.defaultMessageTimeout = staticmethod(QgsMessageBar.defaultMessageTimeout)
     QgsMessageBar.__signal_arguments__ = {'widgetAdded': ['item: QgsMessageBarItem'], 'widgetRemoved': ['item: QgsMessageBarItem']}
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -118,6 +118,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmflattenrelationships.cpp
   processing/qgsalgorithmforcerhr.cpp
   processing/qgsalgorithmfuzzifyraster.cpp
+  processing/qgsalgorithmgenerateelevationprofile.cpp
   processing/qgsalgorithmgeometrybyexpression.cpp
   processing/qgsalgorithmgltftovector.cpp
   processing/qgsalgorithmgpsbabeltools.cpp
@@ -143,6 +144,7 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmloadlayer.cpp
   processing/qgsalgorithmmeancoordinates.cpp
   processing/qgsalgorithmmergelines.cpp
+  processing/qgsalgorithmmeshsurfacetopolygon.cpp
   processing/qgsalgorithmmergevector.cpp
   processing/qgsalgorithmminimumenclosingcircle.cpp
   processing/qgsalgorithmmultidifference.cpp
@@ -254,9 +256,11 @@ set(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmwritevectortiles.cpp
   processing/qgsalgorithmxyztiles.cpp
   processing/qgsalgorithmzonalhistogram.cpp
+  processing/qgsalgorithmzonalminmaxpoint.cpp
   processing/qgsalgorithmzonalstatistics.cpp
   processing/qgsalgorithmzonalstatisticsfeaturebased.cpp
   processing/qgsbookmarkalgorithms.cpp
+  processing/qgsmetadataalgorithms.cpp
   processing/qgsprojectstylealgorithms.cpp
   processing/qgsstylealgorithms.cpp
 
@@ -516,6 +520,12 @@ endif()
 # qgis_analysis library
 
 add_library(qgis_analysis ${LIBRARY_TYPE} ${QGIS_ANALYSIS_SRCS} ${QGIS_ANALYSIS_HDRS})
+
+if (USE_PRECOMPILED_HEADERS)
+  target_precompile_headers(qgis_analysis PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
+endif()
+
+set_target_properties(qgis_analysis PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
 # require c++17
 target_compile_features(qgis_analysis PRIVATE cxx_std_17)
