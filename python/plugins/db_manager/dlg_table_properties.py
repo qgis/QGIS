@@ -386,6 +386,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
             tab = self.table.name
             com = self.viewComment.toPlainText()
             self.db.connector.commentTable(schem, tab, com)
+            self.table.comment = com
         except DbError as e:
             DlgDbError.showError(e, self)
             return
@@ -407,6 +408,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         self.refresh()
         # Refresh line edit, put a void comment
         self.viewComment.setPlainText("")
+        self.table.comment = ""
         # Display successful message
         QMessageBox.information(
             self, self.tr("Delete comment"), self.tr("Comment deleted")
