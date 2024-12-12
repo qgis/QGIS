@@ -103,7 +103,7 @@ Adds a ring to polygon/multipolygon features
 .. versionadded:: 3.28
 %End
 
-    Qgis::GeometryOperationResult addRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 ) /PyName=addCurvedRing/;
+    Qgis::GeometryOperationResult addRing( QgsCurve *ring /Transfer/, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 ) /PyName=addCurvedRing/;
 %Docstring
 Adds a ring to polygon/multipolygon features
 
@@ -151,7 +151,7 @@ Adds a new part polygon to a multipart feature
    available in python bindings as addPartV2
 %End
 
-    Qgis::GeometryOperationResult addPart( QgsCurve *ring, QgsFeatureId featureId ) /PyName=addCurvedPart/;
+    Qgis::GeometryOperationResult addPart( QgsCurve *ring /Transfer/, QgsFeatureId featureId ) /PyName=addCurvedPart/;
 %Docstring
 Adds a new part polygon to a multipart feature
 
