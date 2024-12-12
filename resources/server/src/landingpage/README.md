@@ -1,6 +1,6 @@
 # Landing page/catalog webapp
 
-[Landing page/catalog webapp](https://docs.qgis.org/latest/en/docs/server_manual/services.html#qgis-server-catalog) source code.
+[Landing page/catalog webapp](https://docs.qgis.org/latest/en/docs/server_manual/catalog.html) source code.
 
 ## Building
 
