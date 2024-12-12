@@ -16588,6 +16588,7 @@ QgsStringStatisticalSummary.statistics: src/core/qgsstringstatisticalsummary.h#L
 QgsStringStatisticalSummary: src/core/qgsstringstatisticalsummary.h#L43
 QgsStringUtils.ampersandEncode: src/core/qgsstringutils.h#L200
 QgsStringUtils.capitalize: src/core/qgsstringutils.h#L190
+QgsStringUtils.containsByWord: src/core/qgsstringutils.h#L329
 QgsStringUtils.fuzzyScore: src/core/qgsstringutils.h#L252
 QgsStringUtils.hammingDistance: src/core/qgsstringutils.h#L233
 QgsStringUtils.htmlToMarkdown: src/core/qgsstringutils.h#L299
