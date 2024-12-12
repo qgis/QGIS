@@ -232,9 +232,10 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::addRing( QgsCurve *ring, 
   std::unique_ptr<QgsCurve> uniquePtrRing( ring );
   if ( modifiedFeatureId )
   {
-    QgsFeatureIds *modifiedFeatureIds = new QgsFeatureIds;
-    Qgis::GeometryOperationResult result = staticAddRing( mLayer, uniquePtrRing, targetFeatureIds, modifiedFeatureIds, true );
-    *modifiedFeatureId = *modifiedFeatureIds->begin();
+    QgsFeatureIds modifiedFeatureIds;
+    Qgis::GeometryOperationResult result = staticAddRing( mLayer, uniquePtrRing, targetFeatureIds, &modifiedFeatureIds, true );
+    if ( modifiedFeatureId && !modifiedFeatureIds.empty() )
+      *modifiedFeatureId = *modifiedFeatureIds.begin();
     return result;
   }
   return staticAddRing( mLayer, uniquePtrRing, targetFeatureIds, nullptr, true );
