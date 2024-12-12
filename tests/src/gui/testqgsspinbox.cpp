@@ -209,31 +209,34 @@ void TestQgsSpinBox::editingTimeout()
   spin.setMaximum( 1000 );
   spin.setSingleStep( 1 );
   spin.setFocus();
+  QCOMPARE( spin.editingTimeoutInterval(), 1000 );
+  spin.setEditingTimeoutInterval( 300 );
+  QCOMPARE( spin.editingTimeoutInterval(), 300 );
 
   QSignalSpy spy( &spin, &QgsSpinBox::editingTimeout );
   spin.selectAll();
   QTest::keyClicks( &spin, QStringLiteral( "3" ) );
-  QTest::qWait( 500 );
+  QTest::qWait( 100 );
   // too short, should not be signal
   QCOMPARE( spy.count(), 0 );
-  QTest::qWait( 2000 );
+  QTest::qWait( 400 );
   // long enough, signal should have been emitted
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( spy.at( 0 ).at( 0 ).toInt(), 3 );
 
   QTest::keyClicks( &spin, QStringLiteral( "2" ) );
   QCOMPARE( spy.count(), 1 );
-  QTest::qWait( 2500 );
+  QTest::qWait( 400 );
   // long enough, signal should have been emitted
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( spy.at( 1 ).at( 0 ).toInt(), 32 );
 
   // no signal if value not changed
   QTest::keyClicks( &spin, QStringLiteral( "4" ) );
-  QTest::qWait( 500 );
+  QTest::qWait( 100 );
   QCOMPARE( spy.count(), 2 );
   QTest::keyPress( &spin, Qt::Key_Backspace );
-  QTest::qWait( 2500 );
+  QTest::qWait( 400 );
   // no signal, value did not change
   QCOMPARE( spy.count(), 2 );
 }

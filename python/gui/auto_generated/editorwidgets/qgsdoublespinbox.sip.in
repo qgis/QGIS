@@ -147,6 +147,30 @@ is equal to :py:func:`~QgsDoubleSpinBox.minimum`. Typical use is to indicate tha
     virtual void stepBy( int steps );
 
 
+    int editingTimeoutInterval() const;
+%Docstring
+Returns the timeout (in milliseconds) threshold for the :py:func:`~QgsDoubleSpinBox.editingTimeout` signal to be emitted
+after an edit.
+
+.. seealso:: :py:func:`setEditingTimeoutInterval`
+
+.. versionadded:: 3.42
+%End
+
+  public slots:
+
+    void setEditingTimeoutInterval( int timeout );
+%Docstring
+Sets the ``timeout`` (in milliseconds) threshold for the :py:func:`~QgsDoubleSpinBox.editingTimeout` signal to be emitted
+after an edit.
+
+.. seealso:: :py:func:`editingTimeoutInterval`
+
+.. seealso:: :py:func:`editingTimeout`
+
+.. versionadded:: 3.42
+%End
+
   signals:
 
     void returnPressed();
@@ -172,6 +196,8 @@ Emitted when either:
 
 This signal can be used to respond semi-instantly to changes in the spin box, without responding too quickly
 while the user in the middle of setting the value.
+
+.. seealso:: :py:func:`editingTimeoutInterval`
 
 .. versionadded:: 3.42
 %End

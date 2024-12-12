@@ -55,7 +55,7 @@ QgsDoubleSpinBox::QgsDoubleSpinBox( QWidget *parent )
 
   mLastEditTimer = new QTimer( this );
   mLastEditTimer->setSingleShot( true );
-  mLastEditTimer->setInterval( 2000 );
+  mLastEditTimer->setInterval( 1000 );
   connect( mLastEditTimer, &QTimer::timeout, this, &QgsDoubleSpinBox::onLastEditTimeout );
 }
 
@@ -139,6 +139,16 @@ void QgsDoubleSpinBox::stepBy( int steps )
     whileBlocking( this )->setValue( 0 );
   }
   QDoubleSpinBox::stepBy( steps );
+}
+
+int QgsDoubleSpinBox::editingTimeoutInterval() const
+{
+  return mLastEditTimer->interval();
+}
+
+void QgsDoubleSpinBox::setEditingTimeoutInterval( int timeout )
+{
+  mLastEditTimer->setInterval( timeout );
 }
 
 void QgsDoubleSpinBox::changed( double value )
