@@ -111,7 +111,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * \return OperationResult result code: success or reason of failure
      * \note available in python bindings as addCurvedRing
      */
-    Qgis::GeometryOperationResult addRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = nullptr ) SIP_PYNAME( addCurvedRing );
+    Qgis::GeometryOperationResult addRing( QgsCurve *ring SIP_TRANSFER, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = nullptr ) SIP_PYNAME( addCurvedRing );
 
     /**
      * Adds a new part polygon to a multipart feature
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      *
      * \note available in python bindings as addCurvedPart
      */
-    Qgis::GeometryOperationResult addPart( QgsCurve *ring, QgsFeatureId featureId ) SIP_PYNAME( addCurvedPart );
+    Qgis::GeometryOperationResult addPart( QgsCurve *ring SIP_TRANSFER, QgsFeatureId featureId ) SIP_PYNAME( addCurvedPart );
 
     /**
      * Translates feature by dx, dy
