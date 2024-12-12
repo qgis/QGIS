@@ -69,7 +69,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
 
         # Display comment in line edit
         m = self.table.comment
-        self.viewComment.setText(m)
+        self.viewComment.setPlainText(m)
 
         self.btnAddColumn.clicked.connect(self.addColumn)
         self.btnAddGeometryColumn.clicked.connect(self.addGeometryColumn)
@@ -384,7 +384,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         try:
             schem = self.table.schema().name
             tab = self.table.name
-            com = self.viewComment.text()
+            com = self.viewComment.toPlainText()
             self.db.connector.commentTable(schem, tab, com)
         except DbError as e:
             DlgDbError.showError(e, self)
@@ -406,7 +406,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
             return
         self.refresh()
         # Refresh line edit, put a void comment
-        self.viewComment.setText("")
+        self.viewComment.setPlainText("")
         # Display successful message
         QMessageBox.information(
             self, self.tr("Delete comment"), self.tr("Comment deleted")
