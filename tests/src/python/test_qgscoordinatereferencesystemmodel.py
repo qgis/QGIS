@@ -790,7 +790,7 @@ class TestQgsCoordinateReferenceSystemModel(QgisTestCase):
             for row in range(model.rowCount(projected_index))
             if model.data(
                 model.index(row, 0, projected_index),
-                Qt.DisplayRole,
+                Qt.ItemDataRole.DisplayRole,
             )
             == "Albers Equal Area"
         ][0]
