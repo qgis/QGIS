@@ -123,8 +123,6 @@ class _3D_EXPORT Qgs3DRenderContext
 
     /**
      * Returns the terrain settings.
-     *
-     * \see setTerrainSettings()
      */
     const QgsAbstractTerrainSettings *terrainSettings() const;
 
