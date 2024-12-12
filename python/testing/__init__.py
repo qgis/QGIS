@@ -751,6 +751,7 @@ class QgisTestCase(unittest.TestCase):
                 equal,
                 ""
                 " Features (Expected fid: {}, Result fid: {}) differ in geometry with method {}: \n\n"
+                "  {}\n"
                 "  At given precision ({}):\n"
                 "   Expected geometry: {}\n"
                 "   Result geometry:   {}\n\n"
@@ -760,6 +761,7 @@ class QgisTestCase(unittest.TestCase):
                     geom0_id,
                     geom1_id,
                     "geos" if topo_equal_check else "wkt",
+                    "Normalized" if normalize else "Not-normalized",
                     precision,
                     geom0_wkt if not geom0_is_null else "NULL",
                     geom1_wkt if not geom1_is_null else "NULL",
