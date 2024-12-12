@@ -28,8 +28,6 @@
 #include <Qt3DLogic/QFrameAction>
 
 #include "qgs3dmapcanvas.h"
-#include "moc_qgs3dmapcanvas.cpp"
-
 #include "qgs3dmapscene.h"
 #include "qgswindow3dengine.h"
 #include "qgs3dmapsettings.h"
@@ -38,6 +36,9 @@
 #include "qgsframegraph.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgsrubberband3d.h"
+
+#include "moc_qgs3dmapcanvas.cpp"
+
 
 Qgs3DMapCanvas::Qgs3DMapCanvas()
   : m_aspectEngine( new Qt3DCore::QAspectEngine )
