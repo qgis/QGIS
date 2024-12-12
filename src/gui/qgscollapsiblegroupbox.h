@@ -120,7 +120,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     void setScrollOnExpand( bool scroll ) { mScrollOnExpand = scroll; }
 
     //! If this is set to FALSE the parent QScrollArea will not be automatically scrolled to this widget's contents when expanded
-    bool scrollOnExpand() {return mScrollOnExpand;}
+    bool scrollOnExpand() { return mScrollOnExpand; }
 
   signals:
     //! Signal emitted when groupbox collapsed/expanded state is changed, and when first shown
@@ -139,7 +139,6 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     void setStyleSheet( const QString &style );
 
   protected:
-
     //! Visual fixes for when group box is collapsed/expanded
     void collapseExpandFixes();
 
@@ -169,9 +168,7 @@ class GUI_EXPORT QgsCollapsibleGroupBoxBasic : public QGroupBox
     QIcon mExpandIcon;
 
   private:
-
     void init();
-
 };
 
 /**

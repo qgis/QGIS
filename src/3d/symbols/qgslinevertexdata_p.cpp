@@ -15,7 +15,7 @@
 
 #include "qgslinevertexdata_p.h"
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
@@ -119,7 +119,7 @@ Qt3DQGeometry *QgsLineVertexData::createGeometry( Qt3DCore::QNode *parent )
 void QgsLineVertexData::addLineString( const QgsLineString &lineString, float extraHeightOffset )
 {
   if ( withAdjacency )
-    indexes << vertices.count();  // add the following vertex (for adjacency)
+    indexes << vertices.count(); // add the following vertex (for adjacency)
 
   QgsPoint centroid;
   switch ( altBinding )
@@ -136,16 +136,14 @@ void QgsLineVertexData::addLineString( const QgsLineString &lineString, float ex
     QgsPoint p = lineString.pointN( i );
     float z = Qgs3DUtils::clampAltitude( p, altClamping, altBinding, baseHeight + extraHeightOffset, centroid, renderContext );
 
-    vertices << QVector3D( static_cast< float >( p.x() - origin.x() ),
-                           static_cast< float >( p.y() - origin.y() ),
-                           z );
+    vertices << QVector3D( static_cast<float>( p.x() - origin.x() ), static_cast<float>( p.y() - origin.y() ), z );
     indexes << vertices.count() - 1;
   }
 
   if ( withAdjacency )
-    indexes << vertices.count() - 1;  // add the last vertex (for adjacency)
+    indexes << vertices.count() - 1; // add the last vertex (for adjacency)
 
-  indexes << 0;  // add primitive restart
+  indexes << 0; // add primitive restart
 }
 
 void QgsLineVertexData::addVerticalLines( const QgsLineString &lineString, float verticalLength, float extraHeightOffset )
@@ -167,21 +165,17 @@ void QgsLineVertexData::addVerticalLines( const QgsLineString &lineString, float
     float z2 = z + verticalLength;
 
     if ( withAdjacency )
-      indexes << vertices.count();  // add the following vertex (for adjacency)
+      indexes << vertices.count(); // add the following vertex (for adjacency)
 
-    vertices << QVector3D( static_cast< float >( p.x() - origin.x() ),
-                           static_cast< float >( p.y() - origin.y() ),
-                           z );
+    vertices << QVector3D( static_cast<float>( p.x() - origin.x() ), static_cast<float>( p.y() - origin.y() ), z );
     indexes << vertices.count() - 1;
-    vertices << QVector3D( static_cast< float >( p.x() - origin.x() ),
-                           static_cast< float >( p.y() - origin.y() ),
-                           z2 );
+    vertices << QVector3D( static_cast<float>( p.x() - origin.x() ), static_cast<float>( p.y() - origin.y() ), z2 );
     indexes << vertices.count() - 1;
 
     if ( withAdjacency )
-      indexes << vertices.count() - 1;  // add the last vertex (for adjacency)
+      indexes << vertices.count() - 1; // add the last vertex (for adjacency)
 
-    indexes << 0;  // add primitive restart
+    indexes << 0; // add primitive restart
   }
 }
 

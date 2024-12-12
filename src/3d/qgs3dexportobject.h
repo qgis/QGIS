@@ -53,7 +53,8 @@ class _3D_EXPORT Qgs3DExportObject
      * Constructs an export object that will be filled with coordinates later
      * \param name The name of the parent (Will be useful to define scene hierarchy)
      */
-    Qgs3DExportObject( const QString &name ) : mName( name ) { }
+    Qgs3DExportObject( const QString &name )
+      : mName( name ) {}
 
     //! Returns the object name
     QString name() const { return mName; }
@@ -108,10 +109,10 @@ class _3D_EXPORT Qgs3DExportObject
     QVector<float> vertexPosition() const { return mVertexPosition; }
 
     //! Returns the vertex normal coordinates
-    QVector<float> normals() const { return mNormals;}
+    QVector<float> normals() const { return mNormals; }
 
     //! Returns the vertex texture coordinates
-    QVector<float> texturesUV() const { return mTexturesUV;}
+    QVector<float> texturesUV() const { return mTexturesUV; }
 
     //! Returns the vertex indexes
     QVector<unsigned int> indexes() const { return mIndexes; }

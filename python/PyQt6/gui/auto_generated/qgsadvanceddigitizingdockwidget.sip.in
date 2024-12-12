@@ -25,7 +25,6 @@ by implementing filters called from :py:class:`QgsMapToolAdvancedDigitizing`.
 #include "qgsadvanceddigitizingdockwidget.h"
 %End
   public:
-
     enum CadCapacity /BaseType=IntEnum/
     {
       AbsoluteAngle,
@@ -39,6 +38,8 @@ by implementing filters called from :py:class:`QgsMapToolAdvancedDigitizing`.
     enum WidgetSetMode /BaseType=IntEnum/
     {
       ReturnPressed,
+      FocusOut,
+      TextEdited
     };
 
 
@@ -57,7 +58,6 @@ It contains all values (locked, value, relative) and pointers to corresponding w
 #include "qgsadvanceddigitizingdockwidget.h"
 %End
       public:
-
         enum LockMode /BaseType=IntEnum/
         {
           NoLock,
@@ -285,7 +285,7 @@ Clear any cached previous clicks and helper lines
 determines if CAD tools are enabled or if map tools behaves "nomally"
 %End
 
-    void switchZM( );
+    void switchZM();
 %Docstring
 Determines if Z or M will be enabled.
 
@@ -419,7 +419,7 @@ Returns the point locator match
 .. versionadded:: 3.4
 %End
 
-    QList< QgsPointLocator::Match > lockedSnapVertices() const;
+    QList<QgsPointLocator::Match> lockedSnapVertices() const;
 %Docstring
 Returns the snap matches whose vertices have been locked
 
@@ -467,7 +467,7 @@ Some map tools may find it useful to override list of CAD points that is otherwi
 automatically populated when user clicks with left mouse button on map canvas.
 %End
 
-    QgsPoint currentPointV2( bool *exists  = 0 ) const;
+    QgsPoint currentPointV2( bool *exists = 0 ) const;
 %Docstring
 The last point.
 Helper for the CAD point list. The CAD point list is the list of points
@@ -483,7 +483,7 @@ Returns the last CAD point, in a map ``layer``'s coordinates.
 .. versionadded:: 3.22
 %End
 
- QgsPointXY currentPoint( bool *exists  = 0 ) const /Deprecated/;
+ QgsPointXY currentPoint( bool *exists = 0 ) const /Deprecated/;
 %Docstring
 The last point.
 Helper for the CAD point list. The CAD point list is the list of points
@@ -655,14 +655,14 @@ Can be used to set constraints by external widgets.
 .. versionadded:: 3.8
 %End
 
-    double getLineZ( ) const;
+    double getLineZ() const;
 %Docstring
 Convenient method to get the Z value from the line edit wiget
 
 .. versionadded:: 3.22
 %End
 
-    double getLineM( ) const;
+    double getLineM() const;
 %Docstring
 Convenient method to get the M value from the line edit wiget
 
@@ -715,7 +715,7 @@ when a constraint is toggled.
 
 .. deprecated:: 3.22
 
-   No longer used, will be removed in QGIS 4.0. Use pointChangedV2 instead.
+   No longer used, will be removed in QGIS 4.0. Use :py:func:`~QgsAdvancedDigitizingDockWidget.pointChangedV2` instead.
 %End
 
 

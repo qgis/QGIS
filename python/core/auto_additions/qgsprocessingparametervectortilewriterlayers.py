@@ -5,5 +5,5 @@ try:
     QgsProcessingParameterVectorTileWriterLayers.variantMapAsLayer = staticmethod(QgsProcessingParameterVectorTileWriterLayers.variantMapAsLayer)
     QgsProcessingParameterVectorTileWriterLayers.layerAsVariantMap = staticmethod(QgsProcessingParameterVectorTileWriterLayers.layerAsVariantMap)
     QgsProcessingParameterVectorTileWriterLayers.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass

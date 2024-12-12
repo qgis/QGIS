@@ -22,5 +22,5 @@ QgsServerRequest.AUTHORIZATION = QgsServerRequest.RequestHeader.AUTHORIZATION
 QgsServerRequest.RequestHeader.baseClass = QgsServerRequest
 try:
     QgsServerRequest.methodToString = staticmethod(QgsServerRequest.methodToString)
-except NameError:
+except (NameError, AttributeError):
     pass

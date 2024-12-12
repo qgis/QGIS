@@ -107,6 +107,8 @@ class TestQgsMeshLayer : public QgsTest
     void testSelectByExpression();
 
     void testSetDataSourceRetainStyle();
+    void testRemoveDatasets();
+    void testDatasetsUniquePath();
 
     void keepDatasetIndexConsistency();
     void symbologyConsistencyWithName();
@@ -1231,12 +1233,8 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
   QCOMPARE( layer.datasetGroupCount(), 2 );
   QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 2 );
 
-  // Add twice the same file
-  QVERIFY( layer.addDatasets( testFileDataSet.fileName() ) );   //dataset added
-  QCOMPARE( layer.dataProvider()->extraDatasets().count(), 1 ); //uri not dupplicated
-  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 3 );     //dataset added
-  QCOMPARE( layer.datasetGroupCount(), 2 );                     // meshLayer do not allow dataset group with same name
-  QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 2 );
+  // Add twice the same file - not allow since 3.42
+  QCOMPARE( layer.addDatasets( testFileDataSet.fileName() ), false ); //dataset added
 
   indexes = layer.datasetGroupsIndexes();
   for ( int index : std::as_const( indexes ) )
@@ -1248,7 +1246,7 @@ void TestQgsMeshLayer::test_reload_extra_dataset()
 
   QVERIFY( layer.addDatasets( testFileDataSet_3.fileName() ) );
   QCOMPARE( layer.dataProvider()->extraDatasets().count(), 2 );
-  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 4 );
+  QCOMPARE( layer.dataProvider()->datasetGroupCount(), 3 );
   QCOMPARE( layer.datasetGroupCount(), 3 );
   QCOMPARE( layer.datasetGroupTreeRootItem()->childCount(), 3 );
 
@@ -2470,6 +2468,54 @@ void TestQgsMeshLayer::testMinimumMaximumActiveScalarDataset()
   QVERIFY( found );
   QCOMPARE( min, 400 );
   QCOMPARE( max, 460 );
+}
+  
+void TestQgsMeshLayer::testDatasetsUniquePath()
+{
+  QgsMeshLayer layer(
+    testDataPath( "mesh/quad_and_triangle.2dm" ),
+    QStringLiteral( "mesh" ),
+    QStringLiteral( "mdal" )
+  );
+  QVERIFY( layer.isValid() );
+
+  QString path = testDataPath( "/mesh/quad_and_triangle_vertex_vector.dat" );
+
+  // is unique
+  QVERIFY( layer.datasetsPathUnique( path ) );
+
+  // add dataset group
+  QVERIFY( layer.addDatasets( path ) );
+
+  // no longer unique - already exist
+  QCOMPARE( layer.datasetsPathUnique( path ), false );
+}
+
+void TestQgsMeshLayer::testRemoveDatasets()
+{
+  QgsMeshLayer layer(
+    testDataPath( "mesh/quad_and_triangle.2dm" ),
+    QStringLiteral( "mesh" ),
+    QStringLiteral( "mdal" )
+  );
+  QVERIFY( layer.isValid() );
+
+  // add datasets with same name
+  QVERIFY( layer.addDatasets( testDataPath( "/mesh/quad_and_triangle_vertex_vector.dat" ) ) );
+
+  const QString fileDatasetGroup = QDir::tempPath() + QStringLiteral( "/quad_and_triangle_vertex_vector.dat" );
+
+  QFile::remove( fileDatasetGroup );
+  QVERIFY( QFile::copy( testDataPath( "/mesh/quad_and_triangle_vertex_vector.dat" ), fileDatasetGroup ) );
+
+  QVERIFY( layer.addDatasets( fileDatasetGroup ) );
+
+  // can remove but the second has added "_1"
+  QVERIFY( layer.removeDatasets( "VertexVectorDataset" ) );
+  QVERIFY( layer.removeDatasets( "VertexVectorDataset_1" ) );
+
+  // cannot remove by name - does not exist
+  QCOMPARE( layer.removeDatasets( "Non Existing Dataset Group" ), false );
 }
 
 QGSTEST_MAIN( TestQgsMeshLayer )

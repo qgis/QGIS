@@ -90,11 +90,11 @@ class QgsTerrainTextureGenerator : public QObject
 
     struct JobData
     {
-      int jobId;
-      QgsChunkNodeId tileId;
-      QgsMapRendererSequentialJob *job = nullptr;
-      QgsRectangle extent;
-      QString debugText;
+        int jobId;
+        QgsChunkNodeId tileId;
+        QgsMapRendererSequentialJob *job = nullptr;
+        QgsRectangle extent;
+        QString debugText;
     };
 
     QHash<QgsMapRendererSequentialJob *, JobData> mJobs;

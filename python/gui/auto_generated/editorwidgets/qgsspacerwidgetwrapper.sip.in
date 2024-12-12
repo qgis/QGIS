@@ -19,7 +19,6 @@ Wraps a spacer widget.
 #include "qgsspacerwidgetwrapper.h"
 %End
   public:
-
     explicit QgsSpacerWidgetWrapper( QgsVectorLayer *layer, QWidget *editor = 0, QWidget *parent = 0 );
 %Docstring
 Create a new widget wrapper

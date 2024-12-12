@@ -85,7 +85,7 @@ QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, co
   const bool useNative = settings.value( QStringLiteral( "qgis/native_color_dialogs" ), false ).toBool();
   if ( useNative )
   {
-    return QColorDialog::getColor( initialColor, parent, dialogTitle, allowOpacity ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
+    return QColorDialog::getColor( initialColor, parent, dialogTitle, allowOpacity ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption ) 0 );
   }
   else
   {

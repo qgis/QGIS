@@ -20,7 +20,6 @@ Wraps a button widget to launch a layer action.
 #include "qgsactionwidgetwrapper.h"
 %End
   public:
-
     QgsActionWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent );
 %Docstring
 Create an action widget wrapper
@@ -31,7 +30,6 @@ Create an action widget wrapper
 %End
 
   public:
-
     void setAction( const QgsAction &action );
 %Docstring
 Sets the ``action``.

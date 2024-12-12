@@ -2,5 +2,5 @@
 try:
     QgsCircularString.fromTwoPointsAndCenter = staticmethod(QgsCircularString.fromTwoPointsAndCenter)
     QgsCircularString.__group__ = ['geometry']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -733,6 +733,18 @@ void QgisAppInterface::removeProjectExportAction( QAction *action )
   }
 }
 
+QMenu *QgisAppInterface::projectModelsMenu()
+{
+  return qgis->projectModelsMenu();
+}
+
+QMenu *QgisAppInterface::createProjectModelSubMenu( const QString &title )
+{
+  QMenu *modelSubMenu = new QMenu( title, qgis->projectModelsMenu() );
+  qgis->projectModelsMenu()->addMenu( modelSubMenu );
+  return modelSubMenu;
+}
+
 QMenu *QgisAppInterface::editMenu() { return qgis->editMenu(); }
 QMenu *QgisAppInterface::viewMenu() { return qgis->viewMenu(); }
 QMenu *QgisAppInterface::layerMenu() { return qgis->layerMenu(); }

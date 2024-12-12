@@ -538,11 +538,11 @@ void QgsAppFileItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
       connect( openDataSourceManagerAction, &QAction::triggered, this, [=] {
         QString pageName { sublayer.providerKey() };
         // GPKG special handling
-        if ( sublayer.driverName() == QStringLiteral( "GeoPackage" ) )
+        if ( sublayer.driverName() == QLatin1String( "GeoPackage" ) )
         {
           pageName = QStringLiteral( "GeoPackage" );
         }
-        else if ( sublayer.driverName() == QStringLiteral( "SQLite" ) )
+        else if ( sublayer.driverName() == QLatin1String( "SQLite" ) )
         {
           pageName = QStringLiteral( "Spatialite" );
         }

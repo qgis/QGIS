@@ -26,7 +26,6 @@ and whenever text is typed into the combobox, the completer and popup will adjus
 #include "qgsfeaturepickerwidget.h"
 %End
   public:
-
     QgsFeaturePickerWidget( QWidget *parent = 0 );
 %Docstring
 Create a new QgsFeaturePickerWidget, optionally specifying a ``parent``.
@@ -189,7 +188,6 @@ Emitted when showing the browser buttons changes
 %End
 
 };
-
 
 
 /************************************************************************

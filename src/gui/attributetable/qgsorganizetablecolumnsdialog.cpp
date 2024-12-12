@@ -94,7 +94,7 @@ QgsAttributeTableConfig QgsOrganizeTableColumnsDialog::config() const
   QVector<QgsAttributeTableConfig::ColumnConfig> columns;
   columns.reserve( mFieldsList->count() );
 
-  for ( int i = 0; i < mFieldsList->count() ; i++ )
+  for ( int i = 0; i < mFieldsList->count(); i++ )
   {
     const QListWidgetItem *item = mFieldsList->item( i );
     QgsAttributeTableConfig::ColumnConfig columnConfig = item->data( Qt::UserRole ).value<QgsAttributeTableConfig::ColumnConfig>();
@@ -111,7 +111,7 @@ QgsAttributeTableConfig QgsOrganizeTableColumnsDialog::config() const
 
 void QgsOrganizeTableColumnsDialog::showAll()
 {
-  for ( int i = 0; i < mFieldsList->count() ; i++ )
+  for ( int i = 0; i < mFieldsList->count(); i++ )
   {
     mFieldsList->item( i )->setCheckState( Qt::Checked );
   }
@@ -119,7 +119,7 @@ void QgsOrganizeTableColumnsDialog::showAll()
 
 void QgsOrganizeTableColumnsDialog::hideAll()
 {
-  for ( int i = 0; i < mFieldsList->count() ; i++ )
+  for ( int i = 0; i < mFieldsList->count(); i++ )
   {
     mFieldsList->item( i )->setCheckState( Qt::Unchecked );
   }
@@ -129,6 +129,6 @@ void QgsOrganizeTableColumnsDialog::toggleSelection()
 {
   for ( QListWidgetItem *item : mFieldsList->selectedItems() )
   {
-    item->setCheckState( item->checkState() == Qt::Checked ? Qt::Unchecked :  Qt::Checked );
+    item->setCheckState( item->checkState() == Qt::Checked ? Qt::Unchecked : Qt::Checked );
   }
 }

@@ -15,17 +15,16 @@
 
 #include "qgstest.h"
 
-#include <qgsapplication.h>
-#include <qgslabelingengine.h>
-#include <qgsproject.h>
-#include <qgsmaprenderersequentialjob.h>
-#include <qgsreadwritecontext.h>
-#include <qgsrulebasedlabeling.h>
-#include <qgsvectorlayer.h>
-#include <qgsvectorlayerdiagramprovider.h>
-#include <qgsvectorlayerlabeling.h>
-#include <qgsvectorlayerlabelprovider.h>
-#include "qgsmultirenderchecker.h"
+#include "qgsapplication.h"
+#include "qgslabelingengine.h"
+#include "qgsproject.h"
+#include "qgsmaprenderersequentialjob.h"
+#include "qgsreadwritecontext.h"
+#include "qgsrulebasedlabeling.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerdiagramprovider.h"
+#include "qgsvectorlayerlabeling.h"
+#include "qgsvectorlayerlabelprovider.h"
 #include "qgsfontutils.h"
 #include "qgsnullsymbolrenderer.h"
 #include "qgssinglesymbolrenderer.h"
@@ -43,7 +42,7 @@ class TestQgsLabelingEngine : public QgsTest
     Q_OBJECT
   public:
     TestQgsLabelingEngine()
-      : QgsTest( QStringLiteral( "Labeling Engine Tests" ) ) {}
+      : QgsTest( QStringLiteral( "Labeling Engine Tests" ), QStringLiteral( "labelingengine" ) ) {}
 
   private slots:
     void initTestCase();
@@ -158,7 +157,6 @@ class TestQgsLabelingEngine : public QgsTest
 
     void setDefaultLabelParams( QgsPalLayerSettings &settings );
     QgsLabelingEngineSettings createLabelEngineSettings();
-    bool imageCheck( const QString &testName, QImage &image, int mismatchCount );
 };
 
 void TestQgsLabelingEngine::initTestCase()
@@ -336,7 +334,7 @@ void TestQgsLabelingEngine::testBasic()
 
   p.end();
 
-  QVERIFY( imageCheck( "labeling_basic", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "labeling_basic", "labeling_basic", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // now let's test the variant when integrated into rendering loop
   //note the reference images are slightly different due to use of renderer for this test
@@ -347,7 +345,7 @@ void TestQgsLabelingEngine::testBasic()
 
   vl->setLabeling( nullptr );
 
-  QVERIFY( imageCheck( "labeling_basic", img2, 20 ) );
+  QGSVERIFYIMAGECHECK( "labeling_basic", "labeling_basic", img2, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 
@@ -384,7 +382,7 @@ void TestQgsLabelingEngine::testDiagrams()
 
   p.end();
 
-  QVERIFY( imageCheck( "labeling_point_diagrams", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "labeling_point_diagrams", "labeling_point_diagrams", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // now let's test the variant when integrated into rendering loop
   job.start();
@@ -392,7 +390,7 @@ void TestQgsLabelingEngine::testDiagrams()
   QImage img2 = job.renderedImage();
 
   vl->loadDefaultStyle( res );
-  QVERIFY( imageCheck( "labeling_point_diagrams", img2, 20 ) );
+  QGSVERIFYIMAGECHECK( "labeling_point_diagrams", "labeling_point_diagrams", img2, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 
@@ -455,7 +453,7 @@ void TestQgsLabelingEngine::testRuleBased()
   job.start();
   job.waitForFinished();
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( "labeling_rulebased", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "labeling_rulebased", "labeling_rulebased", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // test read/write rules
   QDomDocument doc, doc2, doc3;
@@ -534,7 +532,7 @@ void TestQgsLabelingEngine::zOrder()
 
   // since labels are all from same layer and have same z-index then smaller labels should be stacked on top of larger
   // labels. For example: B52 > Biplane > Jet
-  QVERIFY( imageCheck( "label_order_size", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_order_size", "label_order_size", img, QString(), 20, QSize( 0, 0 ), 2 );
   img = job.renderedImage();
 
   //test data defined z-index
@@ -547,7 +545,7 @@ void TestQgsLabelingEngine::zOrder()
   engine.removeProvider( provider1 );
 
   // z-index will take preference over label size, so labels should be stacked Jet > Biplane > B52
-  QVERIFY( imageCheck( "label_order_zindex", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_order_zindex", "label_order_zindex", img, QString(), 20, QSize( 0, 0 ), 2 );
   img = job.renderedImage();
 
   pls1.dataDefinedProperties().clear();
@@ -579,7 +577,7 @@ void TestQgsLabelingEngine::zOrder()
   p.end();
 
   // labels have same z-index, so layer order will be used
-  QVERIFY( imageCheck( "label_order_layer1", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_order_layer1", "label_order_layer1", img, QString(), 20, QSize( 0, 0 ), 2 );
   img = job.renderedImage();
 
   //flip layer order and re-test
@@ -590,7 +588,7 @@ void TestQgsLabelingEngine::zOrder()
   p.end();
 
   // label order should be reversed
-  QVERIFY( imageCheck( "label_order_layer2", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_order_layer2", "label_order_layer2", img, QString(), 20, QSize( 0, 0 ), 2 );
   img = job.renderedImage();
 
   //try mixing layer order and z-index
@@ -604,7 +602,7 @@ void TestQgsLabelingEngine::zOrder()
   p.end();
 
   // label order should be most labels from layer 1, then labels from layer 2, then "Jet"s from layer 1
-  QVERIFY( imageCheck( "label_order_mixed", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_order_mixed", "label_order_mixed", img, QString(), 20, QSize( 0, 0 ), 2 );
   img = job.renderedImage();
 
   //cleanup
@@ -907,28 +905,6 @@ void TestQgsLabelingEngine::testParticipatingLayers()
   QCOMPARE( qgis::listToSet( engine.participatingLayers() ), QSet<QgsMapLayer *>() << vl << layer2 << layer3 );
 }
 
-bool TestQgsLabelingEngine::imageCheck( const QString &testName, QImage &image, int mismatchCount )
-{
-  //draw background
-  QImage imageWithBackground( image.width(), image.height(), QImage::Format_RGB32 );
-  QgsMultiRenderChecker::drawBackground( &imageWithBackground );
-  QPainter painter( &imageWithBackground );
-  painter.drawImage( 0, 0, image );
-  painter.end();
-
-  const QString tempDir = QDir::tempPath() + '/';
-  const QString fileName = tempDir + testName + ".png";
-  imageWithBackground.save( fileName, "PNG" );
-  QgsMultiRenderChecker checker;
-  checker.setControlPathPrefix( QStringLiteral( "labelingengine" ) );
-  checker.setControlName( "expected_" + testName );
-  checker.setRenderedImage( fileName );
-  checker.setColorTolerance( 2 );
-  const bool resultFlag = checker.runTest( testName, mismatchCount );
-  mReport += checker.report();
-  return resultFlag;
-}
-
 // See https://github.com/qgis/QGIS/issues/23431
 void TestQgsLabelingEngine::testRegisterFeatureUnprojectible()
 {
@@ -1033,7 +1009,7 @@ void TestQgsLabelingEngine::testRotateHidePartial()
   p.end();
   engine.removeProvider( provider );
 
-  QVERIFY( imageCheck( "label_rotate_hide_partial", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_rotate_hide_partial", "label_rotate_hide_partial", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testParallelLabelSmallFeature()
@@ -1105,7 +1081,7 @@ void TestQgsLabelingEngine::testParallelLabelSmallFeature()
   engine.removeProvider( provider );
 
   // no need to actually check the result here -- we were just testing that no hang/crash occurred
-  //  QVERIFY( imageCheck( "label_rotate_hide_partial", img, 20 ) );
+  //  QGSVERIFYIMAGECHECK( "label_rotate_hide_partial", "label_rotate_hide_partial", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testAllowDegradedPlacements()
@@ -1173,7 +1149,7 @@ void TestQgsLabelingEngine::testAllowDegradedPlacements()
   p.end();
   engine.removeProvider( provider );
 
-  QVERIFY( imageCheck( "label_long_text_short_line_no_degraded", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_long_text_short_line_no_degraded", "label_long_text_short_line_no_degraded", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // allow degraded placement, label should be shown
   settings.placementSettings().setAllowDegradedPlacement( true );
@@ -1184,7 +1160,7 @@ void TestQgsLabelingEngine::testAllowDegradedPlacements()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_long_text_short_line_with_degraded" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_long_text_short_line_with_degraded", "label_long_text_short_line_with_degraded", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testOverlapHandling()
@@ -1273,7 +1249,7 @@ void TestQgsLabelingEngine::testOverlapHandling()
   // overlaps are avoidable if we move the first label to a downgraded position
 
   // test first with default "no overlaps" mode
-  QVERIFY( imageCheck( "label_overlap_flexible_placement", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_overlap_flexible_placement", "label_overlap_flexible_placement", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // test again with allow overlap if required mode (but overlaps are NOT required in this case!)
   settings.placement = Qgis::LabelPlacement::OrderedPositionsAroundPoint;
@@ -1289,7 +1265,7 @@ void TestQgsLabelingEngine::testOverlapHandling()
   img = job2.renderedImage();
 
   // should be the same result
-  QVERIFY( imageCheck( QStringLiteral( "label_overlap_flexible_placement" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_overlap_flexible_placement", "label_overlap_flexible_placement", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // if we allow overlaps without cost, then the labels should overlap so that they both get their best candidate placement
   settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapAtNoCost );
@@ -1301,7 +1277,7 @@ void TestQgsLabelingEngine::testOverlapHandling()
 
   img = job3.renderedImage();
 
-  QVERIFY( imageCheck( QStringLiteral( "label_allow_overlap_flexible_placement" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_allow_overlap_flexible_placement", "label_allow_overlap_flexible_placement", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // force a fixed position for the label instead of flexible placement
   settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::PreventOverlap );
@@ -1317,7 +1293,7 @@ void TestQgsLabelingEngine::testOverlapHandling()
   img = job4.renderedImage();
 
   // now only the one label should be visible when preventing overlaps
-  QVERIFY( imageCheck( QStringLiteral( "label_overlap_nonflexible_placement" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_overlap_nonflexible_placement", "label_overlap_nonflexible_placement", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // allow overlap if required (in this case, they are -- there's no alternative positions)
   settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapIfRequired );
@@ -1331,7 +1307,7 @@ void TestQgsLabelingEngine::testOverlapHandling()
   img = job5.renderedImage();
 
   // now only the one label should be visible when preventing overlaps
-  QVERIFY( imageCheck( QStringLiteral( "label_forced_overlap_nonflexible_placement" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_forced_overlap_nonflexible_placement", "label_forced_overlap_nonflexible_placement", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // we should get the same result now if we allow overlaps without cost
   settings.placementSettings().setOverlapHandling( Qgis::LabelOverlapHandling::AllowOverlapAtNoCost );
@@ -1345,7 +1321,7 @@ void TestQgsLabelingEngine::testOverlapHandling()
   img = job6.renderedImage();
 
   // now only the one label should be visible when preventing overlaps
-  QVERIFY( imageCheck( QStringLiteral( "label_allow_overlap_nonflexible_placement" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_allow_overlap_nonflexible_placement", "label_allow_overlap_nonflexible_placement", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testAllowOverlapsIgnoresObstacles()
@@ -1436,7 +1412,7 @@ void TestQgsLabelingEngine::testAllowOverlapsIgnoresObstacles()
   // overlaps are avoidable if we move the first label to a downgraded position
 
   // test first with default "no overlaps" mode -- should be no label placed
-  QVERIFY( imageCheck( "label_avoid_overlap_with_obstacle", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_avoid_overlap_with_obstacle", "label_avoid_overlap_with_obstacle", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // test again with allow overlap at no cost
   settings = vl1->labeling()->settings();
@@ -1451,7 +1427,7 @@ void TestQgsLabelingEngine::testAllowOverlapsIgnoresObstacles()
   img = job2.renderedImage();
 
   // label should be placed -- it doesn't care about the obstacle anymore
-  QVERIFY( imageCheck( QStringLiteral( "label_allow_overlap_with_obstacle" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_allow_overlap_with_obstacle", "label_allow_overlap_with_obstacle", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testAdjacentParts()
@@ -1503,7 +1479,7 @@ void TestQgsLabelingEngine::testAdjacentParts()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_adjacent_parts" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_adjacent_parts", "label_adjacent_parts", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testTouchingParts()
@@ -1558,7 +1534,7 @@ void TestQgsLabelingEngine::testTouchingParts()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_multipart_touching_lines" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_multipart_touching_lines", "label_multipart_touching_lines", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testMergingLinesWithForks()
@@ -1625,7 +1601,7 @@ void TestQgsLabelingEngine::testMergingLinesWithForks()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_multipart_touching_branches" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_multipart_touching_branches", "label_multipart_touching_branches", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testMergingLinesWithMinimumSize()
@@ -1692,7 +1668,7 @@ void TestQgsLabelingEngine::testMergingLinesWithMinimumSize()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_merged_minimum_size" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_merged_minimum_size", "label_merged_minimum_size", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testPointLabelTabs()
@@ -1744,7 +1720,7 @@ void TestQgsLabelingEngine::testPointLabelTabs()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_point_tabs" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_point_tabs", "label_point_tabs", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testPointLabelTabsHtml()
@@ -1798,7 +1774,7 @@ void TestQgsLabelingEngine::testPointLabelTabsHtml()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_point_tabs" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_point_tabs", "label_point_tabs", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testPointLabelHtmlFormatting()
@@ -1851,7 +1827,7 @@ void TestQgsLabelingEngine::testPointLabelHtmlFormatting()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_point_html_rendering" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_point_html_rendering", "label_point_html_rendering", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testPointLabelHtmlFormattingDataDefinedSize()
@@ -1905,7 +1881,7 @@ void TestQgsLabelingEngine::testPointLabelHtmlFormattingDataDefinedSize()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_point_html_rendering" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_point_html_rendering", "label_point_html_rendering", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testPointLabelHtmlImages()
@@ -1958,7 +1934,7 @@ void TestQgsLabelingEngine::testPointLabelHtmlImages()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "html_images" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "html_images", "html_images", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelsHtmlSuperSubscript()
@@ -2014,7 +1990,7 @@ void TestQgsLabelingEngine::testCurvedLabelsHtmlSuperSubscript()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_html_supersubscript" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_html_supersubscript", "label_curved_html_supersubscript", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelsHtmlWordSpacing()
@@ -2070,7 +2046,7 @@ void TestQgsLabelingEngine::testCurvedLabelsHtmlWordSpacing()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_html_wordspacing" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_html_wordspacing", "curved_html_wordspacing", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelsTabs()
@@ -2127,7 +2103,7 @@ void TestQgsLabelingEngine::testCurvedLabelsTabs()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_tabs" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_tabs", "curved_tabs", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelsTabPositions()
@@ -2184,7 +2160,7 @@ void TestQgsLabelingEngine::testCurvedLabelsTabPositions()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_tab_positions" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_tab_positions", "curved_tab_positions", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelsHtmlFormatting()
@@ -2240,7 +2216,7 @@ void TestQgsLabelingEngine::testCurvedLabelsHtmlFormatting()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_html_rendering" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_html_rendering", "label_curved_html_rendering", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedPerimeterLabelsHtmlFormatting()
@@ -2295,7 +2271,7 @@ void TestQgsLabelingEngine::testCurvedPerimeterLabelsHtmlFormatting()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_perimeter_curved_html_rendering" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_perimeter_curved_html_rendering", "label_perimeter_curved_html_rendering", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelsWithTinySegments()
@@ -2351,7 +2327,7 @@ void TestQgsLabelingEngine::testCurvedLabelsWithTinySegments()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_label_small_segments" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_label_small_segments", "label_curved_label_small_segments", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelCorrectLinePlacement()
@@ -2407,7 +2383,7 @@ void TestQgsLabelingEngine::testCurvedLabelCorrectLinePlacement()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_label_above_1" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_label_above_1", "label_curved_label_above_1", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // and below...
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine | Qgis::LabelLinePlacementFlag::MapOrientation );
@@ -2418,7 +2394,7 @@ void TestQgsLabelingEngine::testCurvedLabelCorrectLinePlacement()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_label_below_1" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_label_below_1", "label_curved_label_below_1", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelNegativeDistance()
@@ -2471,7 +2447,7 @@ void TestQgsLabelingEngine::testCurvedLabelNegativeDistance()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_negative_distance" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_negative_distance", "label_curved_negative_distance", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelOnSmallLineNearCenter()
@@ -2524,7 +2500,7 @@ void TestQgsLabelingEngine::testCurvedLabelOnSmallLineNearCenter()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_small_feature_centered" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_small_feature_centered", "label_curved_small_feature_centered", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelLineOrientationAbove()
@@ -2576,7 +2552,7 @@ void TestQgsLabelingEngine::testCurvedLabelLineOrientationAbove()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_orientation_above" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_orientation_above", "label_curved_line_orientation_above", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
   f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
@@ -2589,7 +2565,7 @@ void TestQgsLabelingEngine::testCurvedLabelLineOrientationAbove()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_orientation_reversed_above" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_orientation_reversed_above", "label_curved_line_orientation_reversed_above", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelLineOrientationBelow()
@@ -2641,7 +2617,7 @@ void TestQgsLabelingEngine::testCurvedLabelLineOrientationBelow()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_orientation_below" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_orientation_below", "label_curved_line_orientation_below", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
   f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
@@ -2654,7 +2630,7 @@ void TestQgsLabelingEngine::testCurvedLabelLineOrientationBelow()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_orientation_reversed_below" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_orientation_reversed_below", "label_curved_line_orientation_reversed_below", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAbove()
@@ -2710,7 +2686,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAbove()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_above" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_above", "label_curved_line_allow_upside_down_above", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
   f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
@@ -2722,7 +2698,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAbove()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_reversed_above" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_reversed_above", "label_curved_line_allow_upside_down_reversed_above", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownBelow()
@@ -2778,7 +2754,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownBelow()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_below" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_below", "label_curved_line_allow_upside_down_below", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
   f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
@@ -2790,7 +2766,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownBelow()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_reversed_below" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_reversed_below", "label_curved_line_allow_upside_down_reversed_below", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAbovePositiveOffset()
@@ -2845,7 +2821,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAbovePositiveOffset()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_above_positive_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_above_positive_offset", "label_curved_line_allow_upside_down_above_positive_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
   f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
@@ -2857,7 +2833,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAbovePositiveOffset()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_reversed_above_positive_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_reversed_above_positive_offset", "label_curved_line_allow_upside_down_reversed_above_positive_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAboveNegativeOffset()
@@ -2913,7 +2889,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAboveNegativeOffset()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_above_negative_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_above_negative_offset", "label_curved_line_allow_upside_down_above_negative_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
   f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
@@ -2925,7 +2901,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownAboveNegativeOffset()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_reversed_above_negative_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_reversed_above_negative_offset", "label_curved_line_allow_upside_down_reversed_above_negative_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownLeftPositiveOffset()
@@ -2980,7 +2956,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownLeftPositiveOffset()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_left_positive_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_left_positive_offset", "label_curved_line_allow_upside_down_left_positive_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
   f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
@@ -2992,7 +2968,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownLeftPositiveOffset()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_reversed_left_positive_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_reversed_left_positive_offset", "label_curved_line_allow_upside_down_reversed_left_positive_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownLeftNegativeOffset()
@@ -3048,7 +3024,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownLeftNegativeOffset()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_left_negative_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_left_negative_offset", "label_curved_line_allow_upside_down_left_negative_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
   f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
@@ -3060,7 +3036,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownLeftNegativeOffset()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_reversed_left_negative_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_reversed_left_negative_offset", "label_curved_line_allow_upside_down_reversed_left_negative_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownRightPositiveOffset()
@@ -3115,7 +3091,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownRightPositiveOffset()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_right_positive_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_right_positive_offset", "label_curved_line_allow_upside_down_right_positive_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
   f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
@@ -3127,7 +3103,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownRightPositiveOffset()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_reversed_right_positive_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_reversed_right_positive_offset", "label_curved_line_allow_upside_down_reversed_right_positive_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownRightNegativeOffset()
@@ -3183,7 +3159,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownRightNegativeOffset()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_right_negative_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_right_negative_offset", "label_curved_line_allow_upside_down_right_negative_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
   f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
@@ -3195,7 +3171,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownRightNegativeOffset()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_reversed_right_negative_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_reversed_right_negative_offset", "label_curved_line_allow_upside_down_reversed_right_negative_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAbove()
@@ -3249,7 +3225,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAbove()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_hint_above" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_above", "label_curved_line_allow_upside_down_hint_above", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
   f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
@@ -3261,7 +3237,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAbove()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_hint_reversed_above" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_reversed_above", "label_curved_line_allow_upside_down_hint_reversed_above", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintBelow()
@@ -3315,7 +3291,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintBelow()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_hint_below" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_below", "label_curved_line_allow_upside_down_hint_below", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
   f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
@@ -3327,7 +3303,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintBelow()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_hint_reversed_below" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_reversed_below", "label_curved_line_allow_upside_down_hint_reversed_below", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAbovePositiveOffset()
@@ -3382,7 +3358,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAbovePositiveOffse
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_hint_above_positive_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_above_positive_offset", "label_curved_line_allow_upside_down_hint_above_positive_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
   f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
@@ -3394,7 +3370,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAbovePositiveOffse
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_hint_reversed_above_positive_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_reversed_above_positive_offset", "label_curved_line_allow_upside_down_hint_reversed_above_positive_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAboveNegativeOffset()
@@ -3450,7 +3426,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAboveNegativeOffse
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_hint_above_negative_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_above_negative_offset", "label_curved_line_allow_upside_down_hint_above_negative_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
   f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
@@ -3462,7 +3438,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintAboveNegativeOffse
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_hint_reversed_above_negative_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_reversed_above_negative_offset", "label_curved_line_allow_upside_down_hint_reversed_above_negative_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintLeftPositiveOffset()
@@ -3517,7 +3493,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintLeftPositiveOffset
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_hint_left_positive_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_left_positive_offset", "label_curved_line_allow_upside_down_hint_left_positive_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
   f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
@@ -3529,7 +3505,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintLeftPositiveOffset
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_hint_reversed_left_positive_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_reversed_left_positive_offset", "label_curved_line_allow_upside_down_hint_reversed_left_positive_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintLeftNegativeOffset()
@@ -3585,7 +3561,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintLeftNegativeOffset
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_hint_left_negative_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_left_negative_offset", "label_curved_line_allow_upside_down_hint_left_negative_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
   f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
@@ -3597,7 +3573,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintLeftNegativeOffset
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_hint_reversed_left_negative_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_reversed_left_negative_offset", "label_curved_line_allow_upside_down_hint_reversed_left_negative_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintRightPositiveOffset()
@@ -3652,7 +3628,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintRightPositiveOffse
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_hint_right_positive_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_right_positive_offset", "label_curved_line_allow_upside_down_hint_right_positive_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
   f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
@@ -3664,7 +3640,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintRightPositiveOffse
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_hint_reversed_right_positive_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_reversed_right_positive_offset", "label_curved_line_allow_upside_down_hint_reversed_right_positive_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintRightNegativeOffset()
@@ -3720,7 +3696,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintRightNegativeOffse
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_hint_right_negative_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_right_negative_offset", "label_curved_line_allow_upside_down_hint_right_negative_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // reverse line and retry, label should be flipped to other side of line
   f.setGeometry( QgsGeometry( qgsgeometry_cast<QgsLineString *>( f.geometry().constGet() )->reversed() ) );
@@ -3732,7 +3708,7 @@ void TestQgsLabelingEngine::testCurvedLabelAllowUpsideDownHintRightNegativeOffse
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_line_allow_upside_down_hint_reversed_right_negative_offset" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_line_allow_upside_down_hint_reversed_right_negative_offset", "label_curved_line_allow_upside_down_hint_reversed_right_negative_offset", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testRepeatDistanceWithSmallLine()
@@ -3787,7 +3763,7 @@ void TestQgsLabelingEngine::testRepeatDistanceWithSmallLine()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_repeat_distance_with_small_line" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_repeat_distance_with_small_line", "label_repeat_distance_with_small_line", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testParallelPlacementPreferAbove()
@@ -3840,7 +3816,7 @@ void TestQgsLabelingEngine::testParallelPlacementPreferAbove()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_prefer_above" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_prefer_above", "parallel_prefer_above", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLabelBoundary()
@@ -3900,7 +3876,7 @@ void TestQgsLabelingEngine::testLabelBoundary()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_boundary_geometry" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_boundary_geometry", "label_boundary_geometry", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // with rotation
   mapSettings.setRotation( 45 );
@@ -3909,7 +3885,7 @@ void TestQgsLabelingEngine::testLabelBoundary()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "rotated_label_boundary_geometry" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "rotated_label_boundary_geometry", "rotated_label_boundary_geometry", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLabelBlockingRegion()
@@ -3973,7 +3949,7 @@ void TestQgsLabelingEngine::testLabelBlockingRegion()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_blocking_geometry" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_blocking_geometry", "label_blocking_geometry", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // with rotation
   mapSettings.setRotation( 45 );
@@ -3982,7 +3958,7 @@ void TestQgsLabelingEngine::testLabelBlockingRegion()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "rotated_label_blocking_geometry" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "rotated_label_blocking_geometry", "rotated_label_blocking_geometry", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // blocking regions WITH label margin
   mapSettings.setRotation( 0 );
@@ -3993,7 +3969,7 @@ void TestQgsLabelingEngine::testLabelBlockingRegion()
   job3.waitForFinished();
 
   img = job3.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_blocking_boundary_geometry" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_blocking_boundary_geometry", "label_blocking_boundary_geometry", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLabelRotationWithReprojection()
@@ -4052,7 +4028,7 @@ void TestQgsLabelingEngine::testLabelRotationWithReprojection()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_rotate_with_reproject" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_rotate_with_reproject", "label_rotate_with_reproject", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLabelRotationUnit()
@@ -4094,7 +4070,7 @@ void TestQgsLabelingEngine::testLabelRotationUnit()
 
   p.end();
 
-  QVERIFY( imageCheck( "label_rotate_unit", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_rotate_unit", "label_rotate_unit", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   vl->setLabeling( nullptr );
 }
@@ -4178,7 +4154,7 @@ void TestQgsLabelingEngine::drawUnplaced()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "unplaced_labels" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "unplaced_labels", "unplaced_labels", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::labelingResults()
@@ -4233,7 +4209,6 @@ void TestQgsLabelingEngine::labelingResults()
 
   QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
   engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
-  engineSettings.setFlag( Qgis::LabelingFlag::DrawLabelRectOnly, true );
   //engineSettings.setFlag( Qgis::LabelingFlag::DrawCandidates, true );
   mapSettings.setLabelingEngineSettings( engineSettings );
 
@@ -4439,7 +4414,6 @@ void TestQgsLabelingEngine::labelingResultsCurved()
 
   QgsLabelingEngineSettings engineSettings = mapSettings.labelingEngineSettings();
   engineSettings.setFlag( Qgis::LabelingFlag::UsePartialCandidates, false );
-  engineSettings.setFlag( Qgis::LabelingFlag::DrawLabelRectOnly, true );
   //engineSettings.setFlag( Qgis::LabelingFlag::DrawCandidates, true );
   mapSettings.setLabelingEngineSettings( engineSettings );
 
@@ -5010,7 +4984,7 @@ void TestQgsLabelingEngine::curvedOverrun()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_no_overrun" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_no_overrun", "label_curved_no_overrun", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setOverrunDistance( 11 );
   settings.maxCurvedCharAngleIn = 99;
@@ -5022,7 +4996,7 @@ void TestQgsLabelingEngine::curvedOverrun()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_overrun" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_overrun", "label_curved_overrun", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // too short for what's required...
   settings.lineSettings().setOverrunDistance( 3 );
@@ -5033,7 +5007,7 @@ void TestQgsLabelingEngine::curvedOverrun()
   job3.waitForFinished();
 
   img = job3.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_no_overrun" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_no_overrun", "label_curved_no_overrun", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::parallelOverrun()
@@ -5086,7 +5060,7 @@ void TestQgsLabelingEngine::parallelOverrun()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_no_overrun" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_no_overrun", "label_curved_no_overrun", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setOverrunDistance( 10 );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) ); // TODO: this should not be necessary!
@@ -5096,7 +5070,7 @@ void TestQgsLabelingEngine::parallelOverrun()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_parallel_overrun" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_parallel_overrun", "label_parallel_overrun", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // too short for what's required...
   settings.lineSettings().setOverrunDistance( 3 );
@@ -5107,7 +5081,7 @@ void TestQgsLabelingEngine::parallelOverrun()
   job3.waitForFinished();
 
   img = job3.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_curved_no_overrun" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_curved_no_overrun", "label_curved_no_overrun", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testDataDefinedLabelAllParts()
@@ -5165,7 +5139,7 @@ void TestQgsLabelingEngine::testDataDefinedLabelAllParts()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_datadefined_label_all_parts" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_datadefined_label_all_parts", "label_datadefined_label_all_parts", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testDataDefinedPlacementPositionPoint()
@@ -5206,7 +5180,7 @@ void TestQgsLabelingEngine::testDataDefinedPlacementPositionPoint()
 
   p.end();
 
-  QVERIFY( imageCheck( "label_datadefined_placement_position_point", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_datadefined_placement_position_point", "label_datadefined_placement_position_point", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   vl->setLabeling( nullptr );
 }
@@ -5251,7 +5225,7 @@ void TestQgsLabelingEngine::testVerticalOrientation()
 
   p.end();
 
-  QVERIFY( imageCheck( "labeling_vertical", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "labeling_vertical", "labeling_vertical", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   vl->setLabeling( nullptr );
 }
@@ -5301,7 +5275,7 @@ void TestQgsLabelingEngine::testVerticalOrientationLetterLineSpacing()
 
   p.end();
 
-  QVERIFY( imageCheck( "labeling_vertical_letter_line_spacing", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "labeling_vertical_letter_line_spacing", "labeling_vertical_letter_line_spacing", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   vl->setLabeling( nullptr );
 }
@@ -5347,7 +5321,7 @@ void TestQgsLabelingEngine::testRotationBasedOrientationPoint()
 
   p.end();
 
-  QVERIFY( imageCheck( "labeling_rotation_based_orientation_point", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "labeling_rotation_based_orientation_point", "labeling_rotation_based_orientation_point", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   vl->setLabeling( nullptr );
 }
@@ -5395,7 +5369,7 @@ void TestQgsLabelingEngine::testRotationBasedOrientationPointHtmlLabel()
 
   p.end();
 
-  QVERIFY( imageCheck( "labeling_rotation_based_orientation_point", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "labeling_rotation_based_orientation_point", "labeling_rotation_based_orientation_point", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   vl->setLabeling( nullptr );
 }
@@ -5448,7 +5422,7 @@ void TestQgsLabelingEngine::testRotationBasedOrientationLine()
 
   p.end();
 
-  QVERIFY( imageCheck( "labeling_rotation_based_orientation_line", img, 20 ) );
+  QGSVERIFYIMAGECHECK( "labeling_rotation_based_orientation_line", "labeling_rotation_based_orientation_line", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   vl2->setLabeling( nullptr );
   QgsProject::instance()->removeMapLayer( vl2 );
@@ -5505,7 +5479,7 @@ void TestQgsLabelingEngine::testMapUnitLetterSpacing()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_letter_spacing_map_units" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_letter_spacing_map_units", "label_letter_spacing_map_units", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testMapUnitWordSpacing()
@@ -5559,7 +5533,7 @@ void TestQgsLabelingEngine::testMapUnitWordSpacing()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_word_spacing_map_units" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_word_spacing_map_units", "label_word_spacing_map_units", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLineHeightAbsolute()
@@ -5612,7 +5586,7 @@ void TestQgsLabelingEngine::testLineHeightAbsolute()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_absolute_line_spacing" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_absolute_line_spacing", "label_absolute_line_spacing", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testReferencedFields()
@@ -5687,7 +5661,7 @@ void TestQgsLabelingEngine::testClipping()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_feature_clipping" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_feature_clipping", "label_feature_clipping", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // also check with symbol levels
   vl2->renderer()->setUsingSymbolLevels( true );
@@ -5696,7 +5670,7 @@ void TestQgsLabelingEngine::testClipping()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "label_feature_clipping" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "label_feature_clipping", "label_feature_clipping", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLineAnchorParallel()
@@ -5750,7 +5724,7 @@ void TestQgsLabelingEngine::testLineAnchorParallel()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_anchor_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_anchor_start", "parallel_anchor_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 1.0 );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -5759,7 +5733,7 @@ void TestQgsLabelingEngine::testLineAnchorParallel()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_anchor_end" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_anchor_end", "parallel_anchor_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
@@ -5814,7 +5788,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_hint_anchor_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_hint_anchor_start", "parallel_hint_anchor_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 1.0 );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -5823,7 +5797,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_hint_anchor_end" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_hint_anchor_end", "parallel_hint_anchor_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setLineAnchorPercent( 0.0 );
@@ -5833,7 +5807,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   job3.waitForFinished();
 
   img = job3.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_strict_anchor_start", "parallel_strict_anchor_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 1.0 );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -5842,7 +5816,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   job4.waitForFinished();
 
   img = job4.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_end" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_strict_anchor_end", "parallel_strict_anchor_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.fieldName = QStringLiteral( "'XXXXX'" );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
@@ -5854,7 +5828,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   job5.waitForFinished();
 
   img = job5.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_20_center" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_strict_anchor_20_center", "parallel_strict_anchor_20_center", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -5863,7 +5837,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   job6.waitForFinished();
 
   img = job6.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_20_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_strict_anchor_20_start", "parallel_strict_anchor_20_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -5872,7 +5846,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   job7.waitForFinished();
 
   img = job7.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_20_end" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_strict_anchor_20_end", "parallel_strict_anchor_20_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::FollowPlacement );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -5881,7 +5855,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   job8.waitForFinished();
 
   img = job8.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_20_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_strict_anchor_20_start", "parallel_strict_anchor_20_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 0.40 );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
@@ -5891,7 +5865,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   job9.waitForFinished();
 
   img = job9.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_40_center" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_strict_anchor_40_center", "parallel_strict_anchor_40_center", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -5900,7 +5874,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   job10.waitForFinished();
 
   img = job10.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_40_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_strict_anchor_40_start", "parallel_strict_anchor_40_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -5909,7 +5883,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   job11.waitForFinished();
 
   img = job11.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_40_end" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_strict_anchor_40_end", "parallel_strict_anchor_40_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::FollowPlacement );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -5918,7 +5892,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   job12.waitForFinished();
 
   img = job12.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_40_center" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_strict_anchor_40_center", "parallel_strict_anchor_40_center", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 0.80 );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
@@ -5928,7 +5902,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   job13.waitForFinished();
 
   img = job13.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_80_center" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_strict_anchor_80_center", "parallel_strict_anchor_80_center", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -5937,7 +5911,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   job14.waitForFinished();
 
   img = job14.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_80_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_strict_anchor_80_start", "parallel_strict_anchor_80_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -5946,7 +5920,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   job15.waitForFinished();
 
   img = job15.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_80_end" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_strict_anchor_80_end", "parallel_strict_anchor_80_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::FollowPlacement );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -5955,7 +5929,7 @@ void TestQgsLabelingEngine::testLineAnchorParallelConstraints()
   job16.waitForFinished();
 
   img = job16.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_80_end" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_strict_anchor_80_end", "parallel_strict_anchor_80_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLineAnchorDataDefinedType()
@@ -6012,7 +5986,7 @@ void TestQgsLabelingEngine::testLineAnchorDataDefinedType()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_strict_anchor_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_strict_anchor_start", "parallel_strict_anchor_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // override strict by hint
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
@@ -6024,7 +5998,7 @@ void TestQgsLabelingEngine::testLineAnchorDataDefinedType()
   job3.waitForFinished();
 
   img = job3.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_hint_anchor_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_hint_anchor_start", "parallel_hint_anchor_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLineAnchorCurved()
@@ -6079,7 +6053,7 @@ void TestQgsLabelingEngine::testLineAnchorCurved()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_anchor_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_anchor_start", "curved_anchor_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 1.0 );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -6088,7 +6062,7 @@ void TestQgsLabelingEngine::testLineAnchorCurved()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_anchor_end" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_anchor_end", "curved_anchor_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 0.3 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
@@ -6099,7 +6073,7 @@ void TestQgsLabelingEngine::testLineAnchorCurved()
   job3.waitForFinished();
 
   img = job3.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_anchor_30_above" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_anchor_30_above", "curved_anchor_30_above", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setPlacementFlags( Qgis::LabelLinePlacementFlag::BelowLine );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -6108,7 +6082,7 @@ void TestQgsLabelingEngine::testLineAnchorCurved()
   job4.waitForFinished();
 
   img = job4.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_anchor_30_below" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_anchor_30_below", "curved_anchor_30_below", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
@@ -6163,7 +6137,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_hint_anchor_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_hint_anchor_start", "curved_hint_anchor_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 1.0 );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -6172,7 +6146,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_hint_anchor_end" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_hint_anchor_end", "curved_hint_anchor_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setLineAnchorPercent( 0.0 );
@@ -6183,7 +6157,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   job3.waitForFinished();
 
   img = job3.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_strict_anchor_start", "curved_strict_anchor_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 1.0 );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
@@ -6193,7 +6167,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   job4.waitForFinished();
 
   img = job4.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_end" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_strict_anchor_end", "curved_strict_anchor_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.fieldName = QStringLiteral( "'XXXXX'" );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
@@ -6205,7 +6179,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   job5.waitForFinished();
 
   img = job5.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_20_center" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_strict_anchor_20_center", "curved_strict_anchor_20_center", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -6214,7 +6188,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   job6.waitForFinished();
 
   img = job6.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_20_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_strict_anchor_20_start", "curved_strict_anchor_20_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -6223,7 +6197,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   job7.waitForFinished();
 
   img = job7.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_20_end" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_strict_anchor_20_end", "curved_strict_anchor_20_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::FollowPlacement );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -6232,7 +6206,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   job8.waitForFinished();
 
   img = job8.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_20_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_strict_anchor_20_start", "curved_strict_anchor_20_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 0.40 );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
@@ -6242,7 +6216,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   job9.waitForFinished();
 
   img = job9.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_40_center" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_strict_anchor_40_center", "curved_strict_anchor_40_center", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -6251,7 +6225,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   job10.waitForFinished();
 
   img = job10.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_40_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_strict_anchor_40_start", "curved_strict_anchor_40_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -6260,7 +6234,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   job11.waitForFinished();
 
   img = job11.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_40_end" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_strict_anchor_40_end", "curved_strict_anchor_40_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::FollowPlacement );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -6269,7 +6243,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   job12.waitForFinished();
 
   img = job12.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_40_center" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_strict_anchor_40_center", "curved_strict_anchor_40_center", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 0.80 );
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::CenterOfText );
@@ -6279,7 +6253,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   job13.waitForFinished();
 
   img = job13.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_80_center" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_strict_anchor_80_center", "curved_strict_anchor_80_center", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::StartOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -6288,7 +6262,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   job14.waitForFinished();
 
   img = job14.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_80_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_strict_anchor_80_start", "curved_strict_anchor_80_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::EndOfText );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -6297,7 +6271,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   job15.waitForFinished();
 
   img = job15.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_80_end" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_strict_anchor_80_end", "curved_strict_anchor_80_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorTextPoint( QgsLabelLineSettings::AnchorTextPoint::FollowPlacement );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -6306,7 +6280,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedConstraints()
   job16.waitForFinished();
 
   img = job16.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_80_end" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_strict_anchor_80_end", "curved_strict_anchor_80_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLineAnchorCurvedOverrun()
@@ -6364,7 +6338,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedOverrun()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_overrun_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_strict_anchor_overrun_start", "curved_strict_anchor_overrun_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 1.0 );
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
@@ -6376,7 +6350,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedOverrun()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_overrun_end" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_strict_anchor_overrun_end", "curved_strict_anchor_overrun_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLineAnchorCurvedStrictAllUpsideDown()
@@ -6434,7 +6408,7 @@ void TestQgsLabelingEngine::testLineAnchorCurvedStrictAllUpsideDown()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "curved_strict_anchor_all_upside_down" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "curved_strict_anchor_all_upside_down", "curved_strict_anchor_all_upside_down", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLineAnchorHorizontal()
@@ -6489,7 +6463,7 @@ void TestQgsLabelingEngine::testLineAnchorHorizontal()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "horizontal_anchor_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "horizontal_anchor_start", "horizontal_anchor_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 1.0 );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -6498,7 +6472,7 @@ void TestQgsLabelingEngine::testLineAnchorHorizontal()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "horizontal_anchor_end" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "horizontal_anchor_end", "horizontal_anchor_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLineAnchorHorizontalConstraints()
@@ -6562,7 +6536,7 @@ void TestQgsLabelingEngine::testLineAnchorHorizontalConstraints()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "horizontal_hint_anchor_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "horizontal_hint_anchor_start", "horizontal_hint_anchor_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 1.0 );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -6571,7 +6545,7 @@ void TestQgsLabelingEngine::testLineAnchorHorizontalConstraints()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "horizontal_hint_anchor_end" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "horizontal_hint_anchor_end", "horizontal_hint_anchor_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setAnchorType( QgsLabelLineSettings::AnchorType::Strict );
   settings.lineSettings().setLineAnchorPercent( 0.0 );
@@ -6581,7 +6555,7 @@ void TestQgsLabelingEngine::testLineAnchorHorizontalConstraints()
   job3.waitForFinished();
 
   img = job3.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "horizontal_strict_anchor_start" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "horizontal_strict_anchor_start", "horizontal_strict_anchor_start", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   settings.lineSettings().setLineAnchorPercent( 1.0 );
   vl2->setLabeling( new QgsVectorLayerSimpleLabeling( settings ) );
@@ -6590,7 +6564,7 @@ void TestQgsLabelingEngine::testLineAnchorHorizontalConstraints()
   job4.waitForFinished();
 
   img = job4.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "horizontal_strict_anchor_end" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "horizontal_strict_anchor_end", "horizontal_strict_anchor_end", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLineAnchorClipping()
@@ -6645,7 +6619,7 @@ void TestQgsLabelingEngine::testLineAnchorClipping()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "line_anchor_no_clipping" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "line_anchor_no_clipping", "line_anchor_no_clipping", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testShowAllLabelsWhenALabelHasNoCandidates()
@@ -6707,7 +6681,7 @@ void TestQgsLabelingEngine::testShowAllLabelsWhenALabelHasNoCandidates()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "show_all_labels_when_no_candidates" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "show_all_labels_when_no_candidates", "show_all_labels_when_no_candidates", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testSymbologyScalingFactor()
@@ -6761,7 +6735,7 @@ void TestQgsLabelingEngine::testSymbologyScalingFactor()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "labeling_reference_scale_not_set" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "labeling_reference_scale_not_set", "labeling_reference_scale_not_set", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // with reference scale set
   vl->renderer()->setReferenceScale( mapSettings.scale() * 2 );
@@ -6770,7 +6744,7 @@ void TestQgsLabelingEngine::testSymbologyScalingFactor()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "labeling_reference_scale_set" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "labeling_reference_scale_set", "labeling_reference_scale_set", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testSymbologyScalingFactor2()
@@ -6821,7 +6795,7 @@ void TestQgsLabelingEngine::testSymbologyScalingFactor2()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "labeling_reference_scale2_not_set" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "labeling_reference_scale2_not_set", "labeling_reference_scale2_not_set", img, QString(), 20, QSize( 0, 0 ), 2 );
 
   // with reference scale set
   vl->renderer()->setReferenceScale( mapSettings.scale() * 2 );
@@ -6830,7 +6804,7 @@ void TestQgsLabelingEngine::testSymbologyScalingFactor2()
   job2.waitForFinished();
 
   img = job2.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "labeling_reference_scale2_set" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "labeling_reference_scale2_set", "labeling_reference_scale2_set", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLineDirectionSymbolRight()
@@ -6884,7 +6858,7 @@ void TestQgsLabelingEngine::testLineDirectionSymbolRight()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_direction_symbol_right" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_direction_symbol_right", "parallel_direction_symbol_right", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLineDirectionSymbolLeft()
@@ -6938,7 +6912,7 @@ void TestQgsLabelingEngine::testLineDirectionSymbolLeft()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_direction_symbol_left" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_direction_symbol_left", "parallel_direction_symbol_left", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLineDirectionSymbolAbove()
@@ -6992,7 +6966,7 @@ void TestQgsLabelingEngine::testLineDirectionSymbolAbove()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_direction_symbol_above" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_direction_symbol_above", "parallel_direction_symbol_above", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 void TestQgsLabelingEngine::testLineDirectionSymbolBelow()
@@ -7046,7 +7020,7 @@ void TestQgsLabelingEngine::testLineDirectionSymbolBelow()
   job.waitForFinished();
 
   QImage img = job.renderedImage();
-  QVERIFY( imageCheck( QStringLiteral( "parallel_direction_symbol_below" ), img, 20 ) );
+  QGSVERIFYIMAGECHECK( "parallel_direction_symbol_below", "parallel_direction_symbol_below", img, QString(), 20, QSize( 0, 0 ), 2 );
 }
 
 QGSTEST_MAIN( TestQgsLabelingEngine )

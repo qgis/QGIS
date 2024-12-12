@@ -33,9 +33,7 @@ email                : ersts@amnh.org
 
 class CORE_EXPORT QgsRasterShaderFunction
 {
-#ifdef SIP_RUN
-#include <qgscolorrampshader.h>
-#endif
+    //SIP_TYPEHEADER_INCLUDE( "qgscolorrampshader.h" );
 
 
 #ifdef SIP_RUN

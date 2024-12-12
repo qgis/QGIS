@@ -52,7 +52,6 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     Q_PROPERTY( QgsTextFormat format READ format )
 
   public:
-
     /**
      * Constructor for QgsTextFormatWidget.
      * \param format initial formatting settings to show in widget
@@ -60,8 +59,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
      * \param parent parent widget
      * \param layer associated layer (vector or mesh)
      */
-    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                         QgsMapLayer *layer = nullptr );
+    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsMapLayer *layer = nullptr );
 
     ~QgsTextFormatWidget() override;
 
@@ -122,7 +120,6 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     void auxiliaryFieldCreated();
 
   protected:
-
     //! Widget mode
     enum Mode
     {
@@ -171,7 +168,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     //! Text substitution list
     QgsStringReplacementCollection mSubstitutions;
     //! Tab positions
-    QList< QgsTextFormat::Tab > mTabPositions;
+    QList<QgsTextFormat::Tab> mTabPositions;
 
     //! Quadrant button group
     QButtonGroup *mQuadrantBtnGrp = nullptr;
@@ -239,9 +236,9 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     Mode mWidgetMode = Text;
 
     QgsCharacterSelectorDialog *mCharDlg = nullptr;
-    std::unique_ptr< QgsPaintEffect > mBufferEffect;
-    std::unique_ptr< QgsPaintEffect > mMaskEffect;
-    std::unique_ptr< QgsPaintEffect > mBackgroundEffect;
+    std::unique_ptr<QgsPaintEffect> mBufferEffect;
+    std::unique_ptr<QgsPaintEffect> mMaskEffect;
+    std::unique_ptr<QgsPaintEffect> mBackgroundEffect;
     QColor mPreviewBackgroundColor;
 
     QFontDatabase mFontDB;
@@ -336,7 +333,6 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsTextFormatDialog.
      * \param format initial format settings to show in dialog
@@ -365,13 +361,11 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
     QDialogButtonBox *buttonBox() const;
 
   private:
-
     QgsTextFormatWidget *mFormatWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
 
   private slots:
     void showHelp();
-
 };
 
 /**
@@ -390,7 +384,6 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsTextFormatPanelWidget.
      * \param format initial format settings to show in dialog
@@ -421,7 +414,6 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
     void setDockMode( bool dockMode ) override;
 
   private:
-
     QgsTextFormatWidget *mFormatWidget = nullptr;
     bool mBlockSignals = false;
 };

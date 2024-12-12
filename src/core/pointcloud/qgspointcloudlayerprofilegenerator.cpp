@@ -510,8 +510,8 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
 
   for ( QgsPointCloudIndex *pc : std::as_const( indexes ) )
   {
-    const IndexedPointCloudNode root = pc->root();
-    const QgsRectangle rootNodeExtentLayerCoords = pc->nodeMapExtent( root );
+    const QgsPointCloudNode root = pc->getNode( pc->root() );
+    const QgsRectangle rootNodeExtentLayerCoords = root.bounds().toRectangle();
     QgsRectangle rootNodeExtentInCurveCrs;
     try
     {
@@ -531,7 +531,7 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
     }
 
     double rootErrorPixels = rootErrorInMapCoordinates / mapUnitsPerPixel; // in pixels
-    const QVector<IndexedPointCloudNode> nodes = traverseTree( pc, pc->root(), maximumErrorPixels, rootErrorPixels, context.elevationRange() );
+    const QVector<QgsPointCloudNodeId> nodes = traverseTree( pc, pc->root(), maximumErrorPixels, rootErrorPixels, context.elevationRange() );
 
     const double rootErrorInLayerCoordinates = rootNodeExtentLayerCoords.width() / pc->span();
     const double maxErrorInMapCoordinates = maximumErrorPixels * mapUnitsPerPixel;
@@ -599,37 +599,36 @@ QgsFeedback *QgsPointCloudLayerProfileGenerator::feedback() const
   return mFeedback.get();
 }
 
-QVector<IndexedPointCloudNode> QgsPointCloudLayerProfileGenerator::traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange )
+QVector<QgsPointCloudNodeId> QgsPointCloudLayerProfileGenerator::traverseTree( const QgsPointCloudIndex *pc, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange )
 {
-  QVector<IndexedPointCloudNode> nodes;
+  QVector<QgsPointCloudNodeId> nodes;
 
   if ( mFeedback->isCanceled() )
   {
     return nodes;
   }
 
-  const QgsDoubleRange nodeZRange = pc->nodeZRange( n );
-  const QgsDoubleRange adjustedNodeZRange = QgsDoubleRange( nodeZRange.lower() * mZScale + mZOffset, nodeZRange.upper() * mZScale + mZOffset );
-  if ( !zRange.isInfinite() && !zRange.overlaps( adjustedNodeZRange ) )
+  QgsPointCloudNode node = pc->getNode( n );
+  QgsBox3D nodeBounds = node.bounds();
+  const QgsDoubleRange nodeZRange( nodeBounds.zMinimum(), nodeBounds.zMaximum() );
+  if ( !zRange.isInfinite() && !zRange.overlaps( nodeZRange ) )
     return nodes;
 
-  const QgsRectangle nodeMapExtent = pc->nodeMapExtent( n );
-  if ( !mMaxSearchExtentInLayerCrs.intersects( nodeMapExtent ) )
+  if ( !mMaxSearchExtentInLayerCrs.intersects( nodeBounds.toRectangle() ) )
     return nodes;
 
-  const QgsGeometry nodeMapGeometry = QgsGeometry::fromRect( nodeMapExtent );
+  const QgsGeometry nodeMapGeometry = QgsGeometry::fromRect( nodeBounds.toRectangle() );
   if ( !mSearchGeometryInLayerCrsGeometryEngine->intersects( nodeMapGeometry.constGet() ) )
     return nodes;
 
-  if ( pc->nodePointCount( n ) > 0 )
+  if ( node.pointCount() > 0 )
     nodes.append( n );
 
   double childrenErrorPixels = nodeErrorPixels / 2.0;
   if ( childrenErrorPixels < maxErrorPixels )
     return nodes;
 
-  const QList<IndexedPointCloudNode> children = pc->nodeChildren( n );
-  for ( const IndexedPointCloudNode &nn : children )
+  for ( const QgsPointCloudNodeId &nn : node.children() )
   {
     nodes += traverseTree( pc, nn, maxErrorPixels, childrenErrorPixels, zRange );
   }
@@ -637,10 +636,10 @@ QVector<IndexedPointCloudNode> QgsPointCloudLayerProfileGenerator::traverseTree(
   return nodes;
 }
 
-int QgsPointCloudLayerProfileGenerator::visitNodesSync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange )
+int QgsPointCloudLayerProfileGenerator::visitNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange )
 {
   int nodesDrawn = 0;
-  for ( const IndexedPointCloudNode &n : nodes )
+  for ( const QgsPointCloudNodeId &n : nodes )
   {
     if ( mFeedback->isCanceled() )
       break;
@@ -657,7 +656,7 @@ int QgsPointCloudLayerProfileGenerator::visitNodesSync( const QVector<IndexedPoi
   return nodesDrawn;
 }
 
-int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange )
+int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange )
 {
   int nodesDrawn = 0;
 
@@ -670,7 +669,7 @@ int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<IndexedPo
 
   for ( int i = 0; i < nodes.size(); ++i )
   {
-    const IndexedPointCloudNode &n = nodes[i];
+    const QgsPointCloudNodeId &n = nodes[i];
     const QString nStr = n.toString();
     QgsPointCloudBlockRequest *blockRequest = pc->asyncNodeData( n, request );
     blockRequests.append( blockRequest );

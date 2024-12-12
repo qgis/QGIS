@@ -28,7 +28,6 @@ Basic shading material used for rendering simple lines as solid line components.
 #include "qgssimplelinematerialsettings.h"
 %End
   public:
-
     QgsSimpleLineMaterialSettings();
 
     virtual QString type() const;

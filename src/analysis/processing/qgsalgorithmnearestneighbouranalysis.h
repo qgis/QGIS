@@ -30,9 +30,7 @@
  */
 class QgsNearestNeighbourAnalysisAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsNearestNeighbourAnalysisAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -46,9 +44,7 @@ class QgsNearestNeighbourAnalysisAlgorithm : public QgsProcessingAlgorithm
     QgsNearestNeighbourAnalysisAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE

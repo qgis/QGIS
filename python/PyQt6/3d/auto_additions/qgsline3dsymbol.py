@@ -2,5 +2,5 @@
 try:
     QgsLine3DSymbol.create = staticmethod(QgsLine3DSymbol.create)
     QgsLine3DSymbol.__group__ = ['symbols']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -63,8 +63,7 @@ QgsFilterAlgorithmConfigurationWidget::QgsFilterAlgorithmConfigurationWidget( QW
   connect( addOutputButton, &QToolButton::clicked, this, &QgsFilterAlgorithmConfigurationWidget::addOutput );
   connect( removeOutputButton, &QToolButton::clicked, this, &QgsFilterAlgorithmConfigurationWidget::removeSelectedOutputs );
 
-  connect( mOutputExpressionWidget->selectionModel(), &QItemSelectionModel::selectionChanged, this, [removeOutputButton, this]
-  {
+  connect( mOutputExpressionWidget->selectionModel(), &QItemSelectionModel::selectionChanged, this, [removeOutputButton, this] {
     removeOutputButton->setEnabled( !mOutputExpressionWidget->selectionModel()->selectedIndexes().isEmpty() );
   } );
 }
@@ -198,8 +197,7 @@ QgsConditionalBranchAlgorithmConfigurationWidget::QgsConditionalBranchAlgorithmC
   connect( addConditionButton, &QToolButton::clicked, this, &QgsConditionalBranchAlgorithmConfigurationWidget::addCondition );
   connect( removeConditionButton, &QToolButton::clicked, this, &QgsConditionalBranchAlgorithmConfigurationWidget::removeSelectedConditions );
 
-  connect( mConditionExpressionWidget->selectionModel(), &QItemSelectionModel::selectionChanged, this, [removeConditionButton, this]
-  {
+  connect( mConditionExpressionWidget->selectionModel(), &QItemSelectionModel::selectionChanged, this, [removeConditionButton, this] {
     removeConditionButton->setEnabled( !mConditionExpressionWidget->selectionModel()->selectedIndexes().isEmpty() );
   } );
 }
@@ -241,7 +239,7 @@ void QgsConditionalBranchAlgorithmConfigurationWidget::setConfiguration( const Q
     currentRow++;
   }
 
-  if ( conditions .isEmpty() )
+  if ( conditions.isEmpty() )
     addCondition();
 }
 

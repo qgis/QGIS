@@ -17,10 +17,6 @@ repos:
       exclude: |
         (?x)^(
             src/core/.*|
-            src/gui/.*|
-            src/analysis/.*|
-            src/3d/.*|
-            src/server/.*|
             tests/code_layout/sipify/sipifyheader.h
         )$
 

@@ -247,6 +247,28 @@ tests:
         name: expected/create_grid_negative_overlay.gml
         type: vector
 
+  - algorithm: native:surfacetopolygon
+    name: Create polygon from surface of Mesh layer
+    params:
+      INPUT: 
+        name: quad_and_triangle.2dm
+        type: mesh
+    results:
+      OUTPUT:
+        name: expected/mesh_surface_to_polygon.gml
+        type: vector
+
+  - algorithm: native:surfacetopolygon
+    name: Create polygon from surface of Mesh layer - multiple parts with hole
+    params:
+      INPUT: 
+        name: mesh_two_part_with_hole.2dm
+        type: mesh
+    results:
+      OUTPUT:
+        name: expected/mesh_surface_to_polygon_complex_mesh_hole.gml
+        type: vector
+
   - algorithm: native:rasterminmax
     name: Raster min max
     params:

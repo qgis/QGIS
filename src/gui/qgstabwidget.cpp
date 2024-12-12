@@ -31,7 +31,7 @@ QgsTabWidget::QgsTabWidget( QWidget *parent )
 void QgsTabWidget::hideTab( QWidget *tab )
 {
   QgsDebugMsgLevel( QStringLiteral( "Hide" ), 3 );
-  TabInformation &info = mTabs[ realTabIndex( tab )];
+  TabInformation &info = mTabs[realTabIndex( tab )];
   if ( info.visible )
   {
     mSetTabVisibleFlag = true;
@@ -44,8 +44,8 @@ void QgsTabWidget::hideTab( QWidget *tab )
 void QgsTabWidget::showTab( QWidget *tab )
 {
   QgsDebugMsgLevel( QStringLiteral( "Show" ), 3 );
-  TabInformation &info = mTabs[ realTabIndex( tab )];
-  if ( ! info.visible )
+  TabInformation &info = mTabs[realTabIndex( tab )];
+  if ( !info.visible )
   {
     mSetTabVisibleFlag = true;
     insertTab( info.sourceIndex + 1, info.widget, info.label );
@@ -165,12 +165,12 @@ QgsTabWidget::TabInformation QgsTabWidget::tabInfo( QWidget *widget )
   return TabInformation();
 }
 
-bool QgsTabWidget::TabInformation::operator ==( const QgsTabWidget::TabInformation &other ) const
+bool QgsTabWidget::TabInformation::operator==( const QgsTabWidget::TabInformation &other ) const
 {
   return other.widget == widget && other.sourceIndex == sourceIndex;
 }
 
-bool QgsTabWidget::TabInformation::operator !=( const TabInformation &other ) const
+bool QgsTabWidget::TabInformation::operator!=( const TabInformation &other ) const
 {
   return !( *this == other );
 }

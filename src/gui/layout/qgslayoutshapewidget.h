@@ -33,7 +33,7 @@
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutShapeWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutShapeWidgetBase
+class GUI_EXPORT QgsLayoutShapeWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayoutShapeWidgetBase
 {
     Q_OBJECT
   public:
@@ -42,12 +42,11 @@ class GUI_EXPORT QgsLayoutShapeWidget: public QgsLayoutItemBaseWidget, private U
     void setMasterLayout( QgsMasterLayoutInterface *masterLayout ) override;
 
   protected:
-
     bool setNewItem( QgsLayoutItem *item ) override;
 
 
   private:
-    QPointer< QgsLayoutItemShape > mShape;
+    QPointer<QgsLayoutItemShape> mShape;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
     //! Blocks / unblocks the signal of all GUI elements

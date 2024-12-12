@@ -42,6 +42,8 @@ set(PG_HDRS
 # static library
 add_library (provider_postgres_a STATIC ${PG_SRCS} ${PG_HDRS})
 
+set_target_properties(provider_postgres_a PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+
 target_include_directories(provider_postgres_a SYSTEM PUBLIC
   ${POSTGRES_INCLUDE_DIR}
 )
@@ -67,6 +69,8 @@ if (WITH_GUI)
   endif()
 
   add_library(provider_postgres_gui_a STATIC ${PG_GUI_SRCS} ${PG_UIS_H})
+
+  set_target_properties(provider_postgres_gui_a PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
   target_include_directories(provider_postgres_gui_a SYSTEM PRIVATE
     ${POSTGRES_INCLUDE_DIR}
@@ -140,6 +144,9 @@ else()
   # dynamically loaded module
   add_library(provider_postgres MODULE ${PG_SRCS} ${PG_GUI_SRCS} ${PG_HDRS})
   add_library(provider_postgresraster MODULE ${PGRASTER_SRCS} ${PG_HDRS})
+
+  set_target_properties(provider_postgres PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+  set_target_properties(provider_postgresraster PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
   target_include_directories(provider_postgres SYSTEM PRIVATE
     ${POSTGRES_INCLUDE_DIR}

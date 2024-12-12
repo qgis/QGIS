@@ -45,9 +45,9 @@ try:
 
    The need to attribute the parameters vary depending on the targeted scalebar."""
     QgsScaleBarRenderer.ScaleBarContext.__group__ = ['scalebar']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsScaleBarRenderer.__group__ = ['scalebar']
-except NameError:
+except (NameError, AttributeError):
     pass

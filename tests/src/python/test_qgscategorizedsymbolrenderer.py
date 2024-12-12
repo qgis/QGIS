@@ -1405,6 +1405,43 @@ class TestQgsCategorizedSymbolRenderer(QgisTestCase):
 """,
         )
 
+    def testMaximumExtentBuffer(self):
+        # setup renderer
+
+        fields = QgsFields()
+        fields.append(QgsField("x"))
+
+        renderer = QgsCategorizedSymbolRenderer()
+        renderer.setClassAttribute("x")
+
+        symbol_a = createMarkerSymbol()
+        symbol_a.setColor(QColor(255, 0, 0))
+        symbol_a.setExtentBuffer(10)
+        renderer.addCategory(QgsRendererCategory("a", symbol_a, "a"))
+
+        symbol_b = createMarkerSymbol()
+        symbol_b.setColor(QColor(0, 255, 0))
+        symbol_b.setExtentBuffer(-10)
+        renderer.addCategory(QgsRendererCategory("b", symbol_b, "b"))
+
+        symbol_c = createMarkerSymbol()
+        symbol_c.setColor(QColor(0, 0, 255))
+        symbol_c.setExtentBuffer(20)
+        renderer.addCategory(QgsRendererCategory("c", symbol_c, "c", False))
+
+        symbol_d = createMarkerSymbol()
+        symbol_d.setColor(QColor(255, 0, 255))
+        symbol_d.setExtentBuffer(15)
+        renderer.addCategory(QgsRendererCategory(["d", "e"], symbol_d, "de"))
+
+        # add default category
+
+        default_symbol = createMarkerSymbol()
+        default_symbol.setColor(QColor(255, 255, 255))
+        renderer.addCategory(QgsRendererCategory("", default_symbol, "default"))
+
+        self.assertEqual(renderer.maximumExtentBuffer(QgsRenderContext()), 20)
+
 
 if __name__ == "__main__":
     unittest.main()

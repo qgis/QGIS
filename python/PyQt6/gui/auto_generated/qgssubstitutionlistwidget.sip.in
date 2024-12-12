@@ -21,7 +21,6 @@ options for exporting and importing substitution lists.
 #include "qgssubstitutionlistwidget.h"
 %End
   public:
-
     QgsSubstitutionListWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSubstitutionListWidget.
@@ -67,7 +66,6 @@ options for exporting and importing substitution lists.
 #include "qgssubstitutionlistwidget.h"
 %End
   public:
-
     QgsSubstitutionListDialog( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSubstitutionListDialog.

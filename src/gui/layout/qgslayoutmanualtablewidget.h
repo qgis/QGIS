@@ -37,7 +37,7 @@ class QgsTableEditorDialog;
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutManualTableWidgetBase
+class GUI_EXPORT QgsLayoutManualTableWidget : public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutManualTableWidgetBase
 {
     Q_OBJECT
   public:
@@ -52,18 +52,17 @@ class GUI_EXPORT QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, pub
 
 
   protected:
-
     bool setNewItem( QgsLayoutItem *item ) override;
 
   private:
-    QPointer< QgsLayoutItemManualTable > mTable;
-    QPointer< QgsLayoutFrame > mFrame;
+    QPointer<QgsLayoutItemManualTable> mTable;
+    QPointer<QgsLayoutFrame> mFrame;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
     //! Blocks / unblocks the signals of all GUI elements
     void blockAllSignals( bool b );
 
-    static QPointer< QgsTableEditorDialog > sEditorDialog;
+    static QPointer<QgsTableEditorDialog> sEditorDialog;
 
   private slots:
 
@@ -87,7 +86,6 @@ class GUI_EXPORT QgsLayoutManualTableWidget: public QgsLayoutItemBaseWidget, pub
     void mWrapBehaviorComboBox_currentIndexChanged( int index );
     void mAdvancedCustomizationButton_clicked();
     void updateGuiElements();
-
 };
 
 #endif // QGSLAYOUTMANUALTABLEWIDGET_H

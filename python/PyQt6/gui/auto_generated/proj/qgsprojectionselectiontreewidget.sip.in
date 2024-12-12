@@ -34,9 +34,7 @@ suitable to use the compact :py:class:`QgsProjectionSelectionWidget` widget.
 #include "qgsprojectionselectiontreewidget.h"
 %End
   public:
-
-    QgsProjectionSelectionTreeWidget( QWidget *parent /TransferThis/ = 0,
-                                      QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
+    QgsProjectionSelectionTreeWidget( QWidget *parent /TransferThis/ = 0, QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 %Docstring
 Constructor for QgsProjectionSelectionTreeWidget, with the specified ``parent`` widget.
 
@@ -197,7 +195,6 @@ Emitted when the selection in the tree is changed from a valid selection to an i
 %End
 
   protected:
-
     virtual void resizeEvent( QResizeEvent *event );
 
 

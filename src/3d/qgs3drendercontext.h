@@ -45,9 +45,7 @@ class Qgs3DMapSettings;
  */
 class _3D_EXPORT Qgs3DRenderContext
 {
-
   public:
-
     Qgs3DRenderContext() = default;
 
     /**
@@ -149,28 +147,28 @@ class _3D_EXPORT Qgs3DRenderContext
      * \see setExpressionContext()
      * \note not available in Python bindings
      */
-    const QgsExpressionContext &expressionContext() const { return mExpressionContext; } SIP_SKIP
+    const QgsExpressionContext &expressionContext() const SIP_SKIP { return mExpressionContext; }
 
   private:
-    QgsCoordinateReferenceSystem mCrs;   //!< Destination coordinate system of the world
+    QgsCoordinateReferenceSystem mCrs; //!< Destination coordinate system of the world
     //! Coordinate transform context
     QgsCoordinateTransformContext mTransformContext;
     //! Offset in map CRS coordinates at which our 3D world has origin (0,0,0)
     QgsVector3D mOrigin;
     QgsRectangle mExtent; //!< 2d extent used to limit the 3d view
     QgsDateTimeRange mTemporalRange;
-    QColor mSelectionColor; //!< Color to be used for selected map features
-    double mDpi = 96;  //!< Dot per inch value for the screen / painter
+    QColor mSelectionColor;     //!< Color to be used for selected map features
+    double mDpi = 96;           //!< Dot per inch value for the screen / painter
     float mFieldOfView = 45.0f; //!< Camera lens field of view value
     bool mTerrainRenderingEnabled = true;
-    double mTerrainVerticalScale = 1;   //!< Multiplier of terrain heights to make the terrain shape more pronounced
+    double mTerrainVerticalScale = 1; //!< Multiplier of terrain heights to make the terrain shape more pronounced
 
     //! Expression context
     QgsExpressionContext mExpressionContext;
 
     // not owned, currently a pointer to the Qgs3DMapSettings terrain generator.
     // TODO -- fix during implementation of https://github.com/qgis/QGIS-Enhancement-Proposals/issues/301
-    QgsTerrainGenerator *mTerrainGenerator = nullptr;  //!< Implementation of the terrain generation
+    QgsTerrainGenerator *mTerrainGenerator = nullptr; //!< Implementation of the terrain generation
 };
 
 

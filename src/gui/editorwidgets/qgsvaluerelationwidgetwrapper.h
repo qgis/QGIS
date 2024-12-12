@@ -42,7 +42,6 @@ class QgsFilteredTableWidget : public QWidget
     Q_OBJECT
 
   public:
-
     /**
      * \brief QgsFilteredTableWidget constructor
      * \param parent
@@ -138,7 +137,6 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsValueRelationWidgetWrapper.
      *
@@ -218,7 +216,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     QMetaType::Type fkType() const;
 
     //! Sets the values for the widgets, re-creates the cache when required
-    void populate( );
+    void populate();
 
     QComboBox *mComboBox = nullptr;
     QgsFilteredTableWidget *mTableWidget = nullptr;
@@ -226,14 +224,12 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     int mSubWidgetSignalBlocking = 0; //! Set to non-zero when a endless loop of notifications could happen.
 
     QgsValueRelationFieldFormatter::ValueRelationCache mCache;
-    QgsVectorLayer *mLayer = nullptr;
 
     bool mEnabled = true;
     QString mExpression;
 
     friend class QgsValueRelationWidgetFactory;
     friend class TestQgsValueRelationWidgetWrapper;
-
 };
 
 #endif // QGSVALUERELATIONWIDGETWRAPPER_H

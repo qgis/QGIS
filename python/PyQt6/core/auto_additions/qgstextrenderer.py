@@ -16,5 +16,5 @@ try:
     QgsTextRenderer.wrappedText = staticmethod(QgsTextRenderer.wrappedText)
     QgsTextRenderer.calculateScaleFactorForFormat = staticmethod(QgsTextRenderer.calculateScaleFactorForFormat)
     QgsTextRenderer.__group__ = ['textrenderer']
-except NameError:
+except (NameError, AttributeError):
     pass

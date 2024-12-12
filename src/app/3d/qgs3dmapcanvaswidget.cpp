@@ -31,8 +31,10 @@
 #include "qgs3dmapscene.h"
 #include "qgscameracontroller.h"
 #include "qgshelp.h"
+#include "qgsidentifyresultsdialog.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptoolextent.h"
+#include "qgsmaptoolidentifyaction.h"
 #include "qgsmessagebar.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
@@ -225,6 +227,11 @@ Qgs3DMapCanvasWidget::Qgs3DMapCanvasWidget( const QString &name, bool isDocked )
   connect( mCanvas, &Qgs3DMapCanvas::fpsCounterEnabledChanged, this, &Qgs3DMapCanvasWidget::toggleFpsCounter );
   connect( mCanvas, &Qgs3DMapCanvas::cameraNavigationSpeedChanged, this, &Qgs3DMapCanvasWidget::cameraNavigationSpeedChanged );
   connect( mCanvas, &Qgs3DMapCanvas::viewed2DExtentFrom3DChanged, this, &Qgs3DMapCanvasWidget::onViewed2DExtentFrom3DChanged );
+
+  QgsMapToolIdentifyAction *identifyTool2D = QgisApp::instance()->identifyMapTool();
+  QgsIdentifyResultsDialog *resultDialog = identifyTool2D->resultsDialog();
+  connect( resultDialog, &QgsIdentifyResultsDialog::featureHighlighted, mCanvas, &Qgs3DMapCanvas::highlightFeature );
+  connect( resultDialog, &QgsIdentifyResultsDialog::highlightsCleared, mCanvas, &Qgs3DMapCanvas::clearHighlights );
 
   mMapToolIdentify = new Qgs3DMapToolIdentify( mCanvas );
 

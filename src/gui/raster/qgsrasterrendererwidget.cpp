@@ -30,4 +30,3 @@ QgsMapCanvas *QgsRasterRendererWidget::mapCanvas()
 {
   return mCanvas;
 }
-

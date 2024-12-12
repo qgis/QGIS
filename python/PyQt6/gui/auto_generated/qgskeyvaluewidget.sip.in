@@ -10,7 +10,7 @@
 
 
 
-class QgsKeyValueWidget: QgsTableWidgetBase
+class QgsKeyValueWidget : QgsTableWidgetBase
 {
 %Docstring(signature="appended")
 Widget allowing to edit a QVariantMap, using a table.
@@ -20,7 +20,6 @@ Widget allowing to edit a QVariantMap, using a table.
 #include "qgskeyvaluewidget.h"
 %End
   public:
-
     explicit QgsKeyValueWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor.
@@ -41,6 +40,7 @@ Gets the edit value.
   public slots:
 
     virtual void setReadOnly( bool readOnly );
+
 
 };
 

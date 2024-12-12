@@ -30,14 +30,10 @@ class ANALYSIS_EXPORT QgsGeometryDuplicateCheckError : public QgsGeometryCheckEr
 {
   public:
     //! Constructor
-    QgsGeometryDuplicateCheckError( const QgsGeometryCheck *check,
-                                    const QgsGeometryCheckerUtils::LayerFeature &layerFeature,
-                                    const QgsPointXY &errorLocation,
-                                    const QMap<QString, QgsFeaturePool *> &featurePools,
-                                    const QMap<QString, QList<QgsFeatureId>> &duplicates )
+    QgsGeometryDuplicateCheckError( const QgsGeometryCheck *check, const QgsGeometryCheckerUtils::LayerFeature &layerFeature, const QgsPointXY &errorLocation, const QMap<QString, QgsFeaturePool *> &featurePools, const QMap<QString, QList<QgsFeatureId>> &duplicates )
       : QgsGeometryCheckError( check, layerFeature, errorLocation, QgsVertexId(), duplicatesString( featurePools, duplicates ) )
       , mDuplicates( duplicates )
-    { }
+    {}
 
     //! Returns the duplicates
     QMap<QString, QList<QgsFeatureId>> duplicates() const { return mDuplicates; }
@@ -45,9 +41,7 @@ class ANALYSIS_EXPORT QgsGeometryDuplicateCheckError : public QgsGeometryCheckEr
     //! Returns if the \a other error is equivalent
     bool isEqual( QgsGeometryCheckError *other ) const override
     {
-      return other->check() == check() &&
-             other->layerId() == layerId() &&
-             other->featureId() == featureId() &&
+      return other->check() == check() && other->layerId() == layerId() && other->featureId() == featureId() &&
              // static_cast: since other->checker() == checker is only true if the types are actually the same
              static_cast<QgsGeometryDuplicateCheckError *>( other )->duplicates() == duplicates();
     }
@@ -77,13 +71,17 @@ class ANALYSIS_EXPORT QgsGeometryDuplicateCheck : public QgsGeometryCheck
     QString id() const override { return factoryId(); }
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
 
-    static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() {return {Qgis::GeometryType::Point, Qgis::GeometryType::Line, Qgis::GeometryType::Polygon}; }
+    static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() { return { Qgis::GeometryType::Point, Qgis::GeometryType::Line, Qgis::GeometryType::Polygon }; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     static QString factoryDescription() { return tr( "Duplicate" ); }
     static QString factoryId();
     static QgsGeometryCheck::CheckType factoryCheckType();
 
-    enum ResolutionMethod { NoChange, RemoveDuplicates };
+    enum ResolutionMethod
+    {
+      NoChange,
+      RemoveDuplicates
+    };
 };
 
 #endif // QGS_GEOMETRY_DUPLICATE_CHECK_H

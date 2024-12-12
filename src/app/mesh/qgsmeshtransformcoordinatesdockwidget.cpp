@@ -27,6 +27,8 @@
 #include "qgshelp.h"
 #include "qgscoordinateutils.h"
 #include "qgsapplication.h"
+#include "qgsterrainprovider.h"
+#include "qgsprojectelevationproperties.h"
 
 QgsMeshTransformCoordinatesDockWidget::QgsMeshTransformCoordinatesDockWidget( QWidget *parent )
   : QgsDockWidget( parent )
@@ -54,6 +56,7 @@ QgsMeshTransformCoordinatesDockWidget::QgsMeshTransformCoordinatesDockWidget( QW
   connect( mButtonPreview, &QToolButton::clicked, this, &QgsMeshTransformCoordinatesDockWidget::calculate );
   connect( mButtonApply, &QPushButton::clicked, this, &QgsMeshTransformCoordinatesDockWidget::apply );
   connect( mButtonImport, &QToolButton::toggled, this, &QgsMeshTransformCoordinatesDockWidget::onImportVertexClicked );
+  connect( mGetZValuesButton, &QPushButton::clicked, this, &QgsMeshTransformCoordinatesDockWidget::updateZValuesFromTerrain );
 }
 
 QgsExpressionContext QgsMeshTransformCoordinatesDockWidget::createExpressionContext() const
@@ -100,6 +103,9 @@ void QgsMeshTransformCoordinatesDockWidget::setInput( QgsMeshLayer *layer, const
                                       .arg( mInputLayer->name() ) );
     }
   }
+
+  mGetZValuesButton->setDisabled( vertexIndexes.empty() );
+
   importVertexCoordinates();
   updateButton();
   emit calculationUpdated();
@@ -154,6 +160,56 @@ void QgsMeshTransformCoordinatesDockWidget::apply()
   QgsTemporaryCursorOverride busyCursor( Qt::WaitCursor );
   if ( mIsResultValid && mInputLayer && mInputLayer->meshEditor() )
     mInputLayer->meshEditor()->advancedEdit( &mTransformVertices );
+  emit applied();
+}
+
+void QgsMeshTransformCoordinatesDockWidget::updateZValuesFromTerrain()
+{
+  if ( mInputVertices.empty() )
+    return;
+
+  QList<int> modifiedVerticesIndexes;
+  QList<double> newZValues;
+
+  const QgsAbstractTerrainProvider *terrainProvider = QgsProject::instance()->elevationProperties()->terrainProvider();
+
+  if ( terrainProvider == nullptr )
+    return;
+
+  const QgsCoordinateTransform transformation = QgsCoordinateTransform( mInputLayer->crs(), terrainProvider->crs(), QgsProject::instance() );
+
+  QgsPointXY point;
+  bool vertexTransformed;
+  double elevation;
+
+  for ( int i = 0; i < mInputVertices.count(); i++ )
+  {
+    const int vertexIndex = mInputVertices.at( i );
+    const QgsPoint vertex = mInputLayer->nativeMesh()->vertex( vertexIndex );
+
+    try
+    {
+      point = transformation.transform( vertex.x(), vertex.y() );
+      vertexTransformed = true;
+    }
+    catch ( const QgsCsException & )
+    {
+      vertexTransformed = false;
+    }
+
+    if ( vertexTransformed )
+    {
+      elevation = terrainProvider->heightAt( point.x(), point.y() );
+      if ( !std::isnan( elevation ) )
+      {
+        modifiedVerticesIndexes.push_back( vertexIndex );
+        newZValues.push_back( elevation );
+      }
+    }
+  }
+
+  emit aboutToBeApplied();
+  mInputLayer->meshEditor()->changeZValues( modifiedVerticesIndexes, newZValues );
   emit applied();
 }
 

@@ -1334,6 +1334,8 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
     symbol->setMapUnitScale( mapUnitScale );
   }
   symbol->setOpacity( element.attribute( QStringLiteral( "alpha" ), QStringLiteral( "1.0" ) ).toDouble() );
+  symbol->setExtentBuffer( element.attribute( QStringLiteral( "extent_buffer" ), QStringLiteral( "0.0" ) ).toDouble() );
+  symbol->setExtentBufferSizeUnit( QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "extent_buffer_unit" ), QStringLiteral( "MapUnit" ) ) ) );
   symbol->setClipFeaturesToExtent( element.attribute( QStringLiteral( "clip_to_extent" ), QStringLiteral( "1" ) ).toInt() );
   symbol->setForceRHR( element.attribute( QStringLiteral( "force_rhr" ), QStringLiteral( "0" ) ).toInt() );
   Qgis::SymbolFlags flags;
@@ -1452,6 +1454,11 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, const QgsSymbo
   symEl.setAttribute( QStringLiteral( "name" ), name );
   symEl.setAttribute( QStringLiteral( "alpha" ), QString::number( symbol->opacity() ) );
   symEl.setAttribute( QStringLiteral( "clip_to_extent" ), symbol->clipFeaturesToExtent() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  if ( !qgsDoubleNear( symbol->extentBuffer(), 0 ) )
+  {
+    symEl.setAttribute( QStringLiteral( "extent_buffer" ), QString::number( symbol->extentBuffer() ) );
+    symEl.setAttribute( QStringLiteral( "extent_buffer_unit" ), QgsUnitTypes::encodeUnit( symbol->extentBufferSizeUnit() ) );
+  }
   symEl.setAttribute( QStringLiteral( "force_rhr" ), symbol->forceRHR() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   if ( symbol->flags() & Qgis::SymbolFlag::RendererShouldUseSymbolLevels )
     symEl.setAttribute( QStringLiteral( "renderer_should_use_levels" ), QStringLiteral( "1" ) );

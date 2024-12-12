@@ -43,9 +43,8 @@ typedef void *GDALDatasetH SIP_SKIP;
  */
 class ANALYSIS_EXPORT QgsAlignRaster
 {
-#ifdef SIP_RUN
-#include <gdal_version.h>
-#endif
+    //SIP_TYPEHEADER_INCLUDE( "gdal_version.h" );
+
 
   public:
     QgsAlignRaster();
@@ -113,15 +112,14 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! Helper struct to be sub-classed for progress reporting
     struct ProgressHandler
     {
-
-      /**
+        /**
        * Method to be overridden for progress reporting.
        * \param complete Overall progress of the alignment operation
        * \returns FALSE if the execution should be canceled, TRUE otherwise
        */
-      virtual bool progress( double complete ) = 0;
+        virtual bool progress( double complete ) = 0;
 
-      virtual ~ProgressHandler() = default;
+        virtual ~ProgressHandler() = default;
     };
 
     //! Assign a progress handler instance. Does not take ownership. NULLPTR can be passed.
@@ -134,13 +132,21 @@ class ANALYSIS_EXPORT QgsAlignRaster
     //! Gets list of rasters that will be aligned
     List rasters() const { return mRasters; }
 
-    void setGridOffset( QPointF offset ) { mGridOffsetX = offset.x(); mGridOffsetY = offset.y(); }
+    void setGridOffset( QPointF offset )
+    {
+      mGridOffsetX = offset.x();
+      mGridOffsetY = offset.y();
+    }
     QPointF gridOffset() const { return QPointF( mGridOffsetX, mGridOffsetY ); }
 
     //! Sets output cell size
     void setCellSize( double x, double y ) { setCellSize( QSizeF( x, y ) ); }
     //! Sets output cell size
-    void setCellSize( QSizeF size ) { mCellSizeX = size.width(); mCellSizeY = size.height(); }
+    void setCellSize( QSizeF size )
+    {
+      mCellSizeX = size.width();
+      mCellSizeY = size.height();
+    }
     //! Gets output cell size
     QSizeF cellSize() const { return QSizeF( mCellSizeX, mCellSizeY ); }
 
@@ -223,7 +229,6 @@ class ANALYSIS_EXPORT QgsAlignRaster
     int suggestedReferenceLayer() const;
 
   protected:
-
     //! Internal function for processing of one raster (1. create output, 2. do the alignment)
     bool createAndWarp( const Item &raster );
 
@@ -231,7 +236,6 @@ class ANALYSIS_EXPORT QgsAlignRaster
     static bool suggestedWarpOutput( const RasterInfo &info, const QString &destWkt, QSizeF *cellSize = nullptr, QPointF *gridOffset = nullptr, QgsRectangle *rect = nullptr );
 
   protected:
-
     // set by the client
 
     //! Object that facilitates reporting of progress / cancellation

@@ -25,8 +25,7 @@
 
 //! Apply filter from AccessControal
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
-void QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( const QgsAccessControl *accessControl, QgsMapLayer *mapLayer,
-    QHash<QgsMapLayer *, QString> &originalLayerFilters )
+void QgsOWSServerFilterRestorer::applyAccessControlLayerFilters( const QgsAccessControl *accessControl, QgsMapLayer *mapLayer, QHash<QgsMapLayer *, QString> &originalLayerFilters )
 {
   if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mapLayer ) )
   {

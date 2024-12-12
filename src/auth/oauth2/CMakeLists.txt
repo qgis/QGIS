@@ -3,7 +3,12 @@
 ########################################################
 # Packages
 
-option(WITH_INTERNAL_O2 "Download and locally include source of o2 library" ON)
+if(WITH_VGPKG)
+  set(WITH_INTERNAL_O2_DEFAULT OFF)
+else()
+  set(WITH_INTERNAL_O2_DEFAULT ON)
+endif()
+option(WITH_INTERNAL_O2 "Download and locally include source of o2 library" ${WITH_INTERNAL_O2_DEFAULT})
 
 if(WITH_INTERNAL_O2)
   set(O2_SOURCE_DIR ${CMAKE_SOURCE_DIR}/external/o2/src)
@@ -52,14 +57,12 @@ set(AUTH_OAUTH2_SRCS
   core/qgso2.cpp
   core/qgsauthoauth2config.cpp
   core/qgsauthoauth2method.cpp
-  ${CMAKE_SOURCE_DIR}/external/qjsonwrapper/Json.cpp
 )
 
 set(AUTH_OAUTH2_HDRS
   core/qgsauthoauth2config.h
   core/qgsauthoauth2method.h
   core/qgso2.h
-  ${CMAKE_SOURCE_DIR}/external/qjsonwrapper/Json.h
 )
 
 if(WITH_INTERNAL_O2)
@@ -115,16 +118,10 @@ target_link_libraries(authmethod_oauth2_a qgis_core)
 if(WITH_INTERNAL_O2)
   target_include_directories(authmethod_oauth2_a SYSTEM PUBLIC ${O2_INCLUDE_DIR})
 else()
-  if(NOT "${O2_LIBRARY}" STREQUAL "")
-    # prefer dynamic linking
-    target_link_libraries(authmethod_oauth2_a ${O2_LIBRARY})
-  else()
-    target_link_libraries(authmethod_oauth2_a ${O2_LIBRARY_STATIC})
-  endif()
+  target_link_libraries(authmethod_oauth2_a o2::o2)
 endif()
 
 target_include_directories(authmethod_oauth2_a PRIVATE
-  ${CMAKE_SOURCE_DIR}/external/qjsonwrapper
   ${CMAKE_SOURCE_DIR}/src/auth/oauth2/core
 )
 if (WITH_GUI)
@@ -145,7 +142,6 @@ else()
   add_library(authmethod_oauth2 MODULE ${AUTH_OAUTH2_SRCS} ${AUTH_OAUTH2_HDRS} ${AUTH_OAUTH2_RCCS} ${AUTH_OAUTH2_UIS_H})
 
   target_include_directories(authmethod_oauth2 PRIVATE
-    ${CMAKE_SOURCE_DIR}/external/qjsonwrapper
     ${CMAKE_SOURCE_DIR}/src/auth/oauth2/core
   )
 
@@ -158,12 +154,7 @@ else()
   if(WITH_INTERNAL_O2)
     target_include_directories(authmethod_oauth2 SYSTEM PUBLIC ${O2_INCLUDE_DIR})
   else()
-    if(NOT "${O2_LIBRARY}" STREQUAL "")
-      # prefer dynamic linking
-      target_link_libraries(authmethod_oauth2 ${O2_LIBRARY})
-    else()
-      target_link_libraries(authmethod_oauth2 ${O2_LIBRARY_STATIC})
-    endif()
+    target_link_libraries(authmethod_oauth2 o2::o2)
   endif()
 
   if(WIN32)

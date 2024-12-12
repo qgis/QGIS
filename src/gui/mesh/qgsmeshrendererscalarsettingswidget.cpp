@@ -31,9 +31,9 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
   setupUi( this );
 
   mScalarMinSpinBox->setClearValueMode( QgsDoubleSpinBox::ClearValueMode::MinimumValue );
-  mScalarMinSpinBox->setSpecialValueText( QString( ) );
+  mScalarMinSpinBox->setSpecialValueText( QString() );
   mScalarMaxSpinBox->setClearValueMode( QgsDoubleSpinBox::ClearValueMode::MinimumValue );
-  mScalarMaxSpinBox->setSpecialValueText( QString( ) );
+  mScalarMaxSpinBox->setSpecialValueText( QString() );
 
   mScalarMinSpinBox->setEnabled( true );
   mScalarMaxSpinBox->setEnabled( true );
@@ -52,27 +52,26 @@ QgsMeshRendererScalarSettingsWidget::QgsMeshRendererScalarSettingsWidget( QWidge
   mMinMaxValueTypeComboBox->setEnabled( false );
 
   mScalarEdgeStrokeWidthUnitSelectionWidget->setUnits(
-  {
-    Qgis::RenderUnit::Millimeters,
-    Qgis::RenderUnit::MetersInMapUnits,
-    Qgis::RenderUnit::Pixels,
-    Qgis::RenderUnit::Points,
-  } );
+    {
+      Qgis::RenderUnit::Millimeters,
+      Qgis::RenderUnit::MetersInMapUnits,
+      Qgis::RenderUnit::Pixels,
+      Qgis::RenderUnit::Points,
+    }
+  );
 
   // connect
   connect( mScalarRecalculateMinMaxButton, &QPushButton::clicked, this, &QgsMeshRendererScalarSettingsWidget::recalculateMinMaxButtonClicked );
-  connect( mScalarMinSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { minMaxChanged(); } );
-  connect( mScalarMaxSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double ) { minMaxChanged(); } );
+  connect( mScalarMinSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [=]( double ) { minMaxChanged(); } );
+  connect( mScalarMaxSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [=]( double ) { minMaxChanged(); } );
   connect( mScalarEdgeStrokeWidthVariableRadioButton, &QRadioButton::toggled, this, &QgsMeshRendererScalarSettingsWidget::onEdgeStrokeWidthMethodChanged );
 
   connect( mScalarColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
   connect( mOpacityWidget, &QgsOpacityWidget::opacityChanged, this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
   connect( mScalarInterpolationTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
 
-  connect( mScalarEdgeStrokeWidthUnitSelectionWidget, &QgsUnitSelectionWidget::changed,
-           this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
-  connect( mScalarEdgeStrokeWidthSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
-           this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
+  connect( mScalarEdgeStrokeWidthUnitSelectionWidget, &QgsUnitSelectionWidget::changed, this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
+  connect( mScalarEdgeStrokeWidthSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
   connect( mScalarEdgeStrokeWidthVariableRadioButton, &QCheckBox::toggled, this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
   connect( mScalarEdgeStrokeWidthFixedRadioButton, &QCheckBox::toggled, this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
   connect( mScalarEdgeStrokeWidthVariablePushButton, &QgsMeshVariableStrokeWidthButton::widgetChanged, this, &QgsMeshRendererScalarSettingsWidget::widgetChanged );
@@ -129,7 +128,7 @@ QgsMeshRendererScalarSettings QgsMeshRendererScalarSettingsWidget::settings() co
   return settings;
 }
 
-void QgsMeshRendererScalarSettingsWidget::syncToLayer( )
+void QgsMeshRendererScalarSettingsWidget::syncToLayer()
 {
   if ( !mMeshLayer )
     return;

@@ -876,7 +876,7 @@ QgsGeometry QgsGeometry::nearestPoint( const QgsGeometry &other ) const
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  QgsGeometry result = geos.closestPoint( other );
+  QgsGeometry result = QgsGeometry( geos.closestPoint( other ) );
   result.mLastError = mLastError;
   return result;
 }
@@ -891,7 +891,7 @@ QgsGeometry QgsGeometry::shortestLine( const QgsGeometry &other ) const
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  QgsGeometry result = geos.shortestLine( other, &mLastError );
+  QgsGeometry result = QgsGeometry( geos.shortestLine( other, &mLastError ) );
   result.mLastError = mLastError;
   return result;
 }
@@ -2779,7 +2779,7 @@ QgsGeometry QgsGeometry::voronoiDiagram( const QgsGeometry &extent, double toler
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  QgsGeometry result = geos.voronoiDiagram( extent.constGet(), tolerance, edgesOnly, &mLastError );
+  QgsGeometry result = QgsGeometry( geos.voronoiDiagram( extent.constGet(), tolerance, edgesOnly, &mLastError ) );
   result.mLastError = mLastError;
   return result;
 }
@@ -2793,7 +2793,7 @@ QgsGeometry QgsGeometry::delaunayTriangulation( double tolerance, bool edgesOnly
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  QgsGeometry result = geos.delaunayTriangulation( tolerance, edgesOnly );
+  QgsGeometry result = QgsGeometry( geos.delaunayTriangulation( tolerance, edgesOnly ) );
   result.mLastError = mLastError;
   return result;
 }
@@ -3102,7 +3102,7 @@ QgsGeometry QgsGeometry::mergeLines() const
 
   QgsGeos geos( d->geometry.get() );
   mLastError.clear();
-  QgsGeometry result = geos.mergeLines( &mLastError );
+  QgsGeometry result( geos.mergeLines( &mLastError ) );
   result.mLastError = mLastError;
   return result;
 }

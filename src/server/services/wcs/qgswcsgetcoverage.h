@@ -27,8 +27,7 @@ namespace QgsWcs
   /**
    * Output WCS GetCoverage response
    */
-  void writeGetCoverage( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
-                         const QgsServerRequest &request, QgsServerResponse &response );
+  void writeGetCoverage( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response );
 
   /**
    * Compute coverage data

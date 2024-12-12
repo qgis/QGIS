@@ -30,7 +30,6 @@ class QgsRelationReferenceWidget : QWidget
       sipType = NULL;
 %End
   public:
-
     enum CanvasExtent /BaseType=IntEnum/
     {
       Fixed,

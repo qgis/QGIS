@@ -70,7 +70,7 @@ force update of canvas layers from the layer tree. Normally this should not be n
 
   signals:
 
-    void canvasLayersChanged( const QList< QgsMapLayer * > &layers );
+    void canvasLayersChanged( const QList<QgsMapLayer *> &layers );
 %Docstring
 Emitted when the set of layers (or order of layers) visible in the
 canvas changes.

@@ -157,33 +157,33 @@ Filters = QgsProcessingToolboxProxyModel  # dirty hack since SIP seems to introd
 try:
     QgsProcessingToolboxModel.__attribute_docs__ = {'recentAlgorithmAdded': 'Emitted whenever recent algorithms are added to the model.\n', 'favoriteAlgorithmAdded': 'Emitted whenever favorite algorithms are added to the model.\n'}
     QgsProcessingToolboxModel.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsProcessingToolboxModelNode.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsProcessingToolboxModelRecentNode.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsProcessingToolboxModelFavoriteNode.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsProcessingToolboxModelProviderNode.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsProcessingToolboxModelGroupNode.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsProcessingToolboxModelAlgorithmNode.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsProcessingToolboxProxyModel.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass

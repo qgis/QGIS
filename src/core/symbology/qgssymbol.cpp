@@ -26,6 +26,7 @@
 
 #include "qgssymbol.h"
 #include "qgspolyhedralsurface.h"
+#include "qgsrectangle.h"
 #include "qgssymbollayer.h"
 
 #include "qgsgeometrygeneratorsymbollayer.h"
@@ -2223,6 +2224,20 @@ QgsSymbolRenderContext *QgsSymbol::symbolRenderContext()
   return mSymbolRenderContext.get();
 }
 
+double QgsSymbol::extentBuffer() const
+{
+  return mExtentBuffer;
+}
+
+void QgsSymbol::setExtentBuffer( double extentBuffer )
+{
+  if ( extentBuffer < 0 )
+    mExtentBuffer = 0;
+  else
+    mExtentBuffer = extentBuffer;
+}
+
+
 void QgsSymbol::renderVertexMarker( QPointF pt, QgsRenderContext &context, Qgis::VertexMarkerType currentVertexMarkerType, double currentVertexMarkerSize )
 {
   int markerSize = context.convertToPainterUnits( currentVertexMarkerSize, Qgis::RenderUnit::Millimeters );
@@ -2239,6 +2254,7 @@ void QgsSymbol::initPropertyDefinitions()
   sPropertyDefinitions = QgsPropertiesDefinition
   {
     { static_cast< int >( QgsSymbol::Property::Opacity ), QgsPropertyDefinition( "alpha", QObject::tr( "Opacity" ), QgsPropertyDefinition::Opacity, origin )},
+    { static_cast< int >( QgsSymbol::Property::ExtentBuffer ), QgsPropertyDefinition( "extent_buffer", QObject::tr( "Extent buffer" ), QgsPropertyDefinition::DoublePositive, origin )},
   };
 }
 
@@ -2298,6 +2314,8 @@ void QgsSymbol::copyCommonProperties( const QgsSymbol *other )
   mDataDefinedProperties = other->mDataDefinedProperties;
   mSymbolFlags = other->mSymbolFlags;
   mAnimationSettings = other->mAnimationSettings;
+  mExtentBuffer = other->mExtentBuffer;
+  mExtentBufferSizeUnit = other->mExtentBufferSizeUnit;
   if ( other->mBufferSettings )
     mBufferSettings = std::make_unique< QgsSymbolBufferSettings >( *other->mBufferSettings );
   else

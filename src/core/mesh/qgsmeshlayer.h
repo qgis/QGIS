@@ -203,13 +203,23 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
     /**
      * Adds datasets to the mesh from file with \a path. Use the the time \a defaultReferenceTime as reference time is not provided in the file
      *
-     * \param path the path to the atasets file
+     * \param path the path to the datasets file
      * \param defaultReferenceTime reference time used if not provided in the file
      * \return whether the dataset is added
      *
      * \since QGIS 3.14
      */
     bool addDatasets( const QString &path, const QDateTime &defaultReferenceTime = QDateTime() );
+
+    /**
+     * Removes datasets from the mesh with given \a name.
+     *
+     * \param name name of dataset group to remove
+     * \return whether the dataset is removed
+     *
+     * \since QGIS 3.42
+     */
+    bool removeDatasets( const QString &name );
 
     /**
      * Adds extra datasets to the mesh. Take ownership.
@@ -949,6 +959,17 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      * \since QGIS 3.42
      */
     QgsMeshDatasetIndex activeScalarDatasetIndex( QgsRenderContext &rendererContext );
+    
+    /**
+     * Checks whether that datasets path is already added to this mesh layer. Return TRUE if the
+     * dataset path is not already added.
+     *
+     * \param path the path to the datasets file
+     * \return whether the datasets path is unique
+     *
+     * \since QGIS 3.42
+     */
+    bool datasetsPathUnique( const QString &path );
 
   public slots:
 
@@ -1003,7 +1024,6 @@ class CORE_EXPORT QgsMeshLayer : public QgsMapLayer, public QgsAbstractProfileSo
      * \param flags provider flags since QGIS 3.16
      */
     bool setDataProvider( QString const &provider, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
-
 #ifdef SIP_RUN
     QgsMeshLayer( const QgsMeshLayer &rhs );
 #endif

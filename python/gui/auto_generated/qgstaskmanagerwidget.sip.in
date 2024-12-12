@@ -21,7 +21,6 @@ A widget which displays tasks from a :py:class:`QgsTaskManager` and allows for i
 #include "qgstaskmanagerwidget.h"
 %End
   public:
-
     QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsTaskManagerWidget

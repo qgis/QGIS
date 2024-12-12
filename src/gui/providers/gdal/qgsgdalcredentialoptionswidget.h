@@ -33,7 +33,6 @@ class QgsGdalCredentialOptionsModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     enum Column
     {
       Key = 0,
@@ -52,21 +51,20 @@ class QgsGdalCredentialOptionsModel : public QAbstractItemModel
     bool insertRows( int position, int rows, const QModelIndex &parent = QModelIndex() ) override;
     bool removeRows( int position, int rows, const QModelIndex &parent = QModelIndex() ) override;
 
-    void setOptions( const QList< QPair< QString, QString > > &options );
-    void setAvailableOptions( const QList< QgsGdalOption > &options );
+    void setOptions( const QList<QPair<QString, QString>> &options );
+    void setAvailableOptions( const QList<QgsGdalOption> &options );
     QStringList availableKeys() const { return mAvailableKeys; }
     QgsGdalOption option( const QString &key ) const;
-    QList< QPair< QString, QString > > credentialOptions() const { return mCredentialOptions; }
-    void setCredentialOptions( const QList< QPair< QString, QString > > &options );
+    QList<QPair<QString, QString>> credentialOptions() const { return mCredentialOptions; }
+    void setCredentialOptions( const QList<QPair<QString, QString>> &options );
 
   signals:
 
     void optionsChanged();
 
   private:
-
-    QList< QPair< QString, QString > > mCredentialOptions;
-    QList< QgsGdalOption > mAvailableOptions;
+    QList<QPair<QString, QString>> mCredentialOptions;
+    QList<QgsGdalOption> mAvailableOptions;
     QStringList mAvailableKeys;
     QMap<QString, QString> mDescriptions;
 };
@@ -77,7 +75,6 @@ class QgsGdalCredentialOptionsDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
-
     QgsGdalCredentialOptionsDelegate( QObject *parent );
 
   protected:
@@ -93,9 +90,10 @@ class QgsGdalCredentialOptionsRemoveOptionDelegate : public QStyledItemDelegate
   public:
     QgsGdalCredentialOptionsRemoveOptionDelegate( QObject *parent );
     bool eventFilter( QObject *obj, QEvent *event ) override;
+
   protected:
-    void paint( QPainter *painter,
-                const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+
   private:
     void setHoveredIndex( const QModelIndex &index );
 
@@ -116,7 +114,6 @@ class GUI_EXPORT QgsGdalCredentialOptionsWidget : public QWidget, private Ui::Qg
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsGdalCredentialOptionsWidget, with the specified \a parent widget.
      */
@@ -155,11 +152,9 @@ class GUI_EXPORT QgsGdalCredentialOptionsWidget : public QWidget, private Ui::Qg
     void modelOptionsChanged();
 
   private:
-
     QString mHandler;
     QgsGdalCredentialOptionsModel *mModel = nullptr;
     QgsGdalCredentialOptionsDelegate *mDelegate = nullptr;
-
 };
 
 #endif // QGGDALCREDENTIALOPTIONSWIDGET_H

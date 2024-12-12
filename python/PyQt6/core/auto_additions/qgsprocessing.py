@@ -29,5 +29,5 @@ try:
     QgsProcessing.sourceTypeToString = staticmethod(QgsProcessing.sourceTypeToString)
     QgsProcessing.documentationFlagToString = staticmethod(QgsProcessing.documentationFlagToString)
     QgsProcessing.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass

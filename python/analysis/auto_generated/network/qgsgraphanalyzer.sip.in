@@ -22,7 +22,6 @@ points using different strategies with Dijkstra algorithm
 #include "qgsgraphanalyzer.h"
 %End
   public:
-
     static SIP_PYLIST  dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum, QVector<int> *resultTree = 0, QVector<double> *resultCost = 0 );
 %Docstring
 Solve shortest path problem using Dijkstra algorithm
@@ -36,8 +35,8 @@ Solve shortest path problem using Dijkstra algorithm
 %End
 
 %MethodCode
-    QVector< int > treeResult;
-    QVector< double > costResult;
+    QVector<int> treeResult;
+    QVector<double> costResult;
     QgsGraphAnalyzer::dijkstra( a0, a1, a2, &treeResult, &costResult );
 
     PyObject *l1 = PyList_New( treeResult.size() );

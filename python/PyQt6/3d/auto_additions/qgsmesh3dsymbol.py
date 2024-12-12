@@ -27,5 +27,5 @@ QgsMesh3DSymbol.ZValueType.__doc__ = """How to render the Z value of the mesh
 # --
 try:
     QgsMesh3DSymbol.__group__ = ['symbols']
-except NameError:
+except (NameError, AttributeError):
     pass

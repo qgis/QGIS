@@ -33,9 +33,7 @@
  */
 class ANALYSIS_EXPORT QgsStDbscanClusteringAlgorithm : public QgsDbscanClusteringAlgorithm
 {
-
   public:
-
     QgsStDbscanClusteringAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -46,11 +44,8 @@ class ANALYSIS_EXPORT QgsStDbscanClusteringAlgorithm : public QgsDbscanClusterin
     QString groupId() const override;
     QString shortHelpString() const override;
     QgsStDbscanClusteringAlgorithm *createInstance() const override SIP_FACTORY;
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMDSTBSCANCLUSTERING_H
-
-

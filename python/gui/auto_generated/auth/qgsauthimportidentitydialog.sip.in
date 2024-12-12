@@ -38,8 +38,7 @@ Widget for importing an identity certificate/key bundle into the authentication 
       Unknown
     };
 
-    explicit QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
-                                          QWidget *parent /TransferThis/ = 0 );
+    explicit QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a dialog for importing identities
 

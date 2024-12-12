@@ -59,7 +59,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
     Q_OBJECT
 
   public:
-
     QgsVectorLayerProperties( QgsMapCanvas *canvas, QgsMessageBar *messageBar, QgsVectorLayer *lyr = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     bool eventFilter( QObject *obj, QEvent *ev ) override;
@@ -138,7 +137,6 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
     void resizeMapTip();
 
   private:
-
     enum PropertyType
     {
       Style = 0,
@@ -179,7 +177,7 @@ class GUI_EXPORT QgsVectorLayerProperties : public QgsLayerPropertiesDialog, pri
     QgsAttributesFormProperties *mAttributesFormPropertiesDialog = nullptr;
 
     //! List of joins of a layer at the time of creation of the dialog. Used to return joins to previous state if dialog is canceled
-    QList< QgsVectorLayerJoinInfo > mOldJoins;
+    QList<QgsVectorLayerJoinInfo> mOldJoins;
 
     //! Adds a new join to mJoinTreeWidget
     void addJoinToTreeWidget( const QgsVectorLayerJoinInfo &join, int insertIndex = -1 );

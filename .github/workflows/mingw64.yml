@@ -55,7 +55,7 @@ jobs:
       # Node.js and Yarn for server landingpage webapp
       - uses: actions/setup-node@v4
         with:
-          node-version: '17'
+          node-version: '22'
 
       - name: Make yarn available
         run: corepack enable

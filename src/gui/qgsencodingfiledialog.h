@@ -27,17 +27,14 @@ class QPushButton;
  * \ingroup gui
  * \brief A file dialog which lets the user select the preferred encoding type for a data provider.
  */
-class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
+class GUI_EXPORT QgsEncodingFileDialog : public QFileDialog
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsEncodingFileDialog
      */
-    QgsEncodingFileDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                           const QString &caption = QString(), const QString &directory = QString(),
-                           const QString &filter = QString(), const QString &encoding = QString() );
+    QgsEncodingFileDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &caption = QString(), const QString &directory = QString(), const QString &filter = QString(), const QString &encoding = QString() );
     //! Returns a string describing the chosen encoding
     QString encoding() const;
     //! Adds a 'Cancel All' button for the user to click
@@ -65,12 +62,11 @@ class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
  * \ingroup gui
  * \brief A dialog which presents the user with a choice of file encodings.
  */
-class GUI_EXPORT QgsEncodingSelectionDialog: public QDialog
+class GUI_EXPORT QgsEncodingSelectionDialog : public QDialog
 {
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsEncodingSelectionDialog.
      *
@@ -78,9 +74,7 @@ class GUI_EXPORT QgsEncodingSelectionDialog: public QDialog
      *
      * The \a encoding argument can be used to specify the encoding initially selected in the dialog.
      */
-    QgsEncodingSelectionDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                                const QString &caption = QString(), const QString &encoding = QString(),
-                                Qt::WindowFlags flags = Qt::WindowFlags() );
+    QgsEncodingSelectionDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &caption = QString(), const QString &encoding = QString(), Qt::WindowFlags flags = Qt::WindowFlags() );
 
     /**
      * Returns the encoding selected within the dialog.
@@ -95,9 +89,7 @@ class GUI_EXPORT QgsEncodingSelectionDialog: public QDialog
     void setEncoding( const QString &encoding );
 
   private:
-
     QComboBox *mEncodingComboBox = nullptr;
-
 };
 
 

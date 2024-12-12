@@ -103,7 +103,7 @@
 #include "qgsalgorithmgenerateelevationprofile.h"
 #include "qgsalgorithmgeometrybyexpression.h"
 #include "qgsalgorithmgltftovector.h"
-#if QT_CONFIG(process)
+#if QT_CONFIG( process )
 #include "qgsalgorithmgpsbabeltools.h"
 #endif
 #include "qgsalgorithmgrid.h"
@@ -129,6 +129,7 @@
 #include "qgsalgorithmmeancoordinates.h"
 #include "qgsalgorithmmergelines.h"
 #include "qgsalgorithmmergevector.h"
+#include "qgsalgorithmmeshsurfacetopolygon.h"
 #include "qgsalgorithmminimumenclosingcircle.h"
 #include "qgsalgorithmmultidifference.h"
 #include "qgsalgorithmmultiintersection.h"
@@ -394,7 +395,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsGenerateElevationProfileAlgorithm() );
   addAlgorithm( new QgsGeometryByExpressionAlgorithm() );
   addAlgorithm( new QgsGltfToVectorFeaturesAlgorithm() );
-#if QT_CONFIG(process)
+#if QT_CONFIG( process )
   addAlgorithm( new QgsConvertGpxFeatureTypeAlgorithm() );
   addAlgorithm( new QgsConvertGpsDataAlgorithm() );
   addAlgorithm( new QgsDownloadGpsDataAlgorithm() );
@@ -430,6 +431,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsMeshContoursAlgorithm );
   addAlgorithm( new QgsMeshExportCrossSection );
   addAlgorithm( new QgsMeshExportTimeSeries );
+  addAlgorithm( new QgsMeshSurfaceToPolygonAlgorithm() );
   addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
   addAlgorithm( new QgsMultiDifferenceAlgorithm() );
   addAlgorithm( new QgsMultiIntersectionAlgorithm() );

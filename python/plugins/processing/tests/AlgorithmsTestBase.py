@@ -42,6 +42,7 @@ from qgis.core import (
     QgsCoordinateReferenceSystem,
     QgsFeatureRequest,
     QgsMapLayer,
+    QgsMeshLayer,
     QgsProject,
     QgsApplication,
     QgsProcessingContext,
@@ -267,7 +268,7 @@ class AlgorithmsTest:
         parameter based on its key `type` and return the appropriate parameter to pass to the algorithm.
         """
         try:
-            if param["type"] in ("vector", "raster", "table"):
+            if param["type"] in ("vector", "raster", "table", "mesh"):
                 return self.load_layer(id, param).id()
             elif param["type"] == "vrtlayers":
                 vals = []
@@ -377,6 +378,8 @@ class AlgorithmsTest:
             options = QgsRasterLayer.LayerOptions()
             options.loadDefaultStyle = False
             lyr = QgsRasterLayer(filepath, param["name"], "gdal", options)
+        elif param["type"] == "mesh":
+            lyr = QgsMeshLayer(filepath, param["name"], "mdal")
 
         self.assertTrue(
             lyr.isValid(), f'Could not load layer "{filepath}" from param {param}'

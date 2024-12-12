@@ -12,14 +12,13 @@
 
 
 
-class QgsPalettedRendererWidget: QgsRasterRendererWidget
+class QgsPalettedRendererWidget : QgsRasterRendererWidget
 {
 
 %TypeHeaderCode
 #include "qgspalettedrendererwidget.h"
 %End
   public:
-
     QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
     ~QgsPalettedRendererWidget();
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) /Factory/;

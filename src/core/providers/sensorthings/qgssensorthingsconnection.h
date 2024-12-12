@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #ifndef QGSSENSORTHINGSCONNECTION_H
+#define QGSSENSORTHINGSCONNECTION_H
 
 #define SIP_NO_FILE
 

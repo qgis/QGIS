@@ -48,9 +48,7 @@ class QgsHttpRequestAlgorithm : public QObject, public QgsProcessingAlgorithm
     QgsHttpRequestAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback * ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;
 };
 
 ///@endcond PRIVATE

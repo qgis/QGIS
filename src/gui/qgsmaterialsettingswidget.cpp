@@ -22,5 +22,4 @@ QgsMaterialSettingsWidget::QgsMaterialSettingsWidget( QWidget *parent )
 
 void QgsMaterialSettingsWidget::setTechnique( QgsMaterialSettingsRenderingTechnique )
 {
-
 }

@@ -1,22 +1,14 @@
-cmake_minimum_required(VERSION 2.8.11)
+cmake_minimum_required(VERSION 3.10.0)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
-if(o2_WITH_QT5)
+if(o2_WITH_QT6)
+    find_package(Qt6 COMPONENTS Core Network REQUIRED)
+else()
     find_package(Qt5 COMPONENTS Core Network REQUIRED)
-else(o2_WITH_QT5)
-    set(QT_USE_QTNETWORK true)
-    set(QT_USE_QTSCRIPT true)
-    find_package(Qt4 REQUIRED)
-endif(o2_WITH_QT5)
-#find_package(QJson REQUIRED)
-
-if (NOT o2_WITH_QT5)
-    include( ${QT_USE_FILE} )
-endif(NOT o2_WITH_QT5)
-
+endif()
 
 set( o2_SRCS
     o2.cpp
@@ -192,36 +184,18 @@ if(o2_WITH_MSGRAPH)
 endif(o2_WITH_MSGRAPH)
 
 if(o2_WITH_KEYCHAIN)
-    if (Qt5Core_DIR)
-        find_package(Qt5Keychain REQUIRED)
-    else()
-        find_package(QtKeychain REQUIRED)
-    endif()
-    if(QTKEYCHAIN_FOUND OR QT5KEYCHAIN_FOUND)
-        MESSAGE("Found QTKeychain")
-        list(APPEND LINK_TARGETS ${QTKEYCHAIN_LIBRARY})
-        include_directories(${QTKEYCHAIN_INCLUDE_DIR})
-        set( o2_SRCS
-                ${o2_SRCS}
-                o0keychainstore.cpp
-                )
-        set( o2_HDRS
-                ${o2_HDRS}
-                o0keychainstore.h
-                )
-    else()
-        MESSAGE("Qt5Keychain or QtKeychain is required")
-    endif()
-
+    list(APPEND LINK_TARGETS ${QTKEYCHAIN_LIBRARIES})
+    include_directories(SYSTEM ${QTKEYCHAIN_INCLUDE_DIRS})
+    set( o2_SRCS
+            ${o2_SRCS}
+            o0keychainstore.cpp
+            )
+    set( o2_HDRS
+            ${o2_HDRS}
+            o0keychainstore.h
+            )
 
 endif(o2_WITH_KEYCHAIN)
-
-
-
-
-if(NOT o2_WITH_QT5)
-    add_definitions(${QT4_DEFINITIONS})
-endif(NOT o2_WITH_QT5)
 
 if(BUILD_SHARED_LIBS AND APPLE AND POLICY CMP0042) # in CMake >= 2.8.12
     cmake_policy(SET CMP0042 OLD)
@@ -234,11 +208,7 @@ if(BUILD_SHARED_LIBS)
     add_definitions( -DO2_SHARED_LIB )
 endif(BUILD_SHARED_LIBS)
 
-if(o2_WITH_QT5)
-    target_link_libraries( o2 Qt5::Core Qt5::Network ${LINK_TARGETS})
-else(o2_WITH_QT5)
-    target_link_libraries( o2 ${QT_LIBRARIES} ${LINK_TARGETS})
-endif(o2_WITH_QT5)
+target_link_libraries( o2 Qt::Core Qt::Network ${LINK_TARGETS})
 
 if(BUILD_SHARED_LIBS)
     if(APPLE)

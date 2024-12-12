@@ -18,7 +18,6 @@ Base class for any widget that can be shown as a inline panel
 #include "qgspanelwidget.h"
 %End
   public:
-
     QgsPanelWidget( QWidget *parent = 0 );
 %Docstring
 Base class for any widget that can be shown as a inline panel
@@ -193,7 +192,6 @@ Widgets are normally removed form the interface using the panel manager or the c
 %End
 
   protected:
-
     virtual void keyPressEvent( QKeyEvent *event );
 
 %Docstring
@@ -205,7 +203,7 @@ Overridden key press event to handle the esc event on the widget.
 };
 
 
-class QgsPanelWidgetWrapper: QgsPanelWidget
+class QgsPanelWidgetWrapper : QgsPanelWidget
 {
 %Docstring(signature="appended")
 Wrapper widget for existing widgets which can't have
@@ -221,7 +219,6 @@ the inheritance tree changed, e.g dialogs.
 #include "qgspanelwidget.h"
 %End
   public:
-
     QgsPanelWidgetWrapper( QWidget *widget, QWidget *parent = 0 );
 %Docstring
 Wrapper widget for existing widgets which can't have

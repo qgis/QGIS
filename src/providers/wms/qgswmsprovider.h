@@ -174,6 +174,8 @@ class QgsWmsProvider final : public QgsRasterDataProvider
     static QString WMS_KEY;
     static QString WMS_DESCRIPTION;
 
+    static inline QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
+
     /**
      * Constructor for the provider.
      *
@@ -593,7 +595,7 @@ class QgsWmsImageDownloadHandler : public QObject
 {
     Q_OBJECT
   public:
-    QgsWmsImageDownloadHandler( const QString &providerUri, const QUrl &url, const QgsWmsAuthorization &auth, QImage *image, QgsRasterBlockFeedback *feedback );
+    QgsWmsImageDownloadHandler( const QString &providerUri, const QUrl &url, const QgsAuthorizationSettings &auth, QImage *image, QgsRasterBlockFeedback *feedback );
     ~QgsWmsImageDownloadHandler() override;
 
     void downloadBlocking();
@@ -622,7 +624,7 @@ class QgsWmsTiledImageDownloadHandler : public QObject
 {
     Q_OBJECT
   public:
-    QgsWmsTiledImageDownloadHandler( const QString &providerUri, const QgsWmsAuthorization &auth, int reqNo, const QgsWmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, double sourceResolution, bool smoothPixmapTransform, bool resamplingEnabled, QgsRasterBlockFeedback *feedback );
+    QgsWmsTiledImageDownloadHandler( const QString &providerUri, const QgsAuthorizationSettings &auth, int reqNo, const QgsWmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, double sourceResolution, bool smoothPixmapTransform, bool resamplingEnabled, QgsRasterBlockFeedback *feedback );
     ~QgsWmsTiledImageDownloadHandler() override;
 
     void downloadBlocking();
@@ -650,7 +652,7 @@ class QgsWmsTiledImageDownloadHandler : public QObject
 
     QString mProviderUri;
     QString mBaseUrl;
-    QgsWmsAuthorization mAuth;
+    QgsAuthorizationSettings mAuth;
 
     QImage *mImage = nullptr;
     QgsRectangle mViewExtent;

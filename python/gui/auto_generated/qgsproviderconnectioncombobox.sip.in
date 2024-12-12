@@ -28,7 +28,6 @@ The :py:class:`QgsProviderConnectionComboBox` class is a combo box which display
 #include "qgsproviderconnectioncombobox.h"
 %End
   public:
-
     explicit QgsProviderConnectionComboBox( const QString &provider, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProviderConnectionComboBox, for the specified ``provider``.

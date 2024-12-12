@@ -28,7 +28,6 @@ with three color components: ambient, diffuse and specular.
 #include "qgsgoochmaterialsettings.h"
 %End
   public:
-
     QgsGoochMaterialSettings();
 
     virtual QString type() const;

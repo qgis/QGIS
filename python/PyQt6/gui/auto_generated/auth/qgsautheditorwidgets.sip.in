@@ -18,7 +18,6 @@ Dialog for viewing available authentication method plugins
 #include "qgsautheditorwidgets.h"
 %End
   public:
-
     explicit QgsAuthMethodPlugins( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a dialog for viewing available authentication method plugins
@@ -39,7 +38,6 @@ Wrapper widget for available authentication editors
 #include "qgsautheditorwidgets.h"
 %End
   public:
-
     explicit QgsAuthEditorWidgets( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a widget to contain various authentication editors

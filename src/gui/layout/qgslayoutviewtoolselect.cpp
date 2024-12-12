@@ -149,7 +149,7 @@ void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
   }
   else
   {
-    if ( ( !selectedItem->isSelected() ) &&       //keep selection if an already selected item pressed
+    if ( ( !selectedItem->isSelected() ) &&            //keep selection if an already selected item pressed
          !( event->modifiers() & Qt::ShiftModifier ) ) //keep selection if shift key pressed
     {
       layout()->setSelectedItem( selectedItem ); // clears existing selection

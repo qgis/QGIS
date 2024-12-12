@@ -2,5 +2,5 @@
 try:
     QgsWeakRelation.readXml = staticmethod(QgsWeakRelation.readXml)
     QgsWeakRelation.writeXml = staticmethod(QgsWeakRelation.writeXml)
-except NameError:
+except (NameError, AttributeError):
     pass

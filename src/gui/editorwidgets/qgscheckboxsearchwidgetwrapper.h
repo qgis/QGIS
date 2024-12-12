@@ -38,7 +38,6 @@ class GUI_EXPORT QgsCheckboxSearchWidgetWrapper : public QgsSearchWidgetWrapper
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsCheckboxSearchWidgetWrapper.
      * \param vl associated vector layer
@@ -79,7 +78,6 @@ class GUI_EXPORT QgsCheckboxSearchWidgetWrapper : public QgsSearchWidgetWrapper
 
   private:
     QCheckBox *mCheckBox = nullptr;
-    QgsVectorLayer *mLayer = nullptr;
 
     friend class QgsCheckboxWidgetFactory;
 };

@@ -1,0 +1,719 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsgeos.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsGeos: QgsGeometryEngine
+{
+%Docstring(signature="appended")
+Does vector analysis using the GEOS library and handles import, export, and exception handling.
+
+.. note::
+
+   Available in Python bindings since QGIS 3.42
+%End
+
+%TypeHeaderCode
+#include "qgsgeos.h"
+%End
+  public:
+
+    QgsGeos( const QgsAbstractGeometry *geometry, double precision = 0, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlag::SkipEmptyInteriorRings );
+%Docstring
+GEOS geometry engine constructor
+
+:param geometry: The geometry
+:param precision: The precision of the grid to which to snap the geometry vertices. If 0, no snapping is performed.
+:param flags: GEOS creation flags (since QGIS 3.40)
+
+.. note::
+
+   The third parameter was prior to QGIS 3.40 a boolean which has been incorporated into the flag
+%End
+
+
+
+    std::unique_ptr< QgsAbstractGeometry > makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false, QString *errorMsg = 0 ) const throw( QgsNotSupportedException );
+%Docstring
+Repairs the geometry using GEOS make valid routine.
+
+The ``method`` and ``keepCollapsed`` arguments require builds based on GEOS 3.10 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.9 or earlier when the ``method`` is not Qgis.MakeValidMethod.Linework or the ``keepCollapsed`` option is set.
+
+.. versionadded:: 3.20
+%End
+
+
+    virtual void geometryChanged();
+
+    virtual void prepareGeometry();
+
+
+    virtual QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+
+    virtual QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+
+
+    std::unique_ptr< QgsAbstractGeometry > clip( const QgsRectangle &rectangle, QString *errorMsg /Out/ = 0 ) const;
+%Docstring
+Performs a fast, non-robust intersection between the geometry and
+a ``rectangle``. The returned geometry may be invalid.
+
+:param rectangle: clipping rectangle
+
+:return: - clipped geometry
+         - errorMsg: descriptive error string if the operation fails
+%End
+
+    std::unique_ptr< QgsAbstractGeometry > subdivide( int maxNodes, QString *errorMsg /Out/ = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+%Docstring
+Subdivides the geometry. The returned geometry will be a collection containing subdivided parts
+from the original geometry, where no part has more then the specified maximum number of nodes (``maxNodes``).
+
+This is useful for dividing a complex geometry into less complex parts, which are better able to be spatially
+indexed and faster to perform further operations such as intersects on. The returned geometry parts may
+not be valid and may contain self-intersections.
+
+The minimum allowed value for ``maxNodes`` is 8.
+
+Curved geometries are not supported.
+
+:param maxNodes: Maximum nodes used
+:param parameters: can be used to specify parameters which control the subdivision results (since QGIS 3.28)
+
+:return: - subdivided geometry
+         - errorMsg: descriptive error string if the operation fails
+%End
+
+    virtual QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+
+    virtual QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+
+    virtual QgsAbstractGeometry *combine( const QVector< QgsGeometry > &, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+
+    virtual QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = 0, const QgsGeometryParameters &parameters = QgsGeometryParameters() ) const;
+
+    virtual QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = 0 ) const;
+
+    virtual QgsAbstractGeometry *buffer( double distance, int segments, Qgis::EndCapStyle endCapStyle, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = 0 ) const;
+
+    virtual QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = 0 ) const;
+
+    virtual QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = 0 ) const;
+
+    virtual QgsAbstractGeometry *envelope( QString *errorMsg = 0 ) const;
+
+    virtual QgsPoint *centroid( QString *errorMsg = 0 ) const;
+
+    virtual QgsPoint *pointOnSurface( QString *errorMsg = 0 ) const;
+
+    virtual QgsAbstractGeometry *convexHull( QString *errorMsg = 0 ) const;
+
+    virtual double distance( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const;
+
+    virtual bool distanceWithin( const QgsAbstractGeometry *geom, double maxdistance, QString *errorMsg = 0 ) const;
+
+
+    bool contains( double x, double y, QString *errorMsg /Out/ = 0 ) const;
+%Docstring
+Returns ``True`` if the geometry contains the point at (``x``, ``y``).
+
+This method is more efficient than creating a temporary :py:class:`QgsPoint` object to test for containment.
+
+:param x: x-coordinate of point to test
+:param y: y-coordinate of point to test
+
+:return: - ``True`` if the geometry contains the point
+         - errorMsg: descriptive error string if the operation fails
+
+.. versionadded:: 3.26
+%End
+
+    double distance( double x, double y, QString *errorMsg /Out/ = 0 ) const;
+%Docstring
+Returns the minimum distance from the geometry to the point at (``x``, ``y``).
+
+This method is more efficient than creating a temporary :py:class:`QgsPoint` object to test distance.
+
+:param x: x-coordinate of point to test
+:param y: y-coordinate of point to test
+
+:return: - minimum distance
+         - errorMsg: descriptive error string if the operation fails
+
+.. versionadded:: 3.26
+%End
+
+    double hausdorffDistance( const QgsAbstractGeometry *geometry, QString *errorMsg /Out/ = 0 ) const;
+%Docstring
+Returns the Hausdorff distance between this geometry and another ``geometry``. This is basically a measure of how similar or dissimilar 2 geometries are.
+
+This algorithm is an approximation to the standard Hausdorff distance. This approximation is exact or close enough for a large
+subset of useful cases. Examples of these are:
+
+- computing distance between Linestrings that are roughly parallel to each other,
+  and roughly equal in length. This occurs in matching linear networks.
+- Testing similarity of geometries.
+
+If the default approximate provided by this method is insufficient, use :py:func:`~QgsGeos.hausdorffDistanceDensify` instead.
+
+:param geometry: geometry to compare to
+
+:return: - calculated Hausdorff distance
+         - errorMsg: descriptive error string if the operation fails
+
+.. seealso:: :py:func:`hausdorffDistanceDensify`
+%End
+
+    double hausdorffDistanceDensify( const QgsAbstractGeometry *geometry, double densifyFraction, QString *errorMsg /Out/ = 0 ) const;
+%Docstring
+Returns the Hausdorff distance between this geometry and another ``geometry``. This is basically a measure of how similar or dissimilar 2 geometries are.
+
+This function accepts a ``densifyFraction`` argument. The function performs a segment
+densification before computing the discrete Hausdorff distance. The ``densifyFraction`` parameter
+sets the fraction by which to densify each segment. Each segment will be split into a
+number of equal-length subsegments, whose fraction of the total length is
+closest to the given fraction.
+
+This method can be used when the default approximation provided by :py:func:`~QgsGeos.hausdorffDistance`
+is not sufficient. Decreasing the ``densifyFraction`` parameter will make the
+distance returned approach the true Hausdorff distance for the geometries.
+
+:param geometry: geometry to compare to
+:param densifyFraction: fraction by which to densify each segment
+
+:return: - calculated densified Hausdorff distance
+         - errorMsg: descriptive error string if the operation fails
+
+.. seealso:: :py:func:`hausdorffDistance`
+%End
+
+    double frechetDistance( const QgsAbstractGeometry *geometry, QString *errorMsg /Out/ = 0 ) const throw( QgsNotSupportedException );
+%Docstring
+Returns the Fréchet distance between this geometry and another ``geometry``, restricted to discrete points for both geometries.
+
+The Fréchet distance is a measure of similarity between curves that takes into account the location and ordering of the points along the curves.
+Therefore it is often better than the Hausdorff distance.
+
+This method requires a QGIS build based on GEOS 3.7 or later.
+
+:param geometry: geometry to compare to
+
+:return: - calculated Fréchet distance
+         - errorMsg: descriptive error string if the operation fails
+
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.6 or earlier.
+
+.. seealso:: :py:func:`frechetDistanceDensify`
+
+.. versionadded:: 3.20
+%End
+
+    double frechetDistanceDensify( const QgsAbstractGeometry *geometry, double densifyFraction, QString *errorMsg /Out/ = 0 ) const throw( QgsNotSupportedException );
+%Docstring
+Returns the Fréchet distance between this geometry and another ``geometry``, restricted to discrete points for both geometries.
+
+The Fréchet distance is a measure of similarity between curves that takes into account the location and ordering of the points along the curves.
+Therefore it is often better than the Hausdorff distance.
+
+This function accepts a ``densifyFraction`` argument. The function performs a segment
+densification before computing the discrete Fréchet distance. The ``densifyFraction`` parameter
+sets the fraction by which to densify each segment. Each segment will be split into a
+number of equal-length subsegments, whose fraction of the total length is
+closest to the given fraction.
+
+This method can be used when the default approximation provided by :py:func:`~QgsGeos.frechetDistance`
+is not sufficient. Decreasing the ``densifyFraction`` parameter will make the
+distance returned approach the true Fréchet distance for the geometries.
+
+This method requires a QGIS build based on GEOS 3.7 or later.
+
+:param geometry: geometry to compare to
+:param densifyFraction: fraction by which to densify each segment
+
+:return: - calculated densified Fréchet distance
+         - errorMsg: descriptive error string if the operation fails
+
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.6 or earlier.
+
+.. seealso:: :py:func:`frechetDistance`
+
+.. versionadded:: 3.20
+%End
+
+    virtual bool intersects( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const;
+
+    virtual bool touches( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const;
+
+    virtual bool crosses( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const;
+
+    virtual bool within( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const;
+
+    virtual bool overlaps( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const;
+
+    virtual bool contains( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const;
+
+    virtual bool disjoint( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const;
+
+    virtual QString relate( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const;
+
+    virtual bool relatePattern( const QgsAbstractGeometry *geom, const QString &pattern, QString *errorMsg = 0 ) const;
+
+    virtual double area( QString *errorMsg = 0 ) const;
+
+    virtual double length( QString *errorMsg = 0 ) const;
+
+    virtual bool isValid( QString *errorMsg = 0, bool allowSelfTouchingHoles = false, QgsGeometry *errorLoc = 0 ) const;
+
+    virtual bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const;
+
+    virtual bool isEmpty( QString *errorMsg = 0 ) const;
+
+    virtual bool isSimple( QString *errorMsg = 0 ) const;
+
+
+     virtual EngineOperationResult splitGeometry( const QgsLineString &splitLine,
+                                         QVector<QgsGeometry> &newGeometries,
+                                         bool topological,
+                                         QgsPointSequence &topologyTestPoints,
+                                         QString *errorMsg = 0, bool skipIntersectionCheck = false ) const;
+
+    virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, Qgis::JoinStyle joinStyle, double miterLimit, QString *errorMsg = 0 ) const;
+
+
+    std::unique_ptr< QgsAbstractGeometry > singleSidedBuffer( double distance, int segments, Qgis::BufferSide side,
+        Qgis::JoinStyle joinStyle, double miterLimit,
+        QString *errorMsg /Out/ = 0 ) const;
+%Docstring
+Returns a single sided buffer for a geometry. The buffer is only
+applied to one side of the geometry.
+
+:param distance: buffer distance
+:param segments: for round joins, number of segments to approximate quarter-circle
+:param side: side of geometry to buffer (0 = left, 1 = right)
+:param joinStyle: join style for corners ( Round (1) / Miter (2) / Bevel (3) )
+:param miterLimit: limit on the miter ratio used for very sharp corners
+
+:return: - buffered geometry, or ``None`` if buffer could not be calculated
+         - errorMsg: descriptive error string if the operation fails
+%End
+
+    std::unique_ptr< QgsAbstractGeometry > maximumInscribedCircle( double tolerance, QString *errorMsg /Out/ = 0 ) const throw( QgsNotSupportedException );
+%Docstring
+Returns the maximum inscribed circle.
+
+Constructs the Maximum Inscribed Circle for a  polygonal geometry, up to a specified tolerance.
+The Maximum Inscribed Circle is determined by a point in the interior of the area
+which has the farthest distance from the area boundary, along with a boundary point at that distance.
+In the context of geography the center of the Maximum Inscribed Circle is known as the
+Pole of Inaccessibility. A cartographic use case is to determine a suitable point
+to place a map label within a polygon.
+The radius length of the Maximum Inscribed Circle is a  measure of how "narrow" a polygon is. It is the
+distance at which the negative buffer becomes empty.
+The class supports polygons with holes and multipolygons.
+The implementation uses a successive-approximation technique over a grid of square cells covering the area geometry.
+The grid is refined using a branch-and-bound algorithm. Point containment and distance are computed in a performant
+way by using spatial indexes.
+Returns a two-point linestring, with one point at the center of the inscribed circle and the other
+on the boundary of the inscribed circle.
+
+This method requires a QGIS build based on GEOS 3.9 or later.
+
+:param tolerance: tolerance to determine when iteration should end
+
+:return: - maximum inscribed circle geometry
+         - errorMsg: descriptive error string if the operation fails
+
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.8 or earlier.
+
+.. versionadded:: 3.20
+%End
+
+    std::unique_ptr< QgsAbstractGeometry > largestEmptyCircle( double tolerance, const QgsAbstractGeometry *boundary = 0, QString *errorMsg /Out/ = 0 ) const throw( QgsNotSupportedException );
+%Docstring
+Constructs the Largest Empty Circle for a set of obstacle geometries, up to a
+specified tolerance.
+
+The Largest Empty Circle is the largest circle which has its center in the convex hull of the
+obstacles (the boundary), and whose interior does not intersect with any obstacle.
+The circle center is the point in the interior of the boundary which has the farthest distance from
+the obstacles (up to tolerance). The circle is determined by the center point and a point lying on an
+obstacle indicating the circle radius.
+The implementation uses a successive-approximation technique over a grid of square cells covering the obstacles and boundary.
+The grid is refined using a branch-and-bound algorithm.  Point containment and distance are computed in a performant
+way by using spatial indexes.
+Returns a two-point linestring, with one point at the center of the inscribed circle and the other
+on the boundary of the inscribed circle.
+
+This method requires a QGIS build based on GEOS 3.9 or later.
+
+:param tolerance: tolerance to determine when iteration should end
+:param boundary: optional set of boundary obstacles
+
+:return: - largest empty circle geometry
+         - errorMsg: descriptive error string if the operation fails
+
+.. warning::
+
+   the ``tolerance`` value must be a value greater than 0, or the algorithm may never converge on a solution
+
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.8 or earlier.
+
+.. versionadded:: 3.20
+%End
+
+    std::unique_ptr< QgsAbstractGeometry > minimumWidth( QString *errorMsg /Out/ = 0 ) const throw( QgsNotSupportedException );
+%Docstring
+Returns a linestring geometry which represents the minimum diameter of the geometry.
+
+The minimum diameter is defined to be the width of the smallest band that
+contains the geometry, where a band is a strip of the plane defined
+by two parallel lines. This can be thought of as the smallest hole that the geometry
+can be moved through, with a single rotation.
+
+This method requires a QGIS build based on GEOS 3.6 or later.
+
+
+:return: - linestring representing the minimum diameter of the geometry
+         - errorMsg: descriptive error string if the operation fails
+
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.5 or earlier.
+
+.. versionadded:: 3.20
+%End
+
+    double minimumClearance( QString *errorMsg /Out/ = 0 ) const throw( QgsNotSupportedException );
+%Docstring
+Computes the minimum clearance of a geometry.
+
+The minimum clearance is the smallest amount by which
+a vertex could be moved to produce an invalid polygon, a non-simple linestring, or a multipoint with
+repeated points.  If a geometry has a minimum clearance of 'eps', it can be said that:
+
+- No two distinct vertices in the geometry are separated by less than 'eps'
+- No vertex is closer than 'eps' to a line segment of which it is not an endpoint.
+
+If the minimum clearance cannot be defined for a geometry (such as with a single point, or a multipoint
+whose points are identical) a value of infinity will be returned.
+
+If an error occurs while calculating the clearance NaN will be returned.
+
+This method requires a QGIS build based on GEOS 3.6 or later.
+
+
+:return: - calculated minimum clearance of the geometry
+         - errorMsg: descriptive error string if the operation fails
+
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.5 or earlier.
+
+.. versionadded:: 3.20
+%End
+
+    std::unique_ptr< QgsAbstractGeometry > minimumClearanceLine( QString *errorMsg /Out/ = 0 ) const throw( QgsNotSupportedException );
+%Docstring
+Returns a LineString whose endpoints define the minimum clearance of a geometry.
+
+If the geometry has no minimum clearance, an empty LineString will be returned.
+
+This method requires a QGIS build based on GEOS 3.6 or later.
+
+
+:return: - linestring geometry representing the minimum clearance of the geometry
+         - errorMsg: descriptive error string if the operation fails
+
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.5 or earlier.
+
+.. versionadded:: 3.20
+%End
+
+    std::unique_ptr< QgsAbstractGeometry > node( QString *errorMsg /Out/ = 0 ) const;
+%Docstring
+Returns a (Multi)LineString representing the fully noded version of a collection of linestrings.
+
+The noding preserves all of the input nodes, and introduces the least possible number of new nodes.
+The resulting linework is dissolved (duplicate lines are removed).
+
+The input geometry type should be a (Multi)LineString.
+
+
+:return: - (multi)linestring geometry representing the fully noded version of the collection of linestrings
+         - errorMsg: descriptive error string if the operation fails
+
+.. versionadded:: 3.20
+%End
+
+    std::unique_ptr< QgsAbstractGeometry > sharedPaths( const QgsAbstractGeometry *other, QString *errorMsg /Out/ = 0 ) const;
+%Docstring
+Find paths shared between the two given lineal geometries (this and ``other``).
+
+Returns a GeometryCollection having two elements:
+
+- first element is a MultiLineString containing shared paths
+  having the same direction on both inputs
+- second element is a MultiLineString containing shared paths
+  having the opposite direction on the two inputs
+
+:param other: geometry to compare against
+
+:return: - shared paths, or ``None`` on exception
+         - errorMsg: descriptive error string if the operation fails
+
+.. versionadded:: 3.20
+%End
+
+
+    std::unique_ptr< QgsAbstractGeometry > mergeLines( QString *errorMsg /Out/ = 0 ) const;
+%Docstring
+Merges any connected lines in a LineString/MultiLineString geometry and
+converts them to single line strings.
+
+
+:return: - a LineString or MultiLineString geometry, with any connected lines
+           joined. An empty geometry will be returned if the input geometry was not a
+           LineString/MultiLineString geometry.
+         - errorMsg: descriptive error string if the operation fails
+%End
+
+    std::unique_ptr< QgsAbstractGeometry > closestPoint( const QgsGeometry &other, QString *errorMsg /Out/ = 0 ) const;
+%Docstring
+Returns the closest point on the geometry to the other geometry.
+
+:param other: geometry to compare against
+
+:return: - closest point
+         - errorMsg: descriptive error string if the operation fails
+
+.. seealso:: :py:func:`shortestLine`
+%End
+
+    std::unique_ptr< QgsAbstractGeometry > shortestLine( const QgsGeometry &other, QString *errorMsg /Out/ = 0 ) const;
+%Docstring
+Returns the shortest line joining this geometry to the other geometry.
+
+:param other: geometry to compare against
+
+:return: - shortest line joining this geometry to the other geometry
+         - errorMsg: descriptive error string if the operation fails
+
+.. seealso:: :py:func:`closestPoint`
+%End
+
+    std::unique_ptr< QgsAbstractGeometry > shortestLine( const QgsAbstractGeometry *other, QString *errorMsg /Out/ = 0 ) const;
+%Docstring
+Returns the shortest line joining this geometry to the other geometry.
+
+:param other: geometry to compare against
+
+:return: - shortest line joining this geometry to the other geometry
+         - errorMsg: descriptive error string if the operation fails
+
+.. seealso:: :py:func:`closestPoint`
+
+.. versionadded:: 3.20
+%End
+
+    double lineLocatePoint( const QgsPoint &point, QString *errorMsg /Out/ = 0 ) const;
+%Docstring
+Returns a distance representing the location along this linestring of the closest point
+on this linestring geometry to the specified point. Ie, the returned value indicates
+how far along this linestring you need to traverse to get to the closest location
+where this linestring comes to the specified point.
+
+:param point: point to seek proximity to
+
+:return: - distance along line, or -1 on error
+         - errorMsg: descriptive error string if the operation fails
+
+.. note::
+
+   only valid for linestring geometries
+%End
+
+    double lineLocatePoint( double x, double y, QString *errorMsg /Out/ = 0 ) const;
+%Docstring
+Returns a distance representing the location along this linestring of the closest point
+on this linestring geometry to the point at (``x``, ``y``). Ie, the returned value indicates
+how far along this linestring you need to traverse to get to the closest location
+where this linestring comes to the specified point.
+
+This method is more efficient than creating a temporary :py:class:`QgsPoint` object to locate.
+
+:param x: x-coordinate of point to locate
+:param y: y-coordinate of point to locate
+
+:return: - distance along line, or -1 on error
+         - errorMsg: descriptive error string if the operation fails
+
+.. note::
+
+   only valid for linestring geometries
+
+.. versionadded:: 3.26
+%End
+
+
+    std::unique_ptr< QgsAbstractGeometry > voronoiDiagram( const QgsAbstractGeometry *extent = 0, double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg /Out/ = 0 ) const;
+%Docstring
+Creates a Voronoi diagram for the nodes contained within the geometry.
+
+Returns the Voronoi polygons for the nodes contained within the geometry.
+If ``extent`` is specified then it will be used as a clipping envelope for the diagram.
+If no extent is set then the clipping envelope will be automatically calculated.
+In either case the diagram will be clipped to the larger of the provided envelope
+OR the envelope surrounding all input nodes.
+The ``tolerance`` parameter specifies an optional snapping tolerance which can
+be used to improve the robustness of the diagram calculation.
+If ``edgesOnly`` is ``True`` than line string boundary geometries will be returned
+instead of polygons.
+An empty geometry will be returned if the diagram could not be calculated.
+
+:param extent: optional clipping envelope for the diagram
+:param tolerance:
+:param edgesOnly:
+
+:return: - Voronoi diagram
+         - errorMsg: descriptive error string if the operation fails
+%End
+
+    std::unique_ptr< QgsAbstractGeometry > delaunayTriangulation( double tolerance = 0.0, bool edgesOnly = false, QString *errorMsg /Out/ = 0 ) const;
+%Docstring
+Returns the Delaunay triangulation for the vertices of the geometry.
+The ``tolerance`` parameter specifies an optional snapping tolerance which can
+be used to improve the robustness of the triangulation.
+If ``edgesOnly`` is ``True`` than line string boundary geometries will be returned
+instead of polygons.
+An empty geometry will be returned if the diagram could not be calculated.
+
+:param tolerance:
+:param edgesOnly:
+
+:return: - Delaunay triangulation
+         - errorMsg: descriptive error string if the operation fails
+
+.. seealso:: :py:func:`constrainedDelaunayTriangulation`
+%End
+
+    std::unique_ptr< QgsAbstractGeometry > constrainedDelaunayTriangulation( QString *errorMsg /Out/ = 0 ) const throw( QgsNotSupportedException );
+%Docstring
+Returns a constrained Delaunay triangulation for the vertices of the geometry.
+
+An empty geometry will be returned if the triangulation could not be calculated.
+
+This method requires a QGIS build based on GEOS 3.11 or later.
+
+
+:return: - constrained Delaunay triangulation
+         - errorMsg: descriptive error string if the operation fails
+
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.10 or earlier.
+
+.. seealso:: :py:func:`delaunayTriangulation`
+
+.. versionadded:: 3.36
+%End
+
+    std::unique_ptr< QgsAbstractGeometry > concaveHull( double targetPercent, bool allowHoles = false, QString *errorMsg /Out/ = 0 ) const throw( QgsNotSupportedException );
+%Docstring
+Returns a possibly concave geometry that encloses the input geometry.
+
+The result is a single polygon, line or point.
+
+It will not contain holes unless the optional ``allowHoles`` argument is specified as true.
+
+One can think of a concave hull as a geometry obtained by "shrink-wrapping" a set of geometries.
+This is different to the convex hull, which is more like wrapping a rubber band around the geometries.
+It is slower to compute than the convex hull but generally has a smaller area and represents a more natural boundary for the input geometry.
+The ``target_percent`` is the percentage of area of the convex hull the solution tries to approach.
+
+A ``target_percent`` of 1 gives the same result as the convex hull.
+A ``target_percent`` between 0 and 0.99 produces a result that should have a smaller area than the convex hull.
+
+This method requires a QGIS build based on GEOS 3.11 or later.
+
+:param targetPercent:
+:param allowHoles:
+
+:return: - concave geometry that encloses the input geometry
+         - errorMsg: descriptive error string if the operation fails
+
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.10 or earlier.
+
+.. seealso:: :py:func:`convexHull`
+
+.. versionadded:: 3.28
+%End
+
+
+    std::unique_ptr< QgsAbstractGeometry > simplifyCoverageVW( double tolerance, bool preserveBoundary, QString *errorMsg /Out/ = 0 ) const throw( QgsNotSupportedException );
+%Docstring
+Operates on a coverage (represented as a list of polygonal geometry with exactly matching edge geometry) to apply
+a Visvalingam–Whyatt simplification to the edges, reducing complexity in proportion with the provided tolerance,
+while retaining a valid coverage (no edges will cross or touch after the simplification).
+
+Geometries never disappear, but they may be simplified down to just a triangle. Also, some invalid geoms
+(such as Polygons which have too few non-repeated points) will be returned unchanged.
+
+If the input dataset is not a valid coverage due to overlaps, it will still be simplified, but invalid topology
+such as crossing edges will still be invalid.
+
+:param tolerance: A tolerance parameter in linear units.
+:param preserveBoundary: Set to ``True`` to preserve the outside edges of the coverage without simplification, or ``False`` to allow them to be simplified.
+
+:return: - simplified coverage
+         - errorMsg: descriptive error string if the operation fails
+
+This method requires a QGIS build based on GEOS 3.12 or later.
+
+:raises QgsNotSupportedException: on QGIS builds based on GEOS 3.11 or earlier.
+
+.. seealso:: :py:func:`validateCoverage`
+
+.. versionadded:: 3.36
+%End
+
+    std::unique_ptr< QgsAbstractGeometry > unionCoverage( QString *errorMsg /Out/ = 0 ) const;
+%Docstring
+Optimized union algorithm for polygonal inputs that are correctly noded and do not overlap.
+It may generate an error (returns ``None``) for inputs that do not satisfy this constraint,
+however this is not guaranteed.
+
+The input geometry is the polygonal coverage to union, stored in a geometry collection.
+All members must be POLYGON or MULTIPOLYGON.
+
+
+:return: - unioned coverage
+         - errorMsg: descriptive error string if the operation fails
+
+.. seealso:: :py:func:`validateCoverage`
+
+.. versionadded:: 3.36
+%End
+
+
+
+
+
+
+  private:
+    QgsGeos( const QgsGeos & );
+};
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgsgeos.h                                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.py again   *
+ ************************************************************************/

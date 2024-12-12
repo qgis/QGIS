@@ -130,7 +130,6 @@ QVariant QgsVectorTileBasicRendererListModel::data( const QModelIndex &index, in
 
     case Filter:
       return style.filterExpression();
-
   }
   return QVariant();
 }
@@ -154,9 +153,7 @@ Qt::ItemFlags QgsVectorTileBasicRendererListModel::flags( const QModelIndex &ind
 
   const Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
 
-  return Qt::ItemIsEnabled | Qt::ItemIsSelectable |
-         Qt::ItemIsEditable | checkable |
-         Qt::ItemIsDragEnabled;
+  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | checkable | Qt::ItemIsDragEnabled;
 }
 
 bool QgsVectorTileBasicRendererListModel::setData( const QModelIndex &index, const QVariant &value, int role )
@@ -269,8 +266,7 @@ QMimeData *QgsVectorTileBasicRendererListModel::mimeData( const QModelIndexList 
   return mimeData;
 }
 
-bool QgsVectorTileBasicRendererListModel::dropMimeData( const QMimeData *data,
-    Qt::DropAction action, int row, int column, const QModelIndex &parent )
+bool QgsVectorTileBasicRendererListModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
   Q_UNUSED( column )
 
@@ -343,14 +339,9 @@ QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTil
 
   if ( mMapCanvas )
   {
-    connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, [ = ]( double scale )
-    {
+    connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, [=]( double scale ) {
       const QgsMapSettings &mapSettings = mMapCanvas->mapSettings();
-      const double tileScale = mVTLayer ? mVTLayer->tileMatrixSet().calculateTileScaleForMap( mMapCanvas->scale(),
-                               mapSettings.destinationCrs(),
-                               mapSettings.visibleExtent(),
-                               mapSettings.outputSize(),
-                               mapSettings.outputDpi() ) : scale;
+      const double tileScale = mVTLayer ? mVTLayer->tileMatrixSet().calculateTileScaleForMap( mMapCanvas->scale(), mapSettings.destinationCrs(), mapSettings.visibleExtent(), mapSettings.outputSize(), mapSettings.outputDpi() ) : scale;
       const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( tileScale ) : QgsVectorTileUtils::scaleToZoomLevel( tileScale, 0, 99 );
       mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( zoom ) );
       if ( mProxyModel )
@@ -358,21 +349,15 @@ QgsVectorTileBasicRendererWidget::QgsVectorTileBasicRendererWidget( QgsVectorTil
     } );
 
     const QgsMapSettings &mapSettings = mMapCanvas->mapSettings();
-    const double tileScale = mVTLayer ? mVTLayer->tileMatrixSet().calculateTileScaleForMap( mMapCanvas->scale(),
-                             mapSettings.destinationCrs(),
-                             mapSettings.visibleExtent(),
-                             mapSettings.outputSize(),
-                             mapSettings.outputDpi() ) : mMapCanvas->scale();
+    const double tileScale = mVTLayer ? mVTLayer->tileMatrixSet().calculateTileScaleForMap( mMapCanvas->scale(), mapSettings.destinationCrs(), mapSettings.visibleExtent(), mapSettings.outputSize(), mapSettings.outputDpi() ) : mMapCanvas->scale();
     mLabelCurrentZoom->setText( tr( "Current zoom: %1" ).arg( mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( tileScale ) : QgsVectorTileUtils::scaleToZoomLevel( tileScale, 0, 99 ) ) );
   }
 
-  connect( mCheckVisibleOnly, &QCheckBox::toggled, this, [ = ]( bool filter )
-  {
+  connect( mCheckVisibleOnly, &QCheckBox::toggled, this, [=]( bool filter ) {
     mProxyModel->setFilterVisible( filter );
   } );
 
-  connect( mFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [ = ]( const QString & text )
-  {
+  connect( mFilterLineEdit, &QgsFilterLineEdit::textChanged, this, [=]( const QString &text ) {
     mProxyModel->setFilterString( text );
   } );
 
@@ -406,11 +391,7 @@ void QgsVectorTileBasicRendererWidget::syncToLayer( QgsMapLayer *layer )
   if ( mMapCanvas )
   {
     const QgsMapSettings &mapSettings = mMapCanvas->mapSettings();
-    const double tileScale = mVTLayer ? mVTLayer->tileMatrixSet().calculateTileScaleForMap( mMapCanvas->scale(),
-                             mapSettings.destinationCrs(),
-                             mapSettings.visibleExtent(),
-                             mapSettings.outputSize(),
-                             mapSettings.outputDpi() ) : mMapCanvas->scale();
+    const double tileScale = mVTLayer ? mVTLayer->tileMatrixSet().calculateTileScaleForMap( mMapCanvas->scale(), mapSettings.destinationCrs(), mapSettings.visibleExtent(), mapSettings.outputSize(), mapSettings.outputDpi() ) : mMapCanvas->scale();
     const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( tileScale ) : QgsVectorTileUtils::scaleToZoomLevel( tileScale, 0, 99 );
     mProxyModel->setCurrentZoom( zoom );
   }
@@ -477,7 +458,7 @@ void QgsVectorTileBasicRendererWidget::editStyleAtIndex( const QModelIndex &prox
   if ( !style.symbol() )
     return;
 
-  std::unique_ptr< QgsSymbol > symbol( style.symbol()->clone() );
+  std::unique_ptr<QgsSymbol> symbol( style.symbol()->clone() );
 
   QgsSymbolWidgetContext context;
   context.setMapCanvas( mMapCanvas );
@@ -486,11 +467,7 @@ void QgsVectorTileBasicRendererWidget::editStyleAtIndex( const QModelIndex &prox
   if ( mMapCanvas )
   {
     const QgsMapSettings &mapSettings = mMapCanvas->mapSettings();
-    const double tileScale = mVTLayer ? mVTLayer->tileMatrixSet().calculateTileScaleForMap( mMapCanvas->scale(),
-                             mapSettings.destinationCrs(),
-                             mapSettings.visibleExtent(),
-                             mapSettings.outputSize(),
-                             mapSettings.outputDpi() ) : mMapCanvas->scale();
+    const double tileScale = mVTLayer ? mVTLayer->tileMatrixSet().calculateTileScaleForMap( mMapCanvas->scale(), mapSettings.destinationCrs(), mapSettings.visibleExtent(), mapSettings.outputSize(), mapSettings.outputDpi() ) : mMapCanvas->scale();
     const int zoom = mVTLayer ? mVTLayer->tileMatrixSet().scaleToZoomLevel( tileScale ) : QgsVectorTileUtils::scaleToZoomLevel( tileScale, 0, 99 );
     QList<QgsExpressionContextScope> scopes = context.additionalExpressionContextScopes();
     QgsExpressionContextScope tileScope;
@@ -500,7 +477,7 @@ void QgsVectorTileBasicRendererWidget::editStyleAtIndex( const QModelIndex &prox
     context.setAdditionalExpressionContextScopes( scopes );
   }
 
-  QgsVectorLayer *vectorLayer = nullptr;  // TODO: have a temporary vector layer with sub-layer's fields?
+  QgsVectorLayer *vectorLayer = nullptr; // TODO: have a temporary vector layer with sub-layer's fields?
 
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   if ( panel && panel->dockMode() )
@@ -508,7 +485,7 @@ void QgsVectorTileBasicRendererWidget::editStyleAtIndex( const QModelIndex &prox
     QgsSymbolSelectorWidget *widget = QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::move( symbol ), QgsStyle::defaultStyle(), vectorLayer, panel );
     widget->setContext( context );
     widget->setPanelTitle( style.styleName() );
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ] { updateSymbolsFromWidget( widget ); } );
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [=] { updateSymbolsFromWidget( widget ); } );
     openPanel( widget );
   }
   else
@@ -544,7 +521,7 @@ void QgsVectorTileBasicRendererWidget::removeStyle()
 {
   const QModelIndexList sel = viewStyles->selectionModel()->selectedIndexes();
 
-  QList<int > res;
+  QList<int> res;
   for ( const QModelIndex &proxyIndex : sel )
   {
     const QModelIndex sourceIndex = mProxyModel->mapToSource( proxyIndex );
@@ -555,7 +532,7 @@ void QgsVectorTileBasicRendererWidget::removeStyle()
 
   for ( int i = res.size() - 1; i >= 0; --i )
   {
-    mModel->removeRow( res[ i ] );
+    mModel->removeRow( res[i] );
   }
   // make sure that the selection is gone
   viewStyles->selectionModel()->clear();
@@ -615,7 +592,6 @@ bool QgsVectorTileBasicRendererProxyModel::filterAcceptsRow( int source_row, con
 
   return true;
 }
-
 
 
 ///@endcond

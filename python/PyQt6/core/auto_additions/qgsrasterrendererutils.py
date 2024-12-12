@@ -3,5 +3,5 @@ try:
     QgsRasterRendererUtils.parseColorMapFile = staticmethod(QgsRasterRendererUtils.parseColorMapFile)
     QgsRasterRendererUtils.saveColorMapFile = staticmethod(QgsRasterRendererUtils.saveColorMapFile)
     QgsRasterRendererUtils.__group__ = ['raster']
-except NameError:
+except (NameError, AttributeError):
     pass

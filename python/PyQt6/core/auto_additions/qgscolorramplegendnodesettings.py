@@ -3,5 +3,5 @@ QgsColorRampLegendNodeSettings.MinimumToMaximum = QgsColorRampLegendNodeSettings
 QgsColorRampLegendNodeSettings.MaximumToMinimum = QgsColorRampLegendNodeSettings.Direction.MaximumToMinimum
 try:
     QgsColorRampLegendNodeSettings.__group__ = ['layertree']
-except NameError:
+except (NameError, AttributeError):
     pass

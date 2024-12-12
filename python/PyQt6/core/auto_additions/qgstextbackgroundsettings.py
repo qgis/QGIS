@@ -13,5 +13,5 @@ QgsTextBackgroundSettings.RotationOffset = QgsTextBackgroundSettings.RotationTyp
 QgsTextBackgroundSettings.RotationFixed = QgsTextBackgroundSettings.RotationType.RotationFixed
 try:
     QgsTextBackgroundSettings.__group__ = ['textrenderer']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -52,7 +52,7 @@ QList<QgsProviderSourceWidgetProvider *> QgsProviderGuiMetadata::sourceWidgetPro
   return QList<QgsProviderSourceWidgetProvider *>();
 }
 
-QList< const QgsMapLayerConfigWidgetFactory *> QgsProviderGuiMetadata::mapLayerConfigWidgetFactories()
+QList<const QgsMapLayerConfigWidgetFactory *> QgsProviderGuiMetadata::mapLayerConfigWidgetFactories()
 {
   return QList<const QgsMapLayerConfigWidgetFactory *>();
 }
@@ -65,4 +65,3 @@ QString QgsProviderGuiMetadata::key() const
 void QgsProviderGuiMetadata::registerGui( QMainWindow * )
 {
 }
-

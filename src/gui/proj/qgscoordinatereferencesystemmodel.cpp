@@ -18,12 +18,13 @@
 #include "moc_qgscoordinatereferencesystemmodel.cpp"
 #include "qgscoordinatereferencesystemutils.h"
 #include "qgsapplication.h"
+#include "qgsstringutils.h"
 
 #include <QFont>
 
 QgsCoordinateReferenceSystemModel::QgsCoordinateReferenceSystemModel( QObject *parent )
   : QAbstractItemModel( parent )
-  , mRootNode( std::make_unique< QgsCoordinateReferenceSystemModelGroupNode >( QString(), QIcon(), QString() ) )
+  , mRootNode( std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>( QString(), QIcon(), QString() ) )
 {
   mCrsDbRecords = QgsApplication::coordinateReferenceSystemRegistry()->crsDbRecords();
 
@@ -64,14 +65,14 @@ QVariant QgsCoordinateReferenceSystemModel::data( const QModelIndex &index, int 
   if ( !n )
     return QVariant();
 
-  if ( role == static_cast< int >( CustomRole::NodeType ) )
+  if ( role == static_cast<int>( CustomRole::NodeType ) )
     return n->nodeType();
 
   switch ( n->nodeType() )
   {
     case QgsCoordinateReferenceSystemModelNode::NodeGroup:
     {
-      QgsCoordinateReferenceSystemModelGroupNode *groupNode = qgis::down_cast< QgsCoordinateReferenceSystemModelGroupNode * >( n );
+      QgsCoordinateReferenceSystemModelGroupNode *groupNode = qgis::down_cast<QgsCoordinateReferenceSystemModelGroupNode *>( n );
       switch ( role )
       {
         case Qt::DecorationRole:
@@ -107,15 +108,14 @@ QVariant QgsCoordinateReferenceSystemModel::data( const QModelIndex &index, int 
           return font;
         }
 
-        case static_cast< int >( CustomRole::GroupId ):
+        case static_cast<int>( CustomRole::GroupId ):
           return groupNode->id();
       }
       return QVariant();
-
     }
     case QgsCoordinateReferenceSystemModelNode::NodeCrs:
     {
-      QgsCoordinateReferenceSystemModelCrsNode *crsNode = qgis::down_cast< QgsCoordinateReferenceSystemModelCrsNode * >( n );
+      QgsCoordinateReferenceSystemModelCrsNode *crsNode = qgis::down_cast<QgsCoordinateReferenceSystemModelCrsNode *>( n );
       switch ( role )
       {
         case Qt::DisplayRole:
@@ -137,30 +137,35 @@ QVariant QgsCoordinateReferenceSystemModel::data( const QModelIndex &index, int 
           }
           break;
 
-        case static_cast< int >( CustomRole::Name ):
+        case static_cast<int>( CustomRole::Name ):
           return crsNode->record().description;
 
-        case static_cast< int >( CustomRole::AuthId ):
+        case static_cast<int>( CustomRole::AuthId ):
           if ( !crsNode->record().authId.isEmpty() )
             return QStringLiteral( "%1:%2" ).arg( crsNode->record().authName, crsNode->record().authId );
           else
             return QVariant();
 
-        case static_cast< int >( CustomRole::Deprecated ):
+        case static_cast<int>( CustomRole::Deprecated ):
           return crsNode->record().deprecated;
 
-        case static_cast< int >( CustomRole::Type ):
+        case static_cast<int>( CustomRole::Type ):
           return QVariant::fromValue( crsNode->record().type );
 
-        case static_cast< int >( CustomRole::Wkt ):
+        case static_cast<int>( CustomRole::Wkt ):
           return crsNode->wkt();
 
-        case static_cast< int >( CustomRole::Proj ):
+        case static_cast<int>( CustomRole::Proj ):
           return crsNode->proj();
+
+        case static_cast<int>( CustomRole::Group ):
+          return crsNode->group();
+
+        case static_cast<int>( CustomRole::Projection ):
+          return crsNode->projection();
 
         default:
           break;
-
       }
     }
   }
@@ -237,7 +242,7 @@ QModelIndex QgsCoordinateReferenceSystemModel::parent( const QModelIndex &child 
 QModelIndex QgsCoordinateReferenceSystemModel::authIdToIndex( const QString &authid ) const
 {
   const QModelIndex startIndex = index( 0, 0 );
-  const QModelIndexList hits = match( startIndex, static_cast< int >( CustomRole::AuthId ), authid, 1, Qt::MatchRecursive );
+  const QModelIndexList hits = match( startIndex, static_cast<int>( CustomRole::AuthId ), authid, 1, Qt::MatchRecursive );
   return hits.value( 0 );
 }
 
@@ -281,9 +286,10 @@ void QgsCoordinateReferenceSystemModel::userCrsAdded( const QString &id )
       QgsCoordinateReferenceSystemModelGroupNode *group = mRootNode->getChildGroupNode( QStringLiteral( "USER" ) );
       if ( !group )
       {
-        std::unique_ptr< QgsCoordinateReferenceSystemModelGroupNode > newGroup = std::make_unique< QgsCoordinateReferenceSystemModelGroupNode >(
-              tr( "User-defined" ),
-              QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ),  QStringLiteral( "USER" ) );
+        std::unique_ptr<QgsCoordinateReferenceSystemModelGroupNode> newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>(
+          tr( "User-defined" ),
+          QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ), QStringLiteral( "USER" )
+        );
         beginInsertRows( QModelIndex(), mRootNode->children().length(), mRootNode->children().length() );
         mRootNode->addChildNode( newGroup.get() );
         endInsertRows();
@@ -309,7 +315,7 @@ void QgsCoordinateReferenceSystemModel::userCrsRemoved( long id )
   {
     for ( int row = 0; row < group->children().size(); ++row )
     {
-      if ( QgsCoordinateReferenceSystemModelCrsNode *crsNode = dynamic_cast< QgsCoordinateReferenceSystemModelCrsNode * >( group->children().at( row ) ) )
+      if ( QgsCoordinateReferenceSystemModelCrsNode *crsNode = dynamic_cast<QgsCoordinateReferenceSystemModelCrsNode *>( group->children().at( row ) ) )
       {
         if ( crsNode->record().authId == QString::number( id ) )
         {
@@ -331,7 +337,7 @@ void QgsCoordinateReferenceSystemModel::userCrsChanged( const QString &id )
   {
     for ( int row = 0; row < group->children().size(); ++row )
     {
-      if ( QgsCoordinateReferenceSystemModelCrsNode *crsNode = dynamic_cast< QgsCoordinateReferenceSystemModelCrsNode * >( group->children().at( row ) ) )
+      if ( QgsCoordinateReferenceSystemModelCrsNode *crsNode = dynamic_cast<QgsCoordinateReferenceSystemModelCrsNode *>( group->children().at( row ) ) )
       {
         if ( QStringLiteral( "USER:%1" ).arg( crsNode->record().authId ) == id )
         {
@@ -352,7 +358,7 @@ void QgsCoordinateReferenceSystemModel::userCrsChanged( const QString &id )
 QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::addRecord( const QgsCrsDbRecord &record )
 {
   QgsCoordinateReferenceSystemModelGroupNode *parentNode = mRootNode.get();
-  std::unique_ptr< QgsCoordinateReferenceSystemModelCrsNode > crsNode = std::make_unique< QgsCoordinateReferenceSystemModelCrsNode>( record );
+  std::unique_ptr<QgsCoordinateReferenceSystemModelCrsNode> crsNode = std::make_unique<QgsCoordinateReferenceSystemModelCrsNode>( record );
 
   QString groupName;
   QString groupId;
@@ -424,6 +430,7 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
         break;
     }
   }
+  crsNode->setGroup( groupName );
 
   if ( QgsCoordinateReferenceSystemModelGroupNode *group = parentNode->getChildGroupNode( groupId ) )
   {
@@ -431,7 +438,7 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
   }
   else
   {
-    std::unique_ptr< QgsCoordinateReferenceSystemModelGroupNode > newGroup = std::make_unique< QgsCoordinateReferenceSystemModelGroupNode >( groupName, groupIcon, groupId );
+    std::unique_ptr<QgsCoordinateReferenceSystemModelGroupNode> newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>( groupName, groupIcon, groupId );
     parentNode->addChildNode( newGroup.get() );
     parentNode = newGroup.release();
   }
@@ -441,6 +448,8 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
     QString projectionName = QgsCoordinateReferenceSystemUtils::translateProjection( record.projectionAcronym );
     if ( projectionName.isEmpty() )
       projectionName = tr( "Other" );
+    else
+      crsNode->setProjection( projectionName );
 
     if ( QgsCoordinateReferenceSystemModelGroupNode *group = parentNode->getChildGroupNode( record.projectionAcronym ) )
     {
@@ -448,7 +457,7 @@ QgsCoordinateReferenceSystemModelCrsNode *QgsCoordinateReferenceSystemModel::add
     }
     else
     {
-      std::unique_ptr< QgsCoordinateReferenceSystemModelGroupNode > newGroup = std::make_unique< QgsCoordinateReferenceSystemModelGroupNode >( projectionName, QIcon(), record.projectionAcronym );
+      std::unique_ptr<QgsCoordinateReferenceSystemModelGroupNode> newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>( projectionName, QIcon(), record.projectionAcronym );
       parentNode->addChildNode( newGroup.get() );
       parentNode = newGroup.release();
     }
@@ -468,9 +477,10 @@ QModelIndex QgsCoordinateReferenceSystemModel::addCustomCrs( const QgsCoordinate
   QgsCoordinateReferenceSystemModelGroupNode *group = mRootNode->getChildGroupNode( QStringLiteral( "CUSTOM" ) );
   if ( !group )
   {
-    std::unique_ptr< QgsCoordinateReferenceSystemModelGroupNode > newGroup = std::make_unique< QgsCoordinateReferenceSystemModelGroupNode >(
-          tr( "Custom" ),
-          QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ),  QStringLiteral( "CUSTOM" ) );
+    std::unique_ptr<QgsCoordinateReferenceSystemModelGroupNode> newGroup = std::make_unique<QgsCoordinateReferenceSystemModelGroupNode>(
+      tr( "Custom" ),
+      QgsApplication::getThemeIcon( QStringLiteral( "/user.svg" ) ), QStringLiteral( "CUSTOM" )
+    );
     beginInsertRows( QModelIndex(), mRootNode->children().length(), mRootNode->children().length() );
     mRootNode->addChildNode( newGroup.get() );
     endInsertRows();
@@ -515,7 +525,7 @@ QModelIndex QgsCoordinateReferenceSystemModel::indexOfParentTreeNode( QgsCoordin
 
   QgsCoordinateReferenceSystemModelNode *grandParentNode = parentNode->parent();
   if ( !grandParentNode )
-    return QModelIndex();  // root node -> invalid index
+    return QModelIndex(); // root node -> invalid index
 
   int row = grandParentNode->children().indexOf( parentNode );
   Q_ASSERT( row >= 0 );
@@ -557,13 +567,12 @@ QgsCoordinateReferenceSystemModelGroupNode *QgsCoordinateReferenceSystemModelNod
   {
     if ( node->nodeType() == NodeGroup )
     {
-      QgsCoordinateReferenceSystemModelGroupNode *groupNode = qgis::down_cast< QgsCoordinateReferenceSystemModelGroupNode * >( node );
+      QgsCoordinateReferenceSystemModelGroupNode *groupNode = qgis::down_cast<QgsCoordinateReferenceSystemModelGroupNode *>( node );
       if ( groupNode && groupNode->id() == id )
         return groupNode;
     }
   }
   return nullptr;
-
 }
 
 QgsCoordinateReferenceSystemModelGroupNode::QgsCoordinateReferenceSystemModelGroupNode( const QString &name, const QIcon &icon, const QString &id )
@@ -571,13 +580,11 @@ QgsCoordinateReferenceSystemModelGroupNode::QgsCoordinateReferenceSystemModelGro
   , mName( name )
   , mIcon( icon )
 {
-
 }
 
 QgsCoordinateReferenceSystemModelCrsNode::QgsCoordinateReferenceSystemModelCrsNode( const QgsCrsDbRecord &record )
   : mRecord( record )
 {
-
 }
 ///@endcond
 
@@ -652,7 +659,7 @@ bool QgsCoordinateReferenceSystemProxyModel::filterAcceptsRow( int sourceRow, co
     return true;
 
   const QModelIndex sourceIndex = mModel->index( sourceRow, 0, sourceParent );
-  const QgsCoordinateReferenceSystemModelNode::NodeType nodeType = static_cast< QgsCoordinateReferenceSystemModelNode::NodeType >( sourceModel()->data( sourceIndex, static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::NodeType ) ).toInt() );
+  const QgsCoordinateReferenceSystemModelNode::NodeType nodeType = static_cast<QgsCoordinateReferenceSystemModelNode::NodeType>( sourceModel()->data( sourceIndex, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::NodeType ) ).toInt() );
   switch ( nodeType )
   {
     case QgsCoordinateReferenceSystemModelNode::NodeGroup:
@@ -661,13 +668,13 @@ bool QgsCoordinateReferenceSystemProxyModel::filterAcceptsRow( int sourceRow, co
       break;
   }
 
-  const bool deprecated = sourceModel()->data( sourceIndex, static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::Deprecated ) ).toBool();
+  const bool deprecated = sourceModel()->data( sourceIndex, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::Deprecated ) ).toBool();
   if ( mFilterDeprecated && deprecated )
     return false;
 
   if ( mFilters )
   {
-    const Qgis::CrsType type = sourceModel()->data( sourceIndex, static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::Type ) ).value< Qgis::CrsType >();
+    const Qgis::CrsType type = sourceModel()->data( sourceIndex, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::Type ) ).value<Qgis::CrsType>();
     switch ( type )
     {
       case Qgis::CrsType::Unknown:
@@ -699,7 +706,7 @@ bool QgsCoordinateReferenceSystemProxyModel::filterAcceptsRow( int sourceRow, co
     }
   }
 
-  const QString authid = sourceModel()->data( sourceIndex, static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::AuthId ) ).toString();
+  const QString authid = sourceModel()->data( sourceIndex, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::AuthId ) ).toString();
   if ( !mFilterAuthIds.isEmpty() )
   {
     if ( !mFilterAuthIds.contains( authid.toUpper() ) )
@@ -708,8 +715,16 @@ bool QgsCoordinateReferenceSystemProxyModel::filterAcceptsRow( int sourceRow, co
 
   if ( !mFilterString.trimmed().isEmpty() )
   {
-    const QString name = sourceModel()->data( sourceIndex, static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::Name ) ).toString();
-    if ( !( name.contains( mFilterString, Qt::CaseInsensitive )
+    const QString name = sourceModel()->data( sourceIndex, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::Name ) ).toString();
+    QString candidate = name;
+    const QString groupName = sourceModel()->data( sourceIndex, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::Group ) ).toString();
+    if ( !groupName.isEmpty() )
+      candidate += ' ' + groupName;
+    const QString projectionName = sourceModel()->data( sourceIndex, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::Projection ) ).toString();
+    if ( !projectionName.isEmpty() )
+      candidate += ' ' + projectionName;
+
+    if ( !( QgsStringUtils::containsByWord( candidate, mFilterString )
             || authid.contains( mFilterString, Qt::CaseInsensitive ) ) )
       return false;
   }
@@ -718,8 +733,8 @@ bool QgsCoordinateReferenceSystemProxyModel::filterAcceptsRow( int sourceRow, co
 
 bool QgsCoordinateReferenceSystemProxyModel::lessThan( const QModelIndex &left, const QModelIndex &right ) const
 {
-  QgsCoordinateReferenceSystemModelNode::NodeType leftType = static_cast< QgsCoordinateReferenceSystemModelNode::NodeType >( sourceModel()->data( left, static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::NodeType ) ).toInt() );
-  QgsCoordinateReferenceSystemModelNode::NodeType rightType = static_cast< QgsCoordinateReferenceSystemModelNode::NodeType >( sourceModel()->data( right, static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::NodeType ) ).toInt() );
+  QgsCoordinateReferenceSystemModelNode::NodeType leftType = static_cast<QgsCoordinateReferenceSystemModelNode::NodeType>( sourceModel()->data( left, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::NodeType ) ).toInt() );
+  QgsCoordinateReferenceSystemModelNode::NodeType rightType = static_cast<QgsCoordinateReferenceSystemModelNode::NodeType>( sourceModel()->data( right, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::NodeType ) ).toInt() );
 
   if ( leftType != rightType )
   {
@@ -735,8 +750,8 @@ bool QgsCoordinateReferenceSystemProxyModel::lessThan( const QModelIndex &left, 
   if ( leftType == QgsCoordinateReferenceSystemModelNode::NodeGroup )
   {
     // both are groups -- ensure USER group comes last, and CUSTOM group comes first
-    const QString leftGroupId = sourceModel()->data( left, static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::GroupId ) ).toString();
-    const QString rightGroupId = sourceModel()->data( left, static_cast< int >( QgsCoordinateReferenceSystemModel::CustomRole::GroupId ) ).toString();
+    const QString leftGroupId = sourceModel()->data( left, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::GroupId ) ).toString();
+    const QString rightGroupId = sourceModel()->data( left, static_cast<int>( QgsCoordinateReferenceSystemModel::CustomRole::GroupId ) ).toString();
     if ( leftGroupId == QLatin1String( "USER" ) )
       return false;
     if ( rightGroupId == QLatin1String( "USER" ) )
@@ -751,5 +766,3 @@ bool QgsCoordinateReferenceSystemProxyModel::lessThan( const QModelIndex &left, 
   // default sort is alphabetical order
   return QString::localeAwareCompare( leftStr, rightStr ) < 0;
 }
-
-

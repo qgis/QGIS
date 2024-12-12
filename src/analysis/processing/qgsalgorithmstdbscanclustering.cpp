@@ -51,32 +51,23 @@ QString QgsStDbscanClusteringAlgorithm::groupId() const
 
 void QgsStDbscanClusteringAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
-                QObject::tr( "Input layer" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPoint ) ) );
-  addParameter( new QgsProcessingParameterField( QStringLiteral( "DATETIME_FIELD" ),
-                QObject::tr( "Date/time field" ), QVariant(),
-                QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::DateTime, false, false ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPoint ) ) );
+  addParameter( new QgsProcessingParameterField( QStringLiteral( "DATETIME_FIELD" ), QObject::tr( "Date/time field" ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::DateTime, false, false ) );
 
-  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MIN_SIZE" ), QObject::tr( "Minimum cluster size" ),
-                Qgis::ProcessingNumberParameterType::Integer, 5, false, 1 ) );
-  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "EPS" ),
-                QObject::tr( "Maximum distance between clustered points" ), 1, QStringLiteral( "INPUT" ), false, 0 ) );
-  auto durationParameter = std::make_unique<QgsProcessingParameterDuration>( QStringLiteral( "EPS2" ),
-                           QObject::tr( "Maximum time duration between clustered points" ), 0, false, 0 );
+  addParameter( new QgsProcessingParameterNumber( QStringLiteral( "MIN_SIZE" ), QObject::tr( "Minimum cluster size" ), Qgis::ProcessingNumberParameterType::Integer, 5, false, 1 ) );
+  addParameter( new QgsProcessingParameterDistance( QStringLiteral( "EPS" ), QObject::tr( "Maximum distance between clustered points" ), 1, QStringLiteral( "INPUT" ), false, 0 ) );
+  auto durationParameter = std::make_unique<QgsProcessingParameterDuration>( QStringLiteral( "EPS2" ), QObject::tr( "Maximum time duration between clustered points" ), 0, false, 0 );
   durationParameter->setDefaultUnit( Qgis::TemporalUnit::Hours );
   addParameter( durationParameter.release() );
 
-  auto dbscanStarParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "DBSCAN*" ),
-                         QObject::tr( "Treat border points as noise (DBSCAN*)" ), false, true );
+  auto dbscanStarParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "DBSCAN*" ), QObject::tr( "Treat border points as noise (DBSCAN*)" ), false, true );
   dbscanStarParam->setFlags( dbscanStarParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( dbscanStarParam.release() );
 
-  auto fieldNameParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FIELD_NAME" ),
-                        QObject::tr( "Cluster field name" ), QStringLiteral( "CLUSTER_ID" ) );
+  auto fieldNameParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "FIELD_NAME" ), QObject::tr( "Cluster field name" ), QStringLiteral( "CLUSTER_ID" ) );
   fieldNameParam->setFlags( fieldNameParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( fieldNameParam.release() );
-  auto sizeFieldNameParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "SIZE_FIELD_NAME" ),
-                            QObject::tr( "Cluster size field name" ), QStringLiteral( "CLUSTER_SIZE" ) );
+  auto sizeFieldNameParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "SIZE_FIELD_NAME" ), QObject::tr( "Cluster size field name" ), QStringLiteral( "CLUSTER_SIZE" ) );
   sizeFieldNameParam->setFlags( sizeFieldNameParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( sizeFieldNameParam.release() );
 
@@ -100,5 +91,3 @@ QgsStDbscanClusteringAlgorithm *QgsStDbscanClusteringAlgorithm::createInstance()
 }
 
 ///@endcond
-
-

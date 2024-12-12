@@ -19,7 +19,6 @@ A combo box allowing selection of paint effect draw modes
 #include "qgseffectdrawmodecombobox.h"
 %End
   public:
-
     QgsEffectDrawModeComboBox( QWidget *parent /TransferThis/ = 0 );
 
     QgsPaintEffect::DrawMode drawMode() const;
@@ -35,7 +34,6 @@ Sets the currently selected draw mode for the combo box
 
 :param drawMode: selected draw mode
 %End
-
 };
 
 /************************************************************************

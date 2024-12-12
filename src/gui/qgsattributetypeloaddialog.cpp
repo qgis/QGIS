@@ -48,15 +48,12 @@ QgsAttributeTypeLoadDialog::QgsAttributeTypeLoadDialog( QgsVectorLayer *vl )
 
   connect( layerComboBox, &QgsMapLayerComboBox::layerChanged, keyComboBox, &QgsFieldComboBox::setLayer );
   connect( layerComboBox, &QgsMapLayerComboBox::layerChanged, valueComboBox, &QgsFieldComboBox::setLayer );
-  connect( keyComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int index ) { createPreview( index ); } );
-  connect( valueComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [ = ]( int index ) { createPreview( index ); } );
+  connect( keyComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=]( int index ) { createPreview( index ); } );
+  connect( valueComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=]( int index ) { createPreview( index ); } );
   connect( previewButton, &QAbstractButton::pressed, this, &QgsAttributeTypeLoadDialog::previewButtonPushed );
-  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [ = ]
-  {
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, [=] {
     QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#edit-widgets" ) );
   } );
-
-
 }
 
 void QgsAttributeTypeLoadDialog::setVectorLayer( QgsVectorLayer *layer )

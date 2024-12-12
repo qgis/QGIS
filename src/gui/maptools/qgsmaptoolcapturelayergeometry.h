@@ -43,25 +43,25 @@ class GUI_EXPORT QgsMapToolCaptureLayerGeometry : public QgsMapToolCapture
      * Called when the geometry is captured
      * A more specific handler is also called afterwards (layerPointCaptured, layerLineCaptured or layerPolygonCaptured)
      */
-    virtual void layerGeometryCaptured( const QgsGeometry &geometry ) {Q_UNUSED( geometry )} SIP_FORCE
+    virtual void layerGeometryCaptured( const QgsGeometry &geometry ) SIP_FORCE { Q_UNUSED( geometry ) }
 
     /**
      * Called when a point is captured
      * The generic geometryCaptured() signal will be emitted immediately before this point-specific signal.
      */
-    virtual void layerPointCaptured( const QgsPoint &point ) {Q_UNUSED( point )} SIP_FORCE
+    virtual void layerPointCaptured( const QgsPoint &point ) SIP_FORCE { Q_UNUSED( point ) }
 
     /**
      * Called when a line is captured
      * The generic geometryCaptured() signal will be emitted immediately before this line-specific signal.
      */
-    virtual void layerLineCaptured( const QgsCurve *line ) {Q_UNUSED( line )} SIP_FORCE
+    virtual void layerLineCaptured( const QgsCurve *line ) SIP_FORCE { Q_UNUSED( line ) }
 
     /**
      * Called when a polygon is captured
      * The generic geometryCaptured() signal will be emitted immediately before this polygon-specific signal.
      */
-    virtual void layerPolygonCaptured( const QgsCurvePolygon *polygon ) {Q_UNUSED( polygon )} SIP_FORCE
+    virtual void layerPolygonCaptured( const QgsCurvePolygon *polygon ) SIP_FORCE { Q_UNUSED( polygon ) }
 };
 
 #endif // QGSMAPTOOLCAPTURELAYERGEOMETRY_H

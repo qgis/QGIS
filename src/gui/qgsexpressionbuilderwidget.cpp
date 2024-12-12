@@ -102,9 +102,9 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   connect( mExpressionPreviewWidget, &QgsExpressionPreviewWidget::toolTipChanged, txtExpressionString, &QgsCodeEditorExpression::setToolTip );
   connect( mExpressionPreviewWidget, &QgsExpressionPreviewWidget::expressionParsed, this, &QgsExpressionBuilderWidget::onExpressionParsed );
   connect( mExpressionPreviewWidget, &QgsExpressionPreviewWidget::expressionParsed, btnSaveExpression, &QToolButton::setEnabled );
-  connect( mExpressionPreviewWidget, &QgsExpressionPreviewWidget::expressionParsed, this, &QgsExpressionBuilderWidget::expressionParsed ); // signal-to-signal
+  connect( mExpressionPreviewWidget, &QgsExpressionPreviewWidget::expressionParsed, this, &QgsExpressionBuilderWidget::expressionParsed );     // signal-to-signal
   connect( mExpressionPreviewWidget, &QgsExpressionPreviewWidget::parserErrorChanged, this, &QgsExpressionBuilderWidget::parserErrorChanged ); // signal-to-signal
-  connect( mExpressionPreviewWidget, &QgsExpressionPreviewWidget::evalErrorChanged, this, &QgsExpressionBuilderWidget::evalErrorChanged ); // signal-to-signal
+  connect( mExpressionPreviewWidget, &QgsExpressionPreviewWidget::evalErrorChanged, this, &QgsExpressionBuilderWidget::evalErrorChanged );     // signal-to-signal
 
   connect( mExpressionTreeView, &QgsExpressionTreeView::expressionItemDoubleClicked, this, &QgsExpressionBuilderWidget::insertExpressionText );
   connect( mExpressionTreeView, &QgsExpressionTreeView::currentExpressionItemChanged, this, &QgsExpressionBuilderWidget::expressionTreeItemChanged );
@@ -146,18 +146,14 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   txtSearchEditValues->setShowSearchIcon( true );
   txtSearchEditValues->setPlaceholderText( tr( "Search…" ) );
 
-  editorSplit->setSizes( QList<int>( {175, 300} ) );
+  editorSplit->setSizes( QList<int>( { 175, 300 } ) );
 
   functionsplit->setCollapsible( 0, false );
-  connect( mShowHelpButton, &QPushButton::clicked, this, [ = ]()
-  {
-    functionsplit->setSizes( QList<int>( {mOperationListGroup->width() - mHelpAndValuesWidget->minimumWidth(),
-                                          mHelpAndValuesWidget->minimumWidth()
-                                         } ) );
+  connect( mShowHelpButton, &QPushButton::clicked, this, [=]() {
+    functionsplit->setSizes( QList<int>( { mOperationListGroup->width() - mHelpAndValuesWidget->minimumWidth(), mHelpAndValuesWidget->minimumWidth() } ) );
     mShowHelpButton->setEnabled( false );
   } );
-  connect( functionsplit, &QSplitter::splitterMoved, this, [ = ]( int, int )
-  {
+  connect( functionsplit, &QSplitter::splitterMoved, this, [=]( int, int ) {
     mShowHelpButton->setEnabled( functionsplit->sizes().at( 1 ) == 0 );
   } );
 
@@ -186,7 +182,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   txtExpressionString->indicatorDefine( QgsCodeEditor::SquiggleIndicator, QgsExpression::ParserError::FunctionWrongArgs );
   txtExpressionString->indicatorDefine( QgsCodeEditor::SquiggleIndicator, QgsExpression::ParserError::FunctionInvalidParams );
   txtExpressionString->indicatorDefine( QgsCodeEditor::SquiggleIndicator, QgsExpression::ParserError::FunctionNamedArgsError );
-#if defined(QSCINTILLA_VERSION) && QSCINTILLA_VERSION >= 0x20a00
+#if defined( QSCINTILLA_VERSION ) && QSCINTILLA_VERSION >= 0x20a00
   txtExpressionString->indicatorDefine( QgsCodeEditor::TriangleIndicator, QgsExpression::ParserError::Unknown );
 #else
   txtExpressionString->indicatorDefine( QgsCodeEditor::SquiggleIndicator, QgsExpression::ParserError::Unknown );
@@ -366,7 +362,7 @@ void QgsExpressionBuilderWidget::runPythonCode( const QString &code )
 QgsVectorLayer *QgsExpressionBuilderWidget::contextLayer( const QgsExpressionItem *item ) const
 {
   QgsVectorLayer *layer = nullptr;
-  if ( ! QgsVariantUtils::isNull( item->data( QgsExpressionItem::LAYER_ID_ROLE ) ) )
+  if ( !QgsVariantUtils::isNull( item->data( QgsExpressionItem::LAYER_ID_ROLE ) ) )
   {
     layer = qobject_cast<QgsVectorLayer *>( QgsProject::instance()->mapLayer( item->data( QgsExpressionItem::LAYER_ID_ROLE ).toString() ) );
   }
@@ -396,7 +392,7 @@ void QgsExpressionBuilderWidget::saveFunctionFile( QString fileName )
   if ( myFile.open( QIODevice::WriteOnly | QFile::Truncate ) )
   {
     QTextStream myFileStream( &myFile );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     myFileStream.setCodec( "UTF-8" );
 #endif
     myFileStream << txtPython->text() << Qt::endl;
@@ -420,7 +416,8 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( const QString &path )
   for ( const QString &name : constFiles )
   {
     QFileInfo info( mFunctionsPath + QDir::separator() + name );
-    if ( info.baseName() == QLatin1String( "__init__" ) ) continue;
+    if ( info.baseName() == QLatin1String( "__init__" ) )
+      continue;
     QListWidgetItem *item = new QListWidgetItem( QgsApplication::getThemeIcon( QStringLiteral( "console/iconTabEditorConsole.svg" ) ), info.baseName() );
     cmbFileNames->addItem( item );
   }
@@ -444,7 +441,8 @@ void QgsExpressionBuilderWidget::updateFunctionFileList( const QString &path )
     // Create default sample entry.
     newFunctionFile( QStringLiteral( "default" ) );
     txtPython->setText( QStringLiteral( "'''\n#Sample custom function file\n"
-                                        "#(uncomment to use and customize or Add button to create a new file) \n%1 \n '''" ).arg( txtPython->text() ) );
+                                        "#(uncomment to use and customize or Add button to create a new file) \n%1 \n '''" )
+                          .arg( txtPython->text() ) );
     saveFunctionFile( QStringLiteral( "default" ) );
   }
 }
@@ -474,7 +472,7 @@ void QgsExpressionBuilderWidget::btnNewFile_pressed()
   bool ok = false;
   mProject->readEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ), QString(), &ok );
 
-  QgsExpressionAddFunctionFileDialog dlg {!ok, this};
+  QgsExpressionAddFunctionFileDialog dlg { !ok, this };
   if ( dlg.exec() == QDialog::DialogCode::Accepted )
   {
     if ( dlg.createProjectFunctions() )
@@ -501,18 +499,14 @@ void QgsExpressionBuilderWidget::btnRemoveFile_pressed()
 {
   if ( cmbFileNames->currentItem()->data( Qt::UserRole ) == QLatin1String( "project" ) )
   {
-    if ( QMessageBox::question( this, tr( "Remove Project Functions" ),
-                                tr( "Are you sure you want to remove the project functions?" ),
-                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::No )
+    if ( QMessageBox::question( this, tr( "Remove Project Functions" ), tr( "Are you sure you want to remove the project functions?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::No )
       return;
 
     mProject->removeEntry( QStringLiteral( "ExpressionFunctions" ), QStringLiteral( "/pythonCode" ) );
   }
   else
   {
-    if ( QMessageBox::question( this, tr( "Remove File" ),
-                                tr( "Are you sure you want to remove current functions file?" ),
-                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::No )
+    if ( QMessageBox::question( this, tr( "Remove File" ), tr( "Are you sure you want to remove current functions file?" ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) == QMessageBox::No )
       return;
 
     QString fileName = cmbFileNames->currentItem()->text();
@@ -546,7 +540,6 @@ void QgsExpressionBuilderWidget::btnRemoveFile_pressed()
     btnRemoveFile->setEnabled( false );
     txtPython->clear();
   }
-
 }
 
 void QgsExpressionBuilderWidget::cmbFileNames_currentItemChanged( QListWidgetItem *item, QListWidgetItem *lastitem )
@@ -695,9 +688,7 @@ QString QgsExpressionBuilderWidget::getFunctionHelp( QgsExpressionFunction *func
   QString helpContents = QgsExpression::helpText( function->name() );
 
   return QStringLiteral( "<head><style>" ) + helpStylesheet() + QStringLiteral( "</style></head><body>" ) + helpContents + QStringLiteral( "</body>" );
-
 }
-
 
 
 bool QgsExpressionBuilderWidget::isExpressionValid()
@@ -705,7 +696,7 @@ bool QgsExpressionBuilderWidget::isExpressionValid()
   return mExpressionValid;
 }
 
-void QgsExpressionBuilderWidget::setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant> > &choices, const std::function<QgsExpressionContext( const QVariant & )> &previewContextGenerator )
+void QgsExpressionBuilderWidget::setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant>> &choices, const std::function<QgsExpressionContext( const QVariant & )> &previewContextGenerator )
 {
   mExpressionPreviewWidget->setCustomPreviewGenerator( label, choices, previewContextGenerator );
 }
@@ -726,7 +717,7 @@ QgsExpressionTreeView *QgsExpressionBuilderWidget::expressionTree() const
 }
 
 // this is potentially very slow if there are thousands of user expressions, every time entire cleanup and load
-void QgsExpressionBuilderWidget::loadUserExpressions( )
+void QgsExpressionBuilderWidget::loadUserExpressions()
 {
   mExpressionTreeView->loadUserExpressions();
 }
@@ -778,7 +769,7 @@ void QgsExpressionBuilderWidget::txtExpressionString_textChanged()
 {
   QString text = expressionText();
 
-  btnClearEditor->setEnabled( ! txtExpressionString->text().isEmpty() );
+  btnClearEditor->setEnabled( !txtExpressionString->text().isEmpty() );
   btnSaveExpression->setEnabled( false );
 
   mExpressionPreviewWidget->setExpressionText( text );
@@ -828,7 +819,7 @@ void QgsExpressionBuilderWidget::createErrorMarkers( const QList<QgsExpression::
   clearErrors();
   for ( const QgsExpression::ParserError &error : errors )
   {
-    int errorFirstLine = error.firstLine - 1 ;
+    int errorFirstLine = error.firstLine - 1;
     int errorFirstColumn = error.firstColumn - 1;
     int errorLastColumn = error.lastColumn - 1;
     int errorLastLine = error.lastLine - 1;
@@ -840,10 +831,7 @@ void QgsExpressionBuilderWidget::createErrorMarkers( const QList<QgsExpression::
       errorFirstLine = errorLastLine;
       errorFirstColumn = errorLastColumn - 1;
     }
-    txtExpressionString->fillIndicatorRange( errorFirstLine,
-        errorFirstColumn,
-        errorLastLine,
-        errorLastColumn, error.errorType );
+    txtExpressionString->fillIndicatorRange( errorFirstLine, errorFirstColumn, errorLastLine, errorLastColumn, error.errorType );
   }
 }
 
@@ -862,7 +850,7 @@ void QgsExpressionBuilderWidget::createMarkers( const QgsExpressionNode *inNode 
       txtExpressionString->SendScintilla( QsciScintilla::SCI_INDICATORFILLRANGE, start_pos, end - start );
       if ( node->args() )
       {
-        const QList< QgsExpressionNode * > nodeList = node->args()->list();
+        const QList<QgsExpressionNode *> nodeList = node->args()->list();
         for ( QgsExpressionNode *n : nodeList )
         {
           createMarkers( n );
@@ -903,7 +891,7 @@ void QgsExpressionBuilderWidget::createMarkers( const QgsExpressionNode *inNode 
       const QgsExpressionNodeInOperator *node = static_cast<const QgsExpressionNodeInOperator *>( inNode );
       if ( node->list() )
       {
-        const QList< QgsExpressionNode * > nodeList = node->list()->list();
+        const QList<QgsExpressionNode *> nodeList = node->list()->list();
         for ( QgsExpressionNode *n : nodeList )
         {
           createMarkers( n );
@@ -975,7 +963,7 @@ void QgsExpressionBuilderWidget::operatorButtonClicked()
 void QgsExpressionBuilderWidget::loadSampleValues()
 {
   QgsExpressionItem *item = mExpressionTreeView->currentItem();
-  if ( ! item )
+  if ( !item )
   {
     return;
   }
@@ -995,7 +983,7 @@ void QgsExpressionBuilderWidget::loadSampleValues()
 void QgsExpressionBuilderWidget::loadAllValues()
 {
   QgsExpressionItem *item = mExpressionTreeView->currentItem();
-  if ( ! item )
+  if ( !item )
   {
     return;
   }
@@ -1015,7 +1003,7 @@ void QgsExpressionBuilderWidget::loadAllValues()
 void QgsExpressionBuilderWidget::loadSampleUsedValues()
 {
   QgsExpressionItem *item = mExpressionTreeView->currentItem();
-  if ( ! item )
+  if ( !item )
   {
     return;
   }
@@ -1035,7 +1023,7 @@ void QgsExpressionBuilderWidget::loadSampleUsedValues()
 void QgsExpressionBuilderWidget::loadAllUsedValues()
 {
   QgsExpressionItem *item = mExpressionTreeView->currentItem();
-  if ( ! item )
+  if ( !item )
   {
     return;
   }
@@ -1095,7 +1083,7 @@ void QgsExpressionBuilderWidget::autosave()
 void QgsExpressionBuilderWidget::storeCurrentUserExpression()
 {
   const QString expression { this->expressionText() };
-  QgsExpressionStoreDialog dlg { expression, expression, QString( ), mExpressionTreeView->userExpressionLabels() };
+  QgsExpressionStoreDialog dlg { expression, expression, QString(), mExpressionTreeView->userExpressionLabels() };
   if ( dlg.exec() == QDialog::DialogCode::Accepted )
   {
     mExpressionTreeView->saveToUserExpressions( dlg.label().simplified(), dlg.expression(), dlg.helpText() );
@@ -1111,8 +1099,7 @@ void QgsExpressionBuilderWidget::editSelectedUserExpression()
 
   // Don't handle remove if we are on a header node or the parent
   // is not the user group
-  if ( item->getItemType() == QgsExpressionItem::Header ||
-       ( item->parent() && item->parent()->text() != mUserExpressionsGroupName ) )
+  if ( item->getItemType() == QgsExpressionItem::Header || ( item->parent() && item->parent()->text() != mUserExpressionsGroupName ) )
     return;
 
   QgsSettings settings;
@@ -1141,17 +1128,13 @@ void QgsExpressionBuilderWidget::removeSelectedUserExpression()
 
   // Don't handle remove if we are on a header node or the parent
   // is not the user group
-  if ( item->getItemType() == QgsExpressionItem::Header ||
-       ( item->parent() && item->parent()->text() != mUserExpressionsGroupName ) )
+  if ( item->getItemType() == QgsExpressionItem::Header || ( item->parent() && item->parent()->text() != mUserExpressionsGroupName ) )
     return;
 
-  if ( QMessageBox::Yes == QMessageBox::question( this, tr( "Remove Stored Expression" ),
-       tr( "Do you really want to remove stored expressions '%1'?" ).arg( item->text() ),
-       QMessageBox::Yes | QMessageBox::No ) )
+  if ( QMessageBox::Yes == QMessageBox::question( this, tr( "Remove Stored Expression" ), tr( "Do you really want to remove stored expressions '%1'?" ).arg( item->text() ), QMessageBox::Yes | QMessageBox::No ) )
   {
     mExpressionTreeView->removeFromUserExpressions( item->text() );
   }
-
 }
 
 void QgsExpressionBuilderWidget::exportUserExpressions_pressed()
@@ -1159,10 +1142,11 @@ void QgsExpressionBuilderWidget::exportUserExpressions_pressed()
   QgsSettings settings;
   QString lastSaveDir = settings.value( QStringLiteral( "lastExportExpressionsDir" ), QDir::homePath(), QgsSettings::App ).toString();
   QString saveFileName = QFileDialog::getSaveFileName(
-                           this,
-                           tr( "Export User Expressions" ),
-                           lastSaveDir,
-                           tr( "User expressions" ) + " (*.json)" );
+    this,
+    tr( "Export User Expressions" ),
+    lastSaveDir,
+    tr( "User expressions" ) + " (*.json)"
+  );
 
   // return dialog focus on Mac
   activateWindow();
@@ -1186,7 +1170,7 @@ void QgsExpressionBuilderWidget::exportUserExpressions_pressed()
   if ( !jsonFile.open( QFile::WriteOnly | QIODevice::Truncate ) )
     QMessageBox::warning( this, tr( "Export user expressions" ), tr( "Error while creating the expressions file." ) );
 
-  if ( ! jsonFile.write( exportJson.toJson() ) )
+  if ( !jsonFile.write( exportJson.toJson() ) )
     QMessageBox::warning( this, tr( "Export user expressions" ), tr( "Error while creating the expressions file." ) );
   else
     jsonFile.close();
@@ -1197,10 +1181,11 @@ void QgsExpressionBuilderWidget::importUserExpressions_pressed()
   QgsSettings settings;
   QString lastImportDir = settings.value( QStringLiteral( "lastImportExpressionsDir" ), QDir::homePath(), QgsSettings::App ).toString();
   QString loadFileName = QFileDialog::getOpenFileName(
-                           this,
-                           tr( "Import User Expressions" ),
-                           lastImportDir,
-                           tr( "User expressions" ) + " (*.json)" );
+    this,
+    tr( "Import User Expressions" ),
+    lastImportDir,
+    tr( "User expressions" ) + " (*.json)"
+  );
 
   if ( loadFileName.isEmpty() )
     return;

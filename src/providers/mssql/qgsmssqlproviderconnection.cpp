@@ -60,7 +60,7 @@ QgsMssqlProviderConnection::QgsMssqlProviderConnection( const QString &uri, cons
 
   if ( inputUri.hasParam( QStringLiteral( "estimatedMetadata" ) ) )
   {
-    currentUri.setUseEstimatedMetadata( inputUri.param( QStringLiteral( "estimatedMetadata" ) ) == QStringLiteral( "true" ) || inputUri.param( QStringLiteral( "estimatedMetadata" ) ) == '1' );
+    currentUri.setUseEstimatedMetadata( inputUri.param( QStringLiteral( "estimatedMetadata" ) ) == QLatin1String( "true" ) || inputUri.param( QStringLiteral( "estimatedMetadata" ) ) == '1' );
   }
 
   for ( const auto &param : EXTRA_CONNECTION_PARAMETERS )
@@ -339,10 +339,10 @@ QList<QgsMssqlProviderConnection::TableProperty> QgsMssqlProviderConnection::tab
   const QgsDataSourceUri dsUri { uri() };
 
   // Defaults to false
-  const bool useGeometryColumnsOnly { dsUri.hasParam( QStringLiteral( "geometryColumnsOnly" ) ) && ( dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == QStringLiteral( "true" ) || dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == '1' ) };
+  const bool useGeometryColumnsOnly { dsUri.hasParam( QStringLiteral( "geometryColumnsOnly" ) ) && ( dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == QLatin1String( "true" ) || dsUri.param( QStringLiteral( "geometryColumnsOnly" ) ) == '1' ) };
 
   // Defaults to true
-  const bool useEstimatedMetadata { !dsUri.hasParam( QStringLiteral( "estimatedMetadata" ) ) || ( dsUri.param( QStringLiteral( "estimatedMetadata" ) ) == QStringLiteral( "true" ) || dsUri.param( QStringLiteral( "estimatedMetadata" ) ) == '1' ) };
+  const bool useEstimatedMetadata { !dsUri.hasParam( QStringLiteral( "estimatedMetadata" ) ) || ( dsUri.param( QStringLiteral( "estimatedMetadata" ) ) == QLatin1String( "true" ) || dsUri.param( QStringLiteral( "estimatedMetadata" ) ) == '1' ) };
 
   // Defaults to true because we want to list all tables if flags are not set
   bool allowGeometrylessTables;
@@ -537,7 +537,7 @@ void QgsMssqlProviderConnection::store( const QString &name ) const
   {
     if ( dsUri.hasParam( param ) )
     {
-      settings.setValue( param, dsUri.param( param ) == QStringLiteral( "true" ) || dsUri.param( param ) == '1' );
+      settings.setValue( param, dsUri.param( param ) == QLatin1String( "true" ) || dsUri.param( param ) == '1' );
     }
   }
 
@@ -545,7 +545,7 @@ void QgsMssqlProviderConnection::store( const QString &name ) const
   const auto config { configuration().keys() };
   for ( const auto &p : config )
   {
-    settings.setValue( p, configuration().value( p ) == QStringLiteral( "true" ) || configuration().value( p ) == '1' );
+    settings.setValue( p, configuration().value( p ) == QLatin1String( "true" ) || configuration().value( p ) == '1' );
   }
 
   settings.endGroup();

@@ -50,7 +50,7 @@ QString QgsExportToPostgresqlAlgorithm::groupId() const
 
 void QgsExportToPostgresqlAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Layer to export" ), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Layer to export" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
   addParameter( new QgsProcessingParameterProviderConnection( QStringLiteral( "DATABASE" ), QObject::tr( "Database (connection name)" ), QStringLiteral( "postgres" ) ) );
   addParameter( new QgsProcessingParameterDatabaseSchema( QStringLiteral( "SCHEMA" ), QObject::tr( "Schema (schema name)" ), QStringLiteral( "DATABASE" ), QStringLiteral( "public" ), true ) );
   addParameter( new QgsProcessingParameterDatabaseTable( QStringLiteral( "TABLENAME" ), QObject::tr( "Table to export to (leave blank to use layer name)" ), QStringLiteral( "DATABASE" ), QStringLiteral( "SCHEMA" ), QVariant(), true, true ) );
@@ -70,7 +70,7 @@ QString QgsExportToPostgresqlAlgorithm::shortHelpString() const
                       "database, creating a new table.\n\n"
                       "Prior to this a connection between QGIS and the PostgreSQL "
                       "database has to be created (for example through the QGIS Browser panel)."
-                    );
+  );
 }
 
 QString QgsExportToPostgresqlAlgorithm::shortDescription() const
@@ -150,7 +150,7 @@ QVariantMap QgsExportToPostgresqlAlgorithm::processAlgorithm( const QVariantMap 
   uri.setKeyColumn( mPrimaryKeyField );
   uri.setGeometryColumn( mGeomColumn );
 
-  std::unique_ptr< QgsVectorLayerExporter > exporter = std::make_unique< QgsVectorLayerExporter >( uri.uri(), mProviderName, mSource->fields(), mSource->wkbType(), mSource->sourceCrs(), mOverwrite, mOptions );
+  std::unique_ptr<QgsVectorLayerExporter> exporter = std::make_unique<QgsVectorLayerExporter>( uri.uri(), mProviderName, mSource->fields(), mSource->wkbType(), mSource->sourceCrs(), mOverwrite, mOptions );
 
   if ( exporter->errorCode() != Qgis::VectorExportResult::Success )
     throw QgsProcessingException( QObject::tr( "Error exporting to PostGIS\n%1" ).arg( exporter->errorMessage() ) );

@@ -31,9 +31,7 @@
  */
 class QgsBookmarksToLayerAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsBookmarksToLayerAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -49,13 +47,10 @@ class QgsBookmarksToLayerAlgorithm : public QgsProcessingAlgorithm
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    QList< QgsBookmark > mBookmarks;
-
-
+    QList<QgsBookmark> mBookmarks;
 };
 
 /**
@@ -63,9 +58,7 @@ class QgsBookmarksToLayerAlgorithm : public QgsProcessingAlgorithm
  */
 class QgsLayerToBookmarksAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsLayerToBookmarksAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -80,19 +73,14 @@ class QgsLayerToBookmarksAlgorithm : public QgsProcessingAlgorithm
     QgsLayerToBookmarksAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap postProcessAlgorithm( QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    QList< QgsBookmark > mBookmarks;
+    QList<QgsBookmark> mBookmarks;
     int mDest = 0;
-
-
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSBOOKMARKALGORITHMS_H
-
-

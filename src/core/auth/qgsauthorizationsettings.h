@@ -18,49 +18,41 @@
 
 #include "qgsauthmanager.h"
 #include "qgsapplication.h"
+#include "qgshttpheaders.h"
 
 #include <QString>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-// TODO: merge with QgsWmsAuthorization?
-struct QgsAuthorizationSettings
+#define SIP_NO_FILE
+
+/**
+ * \ingroup core
+ * \class QgsAuthorizationSettings
+ * \brief Utility class that contains authorization information.
+ * \since QGIS 3.42
+ */
+class CORE_EXPORT QgsAuthorizationSettings
 {
-    QgsAuthorizationSettings( const QString &userName = QString(), const QString &password = QString(), const QString &authcfg = QString() )
-      : mUserName( userName )
-      , mPassword( password )
-      , mAuthCfg( authcfg )
-    {}
+  public:
 
-    //! update authorization for request
-    bool setAuthorization( QNetworkRequest &request ) const
-    {
-      if ( !mAuthCfg.isEmpty() ) // must be non-empty value
-      {
-        return QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
-      }
-      else if ( !mUserName.isNull() || !mPassword.isNull() ) // allow empty values
-      {
-        request.setRawHeader( "Authorization", "Basic " + QStringLiteral( "%1:%2" ).arg( mUserName, mPassword ).toLatin1().toBase64() );
-      }
-      return true;
-    }
+    //! Constructor for QgsAuthorizationSettings.
+    QgsAuthorizationSettings( const QString &userName = QString(), const QString &password = QString(), const QgsHttpHeaders &httpHeaders = QgsHttpHeaders(), const QString &authcfg = QString() );
 
-    //! update authorization for reply
-    bool setAuthorizationReply( QNetworkReply *reply ) const
-    {
-      if ( !mAuthCfg.isEmpty() )
-      {
-        return QgsApplication::authManager()->updateNetworkReply( reply, mAuthCfg );
-      }
-      return true;
-    }
+    //! Update authorization for request
+    bool setAuthorization( QNetworkRequest &request ) const;
+
+    //! Update authorization for reply
+    bool setAuthorizationReply( QNetworkReply *reply ) const;
 
     //! Username for basic http authentication
     QString mUserName;
 
     //! Password for basic http authentication
     QString mPassword;
+
+    //! headers for http requests
+    QgsHttpHeaders mHttpHeaders;
 
     //! Authentication configuration ID
     QString mAuthCfg;

@@ -25,7 +25,7 @@
 
 #include <Qt3DCore/QEntity>
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
@@ -137,7 +137,7 @@ static Qt3DQAttribute *parseAttribute( tinygltf::Model &model, int accessorIndex
 
   attribute->setBuffer( buffer );
   attribute->setByteOffset( bv.byteOffset + accessor.byteOffset );
-  attribute->setByteStride( bv.byteStride );  // could be zero, it seems that's fine (assuming packed)
+  attribute->setByteStride( bv.byteStride ); // could be zero, it seems that's fine (assuming packed)
   attribute->setCount( accessor.count );
   attribute->setVertexBaseType( parseVertexBaseType( accessor.componentType ) );
   attribute->setVertexSize( tinygltf::GetNumComponentsInType( accessor.type ) );
@@ -166,9 +166,9 @@ static Qt3DQAttribute *reprojectPositions( tinygltf::Model &model, int accessorI
     double y = vy[i] - sceneOrigin.y();
     double z = ( vz[i] * transform.zValueScale ) + transform.zValueOffset - sceneOrigin.z();
 
-    out[i * 3 + 0] = static_cast< float >( x );
-    out[i * 3 + 1] = static_cast< float >( y );
-    out[i * 3 + 2] = static_cast< float >( z );
+    out[i * 3 + 0] = static_cast<float>( x );
+    out[i * 3 + 1] = static_cast<float>( y );
+    out[i * 3 + 2] = static_cast<float>( z );
   }
 
   Qt3DQBuffer *buffer = new Qt3DQBuffer();
@@ -203,7 +203,7 @@ class TinyGltfTextureImageDataGenerator : public Qt3DRender::QTextureImageDataGe
       return mImagePtr;
     }
 
-    bool operator ==( const QTextureImageDataGenerator &other ) const override
+    bool operator==( const QTextureImageDataGenerator &other ) const override
     {
       const TinyGltfTextureImageDataGenerator *otherFunctor = functor_cast<TinyGltfTextureImageDataGenerator>( &other );
       return mImagePtr.get() == otherFunctor->mImagePtr.get();

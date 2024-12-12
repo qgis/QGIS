@@ -40,7 +40,6 @@ class GUI_EXPORT QgsMeshRendererScalarSettingsWidget : public QWidget, private U
     Q_OBJECT
 
   public:
-
     /**
      * A widget to hold the renderer scalar settings for a mesh layer.
      * \param parent Parent object

@@ -1,5 +1,5 @@
 # The following has been generated automatically from src/gui/processing/qgsprocessingtoolboxtreeview.h
 try:
     QgsProcessingToolboxTreeView.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass

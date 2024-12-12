@@ -47,20 +47,21 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
 
   blockSignals( false );
 
-  connect( mSnapToleranceSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::snapToleranceChanged );
+  connect( mSnapToleranceSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::snapToleranceChanged );
 
   connect( mGridOffsetUnitsComboBox, &QgsLayoutUnitsComboBox::unitChanged, this, &QgsLayoutPropertiesWidget::gridOffsetUnitsChanged );
   connect( mGridSpacingUnitsCombo, &QgsLayoutUnitsComboBox::unitChanged, this, &QgsLayoutPropertiesWidget::gridResolutionUnitsChanged );
-  connect( mGridResolutionSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::gridResolutionChanged );
-  connect( mOffsetXSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::gridOffsetXChanged );
-  connect( mOffsetYSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::gridOffsetYChanged );
+  connect( mGridResolutionSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::gridResolutionChanged );
+  connect( mOffsetXSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::gridOffsetXChanged );
+  connect( mOffsetYSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::gridOffsetYChanged );
 
   const double leftMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsLeftMargin" ) ).toDouble();
   const double topMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsTopMargin" ) ).toDouble();
   const double bottomMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsBottomMargin" ) ).toDouble();
   const double rightMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsRightMargin" ) ).toDouble();
-  const Qgis::LayoutUnit marginUnit = static_cast< Qgis::LayoutUnit >(
-                                        mLayout->customProperty( QStringLiteral( "imageCropMarginUnit" ), static_cast< int >( Qgis::LayoutUnit::Millimeters ) ).toInt() );
+  const Qgis::LayoutUnit marginUnit = static_cast<Qgis::LayoutUnit>(
+    mLayout->customProperty( QStringLiteral( "imageCropMarginUnit" ), static_cast<int>( Qgis::LayoutUnit::Millimeters ) ).toInt()
+  );
 
   const bool exportWorldFile = mLayout->customProperty( QStringLiteral( "exportWorldFile" ), false ).toBool();
   mGenerateWorldFileCheckBox->setChecked( exportWorldFile );
@@ -80,13 +81,13 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   mMarginUnitsComboBox->setUnit( marginUnit );
   mMarginUnitsComboBox->setConverter( &mLayout->renderContext().measurementConverter() );
 
-  connect( mTopMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
-  connect( mRightMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
-  connect( mBottomMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
-  connect( mLeftMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
+  connect( mTopMarginSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
+  connect( mRightMarginSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
+  connect( mBottomMarginSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
+  connect( mLeftMarginSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
   connect( mResizePageButton, &QPushButton::clicked, this, &QgsLayoutPropertiesWidget::resizeToContents );
 
-  connect( mResolutionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::dpiChanged );
+  connect( mResolutionSpinBox, &QSpinBox::editingFinished, this, [this] { dpiChanged( mResolutionSpinBox->value() ); } );
 
   mReferenceMapComboBox->setCurrentLayout( mLayout );
   mReferenceMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
@@ -109,7 +110,7 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
 
 void QgsLayoutPropertiesWidget::setMasterLayout( QgsMasterLayoutInterface *masterLayout )
 {
-  if ( QgsPrintLayout *printLayout = dynamic_cast< QgsPrintLayout * >( masterLayout ) )
+  if ( QgsPrintLayout *printLayout = dynamic_cast<QgsPrintLayout *>( masterLayout ) )
   {
     connect( printLayout, &QgsPrintLayout::nameChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
     connect( printLayout->atlas(), &QgsLayoutAtlas::coverageLayerChanged, this, &QgsLayoutPropertiesWidget::updateVariables );
@@ -201,18 +202,14 @@ void QgsLayoutPropertiesWidget::resizeMarginsChanged()
   mLayout->setCustomProperty( QStringLiteral( "resizeToContentsTopMargin" ), mTopMarginSpinBox->value() );
   mLayout->setCustomProperty( QStringLiteral( "resizeToContentsBottomMargin" ), mBottomMarginSpinBox->value() );
   mLayout->setCustomProperty( QStringLiteral( "resizeToContentsRightMargin" ), mRightMarginSpinBox->value() );
-  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginUnit" ), static_cast< int >( mMarginUnitsComboBox->unit() ) );
+  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginUnit" ), static_cast<int>( mMarginUnitsComboBox->unit() ) );
 }
 
 void QgsLayoutPropertiesWidget::resizeToContents()
 {
   mLayout->undoStack()->beginMacro( tr( "Resize to Contents" ) );
 
-  mLayout->pageCollection()->resizeToContents( QgsMargins( mLeftMarginSpinBox->value(),
-      mTopMarginSpinBox->value(),
-      mRightMarginSpinBox->value(),
-      mBottomMarginSpinBox->value() ),
-      mMarginUnitsComboBox->unit() );
+  mLayout->pageCollection()->resizeToContents( QgsMargins( mLeftMarginSpinBox->value(), mTopMarginSpinBox->value(), mRightMarginSpinBox->value(), mBottomMarginSpinBox->value() ), mMarginUnitsComboBox->unit() );
 
   mLayout->undoStack()->endMacro();
 }
@@ -220,7 +217,7 @@ void QgsLayoutPropertiesWidget::resizeToContents()
 void QgsLayoutPropertiesWidget::referenceMapChanged( QgsLayoutItem *item )
 {
   mLayout->undoStack()->beginCommand( mLayout, tr( "Set Reference Map" ) );
-  QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( item );
+  QgsLayoutItemMap *map = qobject_cast<QgsLayoutItemMap *>( item );
   mLayout->setReferenceMap( map );
   mLayout->undoStack()->endCommand();
 }
@@ -286,4 +283,3 @@ void QgsLayoutPropertiesWidget::blockSignals( bool block )
   mOffsetYSpinBox->blockSignals( block );
   mSnapToleranceSpinBox->blockSignals( block );
 }
-

@@ -64,7 +64,7 @@ QgsTruncateTableAlgorithm *QgsTruncateTableAlgorithm::createInstance() const
 
 void QgsTruncateTableAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
   addOutput( new QgsProcessingOutputVectorLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Truncated layer" ) ) );
 }
 

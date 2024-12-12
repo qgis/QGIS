@@ -76,7 +76,6 @@ class QgsLineMaterial : public QgsMaterial
     Qt3DRender::QParameter *mParameterUseVertexColors = nullptr;
 
     Qt3DRender::QParameter *mParameterWindowScale = nullptr;
-
 };
 
 /// @endcond

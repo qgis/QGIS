@@ -227,6 +227,12 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
 
     void selectionModeChanged();
 
+    //! Emitted when a feature gets highlighted
+    void featureHighlighted( const QgsFeature &feature, QgsMapLayer *layer );
+
+    //! Emitted when all feature highlights are removed
+    void highlightsCleared();
+
   public slots:
     //! Remove results
     void clear();

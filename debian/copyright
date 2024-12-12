@@ -753,10 +753,6 @@ Files: src/app/qtmain_android.cpp
 Copyright: 2009-2011, BogDan Vatra <bog_dan_ro@yahoo.com>
 License: BSD-3-Clause
 
-Files: src/auth/oauth2/qjsonwrapper/*
-Copyright: 2014, Uwe L. Korn <uwelk@xhochy.com>
-License: MIT
-
 Files: src/core/pal/*
 Copyright: 2008, Maxence Laurent, MIS-TIC, HEIG-VD
 License: GPL-3+

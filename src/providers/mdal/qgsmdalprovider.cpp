@@ -663,10 +663,15 @@ void QgsMdalProvider::fileMeshExtensions( QStringList &fileMeshExtensions, QStri
 
 bool QgsMdalProvider::addDataset( const QString &uri )
 {
+  if ( mExtraDatasetUris.contains( uri ) || dataSourceUri().contains( uri ) )
+    return false;
+
   int datasetCount = datasetGroupCount();
 
   std::string str = uri.toStdString();
   MDAL_M_LoadDatasets( mMeshH, str.c_str() );
+
+  makeLastDatasetGroupNameUnique();
 
   if ( datasetCount == datasetGroupCount() )
   {
@@ -684,6 +689,62 @@ bool QgsMdalProvider::addDataset( const QString &uri )
     emit datasetGroupsAdded( datasetCountAdded );
     emit dataChanged();
     return true; // Ok
+  }
+}
+
+void QgsMdalProvider::makeLastDatasetGroupNameUnique()
+{
+  MDAL_DatasetGroupH datasetGroupH = MDAL_M_datasetGroup( mMeshH, datasetGroupCount() - 1 );
+  QString lastAddedGroupName = QString( MDAL_G_name( datasetGroupH ) );
+
+  QSet<QString> existingNames;
+
+  for ( int i = 0; i < datasetGroupCount() - 1; i++ )
+  {
+    existingNames.insert( MDAL_G_name( MDAL_M_datasetGroup( mMeshH, i ) ) );
+  }
+
+  if ( existingNames.contains( lastAddedGroupName ) )
+  {
+    const thread_local QRegularExpression reEndsNumber( "_([0-9]+)$" );
+    QRegularExpressionMatch match;
+
+    while ( existingNames.find( lastAddedGroupName ) != existingNames.end() )
+    {
+      match = reEndsNumber.match( lastAddedGroupName );
+      if ( match.hasMatch() )
+      {
+        const int number = match.capturedTexts().constLast().toInt();
+        lastAddedGroupName = lastAddedGroupName.left( lastAddedGroupName.length() - match.capturedLength() + 1 ) + QString::number( number + 1 );
+      }
+      else
+      {
+        lastAddedGroupName = lastAddedGroupName.append( "_1" );
+      }
+    }
+    MDAL_G_setName( datasetGroupH, lastAddedGroupName.toStdString().c_str() );
+  }
+}
+
+bool QgsMdalProvider::removeDatasetGroup( int index )
+{
+  if ( index < 0 && index > datasetGroupCount() - 1 )
+  {
+    return false;
+  }
+  else
+  {
+    const QgsMeshDatasetGroupMetadata datasetGroupMeta = datasetGroupMetadata( index );
+
+    if ( !mExtraDatasetUris.contains( datasetGroupMeta.uri() ) )
+    {
+      return false;
+    }
+
+    mExtraDatasetUris.removeOne( datasetGroupMeta.uri() );
+    MDAL_M_RemoveDatasetGroup( mMeshH, index );
+    emit dataChanged();
+    return true;
   }
 }
 

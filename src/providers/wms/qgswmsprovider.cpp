@@ -88,8 +88,6 @@
 QString QgsWmsProvider::WMS_KEY = QStringLiteral( "wms" );
 QString QgsWmsProvider::WMS_DESCRIPTION = QStringLiteral( "OGC Web Map Service version 1.3 data provider" );
 
-static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
-
 QMap<QString, QgsWmsStatistics::Stat> QgsWmsStatistics::sData;
 
 //! a helper class for ordering tile requests according to the distance from view center
@@ -4240,7 +4238,7 @@ QgsProviderMetadata::ProviderCapabilities QgsWmsProviderMetadata::providerCapabi
 
 // -----------------
 
-QgsWmsImageDownloadHandler::QgsWmsImageDownloadHandler( const QString &providerUri, const QUrl &url, const QgsWmsAuthorization &auth, QImage *image, QgsRasterBlockFeedback *feedback )
+QgsWmsImageDownloadHandler::QgsWmsImageDownloadHandler( const QString &providerUri, const QUrl &url, const QgsAuthorizationSettings &auth, QImage *image, QgsRasterBlockFeedback *feedback )
   : mProviderUri( providerUri )
   , mCachedImage( image )
   , mEventLoop( new QEventLoop )
@@ -4395,7 +4393,7 @@ void QgsWmsImageDownloadHandler::canceled()
 // ----------
 
 
-QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString &providerUri, const QgsWmsAuthorization &auth, int tileReqNo, const QgsWmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, double sourceResolution, bool smoothPixmapTransform, bool resamplingEnabled, QgsRasterBlockFeedback *feedback )
+QgsWmsTiledImageDownloadHandler::QgsWmsTiledImageDownloadHandler( const QString &providerUri, const QgsAuthorizationSettings &auth, int tileReqNo, const QgsWmsProvider::TileRequests &requests, QImage *image, const QgsRectangle &viewExtent, double sourceResolution, bool smoothPixmapTransform, bool resamplingEnabled, QgsRasterBlockFeedback *feedback )
   : mProviderUri( providerUri )
   , mAuth( auth )
   , mImage( image )

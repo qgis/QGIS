@@ -23,11 +23,7 @@ for each set of "destination" fields an expression defines how to obtain the val
 #include "qgsfieldmappingwidget.h"
 %End
   public:
-
-    explicit QgsFieldMappingWidget( QWidget *parent = 0,
-                                    const QgsFields &sourceFields = QgsFields(),
-                                    const QgsFields &destinationFields = QgsFields(),
-                                    const QMap<QString, QString> &expressions = QMap<QString, QString>() );
+    explicit QgsFieldMappingWidget( QWidget *parent = 0, const QgsFields &sourceFields = QgsFields(), const QgsFields &destinationFields = QgsFields(), const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 %Docstring
 Constructs a QgsFieldMappingWidget from a set of ``sourceFields``
 and ``destinationFields``, initial values for the expressions can be
@@ -56,7 +52,7 @@ Returns the underlying mapping model
 Returns a list of Field objects representing the current status of the underlying mapping model
 %End
 
-    QMap< QString, QgsProperty > fieldPropertyMap() const;
+    QMap<QString, QgsProperty> fieldPropertyMap() const;
 %Docstring
 Returns a map of destination field name to :py:class:`QgsProperty` definition for field value,
 representing the current status of the widget.
@@ -64,7 +60,7 @@ representing the current status of the widget.
 .. seealso:: :py:func:`setFieldPropertyMap`
 %End
 
-    void setFieldPropertyMap( const QMap< QString, QgsProperty > &map );
+    void setFieldPropertyMap( const QMap<QString, QgsProperty> &map );
 %Docstring
 Sets a map of destination field name to :py:class:`QgsProperty` definition for field value.
 
@@ -97,8 +93,7 @@ Returned value may be ``None``.
 .. versionadded:: 3.16
 %End
 
-    void setDestinationFields( const QgsFields &destinationFields,
-                               const QMap<QString, QString> &expressions = QMap<QString, QString>() );
+    void setDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 %Docstring
 Set destination fields to ``destinationFields`` in the underlying model,
 initial values for the expressions can be optionally specified through
@@ -131,22 +126,22 @@ Emitted when the fields defined in the widget are changed.
 Appends a new ``field`` to the model, with an optional ``expression``
 %End
 
-    bool removeSelectedFields( );
+    bool removeSelectedFields();
 %Docstring
 Removes the currently selected field from the model
 %End
 
-    bool moveSelectedFieldsUp( );
+    bool moveSelectedFieldsUp();
 %Docstring
 Moves up currently selected field
 %End
 
-    bool moveSelectedFieldsDown( );
+    bool moveSelectedFieldsDown();
 %Docstring
 Moves down the currently selected field
 %End
 
-    void invertSelection( );
+    void invertSelection();
 %Docstring
 Invert the field selection state.
 

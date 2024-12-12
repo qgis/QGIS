@@ -478,9 +478,9 @@ void TestQgsPointCloud3DRendering::testPointCloudFilteredClassification()
   // find a better fix in the future.
   QImage img = Qgs3DUtils::captureSceneImage( engine, scene );
 
-  QGSVERIFYIMAGECHECK( "pointcloud_3d_filtered_classification", "pointcloud_3d_filtered_classification", img, QString(), 80, QSize( 0, 0 ), 15 );
-
   mLayer->setSubsetString( "" );
+
+  QGSVERIFYIMAGECHECK( "pointcloud_3d_filtered_classification", "pointcloud_3d_filtered_classification", img, QString(), 80, QSize( 0, 0 ), 15 );
 }
 
 void TestQgsPointCloud3DRendering::testPointCloudFilteredSceneExtent()

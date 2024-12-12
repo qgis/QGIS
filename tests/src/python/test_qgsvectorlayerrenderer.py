@@ -16,21 +16,27 @@ from qgis.PyQt.QtCore import QDir, QSize
 from qgis.PyQt.QtGui import QColor
 
 from qgis.core import (
+    edit,
     Qgis,
     QgsCategorizedSymbolRenderer,
     QgsCentroidFillSymbolLayer,
     QgsCoordinateReferenceSystem,
+    QgsFeature,
     QgsFeatureRendererGenerator,
     QgsFillSymbol,
     QgsGeometry,
+    QgsGeometryGeneratorSymbolLayer,
     QgsLineSymbol,
     QgsMapClippingRegion,
     QgsMapSettings,
     QgsMarkerSymbol,
+    QgsPointXY,
     QgsRectangle,
     QgsRendererCategory,
     QgsRuleBasedRenderer,
     QgsSingleSymbolRenderer,
+    QgsSymbol,
+    QgsRenderContext,
     QgsVectorLayer,
 )
 import unittest
@@ -924,6 +930,81 @@ class TestQgsVectorLayerRenderer(QgisTestCase):
         self.assertTrue(
             self.render_map_settings_check(
                 "selection_symbol", "selection_symbol", mapsettings
+            )
+        )
+
+    def testRenderWithExtentBuffer(self):
+        def createFeature(x: float, y: float) -> QgsFeature:
+            feat = QgsFeature()
+            feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(x, y)))
+
+            return feat
+
+        def createSymbol() -> QgsMarkerSymbol:
+            sym = QgsMarkerSymbol.createSimple(
+                {"color": "#33aa33", "outline_style": "no", "size": "5"}
+            )
+            return sym
+
+        def createGeometryGenerator() -> QgsGeometryGeneratorSymbolLayer:
+            geomgen = QgsGeometryGeneratorSymbolLayer.create(
+                {"geometryModifier": "make_point($x + if($x <= 0, 5, -5), $y)"}
+            )
+            geomgen.setSymbolType(QgsSymbol.SymbolType.Marker)
+            geomgen.setSubSymbol(
+                QgsMarkerSymbol.createSimple(
+                    {"color": "#ff00ff", "outline_style": "no", "size": "6"}
+                )
+            )
+
+            return geomgen
+
+        point_layer = QgsVectorLayer("Point?crs=EPSG:3857", "point layer", "memory")
+
+        with edit(point_layer):
+            point_layer.addFeature(createFeature(-15.999, 8))
+            point_layer.addFeature(createFeature(-16.001, 6))
+            point_layer.addFeature(createFeature(-13, 4))
+            point_layer.addFeature(createFeature(-10, 2))
+            point_layer.addFeature(createFeature(17, 0))
+            point_layer.addFeature(createFeature(4, -2))
+            point_layer.addFeature(createFeature(15.999, -4))
+            point_layer.addFeature(createFeature(17, -6))
+            point_layer.addFeature(createFeature(15.999, -8))
+
+        sym1 = createSymbol()
+        sym1.appendSymbolLayer(createGeometryGenerator())
+
+        renderer1 = QgsSingleSymbolRenderer(sym1)
+        point_layer.setRenderer(renderer1)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
+        mapsettings.setExtent(QgsRectangle(-10, -10, 10, 10))
+        mapsettings.setLayers([point_layer])
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                "buffer_extent_zero",
+                "buffer_extent_zero",
+                mapsettings,
+            )
+        )
+
+        sym2 = createSymbol()
+        sym2.appendSymbolLayer(createGeometryGenerator())
+        sym2.setExtentBuffer(1)
+
+        renderer2 = QgsSingleSymbolRenderer(sym2)
+        point_layer.setRenderer(renderer2)
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                "buffer_extent",
+                "buffer_extent",
+                mapsettings,
             )
         )
 

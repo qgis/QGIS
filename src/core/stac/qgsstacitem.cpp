@@ -40,7 +40,7 @@ QString QgsStacItem::toHtml() const
 {
   QString html = QStringLiteral( "<html><head></head>\n<body>\n" );
 
-  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Item") );
+  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Item" ) );
   html += QLatin1String( "<table class=\"list-view\">\n" );
   html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "id" ), id() );
   html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "stac_version" ), stacVersion() );
@@ -49,7 +49,7 @@ QString QgsStacItem::toHtml() const
 
   if ( !mStacExtensions.isEmpty() )
   {
-    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Extensions") );
+    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Extensions" ) );
     html += QLatin1String( "<ul>\n" );
     for ( const QString &extension : mStacExtensions )
     {
@@ -58,19 +58,19 @@ QString QgsStacItem::toHtml() const
     html += QLatin1String( "</ul>\n" );
   }
 
-  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Geometry") );
+  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Geometry" ) );
   html += QLatin1String( "<table class=\"list-view\">\n" );
   html += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>%2</td></tr>\n" ).arg( QStringLiteral( "WKT" ), mGeometry.asWkt() );
   html += QLatin1String( "</table>\n" );
 
-  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Bounding Box") );
+  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Bounding Box" ) );
   html += QLatin1String( "<ul>\n" );
   html += QStringLiteral( "<li>%1</li>\n" ).arg( mBbox.is2d() ? mBbox.toRectangle().toString() : mBbox.toString() );
   html += QLatin1String( "</ul>\n" );
 
   if ( ! mProperties.isEmpty() )
   {
-    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Properties") );
+    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Properties" ) );
     html += QLatin1String( "<table class=\"list-view\">\n" );
     for ( auto it = mProperties.constBegin(); it != mProperties.constEnd(); ++it )
     {
@@ -79,7 +79,7 @@ QString QgsStacItem::toHtml() const
     html += QLatin1String( "</table><br/>\n" );
   }
 
-  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Links") );
+  html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Links" ) );
   for ( const QgsStacLink &link : mLinks )
   {
     html += QLatin1String( "<table class=\"list-view\">\n" );
@@ -92,7 +92,7 @@ QString QgsStacItem::toHtml() const
 
   if ( ! mAssets.isEmpty() )
   {
-    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Assets") );
+    html += QStringLiteral( "<h1>%1</h1>\n<hr>\n" ).arg( QLatin1String( "Assets" ) );
     for ( auto it = mAssets.constBegin(); it != mAssets.constEnd(); ++it )
     {
       html += QLatin1String( "<table class=\"list-view\">\n" );
@@ -176,4 +176,30 @@ QgsDateTimeRange QgsStacItem::dateTimeRange() const
   const QDateTime start = QDateTime::fromString( mProperties.value( QStringLiteral( "start_datetime" ), QStringLiteral( "null" ) ).toString() );
   const QDateTime end = QDateTime::fromString( mProperties.value( QStringLiteral( "end_datetime" ), QStringLiteral( "null" ) ).toString() );
   return QgsDateTimeRange( start, end );
+}
+
+QString QgsStacItem::title() const
+{
+  return mProperties.value( QStringLiteral( "title" ) ).toString();
+}
+
+QString QgsStacItem::description() const
+{
+  return mProperties.value( QStringLiteral( "description" ) ).toString();
+}
+
+QgsMimeDataUtils::UriList QgsStacItem::uris() const
+{
+  QgsMimeDataUtils::UriList uris;
+  for ( const QgsStacAsset &asset : std::as_const( mAssets ) )
+  {
+    QgsMimeDataUtils::Uri uri = asset.uri();
+
+    // skip assets with incompatible formats
+    if ( uri.uri.isEmpty() )
+      continue;
+
+    uris.append( uri );
+  }
+  return uris;
 }

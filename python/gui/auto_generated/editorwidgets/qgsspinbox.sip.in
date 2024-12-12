@@ -36,7 +36,6 @@ This value can then be handled by a special value text.
       sipType = NULL;
 %End
   public:
-
     enum ClearValueMode
     {
       MinimumValue,
@@ -153,7 +152,6 @@ Emitted when the the value has been manually edited via line edit.
 %End
 
   protected:
-
     virtual void changeEvent( QEvent *event );
 
     virtual void paintEvent( QPaintEvent *event );

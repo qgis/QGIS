@@ -122,10 +122,10 @@
   ( void ) ( 0 )
 
 //sometimes GML attributes are in a different order - but that's ok
-#define QGSCOMPAREGML( result, expected )                                                                                 \
-  {                                                                                                                       \
-    QCOMPARE( result.replace( QStringLiteral( "ts=\" \" cs=\",\"" ), QStringLiteral( "cs=\",\" ts=\" \"" ) ), expected ); \
-  }                                                                                                                       \
+#define QGSCOMPAREGML( result, expected )                                                                               \
+  {                                                                                                                     \
+    QCOMPARE( result.replace( QLatin1String( "ts=\" \" cs=\",\"" ), QLatin1String( "cs=\",\" ts=\" \"" ) ), expected ); \
+  }                                                                                                                     \
   ( void ) ( 0 )
 
 // Start your PostgreSQL-backend connection requiring test with this macro

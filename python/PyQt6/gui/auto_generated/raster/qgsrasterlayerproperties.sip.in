@@ -24,7 +24,6 @@ Property sheet for a raster map layer
 %End
   public:
 
-
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = 0, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor

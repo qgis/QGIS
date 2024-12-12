@@ -46,24 +46,22 @@ class QgsServerApiBadRequestException;
  */
 class SERVER_EXPORT QgsServerQueryStringParameter
 {
-
     Q_GADGET
 
 #ifndef SIP_RUN
-    typedef  std::function< bool ( const QgsServerApiContext &, QVariant & ) > customValidator;
+    typedef std::function<bool( const QgsServerApiContext &, QVariant & )> customValidator;
 #endif
   public:
-
     /**
      * The Type enum represents the parameter type
      */
     enum class Type
     {
-      String = QMetaType::Type::QString,    //!< Parameter is a string
+      String = QMetaType::Type::QString,   //!< Parameter is a string
       Integer = QMetaType::Type::LongLong, //!< Parameter is an integer
       Double = QMetaType::Type::Double,    //!< Parameter is a double
       Boolean = QMetaType::Type::Bool,     //!< Parameter is a boolean
-      List = QMetaType::Type::QStringList,  //!< Parameter is a (comma separated) list of strings, the handler will perform any further required conversion of the list values
+      List = QMetaType::Type::QStringList, //!< Parameter is a (comma separated) list of strings, the handler will perform any further required conversion of the list values
     };
     Q_ENUM( Type )
 
@@ -77,11 +75,7 @@ class SERVER_EXPORT QgsServerQueryStringParameter
      * \param description parameter description
      * \param defaultValue default value, it is ignored if the parameter is required
      */
-    QgsServerQueryStringParameter( const QString name,
-                                   bool required = false,
-                                   Type type = QgsServerQueryStringParameter::Type::String,
-                                   const QString &description = QString(),
-                                   const QVariant &defaultValue = QVariant() );
+    QgsServerQueryStringParameter( const QString name, bool required = false, Type type = QgsServerQueryStringParameter::Type::String, const QString &description = QString(), const QVariant &defaultValue = QVariant() );
 
     virtual ~QgsServerQueryStringParameter();
 
@@ -116,7 +110,7 @@ class SERVER_EXPORT QgsServerQueryStringParameter
     /**
      * Returns the handler information as a JSON object.
      */
-    json data( ) const;
+    json data() const;
 
 #endif
 
@@ -158,7 +152,6 @@ class SERVER_EXPORT QgsServerQueryStringParameter
     void setHidden( bool hidden );
 
   private:
-
     QString mName;
     bool mRequired = false;
     Type mType = Type::String;
@@ -168,7 +161,6 @@ class SERVER_EXPORT QgsServerQueryStringParameter
     bool mHidden = false;
 
     friend class TestQgsServerQueryStringParameter;
-
 };
 
 #endif // QGSSERVERQUERYSTRINGPARAMETER_H

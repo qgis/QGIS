@@ -23,9 +23,7 @@ will be returned.
 #include "qgsquerybuilder.h"
 %End
   public:
-
-    QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0,
-                     Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 This constructor is used when the query builder is called from the
 vector layer properties dialog

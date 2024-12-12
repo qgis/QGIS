@@ -41,7 +41,6 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
     Q_OBJECT
 
   public:
-
 #ifndef SIP_RUN
 
     /**
@@ -159,7 +158,6 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
     void loadDefaultStyle();
 
   protected:
-
     /**
      * Initialize the dialog. Must be called in the subclass constructor
      * as the final call.
@@ -199,12 +197,14 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
     /**
      * Resets the dialog to the current layer state.
       */
-    virtual void syncToLayer() SIP_SKIP = 0;
+    virtual void syncToLayer() SIP_SKIP
+    = 0;
 
     /**
      * Applies the dialog settings to the layer.
      */
-    virtual void apply() SIP_SKIP = 0;
+    virtual void apply() SIP_SKIP
+    = 0;
 
     /**
      * Rolls back changes made to the layer.
@@ -222,17 +222,15 @@ class GUI_EXPORT QgsLayerPropertiesDialog : public QgsOptionsDialogBase SIP_ABST
     void openUrl( const QUrl &url );
 
   private:
-
     /**
      * Generates the window title for the dialog.
      */
     QString generateDialogTitle() const;
 
-    QPointer< QgsMapLayer> mLayer;
+    QPointer<QgsMapLayer> mLayer;
 
     QgsMetadataWidget *mMetadataWidget = nullptr;
     QWidget *mMetadataPage = nullptr;
-
 };
 
 #endif // QGSLAYERPROPERTIESDIALOG_H

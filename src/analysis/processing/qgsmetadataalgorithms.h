@@ -42,13 +42,10 @@ class QgsCopyLayerMetadataAlgorithm : public QgsProcessingAlgorithm
     QgsCopyLayerMetadataAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback * ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;
 
   private:
-
     QString mLayerId;
 };
 
@@ -69,13 +66,10 @@ class QgsApplyLayerMetadataAlgorithm : public QgsProcessingAlgorithm
     QgsApplyLayerMetadataAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback * ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;
 
   private:
-
     QString mLayerId;
 };
 
@@ -97,12 +91,9 @@ class QgsExportLayerMetadataAlgorithm : public QgsProcessingAlgorithm
     QgsExportLayerMetadataAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback * ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;
 
   private:
-
     QString mLayerId;
 };
 

@@ -62,7 +62,7 @@ QString QgsZonalMinimumMaximumPointAlgorithm::shortHelpString() const
 
 QList<int> QgsZonalMinimumMaximumPointAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
+  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 QgsZonalMinimumMaximumPointAlgorithm *QgsZonalMinimumMaximumPointAlgorithm::createInstance() const
@@ -74,8 +74,7 @@ void QgsZonalMinimumMaximumPointAlgorithm::initParameters( const QVariantMap &co
 {
   Q_UNUSED( configuration )
   addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_RASTER" ), QObject::tr( "Raster layer" ) ) );
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "RASTER_BAND" ),
-                QObject::tr( "Raster band" ), 1, QStringLiteral( "INPUT_RASTER" ) ) );
+  addParameter( new QgsProcessingParameterBand( QStringLiteral( "RASTER_BAND" ), QObject::tr( "Raster band" ), 1, QStringLiteral( "INPUT_RASTER" ) ) );
 }
 
 QString QgsZonalMinimumMaximumPointAlgorithm::outputName() const
@@ -122,8 +121,7 @@ bool QgsZonalMinimumMaximumPointAlgorithm::prepareAlgorithm( const QVariantMap &
 
   mBand = parameterAsInt( parameters, QStringLiteral( "RASTER_BAND" ), context );
   if ( mBand < 1 || mBand > rasterLayer->bandCount() )
-    throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand )
-                                  .arg( rasterLayer->bandCount() ) );
+    throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( mBand ).arg( rasterLayer->bandCount() ) );
 
   if ( !rasterLayer->dataProvider() )
     throw QgsProcessingException( QObject::tr( "Invalid raster layer. Layer %1 is invalid." ).arg( rasterLayer->id() ) );
@@ -164,20 +162,19 @@ QgsFeatureList QgsZonalMinimumMaximumPointAlgorithm::processFeature( const QgsFe
       feedback->reportError( QObject::tr( "Encountered a transform error when reprojecting feature with id %1." ).arg( feature.id() ) );
   }
 
-  const QMap<Qgis::ZonalStatistic, QVariant> results = QgsZonalStatistics::calculateStatistics( mRaster.get(), geometry, mPixelSizeX, mPixelSizeY, mBand,
-      Qgis::ZonalStatistic::Min | Qgis::ZonalStatistic::MinimumPoint | Qgis::ZonalStatistic::Max | Qgis::ZonalStatistic::MaximumPoint );
+  const QMap<Qgis::ZonalStatistic, QVariant> results = QgsZonalStatistics::calculateStatistics( mRaster.get(), geometry, mPixelSizeX, mPixelSizeY, mBand, Qgis::ZonalStatistic::Min | Qgis::ZonalStatistic::MinimumPoint | Qgis::ZonalStatistic::Max | Qgis::ZonalStatistic::MaximumPoint );
 
   QgsFeature minPointFeature( mOutputFields );
   QgsAttributes minAttributes = attributes;
   minAttributes << results.value( Qgis::ZonalStatistic::Min ) << QStringLiteral( "minimum" );
   minPointFeature.setAttributes( minAttributes );
-  minPointFeature.setGeometry( QgsGeometry::fromPointXY( results.value( Qgis::ZonalStatistic::MinimumPoint ).value< QgsPointXY >() ) );
+  minPointFeature.setGeometry( QgsGeometry::fromPointXY( results.value( Qgis::ZonalStatistic::MinimumPoint ).value<QgsPointXY>() ) );
 
   QgsFeature maxPointFeature( mOutputFields );
   QgsAttributes maxAttributes = attributes;
   maxAttributes << results.value( Qgis::ZonalStatistic::Max ) << QStringLiteral( "maximum" );
   maxPointFeature.setAttributes( maxAttributes );
-  maxPointFeature.setGeometry( QgsGeometry::fromPointXY( results.value( Qgis::ZonalStatistic::MaximumPoint ).value< QgsPointXY >() ) );
+  maxPointFeature.setGeometry( QgsGeometry::fromPointXY( results.value( Qgis::ZonalStatistic::MaximumPoint ).value<QgsPointXY>() ) );
 
   return QgsFeatureList { minPointFeature, maxPointFeature };
 }

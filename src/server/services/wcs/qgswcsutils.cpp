@@ -94,7 +94,7 @@ namespace QgsWcs
     lowerPosElem.appendChild( lowerPosText );
     lonLatElem.appendChild( lowerPosElem );
     QDomElement upperPosElem = doc.createElement( QStringLiteral( "gml:pos" ) );
-    const QDomText upperPosText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( BBox.xMaximum(), wgs84precision ), wgs84precision ) + " " +  qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( BBox.yMaximum(), wgs84precision ), wgs84precision ) );
+    const QDomText upperPosText = doc.createTextNode( qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( BBox.xMaximum(), wgs84precision ), wgs84precision ) + " " + qgsDoubleToString( QgsServerProjectUtils::ceilWithPrecision( BBox.yMaximum(), wgs84precision ), wgs84precision ) );
     upperPosElem.appendChild( upperPosText );
     lonLatElem.appendChild( upperPosElem );
     layerElem.appendChild( lonLatElem );
@@ -253,8 +253,7 @@ namespace QgsWcs
 
   QString serviceUrl( const QgsServerRequest &request, const QgsProject *project, const QgsServerSettings &settings )
   {
-    static const QSet< QString > sFilter
-    {
+    static const QSet<QString> sFilter {
       QStringLiteral( "REQUEST" ),
       QStringLiteral( "VERSION" ),
       QStringLiteral( "SERVICE" ),
@@ -269,7 +268,7 @@ namespace QgsWcs
       QUrl url = request.originalUrl();
       QUrlQuery q( url );
 
-      const QList<QPair<QString, QString> > queryItems = q.queryItems();
+      const QList<QPair<QString, QString>> queryItems = q.queryItems();
       for ( const QPair<QString, QString> &param : queryItems )
       {
         if ( sFilter.contains( param.first.toUpper() ) )
@@ -278,10 +277,9 @@ namespace QgsWcs
 
       url.setQuery( q );
       href = url.toString();
-
     }
 
-    return  href;
+    return href;
   }
 
   QgsRectangle parseBbox( const QString &bboxStr )
@@ -302,6 +300,4 @@ namespace QgsWcs
     return QgsRectangle( d[0], d[1], d[2], d[3] );
   }
 
-} // namespace QgsWfs
-
-
+} // namespace QgsWcs

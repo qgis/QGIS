@@ -37,7 +37,7 @@ namespace Qt3DRender
   class QRenderSettings;
   class QCamera;
   class QFrameGraphNode;
-}
+} // namespace Qt3DRender
 
 class QgsFrameGraph;
 
@@ -61,7 +61,6 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsAbstract3DEngine with the specified \a parent object.
      */
@@ -153,6 +152,7 @@ class _3D_EXPORT QgsAbstract3DEngine : public QObject
      *  \since QGIS 3.30
      */
     void sizeChanged();
+
   protected:
     QgsFrameGraph *mFrameGraph = nullptr;
 };

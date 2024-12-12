@@ -19,5 +19,4 @@
 QgsLayerTreeViewIndicator::QgsLayerTreeViewIndicator( QObject *parent )
   : QObject( parent )
 {
-
 }

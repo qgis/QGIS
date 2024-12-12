@@ -160,6 +160,7 @@ class CORE_EXPORT QgsTextRenderer
      * \param context destination render context
      * \param alignment horizontal alignment
      * \param rotation text rotation
+     * \param mode optional layout mode (since QGIS 3.42)
      *
      * \since QGIS 3.40
      */
@@ -169,7 +170,8 @@ class CORE_EXPORT QgsTextRenderer
                               const QgsTextDocumentMetrics &metrics,
                               QgsRenderContext &context,
                               Qgis::TextHorizontalAlignment alignment,
-                              double rotation );
+                              double rotation,
+                              Qgis::TextLayoutMode mode = Qgis::TextLayoutMode::Point );
 
     /**
      * Draws text along a line using the specified settings.

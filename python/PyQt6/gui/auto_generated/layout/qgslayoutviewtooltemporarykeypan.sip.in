@@ -18,7 +18,6 @@ Layout view tool for temporarily panning a layout while a key is depressed.
 #include "qgslayoutviewtooltemporarykeypan.h"
 %End
   public:
-
     QgsLayoutViewToolTemporaryKeyPan( QgsLayoutView *view /TransferThis/ );
 %Docstring
 Constructor for QgsLayoutViewToolTemporaryKeyPan.

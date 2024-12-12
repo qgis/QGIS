@@ -50,7 +50,6 @@ class GUI_EXPORT QgsAttributeTableView : public QgsTableView
     Q_OBJECT
 
   public:
-
     //! Constructor for QgsAttributeTableView
     QgsAttributeTableView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -109,8 +108,8 @@ class GUI_EXPORT QgsAttributeTableView : public QgsTableView
      * \since QGIS 3.30
      */
     void closeCurrentEditor();
-  protected:
 
+  protected:
     /**
      * Called for mouse press events on a table cell.
      * Disables selection change for these events.
@@ -209,7 +208,7 @@ class GUI_EXPORT QgsAttributeTableView : public QgsTableView
     QMenu *mActionPopup = nullptr;
     int mRowSectionAnchor = 0;
     QItemSelectionModel::SelectionFlag mCtrlDragSelectionFlag = QItemSelectionModel::Select;
-    QMap< QModelIndex, QWidget * > mActionWidgets;
+    QMap<QModelIndex, QWidget *> mActionWidgets;
     QgsAttributeTableConfig mConfig;
     QString mSortExpression;
 };

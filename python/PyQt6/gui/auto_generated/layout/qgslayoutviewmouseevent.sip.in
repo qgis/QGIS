@@ -29,7 +29,6 @@ In addition to the coordinates in pixel space it also knows the coordinates the 
       sipType = 0;
 %End
   public:
-
     QgsLayoutViewMouseEvent( QgsLayoutView *view, QMouseEvent *event, bool snap = false );
 %Docstring
 Constructor for QgsLayoutViewMouseEvent. Should only be required to be called from the QgsLayoutView.
@@ -39,8 +38,7 @@ Constructor for QgsLayoutViewMouseEvent. Should only be required to be called fr
 :param snap: set to ``True`` to snap the point using the layout's snapping settings
 %End
 
-    void snapPoint( QGraphicsLineItem *horizontalSnapLine = 0, QGraphicsLineItem *verticalSnapLine = 0,
-                    const QList<QgsLayoutItem *> &ignoreItems = QList< QgsLayoutItem * >() );
+    void snapPoint( QGraphicsLineItem *horizontalSnapLine = 0, QGraphicsLineItem *verticalSnapLine = 0, const QList<QgsLayoutItem *> &ignoreItems = QList<QgsLayoutItem *>() );
 %Docstring
 Manually triggers a snap for the mouse event position using the layout's snapper.
 

@@ -27,12 +27,9 @@ namespace QgsWms
 {
 
   QgsMapRendererJobProxy::QgsMapRendererJobProxy(
-    bool parallelRendering
-    , int maxThreads
-    , QgsFeatureFilterProvider *featureFilterProvider
+    bool parallelRendering, int maxThreads, QgsFeatureFilterProvider *featureFilterProvider
   )
-    :
-    mParallelRendering( parallelRendering )
+    : mParallelRendering( parallelRendering )
     , mFeatureFilterProvider( featureFilterProvider )
   {
 #ifndef HAVE_SERVER_PYTHON_PLUGINS
@@ -105,4 +102,4 @@ namespace QgsWms
   {
     return mPainter.release();
   }
-} // namespace qgsws
+} // namespace QgsWms

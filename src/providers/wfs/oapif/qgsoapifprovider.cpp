@@ -157,7 +157,7 @@ bool QgsOapifProvider::init()
     // Retry with a trailing slash. Works around a bug with
     // https://geoserveis.ide.cat/servei/catalunya/inspire/ogc/features/collections/inspire:AD.Address not working
     // but https://geoserveis.ide.cat/servei/catalunya/inspire/ogc/features/collections/inspire:AD.Address/ working
-    mShared->mCollectionUrl += QStringLiteral( "/" );
+    mShared->mCollectionUrl += QLatin1Char( '/' );
     collectionRequest = std::make_unique<QgsOapifCollectionRequest>( mShared->mURI.uri(), mShared->appendExtraQueryParameters( mShared->mCollectionUrl ) );
     if ( !collectionRequest->request( synchronous, forceRefresh ) || collectionRequest->errorCode() != QgsBaseNetworkRequest::NoError )
     {

@@ -36,6 +36,8 @@ class QgsSnapIndicator;
 class QgsMeshTransformCoordinatesDockWidget;
 class QComboBox;
 class QCheckBox;
+class QPushButton;
+class QCheckBox;
 class QgsUnitSelectionWidget;
 class QgsMapToolSelectionHandler;
 
@@ -63,10 +65,22 @@ class APP_EXPORT QgsZValueWidget : public QWidget
      */
     void setDefaultValue( double z );
 
+    /**
+     *  Get the default z value of the widget. Used as clear value
+     *
+     * \since QGIS 3.42
+     */
+    double getDefaultValue();
+
     QWidget *keyboardEntryWidget() const;
+
+  signals:
+    void applyZValuesFromProjectElevation();
 
   private:
     QgsDoubleSpinBox *mZValueSpinBox = nullptr;
+
+    friend class TestQgsMapToolEditMesh;
 };
 
 class QgsMeshEditForceByLineAction : public QWidgetAction
@@ -108,6 +122,34 @@ class QgsMeshEditForceByLineAction : public QWidgetAction
     QgsDoubleSpinBox *mToleranceSpinBox = nullptr;
 };
 
+class QgsMeshEditDigitizingAction : public QWidgetAction
+{
+    Q_OBJECT
+  public:
+    enum ZValueSource
+    {
+      ZWidget,
+      Terrain,
+      PreferMeshThenTerrain,
+      PreferMeshThenZWidget
+    };
+    Q_ENUM( ZValueSource )
+
+    //! Constructor
+    QgsMeshEditDigitizingAction( QObject *parent = nullptr );
+
+    //! Returns type of z value obtaining
+    QgsMeshEditDigitizingAction::ZValueSource zValueSourceType() const;
+
+    void setZValueType( QgsMeshEditDigitizingAction::ZValueSource zValueSource );
+
+  private slots:
+    void updateSettings();
+
+  private:
+    QComboBox *mComboZValueType = nullptr;
+};
+
 class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
@@ -124,6 +166,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QList<QAction *> forceByLinesActions() const;
     QAction *defaultForceAction() const;
     QWidgetAction *forceByLineWidgetActionSettings() const;
+    QWidgetAction *digitizingWidgetActionSettings() const;
     QAction *reindexAction() const;
 
     void setActionsEnable( bool enable );
@@ -243,6 +286,8 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     void forceByLineBySelectedFeature( QgsMapMouseEvent *e );
     void forceByLine( const QgsGeometry &lineGeometry );
 
+    void setZValueSourceType( QgsMeshEditDigitizingAction::ZValueSource zValueSource );
+
     // members
     struct SelectedVertexData
     {
@@ -350,6 +395,7 @@ class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
     QAction *mActionSelectAllVertices = nullptr;
 
     QgsMeshEditForceByLineAction *mWidgetActionForceByLine = nullptr;
+    QgsMeshEditDigitizingAction *mWidgetActionDigitizing = nullptr;
     QAction *mActionReindexMesh = nullptr;
 
     friend class TestQgsMapToolEditMesh;

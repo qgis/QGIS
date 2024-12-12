@@ -71,8 +71,7 @@ Qgis::ProcessingAlgorithmFlags QgsFlattenRelationshipsAlgorithm::flags() const
 
 void QgsFlattenRelationshipsAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ),
-                QObject::tr( "Input layer" ), QList< int>() << static_cast< int >( Qgis::ProcessingSourceType::Vector ) ) );
+  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::Vector ) ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Flattened layer" ), Qgis::ProcessingSourceType::VectorAnyGeometry ) );
 }
@@ -104,7 +103,7 @@ bool QgsFlattenRelationshipsAlgorithm::prepareAlgorithm( const QVariantMap &para
   if ( !referencingLayer )
     throw QgsProcessingException( QObject::tr( "Could not resolved referenced layer." ) );
 
-  mReferencingSource = std::make_unique< QgsVectorLayerFeatureSource >( referencingLayer );
+  mReferencingSource = std::make_unique<QgsVectorLayerFeatureSource>( referencingLayer );
   mReferencingFields = referencingLayer->fields();
 
   return true;
@@ -112,15 +111,14 @@ bool QgsFlattenRelationshipsAlgorithm::prepareAlgorithm( const QVariantMap &para
 
 QVariantMap QgsFlattenRelationshipsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsProcessingFeatureSource > input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> input( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !input )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
   const QgsFields outFields = QgsProcessingUtils::combineFields( input->fields(), mReferencingFields );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields,
-                                          input->wkbType(), input->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, outFields, input->wkbType(), input->sourceCrs(), QgsFeatureSink::RegeneratePrimaryKey ) );
   if ( parameters.value( QStringLiteral( "OUTPUT" ) ).isValid() && !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 

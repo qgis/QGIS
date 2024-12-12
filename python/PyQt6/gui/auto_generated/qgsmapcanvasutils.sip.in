@@ -21,7 +21,6 @@ Utility functions for working with :py:class:`QgsMapCanvas` widgets.
 #include "qgsmapcanvasutils.h"
 %End
   public:
-
     static long zoomToMatchingFeatures( QgsMapCanvas *canvas, QgsVectorLayer *layer, const QString &filter );
 %Docstring
 Zooms a map ``canvas`` to features from the specified ``layer`` which match the given ``filter`` expression string.

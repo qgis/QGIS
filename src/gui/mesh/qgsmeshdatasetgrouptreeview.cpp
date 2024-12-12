@@ -34,7 +34,7 @@
 
 QgsMeshDatasetGroupTreeModel::QgsMeshDatasetGroupTreeModel( QObject *parent )
   : QAbstractItemModel( parent )
-  ,  mRootItem( new QgsMeshDatasetGroupTreeItem() )
+  , mRootItem( new QgsMeshDatasetGroupTreeItem() )
 {
 }
 
@@ -59,9 +59,9 @@ QVariant QgsMeshDatasetGroupTreeModel::data( const QModelIndex &index, int role 
     case Name:
       return item->name();
       break;
-    case Qt::CheckStateRole :
+    case Qt::CheckStateRole:
       if ( index.column() == 0 )
-        return static_cast< int >( item->isEnabled() ? Qt::Checked : Qt::Unchecked );
+        return static_cast<int>( item->isEnabled() ? Qt::Checked : Qt::Unchecked );
       break;
     case DatasetGroupIndex:
       return item->datasetGroupIndex();
@@ -79,9 +79,7 @@ Qt::ItemFlags QgsMeshDatasetGroupTreeModel::flags( const QModelIndex &index ) co
   return Qt::ItemIsEnabled | Qt::ItemIsUserCheckable | Qt::ItemIsEditable;
 }
 
-QVariant QgsMeshDatasetGroupTreeModel::headerData( int section,
-    Qt::Orientation orientation,
-    int role ) const
+QVariant QgsMeshDatasetGroupTreeModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
   Q_UNUSED( section )
 
@@ -92,7 +90,7 @@ QVariant QgsMeshDatasetGroupTreeModel::headerData( int section,
 }
 
 QModelIndex QgsMeshDatasetGroupTreeModel::index( int row, int column, const QModelIndex &parent )
-const
+  const
 {
   if ( !hasIndex( row, column, parent ) )
     return QModelIndex();
@@ -241,8 +239,8 @@ void QgsMeshDatasetGroupTreeModel::setPersistentDatasetGroup( const QModelIndex 
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-QgsMeshDatasetGroupProxyModel::QgsMeshDatasetGroupProxyModel( QAbstractItemModel *sourceModel ):
-  QSortFilterProxyModel( sourceModel )
+QgsMeshDatasetGroupProxyModel::QgsMeshDatasetGroupProxyModel( QAbstractItemModel *sourceModel )
+  : QSortFilterProxyModel( sourceModel )
 {
   setSourceModel( sourceModel );
 }
@@ -260,7 +258,7 @@ void QgsMeshDatasetGroupProxyModel::setActiveScalarGroup( int group )
   const int oldGroupIndex = mActiveScalarGroupIndex;
   mActiveScalarGroupIndex = group;
 
-  if ( oldGroupIndex > -1  || group > -1 )
+  if ( oldGroupIndex > -1 || group > -1 )
     invalidate();
 }
 
@@ -277,7 +275,7 @@ void QgsMeshDatasetGroupProxyModel::setActiveVectorGroup( int group )
   const int oldGroupIndex = mActiveVectorGroupIndex;
   mActiveVectorGroupIndex = group;
 
-  if ( oldGroupIndex > -1  || group > -1 )
+  if ( oldGroupIndex > -1 || group > -1 )
     invalidate();
 }
 
@@ -305,7 +303,7 @@ QVariant QgsMeshDatasetGroupProxyModel::data( const QModelIndex &index, int role
       return item->datasetGroupIndex() == mActiveScalarGroupIndex;
     case QgsMeshDatasetGroupTreeModel::IsActiveVectorDatasetGroup:
       return item->datasetGroupIndex() == mActiveVectorGroupIndex;
-    case Qt::CheckStateRole :
+    case Qt::CheckStateRole:
       return QVariant();
     case Qt::DecorationRole:
       return QVariant();
@@ -362,7 +360,7 @@ void QgsMeshDatasetGroupTreeItemDelegate::paint( QPainter *painter, const QStyle
 
 QRect QgsMeshDatasetGroupTreeItemDelegate::iconRect( const QRect &rect, bool isVector ) const
 {
-  return  iconRect( rect, isVector ? 1 : 2 );
+  return iconRect( rect, isVector ? 1 : 2 );
 }
 
 QRect QgsMeshDatasetGroupTreeItemDelegate::iconRect( const QRect &rect, int pos ) const
@@ -384,8 +382,7 @@ QSize QgsMeshDatasetGroupTreeItemDelegate::sizeHint( const QStyleOptionViewItem 
 /////////////////////////////////////////////////////////////////////////////////////////
 
 QgsMeshActiveDatasetGroupTreeView::QgsMeshActiveDatasetGroupTreeView( QWidget *parent )
-  : QTreeView( parent ),
-    mProxyModel( new QgsMeshDatasetGroupProxyModel( new QgsMeshDatasetGroupTreeModel( this ) ) )
+  : QTreeView( parent ), mProxyModel( new QgsMeshDatasetGroupProxyModel( new QgsMeshDatasetGroupTreeModel( this ) ) )
 {
   setModel( mProxyModel );
   setItemDelegate( &mDelegate );
@@ -442,7 +439,7 @@ void QgsMeshActiveDatasetGroupTreeView::mousePressEvent( QMouseEvent *event )
     return;
 
   bool processed = false;
-  const QModelIndex idx = indexAt( event->pos() ) ;
+  const QModelIndex idx = indexAt( event->pos() );
   if ( idx.isValid() )
   {
     const QRect vr = visualRect( idx );
@@ -490,7 +487,8 @@ void QgsMeshActiveDatasetGroupTreeView::setActiveGroup()
   setActiveVectorGroup( vectorGroup );
 }
 
-QgsMeshDatasetGroupListModel::QgsMeshDatasetGroupListModel( QObject *parent ): QAbstractListModel( parent )
+QgsMeshDatasetGroupListModel::QgsMeshDatasetGroupListModel( QObject *parent )
+  : QAbstractListModel( parent )
 {}
 
 void QgsMeshDatasetGroupListModel::syncToLayer( QgsMeshLayer *layer )
@@ -512,7 +510,7 @@ int QgsMeshDatasetGroupListModel::rowCount( const QModelIndex &parent ) const
 
 QVariant QgsMeshDatasetGroupListModel::data( const QModelIndex &index, int role ) const
 {
-  if ( !mRootItem || ! index.isValid() )
+  if ( !mRootItem || !index.isValid() )
     return QVariant();
 
   if ( index.row() >= rowCount( QModelIndex() ) )
@@ -558,8 +556,8 @@ QStringList QgsMeshDatasetGroupListModel::variableNames() const
   return variableNames;
 }
 
-QgsMeshDatasetGroupTreeView::QgsMeshDatasetGroupTreeView( QWidget *parent ):
-  QTreeView( parent )
+QgsMeshDatasetGroupTreeView::QgsMeshDatasetGroupTreeView( QWidget *parent )
+  : QTreeView( parent )
   , mModel( new QgsMeshAvailableDatasetGroupTreeModel( this ) )
   , mSaveMenu( new QgsMeshDatasetGroupSaveMenu( this ) )
 {
@@ -621,8 +619,7 @@ void QgsMeshDatasetGroupTreeView::removeCurrentItem()
           varList.append( QStringLiteral( "\n" ) );
         }
       }
-      QMessageBox::information( this, tr( "Remove Dataset Group" ), tr( "This dataset group can't be removed because other dataset groups depend on it:\n%1" )
-                                .arg( varList ) );
+      QMessageBox::information( this, tr( "Remove Dataset Group" ), tr( "This dataset group can't be removed because other dataset groups depend on it:\n%1" ).arg( varList ) );
       return;
     }
   }
@@ -673,7 +670,7 @@ void QgsMeshDatasetGroupTreeView::resetDefault( QgsMeshLayer *meshLayer )
 
 QgsMeshDatasetGroupTreeItem *QgsMeshDatasetGroupTreeView::datasetGroupTreeRootItem()
 {
-  return  mModel->datasetGroupTreeRootItem();
+  return mModel->datasetGroupTreeRootItem();
 }
 
 void QgsMeshDatasetGroupTreeView::selectAllItem( bool isChecked )
@@ -684,7 +681,7 @@ void QgsMeshDatasetGroupTreeView::selectAllItem( bool isChecked )
 QMenu *QgsMeshDatasetGroupSaveMenu::createSaveMenu( int groupIndex, QMenu *parentMenu )
 {
   if ( !mMeshLayer )
-    return  nullptr;
+    return nullptr;
 
   QMenu *menu = new QMenu( parentMenu );
   menu->setTitle( QObject::tr( "Save Datasets Group as..." ) );
@@ -699,14 +696,10 @@ QMenu *QgsMeshDatasetGroupSaveMenu::createSaveMenu( int groupIndex, QMenu *paren
       const QString driverName = driver.name();
       const QString suffix = driver.writeDatasetOnFileSuffix();
       if ( ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteFaceDatasets )
-             && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces ) ||
-           ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets )
-             && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ) ||
-           ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteEdgeDatasets )
-             && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnEdges ) )
+             && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnFaces )
+           || ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets ) && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnVertices ) || ( driver.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteEdgeDatasets ) && groupMeta.dataType() == QgsMeshDatasetGroupMetadata::DataOnEdges ) )
       {
-        menu->addAction( driver.description(), this, [groupIndex, driverName, suffix, this]
-        {
+        menu->addAction( driver.description(), this, [groupIndex, driverName, suffix, this] {
           this->saveDatasetGroup( groupIndex, driverName, suffix );
         } );
       }
@@ -740,10 +733,7 @@ void QgsMeshDatasetGroupSaveMenu::saveDatasetGroup( int datasetGroup, const QStr
   if ( !fileSuffix.isEmpty() )
     filter = QStringLiteral( "%1 (*.%2)" ).arg( driver ).arg( fileSuffix );
   const QString exportFileDir = settings.value( QStringLiteral( "lastMeshDatasetDir" ), QDir::homePath(), QgsSettings::App ).toString();
-  const QString saveFileName = QFileDialog::getSaveFileName( nullptr,
-                               QObject::tr( "Save Mesh Datasets" ),
-                               exportFileDir,
-                               filter );
+  const QString saveFileName = QFileDialog::getSaveFileName( nullptr, QObject::tr( "Save Mesh Datasets" ), exportFileDir, filter );
 
   if ( saveFileName.isEmpty() )
     return;
@@ -761,10 +751,10 @@ void QgsMeshDatasetGroupSaveMenu::saveDatasetGroup( int datasetGroup, const QStr
     emit datasetGroupSaved( saveFileName );
     QMessageBox::information( nullptr, QObject::tr( "Save Mesh Datasets" ), QObject::tr( "Datasets successfully saved on file" ) );
   }
-
 }
 
-QgsMeshAvailableDatasetGroupTreeModel::QgsMeshAvailableDatasetGroupTreeModel( QObject *parent ): QgsMeshDatasetGroupTreeModel( parent )
+QgsMeshAvailableDatasetGroupTreeModel::QgsMeshAvailableDatasetGroupTreeModel( QObject *parent )
+  : QgsMeshDatasetGroupTreeModel( parent )
 {}
 
 QVariant QgsMeshAvailableDatasetGroupTreeModel::data( const QModelIndex &index, int role ) const
@@ -803,7 +793,7 @@ bool QgsMeshAvailableDatasetGroupTreeModel::setData( const QModelIndex &index, c
         return true;
       }
       break;
-    case Qt::CheckStateRole :
+    case Qt::CheckStateRole:
       item->setIsEnabled( value.toBool() );
       return true;
   }
@@ -830,15 +820,19 @@ QVariant QgsMeshAvailableDatasetGroupTreeModel::headerData( int section, Qt::Ori
     if ( section == 0 )
       return tr( "Group" );
     if ( section == 1 )
-      return  tr( "Type" );
+      return tr( "Type" );
     if ( section == 2 )
-      return  tr( "Description" );
+      return tr( "Description" );
   }
 
   return QVariant();
 }
 
-int QgsMeshAvailableDatasetGroupTreeModel::columnCount( const QModelIndex &parent ) const {Q_UNUSED( parent ); return 3;}
+int QgsMeshAvailableDatasetGroupTreeModel::columnCount( const QModelIndex &parent ) const
+{
+  Q_UNUSED( parent );
+  return 3;
+}
 
 QString QgsMeshAvailableDatasetGroupTreeModel::textDisplayed( const QModelIndex &index ) const
 {
@@ -855,7 +849,7 @@ QString QgsMeshAvailableDatasetGroupTreeModel::textDisplayed( const QModelIndex 
         return tr( "Vector" );
       else
         return tr( "Scalar" );
-    case 2 :
+    case 2:
       return item->description();
   }
   return QString();

@@ -27,7 +27,6 @@ Contains utilities required for geometry checks.
 #include "qgsgeometrycheckerutils.h"
 %End
   public:
-
     class LayerFeature
 {
 %Docstring(signature="appended")
@@ -42,7 +41,6 @@ a set of layers.
 #include "qgsgeometrycheckerutils.h"
 %End
       public:
-
         LayerFeature( const QgsFeaturePool *pool, const QgsFeature &feature, const QgsGeometryCheckContext *context, bool useMapCrs );
 %Docstring
 Create a new layer/feature combination.

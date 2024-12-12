@@ -42,7 +42,7 @@ class TestQgsMapToolTrimExtendFeature : public QObject
     TestQgsMapToolTrimExtendFeature() = default;
 
   private:
-    std::unique_ptr<QgsVectorLayer> vlPolygon, vlMultiLine, vlLineZ, vlTopoEdit, vlTopoLimit;
+    std::unique_ptr<QgsVectorLayer> vlPolygon, vlMultiLine, vlLineZ, vlTopoEdit, vlTopoLimit, vlMultiExtend;
     QgsFeature f1, f2;
     QgsMapCanvas *mCanvas = nullptr;
 
@@ -156,16 +156,46 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       vlTopoLimit->dataProvider()->addFeatures( QgsFeatureList() << lineLimit );
 
 
+      /*             + (2, 6)
+       *             |
+       *             |
+       *             + (2, 4)
+       *
+       *(0, 3) +----------------+ (5, 3)
+       *
+       *                 + (3, 2)
+       *                   `
+       *                     `
+       *                        + (5, 0)
+       */
+      vlMultiExtend.reset( new QgsVectorLayer( QStringLiteral( "LineString?crs=EPSG:3946&field=pk:int" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) ) );
+      QVERIFY( vlMultiExtend->isValid() );
+
+      QgsFeature lineRef( vlTopoLimit->dataProvider()->fields(), 1 );
+      lineRef.setAttribute( QStringLiteral( "pk" ), 1 );
+      lineRef.setGeometry( QgsGeometry::fromWkt( QStringLiteral( " LineString (0 3, 5 3) " ) ) );
+
+      QgsFeature line2( vlTopoLimit->dataProvider()->fields(), 2 );
+      line2.setAttribute( QStringLiteral( "pk" ), 2 );
+      line2.setGeometry( QgsGeometry::fromWkt( QStringLiteral( " LineString (2 6, 2 4) " ) ) );
+
+      QgsFeature line3( vlTopoLimit->dataProvider()->fields(), 3 );
+      line3.setAttribute( QStringLiteral( "pk" ), 3 );
+      line3.setGeometry( QgsGeometry::fromWkt( QStringLiteral( " LineString (3 2, 5 0) " ) ) );
+
+      vlMultiExtend->dataProvider()->addFeatures( QgsFeatureList() << lineRef << line2 << line3 );
+
+
       mCanvas = new QgsMapCanvas();
       mCanvas->setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3946" ) ) );
-      mCanvas->setLayers( QList<QgsMapLayer *>() << vlPolygon.get() << vlMultiLine.get() << vlLineZ.get() << vlTopoEdit.get() << vlTopoLimit.get() );
+      mCanvas->setLayers( QList<QgsMapLayer *>() << vlPolygon.get() << vlMultiLine.get() << vlLineZ.get() << vlTopoEdit.get() << vlTopoLimit.get() << vlMultiExtend.get() );
 
       QgsMapSettings mapSettings;
       mapSettings.setOutputSize( QSize( 50, 50 ) );
       mapSettings.setExtent( QgsRectangle( -1, -1, 4, 4 ) );
       QVERIFY( mapSettings.hasValidSettings() );
 
-      mapSettings.setLayers( QList<QgsMapLayer *>() << vlPolygon.get() << vlMultiLine.get() << vlLineZ.get() << vlTopoEdit.get() << vlTopoLimit.get() );
+      mapSettings.setLayers( QList<QgsMapLayer *>() << vlPolygon.get() << vlMultiLine.get() << vlLineZ.get() << vlTopoEdit.get() << vlTopoLimit.get() << vlMultiExtend.get() );
 
       QgsSnappingUtils *mSnappingUtils = new QgsMapCanvasSnappingUtils( mCanvas, this );
       QgsSnappingConfig snappingConfig = mSnappingUtils->config();
@@ -182,6 +212,7 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       mSnappingUtils->locatorForLayer( vlLineZ.get() )->init();
       mSnappingUtils->locatorForLayer( vlTopoEdit.get() )->init();
       mSnappingUtils->locatorForLayer( vlTopoLimit.get() )->init();
+      mSnappingUtils->locatorForLayer( vlMultiExtend.get() )->init();
 
       mCanvas->setSnappingUtils( mSnappingUtils );
     }
@@ -212,13 +243,13 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       std::unique_ptr<QgsMapMouseEvent> event( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseMove,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) )
+        pt.toQPointF().toPoint()
       ) );
       tool->canvasMoveEvent( event.get() );
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseButtonRelease,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ),
+        pt.toQPointF().toPoint(),
         Qt::LeftButton
       ) );
       tool->canvasReleaseEvent( event.get() );
@@ -228,13 +259,13 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseMove,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) )
+        pt.toQPointF().toPoint()
       ) );
       tool->canvasMoveEvent( event.get() );
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseButtonRelease,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ),
+        pt.toQPointF().toPoint(),
         Qt::LeftButton
       ) );
       tool->canvasReleaseEvent( event.get() );
@@ -276,13 +307,13 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       std::unique_ptr<QgsMapMouseEvent> event( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseMove,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) )
+        pt.toQPointF().toPoint()
       ) );
       tool->canvasMoveEvent( event.get() );
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseButtonRelease,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ),
+        pt.toQPointF().toPoint(),
         Qt::LeftButton
       ) );
       tool->canvasReleaseEvent( event.get() );
@@ -292,13 +323,13 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseMove,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) )
+        pt.toQPointF().toPoint()
       ) );
       tool->canvasMoveEvent( event.get() );
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseButtonRelease,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ),
+        pt.toQPointF().toPoint(),
         Qt::LeftButton
       ) );
       tool->canvasReleaseEvent( event.get() );
@@ -321,13 +352,13 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseMove,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) )
+        pt.toQPointF().toPoint()
       ) );
       tool->canvasMoveEvent( event.get() );
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseButtonRelease,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ),
+        pt.toQPointF().toPoint(),
         Qt::LeftButton
       ) );
       tool->canvasReleaseEvent( event.get() );
@@ -338,13 +369,13 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseMove,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) )
+        pt.toQPointF().toPoint()
       ) );
       tool->canvasMoveEvent( event.get() );
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseButtonRelease,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ),
+        pt.toQPointF().toPoint(),
         Qt::LeftButton
       ) );
       tool->canvasReleaseEvent( event.get() );
@@ -370,13 +401,13 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseMove,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) )
+        pt.toQPointF().toPoint()
       ) );
       tool->canvasMoveEvent( event.get() );
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseButtonRelease,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ),
+        pt.toQPointF().toPoint(),
         Qt::LeftButton
       ) );
       tool->canvasReleaseEvent( event.get() );
@@ -386,13 +417,13 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseMove,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) )
+        pt.toQPointF().toPoint()
       ) );
       tool->canvasMoveEvent( event.get() );
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseButtonRelease,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ),
+        pt.toQPointF().toPoint(),
         Qt::LeftButton
       ) );
       tool->canvasReleaseEvent( event.get() );
@@ -428,13 +459,13 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       std::unique_ptr<QgsMapMouseEvent> event( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseMove,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) )
+        pt.toQPointF().toPoint()
       ) );
       tool->canvasMoveEvent( event.get() );
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseButtonRelease,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ),
+        pt.toQPointF().toPoint(),
         Qt::LeftButton
       ) );
       tool->canvasReleaseEvent( event.get() );
@@ -444,13 +475,13 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseMove,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) )
+        pt.toQPointF().toPoint()
       ) );
       tool->canvasMoveEvent( event.get() );
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseButtonRelease,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ),
+        pt.toQPointF().toPoint(),
         Qt::LeftButton
       ) );
       tool->canvasReleaseEvent( event.get() );
@@ -486,13 +517,13 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       std::unique_ptr<QgsMapMouseEvent> event( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseMove,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) )
+        pt.toQPointF().toPoint()
       ) );
       tool->canvasMoveEvent( event.get() );
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseButtonRelease,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ),
+        pt.toQPointF().toPoint(),
         Qt::LeftButton
       ) );
       tool->canvasReleaseEvent( event.get() );
@@ -502,13 +533,13 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseMove,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) )
+        pt.toQPointF().toPoint()
       ) );
       tool->canvasMoveEvent( event.get() );
       event.reset( new QgsMapMouseEvent(
         mCanvas,
         QEvent::MouseButtonRelease,
-        QPoint( std::round( pt.x() ), std::round( pt.y() ) ),
+        pt.toQPointF().toPoint(),
         Qt::LeftButton
       ) );
       tool->canvasReleaseEvent( event.get() );
@@ -524,6 +555,114 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       vlTopoEdit->rollBack();
 
       QgsProject::instance()->setTopologicalEditing( topologicalEditing );
+    }
+
+    void testMultipleExtend()
+    {
+      /*             + (2, 6)
+       *             |
+       *             |
+       *             + (2, 4)
+       *
+       *(0, 3) +----------------+ (5, 3)
+       *
+       *                 + (3, 2)
+       *                   `
+       *                     `
+       *                        + (5, 0)
+       */
+      mCanvas->setCurrentLayer( vlMultiExtend.get() );
+      std::unique_ptr<QgsMapToolTrimExtendFeature> tool( new QgsMapToolTrimExtendFeature( mCanvas ) );
+
+      vlMultiExtend->startEditing();
+      // Limit
+      QgsPointXY pt;
+      pt = tool->canvas()->mapSettings().mapToPixel().transform( 1, 3 );
+      std::unique_ptr<QgsMapMouseEvent> event( new QgsMapMouseEvent(
+        mCanvas,
+        QEvent::MouseMove,
+        pt.toQPointF().toPoint()
+      ) );
+      tool->canvasMoveEvent( event.get() );
+      event.reset( new QgsMapMouseEvent(
+        mCanvas,
+        QEvent::MouseButtonRelease,
+        pt.toQPointF().toPoint(),
+        Qt::LeftButton
+      ) );
+      tool->canvasReleaseEvent( event.get() );
+
+      // Extend
+      pt = tool->canvas()->mapSettings().mapToPixel().transform( 2, 5 );
+      event.reset( new QgsMapMouseEvent(
+        mCanvas,
+        QEvent::MouseMove,
+        pt.toQPointF().toPoint()
+      ) );
+      tool->canvasMoveEvent( event.get() );
+      event.reset( new QgsMapMouseEvent(
+        mCanvas,
+        QEvent::MouseButtonRelease,
+        pt.toQPointF().toPoint(),
+        Qt::LeftButton,
+        Qt::NoButton,
+        Qt::ControlModifier
+      ) );
+      tool->canvasReleaseEvent( event.get() );
+
+
+      /*             + (2, 6)
+       *             |
+       *             |
+       *             |
+       *             | (2, 3)
+       *(0, 3) +-----+----------+ (5, 3)
+       *
+       *                 + (3, 2)
+       *                   `
+       *                     `
+       *                        + (5, 0)
+       */
+      const QgsFeature line2 = vlMultiExtend->getFeature( 2 );
+
+      QString wkt = "LineString (2 6, 2 3)";
+      QCOMPARE( line2.geometry().asWkt(), wkt );
+
+
+      // Extend 2
+      pt = tool->canvas()->mapSettings().mapToPixel().transform( 4, 1 );
+      event.reset( new QgsMapMouseEvent(
+        mCanvas,
+        QEvent::MouseMove,
+        pt.toQPointF().toPoint()
+      ) );
+      tool->canvasMoveEvent( event.get() );
+      event.reset( new QgsMapMouseEvent(
+        mCanvas,
+        QEvent::MouseButtonRelease,
+        pt.toQPointF().toPoint(),
+        Qt::LeftButton
+      ) );
+      tool->canvasReleaseEvent( event.get() );
+
+      /*             + (2, 6)
+       *             |
+       *             |
+       *             |
+       *             | (2, 3)
+       *(0, 3) +-----+----------+ (5, 3)
+       *               `
+       *                 `
+       *                   `
+       *                     `
+       *                        + (5, 0)
+       */
+
+      const QgsFeature line3 = vlMultiExtend->getFeature( 3 );
+
+      wkt = "LineString (2 3, 5 0)";
+      QCOMPARE( line3.geometry().asWkt(), wkt );
+      vlMultiExtend->rollBack();
     }
 };
 

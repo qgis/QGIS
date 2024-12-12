@@ -36,7 +36,6 @@ class QDomElement;
 class _3D_EXPORT QgsNullMaterialSettings : public QgsAbstractMaterialSettings
 {
   public:
-
     QgsNullMaterialSettings() = default;
 
     QString type() const override;
@@ -59,7 +58,6 @@ class _3D_EXPORT QgsNullMaterialSettings : public QgsAbstractMaterialSettings
     QgsMaterial *toMaterial( QgsMaterialSettingsRenderingTechnique technique, const QgsMaterialContext &context ) const override SIP_FACTORY;
     void addParametersToEffect( Qt3DRender::QEffect *effect, const QgsMaterialContext &materialContext ) const override;
 #endif
-
 };
 
 

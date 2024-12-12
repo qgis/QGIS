@@ -29,19 +29,17 @@ QgsMeshRendererMeshSettingsWidget::QgsMeshRendererMeshSettingsWidget( QWidget *p
   setupUi( this );
 
   mLineUnitsComboBox->setUnits(
-  {
-    Qgis::RenderUnit::Millimeters,
-    Qgis::RenderUnit::MetersInMapUnits,
-    Qgis::RenderUnit::Pixels,
-    Qgis::RenderUnit::Points
-  } );
+    { Qgis::RenderUnit::Millimeters,
+      Qgis::RenderUnit::MetersInMapUnits,
+      Qgis::RenderUnit::Pixels,
+      Qgis::RenderUnit::Points
+    }
+  );
 
 
   connect( mColorWidget, &QgsColorButton::colorChanged, this, &QgsMeshRendererMeshSettingsWidget::widgetChanged );
-  connect( mLineWidthSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ),
-           this, &QgsMeshRendererMeshSettingsWidget::widgetChanged );
-  connect( mLineUnitsComboBox, &QgsUnitSelectionWidget::changed,
-           this, &QgsMeshRendererMeshSettingsWidget::widgetChanged );
+  connect( mLineWidthSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsMeshRendererMeshSettingsWidget::widgetChanged );
+  connect( mLineUnitsComboBox, &QgsUnitSelectionWidget::changed, this, &QgsMeshRendererMeshSettingsWidget::widgetChanged );
 }
 
 void QgsMeshRendererMeshSettingsWidget::setLayer( QgsMeshLayer *layer, MeshType meshType )
@@ -59,7 +57,7 @@ QgsMeshRendererMeshSettings QgsMeshRendererMeshSettingsWidget::settings() const
   return settings;
 }
 
-void QgsMeshRendererMeshSettingsWidget::syncToLayer( )
+void QgsMeshRendererMeshSettingsWidget::syncToLayer()
 {
   if ( !mMeshLayer )
     return;

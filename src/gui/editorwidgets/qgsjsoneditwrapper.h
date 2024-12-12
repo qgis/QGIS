@@ -41,7 +41,6 @@ class GUI_EXPORT QgsJsonEditWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsJsonEditWrapper.
      *
@@ -68,7 +67,6 @@ class GUI_EXPORT QgsJsonEditWrapper : public QgsEditorWidgetWrapper
     void setFeature( const QgsFeature &feature ) override;
 
   private:
-
     inline static const QString RAW_VALUE_PROPERTY = "RawValue";
 
     void updateValues( const QVariant &val, const QVariantList & = QVariantList() ) override;

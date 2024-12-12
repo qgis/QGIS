@@ -42,12 +42,12 @@ class QgsCollapsibleGroupBox;
 class QLabel;
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // fix to allow compilation with sip that for some reason
 // doesn't add this include to the file where the code from
 // ConvertToSubClassCode goes.
 #include <qgsrelationreferencewidget.h>
-% End
+//%End
 #endif
 
 /**
@@ -56,7 +56,6 @@ class QLabel;
  */
 class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsRelationReferenceWidget *>( sipCpp ) )
@@ -70,7 +69,6 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     Q_PROPERTY( bool openFormButtonVisible READ openFormButtonVisible WRITE setOpenFormButtonVisible )
 
   public:
-
     enum CanvasExtent
     {
       Fixed,
@@ -252,13 +250,13 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
      * Returns the limit of fetched features (0 means all features)
      * \since QGIS 3.32
      */
-    int fetchLimit() const {return mFetchLimit; }
+    int fetchLimit() const { return mFetchLimit; }
 
     /**
      * Set the limit of fetched features (0 means all features)
      * \since QGIS 3.32
      */
-    void setFetchLimit( int fetchLimit ) {mFetchLimit = fetchLimit; }
+    void setFetchLimit( int fetchLimit ) { mFetchLimit = fetchLimit; }
 
 
   public slots:
@@ -337,7 +335,7 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     QgsRelation mRelation;
     bool mIsEditable = true;
     QStringList mFilterFields;
-    QMap<QString, QMap<QString, QSet<QString> > > mFilterCache;
+    QMap<QString, QMap<QString, QSet<QString>>> mFilterCache;
     bool mInitialized = false;
     int mFetchLimit = 0;
 

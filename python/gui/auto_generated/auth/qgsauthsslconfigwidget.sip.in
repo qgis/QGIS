@@ -21,11 +21,7 @@ Widget for editing an SSL server configuration
 #include "qgsauthsslconfigwidget.h"
 %End
   public:
-
-    explicit QgsAuthSslConfigWidget( QWidget *parent /TransferThis/ = 0,
-                                     const QSslCertificate &cert = QSslCertificate(),
-                                     const QString &hostport = QString(),
-                                     const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
+    explicit QgsAuthSslConfigWidget( QWidget *parent /TransferThis/ = 0, const QSslCertificate &cert = QSslCertificate(), const QString &hostport = QString(), const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 %Docstring
 Construct a widget for editing an SSL server certificate configuration
 
@@ -203,10 +199,7 @@ Dialog wrapper of widget for editing an SSL server configuration
 #include "qgsauthsslconfigwidget.h"
 %End
   public:
-
-    explicit QgsAuthSslConfigDialog( QWidget *parent = 0,
-                                     const QSslCertificate &cert = QSslCertificate(),
-                                     const QString &hostport = QString() );
+    explicit QgsAuthSslConfigDialog( QWidget *parent = 0, const QSslCertificate &cert = QSslCertificate(), const QString &hostport = QString() );
 %Docstring
 Construct wrapper dialog for the SSL config widget
 

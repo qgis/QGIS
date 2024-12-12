@@ -25,7 +25,6 @@ as well as a more specific handler (pointCaptured, lineCaptured or polygonCaptur
 #include "qgsmaptoolcapture.h"
 %End
   public:
-
     enum CaptureMode
     {
       CaptureNone,
@@ -95,7 +94,7 @@ The capture mode
 Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS
 %End
 
-    void clearCurve( );
+    void clearCurve();
 %Docstring
 Clear capture curve.
 %End
@@ -191,7 +190,6 @@ Toggles the stream digitizing mode.
 %End
 
   protected:
-
 
     int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );
 %Docstring

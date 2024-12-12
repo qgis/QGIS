@@ -63,20 +63,13 @@ void QgsCalculateExpressionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   // possibly this should be a new dedicated parameter type for "QgsProcessingParameterVariant", as the values specified for the parameter will
   // be whatever the model calculates as the result of the expression. But this works for now...
-  std::unique_ptr< QgsProcessingParameterString > inputParameter = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "INPUT" ), QObject::tr( "Input" ), QVariant(), false, false );
+  std::unique_ptr<QgsProcessingParameterString> inputParameter = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "INPUT" ), QObject::tr( "Input" ), QVariant(), false, false );
   // we limit the available sources for this parameter to just precalculated expressions -- otherwise it's confusing if we allow users
   // to enter a literal value for this parameter, as they could enter an expression in there and expect it to be evaluated.
   inputParameter->setMetadata(
-  {
-    QVariantMap( {{
-        QStringLiteral( "model_widget" ),
-        QVariantMap(
-        { {
-            QStringLiteral( "accepted_sources" ), QVariantList{ static_cast< int >( Qgis::ProcessingModelChildParameterSource::Expression ) }
-          }}
-        )
-      }} )
-  } );
+    { QVariantMap( { { QStringLiteral( "model_widget" ), QVariantMap( { { QStringLiteral( "accepted_sources" ), QVariantList { static_cast<int>( Qgis::ProcessingModelChildParameterSource::Expression ) } } } ) } } )
+    }
+  );
   addParameter( inputParameter.release() );
 
   addOutput( new QgsProcessingOutputVariant( QStringLiteral( "OUTPUT" ), QObject::tr( "Value" ) ) );
