@@ -55,6 +55,9 @@ void QgsLayoutViewToolAddNodeItem::layoutPressEvent( QgsLayoutViewMouseEvent *ev
       mRubberBand.reset( QgsGui::layoutItemGuiRegistry()->createNodeItemRubberBand( mItemMetadataId, view() ) );
       if ( mRubberBand )
         layout()->addItem( mRubberBand.get() );
+
+      // On first press, deselect the currently selected item, if any
+      view()->deselectAll();
     }
 
     if ( mRubberBand )
@@ -192,8 +195,14 @@ void QgsLayoutViewToolAddNodeItem::moveTemporaryNode( QPointF scenePoint, Qt::Ke
 void QgsLayoutViewToolAddNodeItem::setRubberBandNodes()
 {
   QList<QGraphicsItem *> items = mRubberBand->childItems();
+
+  // Rubber band is not a QGraphicsItem with children, but may be
+  // a custom QGraphicsPolygonItem / QGraphicsPathItem returned by a Python plugin
+  // In this case, directly append it to the list.
   if ( items.isEmpty() )
-    return;
+  {
+    items << mRubberBand.get();
+  }
 
   if ( QGraphicsPolygonItem *polygonItem = dynamic_cast<QGraphicsPolygonItem *>( items[0] ) )
   {
