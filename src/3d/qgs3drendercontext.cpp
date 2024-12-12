@@ -29,6 +29,7 @@ Qgs3DRenderContext::Qgs3DRenderContext( const Qgs3DRenderContext &other )
   , mFieldOfView( other.mFieldOfView )
   , mTerrainRenderingEnabled( other.mTerrainRenderingEnabled )
   , mTerrainSettings( std::unique_ptr<QgsAbstractTerrainSettings>( other.mTerrainSettings->clone() ) )
+  , mExpressionContext( other.mExpressionContext )
   , mTerrainGenerator( other.mTerrainGenerator )
 {
 }
@@ -50,6 +51,7 @@ Qgs3DRenderContext &Qgs3DRenderContext::operator=( const Qgs3DRenderContext &oth
   mFieldOfView = other.mFieldOfView;
   mTerrainRenderingEnabled = other.mTerrainRenderingEnabled;
   mTerrainSettings.reset( other.mTerrainSettings->clone() );
+  mExpressionContext = other.mExpressionContext;
   mTerrainGenerator = other.mTerrainGenerator;
   return *this;
 }
