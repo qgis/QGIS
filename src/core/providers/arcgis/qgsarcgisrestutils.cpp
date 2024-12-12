@@ -1951,7 +1951,6 @@ Qgis::ArcGisRestServiceType QgsArcGisRestUtils::serviceTypeFromString( const QSt
 
 QString QgsArcGisRestUtils::typeToString( Qgis::ArcGisRestServiceType type )
 {
-  // note -- these values are different in the Portal REST responses vs the standard ArcGIS REST responses!
   switch ( type )
   {
     case Qgis::ArcGisRestServiceType::FeatureServer:
