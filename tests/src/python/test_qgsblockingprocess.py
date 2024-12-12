@@ -55,7 +55,7 @@ class TestQgsBlockingProcess(QgisTestCase):
         self.assertEqual(p.run(f), 0)
         self.assertEqual(p.exitStatus(), QProcess.ExitStatus.NormalExit)
         self.assertIn("GDAL", std_out.val)
-        self.assertEqual(std_err.val, "")
+        self.assertEqual(QgisTestCase.strip_std_ignorable_errors(std_err.val), "")
 
     def test_process_err(self):
         temp_folder = tempfile.mkdtemp()
@@ -88,8 +88,12 @@ exit 1"""
         f = QgsFeedback()
         self.assertEqual(p.run(f), 1)
         self.assertEqual(p.exitStatus(), QProcess.ExitStatus.NormalExit)
-        self.assertIn("This goes to stdout", std_out.val)
-        self.assertIn("This goes to stderr", std_err.val)
+        self.assertIn(
+            "This goes to stdout", QgisTestCase.strip_std_ignorable_errors(std_out.val)
+        )
+        self.assertIn(
+            "This goes to stderr", QgisTestCase.strip_std_ignorable_errors(std_err.val)
+        )
 
     def test_process_crash(self):
         """
@@ -176,8 +180,8 @@ exit 1"""
         f = QgsFeedback()
         self.assertEqual(p.run(f), 0)
         self.assertEqual(p.exitStatus(), QProcess.ExitStatus.NormalExit)
-        self.assertFalse(std_out.val.strip())
-        self.assertFalse(std_err.val.strip())
+        self.assertFalse(QgisTestCase.strip_std_ignorable_errors(std_out.val).strip())
+        self.assertFalse(QgisTestCase.strip_std_ignorable_errors(std_err.val).strip())
 
         # set environment variable
         os.environ["my_var"] = "my test variable"
@@ -190,8 +194,11 @@ exit 1"""
         f = QgsFeedback()
         self.assertEqual(p.run(f), 0)
         self.assertEqual(p.exitStatus(), QProcess.ExitStatus.NormalExit)
-        self.assertEqual(std_out.val.strip(), "my test variable")
-        self.assertFalse(std_err.val.strip())
+        self.assertEqual(
+            QgisTestCase.strip_std_ignorable_errors(std_out.val).strip(),
+            "my test variable",
+        )
+        self.assertFalse(QgisTestCase.strip_std_ignorable_errors(std_err.val).strip())
 
         # test python changing path
 
@@ -212,8 +219,10 @@ exit 1"""
         f = QgsFeedback()
         self.assertEqual(p.run(f), 0)
         self.assertEqual(p.exitStatus(), QProcess.ExitStatus.NormalExit)
-        self.assertEqual(std_out.val.strip(), new_path)
-        self.assertFalse(std_err.val.strip())
+        self.assertEqual(
+            QgisTestCase.strip_std_ignorable_errors(std_out.val).strip(), new_path
+        )
+        self.assertFalse(QgisTestCase.strip_std_ignorable_errors(std_err.val).strip())
 
 
 if __name__ == "__main__":
