@@ -413,12 +413,12 @@ def get_plugin_deps(plugin_id: str) -> dict[str, Optional[str]]:
         return result
 
     for dep in plugin_deps.split(","):
-        if dep.find("==") > 0:
+        if "==" in dep:
             name, version_required = dep.split("==")
         else:
-            name = dep
-            version_required = None
-        result[name] = version_required
+            name, version_required = dep, None
+        result[name.strip()] = version_required.strip() if version_required else None
+
     return result
 
 
