@@ -33,7 +33,7 @@
 #include "qgsshadowsettings.h"
 #include "qgstemporalrangeobject.h"
 #include "qgsambientocclusionsettings.h"
-#include "qgsterrainsettings.h"
+#include "qgsabstractterrainsettings.h"
 
 class QgsMapLayer;
 class QgsRasterLayer;

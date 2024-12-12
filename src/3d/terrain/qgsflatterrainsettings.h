@@ -18,7 +18,7 @@
 
 #include "qgis_3d.h"
 #include "qgis_sip.h"
-#include "qgsterrainsettings.h"
+#include "qgsabstractterrainsettings.h"
 #include "qgsrectangle.h"
 
 class QDomElement;

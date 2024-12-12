@@ -29,7 +29,7 @@
 #include "qgs3drendercontext.h"
 #include "qgsthreadingutils.h"
 #include "qgsmaplayerlistutils_p.h"
-#include "qgsterrainsettings.h"
+#include "qgsabstractterrainsettings.h"
 #include "qgsflatterrainsettings.h"
 #include "qgs3dterrainregistry.h"
 
@@ -442,7 +442,7 @@ void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
   {
     mTerrainSettings->resolveReferences( &project );
 
-    std::unique_ptr< QgsTerrainGenerator > terrainGenerator = mTerrainSettings->createTerrainGenerator( Qgs3DRenderContext::fromMapSettings( this ) );
+    std::unique_ptr<QgsTerrainGenerator> terrainGenerator = mTerrainSettings->createTerrainGenerator( Qgs3DRenderContext::fromMapSettings( this ) );
     if ( terrainGenerator )
     {
       setTerrainGenerator( terrainGenerator.release() );

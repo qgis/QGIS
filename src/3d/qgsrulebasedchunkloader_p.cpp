@@ -30,7 +30,7 @@
 
 #include "qgsrulebased3drenderer.h"
 #include "qgstessellatedpolygongeometry.h"
-#include "qgsterrainsettings.h"
+#include "qgsabstractterrainsettings.h"
 
 #include <QtConcurrent>
 #include <Qt3DCore/QTransform>

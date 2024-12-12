@@ -27,7 +27,7 @@
 #include "qgsterraintextureimage_p.h"
 #include "qgsterraintileentity_p.h"
 #include "qgs3dutils.h"
-#include "qgsterrainsettings.h"
+#include "qgsabstractterrainsettings.h"
 
 #include "qgscoordinatetransform.h"
 

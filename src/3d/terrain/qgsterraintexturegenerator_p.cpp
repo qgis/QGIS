@@ -20,7 +20,7 @@
 #include "qgsmapsettings.h"
 #include "qgsmapthemecollection.h"
 #include "qgsproject.h"
-#include "qgsterrainsettings.h"
+#include "qgsabstractterrainsettings.h"
 #include "qgs3dmapsettings.h"
 
 #include "qgseventtracing.h"

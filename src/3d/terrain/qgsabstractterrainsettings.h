@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsterrainsettings.h
+  qgsabstractterrainsettings.h
   --------------------------------------
   Date                 : August 2024
   Copyright            : (C) 2024 by Nyall Dawson
@@ -13,8 +13,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSTERRAINSETTINGS_H
-#define QGSTERRAINSETTINGS_H
+#ifndef QGSABSTRACTTERRAINSETTINGS_H
+#define QGSABSTRACTTERRAINSETTINGS_H
 
 #include "qgis_3d.h"
 #include "qgis_sip.h"
@@ -229,4 +229,4 @@ class _3D_EXPORT QgsAbstractTerrainSettings SIP_ABSTRACT
 };
 
 
-#endif // QGSTERRAINSETTINGS_H
+#endif // QGSABSTRACTTERRAINSETTINGS_H

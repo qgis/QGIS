@@ -76,7 +76,7 @@
 #include "qgs3dmapexportsettings.h"
 #include "qgsmessageoutput.h"
 #include "qgsframegraph.h"
-#include "qgsterrainsettings.h"
+#include "qgsabstractterrainsettings.h"
 
 #include "qgsskyboxentity.h"
 #include "qgsskyboxsettings.h"

@@ -1,5 +1,5 @@
 /***************************************************************************
-  qgsterrainsettings.cpp
+  qgsabstractterrainsettings.cpp
   --------------------------------------
   Date                 : August 2024
   Copyright            : (C) 2024 by Nyall Dawson
@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsterrainsettings.h"
+#include "qgsabstractterrainsettings.h"
 #include "qgis.h"
 #include <QDomElement>
 
