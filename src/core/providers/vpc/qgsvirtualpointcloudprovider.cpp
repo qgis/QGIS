@@ -538,7 +538,12 @@ QgsPointCloudRenderer *QgsVirtualPointCloudProvider::createRenderer( const QVari
 
   if ( mAttributes.indexOf( QLatin1String( "Classification" ) ) >= 0 )
   {
-    return new QgsPointCloudClassifiedRenderer( QStringLiteral( "Classification" ), QgsPointCloudClassifiedRenderer::defaultCategories() );
+    QgsPointCloudClassifiedRenderer *newRenderer = new QgsPointCloudClassifiedRenderer( QStringLiteral( "Classification" ), QgsPointCloudClassifiedRenderer::defaultCategories() );
+    if ( mOverview != nullptr )
+    {
+      newRenderer->setZoomOutBehavior( Qgis::PointCloudZoomOutBehavior::Overview );
+    }
+    return newRenderer;
   }
 
   return new QgsPointCloudExtentRenderer();

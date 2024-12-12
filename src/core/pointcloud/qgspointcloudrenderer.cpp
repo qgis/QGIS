@@ -25,6 +25,7 @@
 #include "qgslogger.h"
 #include "qgscircle.h"
 #include "qgsunittypes.h"
+#include "qgsvirtualpointcloudprovider.h"
 
 #include <QThread>
 #include <QPointer>
@@ -68,7 +69,7 @@ QgsPointCloudRenderer::QgsPointCloudRenderer()
   settings.setEnabled( true );
   settings.setSize( 1 );
   textFormat.setBuffer( settings );
-  mLabelTextFormat = ( textFormat );
+  mLabelTextFormat = textFormat;
 }
 
 QgsPointCloudRenderer *QgsPointCloudRenderer::load( QDomElement &element, const QgsReadWriteContext &context )
@@ -218,7 +219,7 @@ void QgsPointCloudRenderer::copyCommonProperties( QgsPointCloudRenderer *destina
 
   destination->setShowLabels( mShowLabels );
   destination->setLabelTextFormat( mLabelTextFormat );
-  destination->setShowExtends( mShowExtends );
+  destination->setZoomOutBehavior( mZoomOutBehavior );
 }
 
 void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element, const QgsReadWriteContext &context )
@@ -243,7 +244,7 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
     mLabelTextFormat = QgsTextFormat();
     mLabelTextFormat.readXml( element.firstChildElement( QStringLiteral( "text-style" ) ), context );
   }
-  mShowExtends = element.attribute( QStringLiteral( "showExtends" ), QStringLiteral( "0" ) ).toInt();
+  mZoomOutBehavior = static_cast<Qgis::PointCloudZoomOutBehavior>( element.attribute( QStringLiteral( "zoomOutBehavior" ), QStringLiteral( "0" ) ).toInt() );
 }
 
 void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const
@@ -269,7 +270,7 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
     QDomDocument doc = element.ownerDocument();
     element.appendChild( mLabelTextFormat.writeXml( doc, context ) );
   }
-  element.setAttribute( QStringLiteral( "showExtends" ), QString::number( mShowExtends ) );
+  element.setAttribute( QStringLiteral( "zoomOutBehavior" ), QString::number( static_cast<int>( mZoomOutBehavior ) ) );
 }
 
 Qgis::PointCloudSymbol QgsPointCloudRenderer::pointSymbol() const

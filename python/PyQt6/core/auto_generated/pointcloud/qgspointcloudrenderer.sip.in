@@ -578,16 +578,16 @@ Returns the text format renderer is using for rendering labels
 .. versionadded:: 3.42
 %End
 
-    void setShowExtends( const bool show );
+    void setZoomOutBehavior( const Qgis::PointCloudZoomOutBehavior behavior );
 %Docstring
-Set whether the renderer should render point cloud extends instead of overview when zoomed out
+Sets the renderer behavior when zoomed out
 
 .. versionadded:: 3.42
 %End
 
-    bool showExtends() const;
+    Qgis::PointCloudZoomOutBehavior zoomOutBehavior() const;
 %Docstring
-Returns whether the renderer renders point cloud extends instead of overview when zoomed out
+Returns the renderer behavior when zoomed out
 
 .. versionadded:: 3.42
 %End
