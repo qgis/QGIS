@@ -19,8 +19,7 @@ import subprocess
 import sys
 import tempfile
 
-from qgis.testing import unittest
-
+from qgis.testing import QgisTestCase, unittest
 from utilities import unitTestDataPath
 
 print("CTEST_FULL_OUTPUT")
@@ -28,7 +27,7 @@ print("CTEST_FULL_OUTPUT")
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsProcessExecutablePt1(unittest.TestCase):
+class TestQgsProcessExecutablePt1(QgisTestCase):
 
     TMP_DIR = ""
 
@@ -43,25 +42,6 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
     def tearDownClass(cls):
         super().tearDownClass()
         shutil.rmtree(cls.TMP_DIR, ignore_errors=True)
-
-    @staticmethod
-    def _strip_ignorable_errors(output: str):
-        return "\n".join(
-            [
-                e
-                for e in output.splitlines()
-                if e
-                not in (
-                    "Problem with GRASS installation: GRASS was not found or is not correctly installed",
-                    "QStandardPaths: wrong permissions on runtime directory /tmp, 0777 instead of 0700",
-                    "MESA: error: ZINK: failed to choose pdev",
-                    "MESA: error: ZINK: vkEnumeratePhysicalDevices failed (VK_ERROR_INITIALIZATION_FAILED)",
-                    "glx: failed to create drisw screen",
-                    "failed to load driver: zink",
-                    "QML debugging is enabled. Only use this in a safe environment.",
-                )
-            ]
-        )
 
     def run_process(self, arguments):
         call = [QGIS_PROCESS_BIN] + arguments
@@ -100,7 +80,7 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
     def testNoArgs(self):
         rc, output, err = self.run_process([])
         self.assertIn("Available commands", output)
-        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertFalse(self.strip_std_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
     def testPlugins(self):
@@ -109,7 +89,7 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
         self.assertIn("available plugins", output.lower())
         self.assertIn("processing", output.lower())
         self.assertNotIn("metasearch", output.lower())
-        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertFalse(self.strip_std_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
     def testPluginsSkipLoading(self):
@@ -118,7 +98,7 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
         self.assertIn("available plugins", output.lower())
         self.assertIn("processing", output.lower())
         self.assertNotIn("metasearch", output.lower())
-        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertFalse(self.strip_std_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
     def testPluginStatus(self):
@@ -138,12 +118,12 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
         rc, output, err = self.run_process(["plugins"])
         self.assertIn("available plugins", output.lower())
         self.assertIn("* grassprovider", output.lower())
-        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertFalse(self.strip_std_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
         # disable
         rc, output, err = self.run_process(["plugins", "disable", "grassprovider"])
-        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertFalse(self.strip_std_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
         # try to re-disable
@@ -154,17 +134,17 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
         rc, output, err = self.run_process(["plugins"])
         self.assertIn("available plugins", output.lower())
         self.assertNotIn("* grassprovider", output.lower())
-        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertFalse(self.strip_std_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
         rc, output, err = self.run_process(["plugins", "enable", "grassprovider"])
-        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertFalse(self.strip_std_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
         rc, output, err = self.run_process(["plugins"])
         self.assertIn("available plugins", output.lower())
         self.assertIn("* grassprovider", output.lower())
-        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertFalse(self.strip_std_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
         if not previously_enabled:
@@ -198,7 +178,7 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
         self.assertIn("available algorithms", output.lower())
         self.assertIn("native:reprojectlayer", output.lower())
         self.assertIn("gdal:translate", output.lower())
-        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertFalse(self.strip_std_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
     def testAlgorithmListNoPython(self):
@@ -206,7 +186,7 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
         self.assertIn("available algorithms", output.lower())
         self.assertIn("native:reprojectlayer", output.lower())
         self.assertNotIn("gdal:translate", output.lower())
-        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertFalse(self.strip_std_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
     def testAlgorithmsListJson(self):
@@ -240,7 +220,7 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
         rc, output, err = self.run_process(["help", "--no-python", "native:centroids"])
         self.assertIn("representing the centroid", output.lower())
         self.assertIn("argument type", output.lower())
-        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertFalse(self.strip_std_ignorable_errors(err))
         self.assertEqual(rc, 0)
 
     def testAlgorithmHelpJson(self):
@@ -293,7 +273,7 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
                 f"--OUTPUT={output_file}",
             ]
         )
-        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertFalse(self.strip_std_ignorable_errors(err))
         self.assertIn("0...10...20...30...40...50...60...70...80...90", output.lower())
         self.assertIn("results", output.lower())
         self.assertIn("OUTPUT:\t" + output_file, output)
@@ -312,7 +292,7 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
                 f"OUTPUT={output_file}",
             ]
         )
-        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertFalse(self.strip_std_ignorable_errors(err))
         self.assertIn("0...10...20...30...40...50...60...70...80...90", output.lower())
         self.assertIn("results", output.lower())
         self.assertIn("OUTPUT:\t" + output_file, output)
@@ -329,7 +309,7 @@ class TestQgsProcessExecutablePt1(unittest.TestCase):
         rc, output, err = self.run_process_stdin(
             ["run", "--no-python", "native:centroids", "-"], json.dumps(params)
         )
-        self.assertFalse(self._strip_ignorable_errors(err))
+        self.assertFalse(self.strip_std_ignorable_errors(err))
 
         res = json.loads(output)
 

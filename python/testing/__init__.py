@@ -316,6 +316,29 @@ class QgisTestCase(unittest.TestCase):
             file_path[1:] if file_path.startswith("/") else file_path
         )
 
+    @staticmethod
+    def strip_std_ignorable_errors(output: str) -> str:
+        """
+        Strips out ignorable warnings and errors from stdout/stderr output
+        """
+        return "\n".join(
+            [
+                e
+                for e in output.splitlines()
+                if e
+                not in (
+                    "Problem with GRASS installation: GRASS was not found or is not correctly installed",
+                    "QStandardPaths: wrong permissions on runtime directory /tmp, 0777 instead of 0700",
+                    "MESA: error: ZINK: failed to choose pdev",
+                    "MESA: error: ZINK: vkEnumeratePhysicalDevices failed (VK_ERROR_INITIALIZATION_FAILED)",
+                    "glx: failed to create drisw screen",
+                    "failed to load driver: zink",
+                    "QML debugging is enabled. Only use this in a safe environment.",
+                )
+                and not "LC_ALL: cannot change locale" in e
+            ]
+        )
+
     def assertLayersEqual(self, layer_expected, layer_result, **kwargs):
         """
         :param layer_expected: The first layer to compare
