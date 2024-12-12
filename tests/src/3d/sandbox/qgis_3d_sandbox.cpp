@@ -25,13 +25,12 @@
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgsapplication.h"
-#include "qgsflatterraingenerator.h"
+#include "qgsflatterrainsettings.h"
 #include "qgsgui.h"
 #include "qgshelp.h"
 #include "qgslayertree.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapsettings.h"
-#include "qgsmessagebaritem.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudlayer3drenderer.h"
 #include "qgspointlightsettings.h"
@@ -83,10 +82,9 @@ void initCanvas3D( Qgs3DMapCanvas *canvas )
     map->setTransformContext( QgsProject::instance()->transformContext() );
   } );
 
-  QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs(), map->transformContext() );
-  map->setTerrainGenerator( flatTerrain );
-  map->setTerrainElevationOffset( QgsProject::instance()->elevationProperties()->terrainProvider()->offset() );
+  QgsFlatTerrainSettings *flatTerrain = new QgsFlatTerrainSettings();
+  flatTerrain->setElevationOffset( QgsProject::instance()->elevationProperties()->terrainProvider()->offset() );
+  map->setTerrainSettings( flatTerrain );
 
   QgsPointLightSettings defaultPointLight;
   defaultPointLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
