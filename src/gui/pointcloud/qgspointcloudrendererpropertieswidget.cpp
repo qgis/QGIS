@@ -33,6 +33,7 @@
 #include "qgsstyle.h"
 #include "qgssymbolwidgetcontext.h"
 #include "qgstextformatwidget.h"
+#include "qgsvirtualpointcloudprovider.h"
 
 static bool initPointCloudRenderer( const QString &name, QgsPointCloudRendererWidgetFunc f, const QString &iconName = QString() )
 {
@@ -125,12 +126,44 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   connect( mHorizontalTriangleUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
   // show virtual point cloud options only when vpc layer is selected
-  bool showVpcOptions = !mLayer->dataProvider()->subIndexes().isEmpty();
-  mVpcGroupBox->setVisible( showVpcOptions );
-  mLabelOptions->setDialogTitle( tr( "Customize label text" ) );
-  connect( mExtendsCheckBox, &QCheckBox::stateChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
-  connect( mLabels, &QCheckBox::stateChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
-  connect( mLabelOptions, &QgsFontButton::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+  if ( !mLayer->dataProvider()->subIndexes().isEmpty() )
+  {
+    mLabelOptions->setDialogTitle( tr( "Customize label text" ) );
+    connect( mLabels, &QCheckBox::stateChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+    connect( mLabelOptions, &QgsFontButton::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
+    mZoomOutOptions->addItem( tr( "Show extents only" ), static_cast<int>( Qgis::PointCloudZoomOutBehavior::Extent ) );
+    try
+    {
+      const QgsVirtualPointCloudProvider &vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider &>( *mLayer->dataProvider() );
+      if ( vpcProvider.overview() != nullptr )
+      {
+        mZoomOutOptions->addItem( tr( "Show overview only" ), static_cast<int>( Qgis::PointCloudZoomOutBehavior::Overview ) );
+        mZoomOutOptions->addItem( tr( "Show extents over overview" ), static_cast<int>( Qgis::PointCloudZoomOutBehavior::Both ) );
+      }
+    }
+    catch ( const std::bad_cast & )
+    {
+      mZoomOutOptions->setDisabled( true );
+    }
+    connect( mZoomOutOptions, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]() {
+      Qgis::PointCloudZoomOutBehavior zoomOutBehavior = static_cast<Qgis::PointCloudZoomOutBehavior>( mZoomOutOptions->currentData().toInt() );
+      if ( zoomOutBehavior == Qgis::PointCloudZoomOutBehavior::Overview )
+      {
+        mLabels->setDisabled( true );
+        mLabelOptions->setDisabled( true );
+      }
+      else
+      {
+        mLabels->setDisabled( false );
+        mLabelOptions->setDisabled( false );
+      }
+      emitWidgetChanged();
+    } );
+  }
+  else
+  {
+    mVpcGroupBox->setVisible( false );
+  }
 
   syncToLayer( layer );
 }
@@ -191,7 +224,17 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     {
       mLabels->setChecked( mLayer->renderer()->showLabels() );
       mLabelOptions->setTextFormat( mLayer->renderer()->labelTextFormat() );
-      mExtendsCheckBox->setChecked( mLayer->renderer()->showExtends() );
+      mZoomOutOptions->setCurrentIndex( static_cast<int>( mLayer->renderer()->zoomOutBehavior() ) );
+      if ( mLayer->renderer()->zoomOutBehavior() == Qgis::PointCloudZoomOutBehavior::Overview )
+      {
+        mLabels->setDisabled( true );
+        mLabelOptions->setDisabled( true );
+      }
+      else
+      {
+        mLabels->setDisabled( false );
+        mLabelOptions->setDisabled( false );
+      }
     }
   }
 
@@ -235,7 +278,7 @@ void QgsPointCloudRendererPropertiesWidget::apply()
 
   mLayer->renderer()->setShowLabels( mLabels->isChecked() );
   mLayer->renderer()->setLabelTextFormat( mLabelOptions->textFormat() );
-  mLayer->renderer()->setShowExtends( mExtendsCheckBox->isChecked() );
+  mLayer->renderer()->setZoomOutBehavior( static_cast<Qgis::PointCloudZoomOutBehavior>( mZoomOutOptions->currentData().toInt() ) );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()
