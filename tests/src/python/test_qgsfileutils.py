@@ -425,11 +425,16 @@ class TestQgsFileUtils(unittest.TestCase):
             QgsFileUtils.sidecarFilesForPath(f"{unitTestDataPath()}/landsat2.nc"),
             {f"{unitTestDataPath()}/landsat2.nc.aux.xml"},
         )
-        # tif
+        # tif -- ignore .aux.xml, which may/may not be present for this particular
+        # file (it's not checked into git, but can be generated locally)
         self.assertEqual(
-            QgsFileUtils.sidecarFilesForPath(
-                f"{unitTestDataPath()}/ALLINGES_RGF93_CC46_1_1.tif"
-            ),
+            {
+                f
+                for f in QgsFileUtils.sidecarFilesForPath(
+                    f"{unitTestDataPath()}/ALLINGES_RGF93_CC46_1_1.tif"
+                )
+                if not ".aux.xml" in f
+            },
             {f"{unitTestDataPath()}/ALLINGES_RGF93_CC46_1_1.tfw"},
         )
 
