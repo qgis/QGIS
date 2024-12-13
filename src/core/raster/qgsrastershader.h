@@ -84,7 +84,7 @@ class CORE_EXPORT QgsRasterShader
                 int *returnRedValue SIP_OUT,
                 int *returnGreenValue SIP_OUT,
                 int *returnBlueValue SIP_OUT,
-                int *returnAlpha SIP_OUT );
+                int *returnAlpha SIP_OUT ) const;
 
     /**
      * Generates a new RGBA value based on an original RGBA value.
