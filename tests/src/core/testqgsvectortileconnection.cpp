@@ -63,13 +63,13 @@ void TestQgsVectorTileConnection::test_encodedUri()
   conn.zMin = 0;
   conn.zMax = 18;
   QString uri = QgsVectorTileProviderConnection::encodedUri( conn );
-  QCOMPARE( uri, QStringLiteral( "type=xyz&url=https://api.maptiler.com/tiles/v3/%7Bz%7D/%7Bx%7D/%7By%7D.pbf?key%3Dabcdef12345&zmax=18&zmin=0" ) );
+  QCOMPARE( uri, QStringLiteral( "type=xyz&url=https%3A%2F%2Fapi.maptiler.com%2Ftiles%2Fv3%2F%7Bz%7D%2F%7Bx%7D%2F%7By%7D.pbf%3Fkey%3Dabcdef12345&zmax=18&zmin=0" ) );
 
   conn.url = QStringLiteral( "file:///home/user/tiles.mbtiles" );
   conn.zMin = 0;
   conn.zMax = 18;
   uri = QgsVectorTileProviderConnection::encodedUri( conn );
-  QCOMPARE( uri, QStringLiteral( "type=mbtiles&url=file:///home/user/tiles.mbtiles&zmax=18&zmin=0" ) );
+  QCOMPARE( uri, QStringLiteral( "type=mbtiles&url=file%3A%2F%2F%2Fhome%2Fuser%2Ftiles.mbtiles&zmax=18&zmin=0" ) );
 }
 
 
