@@ -161,7 +161,7 @@ void TestQgsHttpheaders::createQgsOwsConnection()
   QgsDataSourceUri uri3( uri2.uri() );
   QCOMPARE( uri3.httpHeader( QgsHttpHeaders::KEY_REFERER ), "http://test.com" );
   QCOMPARE( uri3.httpHeader( "other_http_header" ), "value" );
-  QCOMPARE( uri3.encodedUri(), "https://www.ogc.org/?p1=v1&referer=http://test.com&http-header:other_http_header=value&http-header:referer=http://test.com" );
+  QCOMPARE( uri3.encodedUri(), "https://www.ogc.org/?p1=v1&referer=http%3A%2F%2Ftest.com&http-header:other_http_header=value&http-header:referer=http://test.com" );
 }
 
 
