@@ -54,7 +54,6 @@ PyQgsVectorLayerEditBuffer
 PyQgsLayerDefinition
 PyQgsSettings
 PyQgsSettingsEntry
-PyQgsServerApi
 PyQgsServerWMSGetFeatureInfo
 PyQgsServerWMSGetMap
 PyQgsServerAccessControlWFSTransactional
