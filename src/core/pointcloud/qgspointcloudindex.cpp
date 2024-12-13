@@ -286,7 +286,7 @@ QgsPointCloudBlock *QgsPointCloudIndex::getNodeDataFromCache( const QgsPointClou
   return cached ? cached->clone() : nullptr;
 }
 
-void QgsPointCloudIndex::storeNodeDataToCache( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request )
+void QgsPointCloudIndex::storeNodeDataToCache( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request ) const
 {
   storeNodeDataToCacheStatic( data, node, request, mFilterExpression, mUri );
 }

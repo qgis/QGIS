@@ -342,7 +342,7 @@ class CORE_EXPORT QgsPointCloudIndex
     /**
      * Stores existing \a data to the cache for the specified \a node and \a request. Ownership is not transferred, block gets cloned in the cache.
      */
-    void storeNodeDataToCache( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request );
+    void storeNodeDataToCache( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request ) const;
 
     /**
      * Stores existing \a data to the cache for the specified \a node, \a request, \a expression and \a uri. Ownership is not transferred, block gets cloned in the cache.

@@ -241,7 +241,7 @@ qint64 QgsCopcPointCloudIndex::pointCount() const
   return mLazInfo->pointCount();
 }
 
-bool QgsCopcPointCloudIndex::loadHierarchy()
+bool QgsCopcPointCloudIndex::loadHierarchy() const
 {
   fetchHierarchyPage( mCopcInfoVlr.root_hier_offset, mCopcInfoVlr.root_hier_size );
   return true;

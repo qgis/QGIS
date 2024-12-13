@@ -93,7 +93,7 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
 
   protected:
     bool loadSchema( QgsLazInfo &lazInfo );
-    bool loadHierarchy();
+    bool loadHierarchy() const;
 
     //! Fetches all nodes leading to node \a node into memory
     bool fetchNodeHierarchy( const QgsPointCloudNodeId &n ) const;
