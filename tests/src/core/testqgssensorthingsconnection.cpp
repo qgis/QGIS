@@ -61,7 +61,7 @@ void TestQgsSensorThingsConnection::encodeDecode()
   data.password = QStringLiteral( "my_pw" );
   data.httpHeaders.insert( QStringLiteral( "my_header" ), QStringLiteral( "value" ) );
 
-  QCOMPARE( QgsSensorThingsProviderConnection::encodedUri( data ), QStringLiteral( "url=http://testurl&username=my_user&password=my_pw&authcfg=my_auth&http-header:my_header=value" ) );
+  QCOMPARE( QgsSensorThingsProviderConnection::encodedUri( data ), QStringLiteral( "url=http%3A%2F%2Ftesturl&username=my_user&password=my_pw&authcfg=my_auth&http-header:my_header=value" ) );
   QCOMPARE( QgsSensorThingsProviderConnection::encodedLayerUri( data ), QStringLiteral( "user='my_user' password='my_pw' authcfg=my_auth url='http://testurl' http-header:my_header='value'" ) );
 
   const QgsSensorThingsProviderConnection::Data data2 = QgsSensorThingsProviderConnection::decodedUri( QStringLiteral( "url=http://testurl&username=my_user&password=my_pw&authcfg=my_auth&http-header:my_header=value" ) );
@@ -105,7 +105,7 @@ void TestQgsSensorThingsConnection::testConnections()
   data2.httpHeaders.insert( QStringLiteral( "my_header" ), QStringLiteral( "value2" ) );
   // construct connection using encoded uri
   QgsSensorThingsProviderConnection conn2( QgsSensorThingsProviderConnection::encodedUri( data2 ), {} );
-  QCOMPARE( conn2.uri(), QStringLiteral( "url=http://testurl2&username=my_user2&password=my_pw2&authcfg=my_auth2&http-header:my_header=value2" ) );
+  QCOMPARE( conn2.uri(), QStringLiteral( "url=http%3A%2F%2Ftesturl2&username=my_user2&password=my_pw2&authcfg=my_auth2&http-header:my_header=value2" ) );
   conn2.store( QStringLiteral( "second connection" ) );
 
   // retrieve stored connections
