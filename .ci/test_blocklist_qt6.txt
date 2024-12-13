@@ -36,7 +36,6 @@ PyQgsStyleStorageMssql
 # To be fixed
 PyQgsAnnotation
 PyQgsAuthenticationSystem
-PyQgsAuthManagerOAuth2OWSTest
 PyQgsCodeEditor
 PyQgsDelimitedTextProvider
 PyQgsEditWidgets
