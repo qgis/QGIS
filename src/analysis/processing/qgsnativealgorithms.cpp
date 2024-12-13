@@ -292,6 +292,7 @@ Qgis::ProcessingProviderFlags QgsNativeAlgorithms::flags() const
 void QgsNativeAlgorithms::loadAlgorithms()
 {
   const QgsScopedRuntimeProfile profile( QObject::tr( "QGIS native provider" ) );
+  addAlgorithm( new QgsAddHistoryMetadataAlgorithm() );
   addAlgorithm( new QgsAddIncrementalFieldAlgorithm() );
   addAlgorithm( new QgsAddTableFieldAlgorithm() );
   addAlgorithm( new QgsAddXYFieldsAlgorithm() );

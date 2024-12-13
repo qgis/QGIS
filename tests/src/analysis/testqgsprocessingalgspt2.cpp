@@ -107,6 +107,7 @@ class TestQgsProcessingAlgsPt2 : public QgsTest
     void copyMetadata();
     void applyMetadata();
     void exportMetadata();
+    void addHistoryMetadata();
 
   private:
     QString mPointLayerPath;
@@ -1988,6 +1989,49 @@ void TestQgsProcessingAlgsPt2::exportMetadata()
   QCOMPARE( md.abstract(), exportedMetadata.abstract() );
 }
 
+void TestQgsProcessingAlgsPt2::addHistoryMetadata()
+{
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  QgsLayerMetadata md;
+  md.setTitle( QStringLiteral( "Title" ) );
+  md.setAbstract( QStringLiteral( "Abstract" ) );
+  layer->setMetadata( md );
+
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:addhistorymetadata" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
+  parameters.insert( QStringLiteral( "HISTORY" ), QStringLiteral( "do something" ) );
+
+  bool ok = false;
+  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
+
+  QStringList history = layer->metadata().history();
+  QCOMPARE( history.count(), 1 );
+  QCOMPARE( history.at( 0 ), QStringLiteral( "do something" ) );
+
+  parameters[QStringLiteral( "HISTORY" )] = QStringLiteral( "do something else" );
+
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
+
+  history = layer->metadata().history();
+  QCOMPARE( history.count(), 2 );
+  QCOMPARE( history.at( 0 ), QStringLiteral( "do something" ) );
+  QCOMPARE( history.at( 1 ), QStringLiteral( "do something else" ) );
+}
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )
 #include "testqgsprocessingalgspt2.moc"
