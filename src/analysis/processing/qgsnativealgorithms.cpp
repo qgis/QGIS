@@ -555,6 +555,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsTranslateAlgorithm() );
   addAlgorithm( new QgsTruncateTableAlgorithm() );
   addAlgorithm( new QgsUnionAlgorithm() );
+  addAlgorithm( new QgsUpdateLayerMetadataAlgorithm() );
   addAlgorithm( new QgsOpenUrlAlgorithm() );
   addAlgorithm( new QgsHttpRequestAlgorithm() );
   addAlgorithm( new QgsVariableWidthBufferByMAlgorithm() );

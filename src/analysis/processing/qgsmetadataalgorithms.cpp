@@ -319,4 +319,78 @@ QVariantMap QgsAddHistoryMetadataAlgorithm::processAlgorithm( const QVariantMap 
   return results;
 }
 
+///
+
+QString QgsUpdateLayerMetadataAlgorithm::name() const
+{
+  return QStringLiteral( "updatelayermetadata" );
+}
+
+QString QgsUpdateLayerMetadataAlgorithm::displayName() const
+{
+  return QObject::tr( "Update layer metadata" );
+}
+
+QStringList QgsUpdateLayerMetadataAlgorithm::tags() const
+{
+  return QObject::tr( "change,update,layer,metadata,qmd" ).split( ',' );
+}
+
+QString QgsUpdateLayerMetadataAlgorithm::group() const
+{
+  return QObject::tr( "Metadata tools" );
+}
+
+QString QgsUpdateLayerMetadataAlgorithm::groupId() const
+{
+  return QStringLiteral( "metadatatools" );
+}
+
+QString QgsUpdateLayerMetadataAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "Copies all non-empty metadata fields from an input layer to a target layer.\n\nLeaves empty input fields unchaged in the target." );
+}
+
+QgsUpdateLayerMetadataAlgorithm *QgsUpdateLayerMetadataAlgorithm::createInstance() const
+{
+  return new QgsUpdateLayerMetadataAlgorithm();
+}
+
+void QgsUpdateLayerMetadataAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Source layer" ) ) );
+  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "TARGET" ), QObject::tr( "Target layer" ) ) );
+  addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Updated layer" ) ) );
+}
+
+bool QgsUpdateLayerMetadataAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  QgsMapLayer *inputLayer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsMapLayer *targetLayer = parameterAsLayer( parameters, QStringLiteral( "TARGET" ), context );
+
+  if ( !inputLayer )
+    throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
+
+  if ( !targetLayer )
+    throw QgsProcessingException( QObject::tr( "Invalid target layer" ) );
+
+  mLayerId = targetLayer->id();
+
+  std::unique_ptr<QgsLayerMetadata> md( targetLayer->metadata().clone() );
+  md->combine( &inputLayer->metadata() );
+  targetLayer->setMetadata( *md.get() );
+
+  return true;
+}
+
+QVariantMap QgsUpdateLayerMetadataAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  Q_UNUSED( parameters );
+  Q_UNUSED( context );
+
+  QVariantMap results;
+  results.insert( QStringLiteral( "OUTPUT" ), mLayerId );
+  return results;
+}
+
 ///@endcond

@@ -108,6 +108,7 @@ class TestQgsProcessingAlgsPt2 : public QgsTest
     void applyMetadata();
     void exportMetadata();
     void addHistoryMetadata();
+    void updateMetadata();
 
   private:
     QString mPointLayerPath;
@@ -2031,6 +2032,49 @@ void TestQgsProcessingAlgsPt2::addHistoryMetadata()
   QCOMPARE( history.count(), 2 );
   QCOMPARE( history.at( 0 ), QStringLiteral( "do something" ) );
   QCOMPARE( history.at( 1 ), QStringLiteral( "do something else" ) );
+}
+
+void TestQgsProcessingAlgsPt2::updateMetadata()
+{
+  std::unique_ptr<QgsVectorLayer> inputLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  QVERIFY( inputLayer->isValid() );
+
+  std::unique_ptr<QgsVectorLayer> targetLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "target" ), QStringLiteral( "memory" ) );
+  QVERIFY( targetLayer->isValid() );
+
+  QgsLayerMetadata mdInput;
+  mdInput.setTitle( QStringLiteral( "New title" ) );
+  mdInput.setAbstract( QStringLiteral( "New abstract" ) );
+  mdInput.setLanguage( QStringLiteral( "Language" ) );
+  inputLayer->setMetadata( mdInput );
+
+  QgsLayerMetadata mdTarget;
+  mdTarget.setTitle( QStringLiteral( "Title" ) );
+  mdTarget.setAbstract( QStringLiteral( "Abstract" ) );
+  mdTarget.setType( QStringLiteral( "Type" ) );
+  targetLayer->setMetadata( mdTarget );
+
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:updatelayermetadata" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( inputLayer.get() ) );
+  parameters.insert( QStringLiteral( "TARGET" ), QVariant::fromValue( targetLayer.get() ) );
+
+  bool ok = false;
+  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), targetLayer->id() );
+
+  QgsLayerMetadata targetMetadata = targetLayer->metadata();
+  QCOMPARE( targetMetadata.title(), QStringLiteral( "New title" ) );
+  QCOMPARE( targetMetadata.abstract(), QStringLiteral( "New abstract" ) );
+  QCOMPARE( targetMetadata.language(), QStringLiteral( "Language" ) );
+  QCOMPARE( targetMetadata.type(), QStringLiteral( "Type" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )

@@ -73,7 +73,6 @@ class QgsApplyLayerMetadataAlgorithm : public QgsProcessingAlgorithm
     QString mLayerId;
 };
 
-
 /**
  * Native export layer metadata algorithm.
  */
@@ -112,6 +111,30 @@ class QgsAddHistoryMetadataAlgorithm : public QgsProcessingAlgorithm
     QString shortHelpString() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QgsAddHistoryMetadataAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;
+
+  private:
+    QString mLayerId;
+};
+
+/**
+ * Native update layer metadata algorithm.
+ */
+class QgsUpdateLayerMetadataAlgorithm : public QgsProcessingAlgorithm
+{
+  public:
+    QgsUpdateLayerMetadataAlgorithm() = default;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QgsUpdateLayerMetadataAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
