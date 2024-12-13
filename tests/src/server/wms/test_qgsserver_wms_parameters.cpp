@@ -64,14 +64,14 @@ void TestQgsServerWmsParameters::external_layers()
 
   QgsWms::QgsWmsParametersLayer layer_params = layers_params[0];
   QCOMPARE( layer_params.mNickname, QString( "external_layer_1" ) );
-  QCOMPARE( layer_params.mExternalUri, QString( "layers=layer_1_name&url=http://url_1" ) );
+  QCOMPARE( layer_params.mExternalUri, QString( "layers=layer_1_name&url=http%3A%2F%2Furl_1" ) );
 
   layer_params = layers_params[1];
   QCOMPARE( layer_params.mNickname, QString( "layer" ) );
 
   layer_params = layers_params[2];
   QCOMPARE( layer_params.mNickname, QString( "external_layer_2" ) );
-  QCOMPARE( layer_params.mExternalUri, QString( "layers=layer_2_name&opacities=100&url=http://url_2" ) );
+  QCOMPARE( layer_params.mExternalUri, QString( "layers=layer_2_name&opacities=100&url=http%3A%2F%2Furl_2" ) );
 
   //test if opacities are also applied to external layers
   QCOMPARE( layers_params[0].mOpacity, 255 );
