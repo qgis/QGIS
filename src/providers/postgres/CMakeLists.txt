@@ -2,6 +2,7 @@
 # Files
 
 set(PG_SRCS
+  qgspostgresutils.cpp
   qgspostgresprovider.cpp
   qgspostgresconn.cpp
   qgspostgresconnpool.cpp
@@ -26,6 +27,7 @@ if (WITH_GUI)
     qgspgnewconnection.cpp
     qgspostgresprojectstoragedialog.cpp
     raster/qgspostgresrastertemporalsettingswidget.cpp
+    qgspostgresutils.cpp
   )
 
   set(PG_UIS ${CMAKE_SOURCE_DIR}/src/ui/qgspostgresrastertemporalsettingswidgetbase.ui)
@@ -96,6 +98,7 @@ endif()
 # Postgres Raster
 
 set(PGRASTER_SRCS
+  qgspostgresutils.cpp
   raster/qgspostgresrasterprovider.cpp
   raster/qgspostgresrastershareddata.cpp
   raster/qgspostgresrasterutils.cpp
