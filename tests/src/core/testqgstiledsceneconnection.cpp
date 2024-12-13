@@ -62,8 +62,8 @@ void TestQgsTiledSceneConnection::encodeDecode()
   data.password = QStringLiteral( "my_pw" );
   data.httpHeaders.insert( QStringLiteral( "my_header" ), QStringLiteral( "value" ) );
 
-  QCOMPARE( QgsTiledSceneProviderConnection::encodedUri( data ), QStringLiteral( "url=http://testurl&username=my_user&password=my_pw&authcfg=my_auth&http-header:my_header=value" ) );
-  QCOMPARE( QgsTiledSceneProviderConnection::encodedLayerUri( data ), QStringLiteral( "url=http://testurl&username=my_user&password=my_pw&authcfg=my_auth&http-header:my_header=value" ) );
+  QCOMPARE( QgsTiledSceneProviderConnection::encodedUri( data ), QStringLiteral( "url=http%3A%2F%2Ftesturl&username=my_user&password=my_pw&authcfg=my_auth&http-header:my_header=value" ) );
+  QCOMPARE( QgsTiledSceneProviderConnection::encodedLayerUri( data ), QStringLiteral( "url=http%3A%2F%2Ftesturl&username=my_user&password=my_pw&authcfg=my_auth&http-header:my_header=value" ) );
 
   const QgsTiledSceneProviderConnection::Data data2 = QgsTiledSceneProviderConnection::decodedUri( QStringLiteral( "url=http://testurl&username=my_user&password=my_pw&authcfg=my_auth&http-header:my_header=value" ) );
   QCOMPARE( data2.url, QStringLiteral( "http://testurl" ) );
@@ -111,7 +111,7 @@ void TestQgsTiledSceneConnection::testConnections()
   data2.httpHeaders.insert( QStringLiteral( "my_header" ), QStringLiteral( "value2" ) );
   // construct connection using encoded uri
   QgsTiledSceneProviderConnection conn2( QgsTiledSceneProviderConnection::encodedUri( data2 ), QStringLiteral( "test_provider2" ), {} );
-  QCOMPARE( conn2.uri(), QStringLiteral( "url=http://testurl2&username=my_user2&password=my_pw2&authcfg=my_auth2&http-header:my_header=value2" ) );
+  QCOMPARE( conn2.uri(), QStringLiteral( "url=http%3A%2F%2Ftesturl2&username=my_user2&password=my_pw2&authcfg=my_auth2&http-header:my_header=value2" ) );
   QCOMPARE( qgis::down_cast< QgsTiledSceneProviderConnection * >( &conn2 )->providerKey(), QStringLiteral( "test_provider2" ) );
   conn2.store( QStringLiteral( "second connection" ) );
 
