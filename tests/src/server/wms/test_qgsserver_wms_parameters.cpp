@@ -94,7 +94,7 @@ void TestQgsServerWmsParameters::external_layers()
 
   QgsWms::QgsWmsParametersLayer layer_params2 = layers_params2[0];
   QCOMPARE( layer_params2.mNickname, QString( "external_layer_1" ) );
-  QCOMPARE( layer_params2.mExternalUri, QString( "layers=layer_1_name&url=http://url_1" ) );
+  QCOMPARE( layer_params2.mExternalUri, QString( "layers=layer_1_name&url=http%3A%2F%2Furl_1" ) );
 
 
 }
