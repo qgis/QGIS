@@ -578,14 +578,14 @@ Returns the text format renderer is using for rendering labels
 .. versionadded:: 3.42
 %End
 
-    void setZoomOutBehavior( const Qgis::PointCloudZoomOutBehavior behavior );
+    void setZoomOutBehavior( const Qgis::PointCloudZoomOutRenderBehavior behavior );
 %Docstring
 Sets the renderer behavior when zoomed out
 
 .. versionadded:: 3.42
 %End
 
-    Qgis::PointCloudZoomOutBehavior zoomOutBehavior() const;
+    Qgis::PointCloudZoomOutRenderBehavior zoomOutBehavior() const;
 %Docstring
 Returns the renderer behavior when zoomed out
 

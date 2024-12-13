@@ -10998,6 +10998,23 @@ Qgis.MouseHandlesAction.__doc__ = """Action to be performed by the mouse handles
 # --
 Qgis.MouseHandlesAction.baseClass = Qgis
 # monkey patching scoped based enum
+Qgis.PointCloudZoomOutRenderBehavior.RenderExtents.__doc__ = ""
+Qgis.PointCloudZoomOutRenderBehavior.RenderOverview.__doc__ = ""
+Qgis.PointCloudZoomOutRenderBehavior.RenderOverviewAndExtents.__doc__ = ""
+Qgis.PointCloudZoomOutRenderBehavior.__doc__ = """Point cloud zoom out options
+
+.. versionadded:: 3.42
+
+* ``RenderExtents``: 
+* ``RenderOverview``: 
+* ``RenderOverviewAndExtents``: 
+
+"""
+# --
+Qgis.PointCloudZoomOutRenderBehavior.baseClass = Qgis
+# --
+Qgis.MouseHandlesAction.baseClass = Qgis
+# monkey patching scoped based enum
 Qgis.MeshRangeLimit.NotSet.__doc__ = "User defined"
 Qgis.MeshRangeLimit.MinimumMaximum.__doc__ = "Real min-max values"
 Qgis.MeshRangeLimit.__doc__ = """Describes the limits used to compute mesh ranges (min/max values).
