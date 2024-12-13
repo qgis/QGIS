@@ -240,7 +240,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsPostgresProviderC
     }
     else
     {
-      ok = conn->supportedLayers( properties, false, schema == QStringLiteral( "public" ), aspatial, schema );
+      ok = conn->supportedLayers( properties, false, schema == QStringLiteral( "public" ), aspatial, false, schema );
     }
 
     if ( !ok )
