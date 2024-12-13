@@ -2731,6 +2731,12 @@ bool QgsPostgresConn::allowProjectsInDatabase( const QString &connName )
   return settings.value( "/PostgreSQL/connections/" + connName + "/projectsInDatabase", false ).toBool();
 }
 
+bool QgsPostgresConn::removeRasterOverviewTables( const QString &connName )
+{
+  QgsSettings settings;
+  return settings.value( "/PostgreSQL/connections/" + connName + "/dontShowRasterOverviews", false ).toBool();
+}
+
 void QgsPostgresConn::deleteConnection( const QString &connName )
 {
   QgsSettings settings;
@@ -2755,6 +2761,7 @@ void QgsPostgresConn::deleteConnection( const QString &connName )
   settings.remove( key + "/metadataInDatabase" );
   settings.remove( key + "/dontResolveType" );
   settings.remove( key + "/session_role" );
+  settings.remove( key + "/dontShowRasterOverviews" );
   settings.remove( key );
 }
 
@@ -2782,6 +2789,7 @@ void QgsPostgresConn::duplicateConnection( const QString &src, const QString &ds
   settings.setValue( newKey + QStringLiteral( "/saveUsername" ), settings.value( key + QStringLiteral( "/saveUsername" ) ).toString() );
   settings.setValue( newKey + QStringLiteral( "/savePassword" ), settings.value( key + QStringLiteral( "/savePassword" ) ).toString() );
   settings.setValue( newKey + QStringLiteral( "/authcfg" ), settings.value( key + QStringLiteral( "/authcfg" ) ).toString() );
+  settings.setValue( newKey + QStringLiteral( "/dontShowRasterOverviews" ), settings.value( key + QStringLiteral( "/dontShowRasterOverviews" ) ).toString() );
 
   settings.sync();
 }

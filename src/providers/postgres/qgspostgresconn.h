@@ -471,6 +471,7 @@ class QgsPostgresConn : public QObject
     static bool allowProjectsInDatabase( const QString &connName );
     static void deleteConnection( const QString &connName );
     static bool allowMetadataInDatabase( const QString &connName );
+    static bool removeRasterOverviewTables( const QString &connName );
 
     /**
      * Duplicates \a src connection settings to a new \a dst connection.
