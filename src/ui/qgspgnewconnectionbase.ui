@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>448</width>
-    <height>510</height>
+    <height>573</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -233,6 +233,13 @@
        <widget class="QCheckBox" name="cb_metadataInDatabase">
         <property name="text">
          <string>Allow saving/loading QGIS layer metadata in the database</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="cb_dontShowRasterOverviews">
+        <property name="text">
+         <string>Don't list raster overview tables</string>
         </property>
        </widget>
       </item>
