@@ -248,4 +248,75 @@ QVariantMap QgsExportLayerMetadataAlgorithm::processAlgorithm( const QVariantMap
   return results;
 }
 
+///
+
+QString QgsAddHistoryMetadataAlgorithm::name() const
+{
+  return QStringLiteral( "addhistorymetadata" );
+}
+
+QString QgsAddHistoryMetadataAlgorithm::displayName() const
+{
+  return QObject::tr( "Add history metadata" );
+}
+
+QStringList QgsAddHistoryMetadataAlgorithm::tags() const
+{
+  return QObject::tr( "add,history,metadata" ).split( ',' );
+}
+
+QString QgsAddHistoryMetadataAlgorithm::group() const
+{
+  return QObject::tr( "Metadata tools" );
+}
+
+QString QgsAddHistoryMetadataAlgorithm::groupId() const
+{
+  return QStringLiteral( "metadatatools" );
+}
+
+QString QgsAddHistoryMetadataAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "Adds a new history entry to the layer's metadata." );
+}
+
+QgsAddHistoryMetadataAlgorithm *QgsAddHistoryMetadataAlgorithm::createInstance() const
+{
+  return new QgsAddHistoryMetadataAlgorithm();
+}
+
+void QgsAddHistoryMetadataAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Layer" ) ) );
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "HISTORY" ), QObject::tr( "History entry" ) ) );
+  addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Updated" ) ) );
+}
+
+bool QgsAddHistoryMetadataAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  QgsMapLayer *layer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
+  const QString history = parameterAsString( parameters, QStringLiteral( "HISTORY" ), context );
+
+  if ( !layer )
+    throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
+
+  mLayerId = layer->id();
+
+  std::unique_ptr<QgsLayerMetadata> md( layer->metadata().clone() );
+  md->addHistoryItem( history );
+  layer->setMetadata( *md.get() );
+
+  return true;
+}
+
+QVariantMap QgsAddHistoryMetadataAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  Q_UNUSED( parameters );
+  Q_UNUSED( context );
+
+  QVariantMap results;
+  results.insert( QStringLiteral( "OUTPUT" ), mLayerId );
+  return results;
+}
+
 ///@endcond
