@@ -594,7 +594,7 @@ void QgsPostgresConn::addColumnInfo( QgsPostgresLayerProperty &layerProperty, co
   }
 }
 
-bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, const QString &schema, const QString &name )
+bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, bool removeRasterOverviews, const QString &schema, const QString &name )
 {
   QMutexLocker locker( &mLock );
   int nColumns = 0;
@@ -1054,6 +1054,52 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     }
   }
 
+  if ( removeRasterOverviews )
+  {
+    QString sqlRasterOverviews = QString( "SELECT o_table_schema, o_table_name FROM public.raster_overviews" );
+
+    QgsPostgresResult resultRasterOverviews;
+    resultRasterOverviews = LoggedPQexec( "QgsPostgresConn", sqlRasterOverviews );
+
+    if ( resultRasterOverviews.result() )
+    {
+      QVector<QgsPostgresRasterOverviewLayerProperty> overviews;
+      for ( int idx = 0; idx < resultRasterOverviews.PQntuples(); idx++ )
+      {
+        QgsPostgresRasterOverviewLayerProperty rasterOverviewProperty;
+        rasterOverviewProperty.schemaName = resultRasterOverviews.PQgetvalue( idx, 0 );
+        rasterOverviewProperty.tableName = resultRasterOverviews.PQgetvalue( idx, 1 );
+        overviews.append( rasterOverviewProperty );
+      }
+
+      QVector<QgsPostgresLayerProperty> layersToKeep;
+      for ( int i = 0; i < mLayersSupported.count(); i++ )
+      {
+        QgsPostgresLayerProperty property = mLayersSupported.at( i );
+
+        if ( !property.isRaster )
+        {
+          layersToKeep.append( property );
+        }
+        else
+        {
+          bool keepRasterTable = true;
+          for ( QgsPostgresRasterOverviewLayerProperty overview : overviews )
+          {
+            if ( property.schemaName == overview.schemaName && property.tableName == overview.tableName )
+            {
+              keepRasterTable = false;
+            }
+          }
+
+          if ( keepRasterTable )
+            layersToKeep.append( property );
+        }
+      }
+      mLayersSupported = layersToKeep;
+    }
+  }
+
   if ( nColumns == 0 && schema.isEmpty() )
   {
     QgsMessageLog::logMessage( tr( "Database connection was successful, but the accessible tables could not be determined." ), tr( "PostGIS" ) );
@@ -1062,14 +1108,14 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   return true;
 }
 
-bool QgsPostgresConn::supportedLayersPrivate( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, const QString &schema, const QString &table )
+bool QgsPostgresConn::supportedLayersPrivate( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, bool removeRasterOverviews, const QString &schema, const QString &table )
 {
   QMutexLocker locker( &mLock );
 
   mLayersSupported.clear();
 
   // Get the list of supported tables
-  if ( !getTableInfo( searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables, schema, table ) )
+  if ( !getTableInfo( searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables, removeRasterOverviews, schema, table ) )
   {
     QgsMessageLog::logMessage( tr( "Unable to get list of spatially enabled tables from the database" ), tr( "PostGIS" ) );
     return false;
@@ -1458,15 +1504,15 @@ Qgis::PostgresRelKind QgsPostgresConn::relKindFromValue( const QString &value )
   return Qgis::PostgresRelKind::Unknown;
 }
 
-bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, const QString &schema )
+bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, bool removeRasterOverviews, const QString &schema )
 {
-  return supportedLayersPrivate( layers, searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables, schema );
+  return supportedLayersPrivate( layers, searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables, removeRasterOverviews, schema );
 }
 
 bool QgsPostgresConn::supportedLayer( QgsPostgresLayerProperty &layerProperty, const QString &schema, const QString &table )
 {
   QVector<QgsPostgresLayerProperty> layers;
-  if ( !supportedLayersPrivate( layers, false, false, true /* allowGeometrylessTables */, schema, table ) || layers.empty() )
+  if ( !supportedLayersPrivate( layers, false, false, true /* allowGeometrylessTables */, false, schema, table ) || layers.empty() )
   {
     return false;
   }
