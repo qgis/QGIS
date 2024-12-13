@@ -507,11 +507,12 @@ class TestQgsServer(QgsServerTestBase):
 
     def test_multiple_servers(self):
         """Segfaults?"""
+        servers = {}
         for i in range(10):
-            locals()[f"s{i}"] = QgsServer()
-            locals()[f"rq{i}"] = QgsBufferServerRequest("")
-            locals()[f"re{i}"] = QgsBufferServerResponse()
-            locals()[f"s{i}"].handleRequest(locals()[f"rq{i}"], locals()[f"re{i}"])
+            servers[f"s{i}"] = QgsServer()
+            servers[f"rq{i}"] = QgsBufferServerRequest("")
+            servers[f"re{i}"] = QgsBufferServerResponse()
+            servers[f"s{i}"].handleRequest(servers[f"rq{i}"], servers[f"re{i}"])
 
     def test_requestHandler(self):
         """Test request handler"""
