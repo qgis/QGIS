@@ -131,31 +131,31 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
     mLabelOptions->setDialogTitle( tr( "Customize label text" ) );
     connect( mLabels, &QCheckBox::stateChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
     connect( mLabelOptions, &QgsFontButton::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
-    mZoomOutOptions->addItem( tr( "Show extents only" ), static_cast<int>( Qgis::PointCloudZoomOutBehavior::Extent ) );
-    try
+    mZoomOutOptions->addItem( tr( "Show extents only" ), static_cast<int>( Qgis::PointCloudZoomOutRenderBehavior::RenderExtents ) );
+
+    if ( const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( mLayer->dataProvider() ) )
     {
-      const QgsVirtualPointCloudProvider &vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider &>( *mLayer->dataProvider() );
-      if ( vpcProvider.overview() != nullptr )
+      if ( vpcProvider->overview() )
       {
-        mZoomOutOptions->addItem( tr( "Show overview only" ), static_cast<int>( Qgis::PointCloudZoomOutBehavior::Overview ) );
-        mZoomOutOptions->addItem( tr( "Show extents over overview" ), static_cast<int>( Qgis::PointCloudZoomOutBehavior::Both ) );
+        mZoomOutOptions->addItem( tr( "Show overview only" ), static_cast<int>( Qgis::PointCloudZoomOutRenderBehavior::RenderOverview ) );
+        mZoomOutOptions->addItem( tr( "Show extents over overview" ), static_cast<int>( Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) );
       }
     }
-    catch ( const std::bad_cast & )
+    else
     {
-      mZoomOutOptions->setDisabled( true );
+      mZoomOutOptions->setEnabled( false );
     }
-    connect( mZoomOutOptions, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [this]() {
-      Qgis::PointCloudZoomOutBehavior zoomOutBehavior = static_cast<Qgis::PointCloudZoomOutBehavior>( mZoomOutOptions->currentData().toInt() );
-      if ( zoomOutBehavior == Qgis::PointCloudZoomOutBehavior::Overview )
+
+    connect( mZoomOutOptions, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int currentZoomOutOption ) {
+      switch ( static_cast<Qgis::PointCloudZoomOutRenderBehavior>( currentZoomOutOption ) )
       {
-        mLabels->setDisabled( true );
-        mLabelOptions->setDisabled( true );
-      }
-      else
-      {
-        mLabels->setDisabled( false );
-        mLabelOptions->setDisabled( false );
+        case Qgis::PointCloudZoomOutRenderBehavior::RenderOverview:
+          mLabels->setEnabled( false );
+          mLabelOptions->setEnabled( false );
+          break;
+        default:
+          mLabels->setEnabled( true );
+          mLabelOptions->setEnabled( true );
       }
       emitWidgetChanged();
     } );
@@ -225,15 +225,15 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
       mLabels->setChecked( mLayer->renderer()->showLabels() );
       mLabelOptions->setTextFormat( mLayer->renderer()->labelTextFormat() );
       mZoomOutOptions->setCurrentIndex( static_cast<int>( mLayer->renderer()->zoomOutBehavior() ) );
-      if ( mLayer->renderer()->zoomOutBehavior() == Qgis::PointCloudZoomOutBehavior::Overview )
+      switch ( mLayer->renderer()->zoomOutBehavior() )
       {
-        mLabels->setDisabled( true );
-        mLabelOptions->setDisabled( true );
-      }
-      else
-      {
-        mLabels->setDisabled( false );
-        mLabelOptions->setDisabled( false );
+        case Qgis::PointCloudZoomOutRenderBehavior::RenderOverview:
+          mLabels->setEnabled( false );
+          mLabelOptions->setEnabled( false );
+          break;
+        default:
+          mLabels->setEnabled( true );
+          mLabelOptions->setEnabled( true );
       }
     }
   }
@@ -278,7 +278,7 @@ void QgsPointCloudRendererPropertiesWidget::apply()
 
   mLayer->renderer()->setShowLabels( mLabels->isChecked() );
   mLayer->renderer()->setLabelTextFormat( mLabelOptions->textFormat() );
-  mLayer->renderer()->setZoomOutBehavior( static_cast<Qgis::PointCloudZoomOutBehavior>( mZoomOutOptions->currentData().toInt() ) );
+  mLayer->renderer()->setZoomOutBehavior( static_cast<Qgis::PointCloudZoomOutRenderBehavior>( mZoomOutOptions->currentData().toInt() ) );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()

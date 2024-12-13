@@ -959,18 +959,20 @@ void QgsPointCloudLayer::loadIndexesForRenderContext( QgsRenderContext &renderer
     }
 
     const QVector<QgsPointCloudSubIndex> subIndex = mDataProvider->subIndexes();
-    const QgsVirtualPointCloudProvider &vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider &>( *mDataProvider );
-    for ( int i = 0; i < subIndex.size(); ++i )
+    if ( const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( mDataProvider.get() ) )
     {
-      // no need to load as it's there
-      if ( subIndex.at( i ).index() )
-        continue;
-
-      if ( subIndex.at( i ).extent().intersects( renderExtent ) &&
-           renderExtent.width() < vpcProvider.averageSubIndexWidth() &&
-           renderExtent.height() < vpcProvider.averageSubIndexHeight() )
+      for ( int i = 0; i < subIndex.size(); ++i )
       {
-        mDataProvider->loadSubIndex( i );
+        // no need to load as it's there
+        if ( subIndex.at( i ).index() )
+          continue;
+
+        if ( subIndex.at( i ).extent().intersects( renderExtent ) &&
+             ( renderExtent.width() < vpcProvider->averageSubIndexWidth() ||
+               renderExtent.height() < vpcProvider->averageSubIndexHeight() ) )
+        {
+          mDataProvider->loadSubIndex( i );
+        }
       }
     }
   }

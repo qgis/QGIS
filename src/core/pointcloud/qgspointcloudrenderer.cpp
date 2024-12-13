@@ -244,7 +244,7 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
     mLabelTextFormat = QgsTextFormat();
     mLabelTextFormat.readXml( element.firstChildElement( QStringLiteral( "text-style" ) ), context );
   }
-  mZoomOutBehavior = static_cast<Qgis::PointCloudZoomOutBehavior>( element.attribute( QStringLiteral( "zoomOutBehavior" ), QStringLiteral( "0" ) ).toInt() );
+  mZoomOutBehavior = static_cast<Qgis::PointCloudZoomOutRenderBehavior>( element.attribute( QStringLiteral( "zoomOutBehavior" ), QStringLiteral( "0" ) ).toInt() );
 }
 
 void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const

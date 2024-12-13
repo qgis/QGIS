@@ -5738,13 +5738,13 @@ class CORE_EXPORT Qgis
      * Point cloud zoom out options
      * \since QGIS 3.42
      */
-    enum class PointCloudZoomOutBehavior : int
+    enum class PointCloudZoomOutRenderBehavior : int
     {
-      Extent,
-      Overview,
-      Both
+      RenderExtents,
+      RenderOverview,
+      RenderOverviewAndExtents
     };
-    Q_ENUM( PointCloudZoomOutBehavior )
+    Q_ENUM( PointCloudZoomOutRenderBehavior )
 
     /**
      * Identify search radius in mm

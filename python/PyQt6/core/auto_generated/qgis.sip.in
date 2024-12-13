@@ -3249,11 +3249,11 @@ The development version
       UpdatedCanvas,
     };
 
-    enum class PointCloudZoomOutBehavior /BaseType=IntEnum/
+    enum class PointCloudZoomOutRenderBehavior /BaseType=IntEnum/
     {
-      Extent,
-      Overview,
-      Both
+      RenderExtents,
+      RenderOverview,
+      RenderOverviewAndExtents
     };
 
     enum class PointCloudAccessType /BaseType=IntEnum/

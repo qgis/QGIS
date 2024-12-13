@@ -205,28 +205,22 @@ void QgsVirtualPointCloudProvider::parseFile()
     QgsDoubleRange zRange;
 
     // look directly for link to data file
-    if ( f["assets"].find( "data" ) != f["assets"].end() )
+    if ( f["assets"].contains( "data" ) && f["assets"]["data"].contains( "href" ) )
     {
-      if ( f["assets"]["data"].contains( "href" ) )
-      {
-        uri = QString::fromStdString( f["assets"]["data"]["href"] );
-      }
+      uri = QString::fromStdString( f["assets"]["data"]["href"] );
     }
 
     // look for vpc overview reference
-    if ( mOverview == nullptr && f["assets"].find( "overview" ) != f["assets"].end() )
+    if ( !mOverview && f["assets"].contains( "overview" ) && f["assets"]["overview"].contains( "href" ) )
     {
-      if ( f["assets"]["overview"].contains( "href" ) )
-      {
-        mOverview = std::make_unique<QgsCopcPointCloudIndex>();
-        mOverview->load( fInfo.absoluteDir().absoluteFilePath( QString::fromStdString( f["assets"]["overview"]["href"] ) ) );
-      }
+      mOverview = std::make_unique<QgsCopcPointCloudIndex>();
+      mOverview->load( fInfo.absoluteDir().absoluteFilePath( QString::fromStdString( f["assets"]["overview"]["href"] ) ) );
     }
     // if it doesn't exist look for overview file in the directory
-    else if ( mOverview == nullptr )
+    else if ( !mOverview )
     {
       QDir vpcDir = fInfo.absoluteDir();
-      QStringList nameFilter = { "*overview.*laz" };
+      QStringList nameFilter = { QString( fInfo.baseName() + "-overview.copc.laz" ) };
       vpcDir.setNameFilters( nameFilter );
       vpcDir.setFilter( QDir::Files );
       if ( !vpcDir.entryList().empty() )
@@ -539,9 +533,9 @@ QgsPointCloudRenderer *QgsVirtualPointCloudProvider::createRenderer( const QVari
   if ( mAttributes.indexOf( QLatin1String( "Classification" ) ) >= 0 )
   {
     QgsPointCloudClassifiedRenderer *newRenderer = new QgsPointCloudClassifiedRenderer( QStringLiteral( "Classification" ), QgsPointCloudClassifiedRenderer::defaultCategories() );
-    if ( mOverview != nullptr )
+    if ( mOverview )
     {
-      newRenderer->setZoomOutBehavior( Qgis::PointCloudZoomOutBehavior::Overview );
+      newRenderer->setZoomOutBehavior( Qgis::PointCloudZoomOutRenderBehavior::RenderOverview );
     }
     return newRenderer;
   }
