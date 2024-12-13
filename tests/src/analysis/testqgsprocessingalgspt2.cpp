@@ -109,6 +109,7 @@ class TestQgsProcessingAlgsPt2 : public QgsTest
     void exportMetadata();
     void addHistoryMetadata();
     void updateMetadata();
+    void setMetadataFields();
 
   private:
     QString mPointLayerPath;
@@ -2075,6 +2076,46 @@ void TestQgsProcessingAlgsPt2::updateMetadata()
   QCOMPARE( targetMetadata.abstract(), QStringLiteral( "New abstract" ) );
   QCOMPARE( targetMetadata.language(), QStringLiteral( "Language" ) );
   QCOMPARE( targetMetadata.type(), QStringLiteral( "Type" ) );
+}
+
+void TestQgsProcessingAlgsPt2::setMetadataFields()
+{
+  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+
+  std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:setmetadatafields" ) ) );
+  QVERIFY( alg != nullptr );
+
+  QVariantMap parameters;
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer.get() ) );
+  parameters.insert( QStringLiteral( "TITLE" ), QStringLiteral( "Title" ) );
+
+  bool ok = false;
+  std::unique_ptr<QgsProcessingContext> context = std::make_unique<QgsProcessingContext>();
+  QgsProcessingFeedback feedback;
+  QVariantMap results;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
+  QCOMPARE( layer->metadata().title(), QStringLiteral( "Title" ) );
+
+  // update existing field and set new
+  parameters[QStringLiteral( "TITLE" )] = QStringLiteral( "New title" );
+  parameters.insert( QStringLiteral( "ABSTRACT" ), QStringLiteral( "Abstract" ) );
+  parameters.insert( QStringLiteral( "FEES" ), QStringLiteral( "Enormous fee" ) );
+  parameters.insert( QStringLiteral( "CRS" ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
+
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
+  QCOMPARE( layer->metadata().title(), QStringLiteral( "New title" ) );
+  QCOMPARE( layer->metadata().abstract(), QStringLiteral( "Abstract" ) );
+  QCOMPARE( layer->metadata().fees(), QStringLiteral( "Enormous fee" ) );
+  QVERIFY( layer->metadata().crs().isValid() );
+  QCOMPARE( layer->metadata().crs().authid(), QStringLiteral( "EPSG:4326" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )

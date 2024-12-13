@@ -144,6 +144,31 @@ class QgsUpdateLayerMetadataAlgorithm : public QgsProcessingAlgorithm
     QString mLayerId;
 };
 
+
+/**
+ * Native set metadata fields algorithm.
+ */
+class QgsSetMetadataFieldsAlgorithm : public QgsProcessingAlgorithm
+{
+  public:
+    QgsSetMetadataFieldsAlgorithm() = default;
+    QString name() const override;
+    QString displayName() const override;
+    QStringList tags() const override;
+    QString group() const override;
+    QString groupId() const override;
+    QString shortHelpString() const override;
+    void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
+    QgsSetMetadataFieldsAlgorithm *createInstance() const override SIP_FACTORY;
+
+  protected:
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;
+
+  private:
+    QString mLayerId;
+};
+
 ///@endcond PRIVATE
 
 #endif // QGSMETADATAALGORITHMS_H

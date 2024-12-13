@@ -393,4 +393,127 @@ QVariantMap QgsUpdateLayerMetadataAlgorithm::processAlgorithm( const QVariantMap
   return results;
 }
 
+///
+
+QString QgsSetMetadataFieldsAlgorithm::name() const
+{
+  return QStringLiteral( "setmetadatafields" );
+}
+
+QString QgsSetMetadataFieldsAlgorithm::displayName() const
+{
+  return QObject::tr( "Set metadata fields" );
+}
+
+QStringList QgsSetMetadataFieldsAlgorithm::tags() const
+{
+  return QObject::tr( "set,metadata,title,abstract,identifier" ).split( ',' );
+}
+
+QString QgsSetMetadataFieldsAlgorithm::group() const
+{
+  return QObject::tr( "Metadata tools" );
+}
+
+QString QgsSetMetadataFieldsAlgorithm::groupId() const
+{
+  return QStringLiteral( "metadatatools" );
+}
+
+QString QgsSetMetadataFieldsAlgorithm::shortHelpString() const
+{
+  return QObject::tr( "Sets various metadata fields for a layer." );
+}
+
+QgsSetMetadataFieldsAlgorithm *QgsSetMetadataFieldsAlgorithm::createInstance() const
+{
+  return new QgsSetMetadataFieldsAlgorithm();
+}
+
+void QgsSetMetadataFieldsAlgorithm::initAlgorithm( const QVariantMap & )
+{
+  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Layer" ) ) );
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "IDENTIFIER" ), QObject::tr( "Identifier" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "PARENT_IDENTIFIER" ), QObject::tr( "Parent identifier" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "TITLE" ), QObject::tr( "Title" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "TYPE" ), QObject::tr( "Type" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "LANGUAGE" ), QObject::tr( "Language" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "ENCODING" ), QObject::tr( "Encoding" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "ABSTRACT" ), QObject::tr( "Abstract" ), QVariant(), true, true ) );
+  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Coordinatem reference system" ), QVariant(), true ) );
+  addParameter( new QgsProcessingParameterString( QStringLiteral( "FEES" ), QObject::tr( "Fees" ), QVariant(), false, true ) );
+  addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Updated" ) ) );
+}
+
+bool QgsSetMetadataFieldsAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  QgsMapLayer *layer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
+
+  if ( !layer )
+    throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
+
+  mLayerId = layer->id();
+
+  std::unique_ptr<QgsLayerMetadata> md( layer->metadata().clone() );
+
+  if ( parameters.value( QStringLiteral( "IDENTIFIER" ) ).isValid() )
+  {
+    md->setIdentifier( parameterAsString( parameters, QStringLiteral( "IDENTIFIER" ), context ) );
+  }
+
+  if ( parameters.value( QStringLiteral( "PARENT_IDENTIFIER" ) ).isValid() )
+  {
+    md->setParentIdentifier( parameterAsString( parameters, QStringLiteral( "PARENT_IDENTIFIER" ), context ) );
+  }
+
+  if ( parameters.value( QStringLiteral( "TITLE" ) ).isValid() )
+  {
+    md->setTitle( parameterAsString( parameters, QStringLiteral( "TITLE" ), context ) );
+  }
+
+  if ( parameters.value( QStringLiteral( "TYPE" ) ).isValid() )
+  {
+    md->setType( parameterAsString( parameters, QStringLiteral( "TYPE" ), context ) );
+  }
+
+  if ( parameters.value( QStringLiteral( "LANGUAGE" ) ).isValid() )
+  {
+    md->setLanguage( parameterAsString( parameters, QStringLiteral( "LANGUAGE" ), context ) );
+  }
+
+  if ( parameters.value( QStringLiteral( "ENCODING" ) ).isValid() )
+  {
+    md->setEncoding( parameterAsString( parameters, QStringLiteral( "ENCODING" ), context ) );
+  }
+
+  if ( parameters.value( QStringLiteral( "ABSTRACT" ) ).isValid() )
+  {
+    md->setAbstract( parameterAsString( parameters, QStringLiteral( "ABSTRACT" ), context ) );
+  }
+
+  if ( parameters.value( QStringLiteral( "CRS" ) ).isValid() )
+  {
+    md->setCrs( parameterAsCrs( parameters, QStringLiteral( "CRS" ), context ) );
+  }
+
+  if ( parameters.value( QStringLiteral( "FEES" ) ).isValid() )
+  {
+    md->setFees( parameterAsString( parameters, QStringLiteral( "FEES" ), context ) );
+  }
+
+  layer->setMetadata( *md.get() );
+
+  return true;
+}
+
+QVariantMap QgsSetMetadataFieldsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
+{
+  Q_UNUSED( parameters );
+  Q_UNUSED( context );
+
+  QVariantMap results;
+  results.insert( QStringLiteral( "OUTPUT" ), mLayerId );
+  return results;
+}
+
 ///@endcond
