@@ -2898,3 +2898,29 @@ int QgsPostgresConn::crsToSrid( const QgsCoordinateReferenceSystem &crs )
 
   return -1;
 }
+
+QString QgsPostgresConn::rasterColumnName( const QString &schema, const QString &table )
+{
+  QMutexLocker locker( &mLock );
+  QString rasterColum;
+  QString sql = QStringLiteral( "SELECT r_raster_column"
+                                " FROM public.raster_columns"
+                                " WHERE"
+                                " r_table_schema =%1"
+                                " AND r_table_name =%2" )
+                  .arg( quotedString( schema ) )
+                  .arg( quotedString( table ) );
+
+  QgsPostgresResult res( LoggedPQexec( QStringLiteral( "QgsPostgresConn" ), sql ) );
+
+  if ( res.PQresultStatus() == PGRES_TUPLES_OK )
+  {
+    rasterColum = res.PQgetvalue( 0, 0 );
+  }
+  else
+  {
+    QgsMessageLog::logMessage( tr( "SQL: %1\nresult: %2\nerror: %3\n" ).arg( sql ).arg( res.PQresultStatus() ).arg( res.PQresultErrorMessage() ), tr( "PostGIS" ) );
+  }
+
+  return rasterColum;
+}

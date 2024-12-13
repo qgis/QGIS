@@ -424,6 +424,15 @@ class QgsPostgresConn : public QObject
      */
     bool getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables, const QString &schema = QString(), const QString &name = QString() );
 
+    /**
+     * Gets information about rater column name for raster table
+     * \param schema
+     * \param table
+     * \returns raster column name or empty string
+     * \since QGIS 3.42
+     */
+    QString rasterColumnName( const QString &schema, const QString &table );
+
     qint64 getBinaryInt( QgsPostgresResult &queryResult, int row, int col );
 
     QString fieldExpressionForWhereClause( const QgsField &fld, QMetaType::Type valueType = QMetaType::Type::UnknownType, QString expr = "%1" );
