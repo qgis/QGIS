@@ -1407,8 +1407,7 @@ void QgsRasterLayer::setContrastEnhancement( QgsContrastEnhancement::ContrastEnh
     return;
   }
 
-  const auto constMyBands = myBands;
-  for ( const int myBand : constMyBands )
+  for ( const int myBand : std::as_const( myBands ) )
   {
     if ( myBand != -1 )
     {
