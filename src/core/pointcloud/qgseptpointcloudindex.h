@@ -18,7 +18,6 @@
 #ifndef QGSEPTPOINTCLOUDINDEX_H
 #define QGSEPTPOINTCLOUDINDEX_H
 
-#include <QObject>
 #include <QString>
 #include <QHash>
 #include <QStringList>
