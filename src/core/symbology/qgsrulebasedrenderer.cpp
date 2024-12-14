@@ -750,8 +750,7 @@ QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( cons
   if ( onlyActive )
     listChildren = mActiveChildren;
 
-  const auto constListChildren = listChildren;
-  for ( Rule *rule : constListChildren )
+  for ( Rule *rule : std::as_const( listChildren ) )
   {
     lst += rule->rulesForFeature( feature, context, onlyActive );
   }
