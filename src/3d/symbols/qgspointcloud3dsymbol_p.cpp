@@ -962,33 +962,33 @@ void QgsClassificationPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex
   QgsPointCloudAttribute::DataType attributeType = QgsPointCloudAttribute::Float;
   int attributeOffset = 0;
   QgsClassificationPointCloud3DSymbol *symbol = dynamic_cast<QgsClassificationPointCloud3DSymbol *>( context.symbol() );
-  if ( symbol )
-  {
-    int offset = 0;
-    const QgsPointCloudAttributeCollection collection = context.attributes();
+  if ( !symbol )
+    return;
 
-    if ( symbol->attribute() == QLatin1String( "X" ) )
+  int offset = 0;
+  const QgsPointCloudAttributeCollection collection = context.attributes();
+
+  if ( symbol->attribute() == QLatin1String( "X" ) )
+  {
+    attrIsX = true;
+  }
+  else if ( symbol->attribute() == QLatin1String( "Y" ) )
+  {
+    attrIsY = true;
+  }
+  else if ( symbol->attribute() == QLatin1String( "Z" ) )
+  {
+    attrIsZ = true;
+  }
+  else
+  {
+    const QgsPointCloudAttribute *attr = collection.find( symbol->attribute(), offset );
+    if ( attr )
     {
-      attrIsX = true;
-    }
-    else if ( symbol->attribute() == QLatin1String( "Y" ) )
-    {
-      attrIsY = true;
-    }
-    else if ( symbol->attribute() == QLatin1String( "Z" ) )
-    {
-      attrIsZ = true;
-    }
-    else
-    {
-      const QgsPointCloudAttribute *attr = collection.find( symbol->attribute(), offset );
-      if ( attr )
-      {
-        attributeType = attr->type();
-        attributeName = attr->name();
-        attributeOffset = attributes.pointRecordSize();
-        attributes.push_back( *attr );
-      }
+      attributeType = attr->type();
+      attributeName = attr->name();
+      attributeOffset = attributes.pointRecordSize();
+      attributes.push_back( *attr );
     }
   }
 
