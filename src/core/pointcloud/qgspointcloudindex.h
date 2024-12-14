@@ -163,9 +163,16 @@ class CORE_EXPORT QgsPointCloudNode
      * Constructs new node object. Should only be called by QgsPointCloudIndex::getNode().
      * Bounds should always be computed by QgsPointCloudNode::bounds().
      */
-    QgsPointCloudNode( QgsPointCloudNodeId id, qint64 pointCount,
-                       QList<QgsPointCloudNodeId> childIds, float error, QgsBox3D bounds )
-      : mId( id ), mPointCount( pointCount ), mChildIds( childIds ), mError( error ), mBounds( bounds )
+    QgsPointCloudNode( const QgsPointCloudNodeId &id,
+                       qint64 pointCount,
+                       const QList<QgsPointCloudNodeId> &childIds,
+                       float error,
+                       const QgsBox3D &bounds )
+      : mId( id )
+      , mPointCount( pointCount )
+      , mChildIds( childIds )
+      , mError( error )
+      , mBounds( bounds )
     {
     }
     //! Returns node's ID (unique in index)
