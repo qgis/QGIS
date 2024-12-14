@@ -826,7 +826,7 @@ void QgsRGBPointCloud3DSymbolHandler::processNode( QgsPointCloudIndex *pc, const
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Y" ), QgsPointCloudAttribute::Int32 ) );
   attributes.push_back( QgsPointCloudAttribute( QStringLiteral( "Z" ), QgsPointCloudAttribute::Int32 ) );
 
-  QgsRgbPointCloud3DSymbol *symbol = dynamic_cast<QgsRgbPointCloud3DSymbol *>( context.symbol() );
+  QgsRgbPointCloud3DSymbol *symbol = qgis::down_cast<QgsRgbPointCloud3DSymbol *>( context.symbol() );
 
   // we have to get the RGB attributes using their real data types -- they aren't always short! (sometimes unsigned short)
   int attrOffset = 0;
