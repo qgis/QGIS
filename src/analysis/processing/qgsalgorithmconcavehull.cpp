@@ -270,7 +270,7 @@ void QgsConcaveHullAlgorithm::concaveHullQgis( std::unique_ptr<QgsFeatureSink> &
   const QgsProcessingAlgorithm *dissolveAlg = QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:dissolve" ) );
   if ( !dissolveAlg )
   {
-    feedback->reportError( QObject::tr( "Failed to compute concave hull: Dissolve algorithm not found!" ), true );
+    throw QgsProcessingException( QObject::tr( "Failed to compute concave hull: Dissolve algorithm not found!" ) );
   }
   algorithm.reset( dissolveAlg->create() );
   results = algorithm->run( params, context, &multiStepFeedback );
