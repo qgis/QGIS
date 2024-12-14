@@ -323,9 +323,8 @@ void Qgs3DMapConfigWidget::apply()
     terrainSettings->setMaximumScreenError( spinScreenError->value() );
     terrainSettings->setMaximumGroundError( spinGroundError->value() );
     terrainSettings->setElevationOffset( terrainElevationOffsetSpinBox->value() );
+    mMap->setTerrainSettings( terrainSettings.release() );
   }
-
-  mMap->setTerrainSettings( terrainSettings.release() );
 
   mMap->setFieldOfView( spinCameraFieldOfView->value() );
   mMap->setProjectionType( cboCameraProjectionType->currentData().value<Qt3DRender::QCameraLens::ProjectionType>() );
