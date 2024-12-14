@@ -307,7 +307,7 @@ QgsPointCloudStatistics QgsCopcPointCloudIndex::metadataStatistics() const
 {
   if ( ! mStatistics )
   {
-    QByteArray statisticsEvlrData = fetchCopcStatisticsEvlrData();
+    const QByteArray statisticsEvlrData = fetchCopcStatisticsEvlrData();
     if ( statisticsEvlrData.isEmpty() )
       mStatistics = QgsPointCloudIndex::metadataStatistics();
     else

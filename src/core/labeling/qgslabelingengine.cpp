@@ -720,7 +720,7 @@ void QgsLabelingEngine::drawLabelCandidateRect( pal::LabelPosition *lp, QgsRende
     drawLabelCandidateRect( lp->nextPart(), context, xform, candidates );
 }
 
-void QgsLabelingEngine::drawLabelMetrics( pal::LabelPosition *label, QgsMapToPixel xform, QgsRenderContext &context, const QPointF &renderPoint )
+void QgsLabelingEngine::drawLabelMetrics( pal::LabelPosition *label, const QgsMapToPixel &xform, QgsRenderContext &context, const QPointF &renderPoint )
 {
   QPainter *painter = context.painter();
   if ( !painter )

@@ -439,7 +439,7 @@ class CORE_EXPORT QgsLabelingEngine
      *
      * \see drawLabelCandidateRect()
      */
-    static void drawLabelMetrics( pal::LabelPosition *label, QgsMapToPixel xform, QgsRenderContext &context, const QPointF &renderPoint );
+    static void drawLabelMetrics( pal::LabelPosition *label, const QgsMapToPixel &xform, QgsRenderContext &context, const QPointF &renderPoint );
 
   protected:
     void processProvider( QgsAbstractLabelProvider *provider, QgsRenderContext &context, pal::Pal &p );
