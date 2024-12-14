@@ -3117,13 +3117,14 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
     case SymbolEntity:
     {
       // check if it is an existing symbol
-      if ( !symbolNames().contains( name ) )
+      auto it = mSymbols.constFind( name );
+      if ( it == mSymbols.constEnd() || !it.value() )
       {
         QgsDebugError( QStringLiteral( "Update request received for unavailable symbol" ) );
         return false;
       }
 
-      symEl = QgsSymbolLayerUtils::saveSymbol( name, symbol( name ), doc, QgsReadWriteContext() );
+      symEl = QgsSymbolLayerUtils::saveSymbol( name, it.value(), doc, QgsReadWriteContext() );
       if ( symEl.isNull() )
       {
         QgsDebugError( QStringLiteral( "Couldn't convert symbol to valid XML!" ) );
@@ -3138,15 +3139,16 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
     case Symbol3DEntity:
     {
       // check if it is an existing symbol
-      if ( !symbol3DNames().contains( name ) )
+      auto it = m3dSymbols.constFind( name );
+      if ( it == m3dSymbols.constEnd() || !it.value() )
       {
         QgsDebugError( QStringLiteral( "Update request received for unavailable symbol" ) );
         return false;
       }
 
       symEl = doc.createElement( QStringLiteral( "symbol" ) );
-      symEl.setAttribute( QStringLiteral( "type" ), m3dSymbols.value( name )->type() );
-      m3dSymbols.value( name )->writeXml( symEl, QgsReadWriteContext() );
+      symEl.setAttribute( QStringLiteral( "type" ), it.value()->type() );
+      it.value()->writeXml( symEl, QgsReadWriteContext() );
       if ( symEl.isNull() )
       {
         QgsDebugError( QStringLiteral( "Couldn't convert symbol to valid XML!" ) );
@@ -3160,14 +3162,14 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
 
     case ColorrampEntity:
     {
-      if ( !colorRampNames().contains( name ) )
+      auto it = mColorRamps.constFind( name );
+      if ( it == mColorRamps.constEnd() || !it.value() )
       {
         QgsDebugError( QStringLiteral( "Update requested for unavailable color ramp." ) );
         return false;
       }
 
-      std::unique_ptr< QgsColorRamp > ramp( colorRamp( name ) );
-      symEl = QgsSymbolLayerUtils::saveColorRamp( name, ramp.get(), doc );
+      symEl = QgsSymbolLayerUtils::saveColorRamp( name, it.value(), doc );
       if ( symEl.isNull() )
       {
         QgsDebugError( QStringLiteral( "Couldn't convert color ramp to valid XML!" ) );
@@ -3181,14 +3183,14 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
 
     case TextFormatEntity:
     {
-      if ( !textFormatNames().contains( name ) )
+      auto it = mTextFormats.constFind( name );
+      if ( it == mTextFormats.constEnd() )
       {
         QgsDebugError( QStringLiteral( "Update requested for unavailable text format." ) );
         return false;
       }
 
-      QgsTextFormat format( textFormat( name ) );
-      symEl = format.writeXml( doc, QgsReadWriteContext() );
+      symEl = it.value().writeXml( doc, QgsReadWriteContext() );
       if ( symEl.isNull() )
       {
         QgsDebugError( QStringLiteral( "Couldn't convert text format to valid XML!" ) );
@@ -3202,14 +3204,14 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
 
     case LabelSettingsEntity:
     {
-      if ( !labelSettingsNames().contains( name ) )
+      auto it = mLabelSettings.constFind( name );
+      if ( it == mLabelSettings.constEnd() )
       {
         QgsDebugError( QStringLiteral( "Update requested for unavailable label settings." ) );
         return false;
       }
 
-      QgsPalLayerSettings settings( labelSettings( name ) );
-      symEl = settings.writeXml( doc, QgsReadWriteContext() );
+      symEl = it.value().writeXml( doc, QgsReadWriteContext() );
       if ( symEl.isNull() )
       {
         QgsDebugError( QStringLiteral( "Couldn't convert label settings to valid XML!" ) );
@@ -3223,15 +3225,15 @@ bool QgsStyle::updateSymbol( StyleEntity type, const QString &name )
 
     case LegendPatchShapeEntity:
     {
-      if ( !legendPatchShapeNames().contains( name ) )
+      auto it = mLegendPatchShapes.constFind( name );
+      if ( it == mLegendPatchShapes.constEnd() )
       {
         QgsDebugError( QStringLiteral( "Update requested for unavailable legend patch shape." ) );
         return false;
       }
 
-      QgsLegendPatchShape shape( legendPatchShape( name ) );
       symEl = doc.createElement( QStringLiteral( "shape" ) );
-      shape.writeXml( symEl, doc, QgsReadWriteContext() );
+      it.value().writeXml( symEl, doc, QgsReadWriteContext() );
       symEl.save( stream, 4 );
       query = qgs_sqlite3_mprintf( "UPDATE legendpatchshapes SET xml='%q' WHERE name='%q';",
                                    xmlArray.constData(), name.toUtf8().constData() );
