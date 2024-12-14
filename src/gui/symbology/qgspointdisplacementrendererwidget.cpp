@@ -212,8 +212,7 @@ QgsExpressionContext QgsPointDisplacementRendererWidget::createExpressionContext
   scope.addVariable( QgsExpressionContextScope::StaticVariable( QgsExpressionContext::EXPR_CLUSTER_SIZE, 0, true ) );
   QList<QgsExpressionContextScope> scopes = mContext.additionalExpressionContextScopes();
   scopes << scope;
-  const auto constScopes = scopes;
-  for ( const QgsExpressionContextScope &s : constScopes )
+  for ( const QgsExpressionContextScope &s : std::as_const( scopes ) )
   {
     context << new QgsExpressionContextScope( s );
   }
