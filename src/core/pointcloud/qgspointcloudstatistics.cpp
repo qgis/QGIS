@@ -160,7 +160,7 @@ QByteArray QgsPointCloudStatistics::toStatisticsJson() const
   return statsDoc.toJson( QJsonDocument::Compact );
 }
 
-QgsPointCloudStatistics QgsPointCloudStatistics::fromStatisticsJson( QByteArray statsByteArray )
+QgsPointCloudStatistics QgsPointCloudStatistics::fromStatisticsJson( const QByteArray &statsByteArray )
 {
   QJsonParseError error;
   QJsonDocument document = QJsonDocument::fromJson( statsByteArray, &error );
