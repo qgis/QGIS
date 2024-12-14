@@ -169,8 +169,8 @@ QgsFeatureList QgsAddXYFieldsAlgorithm::processFeature( const QgsFeature &featur
   }
   else
   {
-    attributes[mInPlaceXFieldIndex] = x;
-    attributes[mInPlaceYFieldIndex] = y;
+    attributes[mInPlaceXFieldIndex] = std::move( x );
+    attributes[mInPlaceYFieldIndex] = std::move( y );
   }
   f.setAttributes( attributes );
   return QgsFeatureList() << f;
