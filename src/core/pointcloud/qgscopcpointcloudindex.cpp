@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgscopcpointcloudindex.h"
-#include "moc_qgscopcpointcloudindex.cpp"
 
 #include <fstream>
 #include <QFile>
