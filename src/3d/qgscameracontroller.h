@@ -326,7 +326,7 @@ class _3D_EXPORT QgsCameraController : public QObject
 
     bool mRotationCenterCalculated = false;
     QVector3D mRotationCenter;
-    double mRotationDistanceFromCenter;
+    double mRotationDistanceFromCenter = 0;
     double mRotationPitch = 0;
     double mRotationYaw = 0;
 
