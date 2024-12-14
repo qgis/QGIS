@@ -199,7 +199,8 @@ class CORE_EXPORT QgsConstWkbPtr
     {
       char *data = reinterpret_cast<char *>( &value );
       const std::size_t n = sizeof( value );
-      for ( std::size_t i = 0, m = n / 2; i < m; ++i )
+      const std::size_t m = n / 2;
+      for ( std::size_t i = 0; i < m; ++i )
       {
         std::swap( data[i], data[n - 1 - i] );
       }
