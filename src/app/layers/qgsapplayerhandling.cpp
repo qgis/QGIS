@@ -565,7 +565,7 @@ L *QgsAppLayerHandling::addLayer( const QString &uri, const QString &baseName, c
 
   if ( !layer || !layer->isValid() )
   {
-    if ( showWarningOnInvalid )
+    if ( layer && showWarningOnInvalid )
     {
       QString msg = QObject::tr( "%1 is not a valid or recognized data source, error: \"%2\"" ).arg( uri, layer->error().message( QgsErrorMessage::Format::Text ) );
       QgisApp::instance()->visibleMessageBar()->pushMessage( QObject::tr( "Invalid Data Source" ), msg, Qgis::MessageLevel::Critical );
