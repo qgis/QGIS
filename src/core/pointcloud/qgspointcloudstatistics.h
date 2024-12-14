@@ -129,7 +129,7 @@ class CORE_EXPORT QgsPointCloudStatistics
     QByteArray toStatisticsJson() const;
 
     //! Creates a statistics object from the JSON object \a stats
-    static QgsPointCloudStatistics fromStatisticsJson( QByteArray stats );
+    static QgsPointCloudStatistics fromStatisticsJson( const QByteArray &stats );
 
 #ifndef SIP_RUN
     //! Returns a map object containing all the statistics
