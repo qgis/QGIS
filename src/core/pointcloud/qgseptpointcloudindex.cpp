@@ -523,7 +523,7 @@ QgsPointCloudStatistics QgsEptPointCloudIndex::metadataStatistics() const
 
     s.classCount = mAttributeClasses[ name ];
 
-    statsMap[ name ] = s;
+    statsMap[ name ] = std::move( s );
   }
   return QgsPointCloudStatistics( pointCount(), statsMap );
 }

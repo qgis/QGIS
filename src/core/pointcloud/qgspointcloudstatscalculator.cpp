@@ -112,7 +112,7 @@ struct StatsProcessor
         summary.mean = 0;
         summary.stDev = std::numeric_limits<double>::quiet_NaN();
         summary.classCount.clear();
-        statsMap[ attribute.name() ] = summary;
+        statsMap[ attribute.name() ] = std::move( summary );
       }
 
       QVector<int> attributeOffsetVector;
