@@ -200,7 +200,7 @@ bool QgsPointCloudLayerRenderer::render()
   else if ( const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( mLayer->dataProvider() ) )
   {
     QVector< QgsPointCloudSubIndex > visibleIndexes;
-    for ( const auto &si : mSubIndexes )
+    for ( const QgsPointCloudSubIndex &si : mSubIndexes )
     {
       if ( renderExtent.intersects( si.extent() ) )
       {
@@ -225,7 +225,7 @@ bool QgsPointCloudLayerRenderer::render()
         renderIndex( vpcProvider->overview() );
       }
       mSubIndexExtentRenderer->startRender( context );
-      for ( const auto &si : visibleIndexes )
+      for ( const QgsPointCloudSubIndex &si : visibleIndexes )
       {
         if ( canceled )
           break;

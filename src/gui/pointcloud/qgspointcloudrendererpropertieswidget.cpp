@@ -91,8 +91,8 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
 
   cboRenderers->setCurrentIndex( -1 ); // set no current renderer
 
-  mPointStyleComboBox->addItem( tr( "Square" ), static_cast<int>( Qgis::PointCloudSymbol::Square ) );
-  mPointStyleComboBox->addItem( tr( "Circle" ), static_cast<int>( Qgis::PointCloudSymbol::Circle ) );
+  mPointStyleComboBox->addItem( tr( "Square" ), QVariant::fromValue( Qgis::PointCloudSymbol::Square ) );
+  mPointStyleComboBox->addItem( tr( "Circle" ), QVariant::fromValue( Qgis::PointCloudSymbol::Circle ) );
 
   connect( cboRenderers, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPointCloudRendererPropertiesWidget::rendererChanged );
 
@@ -104,9 +104,9 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   connect( mPointSizeSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
   connect( mPointSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
 
-  mDrawOrderComboBox->addItem( tr( "Default" ), static_cast<int>( Qgis::PointCloudDrawOrder::Default ) );
-  mDrawOrderComboBox->addItem( tr( "Bottom to Top" ), static_cast<int>( Qgis::PointCloudDrawOrder::BottomToTop ) );
-  mDrawOrderComboBox->addItem( tr( "Top to Bottom" ), static_cast<int>( Qgis::PointCloudDrawOrder::TopToBottom ) );
+  mDrawOrderComboBox->addItem( tr( "Default" ), QVariant::fromValue( Qgis::PointCloudDrawOrder::Default ) );
+  mDrawOrderComboBox->addItem( tr( "Bottom to Top" ), QVariant::fromValue( Qgis::PointCloudDrawOrder::BottomToTop ) );
+  mDrawOrderComboBox->addItem( tr( "Top to Bottom" ), QVariant::fromValue( Qgis::PointCloudDrawOrder::TopToBottom ) );
 
   mMaxErrorUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
   mMaxErrorSpinBox->setClearValue( 0.3 );
@@ -131,14 +131,14 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
     mLabelOptions->setDialogTitle( tr( "Customize label text" ) );
     connect( mLabels, &QCheckBox::stateChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
     connect( mLabelOptions, &QgsFontButton::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
-    mZoomOutOptions->addItem( tr( "Show extents only" ), static_cast<int>( Qgis::PointCloudZoomOutRenderBehavior::RenderExtents ) );
+    mZoomOutOptions->addItem( tr( "Show Extents Only" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderExtents ) );
 
     if ( const QgsVirtualPointCloudProvider *vpcProvider = dynamic_cast<QgsVirtualPointCloudProvider *>( mLayer->dataProvider() ) )
     {
       if ( vpcProvider->overview() )
       {
-        mZoomOutOptions->addItem( tr( "Show overview only" ), static_cast<int>( Qgis::PointCloudZoomOutRenderBehavior::RenderOverview ) );
-        mZoomOutOptions->addItem( tr( "Show extents over overview" ), static_cast<int>( Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) );
+        mZoomOutOptions->addItem( tr( "Show Overview Only" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverview ) );
+        mZoomOutOptions->addItem( tr( "Show Extents Over Overview" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents ) );
       }
     }
     else
@@ -153,7 +153,8 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
           mLabels->setEnabled( false );
           mLabelOptions->setEnabled( false );
           break;
-        default:
+        case Qgis::PointCloudZoomOutRenderBehavior::RenderExtents:
+        case Qgis::PointCloudZoomOutRenderBehavior::RenderOverviewAndExtents:
           mLabels->setEnabled( true );
           mLabelOptions->setEnabled( true );
       }
@@ -209,8 +210,8 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     mPointSizeUnitWidget->setUnit( mLayer->renderer()->pointSizeUnit() );
     mPointSizeUnitWidget->setMapUnitScale( mLayer->renderer()->pointSizeMapUnitScale() );
 
-    mPointStyleComboBox->setCurrentIndex( mPointStyleComboBox->findData( static_cast<int>( mLayer->renderer()->pointSymbol() ) ) );
-    mDrawOrderComboBox->setCurrentIndex( mDrawOrderComboBox->findData( static_cast<int>( mLayer->renderer()->drawOrder2d() ) ) );
+    mPointStyleComboBox->setCurrentIndex( mPointStyleComboBox->findData( QVariant::fromValue( mLayer->renderer()->pointSymbol() ) ) );
+    mDrawOrderComboBox->setCurrentIndex( mDrawOrderComboBox->findData( QVariant::fromValue( mLayer->renderer()->drawOrder2d() ) ) );
 
     mMaxErrorSpinBox->setValue( mLayer->renderer()->maximumScreenError() );
     mMaxErrorUnitWidget->setUnit( mLayer->renderer()->maximumScreenErrorUnit() );
@@ -224,7 +225,7 @@ void QgsPointCloudRendererPropertiesWidget::syncToLayer( QgsMapLayer *layer )
     {
       mLabels->setChecked( mLayer->renderer()->showLabels() );
       mLabelOptions->setTextFormat( mLayer->renderer()->labelTextFormat() );
-      mZoomOutOptions->setCurrentIndex( static_cast<int>( mLayer->renderer()->zoomOutBehavior() ) );
+      mZoomOutOptions->setCurrentIndex( mZoomOutOptions->findData( QVariant::fromValue( mLayer->renderer()->zoomOutBehavior() ) ) );
       switch ( mLayer->renderer()->zoomOutBehavior() )
       {
         case Qgis::PointCloudZoomOutRenderBehavior::RenderOverview:
@@ -265,11 +266,11 @@ void QgsPointCloudRendererPropertiesWidget::apply()
   mLayer->renderer()->setPointSizeUnit( mPointSizeUnitWidget->unit() );
   mLayer->renderer()->setPointSizeMapUnitScale( mPointSizeUnitWidget->getMapUnitScale() );
 
-  mLayer->renderer()->setPointSymbol( static_cast<Qgis::PointCloudSymbol>( mPointStyleComboBox->currentData().toInt() ) );
+  mLayer->renderer()->setPointSymbol( mPointStyleComboBox->currentData().value<Qgis::PointCloudSymbol>() );
 
   mLayer->renderer()->setMaximumScreenError( mMaxErrorSpinBox->value() );
   mLayer->renderer()->setMaximumScreenErrorUnit( mMaxErrorUnitWidget->unit() );
-  mLayer->renderer()->setDrawOrder2d( static_cast<Qgis::PointCloudDrawOrder>( mDrawOrderComboBox->currentData().toInt() ) );
+  mLayer->renderer()->setDrawOrder2d( mDrawOrderComboBox->currentData().value<Qgis::PointCloudDrawOrder>() );
 
   mLayer->renderer()->setRenderAsTriangles( mTriangulateGroupBox->isChecked() );
   mLayer->renderer()->setHorizontalTriangleFilter( mHorizontalTriangleCheckBox->isChecked() );
@@ -278,7 +279,7 @@ void QgsPointCloudRendererPropertiesWidget::apply()
 
   mLayer->renderer()->setShowLabels( mLabels->isChecked() );
   mLayer->renderer()->setLabelTextFormat( mLabelOptions->textFormat() );
-  mLayer->renderer()->setZoomOutBehavior( static_cast<Qgis::PointCloudZoomOutRenderBehavior>( mZoomOutOptions->currentData().toInt() ) );
+  mLayer->renderer()->setZoomOutBehavior( mZoomOutOptions->currentData().value<Qgis::PointCloudZoomOutRenderBehavior>() );
 }
 
 void QgsPointCloudRendererPropertiesWidget::rendererChanged()

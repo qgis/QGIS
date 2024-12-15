@@ -10998,16 +10998,16 @@ Qgis.MouseHandlesAction.__doc__ = """Action to be performed by the mouse handles
 # --
 Qgis.MouseHandlesAction.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.PointCloudZoomOutRenderBehavior.RenderExtents.__doc__ = ""
-Qgis.PointCloudZoomOutRenderBehavior.RenderOverview.__doc__ = ""
-Qgis.PointCloudZoomOutRenderBehavior.RenderOverviewAndExtents.__doc__ = ""
+Qgis.PointCloudZoomOutRenderBehavior.RenderExtents.__doc__ = "Render just point cloud extends when zoomed out"
+Qgis.PointCloudZoomOutRenderBehavior.RenderOverview.__doc__ = "Render overview point cloud when zoomed out"
+Qgis.PointCloudZoomOutRenderBehavior.RenderOverviewAndExtents.__doc__ = "Render extent polygons over overview point cloud"
 Qgis.PointCloudZoomOutRenderBehavior.__doc__ = """Point cloud zoom out options
 
 .. versionadded:: 3.42
 
-* ``RenderExtents``: 
-* ``RenderOverview``: 
-* ``RenderOverviewAndExtents``: 
+* ``RenderExtents``: Render just point cloud extends when zoomed out
+* ``RenderOverview``: Render overview point cloud when zoomed out
+* ``RenderOverviewAndExtents``: Render extent polygons over overview point cloud
 
 """
 # --
