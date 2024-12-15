@@ -75,6 +75,7 @@ class APP_EXPORT QgsGeoreferencerMainWindow : public QMainWindow, private Ui::Qg
     static const QgsSettingsEntryBool *settingLoadInProject;
     static const QgsSettingsEntryString *settingLastSourceFolder;
     static const QgsSettingsEntryString *settingLastRasterFileFilter;
+    static const QgsSettingsEntryString *settingLastTargetCrs;
 
     QgsGeoreferencerMainWindow( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
     ~QgsGeoreferencerMainWindow() override;
