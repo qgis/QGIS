@@ -100,7 +100,7 @@ void QgsCameraController::rotateCamera( float diffPitch, float diffHeading )
   float newPitch = oldPitch + diffPitch;
   float newHeading = oldHeading + diffHeading;
 
-  newPitch = std::clamp( newPitch, 0.f, 180.f );  // prevent going over the head
+  newPitch = std::clamp( newPitch, 0.f, 180.f ); // prevent going over the head
 
   // First undo the previously applied rotation, then apply the new rotation
   // (We can't just apply our euler angles difference because the camera may be already rotated)
@@ -126,7 +126,7 @@ void QgsCameraController::rotateCameraAroundPivot( float newPitch, float newHead
   const float oldPitch = mCameraPose.pitchAngle();
   const float oldHeading = mCameraPose.headingAngle();
 
-  newPitch = std::clamp( newPitch, 0.f, 180.f );  // prevent going over the head
+  newPitch = std::clamp( newPitch, 0.f, 180.f ); // prevent going over the head
 
   // First undo the previously applied rotation, then apply the new rotation
   // (We can't just apply our euler angles difference because the camera may be already rotated)
