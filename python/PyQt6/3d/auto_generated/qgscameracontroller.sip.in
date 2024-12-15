@@ -175,6 +175,14 @@ Rotates the camera on itself.
 .. versionadded:: 3.30
 %End
 
+    void rotateCameraAroundPivot( float newPitch, float newHeading, const QVector3D &pivotPoint );
+%Docstring
+Rotates the camera around the pivot point (in world coordinates)
+to the given new pitch and heading angle.
+
+.. versionadded:: 3.42
+%End
+
     bool willHandleKeyEvent( QKeyEvent *event );
 %Docstring
 Returns ``True`` if the camera controller will handle the specified key ``event``,

@@ -340,6 +340,14 @@ class _3D_EXPORT Qgs3DUtils
      * \since QGIS 3.42
      */
     static int openGlMaxClipPlanes( QSurface *surface );
+
+    /**
+     * Returns rotation quaternion that performs rotation around X axis by pitchAngle,
+     * followed by rotation around Z axis by headingAngle (both angles in degrees).
+     *
+     * \since QGIS 3.42
+     */
+    static QQuaternion rotationFromPitchHeadingAngles( float pitchAngle, float headingAngle );
 };
 
 #endif // QGS3DUTILS_H

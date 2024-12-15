@@ -190,6 +190,13 @@ class _3D_EXPORT QgsCameraController : public QObject
     void rotateCamera( float diffPitch, float diffYaw );
 
     /**
+     * Rotates the camera around the pivot point (in world coordinates)
+     * to the given new pitch and heading angle.
+     * \since QGIS 3.42
+     */
+    void rotateCameraAroundPivot( float newPitch, float newHeading, const QVector3D &pivotPoint );
+
+    /**
      * Returns TRUE if the camera controller will handle the specified key \a event,
      * preventing it from being instead handled by parents of the 3D window before
      * the controller ever receives it.
