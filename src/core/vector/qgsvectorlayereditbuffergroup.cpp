@@ -35,6 +35,11 @@ void QgsVectorLayerEditBufferGroup::addLayer( QgsVectorLayer *layer )
   mLayers.insert( layer );
 }
 
+void QgsVectorLayerEditBufferGroup::removeLayer( QgsVectorLayer *layer )
+{
+  mLayers.remove( layer );
+}
+
 void QgsVectorLayerEditBufferGroup::clear()
 {
   mLayers.clear();

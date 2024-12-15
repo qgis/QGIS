@@ -2989,6 +2989,15 @@ void QgsProject::onMapLayersRemoved( const QList<QgsMapLayer *> &layers )
 
   if ( !mBlockSnappingUpdates && mSnappingConfig.removeLayers( layers ) )
     emit snappingConfigChanged( mSnappingConfig );
+
+  for ( QgsMapLayer *layer : layers )
+  {
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+    if ( ! vlayer )
+      continue;
+
+    mEditBufferGroup.removeLayer( vlayer );
+  }
 }
 
 void QgsProject::cleanTransactionGroups( bool force )
