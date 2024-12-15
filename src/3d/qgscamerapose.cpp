@@ -15,6 +15,8 @@
 
 #include "qgscamerapose.h"
 
+#include "qgs3dutils.h"
+
 #include <Qt3DRender/QCamera>
 
 #include <QDomDocument>
@@ -74,8 +76,7 @@ void QgsCameraPose::setPitchAngle( float pitch )
 void QgsCameraPose::updateCamera( Qt3DRender::QCamera *camera )
 {
   // first rotate by pitch angle around X axis, then by heading angle around Z axis
-  // (we use two separate fromEulerAngles() calls because one would not do rotations in order we need)
-  QQuaternion q = QQuaternion::fromEulerAngles( 0, 0, mHeadingAngle ) * QQuaternion::fromEulerAngles( mPitchAngle, 0, 0 );
+  QQuaternion q = Qgs3DUtils::rotationFromPitchHeadingAngles( mPitchAngle, mHeadingAngle );
   QVector3D cameraToCenter = q * QVector3D( 0, 0, -mDistanceFromCenterPoint );
   camera->setUpVector( q * QVector3D( 0, 1, 0 ) );
   camera->setPosition( mCenterPoint.toVector3D() - cameraToCenter );

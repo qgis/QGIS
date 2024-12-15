@@ -93,25 +93,20 @@ void QgsCameraController::setVerticalAxisInversion( Qgis::VerticalAxisInversion 
   mVerticalAxisInversion = inversion;
 }
 
-void QgsCameraController::rotateCamera( float diffPitch, float diffYaw )
+void QgsCameraController::rotateCamera( float diffPitch, float diffHeading )
 {
-  const float pitch = mCameraPose.pitchAngle();
-  const float yaw = mCameraPose.headingAngle();
+  const float oldPitch = mCameraPose.pitchAngle();
+  const float oldHeading = mCameraPose.headingAngle();
+  float newPitch = oldPitch + diffPitch;
+  float newHeading = oldHeading + diffHeading;
 
-  if ( pitch + diffPitch > 180 )
-    diffPitch = 180 - pitch; // prevent going over the head
-  if ( pitch + diffPitch < 0 )
-    diffPitch = 0 - pitch; // prevent going over the head
+  newPitch = std::clamp( newPitch, 0.f, 180.f );  // prevent going over the head
 
-  // Is it always going to be love/hate relationship with quaternions???
-  // This quaternion combines two rotations:
-  // - first it undoes the previously applied rotation so we have do not have any rotation compared to world coords
-  // - then it applies new rotation
+  // First undo the previously applied rotation, then apply the new rotation
   // (We can't just apply our euler angles difference because the camera may be already rotated)
-  // BONUS: we use two separate fromEulerAngles() calls because one would not do rotations in order we need
-  const QQuaternion q1 = QQuaternion::fromEulerAngles( 0, 0, yaw + diffYaw ) * QQuaternion::fromEulerAngles( pitch + diffPitch, 0, 0 );
-  const QQuaternion q2 = QQuaternion::fromEulerAngles( 0, 0, yaw ) * QQuaternion::fromEulerAngles( pitch, 0, 0 );
-  const QQuaternion q = q1 * q2.conjugated();
+  const QQuaternion qNew = Qgs3DUtils::rotationFromPitchHeadingAngles( newPitch, newHeading );
+  const QQuaternion qOld = Qgs3DUtils::rotationFromPitchHeadingAngles( oldPitch, oldHeading );
+  const QQuaternion q = qNew * qOld.conjugated();
 
   // get camera's view vector, rotate it to get new view center
   const QVector3D position = mCamera->position();
@@ -121,8 +116,29 @@ void QgsCameraController::rotateCamera( float diffPitch, float diffYaw )
   viewCenter = position + cameraToCenter;
 
   mCameraPose.setCenterPoint( viewCenter );
-  mCameraPose.setPitchAngle( pitch + diffPitch );
-  mCameraPose.setHeadingAngle( yaw + diffYaw );
+  mCameraPose.setPitchAngle( newPitch );
+  mCameraPose.setHeadingAngle( newHeading );
+  updateCameraFromPose();
+}
+
+void QgsCameraController::rotateCameraAroundPivot( float newPitch, float newHeading, const QVector3D &pivotPoint )
+{
+  const float oldPitch = mCameraPose.pitchAngle();
+  const float oldHeading = mCameraPose.headingAngle();
+
+  newPitch = std::clamp( newPitch, 0.f, 180.f );  // prevent going over the head
+
+  // First undo the previously applied rotation, then apply the new rotation
+  // (We can't just apply our euler angles difference because the camera may be already rotated)
+  const QQuaternion qNew = Qgs3DUtils::rotationFromPitchHeadingAngles( newPitch, newHeading );
+  const QQuaternion qOld = Qgs3DUtils::rotationFromPitchHeadingAngles( oldPitch, oldHeading );
+  const QQuaternion q = qNew * qOld.conjugated();
+
+  const QVector3D newViewCenter = q * ( mCamera->viewCenter() - pivotPoint ) + pivotPoint;
+
+  mCameraPose.setCenterPoint( newViewCenter );
+  mCameraPose.setPitchAngle( newPitch );
+  mCameraPose.setHeadingAngle( newHeading );
   updateCameraFromPose();
 }
 
@@ -340,36 +356,7 @@ void QgsCameraController::onPositionChangedTerrainNavigation( Qt3DInput::QMouseE
       }
     }
 
-    // First transformation : Shift camera position and view center and rotate the camera
-    {
-      QVector3D shiftVector = mRotationCenter - mCamera->viewCenter();
-
-      QVector3D newViewCenterWorld = camera()->viewCenter() + shiftVector;
-      QVector3D newCameraPosition = camera()->position() + shiftVector;
-
-      mCameraPose.setDistanceFromCenterPoint( ( newViewCenterWorld - newCameraPosition ).length() );
-      mCameraPose.setCenterPoint( newViewCenterWorld );
-      mCameraPose.setPitchAngle( mRotationPitch + pitchDiff );
-      mCameraPose.setHeadingAngle( mRotationYaw + yawDiff );
-      updateCameraFromPose();
-    }
-
-
-    // Second transformation : Shift camera position back
-    {
-      QgsRay3D ray = Qgs3DUtils::rayFromScreenPoint( mClickPoint, mScene->engine()->size(), mCamera );
-
-      QVector3D clickedPositionWorld = ray.origin() + mRotationDistanceFromCenter * ray.direction();
-
-      QVector3D shiftVector = clickedPositionWorld - mCamera->viewCenter();
-
-      QVector3D newViewCenterWorld = camera()->viewCenter() - shiftVector;
-      QVector3D newCameraPosition = camera()->position() - shiftVector;
-
-      mCameraPose.setDistanceFromCenterPoint( ( newViewCenterWorld - newCameraPosition ).length() );
-      mCameraPose.setCenterPoint( newViewCenterWorld );
-      updateCameraFromPose();
-    }
+    rotateCameraAroundPivot( mRotationPitch + pitchDiff, mRotationYaw + yawDiff, mRotationCenter );
   }
   else if ( hasLeftButton && hasCtrl && !hasShift )
   {
