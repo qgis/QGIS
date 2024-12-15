@@ -359,6 +359,34 @@ class TestQgsVectorLayerEditBufferGroup(QgisTestCase):
         self.assertTrue(success)
         self.assertFalse(editBufferGroup.isEditing())
 
+    def testRemoveLayer(self):
+        memoryLayer_a = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=id:integer&field=id_b", "testA", "memory"
+        )
+        self.assertTrue(memoryLayer_a.isValid())
+
+        memoryLayer_b = QgsVectorLayer(
+            "Point?crs=epsg:4326&field=id:integer&field=id_a", "testB", "memory"
+        )
+        self.assertTrue(memoryLayer_b.isValid())
+
+        project = QgsProject.instance()
+        project.addMapLayer(memoryLayer_a)
+        project.addMapLayer(memoryLayer_b)
+
+        project.setTransactionMode(Qgis.TransactionMode.BufferedGroups)
+
+        editBufferGroup = project.editBufferGroup()
+
+        project.removeMapLayer(memoryLayer_a.id())
+
+        self.assertNotIn(memoryLayer_a, editBufferGroup.layers())
+        self.assertIn(memoryLayer_b, editBufferGroup.layers())
+
+        # Chack that no crash happens (#59828)
+        project.startEditing()
+        project.commitChanges()
+
 
 if __name__ == "__main__":
     unittest.main()
