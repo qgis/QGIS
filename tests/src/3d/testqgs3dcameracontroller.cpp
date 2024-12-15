@@ -219,7 +219,7 @@ void TestQgs3DCameraController::testZoom()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::Zoom );
 
   QVector3D diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 0.0, 0.0, 10.3 ), 1.5 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 0.0, 0.0, 3.4 ), 1.5 );
   QVector3D diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
   QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( 0.0, 1.5, -850.4 ), 1.5 );
   QCOMPARE( scene->cameraController()->pitch(), initialPitch );
@@ -272,8 +272,8 @@ void TestQgs3DCameraController::testZoomWheel()
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( -1381.3, 1036.7, 1.0 ), 5.0 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -480.0, 360.6, -351.7 ), 5.0 );
-  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1982.3, 5.0 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -479.2, 359.4, 1.6 ), 5.0 );
+  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1631.9, 5.0 );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, 0 );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );
@@ -523,8 +523,8 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( 283.2, -923.1, -27.0 ), 1.5 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( 120.3, -308.9, -116.8 ), 2.0 );
-  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1742.9, 2.0 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( 99.4, -319.9, -8.8 ), 2.0 );
+  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1631.9, 2.0 );
   QCOMPARE( scene->cameraController()->pitch(), initialPitch );
   QCOMPARE( scene->cameraController()->yaw(), initialYaw );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, 0 );
@@ -558,7 +558,7 @@ void TestQgs3DCameraController::testRotationCenterZoomWheelRotationCenter()
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::RotationCenter );
 
   diffViewCenter = scene->cameraController()->camera()->viewCenter() - initialCamViewCenter;
-  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 30.6, 8.2, 6.4 ), 1.0 );
+  QGSCOMPARENEARVECTOR3D( diffViewCenter, QVector3D( 25.9, 7.1, 5.2 ), 1.0 );
   diffPosition = scene->cameraController()->camera()->position() - initialCamPosition;
   QGSCOMPARENEARVECTOR3D( diffPosition, QVector3D( -44.3, -9.1, -11.7 ), 1.0 );
   diffPitch = scene->cameraController()->pitch() - initialPitch;
@@ -816,8 +816,8 @@ void TestQgs3DCameraController::testTranslateZoomWheelTranslate()
   scene->cameraController()->depthBufferCaptured( depthImage );
 
   QGSCOMPARENEARVECTOR3D( scene->cameraController()->mZoomPoint, QVector3D( 4.8, -4.4, 9.9 ), 1.0 );
-  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -615.0, 116.6, -108.0 ), 4.0 );
-  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1743.4, 2.0 );
+  QGSCOMPARENEARVECTOR3D( scene->cameraController()->cameraPose().centerPoint(), QVector3D( -615.5, 116.2, 3.4 ), 4.0 );
+  QGSCOMPARENEAR( scene->cameraController()->cameraPose().distanceFromCenterPoint(), 1631.9, 2.0 );
   QCOMPARE( scene->cameraController()->mCumulatedWheelY, 0 );
   QCOMPARE( scene->cameraController()->mClickPoint, QPoint() );
   QCOMPARE( scene->cameraController()->mCurrentOperation, QgsCameraController::MouseOperation::None );

@@ -183,6 +183,15 @@ to the given new pitch and heading angle.
 .. versionadded:: 3.42
 %End
 
+    void zoomCameraAroundPivot( const QVector3D &oldCameraPosition, double zoomFactor, const QVector3D &pivotPoint );
+%Docstring
+Zooms camera by given zoom factor (higher than one means zoom in)
+while keeping the pivot point (given in world coordinates) at the
+same screen coordinates after the zoom.
+
+.. versionadded:: 3.42
+%End
+
     bool willHandleKeyEvent( QKeyEvent *event );
 %Docstring
 Returns ``True`` if the camera controller will handle the specified key ``event``,
