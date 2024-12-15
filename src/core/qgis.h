@@ -5740,9 +5740,9 @@ class CORE_EXPORT Qgis
      */
     enum class PointCloudZoomOutRenderBehavior : int
     {
-      RenderExtents,
-      RenderOverview,
-      RenderOverviewAndExtents
+      RenderExtents, //!< Render just point cloud extends when zoomed out
+      RenderOverview, //!< Render overview point cloud when zoomed out
+      RenderOverviewAndExtents //!< Render extent polygons over overview point cloud
     };
     Q_ENUM( PointCloudZoomOutRenderBehavior )
 

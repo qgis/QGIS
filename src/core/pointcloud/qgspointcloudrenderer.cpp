@@ -230,8 +230,8 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
 
   mMaximumScreenError = element.attribute( QStringLiteral( "maximumScreenError" ), QStringLiteral( "0.3" ) ).toDouble();
   mMaximumScreenErrorUnit = QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "maximumScreenErrorUnit" ), QStringLiteral( "MM" ) ) );
-  mPointSymbol = static_cast< Qgis::PointCloudSymbol >( element.attribute( QStringLiteral( "pointSymbol" ), QStringLiteral( "0" ) ).toInt() );
-  mDrawOrder2d = static_cast< Qgis::PointCloudDrawOrder >( element.attribute( QStringLiteral( "drawOrder2d" ), QStringLiteral( "0" ) ).toInt() );
+  mPointSymbol = qgsEnumKeyToValue( element.attribute( QStringLiteral( "pointSymbol" ) ), Qgis::PointCloudSymbol::Square );
+  mDrawOrder2d = qgsEnumKeyToValue( element.attribute( QStringLiteral( "drawOrder2d" ) ), Qgis::PointCloudDrawOrder::Default );
 
   mRenderAsTriangles = element.attribute( QStringLiteral( "renderAsTriangles" ), QStringLiteral( "0" ) ).toInt();
   mHorizontalTriangleFilter = element.attribute( QStringLiteral( "horizontalTriangleFilter" ), QStringLiteral( "0" ) ).toInt();
@@ -244,7 +244,7 @@ void QgsPointCloudRenderer::restoreCommonProperties( const QDomElement &element,
     mLabelTextFormat = QgsTextFormat();
     mLabelTextFormat.readXml( element.firstChildElement( QStringLiteral( "text-style" ) ), context );
   }
-  mZoomOutBehavior = static_cast<Qgis::PointCloudZoomOutRenderBehavior>( element.attribute( QStringLiteral( "zoomOutBehavior" ), QStringLiteral( "0" ) ).toInt() );
+  mZoomOutBehavior = qgsEnumKeyToValue( element.attribute( QStringLiteral( "zoomOutBehavior" ) ), Qgis::PointCloudZoomOutRenderBehavior::RenderExtents );
 }
 
 void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const QgsReadWriteContext &context ) const
@@ -255,8 +255,8 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
 
   element.setAttribute( QStringLiteral( "maximumScreenError" ), qgsDoubleToString( mMaximumScreenError ) );
   element.setAttribute( QStringLiteral( "maximumScreenErrorUnit" ), QgsUnitTypes::encodeUnit( mMaximumScreenErrorUnit ) );
-  element.setAttribute( QStringLiteral( "pointSymbol" ), QString::number( static_cast< int >( mPointSymbol ) ) );
-  element.setAttribute( QStringLiteral( "drawOrder2d" ), QString::number( static_cast< int >( mDrawOrder2d ) ) );
+  element.setAttribute( QStringLiteral( "pointSymbol" ), qgsEnumValueToKey( mPointSymbol ) );
+  element.setAttribute( QStringLiteral( "drawOrder2d" ), qgsEnumValueToKey( mDrawOrder2d ) );
 
   element.setAttribute( QStringLiteral( "renderAsTriangles" ), QString::number( static_cast< int >( mRenderAsTriangles ) ) );
   element.setAttribute( QStringLiteral( "horizontalTriangleFilter" ), QString::number( static_cast< int >( mHorizontalTriangleFilter ) ) );
@@ -270,7 +270,7 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
     QDomDocument doc = element.ownerDocument();
     element.appendChild( mLabelTextFormat.writeXml( doc, context ) );
   }
-  element.setAttribute( QStringLiteral( "zoomOutBehavior" ), QString::number( static_cast<int>( mZoomOutBehavior ) ) );
+  element.setAttribute( QStringLiteral( "zoomOutBehavior" ), qgsEnumValueToKey( mZoomOutBehavior ) );
 }
 
 Qgis::PointCloudSymbol QgsPointCloudRenderer::pointSymbol() const
