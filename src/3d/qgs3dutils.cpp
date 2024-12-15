@@ -988,7 +988,6 @@ int Qgs3DUtils::openGlMaxClipPlanes( QSurface *surface )
 
 QQuaternion Qgs3DUtils::rotationFromPitchHeadingAngles( float pitchAngle, float headingAngle )
 {
-  // we use two separate fromEulerAngles() calls because one would not do rotations in order we need
-  return QQuaternion::fromEulerAngles( 0, 0, headingAngle ) *
-         QQuaternion::fromEulerAngles( pitchAngle, 0, 0 );
+  return QQuaternion::fromAxisAndAngle( QVector3D( 0, 0, 1 ), headingAngle ) *
+         QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), pitchAngle );
 }
