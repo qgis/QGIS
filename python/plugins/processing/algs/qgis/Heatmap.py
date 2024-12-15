@@ -295,9 +295,9 @@ class Heatmap(QgisAlgorithm):
             kde_params.weightField = weight_field
             attrs.append(source.fields().lookupField(weight_field))
 
-        kde_params.shape = kernel_shape
+        kde_params.shape = QgsKernelDensityEstimation.KernelShape(kernel_shape)
         kde_params.decayRatio = decay
-        kde_params.outputValues = output_values
+        kde_params.outputValues = QgsKernelDensityEstimation.OutputValues(output_values)
 
         kde = QgsKernelDensityEstimation(kde_params, outputFile, output_format)
 
