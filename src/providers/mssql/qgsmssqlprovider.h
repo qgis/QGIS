@@ -107,7 +107,7 @@ class QgsMssqlProvider final : public QgsVectorDataProvider
     QString description() const override;
 
     QgsAttributeList pkAttributeIndexes() const override;
-
+    QString geometryColumnName() const override;
     QgsRectangle extent() const override;
 
     bool isValid() const override;

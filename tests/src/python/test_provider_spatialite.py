@@ -1004,6 +1004,18 @@ class TestQgsSpatialiteProvider(QgisTestCase, ProviderTestCase):
             QgsFieldConstraints.ConstraintOrigin.ConstraintOriginProvider,
         )
 
+    def test_geometry_column_name(self):
+        """Test geometry column name from geopackage"""
+        vl = QgsVectorLayer(
+            """dbname='{}' table="somedata" (geom)""".format(
+                self.get_test_data_path("provider/spatialite.db").as_posix()
+            ),
+            "test",
+            "spatialite",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().geometryColumnName(), "geom")
+
     def testSkipConstraintCheck(self):
         vl = QgsVectorLayer(
             f"dbname={self.dbname} table=test_autoincrement",

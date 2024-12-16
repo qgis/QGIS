@@ -1246,6 +1246,17 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
             & QgsFieldConstraints.Constraint.ConstraintUnique
         )
 
+    def test_geometry_column_name(self):
+        """Test geometry column name from geopackage"""
+        vl = QgsVectorLayer(
+            self.get_test_data_path("points_gpkg.gpkg").as_posix()
+            + "|layername=points_gpkg",
+            "test",
+            "ogr",
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().geometryColumnName(), "geom")
+
     def testSublayerWithComplexLayerName(self):
         """Test reading a gpkg with a sublayer name containing :"""
         tmpfile = os.path.join(self.basetestpath, "testGeopackageComplexLayerName.gpkg")

@@ -37,6 +37,7 @@
 #include "qgshanadataitems.h"
 #include "qgslogger.h"
 #include "qgsrectangle.h"
+#include "qgsthreadingutils.h"
 
 #include <QtGlobal>
 
@@ -492,6 +493,13 @@ long long QgsHanaProvider::featureCount() const
   }
 
   return mFeaturesCount;
+}
+
+QString QgsHanaProvider::geometryColumnName() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mGeometryColumn;
 }
 
 QgsFields QgsHanaProvider::fields() const

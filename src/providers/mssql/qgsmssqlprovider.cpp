@@ -24,6 +24,7 @@
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
 #include "qgsvariantutils.h"
+#include "qgsthreadingutils.h"
 
 #include <QtGlobal>
 #include <QFileInfo>
@@ -2032,6 +2033,13 @@ QString QgsMssqlProvider::description() const
 QgsAttributeList QgsMssqlProvider::pkAttributeIndexes() const
 {
   return mPrimaryKeyAttrs;
+}
+
+QString QgsMssqlProvider::geometryColumnName() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mGeometryColName;
 }
 
 QStringList QgsMssqlProvider::subLayers() const

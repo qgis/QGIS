@@ -43,6 +43,7 @@
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
 #include "qgspostgreslayermetadataprovider.h"
+#include "qgsthreadingutils.h"
 
 #include "qgspostgresprovider.h"
 #include "qgsprovidermetadata.h"
@@ -3657,6 +3658,13 @@ QgsAttributeList QgsPostgresProvider::attributeIndexes() const
   for ( int i = 0; i < mAttributeFields.count(); ++i )
     lst.append( i );
   return lst;
+}
+
+QString QgsPostgresProvider::geometryColumnName() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mGeometryColumn;
 }
 
 Qgis::VectorProviderCapabilities QgsPostgresProvider::capabilities() const

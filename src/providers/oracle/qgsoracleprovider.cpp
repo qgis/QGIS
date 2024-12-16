@@ -32,6 +32,7 @@
 #include "qgsprojectstorageguiprovider.h"
 #include "qgsprojectstorageregistry.h"
 #include "qgsvectorlayer.h"
+#include "qgsthreadingutils.h"
 
 #include "qgsoracleprovider.h"
 #include "moc_qgsoracleprovider.cpp"
@@ -1182,6 +1183,13 @@ QVariant QgsOracleProvider::maximumValue( int index ) const
 bool QgsOracleProvider::isValid() const
 {
   return mValid;
+}
+
+QString QgsOracleProvider::geometryColumnName() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mGeometryColumn;
 }
 
 QVariant QgsOracleProvider::defaultValue( int fieldId ) const

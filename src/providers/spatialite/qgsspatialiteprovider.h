@@ -138,6 +138,7 @@ class QgsSpatiaLiteProvider final : public QgsVectorDataProvider
     QString name() const override;
     QString description() const override;
     QgsAttributeList pkAttributeIndexes() const override;
+    QString geometryColumnName() const override;
     void invalidateConnections( const QString &connection ) override;
     QList<QgsRelation> discoverRelations( const QgsVectorLayer *target, const QList<QgsVectorLayer *> &layers ) const override;
 
