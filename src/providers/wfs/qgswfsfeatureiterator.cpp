@@ -630,38 +630,40 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
           if ( f.hasGeometry() && f.geometry().wkbType() == Qgis::WkbType::GeometryCollection && ( mShared->mWKBType == Qgis::WkbType::MultiPoint || mShared->mWKBType == Qgis::WkbType::MultiLineString || mShared->mWKBType == Qgis::WkbType::MultiPolygon ) )
           {
             Qgis::WkbType singleType = QgsWkbTypes::singleType( mShared->mWKBType );
-            auto g = f.geometry().constGet();
-            auto gc = qgsgeometry_cast<QgsGeometryCollection *>( g );
-            bool allExpectedType = true;
-            for ( int i = 0; i < gc->numGeometries(); ++i )
+            const QgsAbstractGeometry *g = f.geometry().constGet();
+            if ( const QgsGeometryCollection *gc = qgsgeometry_cast<const QgsGeometryCollection *>( g ) )
             {
-              if ( gc->geometryN( i )->wkbType() != singleType )
-              {
-                allExpectedType = false;
-                break;
-              }
-            }
-            if ( allExpectedType )
-            {
-              QgsGeometryCollection *newGC;
-              if ( mShared->mWKBType == Qgis::WkbType::MultiPoint )
-              {
-                newGC = new QgsMultiPoint();
-              }
-              else if ( mShared->mWKBType == Qgis::WkbType::MultiLineString )
-              {
-                newGC = new QgsMultiLineString();
-              }
-              else
-              {
-                newGC = new QgsMultiPolygon();
-              }
-              newGC->reserve( gc->numGeometries() );
+              bool allExpectedType = true;
               for ( int i = 0; i < gc->numGeometries(); ++i )
               {
-                newGC->addGeometry( gc->geometryN( i )->clone() );
+                if ( gc->geometryN( i )->wkbType() != singleType )
+                {
+                  allExpectedType = false;
+                  break;
+                }
               }
-              f.setGeometry( QgsGeometry( newGC ) );
+              if ( allExpectedType )
+              {
+                QgsGeometryCollection *newGC;
+                if ( mShared->mWKBType == Qgis::WkbType::MultiPoint )
+                {
+                  newGC = new QgsMultiPoint();
+                }
+                else if ( mShared->mWKBType == Qgis::WkbType::MultiLineString )
+                {
+                  newGC = new QgsMultiLineString();
+                }
+                else
+                {
+                  newGC = new QgsMultiPolygon();
+                }
+                newGC->reserve( gc->numGeometries() );
+                for ( int i = 0; i < gc->numGeometries(); ++i )
+                {
+                  newGC->addGeometry( gc->geometryN( i )->clone() );
+                }
+                f.setGeometry( QgsGeometry( newGC ) );
+              }
             }
           }
           else if ( f.hasGeometry() && !mShared->mWFSGeometryTypeFilter.isEmpty() && QgsWkbTypes::flatType( f.geometry().wkbType() ) != mShared->mWKBType )
