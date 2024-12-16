@@ -40,6 +40,7 @@ email                : sherman at mrcc.com
 #include "qgsvariantutils.h"
 #include "qgsjsonutils.h"
 #include "qgssetrequestinitiator_p.h"
+#include "qgsthreadingutils.h"
 
 #include <nlohmann/json.hpp>
 
@@ -3483,6 +3484,27 @@ Qgis::VectorProviderCapabilities QgsOgrProvider::capabilities() const
 Qgis::VectorDataProviderAttributeEditCapabilities QgsOgrProvider::attributeEditCapabilities() const
 {
   return mAttributeEditCapabilities;
+}
+
+QgsAttributeList QgsOgrProvider::pkAttributeIndexes() const
+{
+  return mPrimaryKeyAttrs;
+}
+
+QString QgsOgrProvider::geometryColumnName() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  if ( !mOgrLayer )
+    return QString();
+
+  QgsOgrFeatureDefn &featureDefinition = mOgrLayer->GetLayerDefn();
+  if ( featureDefinition.GetGeomFieldCount() )
+  {
+    OGRGeomFieldDefnH geomH = featureDefinition.GetGeomFieldDefn( 0 );
+    return QString::fromUtf8( OGR_GFld_GetNameRef( geomH ) );
+  }
+  return QString();
 }
 
 void QgsOgrProvider::computeCapabilities()
