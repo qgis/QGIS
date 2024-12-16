@@ -134,7 +134,7 @@ bool QgsVirtualLayerProvider::loadSourceLayers()
       connect( vl, &QgsVectorLayer::featureAdded, this, &QgsVirtualLayerProvider::invalidateStatistics );
       connect( vl, &QgsVectorLayer::featureDeleted, this, &QgsVirtualLayerProvider::invalidateStatistics );
       connect( vl, &QgsVectorLayer::geometryChanged, this, &QgsVirtualLayerProvider::invalidateStatistics );
-      connect( vl, &QgsVectorLayer::updatedFields, this, [=] { createVirtualTable( vl, layer.name() ); } );
+      connect( vl, &QgsVectorLayer::updatedFields, this, [this, vl, layer] { createVirtualTable( vl, layer.name() ); } );
     }
     else
     {
