@@ -148,7 +148,7 @@ and a deep copy. Where possible, use :py:func:`~QgsGeometry.constGet` instead.
 .. seealso:: :py:func:`set`
 %End
 
- void set( QgsAbstractGeometry *geometry /Transfer/ ) /Deprecated="Since 3.0. "/;
+    void set( QgsAbstractGeometry *geometry /Transfer/ ) /Deprecated/;
 %Docstring
 Sets the underlying geometry store. Ownership of geometry is transferred.
 
@@ -165,8 +165,6 @@ Sets the underlying geometry store. Ownership of geometry is transferred.
 .. seealso:: :py:func:`get`
 
 .. seealso:: :py:func:`constGet`
-
-.. deprecated:: 3.0
 %End
 
     bool isNull() const /HoldGIL/;

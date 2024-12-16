@@ -1200,7 +1200,12 @@ def fix_annotations(line):
         # these have no effect (and aren't required) on sip >= 6
         replacements[r"SIP_THROW\(\s*([\w\s,]+?)\s*\)"] = ""
 
-    replacements[r"\bSIP_DEPRECATED\b"] = f'/Deprecated="{CONTEXT.deprecated_message}"/'
+    if CONTEXT.deprecated_message:
+        replacements[r"\bSIP_DEPRECATED\b"] = (
+            f'/Deprecated="{CONTEXT.deprecated_message}"/'
+        )
+    else:
+        replacements[r"\bSIP_DEPRECATED\b"] = f"/Deprecated/"
 
     for _pattern, replacement in replacements.items():
         line = re.sub(_pattern, replacement, line)

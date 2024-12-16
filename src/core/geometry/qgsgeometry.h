@@ -227,7 +227,6 @@ class CORE_EXPORT QgsGeometry
      *
      * \see get()
      * \see constGet()
-     * \deprecated QGIS 3.0
      */
     void set( QgsAbstractGeometry *geometry SIP_TRANSFER ) SIP_DEPRECATED;
 
