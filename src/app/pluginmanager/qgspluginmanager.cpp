@@ -1650,10 +1650,10 @@ void QgsPluginManager::ckbDeprecated_toggled( bool state )
 // PRIVATE METHODS ///////////////////////////////////////////////////////////////////
 
 
-bool QgsPluginManager::isPluginEnabled( QString key )
+bool QgsPluginManager::isPluginEnabled( const QString &key )
 {
   const QMap<QString, QString> *plugin = pluginMetadata( key );
-  if ( plugin->isEmpty() )
+  if ( !plugin || plugin->isEmpty() )
   {
     // No such plugin in the metadata registry
     return false;
@@ -1663,8 +1663,8 @@ bool QgsPluginManager::isPluginEnabled( QString key )
   if ( plugin->value( QStringLiteral( "pythonic" ) ) != QLatin1String( "true" ) )
   {
     // Trim "cpp:" prefix from cpp plugin id
-    key = key.mid( 4 );
-    return ( mySettings.value( "/Plugins/" + key, QVariant( false ) ).toBool() );
+    const QString trimmedKey = key.mid( 4 );
+    return ( mySettings.value( "/Plugins/" + trimmedKey, QVariant( false ) ).toBool() );
   }
   else
   {

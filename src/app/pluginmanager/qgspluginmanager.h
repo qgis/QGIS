@@ -211,7 +211,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void initTabDescriptions();
 
     //! Returns true if given plugin is enabled in QgsSettings
-    bool isPluginEnabled( QString key );
+    bool isPluginEnabled( const QString &key );
 
     //! Returns true if there are plugins available for download in the metadata registry
     bool hasAvailablePlugins();
