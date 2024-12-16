@@ -178,7 +178,7 @@ void QgsDataSourceManagerDialog::configureFromUri( const QString &pageName, cons
   const int pageIdx = mPageProviderNames.indexOf( pageName );
   if ( pageIdx != -1 )
   {
-    QTimer::singleShot( 0, this, [=] {
+    QTimer::singleShot( 0, this, [this, pageIdx, uri] {
       setCurrentPage( pageIdx );
       if ( QgsAbstractDataSourceWidget *dataSourceWidget = qobject_cast<QgsAbstractDataSourceWidget *>( ui->mOptionsStackedWidget->currentWidget() ) )
       {
