@@ -210,11 +210,11 @@ Qgs3DMapScene::Qgs3DMapScene( Qgs3DMapSettings &map, QgsAbstract3DEngine *engine
 
 void Qgs3DMapScene::viewZoomFull()
 {
-  const QgsDoubleRange yRange = elevationRange();
+  const QgsDoubleRange zRange = elevationRange();
   const QgsRectangle extent = sceneExtent();
   const double side = std::max( extent.width(), extent.height() );
   double d = side / 2 / std::tan( cameraController()->camera()->fieldOfView() / 2 * M_PI / 180 );
-  d += yRange.isInfinite() ? 0. : yRange.upper();
+  d += zRange.isInfinite() ? 0. : zRange.upper();
   mCameraController->resetView( static_cast<float>( d ) );
   return;
 }
@@ -396,9 +396,9 @@ bool Qgs3DMapScene::updateCameraNearFarPlanes()
   // as a fallback.
   if ( fnear == 1e9 && ffar == 0 )
   {
-    QgsDoubleRange sceneYRange = elevationRange();
-    sceneYRange = sceneYRange.isInfinite() ? QgsDoubleRange( 0.0, 0.0 ) : sceneYRange;
-    const QgsAABB sceneBbox = Qgs3DUtils::mapToWorldExtent( mMap.extent(), sceneYRange.lower(), sceneYRange.upper(), mMap.origin() );
+    QgsDoubleRange sceneZRange = elevationRange();
+    sceneZRange = sceneZRange.isInfinite() ? QgsDoubleRange( 0.0, 0.0 ) : sceneZRange;
+    const QgsAABB sceneBbox = Qgs3DUtils::mapToWorldExtent( mMap.extent(), sceneZRange.lower(), sceneZRange.upper(), mMap.origin() );
     Qgs3DUtils::computeBoundingBoxNearFarPlanes( sceneBbox, viewMatrix, fnear, ffar );
   }
 
@@ -1077,13 +1077,13 @@ QgsRectangle Qgs3DMapScene::sceneExtent() const
 
 QgsDoubleRange Qgs3DMapScene::elevationRange() const
 {
-  double yMin = std::numeric_limits<double>::max();
-  double yMax = std::numeric_limits<double>::lowest();
+  double zMin = std::numeric_limits<double>::max();
+  double zMax = std::numeric_limits<double>::lowest();
   if ( mMap.terrainRenderingEnabled() && mTerrain )
   {
     const QgsBox3D box3D = mTerrain->rootNode()->box3D();
-    yMin = std::min( yMin, box3D.zMinimum() );
-    yMax = std::max( yMax, box3D.zMaximum() );
+    zMin = std::min( zMin, box3D.zMinimum() );
+    zMax = std::max( zMax, box3D.zMaximum() );
   }
 
   for ( auto it = mLayerEntities.constBegin(); it != mLayerEntities.constEnd(); it++ )
@@ -1095,8 +1095,8 @@ QgsDoubleRange Qgs3DMapScene::elevationRange() const
       {
         QgsPointCloudLayer *pcl = qobject_cast<QgsPointCloudLayer *>( layer );
         QgsDoubleRange zRange = pcl->elevationProperties()->calculateZRange( pcl );
-        yMin = std::min( yMin, zRange.lower() );
-        yMax = std::max( yMax, zRange.upper() );
+        zMin = std::min( zMin, zRange.lower() );
+        zMax = std::max( zMax, zRange.upper() );
         break;
       }
       case Qgis::LayerType::Mesh:
@@ -1109,8 +1109,8 @@ QgsDoubleRange Qgs3DMapScene::elevationRange() const
           const int verticalGroupDatasetIndex = meshLayerRenderer->symbol()->verticalDatasetGroupIndex();
           const QgsMeshDatasetGroupMetadata verticalGroupMetadata = meshLayer->datasetGroupMetadata( verticalGroupDatasetIndex );
           const double verticalScale = meshLayerRenderer->symbol()->verticalScale();
-          yMin = std::min( yMin, verticalGroupMetadata.minimum() * verticalScale );
-          yMax = std::max( yMax, verticalGroupMetadata.maximum() * verticalScale );
+          zMin = std::min( zMin, verticalGroupMetadata.minimum() * verticalScale );
+          zMax = std::max( zMax, verticalGroupMetadata.maximum() * verticalScale );
         }
         break;
       }
@@ -1120,8 +1120,8 @@ QgsDoubleRange Qgs3DMapScene::elevationRange() const
         const QgsDoubleRange zRange = sceneLayer->elevationProperties()->calculateZRange( sceneLayer );
         if ( !zRange.isInfinite() && !zRange.isEmpty() )
         {
-          yMin = std::min( yMin, zRange.lower() );
-          yMax = std::max( yMax, zRange.upper() );
+          zMin = std::min( zMin, zRange.lower() );
+          zMax = std::max( zMax, zRange.upper() );
         }
         break;
       }
@@ -1134,8 +1134,8 @@ QgsDoubleRange Qgs3DMapScene::elevationRange() const
         break;
     }
   }
-  const QgsDoubleRange yRange( std::min( yMin, std::numeric_limits<double>::max() ), std::max( yMax, std::numeric_limits<double>::lowest() ) );
-  return yRange.isEmpty() ? QgsDoubleRange() : yRange;
+  const QgsDoubleRange zRange( std::min( zMin, std::numeric_limits<double>::max() ), std::max( zMax, std::numeric_limits<double>::lowest() ) );
+  return zRange.isEmpty() ? QgsDoubleRange() : zRange;
 }
 
 QMap<QString, Qgs3DMapScene *> Qgs3DMapScene::openScenes()
