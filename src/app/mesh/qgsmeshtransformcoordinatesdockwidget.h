@@ -77,7 +77,7 @@ class APP_EXPORT QgsMeshTransformCoordinatesDockWidget : public QgsDockWidget, p
 
   private:
     QgsMeshTransformVerticesByExpression mTransformVertices;
-    QgsMeshLayer *mInputLayer;
+    QgsMeshLayer *mInputLayer = nullptr;
     QList<int> mInputVertices;
     bool mIsCalculated = false;
     bool mIsResultValid = false;

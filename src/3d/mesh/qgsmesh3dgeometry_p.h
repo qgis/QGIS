@@ -150,7 +150,7 @@ class QgsMesh3DGeometry : public Qt3DCore::QGeometry
     Qt3DCore::QAttribute *mIndexAttribute = nullptr;
 #endif
 
-    QgsMesh3DGeometryBuilder *mBuilder;
+    QgsMesh3DGeometryBuilder *mBuilder = nullptr;
 
   protected slots:
     virtual void getData();
