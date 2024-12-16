@@ -810,6 +810,11 @@ Qgs3DExportObject *Qgs3DSceneExporter::processPoints( Qt3DCore::QEntity *entity,
 
 void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath, int precision )
 {
+  if ( mObjects.isEmpty() )
+  {
+    return;
+  }
+
   const QString objFilePath = QDir( sceneFolderPath ).filePath( sceneName + QStringLiteral( ".obj" ) );
   const QString mtlFilePath = QDir( sceneFolderPath ).filePath( sceneName + QStringLiteral( ".mtl" ) );
 
