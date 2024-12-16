@@ -128,8 +128,11 @@ class _3D_EXPORT Qgs3DMapScene : public QObject
      */
     float worldSpaceError( float epsilon, float distance ) const;
 
-    //! Exports the scene according to the scene export settings
-    void exportScene( const Qgs3DMapExportSettings &exportSettings );
+    /**
+     * Exports the scene according to the scene export settings
+     * Returns FALSE if the operation failed
+     */
+    bool exportScene( const Qgs3DMapExportSettings &exportSettings );
 
     /**
      * Returns the active chunk nodes of \a layer
