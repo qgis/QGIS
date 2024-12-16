@@ -452,6 +452,13 @@ QgsAttributeList QgsVectorDataProvider::pkAttributeIndexes() const
   return QgsAttributeList();
 }
 
+QString QgsVectorDataProvider::geometryColumnName() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return QString();
+}
+
 QList<QgsVectorDataProvider::NativeType> QgsVectorDataProvider::nativeTypes() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS

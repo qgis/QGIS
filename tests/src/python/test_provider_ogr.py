@@ -478,6 +478,14 @@ class PyQgsOGRProvider(QgisTestCase):
             self.assertTrue(f.geometry())
             self.assertEqual(f.geometry().constGet().asWkt(), row[2])
 
+    def test_geometry_column_name(self):
+        """Test geometry column name from shapefile"""
+        vl = QgsVectorLayer(
+            self.get_test_data_path("points.shp").as_posix(), "test", "ogr"
+        )
+        self.assertTrue(vl.isValid())
+        self.assertEqual(vl.dataProvider().geometryColumnName(), "")
+
     def testSetupProxy(self):
         """Test proxy setup"""
         settings = QgsSettings()

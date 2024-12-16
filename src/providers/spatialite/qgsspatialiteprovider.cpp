@@ -33,7 +33,7 @@ email                : a.furieri@lqt.it
 #include "qgsspatialiteproviderconnection.h"
 #include "qgsdbquerylog.h"
 #include "qgsdbquerylog_p.h"
-
+#include "qgsthreadingutils.h"
 #include "qgsjsonutils.h"
 #include "qgsvectorlayer.h"
 
@@ -5887,6 +5887,13 @@ bool QgsSpatiaLiteProviderMetadata::createDb( const QString &dbPath, QString &er
 QgsAttributeList QgsSpatiaLiteProvider::pkAttributeIndexes() const
 {
   return mPrimaryKeyAttrs;
+}
+
+QString QgsSpatiaLiteProvider::geometryColumnName() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+
+  return mGeometryColumn;
 }
 
 QList<QgsVectorLayer *> QgsSpatiaLiteProvider::searchLayers( const QList<QgsVectorLayer *> &layers, const QString &connectionInfo, const QString &tableName )
