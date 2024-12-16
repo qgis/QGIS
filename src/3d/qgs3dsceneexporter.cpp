@@ -808,11 +808,11 @@ Qgs3DExportObject *Qgs3DSceneExporter::processPoints( Qt3DCore::QEntity *entity,
   return obj;
 }
 
-void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath, int precision )
+bool Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath, int precision )
 {
   if ( mObjects.isEmpty() )
   {
-    return;
+    return false;
   }
 
   const QString objFilePath = QDir( sceneFolderPath ).filePath( sceneName + QStringLiteral( ".obj" ) );
@@ -822,13 +822,13 @@ void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
     QgsDebugError( QStringLiteral( "Scene can not be exported to '%1'. File access error." ).arg( objFilePath ) );
-    return;
+    return false;
   }
   QFile mtlFile( mtlFilePath );
   if ( !mtlFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
     QgsDebugError( QStringLiteral( "Scene can not be exported to '%1'. File access error." ).arg( mtlFilePath ) );
-    return;
+    return false;
   }
 
   float maxfloat = std::numeric_limits<float>::max(), minFloat = std::numeric_limits<float>::lowest();
@@ -868,6 +868,7 @@ void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
   }
 
   QgsDebugMsgLevel( QStringLiteral( "Scene exported to '%1'" ).arg( objFilePath ), 2 );
+  return true;
 }
 
 QString Qgs3DSceneExporter::getObjectName( const QString &name )
