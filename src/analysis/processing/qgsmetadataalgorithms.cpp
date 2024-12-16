@@ -442,6 +442,7 @@ void QgsSetMetadataFieldsAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterString( QStringLiteral( "ABSTRACT" ), QObject::tr( "Abstract" ), QVariant(), true, true ) );
   addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Coordinatem reference system" ), QVariant(), true ) );
   addParameter( new QgsProcessingParameterString( QStringLiteral( "FEES" ), QObject::tr( "Fees" ), QVariant(), false, true ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "IGNORE_EMPTY" ), QObject::tr( "Ignore empty fields" ), false ) );
   addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Updated" ) ) );
 }
 
@@ -454,51 +455,89 @@ bool QgsSetMetadataFieldsAlgorithm::prepareAlgorithm( const QVariantMap &paramet
 
   mLayerId = layer->id();
 
+  const bool ignoreEmpty = parameterAsBool( parameters, QStringLiteral( "IGNORE_EMPTY" ), context );
+
   std::unique_ptr<QgsLayerMetadata> md( layer->metadata().clone() );
 
   if ( parameters.value( QStringLiteral( "IDENTIFIER" ) ).isValid() )
   {
-    md->setIdentifier( parameterAsString( parameters, QStringLiteral( "IDENTIFIER" ), context ) );
+    const QString identifier = parameterAsString( parameters, QStringLiteral( "IDENTIFIER" ), context );
+    if ( !identifier.isEmpty() || ( identifier.isEmpty() && !ignoreEmpty ) )
+    {
+      md->setIdentifier( identifier );
+    }
   }
 
   if ( parameters.value( QStringLiteral( "PARENT_IDENTIFIER" ) ).isValid() )
   {
-    md->setParentIdentifier( parameterAsString( parameters, QStringLiteral( "PARENT_IDENTIFIER" ), context ) );
+    const QString parentIdentifier = parameterAsString( parameters, QStringLiteral( "PARENT_IDENTIFIER" ), context );
+    if ( !parentIdentifier.isEmpty() || ( parentIdentifier.isEmpty() && !ignoreEmpty ) )
+    {
+      md->setParentIdentifier( parentIdentifier );
+    }
   }
 
   if ( parameters.value( QStringLiteral( "TITLE" ) ).isValid() )
   {
-    md->setTitle( parameterAsString( parameters, QStringLiteral( "TITLE" ), context ) );
+    const QString title = parameterAsString( parameters, QStringLiteral( "TITLE" ), context );
+    if ( !title.isEmpty() || ( title.isEmpty() && !ignoreEmpty ) )
+    {
+      md->setTitle( title );
+    }
   }
 
   if ( parameters.value( QStringLiteral( "TYPE" ) ).isValid() )
   {
-    md->setType( parameterAsString( parameters, QStringLiteral( "TYPE" ), context ) );
+    const QString type = parameterAsString( parameters, QStringLiteral( "TYPE" ), context );
+    if ( !type.isEmpty() || ( type.isEmpty() && !ignoreEmpty ) )
+    {
+      md->setType( type );
+    }
   }
 
   if ( parameters.value( QStringLiteral( "LANGUAGE" ) ).isValid() )
   {
-    md->setLanguage( parameterAsString( parameters, QStringLiteral( "LANGUAGE" ), context ) );
+    const QString language = parameterAsString( parameters, QStringLiteral( "LANGUAGE" ), context );
+    if ( !language.isEmpty() || ( language.isEmpty() && !ignoreEmpty ) )
+    {
+      md->setLanguage( language );
+    }
   }
 
   if ( parameters.value( QStringLiteral( "ENCODING" ) ).isValid() )
   {
-    md->setEncoding( parameterAsString( parameters, QStringLiteral( "ENCODING" ), context ) );
+    const QString encoding = parameterAsString( parameters, QStringLiteral( "ENCODING" ), context );
+    if ( !encoding.isEmpty() || ( encoding.isEmpty() && !ignoreEmpty ) )
+    {
+      md->setEncoding( encoding );
+    }
   }
 
   if ( parameters.value( QStringLiteral( "ABSTRACT" ) ).isValid() )
   {
-    md->setAbstract( parameterAsString( parameters, QStringLiteral( "ABSTRACT" ), context ) );
+    const QString abstract = parameterAsString( parameters, QStringLiteral( "ABSTRACT" ), context );
+    if ( !abstract.isEmpty() || ( abstract.isEmpty() && !ignoreEmpty ) )
+    {
+      md->setAbstract( abstract );
+    }
   }
 
   if ( parameters.value( QStringLiteral( "CRS" ) ).isValid() )
   {
-    md->setCrs( parameterAsCrs( parameters, QStringLiteral( "CRS" ), context ) );
+    const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+    if ( crs.isValid() || ( !crs.isValid() && !ignoreEmpty ) )
+    {
+      md->setCrs( crs );
+    }
   }
 
   if ( parameters.value( QStringLiteral( "FEES" ) ).isValid() )
   {
-    md->setFees( parameterAsString( parameters, QStringLiteral( "FEES" ), context ) );
+    const QString fees = parameterAsString( parameters, QStringLiteral( "FEES" ), context );
+    if ( !fees.isEmpty() || ( fees.isEmpty() && !ignoreEmpty ) )
+    {
+      md->setFees( fees );
+    }
   }
 
   layer->setMetadata( *md.get() );
