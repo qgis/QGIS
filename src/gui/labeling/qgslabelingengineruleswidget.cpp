@@ -20,6 +20,7 @@
 #include "qgslabelingenginerule.h"
 #include "qgslabelingenginerulewidget.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 
 #include <QMenu>
 #include <QAction>
@@ -408,7 +409,7 @@ QgsLabelingEngineRulesDialog::QgsLabelingEngineRulesDialog( QWidget *parent, Qt:
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->addWidget( mWidget );
 
-  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, Qt::Horizontal, this );
   layout->addWidget( mButtonBox );
 
   setLayout( layout );
@@ -416,6 +417,9 @@ QgsLabelingEngineRulesDialog::QgsLabelingEngineRulesDialog( QWidget *parent, Qt:
 
   connect( mButtonBox->button( QDialogButtonBox::Ok ), &QAbstractButton::clicked, this, &QDialog::accept );
   connect( mButtonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [=] {
+    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#labeling-rules" ) );
+  } );
 }
 
 void QgsLabelingEngineRulesDialog::setRules( const QList<QgsAbstractLabelingEngineRule *> &rules )
