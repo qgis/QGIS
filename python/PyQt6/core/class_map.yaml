@@ -18735,11 +18735,12 @@ QgsVectorLayerEditBuffer.updateLayerFields: src/core/vector/qgsvectorlayereditbu
 QgsVectorLayerEditBuffer: src/core/vector/qgsvectorlayereditbuffer.h#L38
 QgsVectorLayerEditBufferGroup.QgsVectorLayerEditBufferGroup: src/core/vector/qgsvectorlayereditbuffergroup.h#L47
 QgsVectorLayerEditBufferGroup.addLayer: src/core/vector/qgsvectorlayereditbuffergroup.h#L52
-QgsVectorLayerEditBufferGroup.clear: src/core/vector/qgsvectorlayereditbuffergroup.h#L57
-QgsVectorLayerEditBufferGroup.commitChanges: src/core/vector/qgsvectorlayereditbuffergroup.h#L101
-QgsVectorLayerEditBufferGroup.isEditing: src/core/vector/qgsvectorlayereditbuffergroup.h#L117
-QgsVectorLayerEditBufferGroup.rollBack: src/core/vector/qgsvectorlayereditbuffergroup.h#L112
-QgsVectorLayerEditBufferGroup.startEditing: src/core/vector/qgsvectorlayereditbuffergroup.h#L78
+QgsVectorLayerEditBufferGroup.clear: src/core/vector/qgsvectorlayereditbuffergroup.h#L64
+QgsVectorLayerEditBufferGroup.commitChanges: src/core/vector/qgsvectorlayereditbuffergroup.h#L108
+QgsVectorLayerEditBufferGroup.isEditing: src/core/vector/qgsvectorlayereditbuffergroup.h#L124
+QgsVectorLayerEditBufferGroup.removeLayer: src/core/vector/qgsvectorlayereditbuffergroup.h#L59
+QgsVectorLayerEditBufferGroup.rollBack: src/core/vector/qgsvectorlayereditbuffergroup.h#L119
+QgsVectorLayerEditBufferGroup.startEditing: src/core/vector/qgsvectorlayereditbuffergroup.h#L85
 QgsVectorLayerEditBufferGroup: src/core/vector/qgsvectorlayereditbuffergroup.h#L40
 QgsVectorLayerEditPassthrough.addAttribute: src/core/vector/qgsvectorlayereditpassthrough.h#L64
 QgsVectorLayerEditPassthrough.addFeature: src/core/vector/qgsvectorlayereditpassthrough.h#L51
