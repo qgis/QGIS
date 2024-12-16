@@ -43,7 +43,6 @@ class TestQgsServerSecurity(QgsServerTestBase):
         cls.db_clone = os.path.join(tempfile.gettempdir(), "db_clone.sqlite")
         cls.project = os.path.join(cls.testdatapath, "project.qgs")
         cls.project_clone = os.path.join(tempfile.gettempdir(), "project.qgs")
-        cls.app = QgsApplication([], False)
 
     @classmethod
     def tearDownClass(cls):
