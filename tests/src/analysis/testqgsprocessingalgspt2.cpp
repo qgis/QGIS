@@ -2116,6 +2116,34 @@ void TestQgsProcessingAlgsPt2::setMetadataFields()
   QCOMPARE( layer->metadata().fees(), QStringLiteral( "Enormous fee" ) );
   QVERIFY( layer->metadata().crs().isValid() );
   QCOMPARE( layer->metadata().crs().authid(), QStringLiteral( "EPSG:4326" ) );
+
+  // ignore empty field
+  parameters[QStringLiteral( "TITLE" )] = QStringLiteral( "" );
+  parameters.insert( QStringLiteral( "IGNORE_EMPTY" ), true );
+
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
+  QCOMPARE( layer->metadata().title(), QStringLiteral( "New title" ) );
+  QCOMPARE( layer->metadata().abstract(), QStringLiteral( "Abstract" ) );
+  QCOMPARE( layer->metadata().fees(), QStringLiteral( "Enormous fee" ) );
+  QVERIFY( layer->metadata().crs().isValid() );
+  QCOMPARE( layer->metadata().crs().authid(), QStringLiteral( "EPSG:4326" ) );
+
+  parameters[QStringLiteral( "IGNORE_EMPTY" )] = false;
+
+  ok = false;
+  results = alg->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+
+  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
+  QCOMPARE( layer->metadata().title(), QStringLiteral( "" ) );
+  QCOMPARE( layer->metadata().abstract(), QStringLiteral( "Abstract" ) );
+  QCOMPARE( layer->metadata().fees(), QStringLiteral( "Enormous fee" ) );
+  QVERIFY( layer->metadata().crs().isValid() );
+  QCOMPARE( layer->metadata().crs().authid(), QStringLiteral( "EPSG:4326" ) );
 }
 
 QGSTEST_MAIN( TestQgsProcessingAlgsPt2 )
