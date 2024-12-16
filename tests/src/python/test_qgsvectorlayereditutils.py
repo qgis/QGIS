@@ -752,9 +752,9 @@ class TestQgsVectorLayerEditUtils(QgisTestCase):
         self.assertCountEqual(
             attributes,
             [
-                [None, 3301.0, 302.0, 303.0, 8.664000000000001, 305.0],
+                [None, 3301.0, 302.0, 303.0, 277.53878260869567, 305.0],
+                [None, 301, 302.0, QgsUnsetAttributeValue(), 8.664000000000001, 305.0],
                 [None, 301, 302.0, QgsUnsetAttributeValue(), 17.797217391304347, 305.0],
-                [None, 301, 302.0, QgsUnsetAttributeValue(), 277.53878260869567, 305.0],
             ],
         )
 
