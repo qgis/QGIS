@@ -197,7 +197,7 @@ class _3D_EXPORT QgsCameraController : public QObject
     void rotateCameraAroundPivot( float newPitch, float newHeading, const QVector3D &pivotPoint );
 
     /**
-     * Zooms camera by given zoom factor (higher than one means zoom in)
+     * Zooms camera by given zoom factor (>1 one means zoom in)
      * while keeping the pivot point (given in world coordinates) at the
      * same screen coordinates after the zoom.
      * \since QGIS 3.42
