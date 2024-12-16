@@ -99,14 +99,16 @@ class TestQgisAlgorithms(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
         for t in QgsApplication.processingRegistry().parameterTypes():
             import_string = t.pythonImportString()
             # check that pythonImportString correctly imports
-            exec(import_string)
-            # and now we should be able to instantiate an object!
+            # and that we can instantiate an object!
             if t.className() == "QgsProcessingParameterProviderConnection":
                 exec(
-                    f"test = {t.className()}('id','name', 'provider')\nself.assertIsNotNone(test)"
+                    f"{import_string}\ntest = {t.className()}('id','name', 'provider')\nassert test is not None",
+                    {},
                 )
             else:
-                exec(f"test = {t.className()}('id','name')\nself.assertIsNotNone(test)")
+                exec(
+                    f"{import_string}\ntest = {t.className()}('id','name')\nassert test is not None"
+                ), {}
 
 
 if __name__ == "__main__":
