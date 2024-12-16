@@ -2186,10 +2186,10 @@ class TestPyQgsOGRProviderGpkg(QgisTestCase):
         """Regression #21100"""
 
         tmpfile = os.path.join(
-            self.basetestpath, "bug_21100-wierd_field_names.gpkg"
+            self.basetestpath, "bug_21100-weird_field_names.gpkg"
         )  # spellok
         shutil.copy(
-            os.path.join(unitTestDataPath(""), "bug_21100-wierd_field_names.gpkg"),
+            os.path.join(unitTestDataPath(""), "bug_21100-weird_field_names.gpkg"),
             tmpfile,
         )  # spellok
         vl = QgsVectorLayer(f"{tmpfile}|layerid=0", "foo", "ogr")
