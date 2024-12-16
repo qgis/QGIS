@@ -835,7 +835,6 @@ QJsonObject QgsSymbolLegendNode::exportSymbolToJson( const QgsLegendSettings &se
   {
     json[ QStringLiteral( "scaleMinDenom" ) ] = mItem.scaleMinDenom();
   }
-  mItem.scaleMaxDenom();
 
   const QgsSymbol *s = mCustomSymbol ? mCustomSymbol.get() : mItem.symbol();
   if ( !s )

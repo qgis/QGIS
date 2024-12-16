@@ -781,7 +781,6 @@ bool QgsAttributeForm::saveMultiEdits()
   //find changed attributes
   QgsAttributeMap newAttributeValues;
   const QList<int> fieldIndexes = mFormEditorWidgets.uniqueKeys();
-  mFormEditorWidgets.constBegin();
   for ( int fieldIndex : fieldIndexes )
   {
     const QList<QgsAttributeFormEditorWidget *> widgets = mFormEditorWidgets.values( fieldIndex );
