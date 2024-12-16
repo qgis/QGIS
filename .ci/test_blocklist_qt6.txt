@@ -54,7 +54,6 @@ PyQgsRasterLayerRenderer
 PyQgsShapefileProvider
 PyQgsSpatialiteProvider
 PyQgsSymbolLayerReadSld
-PyQgsVectorLayerEditBuffer
 PyQgsLayerDefinition
 PyQgsSettings
 PyQgsSettingsEntry
