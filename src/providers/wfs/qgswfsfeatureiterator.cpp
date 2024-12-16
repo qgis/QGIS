@@ -644,25 +644,25 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
               }
               if ( allExpectedType )
               {
-                QgsGeometryCollection *newGC;
+                std::unique_ptr< QgsGeometryCollection > newGC;
                 if ( mShared->mWKBType == Qgis::WkbType::MultiPoint )
                 {
-                  newGC = new QgsMultiPoint();
+                  newGC = std::make_unique< QgsMultiPoint >();
                 }
                 else if ( mShared->mWKBType == Qgis::WkbType::MultiLineString )
                 {
-                  newGC = new QgsMultiLineString();
+                  newGC = std::make_unique< QgsMultiLineString >();
                 }
                 else
                 {
-                  newGC = new QgsMultiPolygon();
+                  newGC = std::make_unique< QgsMultiPolygon >();
                 }
                 newGC->reserve( gc->numGeometries() );
                 for ( int i = 0; i < gc->numGeometries(); ++i )
                 {
                   newGC->addGeometry( gc->geometryN( i )->clone() );
                 }
-                f.setGeometry( QgsGeometry( newGC ) );
+                f.setGeometry( std::move( newGC ) );
               }
             }
           }
