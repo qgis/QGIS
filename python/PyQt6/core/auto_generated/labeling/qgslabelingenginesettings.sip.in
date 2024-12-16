@@ -247,7 +247,7 @@ Sets the placement engine ``version``, which dictates how the label placement pr
 
     QList< QgsAbstractLabelingEngineRule * > rules();
 %Docstring
-Returns a list of labeling engine rules which must be satifisfied
+Returns a list of labeling engine rules which must be satisfied
 while placing labels.
 
 .. seealso:: :py:func:`addRule`
@@ -260,7 +260,7 @@ while placing labels.
 
     void addRule( QgsAbstractLabelingEngineRule *rule /Transfer/ );
 %Docstring
-Adds a labeling engine ``rule`` which must be satifisfied
+Adds a labeling engine ``rule`` which must be satisfied
 while placing labels.
 
 Ownership of the rule is transferred to the settings.
@@ -274,7 +274,7 @@ Ownership of the rule is transferred to the settings.
 
     void setRules( const QList< QgsAbstractLabelingEngineRule * > &rules /Transfer/ );
 %Docstring
-Sets the labeling engine ``rules`` which must be satifisfied
+Sets the labeling engine ``rules`` which must be satisfied
 while placing labels.
 
 Ownership of the rules are transferred to the settings.
