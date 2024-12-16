@@ -362,7 +362,7 @@ The caller takes responsibility for deleting the returned object.
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
 
 
- virtual int numberExportLayers() const /Deprecated/;
+ virtual int numberExportLayers() const /Deprecated="Since 3.10. "/;
 
 %Docstring
 

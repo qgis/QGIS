@@ -57,7 +57,7 @@ class QgsSublayersDialog : QDialog
     typedef QList<QgsSublayersDialog::LayerDefinition> LayerDefinitionList;
 
 
- QgsSublayersDialog( ProviderType providerType, const QString &name, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = Qt::WindowFlags(), const QString &dataSourceUri = QString() ) /Deprecated/;
+ QgsSublayersDialog( ProviderType providerType, const QString &name, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = Qt::WindowFlags(), const QString &dataSourceUri = QString() ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
 Construct a new QgsSublayersDialog object - a dialog to select which sub layers to be imported from a data source (e.g. from geopackage or zipfile)
 

@@ -93,7 +93,7 @@ Defines the buttons which are shown
 Returns the buttons which are shown
 %End
 
- void duplicateFeature() /Deprecated/;
+ void duplicateFeature() /Deprecated="Since 3.18. Use duplicateSelectedFeatures() instead."/;
 %Docstring
 Duplicates a feature
 

@@ -107,7 +107,7 @@ If ``color`` is an invalid color then the default icon color will be used.
 .. versionadded:: 3.20
 %End
 
- virtual QWidget *paramWidget() /Factory,Deprecated/;
+ virtual QWidget *paramWidget() /Factory,Deprecated="Since 3.20. "/;
 
 %Docstring
 

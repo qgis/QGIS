@@ -142,7 +142,7 @@ items, i.e. it does not fetch children.
 .. versionadded:: 3.6
 %End
 
- void connectItem( QgsDataItem *item ) /Deprecated/;
+ void connectItem( QgsDataItem *item ) /Deprecated="Since 3.4. This method has no effect, and is dangerous to call in earlier QGIS versions. Any usage should be removed (and will have no harmful side-effects!)."/;
 %Docstring
 
 .. deprecated:: 3.4

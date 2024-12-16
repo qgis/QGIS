@@ -134,7 +134,7 @@ Defines if the group box to fill parameters is visible
 .. versionadded:: 3.18
 %End
 
- bool allowParamerters() const /Deprecated/;
+ bool allowParamerters() const /Deprecated="Since 3.40. Use allowParameters()."/;
 %Docstring
 Returns if the group box to fill parameters is visible
 

@@ -234,7 +234,7 @@ A scale <= 0 indicates that no scale filtering is being performed.
 .. seealso:: :py:func:`setLegendFilterByScale`
 %End
 
- void setLegendFilterByMap( const QgsMapSettings *settings ) /Deprecated/;
+ void setLegendFilterByMap( const QgsMapSettings *settings ) /Deprecated="Since 3.32. Use setFilterSettings() instead."/;
 %Docstring
 Force only display of legend nodes which are valid for given map settings.
 Setting ``None`` or invalid map settings will disable the functionality.
@@ -245,7 +245,7 @@ Ownership of map settings pointer does not change, a copy is made.
    Use :py:func:`~QgsLayerTreeModel.setFilterSettings` instead.
 %End
 
- void setLegendFilter( const QgsMapSettings *settings, bool useExtent = true, const QgsGeometry &polygon = QgsGeometry(), bool useExpressions = true ) /Deprecated/;
+ void setLegendFilter( const QgsMapSettings *settings, bool useExtent = true, const QgsGeometry &polygon = QgsGeometry(), bool useExpressions = true ) /Deprecated="Since 3.32. Use setFilterSettings() instead."/;
 %Docstring
 Filter display of legend nodes for given map settings
 

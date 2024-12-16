@@ -43,7 +43,7 @@ change the layer used by the map tool to identify
 Emitted when a ``feature`` has been identified
 %End
 
- void featureIdentified( QgsFeatureId id ) /Deprecated/;
+ void featureIdentified( QgsFeatureId id ) /Deprecated="Since 3.40. Use the signal with a QgsFeature argument instead."/;
 %Docstring
 Emitted when a feature has been identified by its ``id``.
 

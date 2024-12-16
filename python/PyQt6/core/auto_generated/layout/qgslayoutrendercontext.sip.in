@@ -185,7 +185,7 @@ whether they will be rendered in layout exports.
 .. seealso:: :py:func:`setPagesVisible`
 %End
 
- void setCurrentExportLayer( int layer = -1 ) /Deprecated/;
+ void setCurrentExportLayer( int layer = -1 ) /Deprecated="Since 3.40. Items should now handle this themselves, via QgsLayoutItem.exportLayerBehavior() and returning QgsLayoutItem.nextExportPart()."/;
 %Docstring
 Sets the current item ``layer`` to draw while exporting. :py:class:`QgsLayoutItem` subclasses
 which support multi-layer SVG exports must check the :py:func:`~QgsLayoutRenderContext.currentExportLayer`
@@ -200,7 +200,7 @@ If ``layer`` is -1, all item layers will be rendered.
    Items should now handle this themselves, via :py:func:`QgsLayoutItem.exportLayerBehavior()` and returning :py:func:`QgsLayoutItem.nextExportPart()`.
 %End
 
- int currentExportLayer() const /Deprecated/;
+ int currentExportLayer() const /Deprecated="Since 3.40. Items should now handle this themselves, via QgsLayoutItem.exportLayerBehavior() and returning QgsLayoutItem.nextExportPart()."/;
 %Docstring
 Returns the current item layer to draw while exporting. :py:class:`QgsLayoutItem` subclasses
 which support multi-layer SVG exports must check this

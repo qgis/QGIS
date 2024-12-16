@@ -69,7 +69,7 @@ Returns the default flags (equalTo)
 
   public slots:
 
- void onValueChanged( const QVariant &value ) /Deprecated/;
+ void onValueChanged( const QVariant &value ) /Deprecated="Since 3.10. Made private."/;
 %Docstring
 Called when current value of search widget changes
 

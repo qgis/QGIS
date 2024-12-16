@@ -16,7 +16,7 @@ class QgsNewVectorLayerDialog : QDialog
 #include "qgsnewvectorlayerdialog.h"
 %End
   public:
- static QString runAndCreateLayer( QWidget *parent = 0, QString *enc = 0, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QString &initialPath = QString() ) /Deprecated/;
+ static QString runAndCreateLayer( QWidget *parent = 0, QString *enc = 0, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(), const QString &initialPath = QString() ) /Deprecated="Since 3.4.5. Use execAndCreateLayer() instead."/;
 %Docstring
 Runs the dialog and creates a layer matching the dialog parameters.
 

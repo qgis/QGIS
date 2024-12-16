@@ -124,7 +124,7 @@ Returns the string representation of a ``ct`` (Content-Type) attribute.
 Returns the file extension for a ``ct`` (Content-Type).
 %End
 
- static QgsServerOgcApi::ContentType contenTypeFromExtension( const std::string &extension ) /Deprecated/;
+ static QgsServerOgcApi::ContentType contenTypeFromExtension( const std::string &extension ) /Deprecated="Since 3.40. Use contentTypeFromExtension()."/;
 %Docstring
 Returns the Content-Type value corresponding to ``extension``.
 

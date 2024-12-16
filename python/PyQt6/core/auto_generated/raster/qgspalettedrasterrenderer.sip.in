@@ -122,7 +122,7 @@ Returns optional category label
 Set category label
 %End
 
- int band() const /Deprecated/;
+ int band() const /Deprecated="Since 3.38. Use inputBand() instead."/;
 %Docstring
 Returns the raster band used for rendering the raster.
 

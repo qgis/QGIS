@@ -35,7 +35,7 @@ Constructor from map
 
     QgsHttpHeaders();
 
- QgsHttpHeaders( const QgsSettings &settings, const QString &key = QString() ) /Deprecated/;
+ QgsHttpHeaders( const QgsSettings &settings, const QString &key = QString() ) /Deprecated="Since 3.30. Use a variant map settings and the default constructor instead."/;
 %Docstring
 Constructor from :py:class:`QgsSettings` ``settings`` object and root ``key``
 
@@ -70,7 +70,7 @@ Returns the headers as a variant map
 .. versionadded:: 3.30
 %End
 
- bool updateSettings( QgsSettings &settings, const QString &key = QString() ) const /Deprecated/;
+ bool updateSettings( QgsSettings &settings, const QString &key = QString() ) const /Deprecated="Since 3.30. Directly use a variant setting instead."/;
 %Docstring
 Updates the ``settings`` by adding all the http headers in the path "key/PATH_PREFIX/"
 

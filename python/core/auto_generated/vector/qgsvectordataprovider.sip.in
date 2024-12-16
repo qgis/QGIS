@@ -449,7 +449,7 @@ Returns the name of the column storing geometry, if applicable.
 .. versionadded:: 3.42
 %End
 
- QgsAttrPalIndexNameHash palAttributeIndexNames() const /Deprecated/;
+ QgsAttrPalIndexNameHash palAttributeIndexNames() const /Deprecated="Since 3.32. This method is unused and will always return an empty hash."/;
 %Docstring
 Returns list of indexes to names for :py:class:`QgsPalLabeling` fix
 
@@ -550,7 +550,7 @@ providers will return ``None``.
 Convert ``value`` to ``type``
 %End
 
- static QVariant convertValue( QVariant::Type type, const QString &value ) /Deprecated/;
+ static QVariant convertValue( QVariant::Type type, const QString &value ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
 Convert ``value`` to ``type``
 
@@ -564,7 +564,7 @@ Convert ``value`` to ``type``
 Returns the transaction this data provider is included in, if any.
 %End
 
- virtual void forceReload() /Deprecated/;
+ virtual void forceReload() /Deprecated="Since 3.12. Will be removed in QGIS 4.0 - use reloadData() instead."/;
 %Docstring
 
 .. deprecated:: 3.12

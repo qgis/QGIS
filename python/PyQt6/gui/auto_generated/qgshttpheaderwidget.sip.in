@@ -43,7 +43,7 @@ Sets the widget from the headers
 .. versionadded:: 3.30
 %End
 
- void setFromSettings( const QgsSettings &settings, const QString &key ) /Deprecated/;
+ void setFromSettings( const QgsSettings &settings, const QString &key ) /Deprecated="Since 3.30. Use setFromHeaders() instead."/;
 %Docstring
 fill the inner header map from the settings defined at ``key``
 
@@ -57,7 +57,7 @@ fill the inner header map from the settings defined at ``key``
    Use :py:func:`~QgsHttpHeaderWidget.setFromHeaders` instead.
 %End
 
- void updateSettings( QgsSettings &settings, const QString &key ) const /Deprecated/;
+ void updateSettings( QgsSettings &settings, const QString &key ) const /Deprecated="Since 3.30. Use a variant map for settinds directly."/;
 %Docstring
 update the ``settings`` with the http headers present in the inner map.
 

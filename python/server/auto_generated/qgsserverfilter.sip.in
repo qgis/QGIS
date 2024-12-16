@@ -43,7 +43,7 @@ and must be passed to QgsServerFilter instances.
 Returns the :py:class:`QgsServerInterface` instance
 %End
 
- virtual void requestReady() /Deprecated/;
+ virtual void requestReady() /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
 Method called when the :py:class:`QgsRequestHandler` is ready and populated with
 parameters, just before entering the main switch for core services.
@@ -56,7 +56,7 @@ be used instead.
    Will be removed in QGIS 4.0.
 %End
 
- virtual void responseComplete() /Deprecated/;
+ virtual void responseComplete() /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
 Method called when the :py:class:`QgsRequestHandler` processing has done and
 the response is ready, just after the main switch for core services
@@ -70,7 +70,7 @@ be used instead.
    Will be removed in QGIS 4.0.
 %End
 
- virtual void sendResponse() /Deprecated/;
+ virtual void sendResponse() /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
 Method called when the :py:class:`QgsRequestHandler` sends its data to FCGI stdout.
 This normally occurs at the end of core services processing just after

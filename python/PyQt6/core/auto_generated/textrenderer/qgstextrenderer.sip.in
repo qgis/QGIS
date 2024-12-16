@@ -200,7 +200,7 @@ Draws a text document along a line using the specified settings.
 
  static void drawPart( const QRectF &rect, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
                                             QgsRenderContext &context, const QgsTextFormat &format,
-                                            Qgis::TextComponent part, bool drawAsOutlines = true ) /Deprecated/;
+                                            Qgis::TextComponent part, bool drawAsOutlines = true ) /Deprecated="Since 3.40. Private API only, will be removed in 4.0."/;
 %Docstring
 Draws a single component of rendered text using the specified settings.
 
@@ -225,7 +225,7 @@ Draws a single component of rendered text using the specified settings.
 
  static void drawPart( QPointF origin, double rotation, Qgis::TextHorizontalAlignment alignment, const QStringList &textLines,
                                             QgsRenderContext &context, const QgsTextFormat &format,
-                                            Qgis::TextComponent part, bool drawAsOutlines = true ) /Deprecated/;
+                                            Qgis::TextComponent part, bool drawAsOutlines = true ) /Deprecated="Since 3.40. Private API only, will be removed in 4.0."/;
 %Docstring
 Draws a single component of rendered text using the specified settings.
 

@@ -124,7 +124,7 @@ returned in ``retError``.
 Returns time stamp for given file name
 %End
 
- void setDataProvider( const QString &provider ) /Deprecated/;
+ void setDataProvider( const QString &provider ) /Deprecated="Since 3.40. Use the version with ProviderOptions instead."/;
 %Docstring
 Set the data provider.
 
@@ -286,7 +286,7 @@ This will be ``None`` if the layer is invalid.
 This is an overloaded version of the :py:func:`~QgsRasterLayer.draw` function that is called by both :py:func:`~QgsRasterLayer.draw` and thumbnailAsPixmap
 %End
 
- QgsLegendColorList legendSymbologyItems() const /Deprecated/;
+ QgsLegendColorList legendSymbologyItems() const /Deprecated="Since 3.40. Use QgsRasterRenderer.createLegendNodes() instead."/;
 %Docstring
 Returns a list with classification items (Text and color).
 

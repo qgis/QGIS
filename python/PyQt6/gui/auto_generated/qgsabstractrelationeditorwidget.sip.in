@@ -98,7 +98,7 @@ Sets the editor ``context``
 Returns the attribute editor context.
 %End
 
- bool showLabel() const /Deprecated/;
+ bool showLabel() const /Deprecated="Since 3.20. Label is handled directly in QgsAttributeForm."/;
 %Docstring
 Defines if a title label should be shown for this widget.
 
@@ -107,7 +107,7 @@ Defines if a title label should be shown for this widget.
    Label is handled directly in :py:class:`QgsAttributeForm`.
 %End
 
- void setShowLabel( bool showLabel ) /Deprecated/;
+ void setShowLabel( bool showLabel ) /Deprecated="Since 3.20. Label is handled directly in QgsAttributeForm."/;
 %Docstring
 Defines if a title label should be shown for this widget.
 
@@ -127,7 +127,7 @@ Sets ``nmRelationId`` for the relation id of the second relation involved in an 
 If it's empty, then it's considered as a 1:M relationship.
 %End
 
- QString label() const /Deprecated/;
+ QString label() const /Deprecated="Since 3.20. Label is handled directly in QgsAttributeForm."/;
 %Docstring
 Determines the label of this element
 
@@ -263,7 +263,7 @@ Duplicates features
 Refresh the UI when the widget becomes visible
 %End
 
- void updateTitle() /Deprecated/;
+ void updateTitle() /Deprecated="Since 3.20. Label is handled directly in QgsAttributeForm."/;
 %Docstring
 Updates the title contents to reflect the current state of the widget
 
@@ -291,7 +291,7 @@ Should be used to refresh the UI regarding the new data.
 Check :py:class:`QgsRealationEditorWidget` as an example.
 %End
 
- virtual void setTitle( const QString &title ) /Deprecated/;
+ virtual void setTitle( const QString &title ) /Deprecated="Since 3.20. Label is handled directly in QgsAttributeForm."/;
 %Docstring
 Sets the title of the widget, if it is wrapped within a :py:class:`QgsCollapsibleGroupBox`
 

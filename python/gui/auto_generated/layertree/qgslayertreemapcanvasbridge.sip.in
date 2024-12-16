@@ -46,7 +46,7 @@ Associates overview canvas with the bridge, so the overview will be updated when
 %End
 
 
-    void setOvervewCanvas( QgsMapOverviewCanvas *overviewCanvas ) /Deprecated/; // TODO QGIS 4.0 remove
+    void setOvervewCanvas( QgsMapOverviewCanvas *overviewCanvas ) /Deprecated="Since 3.40. Use setOverviewCanvas() instead."/; // TODO QGIS 4.0 remove
 %MethodCode
     sipCpp->setOverviewCanvas( a0 );
 %End

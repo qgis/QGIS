@@ -24,7 +24,7 @@ Bilinear Raster Resampler
 
     QgsBilinearRasterResampler();
 
- virtual void resample( const QImage &srcImage, QImage &dstImage ) /Deprecated/;
+ virtual void resample( const QImage &srcImage, QImage &dstImage ) /Deprecated="Since 3.12. Use resampleV2() instead."/;
 
 %Docstring
 

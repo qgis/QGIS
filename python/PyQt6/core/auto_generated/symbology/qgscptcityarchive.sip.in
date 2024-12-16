@@ -129,7 +129,7 @@ Removes a ``child`` item but doesn't delete it, signals to browser are emitted.
 Returns ``True`` if this item is equal to an ``other`` item.
 %End
 
- virtual QWidget *paramWidget() /Deprecated/;
+ virtual QWidget *paramWidget() /Deprecated="Since 3.40. Is unused and will be removed in QGIS 4.0."/;
 %Docstring
 
 .. deprecated:: 3.40
@@ -137,7 +137,7 @@ Returns ``True`` if this item is equal to an ``other`` item.
    Is unused and will be removed in QGIS 4.0.
 %End
 
- virtual bool acceptDrop() /Deprecated/;
+ virtual bool acceptDrop() /Deprecated="Since 3.40. Is unused and will be removed in QGIS 4.0."/;
 %Docstring
 Returns ``True`` if the item accepts drag & dropped layers - e.g. for import.
 
@@ -146,7 +146,7 @@ Returns ``True`` if the item accepts drag & dropped layers - e.g. for import.
    Is unused and will be removed in QGIS 4.0.
 %End
 
- virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) /Deprecated/;
+ virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) /Deprecated="Since 3.40. Is unused and will be removed in QGIS 4.0."/;
 %Docstring
 Tries to process the ``data`` dropped on this item.
 

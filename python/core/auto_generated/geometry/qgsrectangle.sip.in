@@ -120,7 +120,7 @@ A null rectangle is also empty by definition.
 .. versionadded:: 3.34
 %End
 
- void setMinimal() /Deprecated/;
+ void setMinimal() /Deprecated="Since 3.34. Will be removed in QGIS 4.0. Use setNull()."/;
 %Docstring
 Set a rectangle so that min corner is at max
 and max corner is at min. It is NOT normalized.

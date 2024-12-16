@@ -69,7 +69,7 @@ determine whether the drag action should be accepted.
 %End
 
 
- virtual void handleMimeData( const QMimeData *data ) /Deprecated/;
+ virtual void handleMimeData( const QMimeData *data ) /Deprecated="Since 3.10. Use handleMimeDataV2() instead."/;
 %Docstring
 Called when the specified mime ``data`` has been dropped onto QGIS.
 

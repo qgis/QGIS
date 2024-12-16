@@ -265,7 +265,7 @@ Returns the path to the settings directory in user's home dir
 Returns the path to the user qgis.db file.
 %End
 
- static QString qgisAuthDatabaseFilePath() /Deprecated/;
+ static QString qgisAuthDatabaseFilePath() /Deprecated="Since 3.30. Use qgisAuthDatabaseUri() instead."/;
 %Docstring
 Returns the path to the user authentication database file: qgis-auth.db.
 
@@ -698,7 +698,7 @@ Returns the application's task manager, used for managing application
 wide background task handling.
 %End
 
- static QgsSettingsRegistryCore *settingsRegistryCore() /KeepReference,Deprecated/;
+ static QgsSettingsRegistryCore *settingsRegistryCore() /KeepReference,Deprecated="Since 3.30. Use QgsSettings.treeRoot() instead."/;
 %Docstring
 Returns the application's settings registry, used for managing application settings.
 

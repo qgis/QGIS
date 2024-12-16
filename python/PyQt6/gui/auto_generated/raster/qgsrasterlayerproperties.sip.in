@@ -43,7 +43,7 @@ Constructor
     virtual bool eventFilter( QObject *obj, QEvent *ev );
 
 
- void saveDefaultStyle() /Deprecated/;
+ void saveDefaultStyle() /Deprecated="Since 3.40. Use saveStyleAsDefault() instead."/;
 %Docstring
 Saves the default style when appropriate button is pressed
 

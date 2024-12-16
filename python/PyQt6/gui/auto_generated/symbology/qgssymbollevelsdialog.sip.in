@@ -54,7 +54,7 @@ Sets whether the level ordering is always forced on and hide the checkbox (used 
 
   public slots:
 
- void apply() /Deprecated/;
+ void apply() /Deprecated="Since 3.20. Use symbolLevels() and manually apply the changes to the renderer as appropriate."/;
 %Docstring
 Apply button.
 
