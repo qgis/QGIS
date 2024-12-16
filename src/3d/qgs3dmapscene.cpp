@@ -1006,7 +1006,7 @@ void Qgs3DMapScene::onCameraNavigationModeChanged()
   mCameraController->setCameraNavigationMode( mMap.cameraNavigationMode() );
 }
 
-void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
+bool Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
 {
   QVector<QString> notParsedLayers;
   Qgs3DSceneExporter exporter;
@@ -1045,7 +1045,11 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
   if ( mTerrain )
     exporter.parseTerrain( mTerrain, "Terrain" );
 
-  exporter.save( exportSettings.sceneName(), exportSettings.sceneFolderPath() );
+  const bool sceneSaved = exporter.save( exportSettings.sceneName(), exportSettings.sceneFolderPath() );
+  if ( !sceneSaved )
+  {
+    return false;
+  }
 
   if ( !notParsedLayers.empty() )
   {
@@ -1054,6 +1058,8 @@ void Qgs3DMapScene::exportScene( const Qgs3DMapExportSettings &exportSettings )
       message += layerName + "\n";
     QgsMessageOutput::showMessage( tr( "3D exporter warning" ), message, QgsMessageOutput::MessageText );
   }
+
+  return true;
 }
 
 QVector<const QgsChunkNode *> Qgs3DMapScene::getLayerActiveChunkNodes( QgsMapLayer *layer )

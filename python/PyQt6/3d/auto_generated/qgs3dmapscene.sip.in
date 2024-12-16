@@ -79,9 +79,10 @@ Given screen error (in pixels) and distance from camera (in 3D world coordinates
 estimates the error in world space. Takes into account camera's field of view and the screen (3D view) size.
 %End
 
-    void exportScene( const Qgs3DMapExportSettings &exportSettings );
+    bool exportScene( const Qgs3DMapExportSettings &exportSettings );
 %Docstring
 Exports the scene according to the scene export settings
+Returns ``False`` if the operation failed
 %End
 
 
