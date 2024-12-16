@@ -49,7 +49,6 @@ PyQgsPalLabelingPlacement
 PyQgsRasterAttributeTable
 PyQgsRasterLayerRenderer
 PyQgsSymbolLayerReadSld
-PyQgsVectorLayerEditBuffer
 PyQgsLayerDefinition
 PyQgsSettings
 PyQgsSettingsEntry
