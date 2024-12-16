@@ -67,18 +67,6 @@ inline qint32 FID2PKINT( qint64 x )
   return QgsPostgresUtils::fid_to_int32pk( x );
 }
 
-static bool tableExists( QgsPostgresConn &conn, const QString &name )
-{
-  QgsPostgresResult res( conn.LoggedPQexec( QStringLiteral( "tableExists" ), "SELECT EXISTS ( SELECT oid FROM pg_catalog.pg_class WHERE relname=" + QgsPostgresConn::quotedValue( name ) + ")" ) );
-  return res.PQgetvalue( 0, 0 ).startsWith( 't' );
-}
-
-static bool columnExists( QgsPostgresConn &conn, const QString &table, const QString &column )
-{
-  QgsPostgresResult res( conn.LoggedPQexec( QStringLiteral( "columnExists" ), "SELECT COUNT(*) FROM information_schema.columns WHERE table_name=" + QgsPostgresConn::quotedValue( table ) + " and column_name=" + QgsPostgresConn::quotedValue( column ) ) );
-  return res.PQgetvalue( 0, 0 ).toInt() > 0;
-}
-
 QgsPostgresPrimaryKeyType
   QgsPostgresProvider::pkType( const QgsField &f ) const
 {
@@ -1214,7 +1202,7 @@ bool QgsPostgresProvider::loadFields()
 
 void QgsPostgresProvider::setEditorWidgets()
 {
-  if ( !tableExists( *connectionRO(), EDITOR_WIDGET_STYLES_TABLE ) )
+  if ( !QgsPostgresUtils::tableExists( connectionRO(), EDITOR_WIDGET_STYLES_TABLE ) )
   {
     return;
   }
@@ -5159,11 +5147,11 @@ bool QgsPostgresProviderMetadata::styleExists( const QString &uri, const QString
     return false;
   }
 
-  if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
   {
     return false;
   }
-  else if ( !columnExists( *conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+  else if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
   {
     return false;
   }
@@ -5219,25 +5207,9 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
     return false;
   }
 
-  if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
   {
-    QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), "CREATE TABLE layer_styles("
-                                                                                                "id SERIAL PRIMARY KEY"
-                                                                                                ",f_table_catalog varchar"
-                                                                                                ",f_table_schema varchar"
-                                                                                                ",f_table_name varchar"
-                                                                                                ",f_geometry_column varchar"
-                                                                                                ",styleName text"
-                                                                                                ",styleQML xml"
-                                                                                                ",styleSLD xml"
-                                                                                                ",useAsDefault boolean"
-                                                                                                ",description text"
-                                                                                                ",owner varchar(63) DEFAULT CURRENT_USER"
-                                                                                                ",ui xml"
-                                                                                                ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
-                                                                                                ",type varchar"
-                                                                                                ")" ) );
-    if ( res.PQresultStatus() != PGRES_COMMAND_OK )
+    if ( !QgsPostgresUtils::createStylesTable( conn, QStringLiteral( "QgsPostgresProviderMetadata" ) ) )
     {
       errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database. Maybe this is due to table permissions (user=%1). Please contact your database admin" ).arg( dsUri.username() );
       conn->unref();
@@ -5246,7 +5218,7 @@ bool QgsPostgresProviderMetadata::saveStyle( const QString &uri, const QString &
   }
   else
   {
-    if ( !columnExists( *conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+    if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
     {
       QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresProviderMetadata" ), "ALTER TABLE layer_styles ADD COLUMN type varchar NULL" ) );
       if ( res.PQresultStatus() != PGRES_COMMAND_OK )
@@ -5394,7 +5366,7 @@ QString QgsPostgresProviderMetadata::loadStoredStyle( const QString &uri, QStrin
     dsUri.setDatabase( conn->currentDatabase() );
   }
 
-  if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
   {
     conn->unref();
     return QString();
@@ -5413,7 +5385,7 @@ QString QgsPostgresProviderMetadata::loadStoredStyle( const QString &uri, QStrin
   QString wkbTypeString = QgsPostgresConn::quotedValue( QgsWkbTypes::geometryDisplayString( QgsWkbTypes::geometryType( dsUri.wkbType() ) ) );
 
   // support layer_styles without type column < 3.14
-  if ( !columnExists( *conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
+  if ( !QgsPostgresUtils::columnExists( conn, QStringLiteral( "layer_styles" ), QStringLiteral( "type" ) ) )
   {
     selectQmlQuery = QString( "SELECT styleName, styleQML"
                               " FROM layer_styles"
@@ -5469,7 +5441,7 @@ int QgsPostgresProviderMetadata::listStyles( const QString &uri, QStringList &id
     return -1;
   }
 
-  if ( !tableExists( *conn, QStringLiteral( "layer_styles" ) ) )
+  if ( !QgsPostgresUtils::tableExists( conn, QStringLiteral( "layer_styles" ) ) )
   {
     return -1;
   }

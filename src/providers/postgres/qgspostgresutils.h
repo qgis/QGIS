@@ -91,6 +91,12 @@ class QgsPostgresUtils
 
     //! Replaces UTF-8[<char_code>] with the actual unicode char
     static void restoreInvalidXmlChars( QString &xml );
+
+    static bool createStylesTable( QgsPostgresConn *conn, QString loggedClass );
+
+    static bool columnExists( QgsPostgresConn *conn, const QString &table, const QString &column );
+
+    static bool tableExists( QgsPostgresConn *conn, const QString &name );
 };
 
 #endif

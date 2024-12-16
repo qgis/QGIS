@@ -464,3 +464,37 @@ bool QgsPostgresUtils::deleteSchema( const QString &schema, const QgsDataSourceU
   conn->unref();
   return true;
 }
+
+bool QgsPostgresUtils::tableExists( QgsPostgresConn *conn, const QString &name )
+{
+  QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "tableExists" ), "SELECT EXISTS ( SELECT oid FROM pg_catalog.pg_class WHERE relname=" + QgsPostgresConn::quotedValue( name ) + ")" ) );
+  return res.PQgetvalue( 0, 0 ).startsWith( 't' );
+}
+
+bool QgsPostgresUtils::columnExists( QgsPostgresConn *conn, const QString &table, const QString &column )
+{
+  QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "columnExists" ), "SELECT COUNT(*) FROM information_schema.columns WHERE table_name=" + QgsPostgresConn::quotedValue( table ) + " and column_name=" + QgsPostgresConn::quotedValue( column ) ) );
+  return res.PQgetvalue( 0, 0 ).toInt() > 0;
+}
+
+bool QgsPostgresUtils::createStylesTable( QgsPostgresConn *conn, QString loggedClass )
+{
+  QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresRasterProviderMetadata" ), "CREATE TABLE layer_styles("
+                                                                                                    "id SERIAL PRIMARY KEY"
+                                                                                                    ",f_table_catalog varchar"
+                                                                                                    ",f_table_schema varchar"
+                                                                                                    ",f_table_name varchar"
+                                                                                                    ",f_geometry_column varchar"
+                                                                                                    ",styleName text"
+                                                                                                    ",styleQML xml"
+                                                                                                    ",styleSLD xml"
+                                                                                                    ",useAsDefault boolean"
+                                                                                                    ",description text"
+                                                                                                    ",owner varchar(63) DEFAULT CURRENT_USER"
+                                                                                                    ",ui xml"
+                                                                                                    ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
+                                                                                                    ",type varchar"
+                                                                                                    ",r_raster_column varchar"
+                                                                                                    ")" ) );
+  return res.PQresultStatus() == PGRES_COMMAND_OK;
+}
