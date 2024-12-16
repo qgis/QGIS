@@ -442,6 +442,13 @@ Returns list of indexes to fetch all attributes in :py:func:`~QgsVectorDataProvi
 Returns list of indexes of fields that make up the primary key
 %End
 
+    virtual QString geometryColumnName() const;
+%Docstring
+Returns the name of the column storing geometry, if applicable.
+
+.. versionadded:: 3.42
+%End
+
  QgsAttrPalIndexNameHash palAttributeIndexNames() const /Deprecated/;
 %Docstring
 Returns list of indexes to names for :py:class:`QgsPalLabeling` fix

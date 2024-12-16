@@ -58,6 +58,7 @@ class QgsHanaProvider final : public QgsVectorDataProvider
     QString dataComment() const override;
     long long featureCount() const override;
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
+    QString geometryColumnName() const override;
     QgsFields fields() const override;
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
