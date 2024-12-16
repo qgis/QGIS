@@ -462,7 +462,7 @@ bool QgsSetMetadataFieldsAlgorithm::prepareAlgorithm( const QVariantMap &paramet
   if ( parameters.value( QStringLiteral( "IDENTIFIER" ) ).isValid() )
   {
     const QString identifier = parameterAsString( parameters, QStringLiteral( "IDENTIFIER" ), context );
-    if ( !identifier.isEmpty() || ( identifier.isEmpty() && !ignoreEmpty ) )
+    if ( !identifier.isEmpty() || !ignoreEmpty )
     {
       md->setIdentifier( identifier );
     }
@@ -471,7 +471,7 @@ bool QgsSetMetadataFieldsAlgorithm::prepareAlgorithm( const QVariantMap &paramet
   if ( parameters.value( QStringLiteral( "PARENT_IDENTIFIER" ) ).isValid() )
   {
     const QString parentIdentifier = parameterAsString( parameters, QStringLiteral( "PARENT_IDENTIFIER" ), context );
-    if ( !parentIdentifier.isEmpty() || ( parentIdentifier.isEmpty() && !ignoreEmpty ) )
+    if ( !parentIdentifier.isEmpty() || !ignoreEmpty )
     {
       md->setParentIdentifier( parentIdentifier );
     }
@@ -480,7 +480,7 @@ bool QgsSetMetadataFieldsAlgorithm::prepareAlgorithm( const QVariantMap &paramet
   if ( parameters.value( QStringLiteral( "TITLE" ) ).isValid() )
   {
     const QString title = parameterAsString( parameters, QStringLiteral( "TITLE" ), context );
-    if ( !title.isEmpty() || ( title.isEmpty() && !ignoreEmpty ) )
+    if ( !title.isEmpty() || !ignoreEmpty )
     {
       md->setTitle( title );
     }
@@ -489,7 +489,7 @@ bool QgsSetMetadataFieldsAlgorithm::prepareAlgorithm( const QVariantMap &paramet
   if ( parameters.value( QStringLiteral( "TYPE" ) ).isValid() )
   {
     const QString type = parameterAsString( parameters, QStringLiteral( "TYPE" ), context );
-    if ( !type.isEmpty() || ( type.isEmpty() && !ignoreEmpty ) )
+    if ( !type.isEmpty() || !ignoreEmpty )
     {
       md->setType( type );
     }
@@ -498,7 +498,7 @@ bool QgsSetMetadataFieldsAlgorithm::prepareAlgorithm( const QVariantMap &paramet
   if ( parameters.value( QStringLiteral( "LANGUAGE" ) ).isValid() )
   {
     const QString language = parameterAsString( parameters, QStringLiteral( "LANGUAGE" ), context );
-    if ( !language.isEmpty() || ( language.isEmpty() && !ignoreEmpty ) )
+    if ( !language.isEmpty() || !ignoreEmpty )
     {
       md->setLanguage( language );
     }
@@ -507,7 +507,7 @@ bool QgsSetMetadataFieldsAlgorithm::prepareAlgorithm( const QVariantMap &paramet
   if ( parameters.value( QStringLiteral( "ENCODING" ) ).isValid() )
   {
     const QString encoding = parameterAsString( parameters, QStringLiteral( "ENCODING" ), context );
-    if ( !encoding.isEmpty() || ( encoding.isEmpty() && !ignoreEmpty ) )
+    if ( !encoding.isEmpty() || !ignoreEmpty )
     {
       md->setEncoding( encoding );
     }
@@ -516,7 +516,7 @@ bool QgsSetMetadataFieldsAlgorithm::prepareAlgorithm( const QVariantMap &paramet
   if ( parameters.value( QStringLiteral( "ABSTRACT" ) ).isValid() )
   {
     const QString abstract = parameterAsString( parameters, QStringLiteral( "ABSTRACT" ), context );
-    if ( !abstract.isEmpty() || ( abstract.isEmpty() && !ignoreEmpty ) )
+    if ( !abstract.isEmpty() || !ignoreEmpty )
     {
       md->setAbstract( abstract );
     }
@@ -534,7 +534,7 @@ bool QgsSetMetadataFieldsAlgorithm::prepareAlgorithm( const QVariantMap &paramet
   if ( parameters.value( QStringLiteral( "FEES" ) ).isValid() )
   {
     const QString fees = parameterAsString( parameters, QStringLiteral( "FEES" ), context );
-    if ( !fees.isEmpty() || ( fees.isEmpty() && !ignoreEmpty ) )
+    if ( !fees.isEmpty() || !ignoreEmpty )
     {
       md->setFees( fees );
     }
