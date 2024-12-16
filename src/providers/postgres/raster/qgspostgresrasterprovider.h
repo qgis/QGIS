@@ -47,6 +47,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     virtual QString description() const override;
 
     bool readBlock( int bandNo, QgsRectangle const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    Qgis::ProviderStyleStorageCapabilities styleStorageCapabilities() const override;
 
     // QgsRasterInterface interface
     virtual Qgis::DataType dataType( int bandNo ) const override;
@@ -263,6 +264,17 @@ class QgsPostgresRasterProviderMetadata : public QgsProviderMetadata
     QList<Qgis::LayerType> supportedLayerTypes() const override;
     bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage ) override;
     QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
+
+    // These functions are very
+    bool styleExists( const QString &uri, const QString &styleId, QString &errorCause ) override;
+    bool saveStyle( const QString &uri, const QString &qmlStyle, const QString &sldStyle, const QString &styleName, const QString &styleDescription, const QString &uiFileContent, bool useAsDefault, QString &errCause ) override;
+    QString loadStyle( const QString &uri, QString &errCause ) override;
+    virtual QString loadStoredStyle( const QString &uri, QString &styleName, QString &errCause ) override;
+    int listStyles( const QString &uri, QStringList &ids, QStringList &names, QStringList &descriptions, QString &errCause ) override;
+    bool deleteStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
+    QString getStyleById( const QString &uri, const QString &styleId, QString &errCause ) override;
+
+    const QString mType = "Raster";
 };
 
 
