@@ -260,7 +260,8 @@ void QgsPointCloudRenderer::saveCommonProperties( QDomElement &element, const Qg
   element.setAttribute( QStringLiteral( "horizontalTriangleFilterThreshold" ), qgsDoubleToString( mHorizontalTriangleFilterThreshold ) );
   element.setAttribute( QStringLiteral( "horizontalTriangleFilterUnit" ), QgsUnitTypes::encodeUnit( mHorizontalTriangleFilterUnit ) );
 
-  element.setAttribute( QStringLiteral( "showLabels" ), QString::number( mShowLabels ) );
+  if ( mShowLabels )
+    element.setAttribute( QStringLiteral( "showLabels" ), QStringLiteral( "1" ) );
   if ( mLabelTextFormat.isValid() )
   {
     QDomDocument doc = element.ownerDocument();
