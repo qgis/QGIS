@@ -21,24 +21,24 @@ ${DEFAULTDOCSTRINGSIGNATURE}
 
     PyErr_Fetch(&type, &exception, &traceback);
     // check whether the object is already a unicode string
-    QString pyStrException;
+    QString originalExceptionMessage;
     if ( PyUnicode_Check( exception) )
     {
-      pyStrException = QString::fromUtf8( PyUnicode_AsUTF8( exception ) );
+      originalExceptionMessage = QString::fromUtf8( PyUnicode_AsUTF8( exception ) );
     }
     else
     {
       PyObject* str = PyObject_Str( exception );
-      pyStrException = QString::fromUtf8( PyUnicode_AsUTF8( str ) );
+      originalExceptionMessage = QString::fromUtf8( PyUnicode_AsUTF8( str ) );
       Py_XDECREF( str );
     }
 
     SIP_RELEASE_GIL( sipGILState );
 
     QString strException = "API bad request error";
-    if ( !pyStrException.isEmpty() )
+    if ( !originalExceptionMessage.isEmpty() )
     {
-       strException = pyStrException;
+       strException = originalExceptionMessage;
     }
 
     throw QgsServerApiBadRequestException( strException );
@@ -50,24 +50,24 @@ ${DEFAULTDOCSTRINGSIGNATURE}
 
     PyErr_Fetch(&type, &exception, &traceback);
     // check whether the object is already a unicode string
-    QString pyStrException;
+    QString originalExceptionMessage;
     if ( PyUnicode_Check( exception) )
     {
-      pyStrException = QString::fromUtf8( PyUnicode_AsUTF8( exception ) );
+      originalExceptionMessage = QString::fromUtf8( PyUnicode_AsUTF8( exception ) );
     }
     else
     {
       PyObject* str = PyObject_Str( exception );
-      pyStrException = QString::fromUtf8( PyUnicode_AsUTF8( str ) );
+      originalExceptionMessage = QString::fromUtf8( PyUnicode_AsUTF8( str ) );
       Py_XDECREF( str );
     }
 
     SIP_RELEASE_GIL( sipGILState );
 
     QString strException = "Server internal error";
-    if ( !pyStrException.isEmpty() )
+    if ( !originalExceptionMessage.isEmpty() )
     {
-       strException = pyStrException;
+       strException = originalExceptionMessage;
     }
 
     throw QgsServerException( strException );
