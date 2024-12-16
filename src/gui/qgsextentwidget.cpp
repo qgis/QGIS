@@ -451,7 +451,7 @@ void QgsExtentWidget::bookmarkMenuAboutToShow()
     }
     QAction *action = new QAction( mBookmarkModel->data( mBookmarkModel->index( i, 0 ), static_cast<int>( QgsBookmarkManagerModel::CustomRole::Name ) ).toString(), mBookmarkMenu );
     const QgsReferencedRectangle extent = mBookmarkModel->data( mBookmarkModel->index( i, 0 ), static_cast<int>( QgsBookmarkManagerModel::CustomRole::Extent ) ).value<QgsReferencedRectangle>();
-    connect( action, &QAction::triggered, this, [=] { setOutputExtentFromUser( extent, extent.crs() ); } );
+    connect( action, &QAction::triggered, this, [this, extent] { setOutputExtentFromUser( extent, extent.crs() ); } );
     destMenu->addAction( action );
   }
 

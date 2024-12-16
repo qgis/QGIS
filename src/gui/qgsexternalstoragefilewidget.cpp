@@ -242,7 +242,7 @@ void QgsExternalStorageFileWidget::storeExternalFiles( QStringList fileNames, QS
   connect( storedContent, &QgsExternalStorageStoredContent::progressChanged, mProgressBar, &QProgressBar::setValue );
   connect( mCancelButton, &QToolButton::clicked, storedContent, &QgsExternalStorageStoredContent::cancel );
 
-  auto onStoreFinished = [=] {
+  auto onStoreFinished = [this, storedContent, fileNames, storedUrls, filePath, url] {
     mStoreInProgress = false;
     updateLayout();
     storedContent->deleteLater();
