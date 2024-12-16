@@ -447,6 +447,22 @@ Qgis::GeometryOperationResult QgsVectorLayerEditUtils::splitFeatures( const QgsC
     topologyTestPoints.append( featureTopologyTestPoints );
     if ( splitFunctionReturn == Qgis::GeometryOperationResult::Success )
     {
+      //find largest geometry and give that to the original feature
+      std::function<double( const QgsGeometry & )> size = mLayer->geometryType() == Qgis::GeometryType::Polygon ? &QgsGeometry::area : &QgsGeometry::length;
+      double featureGeomSize = size( featureGeom );
+
+      QVector<QgsGeometry>::iterator largestNewFeature = std::max_element( newGeometries.begin(), newGeometries.end(), [ &size ]( const QgsGeometry & a, const QgsGeometry & b ) -> bool
+      {
+        return size( a ) < size( b );
+      } );
+
+      if ( size( *largestNewFeature ) > featureGeomSize )
+      {
+        QgsGeometry copy = *largestNewFeature;
+        *largestNewFeature = featureGeom;
+        featureGeom = copy;
+      }
+
       //change this geometry
       mLayer->changeGeometry( feat.id(), featureGeom );
 
