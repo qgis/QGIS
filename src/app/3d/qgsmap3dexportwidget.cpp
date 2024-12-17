@@ -80,7 +80,7 @@ void QgsMap3DExportWidget::settingsChanged()
   mExportSettings->setScale( ui->scaleSpinBox->value() );
 }
 
-void QgsMap3DExportWidget::exportScene()
+bool QgsMap3DExportWidget::exportScene()
 {
-  mScene->exportScene( *mExportSettings );
+  return mScene->exportScene( *mExportSettings );
 }
