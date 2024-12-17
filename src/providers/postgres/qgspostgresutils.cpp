@@ -479,22 +479,23 @@ bool QgsPostgresUtils::columnExists( QgsPostgresConn *conn, const QString &table
 
 bool QgsPostgresUtils::createStylesTable( QgsPostgresConn *conn, QString loggedClass )
 {
-  QgsPostgresResult res( conn->LoggedPQexec( QStringLiteral( "QgsPostgresRasterProviderMetadata" ), "CREATE TABLE layer_styles("
-                                                                                                    "id SERIAL PRIMARY KEY"
-                                                                                                    ",f_table_catalog varchar"
-                                                                                                    ",f_table_schema varchar"
-                                                                                                    ",f_table_name varchar"
-                                                                                                    ",f_geometry_column varchar"
-                                                                                                    ",styleName text"
-                                                                                                    ",styleQML xml"
-                                                                                                    ",styleSLD xml"
-                                                                                                    ",useAsDefault boolean"
-                                                                                                    ",description text"
-                                                                                                    ",owner varchar(63) DEFAULT CURRENT_USER"
-                                                                                                    ",ui xml"
-                                                                                                    ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
-                                                                                                    ",type varchar"
-                                                                                                    ",r_raster_column varchar"
-                                                                                                    ")" ) );
+  QgsPostgresResult res( conn->LoggedPQexec( loggedClass, "CREATE TABLE layer_styles("
+                                                          "id SERIAL PRIMARY KEY"
+                                                          ",f_table_catalog varchar"
+                                                          ",f_table_schema varchar"
+                                                          ",f_table_name varchar"
+                                                          ",f_geometry_column varchar"
+                                                          ",styleName text"
+                                                          ",styleQML xml"
+                                                          ",styleSLD xml"
+                                                          ",useAsDefault boolean"
+                                                          ",description text"
+                                                          ",owner varchar(63) DEFAULT CURRENT_USER"
+                                                          ",ui xml"
+                                                          ",update_time timestamp DEFAULT CURRENT_TIMESTAMP"
+                                                          ",type varchar"
+                                                          ",r_raster_column varchar"
+                                                          ")" ) );
+
   return res.PQresultStatus() == PGRES_COMMAND_OK;
 }
