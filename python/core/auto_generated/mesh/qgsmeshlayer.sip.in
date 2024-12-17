@@ -916,6 +916,27 @@ Sets labeling configuration. Takes ownership of the object.
 .. versionadded:: 3.36
 %End
 
+    bool minimumMaximumActiveScalarDataset( const QgsRectangle &extent, const QgsMeshDatasetIndex &datasetIndex, double &min /Out/, double &max /Out/ );
+%Docstring
+Extracts minimum and maximum value for active scalar dataset on mesh faces.
+
+:param extent: extent in which intersecting faces are searched for
+:param datasetIndex: index for which dataset the values should be extracted
+
+:return: - ``True`` if values were extracted
+         - min: minimal value
+         - max: maximal value
+
+.. versionadded:: 3.42
+%End
+
+    QgsMeshDatasetIndex activeScalarDatasetIndex( QgsRenderContext &rendererContext );
+%Docstring
+Returns current active scalar dataset index for current renderer context.
+
+.. versionadded:: 3.42
+%End
+
     bool datasetsPathUnique( const QString &path );
 %Docstring
 Checks whether that datasets path is already added to this mesh layer. Return ``True`` if the

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>381</width>
-    <height>206</height>
+    <width>416</width>
+    <height>272</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -176,6 +176,44 @@
     </layout>
    </item>
    <item>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QRadioButton" name="mUserDefinedRadioButton">
+       <property name="text">
+        <string>Use&amp;r defined</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">mMinMaxTypeButtonGroup</string>
+       </attribute>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="mMinMaxRadioButton">
+       <property name="text">
+        <string>&amp;Min / max</string>
+       </property>
+       <attribute name="buttonGroup">
+        <string notr="true">mMinMaxTypeButtonGroup</string>
+       </attribute>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="mMinMaxValueTypeLabel">
+       <property name="text">
+        <string>Statistics extent</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mMinMaxValueTypeComboBox"/>
+     </item>
+    </layout>
+   </item>
+   <item>
     <widget class="QWidget" name="mScalarResamplingWidget" native="true">
      <layout class="QHBoxLayout" name="horizontalLayout_4">
       <property name="leftMargin">
@@ -261,4 +299,7 @@
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>
+ <buttongroups>
+  <buttongroup name="mMinMaxTypeButtonGroup"/>
+ </buttongroups>
 </ui>

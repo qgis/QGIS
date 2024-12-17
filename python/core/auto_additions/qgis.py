@@ -10951,6 +10951,34 @@ Qgis.MouseHandlesAction.__doc__ = """Action to be performed by the mouse handles
 """
 # --
 Qgis.MouseHandlesAction.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.MeshRangeLimit.NotSet.__doc__ = "User defined"
+Qgis.MeshRangeLimit.MinimumMaximum.__doc__ = "Real min-max values"
+Qgis.MeshRangeLimit.__doc__ = """Describes the limits used to compute mesh ranges (min/max values).
+
+.. versionadded:: 3.42
+
+* ``NotSet``: User defined
+* ``MinimumMaximum``: Real min-max values
+
+"""
+# --
+Qgis.MeshRangeLimit.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.MeshRangeExtent.WholeMesh.__doc__ = "Whole mesh is used to compute statistics"
+Qgis.MeshRangeExtent.FixedCanvas.__doc__ = "Current extent of the canvas (at the time of computation) is used to compute statistics"
+Qgis.MeshRangeExtent.UpdatedCanvas.__doc__ = "Constantly updated extent of the canvas is used to compute statistics"
+Qgis.MeshRangeExtent.__doc__ = """Describes the extent used to compute mesh ranges (min/max values).
+
+.. versionadded:: 3.42
+
+* ``WholeMesh``: Whole mesh is used to compute statistics
+* ``FixedCanvas``: Current extent of the canvas (at the time of computation) is used to compute statistics
+* ``UpdatedCanvas``: Constantly updated extent of the canvas is used to compute statistics
+
+"""
+# --
+Qgis.MeshRangeExtent.baseClass = Qgis
 from enum import Enum
 
 
