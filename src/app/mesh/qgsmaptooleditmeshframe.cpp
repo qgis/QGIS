@@ -2754,12 +2754,12 @@ void QgsMapToolEditMeshFrame::selectByExpression( const QString &textExpression,
     return;
   QgsExpression expression( textExpression );
 
-  std::unique_ptr<QgsDistanceArea> distArea = std::make_unique<QgsDistanceArea>();
-  distArea->setSourceCrs( mCurrentLayer->crs(), QgsProject::instance()->transformContext() );
-  distArea->setEllipsoid( QgsProject::instance()->ellipsoid() );
+  QgsDistanceArea distArea;
+  distArea.setSourceCrs( mCurrentLayer->crs(), QgsProject::instance()->transformContext() );
+  distArea.setEllipsoid( QgsProject::instance()->ellipsoid() );
   expression.setAreaUnits( QgsProject::instance()->areaUnits() );
   expression.setDistanceUnits( QgsProject::instance()->distanceUnits() );
-  expression.setGeomCalculator( distArea.release() );
+  expression.setGeomCalculator( &distArea );
 
   switch ( elementType )
   {
