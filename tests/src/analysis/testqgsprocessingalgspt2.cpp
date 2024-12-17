@@ -2118,7 +2118,7 @@ void TestQgsProcessingAlgsPt2::setMetadataFields()
   QCOMPARE( layer->metadata().crs().authid(), QStringLiteral( "EPSG:4326" ) );
 
   // ignore empty field
-  parameters[QStringLiteral( "TITLE" )] = QStringLiteral( "" );
+  parameters[QStringLiteral( "TITLE" )] = QLatin1String( "" );
   parameters.insert( QStringLiteral( "IGNORE_EMPTY" ), true );
 
   ok = false;
@@ -2139,7 +2139,7 @@ void TestQgsProcessingAlgsPt2::setMetadataFields()
   QVERIFY( ok );
 
   QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ), layer->id() );
-  QCOMPARE( layer->metadata().title(), QStringLiteral( "" ) );
+  QCOMPARE( layer->metadata().title(), QLatin1String( "" ) );
   QCOMPARE( layer->metadata().abstract(), QStringLiteral( "Abstract" ) );
   QCOMPARE( layer->metadata().fees(), QStringLiteral( "Enormous fee" ) );
   QVERIFY( layer->metadata().crs().isValid() );
