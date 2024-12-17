@@ -340,7 +340,7 @@ Creates the symbol layer
     virtual bool canCauseArtifactsBetweenAdjacentTiles() const;
 
 
- void setExpressionsStringForWidth( const QString &start, const QString &end ) /Deprecated/;
+ void setExpressionsStringForWidth( const QString &start, const QString &end ) /Deprecated="Since 3.40. Use setDataDefinedProperty( QgsSymbolLayer.PropertyLineStartWidthValue ) and setDataDefinedProperty( QgsSymbolLayer.PropertyLineEndWidthValue ) instead."/;
 %Docstring
 Sets the expressions (as string) that define the extremety values af the line feature for width.
 
@@ -349,7 +349,7 @@ Sets the expressions (as string) that define the extremety values af the line fe
    Use setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartWidthValue ) and setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndWidthValue ) instead.
 %End
 
- QString startValueExpressionForWidth() const /Deprecated/;
+ QString startValueExpressionForWidth() const /Deprecated="Since 3.40. Use dataDefinedProperty( QgsSymbolLayer.PropertyLineStartWidthValue ) instead."/;
 %Docstring
 Returns the epression related to the start extremity value for width.
 
@@ -358,7 +358,7 @@ Returns the epression related to the start extremity value for width.
    Use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartWidthValue ) instead.
 %End
 
- QString endValueExpressionForWidth() const /Deprecated/;
+ QString endValueExpressionForWidth() const /Deprecated="Since 3.40. Use dataDefinedProperty( QgsSymbolLayer.PropertyLineEndWidthValue ) instead."/;
 %Docstring
 Returns the expression related to the end extremity value for width.
 
@@ -396,7 +396,7 @@ Returns the interpolated width used to render the width of lines, see ``:py:clas
 .. seealso:: :py:func:`setInterpolatedWidth`
 %End
 
- void setExpressionsStringForColor( const QString &start, const QString &end ) /Deprecated/;
+ void setExpressionsStringForColor( const QString &start, const QString &end ) /Deprecated="Since 3.40. Use setDataDefinedProperty( QgsSymbolLayer.PropertyLineStartColorValue ) and setDataDefinedProperty( QgsSymbolLayer.PropertyLineEndColorValue ) instead."/;
 %Docstring
 Sets the expressions (as string) that define the extremety values af the line feature for color.
 
@@ -405,7 +405,7 @@ Sets the expressions (as string) that define the extremety values af the line fe
    Use setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartColorValue ) and setDataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineEndColorValue ) instead.
 %End
 
- QString startValueExpressionForColor() const /Deprecated/;
+ QString startValueExpressionForColor() const /Deprecated="Since 3.40. Use dataDefinedProperty( QgsSymbolLayer.PropertyLineStartColorValue ) instead."/;
 %Docstring
 Returns the epression related to the start extremity value for width for color
 
@@ -414,7 +414,7 @@ Returns the epression related to the start extremity value for width for color
    Use dataDefinedProperty( :py:class:`QgsSymbolLayer`.PropertyLineStartColorValue ) instead.
 %End
 
- QString endValueExpressionForColor() const /Deprecated/;
+ QString endValueExpressionForColor() const /Deprecated="Since 3.40. Use dataDefinedProperty( QgsSymbolLayer.PropertyLineEndColorValue ) instead."/;
 %Docstring
 Returns the expression related to the end extremity value for width for color
 

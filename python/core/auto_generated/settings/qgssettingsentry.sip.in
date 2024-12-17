@@ -246,7 +246,7 @@ Returns settings value.
 .. versionadded:: 3.26
 %End
 
- QVariant valueAsVariant( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const /Deprecated/;
+ QVariant valueAsVariant( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const /Deprecated="Since 3.26. Use valueAsVariantWithDefaultOverride() instead."/;
 %Docstring
 Returns settings value with an optional default value override
 
@@ -255,7 +255,7 @@ Returns settings value with an optional default value override
    Use :py:func:`~QgsSettingsEntryBase.valueAsVariantWithDefaultOverride` instead.
 %End
 
- QVariant valueAsVariant( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const /Deprecated/;
+ QVariant valueAsVariant( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const /Deprecated="Since 3.26. Use valueAsVariantWithDefaultOverride() instead."/;
 %Docstring
 Returns settings value with an optional default value override
 

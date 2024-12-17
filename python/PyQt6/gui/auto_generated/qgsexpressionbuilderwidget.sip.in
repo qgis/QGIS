@@ -76,7 +76,7 @@ Sets layer in order to get the fields and values
 Returns the current layer or a None.
 %End
 
- void loadFieldNames() /Deprecated/;
+ void loadFieldNames() /Deprecated="Since 3.14. This is now done automatically."/;
 %Docstring
 
 .. deprecated:: 3.14
@@ -84,7 +84,7 @@ Returns the current layer or a None.
    This is now done automatically.
 %End
 
- void loadFieldNames( const QgsFields &fields ) /Deprecated/;
+ void loadFieldNames( const QgsFields &fields ) /Deprecated="Since 3.14. Use expressionTree()->loadFieldNames() instead."/;
 %Docstring
 
 .. deprecated:: 3.14
@@ -92,7 +92,7 @@ Returns the current layer or a None.
    Use :py:func:`~QgsExpressionBuilderWidget.expressionTree`->:py:func:`~QgsExpressionBuilderWidget.loadFieldNames` instead.
 %End
 
- void loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues ) /Deprecated/;
+ void loadFieldsAndValues( const QMap<QString, QStringList> &fieldValues ) /Deprecated="Since 3.14. This will not do anything, use setLayer() instead."/;
 %Docstring
 Loads field names and values from the specified map.
 
@@ -199,7 +199,7 @@ objects (i.e. for objects which aren't vector layer features).
 %End
 
 
- void saveToRecent( const QString &collection = "generic" ) /Deprecated/;
+ void saveToRecent( const QString &collection = "generic" ) /Deprecated="Since 3.14. Use expressionTree()->saveRecent() instead."/;
 %Docstring
 Adds the current expression to the given ``collection``.
 By default it is saved to the collection "generic".
@@ -209,7 +209,7 @@ By default it is saved to the collection "generic".
    Use :py:func:`~QgsExpressionBuilderWidget.expressionTree`->:py:func:`~QgsExpressionBuilderWidget.saveRecent` instead.
 %End
 
- void loadRecent( const QString &collection = QStringLiteral( "generic" ) ) /Deprecated/;
+ void loadRecent( const QString &collection = QStringLiteral( "generic" ) ) /Deprecated="Since 3.14. Use expressionTree()->loadRecent() instead."/;
 %Docstring
 Loads the recent expressions from the given ``collection``.
 By default it is loaded from the collection "generic".
@@ -226,7 +226,7 @@ Returns the expression tree
 .. versionadded:: 3.14
 %End
 
- void loadUserExpressions() /Deprecated/;
+ void loadUserExpressions() /Deprecated="Since 3.14. Use expressionTree()->loadUserExpressions() instead."/;
 %Docstring
 Loads the user expressions.
 
@@ -236,7 +236,7 @@ Loads the user expressions.
 .. versionadded:: 3.12
 %End
 
- void saveToUserExpressions( const QString &label, const QString &expression, const QString &helpText ) /Deprecated/;
+ void saveToUserExpressions( const QString &label, const QString &expression, const QString &helpText ) /Deprecated="Since 3.14. Use expressionTree()->saveToUserExpressions() instead."/;
 %Docstring
 Stores the user ``expression`` with given ``label`` and ``helpText``.
 
@@ -246,7 +246,7 @@ Stores the user ``expression`` with given ``label`` and ``helpText``.
 .. versionadded:: 3.12
 %End
 
- void removeFromUserExpressions( const QString &label ) /Deprecated/;
+ void removeFromUserExpressions( const QString &label ) /Deprecated="Since 3.14. Use expressionTree()->removeFromUserExpressions() instead."/;
 %Docstring
 Removes the expression ``label`` from the user stored expressions.
 
@@ -295,7 +295,7 @@ Saves the current function editor text to a project entry.
 .. versionadded:: 3.40
 %End
 
- QStandardItemModel *model() /Deprecated/;
+ QStandardItemModel *model() /Deprecated="Since 3.14. "/;
 %Docstring
 Returns a pointer to the dialog's function item model.
 This method is exposed for testing purposes only - it should not be used to modify the model.

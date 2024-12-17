@@ -184,7 +184,7 @@ Clone itself, create deep copy
 Returns the capabilities supported by the interface.
 %End
 
- QString capabilitiesString() const /Deprecated/;
+ QString capabilitiesString() const /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
 Returns the raster interface capabilities in friendly format.
 
@@ -295,7 +295,7 @@ It may be used to get info about original data, e.g. resolution to decide
 resampling etc.
 %End
 
- QgsRasterBandStats bandStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, QgsRasterBlockFeedback *feedback = 0 ) /Deprecated/;
+ QgsRasterBandStats bandStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, QgsRasterBlockFeedback *feedback = 0 ) /Deprecated="Since 3.40. Use Qgis.RasterBandStatistic instead of int for ``stats`` argument."/;
 %Docstring
 Returns the band statistics.
 
@@ -324,7 +324,7 @@ Returns the band statistics.
 :param feedback: optional feedback object
 %End
 
- bool hasStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0 ) /Deprecated/;
+ bool hasStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0 ) /Deprecated="Since 3.40. Use Qgis.RasterBandStatistic instead of int for ``stats`` argument."/;
 %Docstring
 Returns ``True`` if histogram is available (cached, already calculated).
 The parameters are the same as in :py:func:`~QgsRasterInterface.bandStatistics`
@@ -538,7 +538,7 @@ Fill in histogram defaults if not specified
 #endif
 %End
 
- void initStatistics( QgsRasterBandStats &statistics, int bandNo, int stats, const QgsRectangle &boundingBox = QgsRectangle(), int binCount = 0 ) const /Deprecated/;
+ void initStatistics( QgsRasterBandStats &statistics, int bandNo, int stats, const QgsRectangle &boundingBox = QgsRectangle(), int binCount = 0 ) const /Deprecated="Since 3.40. Use Qgis.RasterBandStatistic instead of int for ``stats`` argument."/;
 %Docstring
 Fill in statistics defaults if not specified
 

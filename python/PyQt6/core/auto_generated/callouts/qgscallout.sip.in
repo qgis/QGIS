@@ -442,7 +442,7 @@ The ``calloutContext`` argument is used to specify additional contextual informa
 how a callout is being rendered.
 %End
 
- QgsGeometry labelAnchorGeometry( const QRectF &bodyBoundingBox, const double angle, LabelAnchorPoint anchor ) const /Deprecated/;
+ QgsGeometry labelAnchorGeometry( const QRectF &bodyBoundingBox, const double angle, LabelAnchorPoint anchor ) const /Deprecated="Since 3.20. Use calloutLabelPoint() instead."/;
 %Docstring
 Returns the anchor point geometry for a label with the given bounding box and ``anchor`` point mode.
 

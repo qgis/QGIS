@@ -854,7 +854,7 @@ corresponds to the last point in the line.
 %End
 
 
- QgsBox3D calculateBoundingBox3d() const /Deprecated/;
+ QgsBox3D calculateBoundingBox3d() const /Deprecated="Since 3.34. use calculateBoundingBox3D() instead"/;
 %Docstring
 Calculates the minimal 3D bounding box for the geometry.
 

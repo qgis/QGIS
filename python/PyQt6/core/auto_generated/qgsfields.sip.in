@@ -377,7 +377,7 @@ Since QGIS 3.30, the optional ``typeString`` argument can be used to specify fie
 .. versionadded:: 3.16
 %End
 
- static QIcon iconForFieldType( QVariant::Type type, QVariant::Type subType, const QString &typeString = QString() ) /Deprecated/;
+ static QIcon iconForFieldType( QVariant::Type type, QVariant::Type subType, const QString &typeString = QString() ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
 Returns an icon corresponding to a field ``type``
 

@@ -150,7 +150,7 @@ by the given Coordinate Reference Systems.
                   in the widget.
 %End
 
- void pushProjectionToFront() /Deprecated/;
+ void pushProjectionToFront() /Deprecated="Since 3.40. Has no effect since QGIS 3.20."/;
 %Docstring
 Marks the current selected projection for push to front of recent projections list.
 
@@ -173,7 +173,7 @@ Clear the list of recent projections.
 Emitted when a projection is selected in the widget.
 %End
 
- void initialized() /Deprecated/;
+ void initialized() /Deprecated="Since 3.40. No longer emitted."/;
 %Docstring
 Notifies others that the widget is now fully initialized, including deferred selection of projection.
 

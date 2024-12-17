@@ -471,7 +471,7 @@ Preprocesses request
 
   signals:
 
- void requestAboutToBeCreated( QNetworkAccessManager::Operation operation, const QNetworkRequest &request, QIODevice *device ) /Deprecated/;
+ void requestAboutToBeCreated( QNetworkAccessManager::Operation operation, const QNetworkRequest &request, QIODevice *device ) /Deprecated="Since 3.40. Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead."/;
 %Docstring
 
 .. deprecated:: 3.40
@@ -617,7 +617,7 @@ See :py:class:`QgsSslErrorHandler` for details on how to handle SSL errors and p
 
 
 
- void requestCreated( QNetworkReply *reply ) /Deprecated/;
+ void requestCreated( QNetworkReply *reply ) /Deprecated="Since 3.40. Use the thread-safe requestAboutToBeCreated( QgsNetworkRequestParameters ) signal instead."/;
 %Docstring
 
 .. deprecated:: 3.40

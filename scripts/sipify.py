@@ -79,7 +79,6 @@ class Context:
         self.debug: bool = False
         self.is_qt6: bool = False
         self.header_file: str = ""
-
         self.current_line: str = ""
         self.sip_run: bool = False
         self.header_code: bool = False
@@ -127,6 +126,7 @@ class Context:
         self.static_methods = defaultdict(dict)
         self.current_signal_args = []
         self.signal_arguments = defaultdict(dict)
+        self.deprecated_message = None
 
     def current_fully_qualified_class_name(self) -> str:
         return ".".join(
@@ -715,6 +715,14 @@ def create_class_links(line):
     return line
 
 
+def process_deprecated_message(message: str) -> str:
+    """
+    Remove all doxygen specific command from deprecated message
+    """
+    # SIP issue with ':' , see https://github.com/Python-SIP/sip/issues/59
+    return message.replace("\\see", "").replace(":", "")
+
+
 def process_doxygen_line(line: str) -> str:
     global CONTEXT
 
@@ -880,6 +888,9 @@ def process_doxygen_line(line: str) -> str:
             version = version[:-1]
         depr_line = f"\n.. deprecated:: {version}"
         message = deprecated_match.group("DEPR_MESSAGE")
+        CONTEXT.deprecated_message = (
+            f"Since {version}. {process_deprecated_message(message)}"
+        )
         if message:
             depr_line += "\n"
             depr_line += "\n".join(f"\n   {_m}" for _m in message.split("\n"))
@@ -1164,7 +1175,6 @@ def fix_annotations(line):
         r"\bSIP_ALLOWNONE\b": "/AllowNone/",
         r"\bSIP_ARRAY\b": "/Array/",
         r"\bSIP_ARRAYSIZE\b": "/ArraySize/",
-        r"\bSIP_DEPRECATED\b": "/Deprecated/",
         r"\bSIP_CONSTRAINED\b": "/Constrained/",
         r"\bSIP_EXTERNAL\b": "/External/",
         r"\bSIP_FACTORY\b": "/Factory/",
@@ -1190,15 +1200,20 @@ def fix_annotations(line):
         # these have no effect (and aren't required) on sip >= 6
         replacements[r"SIP_THROW\(\s*([\w\s,]+?)\s*\)"] = ""
 
+    if CONTEXT.deprecated_message:
+        replacements[r"\bSIP_DEPRECATED\b"] = (
+            f'/Deprecated="{CONTEXT.deprecated_message}"/'
+        )
+    else:
+        replacements[r"\bSIP_DEPRECATED\b"] = f"/Deprecated/"
+
     for _pattern, replacement in replacements.items():
         line = re.sub(_pattern, replacement, line)
 
     # Combine multiple annotations
     while True:
         new_line = re.sub(
-            r'/([\w,]+(="?[\w, \[\]]+"?)?)/\s*/([\w,]+(="?[\w, \[\]]+"?)?]?)/',
-            r"/\1,\3/",
-            line,
+            r'/([\w,]+(="?[^"]+"?)?)/\s*/([\w,]+(="?[^"]+"?)?]?)/', r"/\1,\3/", line
         )
         if new_line == line:
             break

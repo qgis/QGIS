@@ -154,7 +154,7 @@ exec
 :param pos: the position where the menu will be executed
 %End
 
- static void styleHighlight( QgsHighlight *highlight ) /Deprecated/;
+ static void styleHighlight( QgsHighlight *highlight ) /Deprecated="Since 3.40. Use QgsHighlight.applyDefaultStyle() instead."/;
 %Docstring
 Applies style from the settings to the highlight
 

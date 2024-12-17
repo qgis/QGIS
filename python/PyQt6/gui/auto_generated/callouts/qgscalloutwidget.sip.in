@@ -58,7 +58,7 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
 .. seealso:: :py:func:`setContext`
 %End
 
- const QgsVectorLayer *vectorLayer() const /Deprecated/;
+ const QgsVectorLayer *vectorLayer() const /Deprecated="Since 3.40. Use layer() instead."/;
 %Docstring
 Returns the vector layer associated with the widget.
 

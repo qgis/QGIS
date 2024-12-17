@@ -483,7 +483,7 @@ Returns the last CAD point, in a map ``layer``'s coordinates.
 .. versionadded:: 3.22
 %End
 
- QgsPointXY currentPoint( bool *exists = 0 ) const /Deprecated/;
+ QgsPointXY currentPoint( bool *exists = 0 ) const /Deprecated="Since 3.22. Use currentPointV2() instead."/;
 %Docstring
 The last point.
 Helper for the CAD point list. The CAD point list is the list of points
@@ -500,7 +500,7 @@ Helper for the CAD point list. The CAD point list is the list of points
 currently digitized. It contains both  "normal" points and intermediate points (construction mode).
 %End
 
- QgsPointXY previousPoint( bool *exists = 0 ) const /Deprecated/;
+ QgsPointXY previousPoint( bool *exists = 0 ) const /Deprecated="Since 3.22. Use previousPointV2() instead."/;
 %Docstring
 The previous point.
 Helper for the CAD point list. The CAD point list is the list of points
@@ -517,7 +517,7 @@ Helper for the CAD point list. The CAD point list is the list of points
 currently digitized. It contains both  "normal" points and intermediate points (construction mode).
 %End
 
- QgsPointXY penultimatePoint( bool *exists = 0 ) const /Deprecated/;
+ QgsPointXY penultimatePoint( bool *exists = 0 ) const /Deprecated="Since 3.22. Use penultimatePointV2() instead."/;
 %Docstring
 The penultimate point.
 Helper for the CAD point list. The CAD point list is the list of points
@@ -706,7 +706,7 @@ when a constraint is toggled.
 .. versionadded:: 3.22
 %End
 
- void pointChanged( const QgsPointXY &point ) /Deprecated/;
+ void pointChanged( const QgsPointXY &point ) /Deprecated="Since 3.22. No longer used, will be removed in QGIS 4.0. Use pointChangedV2() instead."/;
 %Docstring
 Sometimes a constraint may change the current point out of a mouse event. This happens normally
 when a constraint is toggled.

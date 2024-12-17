@@ -63,6 +63,14 @@ MACRO(GENERATE_SIP_PYTHON_MODULE_CODE MODULE_NAME MODULE_SIP SIP_FILES CPP_FILES
     FILE(RELATIVE_PATH _sip_file_relpath ${BINDING_FILES_ROOT_DIR} "${_sip_file_path}/${_sip_file_name_we}")
     SET(_out_sip_file "${CMAKE_CURRENT_BINARY_DIR}/${_sip_file_relpath}.sip")
     CONFIGURE_FILE(${_sip_file} ${_out_sip_file})
+
+    # Deprecated annotation supports message only since version 6.9.0
+    if(${SIP_VERSION_STR} VERSION_LESS 6.9.0)
+      file(READ ${_out_sip_file} _content)
+      string(REGEX REPLACE "([/,])Deprecated=\"[^\"]*\"([/,])" "\\1Deprecated\\2" _content "${_content}")
+      file(GENERATE OUTPUT ${_out_sip_file} CONTENT "${_content}")
+    endif()
+
   ENDFOREACH (_sip_file)
 
   SET(_message "-DMESSAGE=Generating CPP code for module ${MODULE_NAME}")

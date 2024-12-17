@@ -90,7 +90,7 @@ Creates a color ramp shader
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
- int band() const /Deprecated/;
+ int band() const /Deprecated="Since 3.38. Use inputBand() instead."/;
 %Docstring
 Returns the band used by the renderer
 
@@ -99,7 +99,7 @@ Returns the band used by the renderer
    Use :py:func:`~QgsSingleBandPseudoColorRenderer.inputBand` instead.
 %End
 
- void setBand( int bandNo ) /Deprecated/;
+ void setBand( int bandNo ) /Deprecated="Since 3.38. Use setInputBand() instead."/;
 %Docstring
 Sets the band used by the renderer.
 

@@ -105,7 +105,7 @@ This signal is normally forwarded the app and used to refresh browser items
 Emitted when a DB layer has been selected for addition
 %End
 
- void addRasterLayer( const QString &rasterLayerPath, const QString &baseName, const QString &providerKey ) /Deprecated/;
+ void addRasterLayer( const QString &rasterLayerPath, const QString &baseName, const QString &providerKey ) /Deprecated="Since 3.40. Use addLayer() instead."/;
 %Docstring
 Emitted when a raster layer has been selected for addition
 
@@ -123,7 +123,7 @@ Emitted when one or more GDAL supported layers are selected for addition
 .. versionadded:: 3.20
 %End
 
- void addVectorLayer( const QString &uri, const QString &layerName, const QString &providerKey = QString() ) /Deprecated/;
+ void addVectorLayer( const QString &uri, const QString &layerName, const QString &providerKey = QString() ) /Deprecated="Since 3.40. Use addLayer() instead."/;
 %Docstring
 Emitted when a vector layer has been selected for addition.
 
@@ -135,7 +135,7 @@ will be used.
    Use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
 %End
 
- void addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) /Deprecated/;
+ void addMeshLayer( const QString &url, const QString &baseName, const QString &providerKey ) /Deprecated="Since 3.40. Use addLayer() instead."/;
 %Docstring
 Emitted when a mesh layer has been selected for addition.
 
@@ -144,7 +144,7 @@ Emitted when a mesh layer has been selected for addition.
    Use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
 %End
 
- void addVectorTileLayer( const QString &url, const QString &baseName ) /Deprecated/;
+ void addVectorTileLayer( const QString &url, const QString &baseName ) /Deprecated="Since 3.40. Use addLayer() instead."/;
 %Docstring
 Emitted when a vector tile layer has been selected for addition.
 
@@ -153,7 +153,7 @@ Emitted when a vector tile layer has been selected for addition.
    Use :py:func:`~QgsAbstractDataSourceWidget.addLayer` instead.
 %End
 
- void addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey ) /Deprecated/;
+ void addPointCloudLayer( const QString &url, const QString &baseName, const QString &providerKey ) /Deprecated="Since 3.40. Use addLayer() instead."/;
 %Docstring
 Emitted when a point cloud layer has been selected for addition.
 
@@ -195,7 +195,7 @@ Emitted when a layer needs to be replaced
 :param provider: key
 %End
 
- void progress( int, int ) /Deprecated/;
+ void progress( int, int ) /Deprecated="Since 3.4. This signal is no longer used. Use QgsProxyProgressTask instead to show progress reports."/;
 %Docstring
 Emitted when a progress dialog is shown by the provider dialog.
 

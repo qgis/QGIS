@@ -452,7 +452,7 @@ Sets the dynamic SVG parameters
 
   protected:
 
- void populateList() /Deprecated/;
+ void populateList() /Deprecated="Since 3.16. "/;
 %Docstring
 This method does nothing anymore, the loading is automatic
 

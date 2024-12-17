@@ -62,7 +62,7 @@ documentPath returns the path of the current document in the widget
 :param type: determines the type of the returned null variant if the document is not defined yet
 %End
 
- QVariant documentPath( QVariant::Type type ) const /Deprecated/;
+ QVariant documentPath( QVariant::Type type ) const /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
 documentPath returns the path of the current document in the widget
 

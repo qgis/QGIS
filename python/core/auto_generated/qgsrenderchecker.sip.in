@@ -231,7 +231,7 @@ Test using two arbitrary images at the specified paths for equality.
 .. versionadded:: 3.18
 %End
 
- bool isKnownAnomaly( const QString &diffImageFile ) /Deprecated/;
+ bool isKnownAnomaly( const QString &diffImageFile ) /Deprecated="Since 3.40. Use the test mask system instead."/;
 %Docstring
 Gets a list of all the anomalies. An anomaly is a rendered difference
 file where there is some red pixel content (indicating a render check

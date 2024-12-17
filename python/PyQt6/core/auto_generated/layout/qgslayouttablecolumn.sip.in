@@ -174,7 +174,7 @@ is part of a :py:class:`QgsLayoutItemAttributeTable` and when :py:func:`~QgsLayo
 .. seealso:: :py:func:`setSortByRank`
 %End
 
- int sortByRank() const /Deprecated/;
+ int sortByRank() const /Deprecated="Since 3.14. The order is now hold in a dedicated model."/;
 %Docstring
 Returns the sort rank for the column. If the sort rank is > 0 then the column
 will be sorted in the table. The sort rank specifies the priority given to the
@@ -197,7 +197,7 @@ If sort rank is <= 0 then the column is not being sorted.
    The order is now hold in a dedicated model.
 %End
 
- void setSortByRank( int rank ) /Deprecated/;
+ void setSortByRank( int rank ) /Deprecated="Since 3.14. The order is now hold in a dedicated model."/;
 %Docstring
 Sets the sort ``rank`` for the column. If the sort rank is > 0 then the column
 will be sorted in the table. The sort rank specifies the priority given to the
@@ -219,7 +219,7 @@ If the sort ``rank`` is <= 0 then the column is not being sorted.
    The order is now hold in a dedicated model.
 %End
 
- QgsLayoutTableColumn *clone() /Deprecated,Factory/;
+ QgsLayoutTableColumn *clone() /Deprecated="Since 3.14. Use a copy instead.",Factory/;
 %Docstring
 Creates a duplicate column which is a deep copy of this column.
 

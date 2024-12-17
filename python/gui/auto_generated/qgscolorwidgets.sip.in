@@ -72,7 +72,7 @@ Returns the color component which the widget controls
 .. seealso:: :py:func:`setComponent`
 %End
 
- int componentValue() const /Deprecated/;
+ int componentValue() const /Deprecated="Since 3.40. Use componentValueF() instead."/;
 %Docstring
 Returns the current value of the widget's color component
 
@@ -136,7 +136,7 @@ Sets the color component which the widget controls
 .. seealso:: :py:func:`component`
 %End
 
- virtual void setComponentValue( int value ) /Deprecated/;
+ virtual void setComponentValue( int value ) /Deprecated="Since 3.40. Use setComponentValueF() instead."/;
 %Docstring
 Alters the widget's color by setting the value for the widget's color component
 
@@ -208,7 +208,7 @@ Returns the range of valid values a color component
 :return: maximum value allowed for color component
 %End
 
- int componentValue( ColorComponent component ) const /Deprecated/;
+ int componentValue( ColorComponent component ) const /Deprecated="Since 3.40. Use componentValueF() instead."/;
 %Docstring
 Returns the value of a component of the widget's current color. This method correctly
 handles hue values when the color has an ambiguous hue (e.g., black or white shades)
@@ -239,7 +239,7 @@ handles hue values when the color has an ambiguous hue (e.g., black or white sha
 .. versionadded:: 3.40
 %End
 
- int hue() const /Deprecated/;
+ int hue() const /Deprecated="Since 3.40. Use hueF() instead."/;
 %Docstring
 Returns the hue for the widget. This may differ from the hue for the QColor returned by :py:func:`~QgsColorWidget.color`,
 as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the saturation is zero).
@@ -261,7 +261,7 @@ as QColor returns a hue of -1 if the color's hue is ambiguous (e.g., if the satu
 .. versionadded:: 3.40
 %End
 
- static void alterColor( QColor &color, QgsColorWidget::ColorComponent component, int newValue ) /Deprecated/;
+ static void alterColor( QColor &color, QgsColorWidget::ColorComponent component, int newValue ) /Deprecated="Since 3.40. Use alterColorF() instead."/;
 %Docstring
 Alters a color by modifying the value of a specific color component
 
@@ -568,7 +568,7 @@ Sets the size for drawing the triangular markers on the ramp
 
   signals:
 
- void valueChanged( int value ) /Deprecated/;
+ void valueChanged( int value ) /Deprecated="Since 3.40. Use valueChangedF() instead."/;
 %Docstring
 Emitted when the widget's color component value changes
 

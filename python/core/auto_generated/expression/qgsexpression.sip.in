@@ -562,7 +562,7 @@ quotations where required.
 .. seealso:: :py:func:`quotedColumnRef`
 %End
 
- static QString quotedValue( const QVariant &value, QVariant::Type type ) /Deprecated/;
+ static QString quotedValue( const QVariant &value, QVariant::Type type ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
 Returns a string representation of a literal value, including appropriate
 quotations where required.
@@ -673,7 +673,7 @@ value. The value may be null.
 :return: the expression to evaluate field equality
 %End
 
- static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType ) /Deprecated/;
+ static QString createFieldEqualityExpression( const QString &fieldName, const QVariant &value, QVariant::Type fieldType ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
 Create an expression allowing to evaluate if a field is equal to a
 value. The value may be null.

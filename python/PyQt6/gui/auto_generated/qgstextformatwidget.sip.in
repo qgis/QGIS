@@ -138,7 +138,7 @@ Sets the background color for the text preview widget.
 :param color: background color
 %End
 
- void enableDataDefinedAlignment( bool enable ) /Deprecated/;
+ void enableDataDefinedAlignment( bool enable ) /Deprecated="Since 3.24. "/;
 %Docstring
 Update the enabled state of the data defined alignment buttons.
 

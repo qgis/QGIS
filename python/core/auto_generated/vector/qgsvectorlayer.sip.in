@@ -1185,7 +1185,7 @@ Deletes the selected features
 :return: ``True`` in case of success and ``False`` otherwise
 %End
 
- Qgis::GeometryOperationResult addRing( const QVector<QgsPointXY> &ring, QgsFeatureId *featureId = 0 ) /Deprecated/;
+ Qgis::GeometryOperationResult addRing( const QVector<QgsPointXY> &ring, QgsFeatureId *featureId = 0 ) /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
 %Docstring
 Adds a ring to polygon/multipolygon features
 
@@ -1269,7 +1269,7 @@ Adds a ring to polygon/multipolygon features (takes ownership)
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
- Qgis::GeometryOperationResult addPart( const QList<QgsPointXY> &ring ) /Deprecated/;
+ Qgis::GeometryOperationResult addPart( const QList<QgsPointXY> &ring ) /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
 %Docstring
 Adds a new part polygon to a multipart feature
 
@@ -1297,7 +1297,7 @@ Adds a new part polygon to a multipart feature
 %End
 
 
- Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &ring ) /PyName=addPartV2,Deprecated/;
+ Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &ring ) /PyName=addPartV2,Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
 %Docstring
 Adds a new part polygon to a multipart feature
 
@@ -1388,7 +1388,7 @@ Translates feature by dx, dy
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
- Qgis::GeometryOperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) /Deprecated/;
+ Qgis::GeometryOperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
 %Docstring
 Splits parts cut by the given line
 
@@ -1442,7 +1442,7 @@ Splits parts cut by the given line
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
- Qgis::GeometryOperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) /Deprecated/;
+ Qgis::GeometryOperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
 %Docstring
 Splits features cut by the given line
 
@@ -1552,7 +1552,7 @@ Adds topological points for every vertex of the geometry.
    changes can be discarded by calling :py:func:`~QgsVectorLayer.rollBack`.
 %End
 
- int addTopologicalPoints( const QgsPointXY &p )  /Deprecated/;
+ int addTopologicalPoints( const QgsPointXY &p )  /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
 %Docstring
 Adds a vertex to segments which intersect point ``p`` but don't
 already have a vertex there. If a feature already has a vertex at position ``p``,
@@ -1953,7 +1953,7 @@ Sets a duplicate ``policy`` for the field with the specified index.
     }
 %End
 
- QSet<QString> excludeAttributesWms() const /Deprecated/;
+ QSet<QString> excludeAttributesWms() const /Deprecated="Since 3.16. Use fields().configurationFlags() instead."/;
 %Docstring
 A set of attributes that are not advertised in WMS requests with QGIS server.
 
@@ -1962,7 +1962,7 @@ A set of attributes that are not advertised in WMS requests with QGIS server.
    Use :py:func:`~QgsVectorLayer.fields`.configurationFlags() instead.
 %End
 
- void setExcludeAttributesWms( const QSet<QString> &att ) /Deprecated/;
+ void setExcludeAttributesWms( const QSet<QString> &att ) /Deprecated="Since 3.16. Use setFieldConfigurationFlag() instead."/;
 %Docstring
 A set of attributes that are not advertised in WMS requests with QGIS server.
 
@@ -1971,7 +1971,7 @@ A set of attributes that are not advertised in WMS requests with QGIS server.
    Use :py:func:`~QgsVectorLayer.setFieldConfigurationFlag` instead.
 %End
 
- QSet<QString> excludeAttributesWfs() const /Deprecated/;
+ QSet<QString> excludeAttributesWfs() const /Deprecated="Since 3.16. Use fields().configurationFlags() instead."/;
 %Docstring
 A set of attributes that are not advertised in WFS requests with QGIS server.
 
@@ -1980,7 +1980,7 @@ A set of attributes that are not advertised in WFS requests with QGIS server.
    Use :py:func:`~QgsVectorLayer.fields`.configurationFlags() instead.
 %End
 
- void setExcludeAttributesWfs( const QSet<QString> &att ) /Deprecated/;
+ void setExcludeAttributesWfs( const QSet<QString> &att ) /Deprecated="Since 3.16. Use setFieldConfigurationFlag() instead."/;
 %Docstring
 A set of attributes that are not advertised in WFS requests with QGIS server.
 

@@ -854,7 +854,7 @@ Adds a new ring to this geometry. This makes only sense for polygon and multipol
 :return: OperationResult a result code: success or reason of failure
 %End
 
- Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPointsXY,Deprecated/;
+ Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPointsXY,Deprecated="Since 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis.WkbType geometry type instead of Qgis.GeometryType."/;
 %Docstring
 Adds a new part to a the geometry.
 
@@ -880,7 +880,7 @@ Adds a new part to a the geometry.
 .. versionadded:: 3.38
 %End
 
- Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPoints,Deprecated/;
+ Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPoints,Deprecated="Since 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis.WkbType geometry type instead of Qgis.GeometryType."/;
 %Docstring
 Adds a new part to a the geometry.
 
@@ -906,7 +906,7 @@ Adds a new part to a the geometry.
 .. versionadded:: 3.38
 %End
 
- Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part /Transfer/, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /Deprecated/;
+ Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part /Transfer/, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /Deprecated="Since 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis.WkbType geometry type instead of Qgis.GeometryType."/;
 %Docstring
 Adds a new part to this geometry.
 
@@ -2469,7 +2469,7 @@ empty if none of the child geometries match the desired type.
 .. versionadded:: 3.2
 %End
 
- int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers ) /Deprecated/;
+ int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers ) /Deprecated="Since 3.34. "/;
 %Docstring
 Modifies geometry to avoid intersections with the layers specified in project properties
 
@@ -2791,7 +2791,7 @@ geometry will be a polyline.
 :param polygon: source QPolygonF
 %End
 
- static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) /Deprecated/;
+ static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) /Deprecated="Since 3.40. Use QgsGeometry.fromQPolygonF() or QgsLineString.fromQPolygonF() instead."/;
 %Docstring
 Creates a :py:class:`QgsPolylineXY` from a QPolygonF.
 
@@ -2806,7 +2806,7 @@ Creates a :py:class:`QgsPolylineXY` from a QPolygonF.
    Use :py:func:`QgsGeometry.fromQPolygonF()` or :py:func:`QgsLineString.fromQPolygonF()` instead.
 %End
 
- static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon ) /Deprecated/;
+ static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon ) /Deprecated="Since 3.40. Use QgsGeometry.fromQPolygonF() or QgsLineString.fromQPolygonF() instead."/;
 %Docstring
 Creates a :py:class:`QgsPolygonXYfrom` a QPolygonF.
 

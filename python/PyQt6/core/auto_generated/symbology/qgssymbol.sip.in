@@ -530,7 +530,7 @@ Returns a large (roughly 100x100 pixel) preview image for the symbol.
 .. seealso:: :py:func:`drawPreviewIcon`
 %End
 
- QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0, int flags = static_cast< int >( Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols ) ) /Deprecated/;
+ QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = 0, int flags = static_cast< int >( Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols ) ) /Deprecated="Since 3.40. Use bigSymbolPreviewImageV2() instead."/;
 %Docstring
 
 .. deprecated:: 3.40
@@ -807,7 +807,7 @@ and returns ``True`` if any of the layers returned ``True``.
 .. versionadded:: 3.18
 %End
 
- void setLayer( const QgsVectorLayer *layer ) /Deprecated/;
+ void setLayer( const QgsVectorLayer *layer ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
 
 .. note::
@@ -819,7 +819,7 @@ and returns ``True`` if any of the layers returned ``True``.
    Will be removed in QGIS 4.0.
 %End
 
- const QgsVectorLayer *layer() const /Deprecated/;
+ const QgsVectorLayer *layer() const /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
 %Docstring
 
 .. deprecated:: 3.40

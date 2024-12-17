@@ -109,7 +109,7 @@ to switch between font based and HTML based rendering.
 .. seealso:: :py:func:`mode`
 %End
 
- QFont font() const /Deprecated/;
+ QFont font() const /Deprecated="Since 3.40. Use textFormat() instead (since QGIS 3.24)."/;
 %Docstring
 Returns the label's current font.
 
@@ -120,7 +120,7 @@ Returns the label's current font.
    Use :py:func:`~QgsLayoutItemLabel.textFormat` instead (since QGIS 3.24).
 %End
 
- void setFont( const QFont &font ) /Deprecated/;
+ void setFont( const QFont &font ) /Deprecated="Since 3.40. Use setTextFormat() instead (since QGIS 3.24)."/;
 %Docstring
 Sets the label's current ``font``.
 
@@ -221,7 +221,7 @@ contents, in layout units.
 .. seealso:: :py:func:`setMarginX`
 %End
 
- void setFontColor( const QColor &color ) /Deprecated/;
+ void setFontColor( const QColor &color ) /Deprecated="Since 3.40. Use setTextFormat() instead (since QGIS 3.24)."/;
 %Docstring
 Sets the label font ``color``.
 
@@ -232,7 +232,7 @@ Sets the label font ``color``.
    Use :py:func:`~QgsLayoutItemLabel.setTextFormat` instead (since QGIS 3.24).
 %End
 
- QColor fontColor() const /Deprecated/;
+ QColor fontColor() const /Deprecated="Since 3.40. Use textFormat() instead (since QGIS 3.24)."/;
 %Docstring
 Returns the label font color.
 

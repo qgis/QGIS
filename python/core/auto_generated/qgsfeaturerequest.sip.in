@@ -864,7 +864,7 @@ Check if a feature is accepted by this requests filter
 :return: ``True``, if the filter accepts the feature
 %End
 
- int connectionTimeout() const /Deprecated/;
+ int connectionTimeout() const /Deprecated="Since 3.40. Use timeout() instead."/;
 %Docstring
 Returns the timeout (in milliseconds) for how long we should wait for a connection if none is available from the pool
 at this moment. A negative value (which is set by default) will wait forever.
@@ -878,7 +878,7 @@ at this moment. A negative value (which is set by default) will wait forever.
    Use :py:func:`~QgsFeatureRequest.timeout` instead.
 %End
 
- QgsFeatureRequest &setConnectionTimeout( int connectionTimeout ) /Deprecated/;
+ QgsFeatureRequest &setConnectionTimeout( int connectionTimeout ) /Deprecated="Since 3.40. Use setTimeout() instead."/;
 %Docstring
 Sets the timeout (in milliseconds) for how long we should wait for a connection if none is available from the pool
 at this moment. A negative value (which is set by default) will wait forever.

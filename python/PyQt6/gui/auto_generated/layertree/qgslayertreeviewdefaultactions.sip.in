@@ -47,7 +47,7 @@ Action to uncheck a group and all its children
 Action to check a group and all its parents
 %End
 
- QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = 0 ) /Factory,Deprecated/;
+ QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = 0 ) /Factory,Deprecated="Since 3.18. Use actionZoomToLayers()."/;
 %Docstring
 Action to zoom to the active layer from the layer tree.
 
@@ -109,7 +109,7 @@ Action to zoom to selected features of a vector layer
 Action to enable/disable mutually exclusive flag of a group (only one child node may be checked)
 %End
 
- void zoomToLayer( QgsMapCanvas *canvas ) /Deprecated/;
+ void zoomToLayer( QgsMapCanvas *canvas ) /Deprecated="Since 3.18. Use zoomToLayers()."/;
 %Docstring
 Zooms a map ``canvas`` to the extent of the active layer in the layer tree.
 
@@ -145,7 +145,7 @@ Zooms a map ``canvas`` to all the selected layer(s) in the layer tree
     void renameGroupOrLayer();
     void showFeatureCount();
 
- void zoomToLayer() /Deprecated/;
+ void zoomToLayer() /Deprecated="Since 3.18. Use zoomToLayers()."/;
 %Docstring
 Zooms to the extent of the active layer in the layer tree.
 
@@ -169,7 +169,7 @@ Zooms to the bounding box of all selected features of a vector layer.
 %End
     void zoomToGroup();
 
- void makeTopLevel() /Deprecated/;
+ void makeTopLevel() /Deprecated="Since 3.2. Use moveOutOfGroup()."/;
 %Docstring
 
 .. deprecated:: 3.2

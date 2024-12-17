@@ -92,7 +92,7 @@ Sets the maximum number of polygon label ``candidates`` per centimeter squared.
 .. versionadded:: 3.12
 %End
 
- void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const /Deprecated/;
+ void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const /Deprecated="Since 3.12. Use maximumPolygonCandidatesPerCmSquared() and maximumLineCandidatesPerCm() instead."/;
 %Docstring
 Gets number of candidate positions that will be generated for each label feature.
 
@@ -101,7 +101,7 @@ Gets number of candidate positions that will be generated for each label feature
    Use :py:func:`~QgsLabelingEngineSettings.maximumPolygonCandidatesPerCmSquared` and :py:func:`~QgsLabelingEngineSettings.maximumLineCandidatesPerCm` instead.
 %End
 
- void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) /Deprecated/;
+ void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) /Deprecated="Since 3.12. Use setMaximumPolygonCandidatesPerCmSquared() and setMaximumLineCandidatesPerCm() instead."/;
 %Docstring
 Sets the number of candidate positions that will be generated for each label feature.
 
@@ -110,7 +110,7 @@ Sets the number of candidate positions that will be generated for each label fea
    Use :py:func:`~QgsLabelingEngineSettings.setMaximumPolygonCandidatesPerCmSquared` and :py:func:`~QgsLabelingEngineSettings.setMaximumLineCandidatesPerCm` instead.
 %End
 
- void setSearchMethod( Search s ) /Deprecated/;
+ void setSearchMethod( Search s ) /Deprecated="Since 3.10. Chain is always used."/;
 %Docstring
 Used to set which search method to use for removal collisions between labels
 
@@ -119,7 +119,7 @@ Used to set which search method to use for removal collisions between labels
    Chain is always used.
 %End
 
- Search searchMethod() const /Deprecated/;
+ Search searchMethod() const /Deprecated="Since 3.10. Chain is always used."/;
 %Docstring
 Which search method to use for removal collisions between labels
 

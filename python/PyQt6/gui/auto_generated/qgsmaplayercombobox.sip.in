@@ -36,7 +36,7 @@ This method allows filtering layers according to layer type and/or geometry type
 .. seealso:: :py:func:`filters`
 %End
 
- void setFilters( int filters ) /Deprecated/;
+ void setFilters( int filters ) /Deprecated="Since 3.34. Use the flag signature instead."/;
 %Docstring
 Filters according to layer type and/or geometry type.
 

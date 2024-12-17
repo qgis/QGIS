@@ -140,7 +140,7 @@ Returns a user-friendly, translated name of the specified script ``language``.
 .. versionadded:: 3.30
 %End
 
- void setMarginVisible( bool margin ) /Deprecated/;
+ void setMarginVisible( bool margin ) /Deprecated="Since 3.40. Use base class methods for individual margins instead, or setLineNumbersVisible()."/;
 %Docstring
 Set margin visible state
 
@@ -151,7 +151,7 @@ Set margin visible state
    Use base class methods for individual margins instead, or :py:func:`~QgsCodeEditor.setLineNumbersVisible`.
 %End
 
- bool marginVisible() /Deprecated/;
+ bool marginVisible() /Deprecated="Since 3.40. Use base class methods for individual margins instead, or lineNumbersVisible()."/;
 %Docstring
 Returns whether margins are in a visible state
 
