@@ -41,6 +41,7 @@ class APP_EXPORT QgsMapToolTrimExtendFeature : public QgsMapToolEdit
   private slots:
     // Recompute the extended limit
     void extendLimit();
+    void reset();
 
   private:
     //!  Rubberband that highlights the limit segment
