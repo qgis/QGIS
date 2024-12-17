@@ -205,7 +205,7 @@ class ModelerParametersDialog(QDialog):
                 "processing_algs/{}/{}.html#{}".format(
                     self.widget.algorithm().provider().helpId(),
                     self.algorithm().groupId(),
-                    f"{self.algorithm().provider().helpId()}{self.algorithm().name()}",
+                    f"{self.algorithm().provider().helpId()}{self.algorithm().name().replace('_', '-')}",
                 )
             ).toString()
 
