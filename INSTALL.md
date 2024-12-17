@@ -41,12 +41,14 @@ Building QGIS from source - step by step
          - [4.3.2.1 Build with an SDK](#4321-build-with-an-sdk)
          - [4.3.2.1 Build all the dependencies locally](#4321-build-all-the-dependencies-locally)
 - [5. Building on MacOS X](#5-building-on-macos-x)
-   * [5.1. Install Developer Tools](#51-install-developer-tools)
-   * [5.2. Install CMake and other build tools](#52-install-cmake-and-other-build-tools)
-   * [5.3. Install Qt5 and QGIS-Deps](#53-install-qt5-and-qgis-deps)
-   * [5.4. QGIS source](#54-qgis-source)
-   * [5.5. Configure the build](#55-configure-the-build)
-   * [5.6. Building](#56-building)
+   * [5.1. Building with Mac Packager](#51-building-with-mac-packager)
+     + [5.1.1. Install Developer Tools](#511-install-developer-tools)
+     + [5.1.2. Install CMake and other build tools](#512-install-cmake-and-other-build-tools)
+     + [5.1.3. Install Qt5 and QGIS-Deps](#513-install-qt5-and-qgis-deps)
+     + [5.1.4. QGIS source](#514-qgis-source)
+     + [5.1.5. Configure the build](#515-configure-the-build)
+     + [5.1.6. Building](#516-building)
+   * [5.2. Building with vcpkg](#52-building-with-vcpkg)
 - [6. Setting up the WCS test server on GNU/Linux](#6-setting-up-the-wcs-test-server-on-gnulinux)
    * [6.1. Preparation](#61-preparation)
    * [6.2. Setup mapserver](#62-setup-mapserver)
@@ -997,7 +999,7 @@ If you want to create bundle that runs without these dependencies, please read t
 
 https://github.com/qgis/QGIS-Mac-Packager
 
-## 5.2.
+## 5.2. Building with vcpkg
 
 With [vcpkg](https://github.com/microsoft/vcpkg/) you can develop QGIS using
 Qt6.
