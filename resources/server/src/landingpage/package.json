@@ -11,25 +11,27 @@
     "leaflet": "^1.9.3",
     "leaflet.wms": "^0.2.0",
     "reproject": "^1.2.7",
-    "vue": "^2.6.14",
+    "vue": "^3.5.11",
     "vue-router": "^3.6.5",
-    "vue2-leaflet": "^2.7.1",
-    "vuetify": "^2.6.12",
-    "vuex": "^3.6.2"
+    "vuetify": "^3.0.0",
+    "vuex": "4"
   },
   "devDependencies": {
+    "@babel/core": "^7.11.0",
+    "@babel/eslint-parser": "^7.19.1",
+    "@types/leaflet": "^1.5.7",
     "@vue/cli": "^5.0.8",
     "@vue/cli-plugin-babel": "^5.0.8",
     "@vue/cli-plugin-eslint": "^5.0.8",
     "@vue/cli-service": "^5.0.8",
-    "@babel/eslint-parser": "^7.19.1",
     "eslint": "^8.29.0",
     "eslint-plugin-vue": "^9.8.0",
+    "eslint-webpack-plugin": "^3.0.0",
     "sass": "~1.56.1",
     "sass-loader": "^13.2.0",
     "vue-cli-plugin-vuetify": "~2.5.8",
     "vue-template-compiler": "^2.7.16",
-    "vuetify-loader": "^1.9.2",
+    "webpack": "^5.0.0",
     "webpack-license-plugin": "^4.2.2"
   },
   "eslintConfig": {
