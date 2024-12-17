@@ -46,7 +46,7 @@ QString QgsCopyLayerMetadataAlgorithm::groupId() const
 
 QString QgsCopyLayerMetadataAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Copies metadata from an input layer to a target layer.\n\nAny existing metadata in the target layer will be replaced." );
+  return QObject::tr( "Copies metadata from an source layer to a target layer.\n\nAny existing metadata in the target layer will be replaced." );
 }
 
 QgsCopyLayerMetadataAlgorithm *QgsCopyLayerMetadataAlgorithm::createInstance() const
@@ -56,7 +56,7 @@ QgsCopyLayerMetadataAlgorithm *QgsCopyLayerMetadataAlgorithm::createInstance() c
 
 void QgsCopyLayerMetadataAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Source layer" ) ) );
+  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "SOURCE" ), QObject::tr( "Source layer" ) ) );
   addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "TARGET" ), QObject::tr( "Target layer" ) ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "DEFAULT" ), QObject::tr( "Save metadata as default" ), false ) );
   addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Updated layer" ) ) );
@@ -64,19 +64,19 @@ void QgsCopyLayerMetadataAlgorithm::initAlgorithm( const QVariantMap & )
 
 bool QgsCopyLayerMetadataAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsMapLayer *inputLayer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsMapLayer *sourceLayer = parameterAsLayer( parameters, QStringLiteral( "SOURCE" ), context );
   QgsMapLayer *targetLayer = parameterAsLayer( parameters, QStringLiteral( "TARGET" ), context );
   const bool saveAsDefault = parameterAsBool( parameters, QStringLiteral( "DEFAULT" ), context );
 
-  if ( !inputLayer )
-    throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
+  if ( !sourceLayer )
+    throw QgsProcessingException( QObject::tr( "Invalid source layer" ) );
 
   if ( !targetLayer )
     throw QgsProcessingException( QObject::tr( "Invalid target layer" ) );
 
   mLayerId = targetLayer->id();
 
-  targetLayer->setMetadata( inputLayer->metadata() );
+  targetLayer->setMetadata( sourceLayer->metadata() );
   if ( saveAsDefault )
   {
     bool ok;
@@ -348,7 +348,7 @@ QString QgsUpdateLayerMetadataAlgorithm::groupId() const
 
 QString QgsUpdateLayerMetadataAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "Copies all non-empty metadata fields from an input layer to a target layer.\n\nLeaves empty input fields unchaged in the target." );
+  return QObject::tr( "Copies all non-empty metadata fields from an source layer to a target layer.\n\nLeaves empty input fields unchanged in the target." );
 }
 
 QgsUpdateLayerMetadataAlgorithm *QgsUpdateLayerMetadataAlgorithm::createInstance() const
@@ -358,18 +358,18 @@ QgsUpdateLayerMetadataAlgorithm *QgsUpdateLayerMetadataAlgorithm::createInstance
 
 void QgsUpdateLayerMetadataAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "INPUT" ), QObject::tr( "Source layer" ) ) );
+  addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "SOURCE" ), QObject::tr( "Source layer" ) ) );
   addParameter( new QgsProcessingParameterMapLayer( QStringLiteral( "TARGET" ), QObject::tr( "Target layer" ) ) );
   addOutput( new QgsProcessingOutputMapLayer( QStringLiteral( "OUTPUT" ), QObject::tr( "Updated layer" ) ) );
 }
 
 bool QgsUpdateLayerMetadataAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * )
 {
-  QgsMapLayer *inputLayer = parameterAsLayer( parameters, QStringLiteral( "INPUT" ), context );
+  QgsMapLayer *sourceLayer = parameterAsLayer( parameters, QStringLiteral( "SOURCE" ), context );
   QgsMapLayer *targetLayer = parameterAsLayer( parameters, QStringLiteral( "TARGET" ), context );
 
-  if ( !inputLayer )
-    throw QgsProcessingException( QObject::tr( "Invalid input layer" ) );
+  if ( !sourceLayer )
+    throw QgsProcessingException( QObject::tr( "Invalid source layer" ) );
 
   if ( !targetLayer )
     throw QgsProcessingException( QObject::tr( "Invalid target layer" ) );
@@ -377,7 +377,7 @@ bool QgsUpdateLayerMetadataAlgorithm::prepareAlgorithm( const QVariantMap &param
   mLayerId = targetLayer->id();
 
   std::unique_ptr<QgsLayerMetadata> md( targetLayer->metadata().clone() );
-  md->combine( &inputLayer->metadata() );
+  md->combine( &sourceLayer->metadata() );
   targetLayer->setMetadata( *md.get() );
 
   return true;

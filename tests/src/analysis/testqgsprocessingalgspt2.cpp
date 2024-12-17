@@ -1885,8 +1885,8 @@ void TestQgsProcessingAlgsPt2::generateElevationProfileImage()
 
 void TestQgsProcessingAlgsPt2::copyMetadata()
 {
-  std::unique_ptr<QgsVectorLayer> inputLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
-  QVERIFY( inputLayer->isValid() );
+  std::unique_ptr<QgsVectorLayer> sourceLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  QVERIFY( sourceLayer->isValid() );
 
   std::unique_ptr<QgsVectorLayer> targetLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "target" ), QStringLiteral( "memory" ) );
   QVERIFY( targetLayer->isValid() );
@@ -1894,13 +1894,13 @@ void TestQgsProcessingAlgsPt2::copyMetadata()
   QgsLayerMetadata md;
   md.setTitle( QStringLiteral( "Title" ) );
   md.setAbstract( QStringLiteral( "Abstract" ) );
-  inputLayer->setMetadata( md );
+  sourceLayer->setMetadata( md );
 
   std::unique_ptr<QgsProcessingAlgorithm> alg( QgsApplication::processingRegistry()->createAlgorithmById( QStringLiteral( "native:copylayermetadata" ) ) );
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( inputLayer.get() ) );
+  parameters.insert( QStringLiteral( "SOURCE" ), QVariant::fromValue( sourceLayer.get() ) );
   parameters.insert( QStringLiteral( "TARGET" ), QVariant::fromValue( targetLayer.get() ) );
 
   bool ok = false;
@@ -2037,8 +2037,8 @@ void TestQgsProcessingAlgsPt2::addHistoryMetadata()
 
 void TestQgsProcessingAlgsPt2::updateMetadata()
 {
-  std::unique_ptr<QgsVectorLayer> inputLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
-  QVERIFY( inputLayer->isValid() );
+  std::unique_ptr<QgsVectorLayer> sourceLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "input" ), QStringLiteral( "memory" ) );
+  QVERIFY( sourceLayer->isValid() );
 
   std::unique_ptr<QgsVectorLayer> targetLayer = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "target" ), QStringLiteral( "memory" ) );
   QVERIFY( targetLayer->isValid() );
@@ -2047,7 +2047,7 @@ void TestQgsProcessingAlgsPt2::updateMetadata()
   mdInput.setTitle( QStringLiteral( "New title" ) );
   mdInput.setAbstract( QStringLiteral( "New abstract" ) );
   mdInput.setLanguage( QStringLiteral( "Language" ) );
-  inputLayer->setMetadata( mdInput );
+  sourceLayer->setMetadata( mdInput );
 
   QgsLayerMetadata mdTarget;
   mdTarget.setTitle( QStringLiteral( "Title" ) );
@@ -2059,7 +2059,7 @@ void TestQgsProcessingAlgsPt2::updateMetadata()
   QVERIFY( alg != nullptr );
 
   QVariantMap parameters;
-  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( inputLayer.get() ) );
+  parameters.insert( QStringLiteral( "SOURCE" ), QVariant::fromValue( sourceLayer.get() ) );
   parameters.insert( QStringLiteral( "TARGET" ), QVariant::fromValue( targetLayer.get() ) );
 
   bool ok = false;
