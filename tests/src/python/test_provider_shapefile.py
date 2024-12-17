@@ -605,8 +605,11 @@ class TestPyQgsShapefileProvider(QgisTestCase, ProviderTestCase):
 
         vl = None
 
+        f_shp.close()
         del f_shp
+        f_shx.close()
         del f_shx
+        f_dbf.close()
         del f_dbf
 
         # Test repacking has been done
