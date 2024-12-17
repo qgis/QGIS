@@ -525,7 +525,7 @@ bool QgsSetMetadataFieldsAlgorithm::prepareAlgorithm( const QVariantMap &paramet
   if ( parameters.value( QStringLiteral( "CRS" ) ).isValid() )
   {
     const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
-    if ( crs.isValid() || ( !crs.isValid() && !ignoreEmpty ) )
+    if ( crs.isValid() || !ignoreEmpty )
     {
       md->setCrs( crs );
     }
