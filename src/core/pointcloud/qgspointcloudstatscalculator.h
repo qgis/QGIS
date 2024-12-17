@@ -26,12 +26,12 @@
 #include <QFutureWatcher>
 #include <QEventLoop>
 
+#include "qgspointcloudindex.h"
 #include "qgspointcloudrequest.h"
 #include "qgspointcloudstatistics.h"
 
 #define SIP_NO_FILE
 
-class QgsPointCloudIndex;
 class QgsPointCloudBlock;
 class QgsPointCloudAttribute;
 class QgsPointCloudNodeId;
@@ -50,7 +50,7 @@ class CORE_EXPORT QgsPointCloudStatsCalculator : public QObject
     Q_OBJECT
   public:
     //! Constructor
-    QgsPointCloudStatsCalculator( QgsPointCloudIndex *index );
+    QgsPointCloudStatsCalculator( QgsPointCloudIndex index );
 
     /**
      * Calculates the statistics of given attributes \a attributes up to new \a pointsLimit points
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsPointCloudStatsCalculator : public QObject
     QgsPointCloudStatistics statistics() const { return mStats; }
 
   private:
-    std::unique_ptr<QgsPointCloudIndex> mIndex;
+    QgsPointCloudIndex mIndex;
 
     QgsPointCloudStatistics mStats;
     QSet<QgsPointCloudNodeId> mProcessedNodes;

@@ -40,7 +40,7 @@ class QgsPdalProvider : public QgsPointCloudDataProvider
     bool isValid() const override;
     QString name() const override;
     QString description() const override;
-    QgsPointCloudIndex *index() const override;
+    QgsPointCloudIndex index() const override;
     void loadIndex() override;
     void generateIndex() override;
     PointCloudIndexGenerationState indexingState() override;
@@ -60,7 +60,7 @@ class QgsPdalProvider : public QgsPointCloudDataProvider
     QVariantMap mOriginalMetadata;
     // will be used when layer was not indexed, e.g. when loaded by Processing algorithm
     QgsPointCloudAttributeCollection mDummyAttributes;
-    std::unique_ptr<QgsPointCloudIndex> mIndex;
+    QgsPointCloudIndex mIndex;
     QgsPdalIndexingTask *mRunningIndexingTask = nullptr;
     static QQueue<QgsPdalProvider *> sIndexingQueue;
 };

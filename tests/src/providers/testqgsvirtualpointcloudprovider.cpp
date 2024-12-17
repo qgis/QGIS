@@ -223,7 +223,7 @@ void TestQgsVirtualPointCloudProvider::validLayer()
   QCOMPARE( layer->dataProvider()->pointCount(), 3365334 );
   QCOMPARE( layer->pointCount(), 3365334 );
 
-  QCOMPARE( layer->dataProvider()->index(), nullptr );
+  QVERIFY( !layer->dataProvider()->index() );
 }
 
 void TestQgsVirtualPointCloudProvider::attributes()
@@ -272,8 +272,8 @@ void TestQgsVirtualPointCloudProvider::testLazyLoading()
   std::unique_ptr<QgsPointCloudLayer> layer = std::make_unique<QgsPointCloudLayer>( mTestDataDir + QStringLiteral( "point_clouds/virtual/tiles.vpc" ), QStringLiteral( "layer" ), QStringLiteral( "vpc" ) );
   QVERIFY( layer->isValid() );
 
-  QgsPointCloudIndex *index = layer->dataProvider()->index();
-  QCOMPARE( index, nullptr );
+  QgsPointCloudIndex index = layer->dataProvider()->index();
+  QVERIFY( !index );
 
   QVector<QgsPointCloudSubIndex> subIndexes = layer->dataProvider()->subIndexes();
 

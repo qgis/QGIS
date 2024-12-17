@@ -36,7 +36,6 @@
 class QgsAABB;
 class QgsChunkBoundsEntity;
 class QgsPointCloudLayer;
-class QgsPointCloudIndex;
 class QgsVirtualPointCloudProvider;
 class QgsPointCloud3DSymbol;
 class Qgs3DMapSettings;

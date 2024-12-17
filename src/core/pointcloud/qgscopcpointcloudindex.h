@@ -39,14 +39,14 @@
 
 class QgsCoordinateReferenceSystem;
 
-class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
+class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
 {
   public:
 
     explicit QgsCopcPointCloudIndex();
     ~QgsCopcPointCloudIndex();
 
-    std::unique_ptr<QgsPointCloudIndex> clone() const override;
+    std::unique_ptr<QgsAbstractPointCloudIndex> clone() const override;
 
     void load( const QString &fileName ) override;
 
@@ -61,14 +61,14 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
     QVariantMap originalMetadata() const override { return mOriginalMetadata; }
 
     bool isValid() const override;
-    QgsPointCloudIndex::AccessType accessType() const override { return mAccessType; };
+    QgsPointCloudAccessType accessType() const override { return mAccessType; };
 
     /**
      * Writes the statistics object \a stats into the COPC dataset as an Extended Variable Length Record (EVLR).
      * Returns true if the data was written successfully.
      * \since QGIS 3.26
      */
-    bool writeStatistics( QgsPointCloudStatistics &stats );
+    bool writeStatistics( QgsPointCloudStatistics &stats ) override;
 
     /**
      * Returns the statistics object contained in the COPC dataset.
@@ -84,11 +84,11 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
     void copyCommonProperties( QgsCopcPointCloudIndex *destination ) const;
 
     /**
-     * Returns the gps time flag from global_encoding field in LAS header, 0 indicates GPS week time (seconds passed since the beginning of the week)
+     * Returns one datapoint, "CopcGpsTimeFlag": The gps time flag from global_encoding field in LAS header,
+     * 0 indicates GPS week time (seconds passed since the beginning of the week)
      * 1 indicates GPS adjusted time, which is seconds passed since the GPS base time minus 1e9
-     * \since QGIS 3.42
      */
-    bool gpsTimeFlag() const;
+    QVariantMap extraMetadata() const override;
 
   protected:
     bool loadSchema( QgsLazInfo &lazInfo );
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsPointCloudIndex
     QByteArray fetchCopcStatisticsEvlrData() const;
 
     bool mIsValid = false;
-    QgsPointCloudIndex::AccessType mAccessType = Local;
+    QgsPointCloudAccessType mAccessType = QgsPointCloudAccessType::Local;
     mutable std::ifstream mCopcFile;
     mutable lazperf::copc_info_vlr mCopcInfoVlr;
     mutable QHash<QgsPointCloudNodeId, QPair<uint64_t, int32_t>> mHierarchyNodePos; //!< Additional data hierarchy for COPC

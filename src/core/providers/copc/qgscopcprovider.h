@@ -46,7 +46,7 @@ class QgsCopcProvider: public QgsPointCloudDataProvider
     bool isValid() const override;
     QString name() const override;
     QString description() const override;
-    QgsPointCloudIndex *index() const override;
+    QgsPointCloudIndex index() const override;
     qint64 pointCount() const override;
     QVariantMap originalMetadata() const override;
     void loadIndex( ) override;
@@ -54,7 +54,7 @@ class QgsCopcProvider: public QgsPointCloudDataProvider
     PointCloudIndexGenerationState indexingState( ) override { return PointCloudIndexGenerationState::Indexed; }
 
   private:
-    std::unique_ptr<QgsPointCloudIndex> mIndex;
+    QgsPointCloudIndex mIndex;
 
     QgsRectangle mExtent;
     QgsCoordinateReferenceSystem mCrs;

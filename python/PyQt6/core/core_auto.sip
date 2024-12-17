@@ -517,6 +517,7 @@
 %Include auto_generated/pointcloud/qgspointcloudblock.sip
 %Include auto_generated/pointcloud/qgspointcloudlayer.sip
 %Include auto_generated/pointcloud/qgspointcloudlayerelevationproperties.sip
+%Include auto_generated/pointcloud/qgspointcloudindex.sip
 %Include auto_generated/pointcloud/qgspointclouddataprovider.sip
 %Include auto_generated/pointcloud/qgspointcloudrenderer.sip
 %Include auto_generated/pointcloud/qgspointcloudrendererregistry.sip

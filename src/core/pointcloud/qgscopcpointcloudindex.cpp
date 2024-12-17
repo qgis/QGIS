@@ -33,6 +33,7 @@
 #include "qgslazdecoder.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgspointcloudblockrequest.h"
+#include "qgspointcloudindex.h"
 #include "qgspointcloudrequest.h"
 #include "qgspointcloudattribute.h"
 #include "qgslogger.h"
@@ -51,12 +52,12 @@ QgsCopcPointCloudIndex::QgsCopcPointCloudIndex() = default;
 
 QgsCopcPointCloudIndex::~QgsCopcPointCloudIndex() = default;
 
-std::unique_ptr<QgsPointCloudIndex> QgsCopcPointCloudIndex::clone() const
+std::unique_ptr<QgsAbstractPointCloudIndex> QgsCopcPointCloudIndex::clone() const
 {
   QgsCopcPointCloudIndex *clone = new QgsCopcPointCloudIndex;
   QMutexLocker locker( &mHierarchyMutex );
   copyCommonProperties( clone );
-  return std::unique_ptr<QgsPointCloudIndex>( clone );
+  return std::unique_ptr<QgsAbstractPointCloudIndex>( clone );
 }
 
 void QgsCopcPointCloudIndex::load( const QString &urlString )
@@ -64,10 +65,10 @@ void QgsCopcPointCloudIndex::load( const QString &urlString )
   QUrl url = urlString;
   // Treat non-URLs as local files
   if ( url.isValid() && ( url.scheme() == "http" || url.scheme() == "https" ) )
-    mAccessType = Remote;
+    mAccessType = QgsPointCloudAccessType::Remote;
   else
   {
-    mAccessType = Local;
+    mAccessType = QgsPointCloudAccessType::Local;
     mCopcFile.open( QgsLazDecoder::toNativePath( urlString ), std::ios::binary );
     if ( mCopcFile.fail() )
     {
@@ -78,7 +79,7 @@ void QgsCopcPointCloudIndex::load( const QString &urlString )
   }
   mUri = urlString;
 
-  if ( mAccessType == Remote )
+  if ( mAccessType == QgsPointCloudAccessType::Remote )
     mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromUrl( url ) ) );
   else
     mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromFile( mCopcFile ) ) );
@@ -151,7 +152,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const QgsP
   }
 
   std::unique_ptr<QgsPointCloudBlock> block;
-  if ( mAccessType == Local )
+  if ( mAccessType == QgsPointCloudAccessType::Local )
   {
     const bool found = fetchNodeHierarchy( n );
     if ( !found )
@@ -204,7 +205,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const QgsP
 
 QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
 {
-  if ( mAccessType == Local )
+  if ( mAccessType == QgsPointCloudAccessType::Local )
     return nullptr; // TODO
   if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
   {
@@ -248,7 +249,7 @@ bool QgsCopcPointCloudIndex::loadHierarchy() const
 
 bool QgsCopcPointCloudIndex::writeStatistics( QgsPointCloudStatistics &stats )
 {
-  if ( mAccessType == Remote )
+  if ( mAccessType == QgsPointCloudAccessType::Remote )
   {
     QgsMessageLog::logMessage( QObject::tr( "Can't write statistics to remote file \"%1\"" ).arg( mUri ) );
     return false;
@@ -309,7 +310,7 @@ QgsPointCloudStatistics QgsCopcPointCloudIndex::metadataStatistics() const
   {
     const QByteArray statisticsEvlrData = fetchCopcStatisticsEvlrData();
     if ( statisticsEvlrData.isEmpty() )
-      mStatistics = QgsPointCloudIndex::metadataStatistics();
+      mStatistics = QgsAbstractPointCloudIndex::metadataStatistics();
     else
       mStatistics = QgsPointCloudStatistics::fromStatisticsJson( statisticsEvlrData );
   }
@@ -357,7 +358,7 @@ void QgsCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteS
 
   switch ( mAccessType )
   {
-    case Local:
+    case QgsPointCloudAccessType::Local:
     {
       mCopcFile.seekg( offset );
       std::unique_ptr<char []> data( new char[ byteSize ] );
@@ -366,7 +367,7 @@ void QgsCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteS
       populateHierarchy( data.get(), byteSize );
       return;
     }
-    case Remote:
+    case QgsPointCloudAccessType::Remote:
     {
       QNetworkRequest nr = QNetworkRequest( QUrl( mUri ) );
       QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsCopcPointCloudIndex" ) );
@@ -465,13 +466,13 @@ QgsPointCloudNode QgsCopcPointCloudIndex::getNode( const QgsPointCloudNodeId &id
 
 void QgsCopcPointCloudIndex::copyCommonProperties( QgsCopcPointCloudIndex *destination ) const
 {
-  QgsPointCloudIndex::copyCommonProperties( destination );
+  QgsAbstractPointCloudIndex::copyCommonProperties( destination );
 
   // QgsCopcPointCloudIndex specific fields
   destination->mIsValid = mIsValid;
   destination->mAccessType = mAccessType;
   destination->mUri = mUri;
-  if ( mAccessType == Local )
+  if ( mAccessType == QgsPointCloudAccessType::Local )
     destination->mCopcFile.open( QgsLazDecoder::toNativePath( mUri ), std::ios::binary );
   destination->mCopcInfoVlr = mCopcInfoVlr;
   destination->mHierarchyNodePos = mHierarchyNodePos;
@@ -481,7 +482,7 @@ void QgsCopcPointCloudIndex::copyCommonProperties( QgsCopcPointCloudIndex *desti
 
 QByteArray QgsCopcPointCloudIndex::fetchCopcStatisticsEvlrData() const
 {
-  Q_ASSERT( mAccessType == Local ); // TODO: Remote
+  Q_ASSERT( mAccessType == QgsPointCloudAccessType::Local ); // TODO: Remote
   uint64_t offset = mLazInfo->firstEvlrOffset();
   uint32_t evlrCount = mLazInfo->evlrCount();
 
@@ -509,9 +510,12 @@ QByteArray QgsCopcPointCloudIndex::fetchCopcStatisticsEvlrData() const
   return statisticsEvlrData;
 }
 
-bool QgsCopcPointCloudIndex::gpsTimeFlag() const
+QVariantMap QgsCopcPointCloudIndex::extraMetadata() const
 {
-  return mLazInfo.get()->header().global_encoding & 1;
+  return
+  {
+    { QStringLiteral( "CopcGpsTimeFlag" ), mLazInfo.get()->header().global_encoding & 1 },
+  };
 }
 
 ///@endcond

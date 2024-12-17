@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgscoordinatereferencesystem.h"
 #include "qgspointcloudindex.h"
 #include <QFile>
 #include <QFileInfo>
@@ -25,6 +26,7 @@
 #include <QTime>
 #include <QtDebug>
 #include <qglobal.h>
+#include <qstringliteral.h>
 
 #include "qgsbox3d.h"
 #include "qgstiledownloadmanager.h"
@@ -147,23 +149,23 @@ float QgsPointCloudNode::error() const
 ///@endcond
 
 //
-// QgsPointCloudIndex
+// QgsAbstractPointCloudIndex
 //
 
-QMutex QgsPointCloudIndex::sBlockCacheMutex;
-QCache<QgsPointCloudCacheKey, QgsPointCloudBlock> QgsPointCloudIndex::sBlockCache( 200'000'000 ); // 200MB of cached points
+QMutex QgsAbstractPointCloudIndex::sBlockCacheMutex;
+QCache<QgsPointCloudCacheKey, QgsPointCloudBlock> QgsAbstractPointCloudIndex::sBlockCache( 200'000'000 ); // 200MB of cached points
 
-QgsPointCloudIndex::QgsPointCloudIndex() = default;
+QgsAbstractPointCloudIndex::QgsAbstractPointCloudIndex() = default;
 
-QgsPointCloudIndex::~QgsPointCloudIndex() = default;
+QgsAbstractPointCloudIndex::~QgsAbstractPointCloudIndex() = default;
 
-bool QgsPointCloudIndex::hasNode( const QgsPointCloudNodeId &n ) const
+bool QgsAbstractPointCloudIndex::hasNode( const QgsPointCloudNodeId &n ) const
 {
   QMutexLocker locker( &mHierarchyMutex );
   return mHierarchy.contains( n );
 }
 
-QgsPointCloudNode QgsPointCloudIndex::getNode( const QgsPointCloudNodeId &id ) const
+QgsPointCloudNode QgsAbstractPointCloudIndex::getNode( const QgsPointCloudNodeId &id ) const
 {
   Q_ASSERT( hasNode( id ) );
 
@@ -193,32 +195,32 @@ QgsPointCloudNode QgsPointCloudIndex::getNode( const QgsPointCloudNodeId &id ) c
   return QgsPointCloudNode( id, pointCount, children, bounds.width() / mSpan, bounds );
 }
 
-QgsPointCloudAttributeCollection QgsPointCloudIndex::attributes() const
+QgsPointCloudAttributeCollection QgsAbstractPointCloudIndex::attributes() const
 {
   return mAttributes;
 }
 
-QgsVector3D QgsPointCloudIndex::scale() const
+QgsVector3D QgsAbstractPointCloudIndex::scale() const
 {
   return mScale;
 }
 
-QgsVector3D QgsPointCloudIndex::offset() const
+QgsVector3D QgsAbstractPointCloudIndex::offset() const
 {
   return mOffset;
 }
 
-void QgsPointCloudIndex::setAttributes( const QgsPointCloudAttributeCollection &attributes )
+void QgsAbstractPointCloudIndex::setAttributes( const QgsPointCloudAttributeCollection &attributes )
 {
   mAttributes = attributes;
 }
 
-int QgsPointCloudIndex::span() const
+int QgsAbstractPointCloudIndex::span() const
 {
   return mSpan;
 }
 
-bool QgsPointCloudIndex::setSubsetString( const QString &subset )
+bool QgsAbstractPointCloudIndex::setSubsetString( const QString &subset )
 {
   const QString lastExpression = mFilterExpression;
   mFilterExpression.setExpression( subset );
@@ -242,12 +244,12 @@ bool QgsPointCloudIndex::setSubsetString( const QString &subset )
   return true;
 }
 
-QString QgsPointCloudIndex::subsetString() const
+QString QgsAbstractPointCloudIndex::subsetString() const
 {
   return mFilterExpression;
 }
 
-QgsPointCloudStatistics QgsPointCloudIndex::metadataStatistics() const
+QgsPointCloudStatistics QgsAbstractPointCloudIndex::metadataStatistics() const
 {
   QMap<QString, QgsPointCloudAttributeStatistics> statsMap;
   statsMap[ "X" ].minimum = mExtent.xMinimum();
@@ -260,9 +262,15 @@ QgsPointCloudStatistics QgsPointCloudIndex::metadataStatistics() const
   return QgsPointCloudStatistics( pointCount(), statsMap );
 }
 
-void QgsPointCloudIndex::copyCommonProperties( QgsPointCloudIndex *destination ) const
+bool QgsAbstractPointCloudIndex::writeStatistics( QgsPointCloudStatistics &stats )
 {
-  // Base QgsPointCloudIndex fields
+  Q_UNUSED( stats );
+  return false;
+}
+
+void QgsAbstractPointCloudIndex::copyCommonProperties( QgsAbstractPointCloudIndex *destination ) const
+{
+  // Base QgsAbstractPointCloudIndex fields
   destination->mUri = mUri;
   destination->mExtent = mExtent;
   destination->mZMin = mZMin;
@@ -276,7 +284,7 @@ void QgsPointCloudIndex::copyCommonProperties( QgsPointCloudIndex *destination )
   destination->mFilterExpression = mFilterExpression;
 }
 
-QgsPointCloudBlock *QgsPointCloudIndex::getNodeDataFromCache( const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request )
+QgsPointCloudBlock *QgsAbstractPointCloudIndex::getNodeDataFromCache( const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request )
 {
   QgsPointCloudCacheKey key( node, request, mFilterExpression, mUri );
 
@@ -285,12 +293,12 @@ QgsPointCloudBlock *QgsPointCloudIndex::getNodeDataFromCache( const QgsPointClou
   return cached ? cached->clone() : nullptr;
 }
 
-void QgsPointCloudIndex::storeNodeDataToCache( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request ) const
+void QgsAbstractPointCloudIndex::storeNodeDataToCache( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request ) const
 {
   storeNodeDataToCacheStatic( data, node, request, mFilterExpression, mUri );
 }
 
-void QgsPointCloudIndex::storeNodeDataToCacheStatic( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri )
+void QgsAbstractPointCloudIndex::storeNodeDataToCacheStatic( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri )
 {
   if ( !data )
     return;
@@ -303,3 +311,184 @@ void QgsPointCloudIndex::storeNodeDataToCacheStatic( QgsPointCloudBlock *data, c
   QgsDebugMsgLevel( QStringLiteral( "(%1/%2): Caching node %3 of %4" ).arg( sBlockCache.totalCost() ).arg( sBlockCache.maxCost() ).arg( key.node().toString() ).arg( key.uri() ), 4 );
   sBlockCache.insert( key, data->clone(), cost );
 }
+
+QVariantMap QgsAbstractPointCloudIndex::extraMetadata() const
+{
+  return {};
+}
+
+//
+// QgsPointCloudIndex
+//
+//
+
+QgsPointCloudIndex::QgsPointCloudIndex( QgsAbstractPointCloudIndex *index )
+{
+  mIndex.reset( index );
+}
+
+QgsPointCloudIndex::operator bool() const
+{
+  return mIndex != nullptr;
+}
+
+void QgsPointCloudIndex::load( const QString &fileName )
+{
+  Q_ASSERT( mIndex );
+  mIndex->load( fileName );
+}
+
+bool QgsPointCloudIndex::isValid() const
+{
+  return mIndex && mIndex->isValid();
+}
+
+QString QgsPointCloudIndex::error() const
+{
+  return mIndex ? mIndex->error() : QStringLiteral( "Index is NULL" );
+}
+
+QgsPointCloudAccessType QgsPointCloudIndex::accessType() const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->accessType();
+}
+
+QgsCoordinateReferenceSystem QgsPointCloudIndex::crs() const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->crs();
+}
+
+qint64 QgsPointCloudIndex::pointCount() const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->pointCount();
+}
+
+QVariantMap QgsPointCloudIndex::originalMetadata() const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->originalMetadata();
+}
+
+QgsPointCloudStatistics QgsPointCloudIndex::metadataStatistics() const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->metadataStatistics();
+}
+
+bool QgsPointCloudIndex::writeStatistics( QgsPointCloudStatistics &stats )
+{
+  Q_ASSERT( mIndex );
+  return mIndex->writeStatistics( stats );
+}
+
+QgsPointCloudNodeId QgsPointCloudIndex::root() const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->root();
+}
+
+bool QgsPointCloudIndex::hasNode( const QgsPointCloudNodeId &id ) const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->hasNode( id );
+}
+
+QgsPointCloudNode QgsPointCloudIndex::getNode( const QgsPointCloudNodeId &id ) const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->getNode( id );
+}
+
+QgsPointCloudAttributeCollection QgsPointCloudIndex::attributes() const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->attributes();
+}
+
+std::unique_ptr<QgsPointCloudBlock> QgsPointCloudIndex::nodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
+{
+  Q_ASSERT( mIndex );
+  return mIndex->nodeData( n, request );
+}
+
+QgsPointCloudBlockRequest *QgsPointCloudIndex::asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
+{
+  Q_ASSERT( mIndex );
+  return mIndex->asyncNodeData( n, request );
+}
+
+QgsRectangle QgsPointCloudIndex::extent() const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->extent();
+}
+
+double QgsPointCloudIndex::zMin() const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->zMin();
+}
+double QgsPointCloudIndex::zMax() const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->zMax();
+}
+
+QgsBox3D QgsPointCloudIndex::rootNodeBounds() const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->rootNodeBounds();
+}
+
+QgsVector3D QgsPointCloudIndex::scale() const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->scale();
+}
+
+QgsVector3D QgsPointCloudIndex::offset() const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->offset();
+}
+
+int QgsPointCloudIndex::span() const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->span();
+}
+
+
+bool QgsPointCloudIndex::setSubsetString( const QString &subset )
+{
+  Q_ASSERT( mIndex );
+  return mIndex->setSubsetString( subset );
+}
+
+QString QgsPointCloudIndex::subsetString() const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->subsetString();
+}
+
+QgsPointCloudBlock *QgsPointCloudIndex::getNodeDataFromCache( const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request )
+{
+  Q_ASSERT( mIndex );
+  return mIndex->getNodeDataFromCache( node, request );
+}
+
+void QgsPointCloudIndex::storeNodeDataToCache( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request )
+{
+  Q_ASSERT( mIndex );
+  mIndex->storeNodeDataToCache( data, node, request );
+}
+
+QVariantMap QgsPointCloudIndex::extraMetadata() const
+{
+  Q_ASSERT( mIndex );
+  return mIndex->extraMetadata();
+}
+

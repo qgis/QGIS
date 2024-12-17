@@ -114,7 +114,7 @@ QString QgsVirtualPointCloudProvider::description() const
   return PROVIDER_DESCRIPTION;
 }
 
-QgsPointCloudIndex *QgsVirtualPointCloudProvider::index() const
+QgsPointCloudIndex QgsVirtualPointCloudProvider::index() const
 {
   // non fatal for now -- 2d rendering of point clouds is not thread safe and calls this
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
@@ -398,11 +398,11 @@ void QgsVirtualPointCloudProvider::loadSubIndex( int i )
   if ( !sl.index() )
     return;
 
-  sl.index()->load( sl.uri() );
+  sl.index().load( sl.uri() );
 
   // if expression is broken or index is missing a required field, set to "false" so it returns no points
-  if ( !mSubsetString.isEmpty() && !sl.index()->setSubsetString( mSubsetString ) )
-    sl.index()->setSubsetString( QStringLiteral( "false" ) );
+  if ( !mSubsetString.isEmpty() && !sl.index().setSubsetString( mSubsetString ) )
+    sl.index().setSubsetString( QStringLiteral( "false" ) );
 
   emit subIndexLoaded( i );
 }
@@ -494,8 +494,8 @@ bool QgsVirtualPointCloudProvider::setSubsetString( const QString &subset, bool 
       continue;
 
     // if expression is broken or index is missing a required field, set to "false" so it returns no points
-    if ( !i.index()->setSubsetString( subset ) )
-      i.index()->setSubsetString( QStringLiteral( "false" ) );
+    if ( !i.index().setSubsetString( subset ) )
+      i.index().setSubsetString( QStringLiteral( "false" ) );
   }
 
   mSubsetString = subset;

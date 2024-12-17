@@ -48,7 +48,7 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
     bool isValid() const override;
     QString name() const override;
     QString description() const override;
-    QgsPointCloudIndex *index() const override;
+    QgsPointCloudIndex index() const override;
     qint64 pointCount() const override;
     QVariantMap originalMetadata() const override;
     void loadIndex( ) override;
@@ -69,7 +69,6 @@ class CORE_EXPORT QgsVirtualPointCloudProvider: public QgsPointCloudDataProvider
     void populateAttributeCollection( QSet<QString> names );
     QVector<QgsPointCloudSubIndex> mSubLayers;
     std::unique_ptr<QgsGeometry> mPolygonBounds;
-    std::unique_ptr<QgsPointCloudIndex> mIndex;
     QgsPointCloudAttributeCollection mAttributes;
 
     QStringList mUriList;

@@ -87,7 +87,7 @@ QgsPointCloudAttributeCollection QgsPdalProvider::attributes() const
 
   if ( mIndex )
   {
-    return mIndex->attributes();
+    return mIndex.attributes();
   }
 
   if ( mDummyAttributes.count() > 0 )
@@ -118,7 +118,7 @@ void QgsPdalProvider::generateIndex()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( mRunningIndexingTask || ( mIndex && mIndex->isValid() ) )
+  if ( mRunningIndexingTask || ( mIndex && mIndex.isValid() ) )
     return;
 
   if ( anyIndexingTaskExists() )
@@ -144,7 +144,7 @@ QgsPointCloudDataProvider::PointCloudIndexGenerationState QgsPdalProvider::index
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( mIndex && mIndex->isValid() )
+  if ( mIndex && mIndex.isValid() )
     return PointCloudIndexGenerationState::Indexed;
   else if ( mRunningIndexingTask )
     return PointCloudIndexGenerationState::Indexing;
@@ -156,32 +156,32 @@ void QgsPdalProvider::loadIndex()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( mIndex && mIndex->isValid() )
+  if ( mIndex && mIndex.isValid() )
     return;
   // Try to load copc index
-  if ( !mIndex || !mIndex->isValid() )
+  if ( !mIndex || !mIndex.isValid() )
   {
     const QString outputFile = _outCopcFile( dataSourceUri() );
     const QFileInfo fi( outputFile );
     if ( fi.isFile() )
     {
-      mIndex.reset( new QgsCopcPointCloudIndex );
-      mIndex->load( outputFile );
+      mIndex = new QgsCopcPointCloudIndex;
+      mIndex.load( outputFile );
     }
   }
   // Try to load ept index
-  if ( !mIndex || !mIndex->isValid() )
+  if ( !mIndex || !mIndex.isValid() )
   {
     const QString outputDir = _outEptDir( dataSourceUri() );
     const QString outEptJson = QStringLiteral( "%1/ept.json" ).arg( outputDir );
     const QFileInfo fi( outEptJson );
     if ( fi.isFile() )
     {
-      mIndex.reset( new QgsEptPointCloudIndex );
-      mIndex->load( outEptJson );
+      mIndex = new QgsEptPointCloudIndex;
+      mIndex.load( outEptJson );
     }
   }
-  if ( !mIndex || !mIndex->isValid() )
+  if ( !mIndex || !mIndex.isValid() )
   {
     QgsDebugMsgLevel( QStringLiteral( "pdalprovider: neither copc or ept index for dataset %1 is not correctly loaded" ).arg( dataSourceUri() ), 2 );
   }
@@ -273,11 +273,11 @@ QString QgsPdalProvider::description() const
   return QStringLiteral( "Point Clouds PDAL" );
 }
 
-QgsPointCloudIndex *QgsPdalProvider::index() const
+QgsPointCloudIndex QgsPdalProvider::index() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mIndex.get();
+  return mIndex;
 }
 
 bool QgsPdalProvider::load( const QString &uri )

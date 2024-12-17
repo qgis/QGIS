@@ -76,7 +76,7 @@ void QgsEptPointCloudBlockRequest::blockFinishedLoading()
         QgsPointCloudRequest req;
         req.setAttributes( mRequestedAttributes );
         req.setFilterRect( mFilterRect );
-        QgsPointCloudIndex::storeNodeDataToCacheStatic( mBlock.get(), mNode, req, mFilterExpression, mUri );
+        QgsAbstractPointCloudIndex::storeNodeDataToCacheStatic( mBlock.get(), mNode, req, mFilterExpression, mUri );
       }
     }
     catch ( std::exception &e )
