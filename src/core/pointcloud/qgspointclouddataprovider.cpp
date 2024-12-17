@@ -53,8 +53,8 @@ bool QgsPointCloudDataProvider::hasValidIndex() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsPointCloudIndex *lIndex = index();
-  return lIndex && lIndex->isValid();
+  QgsPointCloudIndex lIndex = index();
+  return lIndex.isValid();
 }
 
 QgsGeometry QgsPointCloudDataProvider::polygonBounds() const
@@ -188,10 +188,10 @@ QgsPointCloudStatistics QgsPointCloudDataProvider::metadataStatistics()
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  QgsPointCloudIndex *pcIndex = index();
+  QgsPointCloudIndex pcIndex = index();
   if ( pcIndex )
   {
-    return pcIndex->metadataStatistics();
+    return pcIndex.metadataStatistics();
   }
   return QgsPointCloudStatistics();
 }
@@ -217,14 +217,14 @@ struct MapIndexedPointCloudNode
   typedef QVector<QMap<QString, QVariant>> result_type;
 
   MapIndexedPointCloudNode( QgsPointCloudRequest &request, const QgsVector3D &indexScale, const QgsVector3D &indexOffset,
-                            const QgsGeometry &extentGeometry, const QgsDoubleRange &zRange, QgsPointCloudIndex *index, int pointsLimit )
+                            const QgsGeometry &extentGeometry, const QgsDoubleRange &zRange, QgsPointCloudIndex index, int pointsLimit )
     : mRequest( request ), mIndexScale( indexScale ), mIndexOffset( indexOffset ), mExtentGeometry( extentGeometry ), mZRange( zRange ), mIndex( index ), mPointsLimit( pointsLimit )
   { }
 
   QVector<QVariantMap> operator()( QgsPointCloudNodeId n )
   {
     QVector<QVariantMap> acceptedPoints;
-    std::unique_ptr<QgsPointCloudBlock> block( mIndex->nodeData( n, mRequest ) );
+    std::unique_ptr<QgsPointCloudBlock> block( mIndex.nodeData( n, mRequest ) );
 
     if ( !block || pointsCount == mPointsLimit )
       return acceptedPoints;
@@ -238,6 +238,12 @@ struct MapIndexedPointCloudNode
     const QgsPointCloudAttribute::DataType zType = blockAttributes.find( QStringLiteral( "Z" ), zOffset )->type();
     std::unique_ptr< QgsGeos > extentEngine = std::make_unique< QgsGeos >( mExtentGeometry.constGet() );
     extentEngine->prepareGeometry();
+
+    std::optional<bool> copcTimeFlag = std::nullopt;
+    QVariantMap extraMetadata = mIndex.extraMetadata();
+    if ( extraMetadata.contains( QStringLiteral( "CopcGpsTimeFlag" ) ) )
+      copcTimeFlag = extraMetadata[ QStringLiteral( "CopcGpsTimeFlag" ) ].toBool();
+
     for ( int i = 0; i < block->pointCount() && pointsCount < mPointsLimit; ++i )
     {
       double x, y, z;
@@ -251,14 +257,14 @@ struct MapIndexedPointCloudNode
         pointAttr[ QStringLiteral( "Z" ) ] = z;
 
 
-        if ( const QgsCopcPointCloudIndex *copcIndex = dynamic_cast<QgsCopcPointCloudIndex *>( mIndex ) )
+        if ( copcTimeFlag.has_value() )
         {
           const QDateTime gpsBaseTime = QDateTime::fromSecsSinceEpoch( 315964809, Qt::UTC );
           constexpr int numberOfSecsInWeek = 3600 * 24 * 7;
           // here we check the flag set in header to determine if we need to
           // parse the time as GPS week time or GPS adjusted standard time
           // however often times the flag is set wrong, so we determine if the value is bigger than the maximum amount of seconds in week then it has to be adjusted standard time
-          if ( copcIndex->gpsTimeFlag() || pointAttr[QStringLiteral( "GpsTime" )].toDouble() > numberOfSecsInWeek )
+          if ( copcTimeFlag.value() || pointAttr[QStringLiteral( "GpsTime" )].toDouble() > numberOfSecsInWeek )
           {
             const QString utcTime = gpsBaseTime.addSecs( static_cast<qint64>( pointAttr[QStringLiteral( "GpsTime" )].toDouble() + 1e9 ) ).toString( Qt::ISODate );
             pointAttr[ QStringLiteral( "GpsTime (raw)" )] = pointAttr[QStringLiteral( "GpsTime" )];
@@ -283,7 +289,7 @@ struct MapIndexedPointCloudNode
   QgsVector3D mIndexOffset;
   const QgsGeometry &mExtentGeometry;
   const QgsDoubleRange &mZRange;
-  QgsPointCloudIndex *mIndex = nullptr;
+  QgsPointCloudIndex mIndex;
   int mPointsLimit;
   int pointsCount = 0;
 };
@@ -314,7 +320,7 @@ QVector<QVariantMap> QgsPointCloudDataProvider::identify(
 }
 
 QVector<QVariantMap> QgsPointCloudDataProvider::identify(
-  QgsPointCloudIndex *index, double maxError,
+  QgsPointCloudIndex index, double maxError,
   const QgsGeometry &extentGeometry,
   const QgsDoubleRange &extentZRange, int pointsLimit )
 {
@@ -322,18 +328,18 @@ QVector<QVariantMap> QgsPointCloudDataProvider::identify(
 
   QVector<QVariantMap> acceptedPoints;
 
-  if ( !index || !index->isValid() )
+  if ( !index.isValid() )
     return acceptedPoints;
 
-  const QgsPointCloudNode root = index->getNode( index->root() );
+  const QgsPointCloudNode root = index.getNode( index.root() );
   const QVector<QgsPointCloudNodeId> nodes = traverseTree( index, root, maxError, root.error(), extentGeometry, extentZRange );
 
-  const QgsPointCloudAttributeCollection attributeCollection = index->attributes();
+  const QgsPointCloudAttributeCollection attributeCollection = index.attributes();
   QgsPointCloudRequest request;
   request.setAttributes( attributeCollection );
 
   acceptedPoints = QtConcurrent::blockingMappedReduced( nodes,
-                   MapIndexedPointCloudNode( request, index->scale(), index->offset(), extentGeometry, extentZRange, index, pointsLimit ),
+                   MapIndexedPointCloudNode( request, index.scale(), index.offset(), extentGeometry, extentZRange, index, pointsLimit ),
                    qOverload<const QVector<QMap<QString, QVariant>>&>( &QVector<QMap<QString, QVariant>>::append ),
                    QtConcurrent::UnorderedReduce );
 
@@ -341,7 +347,7 @@ QVector<QVariantMap> QgsPointCloudDataProvider::identify(
 }
 
 QVector<QgsPointCloudNodeId> QgsPointCloudDataProvider::traverseTree(
-  const QgsPointCloudIndex *pc,
+  const QgsPointCloudIndex pc,
   QgsPointCloudNode node,
   double maxError,
   double nodeError,
@@ -368,7 +374,7 @@ QVector<QgsPointCloudNodeId> QgsPointCloudDataProvider::traverseTree(
 
   for ( const QgsPointCloudNodeId &nn : node.children() )
   {
-    const QgsPointCloudNode childNode = pc->getNode( nn );
+    const QgsPointCloudNode childNode = pc.getNode( nn );
     if ( extentGeometry.intersects( childNode.bounds().toRectangle() ) )
       nodes += traverseTree( pc, childNode, maxError, childrenError, extentGeometry, extentZRange );
   }
@@ -381,11 +387,11 @@ bool QgsPointCloudDataProvider::setSubsetString( const QString &subset, bool upd
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   Q_UNUSED( updateFeatureCount )
-  const auto i = index();
+  auto i = index();
   if ( !i )
     return false;
 
-  if ( !i->setSubsetString( subset ) )
+  if ( !i.setSubsetString( subset ) )
     return false;
   mSubsetString = subset;
   emit dataChanged();

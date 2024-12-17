@@ -900,12 +900,9 @@ void QgsPointCloudLayer::calculateStatistics()
     resetRenderer();
     mStatsCalculationTask = 0;
 #ifdef HAVE_COPC
-    if ( mDataProvider && mDataProvider->index() && mDataProvider->index()->isValid() && mDataProvider->name() == QLatin1String( "pdal" ) && mStatistics.sampledPointsCount() != 0 )
+    if ( mDataProvider && mDataProvider->index() && mDataProvider->index().isValid() && mDataProvider->name() == QLatin1String( "pdal" ) && mStatistics.sampledPointsCount() != 0 )
     {
-      if ( QgsCopcPointCloudIndex *index = dynamic_cast<QgsCopcPointCloudIndex *>( mDataProvider->index() ) )
-      {
-        index->writeStatistics( mStatistics );
-      }
+      mDataProvider->index().writeStatistics( mStatistics );
     }
 #endif
   } );

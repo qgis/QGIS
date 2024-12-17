@@ -36,18 +36,16 @@ QgsCopcProvider::QgsCopcProvider(
   const QString &uri,
   const QgsDataProvider::ProviderOptions &options,
   Qgis::DataProviderReadFlags flags )
-  : QgsPointCloudDataProvider( uri, options, flags )
+  : QgsPointCloudDataProvider( uri, options, flags ), mIndex( new QgsCopcPointCloudIndex )
 {
-  mIndex.reset( new QgsCopcPointCloudIndex );
-
   std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
     profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Open data source" ), QStringLiteral( "projectload" ) );
 
   loadIndex( );
-  if ( mIndex && !mIndex->isValid() )
+  if ( !mIndex.isValid() )
   {
-    appendError( mIndex->error() );
+    appendError( mIndex.error() );
   }
 }
 
@@ -57,7 +55,7 @@ QgsCoordinateReferenceSystem QgsCopcProvider::crs() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mIndex->crs();
+  return mIndex.crs();
 }
 
 Qgis::DataProviderFlags QgsCopcProvider::flags() const
@@ -69,25 +67,21 @@ QgsRectangle QgsCopcProvider::extent() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mIndex->extent();
+  return mIndex.extent();
 }
 
 QgsPointCloudAttributeCollection QgsCopcProvider::attributes() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mIndex->attributes();
+  return mIndex.attributes();
 }
 
 bool QgsCopcProvider::isValid() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  if ( !mIndex.get() )
-  {
-    return false;
-  }
-  return mIndex->isValid();
+  return mIndex.isValid();
 }
 
 QString QgsCopcProvider::name() const
@@ -104,19 +98,19 @@ QString QgsCopcProvider::description() const
   return QStringLiteral( "Point Clouds COPC" );
 }
 
-QgsPointCloudIndex *QgsCopcProvider::index() const
+QgsPointCloudIndex QgsCopcProvider::index() const
 {
   // non fatal for now -- 2d rendering of point clouds is not thread safe and calls this
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
-  return mIndex.get();
+  return mIndex;
 }
 
 qint64 QgsCopcProvider::pointCount() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mIndex->pointCount();
+  return mIndex.pointCount();
 }
 
 void QgsCopcProvider::loadIndex( )
@@ -124,16 +118,16 @@ void QgsCopcProvider::loadIndex( )
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   // Index already loaded -> no need to load
-  if ( mIndex->isValid() )
+  if ( mIndex.isValid() )
     return;
-  mIndex->load( dataSourceUri() );
+  mIndex.load( dataSourceUri() );
 }
 
 QVariantMap QgsCopcProvider::originalMetadata() const
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
-  return mIndex->originalMetadata();
+  return mIndex.originalMetadata();
 }
 
 void QgsCopcProvider::generateIndex()

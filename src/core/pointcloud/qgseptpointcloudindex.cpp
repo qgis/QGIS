@@ -35,6 +35,7 @@
 #include "qgslazdecoder.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgspointcloudblockrequest.h"
+#include "qgspointcloudindex.h"
 #include "qgspointcloudrequest.h"
 #include "qgspointcloudattribute.h"
 #include "qgslogger.h"
@@ -54,12 +55,12 @@ QgsEptPointCloudIndex::QgsEptPointCloudIndex()
 
 QgsEptPointCloudIndex::~QgsEptPointCloudIndex() = default;
 
-std::unique_ptr<QgsPointCloudIndex> QgsEptPointCloudIndex::clone() const
+std::unique_ptr<QgsAbstractPointCloudIndex> QgsEptPointCloudIndex::clone() const
 {
   QgsEptPointCloudIndex *clone = new QgsEptPointCloudIndex;
   QMutexLocker locker( &mHierarchyMutex );
   copyCommonProperties( clone );
-  return std::unique_ptr<QgsPointCloudIndex>( clone );
+  return std::unique_ptr<QgsAbstractPointCloudIndex>( clone );
 }
 
 void QgsEptPointCloudIndex::load( const QString &urlString )
@@ -67,9 +68,9 @@ void QgsEptPointCloudIndex::load( const QString &urlString )
   QUrl url = urlString;
   // Treat non-URLs as local files
   if ( url.isValid() && ( url.scheme() == "http" || url.scheme() == "https" ) )
-    mAccessType = Remote;
+    mAccessType = QgsPointCloudAccessType::Remote;
   else
-    mAccessType = Local;
+    mAccessType = QgsPointCloudAccessType::Local;
   mUri = urlString;
 
   QStringList splitUrl = mUri.split( '/' );
@@ -77,7 +78,7 @@ void QgsEptPointCloudIndex::load( const QString &urlString )
   mUrlDirectoryPart = splitUrl.join( '/' );
 
   QByteArray content;
-  if ( mAccessType == Remote )
+  if ( mAccessType == QgsPointCloudAccessType::Remote )
   {
     QNetworkRequest nr = QNetworkRequest( QUrl( mUri ) );
     QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsEptPointCloudIndex" ) );
@@ -110,7 +111,7 @@ void QgsEptPointCloudIndex::load( const QString &urlString )
     // try to import the metadata too!
     const QString manifestPath = mUrlDirectoryPart + QStringLiteral( "/ept-sources/manifest.json" );
     QByteArray manifestJson;
-    if ( mAccessType == Remote )
+    if ( mAccessType == QgsPointCloudAccessType::Remote )
     {
       QUrl manifestUrl( manifestPath );
 
@@ -158,7 +159,7 @@ void QgsEptPointCloudIndex::loadManifest( const QByteArray &manifestJson )
   const QString fullMetadataPath = mUrlDirectoryPart + QStringLiteral( "/ept-sources/" ) + metadataPath;
 
   QByteArray metadataJson;
-  if ( mAccessType == Remote )
+  if ( mAccessType == QgsPointCloudAccessType::Remote )
   {
     QUrl metadataUrl( fullMetadataPath );
     QNetworkRequest nr = QNetworkRequest( QUrl( metadataUrl ) );
@@ -376,7 +377,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsEptPointCloudIndex::nodeData( const QgsPo
   }
 
   std::unique_ptr<QgsPointCloudBlock> block;
-  if ( mAccessType == Remote )
+  if ( mAccessType == QgsPointCloudAccessType::Remote )
   {
     std::unique_ptr<QgsPointCloudBlockRequest> blockRequest( asyncNodeData( n, request ) );
     if ( !blockRequest )
@@ -431,7 +432,7 @@ QgsPointCloudBlockRequest *QgsEptPointCloudIndex::asyncNodeData( const QgsPointC
            scale(), offset(), mFilterExpression, request.filterRect() );
   }
 
-  if ( mAccessType != Remote )
+  if ( mAccessType != QgsPointCloudAccessType::Remote )
     return nullptr;
 
   if ( !loadNodeHierarchy( n ) )
@@ -481,7 +482,7 @@ qint64 QgsEptPointCloudIndex::pointCount() const
 
 QgsPointCloudNode QgsEptPointCloudIndex::getNode( const QgsPointCloudNodeId &id ) const
 {
-  QgsPointCloudNode node = QgsPointCloudIndex::getNode( id );
+  QgsPointCloudNode node = QgsAbstractPointCloudIndex::getNode( id );
 
   // First try cached value
   if ( node.pointCount() != -1 )
@@ -543,7 +544,7 @@ bool QgsEptPointCloudIndex::loadSingleNodeHierarchy( const QgsPointCloudNodeId &
   const QString filePath = QStringLiteral( "%1/ept-hierarchy/%2.json" ).arg( mUrlDirectoryPart, nodeId.toString() );
 
   QByteArray dataJsonH;
-  if ( mAccessType == Remote )
+  if ( mAccessType == QgsPointCloudAccessType::Remote )
   {
     QNetworkRequest nr( filePath );
     QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsEptPointCloudIndex" ) );
@@ -645,14 +646,14 @@ bool QgsEptPointCloudIndex::isValid() const
   return mIsValid;
 }
 
-QgsPointCloudIndex::AccessType QgsEptPointCloudIndex::accessType() const
+QgsPointCloudAccessType QgsEptPointCloudIndex::accessType() const
 {
   return mAccessType;
 }
 
 void QgsEptPointCloudIndex::copyCommonProperties( QgsEptPointCloudIndex *destination ) const
 {
-  QgsPointCloudIndex::copyCommonProperties( destination );
+  QgsAbstractPointCloudIndex::copyCommonProperties( destination );
 
   // QgsEptPointCloudIndex specific fields
   destination->mIsValid = mIsValid;
