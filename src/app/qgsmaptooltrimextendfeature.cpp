@@ -136,16 +136,20 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
         if ( !getPoints( match, pExtend1, pExtend2 ) )
           break;
 
+        QgsPoint pLimit1Projected, pLimit2Projected;
+        QgsCoordinateTransform transform( mLimitLayer->crs(), mVlayer->crs(), mCanvas->mapSettings().transformContext() );
+        pLimit1Projected = QgsPoint( transform.transform( pLimit1 ) );
+        pLimit2Projected = QgsPoint( transform.transform( pLimit2 ) );
         // No need to trim/extend if segments are continuous
-        if ( ( ( pLimit1 == pExtend1 ) || ( pLimit1 == pExtend2 ) ) || ( ( pLimit2 == pExtend1 ) || ( pLimit2 == pExtend2 ) ) )
+        if ( ( ( pLimit1Projected == pExtend1 ) || ( pLimit1Projected == pExtend2 ) ) || ( ( pLimit2Projected == pExtend1 ) || ( pLimit2Projected == pExtend2 ) ) )
           break;
 
-        mSegmentIntersects = QgsGeometryUtils::segmentIntersection( pLimit1, pLimit2, pExtend1, pExtend2, mIntersection, mIsIntersection, 1e-8, true );
+        mSegmentIntersects = QgsGeometryUtils::segmentIntersection( pLimit1Projected, pLimit2Projected, pExtend1, pExtend2, mIntersection, mIsIntersection, 1e-8, true );
 
         if ( mIs3DLayer && QgsWkbTypes::hasZ( match.layer()->wkbType() ) )
         {
           /* Z Interpolation */
-          const QgsLineString line( pLimit1, pLimit2 );
+          const QgsLineString line( pLimit1Projected, pLimit2Projected );
 
           mIntersection = QgsGeometryUtils::closestPoint( line, QgsPoint( mIntersection ) );
         }
@@ -168,7 +172,7 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
               index += 1;
           }
           // TRIM PART
-          else if ( QgsGeometryUtils::leftOfLine( QgsPoint( mMapPoint ), pLimit1, pLimit2 ) != QgsGeometryUtils::leftOfLine( pExtend1, pLimit1, pLimit2 ) )
+          else if ( QgsGeometryUtils::leftOfLine( QgsPoint( mMapPoint ), pLimit1Projected, pLimit2Projected ) != QgsGeometryUtils::leftOfLine( pExtend1, pLimit1Projected, pLimit2Projected ) )
           {
             // Part where the mouse is (+) will be trimmed
             /*     |
