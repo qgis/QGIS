@@ -1181,7 +1181,7 @@ Shift+O to turn segments into straight or curve lines.</string>
    <property name="toolTip">
     <string>Trim/Extend Feature
 - Click to set the reference segment
-- Click on another segment to trim it or extend it to the reference segment (Use Shift or Ctrl to keep the reference segment active)
+- Click on another segment to trim it or extend it to the reference segment (Use Shift to keep the reference segment active)
 Note : Segment snapping must be enabled in the snapping Toolbar</string>
    </property>
   </action>

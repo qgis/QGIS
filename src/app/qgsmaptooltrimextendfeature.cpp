@@ -265,8 +265,8 @@ void QgsMapToolTrimExtendFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
           emit messageEmitted( tr( "Couldn't trim or extend the feature." ) );
         }
 
-        // If Ctrl or Shift is pressed, keep the tool active with its reference feature
-        if ( !( e->modifiers() & ( Qt::ControlModifier | Qt::ShiftModifier ) ) )
+        // If Shift is pressed, keep the tool active with its reference feature
+        if ( !( e->modifiers() & Qt::ShiftModifier ) )
           deactivate();
         break;
     }
