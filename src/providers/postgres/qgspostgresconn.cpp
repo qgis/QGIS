@@ -2902,7 +2902,7 @@ int QgsPostgresConn::crsToSrid( const QgsCoordinateReferenceSystem &crs )
 QString QgsPostgresConn::rasterColumnName( const QString &schema, const QString &table )
 {
   QMutexLocker locker( &mLock );
-  QString rasterColum;
+  QString rasterColumn;
   QString sql = QStringLiteral( "SELECT r_raster_column"
                                 " FROM public.raster_columns"
                                 " WHERE"
@@ -2915,12 +2915,12 @@ QString QgsPostgresConn::rasterColumnName( const QString &schema, const QString 
 
   if ( res.PQresultStatus() == PGRES_TUPLES_OK )
   {
-    rasterColum = res.PQgetvalue( 0, 0 );
+    rasterColumn = res.PQgetvalue( 0, 0 );
   }
   else
   {
     QgsMessageLog::logMessage( tr( "SQL: %1\nresult: %2\nerror: %3\n" ).arg( sql ).arg( res.PQresultStatus() ).arg( res.PQresultErrorMessage() ), tr( "PostGIS" ) );
   }
 
-  return rasterColum;
+  return rasterColumn;
 }
