@@ -832,9 +832,14 @@ If you want to test QGIS, easiest option is to download and install all-in-one s
 
 https://download.qgis.org/downloads/macos/
 
-On the other hand, if you want to build or develop QGIS on your own, you need a set of dependencies and tools.
-These instructions will use the same set of dependencies that are used for all-in-one QGIS bundle,
-but you can build QGIS with Homebrew, MacPorts or Conda dependencies too.
+If you want to build or develop QGIS on your own, you need a set of dependencies and tools.
+You can use
+
+- the same set of dependencies that are used for all-in-one QGIS bundle
+- vcpkg based dependencies for building with Qt6
+- with Homebrew, MacPorts or Conda dependencies (not covered in this guide)
+
+## 5.1. Building with Mac Packager
 
 https://github.com/qgis/QGIS-Mac-Packager
 
@@ -856,7 +861,7 @@ To find out how many CPUs you have available, run the following in Terminal:
 /usr/sbin/sysctl -n hw.ncpu
 ```
 
-## 5.1. Install Developer Tools
+### 5.1.1. Install Developer Tools
 
 Developer tools are not a part of a standard OS X installation.
 As minimum you require command line tools
@@ -867,7 +872,7 @@ sudo xcode-select --install
 
 but installation of Xcode from the App Store is recommended too.
 
-## 5.2. Install CMake and other build tools
+### 5.1.2. Install CMake and other build tools
 
 For example install Homebrew
 
@@ -884,7 +889,7 @@ brew install git cmake ninja pkg-config wget bash-completion curl gnu-sed coreut
 if you have these tools installed from MacPorts or Conda, it is the same, but we will need to be able to
 run `cmake` and others from Terminal in the following steps
 
-## 5.3. Install Qt5 and QGIS-Deps
+### 5.1.3. Install Qt5 and QGIS-Deps
 
 To build QGIS, we need Qt5 and FOSS dependencies on hand. The Qt5 version ideally should match the version that was
 used to build dependency package.
@@ -907,7 +912,7 @@ Note that the QGIS-Deps package is not yet signed, so you may need to add Termin
 to System Preferences -> Security & Privacy -> Privacy -> Developer Tools or manually accept usage
 of the libraries when asked by system.
 
-## 5.4. QGIS source
+### 5.1.4. QGIS source
 
 Unzip the QGIS source to a working folder of your choice.
 If you are reading this from the source, you've already done this.
@@ -925,7 +930,7 @@ select Download .tar.gz. Double-click the tarball to unzip it.
 git clone git://github.com/qgis/QGIS.git
 ```
 
-## 5.5. Configure the build
+### 5.1.5. Configure the build
 
 CMake supports out of source build so we will create a 'build' dir for the
 build process. OS X uses `${HOME}/Applications` as a standard user app folder (it
@@ -964,7 +969,7 @@ cd build
 ccmake ../QGIS
 ```
 
-## 5.6. Building
+### 5.1.6. Building
 
 Now we can start the build process (remember the parallel compilation note at
 the beginning, this is a good place to use it, if you can):
@@ -991,6 +996,67 @@ For running the installed QGIS, you need to keep the dependencies in `/opt/` fol
 If you want to create bundle that runs without these dependencies, please read the documentation in project
 
 https://github.com/qgis/QGIS-Mac-Packager
+
+## 5.2.
+
+With [vcpkg](https://github.com/microsoft/vcpkg/) you can develop QGIS using
+Qt6.
+
+Install and initialize vcpkg
+
+```sh
+. <(curl https://aka.ms/vcpkg-init.sh -L)
+```
+
+Install build tools using [homebrew](https://brew.sh/)
+
+```sh
+brew install git cmake flex bison automake autoconf libtool nasm ninja
+```
+
+Get the QGIS source code
+
+```sh
+git clone git@github.com:qgis/QGIS.git
+```
+
+Prepare the env for homebrew tools
+
+```sh
+export PATH=$(brew --prefix bison)/bin:$(brew --prefix flex)/bin:$(brew --prefix libtool)/bin:$PATH
+```
+
+Select the target architecture (arm64 is for M series processors).
+We will assume that you build for the same architecture that you build on.
+If that is not the case (e.g. you build for x64 on a arm64 machine), adjust
+the `HOST_TRIPLET` in the next step.
+
+```sh
+TRIPLET=arm64-osx-dynamic-release
+# TRIPLET=x64-osx-dynamic-release
+```
+
+Configure
+
+```sh
+cmake -S . \
+      -G Ninja \
+      -B build \
+      -D WITH_VCPKG=ON \
+      -D BUILD_WITH_QT6=ON \
+      -D WITH_QTWEBKIT=OFF \
+      -D WITH_BINDINGS=ON \
+      -D QGIS_MACAPP_FRAMEWORK=OFF \
+      -D VCPKG_TARGET_TRIPLET="$TRIPLET" \
+      -D VCPKG_HOST_TRIPLET="$TRIPLET" \
+      -D CREATE_MACOSX_BUNDLE=OFF
+```
+
+Build (switch the target to `Release` if you do not want to debug)
+
+```sh
+cmake --build build --target RelWithDebInfo
+```
 
 # 6. Setting up the WCS test server on GNU/Linux
 
