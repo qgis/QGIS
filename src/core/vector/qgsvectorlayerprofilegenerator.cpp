@@ -1443,8 +1443,12 @@ bool QgsVectorLayerProfileGenerator::generateProfileForPolygons()
           intersection.reset( mProfileBufferedCurveEngine->intersection( shiftedPoly.get(), &error ) );
           if ( intersection.get() )
             processTriangleLineIntersect( clampedPolygon.get(), intersection.get(), transformedParts, crossSectionParts );
+#ifdef QGISDEBUG
           else
+          {
             QgsDebugMsgLevel( QStringLiteral( "processPolygon after shift bad geom! error: %1" ).arg( error ), 0 );
+          }
+#endif
         }
       }
 
