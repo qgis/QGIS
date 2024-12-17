@@ -625,6 +625,8 @@ QString QgsOgrProvider::subsetStringHelpUrl() const
 uint QgsOgrProvider::subLayerCount() const
 {
   uint count = layerCount();
+  if ( count == 0 )
+    return 0;
 
   QString errCause;
   QgsOgrLayerUniquePtr layerStyles = QgsOgrProviderUtils::getLayer( mFilePath, QStringLiteral( "layer_styles" ), errCause );
