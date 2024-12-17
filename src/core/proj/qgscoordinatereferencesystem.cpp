@@ -1724,9 +1724,13 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt )
     QgsDebugMsgLevel( QStringLiteral( "This CRS could *** NOT *** be set from the supplied Wkt " ), 2 );
     QgsDebugMsgLevel( "INPUT: " + wkt, 2 );
     for ( auto iter = warnings; iter && *iter; ++iter )
+    {
       QgsDebugMsgLevel( *iter, 2 );
+    }
     for ( auto iter = grammarErrors; iter && *iter; ++iter )
+    {
       QgsDebugMsgLevel( *iter, 2 );
+    }
     QgsDebugMsgLevel( QStringLiteral( "---------------------------------------------------------------\n" ), 2 );
   }
   proj_string_list_destroy( warnings );
