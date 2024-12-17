@@ -48,6 +48,7 @@ QgsMapToolTrimExtendFeature::QgsMapToolTrimExtendFeature( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
 {
   mToolName = tr( "Trim/Extend feature" );
+  connect( mCanvas, &QgsMapCanvas::extentsChanged, this, &QgsMapToolTrimExtendFeature::extendLimit );
 }
 
 static bool getPoints( const QgsPointLocator::Match &match, QgsPoint &p1, QgsPoint &p2 )
@@ -89,15 +90,19 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
 
         QgsPointXY p1, p2;
         match.edgePoints( p1, p2 );
-
+        mLimitLayer = match.layer();
         mRubberBandLimit.reset( createRubberBand( Qgis::GeometryType::Line ) );
+        mRubberBandLimitExtend.reset( createRubberBand( Qgis::GeometryType::Line ) );
+        mRubberBandLimitExtend->setLineStyle( Qt::DotLine );
         mRubberBandLimit->addPoint( p1 );
         mRubberBandLimit->addPoint( p2 );
         mRubberBandLimit->show();
+        extendLimit();
       }
       else if ( mRubberBandLimit )
       {
         mRubberBandLimit->hide();
+        mRubberBandLimitExtend.reset();
       }
       break;
     case StepExtend:
@@ -198,8 +203,10 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
           if ( mIsModified )
           {
             mGeom.removeDuplicateNodes();
-            mRubberBandExtend->setToGeometry( mGeom, mVlayer );
+            // Densify by count to better display the intersection when layer crs != map crs
+            mRubberBandExtend->setToGeometry( mGeom.densifyByCount( 10 ), mVlayer );
             mRubberBandExtend->show();
+            extendLimit();
           }
         }
         else
@@ -294,6 +301,69 @@ void QgsMapToolTrimExtendFeature::keyPressEvent( QKeyEvent *e )
   }
 }
 
+
+void QgsMapToolTrimExtendFeature::extendLimit()
+{
+  if ( !mRubberBandLimitExtend )
+  {
+    return;
+  }
+
+  QgsVectorLayer *refLayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  refLayer = refLayer ? refLayer : mVlayer ? mVlayer
+                                           : mLimitLayer;
+
+  // Compute intersection between the line that extends the limit segment and the
+  // edges of the map canvas
+  QgsPointXY p1 = toLayerCoordinates( refLayer, *mRubberBandLimit->getPoint( 0, 0 ) );
+  QgsPointXY p2 = toLayerCoordinates( refLayer, *mRubberBandLimit->getPoint( 0, 1 ) );
+  QgsPoint canvasTopLeft = QgsPoint( toLayerCoordinates( refLayer, QPoint( 0, 0 ) ) );
+  QgsPoint canvasTopRight = QgsPoint( toLayerCoordinates( refLayer, QPoint( mCanvas->width(), 0 ) ) );
+  QgsPoint canvasBottomLeft = QgsPoint( toLayerCoordinates( refLayer, QPoint( 0, mCanvas->height() ) ) );
+  QgsPoint canvasBottomRight = QgsPoint( toLayerCoordinates( refLayer, QPoint( mCanvas->width(), mCanvas->height() ) ) );
+
+  QList<QgsPointXY> points;
+  points << p1 << p2;
+
+  QgsPoint intersection;
+  if ( QgsGeometryUtils::lineIntersection( QgsPoint( p1 ), QgsPoint( p2 ) - QgsPoint( p1 ), canvasTopLeft, canvasTopRight - canvasTopLeft, intersection ) )
+  {
+    points << QgsPointXY( intersection );
+  }
+  if ( QgsGeometryUtils::lineIntersection( QgsPoint( p1 ), QgsPoint( p2 ) - QgsPoint( p1 ), canvasTopRight, canvasBottomRight - canvasTopRight, intersection ) )
+  {
+    points << QgsPointXY( intersection );
+  }
+  if ( QgsGeometryUtils::lineIntersection( QgsPoint( p1 ), QgsPoint( p2 ) - QgsPoint( p1 ), canvasBottomRight, canvasBottomLeft - canvasBottomRight, intersection ) )
+  {
+    points << QgsPointXY( intersection );
+  }
+  if ( QgsGeometryUtils::lineIntersection( QgsPoint( p1 ), QgsPoint( p2 ) - QgsPoint( p1 ), canvasBottomLeft, canvasTopLeft - canvasBottomLeft, intersection ) )
+  {
+    points << QgsPointXY( intersection );
+  }
+
+  // Reorder the points by x/y coordinates
+  std::sort( points.begin(), points.end(), []( const QgsPointXY &a, const QgsPointXY &b ) -> bool {
+    if ( a.x() == b.x() )
+      return a.y() < b.y();
+    return a.x() < b.x();
+  } );
+
+  // Keep only the closest intersection points from the original points
+  const int p1Idx = points.indexOf( p1 );
+  const int p2Idx = points.indexOf( p2 );
+  const int first = std::max( 0, std::min( p1Idx, p2Idx ) - 1 );
+  const int last = std::min( points.size() - 1, std::max( p1Idx, p2Idx ) + 1 );
+  const QgsPolylineXY polyline = points.mid( first, last - first + 1 ).toVector();
+
+  // Densify the polyline to display a more accurate prediction when layer crs != canvas crs
+  QgsGeometry geom = QgsGeometry::fromPolylineXY( polyline ).densifyByCount( 10 );
+
+  mRubberBandLimitExtend->setToGeometry( geom, refLayer );
+  mRubberBandLimitExtend->show();
+}
+
 void QgsMapToolTrimExtendFeature::deactivate()
 {
   mStep = StepLimit;
@@ -302,6 +372,7 @@ void QgsMapToolTrimExtendFeature::deactivate()
   mIsIntersection = false;
   mSegmentIntersects = false;
   mRubberBandLimit.reset();
+  mRubberBandLimitExtend.reset();
   mRubberBandExtend.reset();
   mRubberBandIntersection.reset();
   QgsMapTool::deactivate();
