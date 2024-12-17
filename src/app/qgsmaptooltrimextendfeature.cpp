@@ -278,13 +278,13 @@ void QgsMapToolTrimExtendFeature::canvasReleaseEvent( QgsMapMouseEvent *e )
 
         // If Shift is pressed, keep the tool active with its reference feature
         if ( !( e->modifiers() & Qt::ShiftModifier ) )
-          deactivate();
+          reset();
         break;
     }
   }
   else if ( e->button() == Qt::RightButton )
   {
-    deactivate();
+    reset();
   }
 }
 
@@ -297,7 +297,7 @@ void QgsMapToolTrimExtendFeature::keyPressEvent( QKeyEvent *e )
 
   if ( e && e->key() == Qt::Key_Escape )
   {
-    deactivate();
+    reset();
   }
 }
 
@@ -354,7 +354,7 @@ void QgsMapToolTrimExtendFeature::extendLimit()
   const int p1Idx = points.indexOf( p1 );
   const int p2Idx = points.indexOf( p2 );
   const int first = std::max( 0, std::min( p1Idx, p2Idx ) - 1 );
-  const int last = std::min( points.size() - 1, std::max( p1Idx, p2Idx ) + 1 );
+  const int last = std::min( static_cast<int>( points.size() ) - 1, std::max( p1Idx, p2Idx ) + 1 );
   const QgsPolylineXY polyline = points.mid( first, last - first + 1 ).toVector();
 
   // Densify the polyline to display a more accurate prediction when layer crs != canvas crs
@@ -363,8 +363,7 @@ void QgsMapToolTrimExtendFeature::extendLimit()
   mRubberBandLimitExtend->setToGeometry( geom, refLayer );
   mRubberBandLimitExtend->show();
 }
-
-void QgsMapToolTrimExtendFeature::deactivate()
+void QgsMapToolTrimExtendFeature::reset()
 {
   mStep = StepLimit;
   mIsModified = false;
@@ -375,7 +374,11 @@ void QgsMapToolTrimExtendFeature::deactivate()
   mRubberBandLimitExtend.reset();
   mRubberBandExtend.reset();
   mRubberBandIntersection.reset();
-  QgsMapTool::deactivate();
   mVlayer = nullptr;
   mLimitLayer = nullptr;
+}
+void QgsMapToolTrimExtendFeature::deactivate()
+{
+  reset();
+  QgsMapTool::deactivate();
 }
