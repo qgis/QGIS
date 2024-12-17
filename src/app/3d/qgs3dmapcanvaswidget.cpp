@@ -556,7 +556,7 @@ void Qgs3DMapCanvasWidget::exportScene()
   QgsGui::enableAutoGeometryRestore( &dlg );
 
   Qgs3DMapExportSettings exportSettings;
-  QgsMap3DExportWidget w( mCanvas->scene(), &exportSettings );
+  QgsMap3DExportWidget exportWidget( mCanvas->scene(), &exportSettings );
 
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, &dlg );
 
@@ -565,10 +565,10 @@ void Qgs3DMapCanvasWidget::exportScene()
   connect( buttons, &QDialogButtonBox::helpRequested, &dlg, [=] { QgsHelp::openHelp( QStringLiteral( "map_views/3d_map_view.html" ) ); } );
 
   QVBoxLayout *layout = new QVBoxLayout( &dlg );
-  layout->addWidget( &w, 1 );
+  layout->addWidget( &exportWidget, 1 );
   layout->addWidget( buttons );
   if ( dlg.exec() )
-    w.exportScene();
+    exportWidget.exportScene();
 }
 
 void Qgs3DMapCanvasWidget::onMainCanvasLayersChanged()
