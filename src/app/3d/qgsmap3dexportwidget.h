@@ -35,7 +35,7 @@ class QgsMap3DExportWidget : public QWidget
     ~QgsMap3DExportWidget();
 
     void loadSettings();
-    void exportScene();
+    bool exportScene();
   private slots:
     void settingsChanged();
 
