@@ -1592,8 +1592,12 @@ int QgsPostgresConn::PQCancel()
   {
     char errbuf[255];
     result = ::PQcancel( cancel, errbuf, 255 );
+#ifdef QGISDEBUG
     if ( !result )
+    {
       QgsDebugMsgLevel( QStringLiteral( "Error canceling the query:" ).arg( errbuf ), 3 );
+    }
+#endif
   }
   ::PQfreeCancel( cancel );
   return result;
@@ -2028,7 +2032,9 @@ void QgsPostgresConn::deduceEndian()
                                          "FETCH FORWARD 1 FROM oidcursor;"
                                          "CLOSE oidcursor;"
                                          "COMMIT;" ) ) )
+  {
     QgsDebugMsgLevel( QStringLiteral( "PQsendQuery(...) error %1" ).arg( PQerrorMessage() ), 2 );
+  }
 
   for ( ;; )
   {

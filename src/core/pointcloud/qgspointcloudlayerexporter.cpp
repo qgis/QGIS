@@ -195,8 +195,12 @@ void QgsPointCloudLayerExporter::prepareExport()
 
   if ( mFormat == ExportFormat::Memory )
   {
+#ifdef QGISDEBUG
     if ( QApplication::instance()->thread() != QThread::currentThread() )
+    {
       QgsDebugMsgLevel( QStringLiteral( "prepareExport() should better be called from the main thread!" ), 2 );
+    }
+#endif
 
     mMemoryLayer = QgsMemoryProviderUtils::createMemoryLayer( mName, outputFields(), Qgis::WkbType::PointZ, mTargetCrs );
   }
