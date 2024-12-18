@@ -468,6 +468,67 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
             )
         )
 
+    @unittest.skipIf(
+        "vpc" not in QgsProviderRegistry.instance().providerList(),
+        "VPC provider not available",
+    )
+    def testOverviewRender(self):
+        layer = QgsPointCloudLayer(
+            unitTestDataPath()
+            + "/point_clouds/virtual/sunshine-coast/new-combined.vpc",
+            "test",
+            "vpc",
+        )
+        self.assertTrue(layer.isValid())
+
+        layer.setRenderer(layer.dataProvider().createRenderer())
+
+        layer.renderer().setPointSize(2)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                "classified_render_overview", "classified_render_overview", mapsettings
+            )
+        )
+
+    @unittest.skipIf(
+        "vpc" not in QgsProviderRegistry.instance().providerList(),
+        "VPC provider not available",
+    )
+    def testExtentsRender(self):
+        layer = QgsPointCloudLayer(
+            unitTestDataPath() + "/point_clouds/virtual/sunshine-coast/combined.vpc",
+            "test",
+            "vpc",
+        )
+        self.assertTrue(layer.isValid())
+
+        layer.setRenderer(layer.dataProvider().createRenderer())
+
+        layer.renderer().setPointSize(2)
+        layer.renderer().setPointSizeUnit(QgsUnitTypes.RenderUnit.RenderMillimeters)
+
+        mapsettings = QgsMapSettings()
+        mapsettings.setOutputSize(QSize(400, 400))
+        mapsettings.setOutputDpi(96)
+        mapsettings.setDestinationCrs(layer.crs())
+        mapsettings.setExtent(QgsRectangle(498061, 7050991, 498069, 7050999))
+        mapsettings.setLayers([layer])
+
+        self.assertTrue(
+            self.render_map_settings_check(
+                "classified_render_extents", "classified_render_extents", mapsettings
+            )
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
