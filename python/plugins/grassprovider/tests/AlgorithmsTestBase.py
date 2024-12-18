@@ -34,12 +34,15 @@ from osgeo.gdalconst import GA_ReadOnly
 from numpy import nan_to_num
 from copy import deepcopy
 
+from qgis.PyQt.QtCore import QT_VERSION
 from qgis.core import (
+    Qgis,
     QgsVectorLayer,
     QgsRasterLayer,
     QgsCoordinateReferenceSystem,
     QgsFeatureRequest,
     QgsMapLayer,
+    QgsMeshLayer,
     QgsProject,
     QgsApplication,
     QgsProcessingContext,
@@ -48,12 +51,21 @@ from qgis.core import (
 )
 from qgis.analysis import QgsNativeAlgorithms
 from qgis.testing import _UnexpectedSuccess, QgisTestCase, start_app
-
 from utilities import unitTestDataPath
+from grassprovider.grass_utils import GrassUtils
 
 import processing
 
 gdal.UseExceptions()
+
+
+def GDAL_COMPUTE_VERSION(maj, min, rev):
+    return (maj) * 1000000 + (min) * 10000 + (rev) * 100
+
+
+def GRASS_VERSION_INT(version: str) -> int:
+    parts = version.split(".")
+    return int(parts[0]) * 1000000 + int(parts[1]) * 10000 + int(parts[2]) * 100
 
 
 def processingTestDataPath():
@@ -73,6 +85,108 @@ class AlgorithmsTest:
 
         if "tests" in algorithm_tests and algorithm_tests["tests"] is not None:
             for idx, algtest in enumerate(algorithm_tests["tests"]):
+                condition = algtest.get("condition")
+                if condition:
+                    grass_condition = condition.get("grass")
+                    if grass_condition:
+                        grass_version = GRASS_VERSION_INT(GrassUtils.installedVersion())
+                        less_than_condition = grass_condition.get("less_than")
+                        if less_than_condition:
+                            if grass_version >= less_than_condition:
+                                print(
+                                    "!!! Skipping {}, requires GRASS < {}, have version {}".format(
+                                        algtest["name"],
+                                        less_than_condition,
+                                        grass_version,
+                                    )
+                                )
+                                continue
+                        at_least_condition = grass_condition.get("at_least")
+                        if at_least_condition:
+                            if grass_version < at_least_condition:
+                                print(
+                                    "!!! Skipping {}, requires GRASS >= {}, have version {}".format(
+                                        algtest["name"],
+                                        at_least_condition,
+                                        grass_version,
+                                    )
+                                )
+                                continue
+
+                    geos_condition = condition.get("geos")
+                    if geos_condition:
+                        less_than_condition = geos_condition.get("less_than")
+                        if less_than_condition:
+                            if Qgis.geosVersionInt() >= less_than_condition:
+                                print(
+                                    "!!! Skipping {}, requires GEOS < {}, have version {}".format(
+                                        algtest["name"],
+                                        less_than_condition,
+                                        Qgis.geosVersionInt(),
+                                    )
+                                )
+                                continue
+                        at_least_condition = geos_condition.get("at_least")
+                        if at_least_condition:
+                            if Qgis.geosVersionInt() < at_least_condition:
+                                print(
+                                    "!!! Skipping {}, requires GEOS >= {}, have version {}".format(
+                                        algtest["name"],
+                                        at_least_condition,
+                                        Qgis.geosVersionInt(),
+                                    )
+                                )
+                                continue
+                    gdal_condition = condition.get("gdal")
+                    if gdal_condition:
+                        less_than_condition = gdal_condition.get("less_than")
+                        if less_than_condition:
+                            if (
+                                int(gdal.VersionInfo("VERSION_NUM"))
+                                >= less_than_condition
+                            ):
+                                print(
+                                    "!!! Skipping {}, requires GDAL < {}, have version {}".format(
+                                        algtest["name"],
+                                        less_than_condition,
+                                        gdal.VersionInfo("VERSION_NUM"),
+                                    )
+                                )
+                                continue
+                        at_least_condition = gdal_condition.get("at_least")
+                        if at_least_condition:
+                            if (
+                                int(gdal.VersionInfo("VERSION_NUM"))
+                                < at_least_condition
+                            ):
+                                print(
+                                    "!!! Skipping {}, requires GDAL >= {}, have version {}".format(
+                                        algtest["name"],
+                                        at_least_condition,
+                                        gdal.VersionInfo("VERSION_NUM"),
+                                    )
+                                )
+                                continue
+                    qt_condition = condition.get("qt")
+                    if qt_condition:
+                        less_than_condition = qt_condition.get("less_than")
+                        if less_than_condition:
+                            if QT_VERSION >= less_than_condition:
+                                print(
+                                    "!!! Skipping {}, requires Qt < {}, have version {}".format(
+                                        algtest["name"], less_than_condition, QT_VERSION
+                                    )
+                                )
+                                continue
+                        at_least_condition = qt_condition.get("at_least")
+                        if at_least_condition:
+                            if QT_VERSION < at_least_condition:
+                                print(
+                                    "!!! Skipping {}, requires Qt >= {}, have version {}".format(
+                                        algtest["name"], at_least_condition, QT_VERSION
+                                    )
+                                )
+                                continue
                 print(
                     'About to start {} of {}: "{}"'.format(
                         idx, len(algorithm_tests["tests"]), algtest["name"]
@@ -136,6 +250,12 @@ class AlgorithmsTest:
         # ignore user setting for invalid geometry handling
         context = QgsProcessingContext()
         context.setProject(QgsProject.instance())
+        if "ellipsoid" in defs:
+            # depending on the project settings, we can't always rely
+            # on QgsProject.ellipsoid() returning the same ellipsoid as was
+            # specified in the test definition. So just force ensure that the
+            # context's ellipsoid is the desired one
+            context.setEllipsoid(defs["ellipsoid"])
 
         if "skipInvalid" in defs and defs["skipInvalid"]:
             context.setInvalidGeometryCheck(
@@ -180,7 +300,7 @@ class AlgorithmsTest:
         parameter based on its key `type` and return the appropriate parameter to pass to the algorithm.
         """
         try:
-            if param["type"] in ("vector", "raster", "table"):
+            if param["type"] in ("vector", "raster", "table", "mesh"):
                 return self.load_layer(id, param).id()
             elif param["type"] == "vrtlayers":
                 vals = []
@@ -290,6 +410,8 @@ class AlgorithmsTest:
             options = QgsRasterLayer.LayerOptions()
             options.loadDefaultStyle = False
             lyr = QgsRasterLayer(filepath, param["name"], "gdal", options)
+        elif param["type"] == "mesh":
+            lyr = QgsMeshLayer(filepath, param["name"], "mdal")
 
         self.assertTrue(
             lyr.isValid(), f'Could not load layer "{filepath}" from param {param}'
@@ -440,10 +562,16 @@ class GenericAlgorithmsTest(QgisTestCase):
     @classmethod
     def setUpClass(cls):
         start_app()
+        from processing.core.Processing import Processing
+
+        Processing.initialize()
         cls.cleanup_paths = []
 
     @classmethod
     def tearDownClass(cls):
+        from processing.core.Processing import Processing
+
+        Processing.deinitialize()
         for path in cls.cleanup_paths:
             shutil.rmtree(path)
 
