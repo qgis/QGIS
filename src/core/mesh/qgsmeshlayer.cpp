@@ -1694,8 +1694,6 @@ QgsMeshDatasetIndex QgsMeshLayer::activeScalarDatasetIndex( QgsRenderContext &re
     return activeScalarDatasetAtTime( rendererContext.temporalRange(), mRendererSettings.activeScalarDatasetGroup() );
   else
     return staticScalarDatasetIndex( mRendererSettings.activeScalarDatasetGroup() );
-
-  return QgsMeshDatasetIndex();
 }
 
 bool QgsMeshLayer::minimumMaximumActiveScalarDataset( const QgsRectangle &extent, const QgsMeshDatasetIndex &datasetIndex, double &min, double &max )
