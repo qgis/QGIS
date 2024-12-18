@@ -37,10 +37,6 @@ QgsRasterLayerLabelProvider::QgsRasterLayerLabelProvider( QgsRasterLayer *layer 
 {
   mPlacement = Qgis::LabelPlacement::OverPoint;
   mFlags |= DrawLabels;
-
-  // always consider these labels highest priority
-  // TODO possibly expose as a setting
-  mPriority = 0;
 }
 
 QgsRasterLayerLabelProvider::~QgsRasterLayerLabelProvider()
@@ -137,20 +133,20 @@ void QgsRasterLayerLabelProvider::startRender( QgsRenderContext &context )
 
 ///@cond PRIVATE
 // RAII properties restorer for QgsRasterDataProvider
-struct ProviderSettingsRestorer
+struct RasterProviderSettingsRestorer
 {
   QgsRasterDataProvider *mProvider;
   const bool mProviderResampling;
   const Qgis::RasterResamplingMethod mZoomedOutMethod;
   const double mMaxOversampling;
 
-  ProviderSettingsRestorer( QgsRasterDataProvider *provider )
+  RasterProviderSettingsRestorer( QgsRasterDataProvider *provider )
     : mProvider( provider )
     , mProviderResampling( provider->isProviderResamplingEnabled() )
     , mZoomedOutMethod( provider->zoomedOutResamplingMethod() )
     , mMaxOversampling( provider->maxOversampling() ) {}
 
-  ~ProviderSettingsRestorer()
+  ~RasterProviderSettingsRestorer()
   {
     mProvider->enableProviderResampling( mProviderResampling );
     mProvider->setZoomedOutResamplingMethod( mZoomedOutMethod );
@@ -255,7 +251,7 @@ void QgsRasterLayerLabelProvider::generateLabels( QgsRenderContext &context, Qgs
   bool isNoData = false;
   int numberLabels = 0;
 
-  ProviderSettingsRestorer restorer( provider );
+  RasterProviderSettingsRestorer restorer( provider );
   if ( mResampleOver > 1 )
   {
     provider->enableProviderResampling( true );
@@ -424,13 +420,17 @@ QDomElement QgsRasterLayerSimpleLabeling::save( QDomDocument &doc, const QgsRead
   }
   elem.setAttribute( QStringLiteral( "resampleMethod" ), qgsEnumValueToKey( mResampleMethod ) );
 
-  QDomElement textFormatElem = doc.createElement( QStringLiteral( "textFormat" ) );
-  textFormatElem.appendChild( mTextFormat.writeXml( doc, context ) );
-  elem.appendChild( textFormatElem );
+  {
+    QDomElement textFormatElem = doc.createElement( QStringLiteral( "textFormat" ) );
+    textFormatElem.appendChild( mTextFormat.writeXml( doc, context ) );
+    elem.appendChild( textFormatElem );
+  }
 
-  QDomElement numericFormatElem = doc.createElement( QStringLiteral( "numericFormat" ) );
-  mNumericFormat->writeXml( numericFormatElem, doc, context );
-  elem.appendChild( numericFormatElem );
+  {
+    QDomElement numericFormatElem = doc.createElement( QStringLiteral( "numericFormat" ) );
+    mNumericFormat->writeXml( numericFormatElem, doc, context );
+    elem.appendChild( numericFormatElem );
+  }
 
   {
     QDomElement placementElem = doc.createElement( QStringLiteral( "placement" ) );
@@ -449,6 +449,7 @@ QDomElement QgsRasterLayerSimpleLabeling::save( QDomDocument &doc, const QgsRead
   {
     QDomElement renderingElem = doc.createElement( QStringLiteral( "rendering" ) );
     renderingElem.setAttribute( QStringLiteral( "scaleVisibility" ), mScaleVisibility );
+    // note the element names are "flipped" vs the member -- this is intentional, and done to match vector labeling
     renderingElem.setAttribute( QStringLiteral( "scaleMin" ), mMaximumScale );
     renderingElem.setAttribute( QStringLiteral( "scaleMax" ), mMinimumScale );
     elem.appendChild( renderingElem );
@@ -506,6 +507,7 @@ QgsRasterLayerSimpleLabeling *QgsRasterLayerSimpleLabeling::create( const QDomEl
   res->mThinningSettings.setMinimumFeatureSize( thinningElem.attribute( QStringLiteral( "minFeatureSize" ), QStringLiteral( "8" ) ).toDouble() );
 
   QDomElement renderingElem = element.firstChildElement( QStringLiteral( "rendering" ) );
+  // note the element names are "flipped" vs the member -- this is intentional, and done to match vector labeling
   res->mMaximumScale = renderingElem.attribute( QStringLiteral( "scaleMin" ), QStringLiteral( "0" ) ).toDouble();
   res->mMinimumScale = renderingElem.attribute( QStringLiteral( "scaleMax" ), QStringLiteral( "0" ) ).toDouble();
   res->mScaleVisibility = renderingElem.attribute( QStringLiteral( "scaleVisibility" ) ).toInt();

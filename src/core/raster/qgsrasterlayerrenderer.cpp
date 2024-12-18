@@ -40,8 +40,6 @@
 #include "qgsunittypes.h"
 #include "qgsrasternuller.h"
 #include "qgsrenderedlayerstatistics.h"
-#include "qgsnumericformat.h"
-
 #include "qgsrasterlabeling.h"
 
 #include <QElapsedTimer>
