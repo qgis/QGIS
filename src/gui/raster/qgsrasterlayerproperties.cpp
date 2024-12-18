@@ -69,6 +69,7 @@
 #include "qgswebframe.h"
 #include "qgsexpressionfinder.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsrasterlabelingwidget.h"
 #if WITH_QTWEBKIT
 #include <QWebElement>
 #endif
@@ -119,6 +120,12 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanv
   mRasterTransparencyWidget = new QgsRasterTransparencyWidget( mRasterLayer, canvas, this );
 
   transparencyScrollArea->setWidget( mRasterTransparencyWidget );
+
+  mLabelingWidget = new QgsRasterLabelingWidget( mRasterLayer, canvas, this );
+  QVBoxLayout *vl = new QVBoxLayout();
+  vl->setContentsMargins( 0, 0, 0, 0 );
+  vl->addWidget( mLabelingWidget );
+  mOptsPage_Labeling->setLayout( vl );
 
   connect( buttonBuildPyramids, &QPushButton::clicked, this, &QgsRasterLayerProperties::buttonBuildPyramids_clicked );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsRasterLayerProperties::mCrsSelector_crsChanged );
@@ -743,6 +750,7 @@ void QgsRasterLayerProperties::sync()
     return;
 
   mRasterTransparencyWidget->syncToLayer();
+  mLabelingWidget->syncToLayer( mRasterLayer );
 
   if ( provider->dataType( 1 ) == Qgis::DataType::ARGB32
        || provider->dataType( 1 ) == Qgis::DataType::ARGB32_Premultiplied )
@@ -953,6 +961,8 @@ void QgsRasterLayerProperties::apply()
   //transparency settings
   QgsRasterRenderer *rasterRenderer = mRasterLayer->renderer();
   mRasterTransparencyWidget->applyToRasterRenderer( rasterRenderer );
+
+  mLabelingWidget->apply();
 
   if ( rasterRenderer )
   {
