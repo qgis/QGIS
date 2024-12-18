@@ -500,12 +500,13 @@ void QgsO2::refreshSynchronous()
     else
     {
       setToken( tokens.value( O2_OAUTH2_ACCESS_TOKEN ).toString() );
-      setExpires( QDateTime::currentMSecsSinceEpoch() / 1000 + static_cast<qint64>( tokens.value( O2_OAUTH2_EXPIRES_IN ).toInt() ) );
+      const int expiresIn = tokens.value( O2_OAUTH2_EXPIRES_IN ).toInt();
+      setExpires( QDateTime::currentMSecsSinceEpoch() / 1000 + static_cast<qint64>( expiresIn ) );
       const QString refreshToken = tokens.value( O2_OAUTH2_REFRESH_TOKEN ).toString();
       if ( !refreshToken.isEmpty() )
         setRefreshToken( refreshToken );
       setLinked( true );
-      QgsDebugMsgLevel( QStringLiteral( "New token expires in %1 seconds" ).arg( expires() ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "New token expires in %1 seconds" ).arg( expiresIn ), 2 );
       emit linkingSucceeded();
     }
     emit refreshFinished( QNetworkReply::NoError );
