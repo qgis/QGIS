@@ -12,6 +12,7 @@ __copyright__ = "Copyright 2022, The QGIS Project"
 
 import os
 import math
+from typing import List, Tuple
 
 from qgis.PyQt.QtCore import QDir
 from qgis.core import (
@@ -2994,7 +2995,7 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         request: QgsProfileRequest,
         tolerance: float,
         layer: QgsVectorLayer,
-        expectedFeatures,
+        expectedFeatures: list[list[int]],
     ):
         request.setTolerance(tolerance)
 
@@ -3005,11 +3006,11 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         features = results.asFeatures(Qgis.ProfileExportType.Features3D)
         self.assertFalse(len(features) == 0)
 
-        expected = sorted(expectedFeatures.copy())
+        expected = [sorted(e.copy()) for e in expectedFeatures]
         actual = [f.attributes["id"] for _, f in enumerate(features)]
         actualUniqSorted = sorted(list(set(actual)))
 
-        self.assertEqual(actualUniqSorted, expected)
+        self.assertIn(actualUniqSorted, expected)
 
         for k, feat in enumerate(features):
             hasValidZ = False
@@ -3029,15 +3030,26 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         request: QgsProfileRequest,
         tolerance: float,
         layer: QgsVectorLayer,
-        expectedFeatures,
-        nbSubGeomPerFeature,
-        geomType,
+        expectedFeatures: list[list[tuple[int, int]]],
+        geomType: Qgis.GeometryType,
     ):
-        results = self.doCheckPoint(request, tolerance, layer, expectedFeatures)
+        """
+        The expectedFeatures is a list of valid features, with each tuple
+        containing feature ID and number of sub geometries for that feature
+        """
+        expected_point_features = [
+            [e[0] for e in expected] for expected in expectedFeatures
+        ]
+        results = self.doCheckPoint(request, tolerance, layer, expected_point_features)
         features = results.asFeatures(Qgis.ProfileExportType.Features3D)
 
         actual = [f.attributes["id"] for _, f in enumerate(features)]
         actualUniqSorted = sorted(list(set(actual)))
+        nbSubGeomPerFeature = [
+            [e[1] for e in expected]
+            for expected in expectedFeatures
+            if len(expected) == len(actualUniqSorted)
+        ][0]
         for idx, fid in enumerate(actualUniqSorted):
             actual = [1 for _, f in enumerate(features) if f.attributes["id"] == fid]
             self.assertEqual(len(actual), nbSubGeomPerFeature[idx])
@@ -3050,6 +3062,10 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
 
         return results
 
+    @unittest.skipIf(
+        Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() == 11,
+        "Unreliable GEOS minor version found",
+    )
     def testPointGenerationFeature(self):
         vl = QgsVectorLayer(os.path.join(unitTestDataPath(), "3d", "points_with_z.shp"))
         self.assertTrue(vl.isValid())
@@ -3072,20 +3088,18 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         req.setTerrainProvider(terrain_provider)
         req.setCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
 
-        if Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() <= 10:
-            self.doCheckPoint(req, 15, vl, [5, 11, 12, 13, 14, 15, 18, 45, 46])
-        elif Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() == 11:
-            self.doCheckPoint(req, 16, vl, [5, 11, 12, 13, 14, 15, 18, 45, 46])
-        elif Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() == 12:
-            self.doCheckPoint(req, 15, vl, [5, 11, 12, 13, 14, 15, 18, 45])
-        elif Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() >= 13:
-            self.doCheckPoint(req, 15, vl, [5, 11, 12, 13, 14, 15, 18, 45, 46])
+        # actual results vary a lot here depending on geos/proj/... versions!
+        expected = [
+            [5, 11, 12, 13, 14, 15, 18, 45, 46],
+            [5, 11, 12, 13, 14, 15, 18, 45],
+        ]
+        self.doCheckPoint(req, 15, vl, expected)
 
         self.doCheckPoint(
             req,
             70,
             vl,
-            [0, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 38, 45, 46, 48],
+            [[0, 3, 4, 5, 6, 7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 38, 45, 46, 48]],
         )
 
     def testLineGenerationFeature(self):
@@ -3112,29 +3126,39 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
         req.setCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
 
         # check no tolerance
-        self.doCheckLine(req, 0, vl, [0, 2], [1, 5], Qgis.GeometryType.Point)
+        self.doCheckLine(req, 0, vl, [[(0, 1), (2, 5)]], Qgis.GeometryType.Point)
 
         # check increased tolerance, terrain, no extrusion
-        self.doCheckLine(req, 1, vl, [0, 2], [1, 5], Qgis.GeometryType.Line)
+        self.doCheckLine(req, 1, vl, [[(0, 1), (2, 5)]], Qgis.GeometryType.Line)
 
         # check increased tolerance, terrain, no extrusion
-        self.doCheckLine(req, 20, vl, [0, 2], [1, 3], Qgis.GeometryType.Line)
+        self.doCheckLine(req, 20, vl, [[(0, 1), (2, 3)]], Qgis.GeometryType.Line)
 
         # check increased tolerance, terrain, no extrusion
-        self.doCheckLine(req, 50, vl, [1, 0, 2], [1, 1, 1], Qgis.GeometryType.Line)
+        self.doCheckLine(
+            req, 50, vl, [[(1, 1), (0, 1), (2, 1)]], Qgis.GeometryType.Line
+        )
 
         # check terrain + extrusion
         vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Terrain)
         vl.elevationProperties().setExtrusionEnabled(True)
         vl.elevationProperties().setExtrusionHeight(17)
-        self.doCheckLine(req, 50, vl, [1, 0, 2], [1, 1, 1], Qgis.GeometryType.Polygon)
+        self.doCheckLine(
+            req, 50, vl, [[(1, 1), (0, 1), (2, 1)]], Qgis.GeometryType.Polygon
+        )
 
         # check no terrain + no extrusion
         vl.elevationProperties().setClamping(Qgis.AltitudeClamping.Absolute)
         vl.elevationProperties().setExtrusionEnabled(False)
         vl.elevationProperties().setZOffset(5.0)
-        self.doCheckLine(req, 50, vl, [1, 0, 2], [1, 1, 1], Qgis.GeometryType.Line)
+        self.doCheckLine(
+            req, 50, vl, [[(1, 1), (0, 1), (2, 1)]], Qgis.GeometryType.Line
+        )
 
+    @unittest.skipIf(
+        Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() == 11,
+        "Unreliable GEOS minor version found",
+    )
     def testPolygonGenerationFeature(self):
         vl = QgsVectorLayer(os.path.join(unitTestDataPath(), "3d", "buildings.shp"))
         self.assertTrue(vl.isValid())
@@ -3162,128 +3186,93 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
             req,
             1,
             vl,
-            [168, 206, 210, 284, 306, 321],
-            [1, 1, 1, 1, 1, 1],
+            [[(168, 1), (206, 1), (210, 1), (284, 1), (306, 1), (321, 1)]],
             Qgis.GeometryType.Line,
         )
 
-        if Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() <= 10:
-            self.doCheckLine(
-                req,
-                10,
-                vl,
-                [168, 172, 206, 210, 231, 267, 275, 282, 284, 306, 307, 319, 321],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                Qgis.GeometryType.Line,
-            )
-            self.doCheckLine(
-                req,
-                11,
-                vl,
+        self.doCheckLine(
+            req,
+            10,
+            vl,
+            [
                 [
-                    168,
-                    172,
-                    206,
-                    210,
-                    231,
-                    255,
-                    267,
-                    275,
-                    282,
-                    283,
-                    284,
-                    306,
-                    307,
-                    319,
-                    321,
+                    (168, 1),
+                    (172, 1),
+                    (206, 1),
+                    (210, 1),
+                    (231, 1),
+                    (267, 1),
+                    (275, 1),
+                    (282, 1),
+                    (284, 1),
+                    (306, 1),
+                    (307, 1),
+                    (319, 1),
+                    (321, 1),
                 ],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                Qgis.GeometryType.Line,
-            )
-        elif Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() == 11:
-            self.doCheckLine(
-                req,
-                9,
-                vl,
-                [168, 172, 206, 210, 231, 267, 275, 282, 284, 306, 307, 319, 321],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                Qgis.GeometryType.Line,
-            )
-            self.doCheckLine(
-                req,
-                10,
-                vl,
-                [168, 172, 206, 210, 231, 267, 275, 282, 283, 284, 306, 307, 319, 321],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                Qgis.GeometryType.Line,
-            )
-        elif Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() == 12:
-            self.doCheckLine(
-                req,
-                10,
-                vl,
-                [168, 172, 206, 210, 231, 267, 275, 282, 283, 284, 306, 307, 319, 321],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                Qgis.GeometryType.Line,
-            )
-            self.doCheckLine(
-                req,
-                11,
-                vl,
                 [
-                    168,
-                    172,
-                    206,
-                    210,
-                    231,
-                    237,
-                    255,
-                    267,
-                    275,
-                    282,
-                    283,
-                    284,
-                    306,
-                    307,
-                    319,
-                    321,
+                    (168, 1),
+                    (172, 1),
+                    (206, 1),
+                    (210, 1),
+                    (231, 1),
+                    (267, 1),
+                    (275, 1),
+                    (282, 1),
+                    (283, 1),
+                    (284, 1),
+                    (306, 1),
+                    (307, 1),
+                    (319, 1),
+                    (321, 1),
                 ],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                Qgis.GeometryType.Line,
-            )
-        elif Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() >= 13:
-            self.doCheckLine(
-                req,
-                10,
-                vl,
-                [168, 172, 206, 210, 231, 267, 275, 282, 284, 306, 307, 319, 321],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                Qgis.GeometryType.Line,
-            )
-            self.doCheckLine(
-                req,
-                11,
-                vl,
+            ],
+            Qgis.GeometryType.Line,
+        )
+
+        self.doCheckLine(
+            req,
+            11,
+            vl,
+            [
                 [
-                    168,
-                    172,
-                    206,
-                    210,
-                    231,
-                    255,
-                    267,
-                    275,
-                    282,
-                    283,
-                    284,
-                    306,
-                    307,
-                    319,
-                    321,
+                    (168, 1),
+                    (172, 1),
+                    (206, 1),
+                    (210, 1),
+                    (231, 1),
+                    (255, 1),
+                    (267, 1),
+                    (275, 1),
+                    (282, 1),
+                    (283, 1),
+                    (284, 1),
+                    (306, 1),
+                    (307, 1),
+                    (319, 1),
+                    (321, 1),
                 ],
-                [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-                Qgis.GeometryType.Line,
-            )
+                [
+                    (168, 1),
+                    (172, 1),
+                    (206, 1),
+                    (210, 1),
+                    (231, 1),
+                    (237, 1),
+                    (255, 1),
+                    (267, 1),
+                    (275, 1),
+                    (282, 1),
+                    (283, 1),
+                    (284, 1),
+                    (306, 1),
+                    (307, 1),
+                    (319, 1),
+                    (321, 1),
+                ],
+            ],
+            Qgis.GeometryType.Line,
+        )
 
     def testPolyhedralSurfaceGenerationFeature(self):
         # Create a Vector Layer and add a polyhedralSurface feature
