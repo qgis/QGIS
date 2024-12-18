@@ -449,41 +449,44 @@ tests:
         hash: 07578ad38cf948473a519f040acb0235f60a592904ac8ef46aa607e1
         type: rasterhash
 
-# Triggers a Python exception on the GRASS version used on the CI - disabling until fixed in GRASS
-#  - algorithm: grass7:i.pansharpen
-#    name: GRASS7 i.pansharpen
-#    params:
-#      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
-#      blue:
-#        name: raster_4class.tif
-#        type: raster
-#      green:
-#        name: raster_5class.tif
-#        type: raster
-#      method: 2
-#      pan:
-#        name: float_raster.tif
-#        type: raster
-#      red:
-#        name: raster_6class.tif
-#        type: raster
-#    results:
-#      blueoutput:
-#        hash:
-#        - 906de8be89e302057ed849d00eaf49332ecca73ffaba1374994f1a17
-#        - 6abf8904844b902dfb567246ad906ff51673fa61a821633eadc480c4
-#        type: rasterhash
-#      greenoutput:
-#        hash:
-#        - 588ad1ef8360ce903fc2defb1a1728a1dc8335d737d5fa77797605ed
-#        - 5c3ac77c7ac4a57b7a985541ce0c5f76c1709d8de7aa66b3acfa45d6
-#        type: rasterhash
-#      redoutput:
-#        hash:
-#        - ad80c0007faa1b0dc15c0b0c21ff4e0045ff5e67b454df0f65e68899
-#        - b488227a86c3ed58f5b2328238d109e69c55024f86efb1d4876de1f6
-#        type: rasterhash
-#
+  - algorithm: grass7:i.pansharpen
+    name: GRASS7 i.pansharpen
+    condition:
+      grass:
+        # This test used to segfault on older GRASS releases
+        at_least: 8040000
+    params:
+      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+      blue:
+        name: raster_4class.tif
+        type: raster
+      green:
+        name: raster_5class.tif
+        type: raster
+      method: 2
+      pan:
+        name: float_raster.tif
+        type: raster
+      red:
+        name: raster_6class.tif
+        type: raster
+    results:
+      blueoutput:
+        hash:
+        - 906de8be89e302057ed849d00eaf49332ecca73ffaba1374994f1a17
+        - 6abf8904844b902dfb567246ad906ff51673fa61a821633eadc480c4
+        type: rasterhash
+      greenoutput:
+        hash:
+        - 588ad1ef8360ce903fc2defb1a1728a1dc8335d737d5fa77797605ed
+        - 5c3ac77c7ac4a57b7a985541ce0c5f76c1709d8de7aa66b3acfa45d6
+        type: rasterhash
+      redoutput:
+        hash:
+        - ad80c0007faa1b0dc15c0b0c21ff4e0045ff5e67b454df0f65e68899
+        - b488227a86c3ed58f5b2328238d109e69c55024f86efb1d4876de1f6
+        type: rasterhash
+
 
   - algorithm: grass7:i.smap
     name: GRASS7 i.smap
