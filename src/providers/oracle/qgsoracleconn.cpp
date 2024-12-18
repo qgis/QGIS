@@ -38,6 +38,7 @@ QMap<QString, QDateTime> QgsOracleConn::sBrokenConnections;
 QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri &uri, bool transaction )
 {
   const QString conninfo = toPoolName( uri );
+  QgsDebugMsgLevel( QStringLiteral( "Trying to connect to %1 (in transaction: %2)" ).arg( conninfo ).arg( transaction ? QStringLiteral( "YES" ) : QStringLiteral( "NO" ) ), 2 );
   const QPair<QString, QThread *> connInfoThread( conninfo, QThread::currentThread() );
 
   if ( !transaction )
@@ -50,16 +51,19 @@ QgsOracleConn *QgsOracleConn::connectDb( const QgsDataSourceUri &uri, bool trans
     }
   }
 
+  QgsDebugMsgLevel( QStringLiteral( "Making new connection" ), 2 );
   QgsOracleConn *conn = new QgsOracleConn( uri, transaction );
 
   if ( conn->mRef == 0 )
   {
+    QgsDebugMsgLevel( QStringLiteral( "Connection has no references, deleting..." ), 2 );
     delete conn;
     return nullptr;
   }
 
   if ( !transaction )
   {
+    QgsDebugMsgLevel( QStringLiteral( "Storing connection for this thread" ), 2 );
     sConnections.insert( connInfoThread, conn );
   }
 
@@ -88,7 +92,8 @@ QgsOracleConn::QgsOracleConn( const QgsDataSourceUri &uri, bool transaction )
   QString options = expandedUri.hasParam( QStringLiteral( "dboptions" ) ) ? expandedUri.param( QStringLiteral( "dboptions" ) ) : QStringLiteral( "OCI_ATTR_PREFETCH_ROWS=1000" );
   if ( mTransaction )
     options += ( !options.isEmpty() ? QStringLiteral( ";" ) : QString() ) + QStringLiteral( "COMMIT_ON_SUCCESS=false" );
-  QString workspace = expandedUri.hasParam( QStringLiteral( "dbworkspace" ) ) ? expandedUri.param( QStringLiteral( "dbworkspace" ) ) : QString();
+  const QString workspace = expandedUri.hasParam( QStringLiteral( "dbworkspace" ) ) ? expandedUri.param( QStringLiteral( "dbworkspace" ) ) : QString();
+  QgsDebugMsgLevel( QStringLiteral( "Using workspace %1" ).arg( workspace ), 2 );
   mDatabase.setConnectOptions( options );
   mDatabase.setUserName( expandedUri.username() );
   mDatabase.setPassword( expandedUri.password() );
