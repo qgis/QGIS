@@ -42,7 +42,6 @@ PyQgsElevationProfileCanvas
 PyQgsProject
 PyQgsFloatingWidget
 PyQgsLayoutHtml
-PyQgsLineSymbolLayers
 PyQgsMapBoxGlStyleConverter
 PyQgsNetworkAccessManager
 PyQgsPalLabelingPlacement
