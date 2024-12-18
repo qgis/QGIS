@@ -212,7 +212,7 @@
           ]
         },
         "overview": {
-          "href": "./new-combined-overview.copc.laz",
+          "href": "./combined-with-overview-overview.copc.laz",
           "roles": [
             "overview"
           ]
@@ -430,7 +430,7 @@
           ]
         },
         "overview": {
-          "href": "./new-combined-overview.copc.laz",
+          "href": "./combined-with-overview-overview.copc.laz",
           "roles": [
             "overview"
           ]
@@ -648,7 +648,7 @@
           ]
         },
         "overview": {
-          "href": "./new-combined-overview.copc.laz",
+          "href": "./combined-with-overview-overview.copc.laz",
           "roles": [
             "overview"
           ]
@@ -866,7 +866,7 @@
           ]
         },
         "overview": {
-          "href": "./new-combined-overview.copc.laz",
+          "href": "./combined-with-overview-overview.copc.laz",
           "roles": [
             "overview"
           ]

@@ -475,7 +475,7 @@ class TestQgsPointCloudClassifiedRenderer(QgisTestCase):
     def testOverviewRender(self):
         layer = QgsPointCloudLayer(
             unitTestDataPath()
-            + "/point_clouds/virtual/sunshine-coast/new-combined.vpc",
+            + "/point_clouds/virtual/sunshine-coast/combined-with-overview.vpc",
             "test",
             "vpc",
         )

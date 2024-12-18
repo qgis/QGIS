@@ -1301,7 +1301,7 @@ void TestQgsIdentify::identifyPointCloud()
 void TestQgsIdentify::identifyVirtualPointCloud()
 {
 #ifdef HAVE_COPC
-  std::unique_ptr<QgsPointCloudLayer> pointCloud = std::make_unique<QgsPointCloudLayer>( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/virtual/sunshine-coast/new-combined.vpc", QStringLiteral( "pointcloud" ), QStringLiteral( "vpc" ) );
+  std::unique_ptr<QgsPointCloudLayer> pointCloud = std::make_unique<QgsPointCloudLayer>( QStringLiteral( TEST_DATA_DIR ) + "/point_clouds/virtual/sunshine-coast/combined-with-overview.vpc", QStringLiteral( "pointcloud" ), QStringLiteral( "vpc" ) );
   QVERIFY( pointCloud->isValid() );
   pointCloud->setCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) );
   QCOMPARE( pointCloud->crs3D().horizontalCrs().authid(), QStringLiteral( "EPSG:28356" ) );
