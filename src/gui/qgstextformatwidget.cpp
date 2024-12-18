@@ -79,6 +79,99 @@ void QgsTextFormatWidget::initWidget()
 
   mGeometryGeneratorGroupBox->setCollapsed( true );
 
+  mTextItem = new QListWidgetItem( tr( "Text" ), mLabelingOptionsListWidget );
+  mTextItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/labeltext.svg" ) ) );
+  mTextItem->setToolTip( tr( "Text style" ) );
+
+  mFormattingItem = new QListWidgetItem( tr( "Formatting" ), mLabelingOptionsListWidget );
+  mFormattingItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/labelformatting.svg" ) ) );
+  mFormattingItem->setToolTip( tr( "Formatting" ) );
+
+  mBufferItem = new QListWidgetItem( tr( "Buffer" ), mLabelingOptionsListWidget );
+  mBufferItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/labelbuffer.svg" ) ) );
+  mBufferItem->setToolTip( tr( "Buffer" ) );
+
+  mMaskItem = new QListWidgetItem( tr( "Mask" ), mLabelingOptionsListWidget );
+  mMaskItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/labelmask.svg" ) ) );
+  mMaskItem->setToolTip( tr( "Mask" ) );
+
+  mBackgroundItem = new QListWidgetItem( tr( "Background" ), mLabelingOptionsListWidget );
+  mBackgroundItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/labelbackground.svg" ) ) );
+  mBackgroundItem->setToolTip( tr( "Background" ) );
+
+  mShadowItem = new QListWidgetItem( tr( "Shadow" ), mLabelingOptionsListWidget );
+  mShadowItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/labelshadow.svg" ) ) );
+  mShadowItem->setToolTip( tr( "Shadow" ) );
+
+  mCalloutItem = new QListWidgetItem( tr( "Callouts" ), mLabelingOptionsListWidget );
+  mCalloutItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/labelcallout.svg" ) ) );
+  mCalloutItem->setToolTip( tr( "Callouts" ) );
+
+  mPlacementItem = new QListWidgetItem( tr( "Placement" ), mLabelingOptionsListWidget );
+  mPlacementItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/labelplacement.svg" ) ) );
+  mPlacementItem->setToolTip( tr( "Placement" ) );
+
+  mRenderingItem = new QListWidgetItem( tr( "Rendering" ), mLabelingOptionsListWidget );
+  mRenderingItem->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "propertyicons/render.svg" ) ) );
+  mRenderingItem->setToolTip( tr( "Rendering" ) );
+
+  mLabelingOptionsListWidget->addItem( mTextItem );
+  mLabelingOptionsListWidget->addItem( mFormattingItem );
+  mLabelingOptionsListWidget->addItem( mBufferItem );
+  mLabelingOptionsListWidget->addItem( mMaskItem );
+  mLabelingOptionsListWidget->addItem( mBackgroundItem );
+  mLabelingOptionsListWidget->addItem( mShadowItem );
+  mLabelingOptionsListWidget->addItem( mCalloutItem );
+  mLabelingOptionsListWidget->addItem( mPlacementItem );
+  mLabelingOptionsListWidget->addItem( mRenderingItem );
+
+  QObject::connect( mOptionsTab, &QTabWidget::currentChanged, this, [this]( int index ) {
+    if ( index == mOptionsTab->indexOf( textTab ) )
+      mLabelStackedWidget->setCurrentWidget( mLabelPage_Text );
+    else if ( index == mOptionsTab->indexOf( formattingTab ) )
+      mLabelStackedWidget->setCurrentWidget( mLabelPage_Formatting );
+    else if ( index == mOptionsTab->indexOf( maskTab ) )
+      mLabelStackedWidget->setCurrentWidget( mLabelPage_Mask );
+    else if ( index == mOptionsTab->indexOf( bufferTab ) )
+      mLabelStackedWidget->setCurrentWidget( mLabelPage_Buffer );
+    else if ( index == mOptionsTab->indexOf( backgroundTab ) )
+      mLabelStackedWidget->setCurrentWidget( mLabelPage_Background );
+    else if ( index == mOptionsTab->indexOf( shadowTab ) )
+      mLabelStackedWidget->setCurrentWidget( mLabelPage_Shadow );
+    else if ( index == mOptionsTab->indexOf( calloutsTab ) )
+      mLabelStackedWidget->setCurrentWidget( mLabelPage_Callouts );
+    else if ( index == mOptionsTab->indexOf( placementTab ) )
+      mLabelStackedWidget->setCurrentWidget( mLabelPage_Placement );
+    else if ( index == mOptionsTab->indexOf( renderingTab ) )
+      mLabelStackedWidget->setCurrentWidget( mLabelPage_Rendering );
+  } );
+
+  QObject::connect( mLabelingOptionsListWidget, &QListWidget::currentRowChanged, this, [this]( int ) {
+    QListWidgetItem *currentItem = mLabelingOptionsListWidget->currentItem();
+    if ( !currentItem )
+      return;
+    if ( currentItem == mTextItem )
+      mLabelStackedWidget->setCurrentWidget( mLabelPage_Text );
+    else if ( currentItem == mFormattingItem )
+      mLabelStackedWidget->setCurrentWidget( mLabelPage_Formatting );
+    else if ( currentItem == mMaskItem )
+      mLabelStackedWidget->setCurrentWidget( mLabelPage_Mask );
+    else if ( currentItem == mBufferItem )
+      mLabelStackedWidget->setCurrentWidget( mLabelPage_Buffer );
+    else if ( currentItem == mBackgroundItem )
+      mLabelStackedWidget->setCurrentWidget( mLabelPage_Background );
+    else if ( currentItem == mShadowItem )
+      mLabelStackedWidget->setCurrentWidget( mLabelPage_Shadow );
+    else if ( currentItem == mCalloutItem )
+      mLabelStackedWidget->setCurrentWidget( mLabelPage_Callouts );
+    else if ( currentItem == mPlacementItem )
+      mLabelStackedWidget->setCurrentWidget( mLabelPage_Placement );
+    else if ( currentItem == mRenderingItem )
+      mLabelStackedWidget->setCurrentWidget( mLabelPage_Rendering );
+  } );
+
+  QObject::connect( mLabelingOptionsListWidget, &QListWidget::currentRowChanged, mLabelStackedWidget, &QStackedWidget::setCurrentIndex );
+
   connect( mShapeSVGPathLineEdit, &QLineEdit::textChanged, this, &QgsTextFormatWidget::mShapeSVGPathLineEdit_textChanged );
   connect( mFontSizeSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsTextFormatWidget::mFontSizeSpinBox_valueChanged );
   connect( mFontFamilyCmbBx, &QFontComboBox::currentFontChanged, this, &QgsTextFormatWidget::mFontFamilyCmbBx_currentFontChanged );
@@ -553,14 +646,18 @@ void QgsTextFormatWidget::setWidgetMode( QgsTextFormatWidget::Mode mode )
     {
       const int prevIndex = mOptionsTab->currentIndex();
       setPropertyOverrideButtonsVisible( true );
-      delete mLabelingOptionsListWidget->takeItem( 8 ); // rendering
-      delete mLabelingOptionsListWidget->takeItem( 7 ); // placement
-      delete mLabelingOptionsListWidget->takeItem( 6 ); // callouts
-      delete mLabelingOptionsListWidget->takeItem( 3 ); // mask
-      mOptionsTab->removeTab( 8 );
-      mOptionsTab->removeTab( 7 );
-      mOptionsTab->removeTab( 6 );
-      mOptionsTab->removeTab( 3 );
+      delete mRenderingItem;
+      mRenderingItem = nullptr;
+      delete mPlacementItem;
+      mPlacementItem = nullptr;
+      delete mCalloutItem;
+      mCalloutItem = nullptr;
+      delete mMaskItem;
+      mMaskItem = nullptr;
+      mOptionsTab->removeTab( mOptionsTab->indexOf( renderingTab ) );
+      mOptionsTab->removeTab( mOptionsTab->indexOf( placementTab ) );
+      mOptionsTab->removeTab( mOptionsTab->indexOf( calloutsTab ) );
+      mOptionsTab->removeTab( mOptionsTab->indexOf( maskTab ) );
       mLabelStackedWidget->removeWidget( mLabelPage_Rendering );
       mLabelStackedWidget->removeWidget( mLabelPage_Callouts );
       mLabelStackedWidget->removeWidget( mLabelPage_Mask );
@@ -629,15 +726,24 @@ void QgsTextFormatWidget::setPropertyOverrideButtonsVisible( bool visible )
 void QgsTextFormatWidget::setDockMode( bool enabled )
 {
   mOptionsTab->setVisible( enabled );
-  mOptionsTab->setTabToolTip( 0, tr( "Text" ) );
-  mOptionsTab->setTabToolTip( 1, tr( "Formatting" ) );
-  mOptionsTab->setTabToolTip( 2, tr( "Buffer" ) );
-  mOptionsTab->setTabToolTip( 3, tr( "Mask" ) );
-  mOptionsTab->setTabToolTip( 4, tr( "Background" ) );
-  mOptionsTab->setTabToolTip( 5, tr( "Shadow" ) );
-  mOptionsTab->setTabToolTip( 6, tr( "Callouts" ) );
-  mOptionsTab->setTabToolTip( 7, tr( "Placement" ) );
-  mOptionsTab->setTabToolTip( 8, tr( "Rendering" ) );
+  if ( int tabIndex = mOptionsTab->indexOf( textTab ); tabIndex >= 0 )
+    mOptionsTab->setTabToolTip( tabIndex, tr( "Text" ) );
+  if ( int tabIndex = mOptionsTab->indexOf( formattingTab ); tabIndex >= 0 )
+    mOptionsTab->setTabToolTip( tabIndex, tr( "Formatting" ) );
+  if ( int tabIndex = mOptionsTab->indexOf( bufferTab ); tabIndex >= 0 )
+    mOptionsTab->setTabToolTip( tabIndex, tr( "Buffer" ) );
+  if ( int tabIndex = mOptionsTab->indexOf( maskTab ); tabIndex >= 0 )
+    mOptionsTab->setTabToolTip( tabIndex, tr( "Mask" ) );
+  if ( int tabIndex = mOptionsTab->indexOf( backgroundTab ); tabIndex >= 0 )
+    mOptionsTab->setTabToolTip( tabIndex, tr( "Background" ) );
+  if ( int tabIndex = mOptionsTab->indexOf( shadowTab ); tabIndex >= 0 )
+    mOptionsTab->setTabToolTip( tabIndex, tr( "Shadow" ) );
+  if ( int tabIndex = mOptionsTab->indexOf( calloutsTab ); tabIndex >= 0 )
+    mOptionsTab->setTabToolTip( tabIndex, tr( "Callouts" ) );
+  if ( int tabIndex = mOptionsTab->indexOf( placementTab ); tabIndex >= 0 )
+    mOptionsTab->setTabToolTip( tabIndex, tr( "Placement" ) );
+  if ( int tabIndex = mOptionsTab->indexOf( renderingTab ); tabIndex >= 0 )
+    mOptionsTab->setTabToolTip( tabIndex, tr( "Rendering" ) );
 
   mLabelingOptionsListFrame->setVisible( !enabled );
   groupBox_mPreview->setVisible( !enabled );
@@ -985,8 +1091,8 @@ void QgsTextFormatWidget::updateWidgetForFormat( const QgsTextFormat &format )
     mFontMissingLabel->setText( missingTxt.arg( txtPrepend ) );
 
     // ensure user is sent to 'Text style' section to see notice
-    mLabelingOptionsListWidget->setCurrentRow( 0 );
-    whileBlocking( mOptionsTab )->setCurrentIndex( 0 );
+    mLabelingOptionsListWidget->setCurrentItem( mTextItem );
+    whileBlocking( mOptionsTab )->setCurrentIndex( mOptionsTab->indexOf( textTab ) );
   }
   mFontLineHeightSpinBox->setValue( format.lineHeightUnit() == Qgis::RenderUnit::Percentage ? ( format.lineHeight() * 100 ) : format.lineHeight() );
   mLineHeightUnitWidget->setUnit( format.lineHeightUnit() );
@@ -1237,10 +1343,28 @@ void QgsTextFormatWidget::deactivateField( QgsPalLayerSettings::Property key )
   }
 }
 
-void QgsTextFormatWidget::optionsStackedWidget_CurrentChanged( int indx )
+void QgsTextFormatWidget::optionsStackedWidget_CurrentChanged( int )
 {
   mLabelingOptionsListWidget->blockSignals( true );
-  mLabelingOptionsListWidget->setCurrentRow( indx );
+  QWidget *currentPage = mLabelStackedWidget->currentWidget();
+  if ( currentPage == mLabelPage_Text )
+    mLabelingOptionsListWidget->setCurrentItem( mTextItem );
+  else if ( currentPage == mLabelPage_Formatting )
+    mLabelingOptionsListWidget->setCurrentItem( mFormattingItem );
+  else if ( currentPage == mLabelPage_Mask )
+    mLabelingOptionsListWidget->setCurrentItem( mMaskItem );
+  if ( currentPage == mLabelPage_Buffer )
+    mLabelingOptionsListWidget->setCurrentItem( mBufferItem );
+  if ( currentPage == mLabelPage_Background )
+    mLabelingOptionsListWidget->setCurrentItem( mBackgroundItem );
+  if ( currentPage == mLabelPage_Shadow )
+    mLabelingOptionsListWidget->setCurrentItem( mShadowItem );
+  if ( currentPage == mLabelPage_Callouts )
+    mLabelingOptionsListWidget->setCurrentItem( mCalloutItem );
+  if ( currentPage == mLabelPage_Rendering )
+    mLabelingOptionsListWidget->setCurrentItem( mRenderingItem );
+  if ( currentPage == mLabelPage_Placement )
+    mLabelingOptionsListWidget->setCurrentItem( mPlacementItem );
   mLabelingOptionsListWidget->blockSignals( false );
 }
 

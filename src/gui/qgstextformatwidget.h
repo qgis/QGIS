@@ -203,6 +203,25 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, public QgsExpressionConte
     //! Geometry type for layer, if known
     Qgis::GeometryType mGeomType = Qgis::GeometryType::Unknown;
 
+    //! Text widget item
+    QListWidgetItem *mTextItem = nullptr;
+    //! Formatting widget item
+    QListWidgetItem *mFormattingItem = nullptr;
+    //! Buffer widget item
+    QListWidgetItem *mBufferItem = nullptr;
+    //! Mask widget item
+    QListWidgetItem *mMaskItem = nullptr;
+    //! Background widget item
+    QListWidgetItem *mBackgroundItem = nullptr;
+    //! Shadow widget item
+    QListWidgetItem *mShadowItem = nullptr;
+    //! Callout widget item
+    QListWidgetItem *mCalloutItem = nullptr;
+    //! Placement widget item
+    QListWidgetItem *mPlacementItem = nullptr;
+    //! Rendering widget item
+    QListWidgetItem *mRenderingItem = nullptr;
+
   protected slots:
 
     //! Updates line placement options to reflect current state of widget
