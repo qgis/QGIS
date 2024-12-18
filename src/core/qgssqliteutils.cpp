@@ -281,9 +281,6 @@ QString QgsSqliteUtils::quotedValue( const QVariant &value )
     case QMetaType::Type::Double:
       return value.toString();
 
-    case QMetaType::Type::Bool:
-      //SQLite has no boolean literals
-      return value.toBool() ? QStringLiteral( "1" ) : QStringLiteral( "0" );
 
     default:
     case QMetaType::Type::QString:
