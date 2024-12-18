@@ -4103,7 +4103,6 @@ bool QgsPalLabeling::staticWillUseLayer( const QgsMapLayer *layer )
     }
 
     case Qgis::LayerType::Plugin:
-
     case Qgis::LayerType::PointCloud:
     case Qgis::LayerType::Annotation:
     case Qgis::LayerType::Group:
