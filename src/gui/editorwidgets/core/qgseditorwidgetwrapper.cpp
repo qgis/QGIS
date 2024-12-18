@@ -121,11 +121,11 @@ void QgsEditorWidgetWrapper::updateConstraintWidgetStatus()
         break;
 
       case ConstraintResultFailHard:
-        widget()->setStyleSheet( QStringLiteral( "background-color: rgba(255, 150, 0, 0.3);" ) );
+        widget()->setStyleSheet( QStringLiteral( "QWidget { background-color: rgba(255, 150, 0, 0.3); } QCalendarWidget QWidget#qt_calendar_calendarview, QCalendarWidget QWidget#qt_calendar_navigationbar QWidget { color: rgb(0, 0, 0); background-color: rgba(255, 150, 0, 1); }" ) );
         break;
 
       case ConstraintResultFailSoft:
-        widget()->setStyleSheet( QStringLiteral( "background-color: rgba(255, 200, 45, 0.3);" ) );
+        widget()->setStyleSheet( QStringLiteral( "QWidget { background-color: rgba(255, 200, 45, 0.3); } QCalendarWidget QWidget#qt_calendar_calendarview, QCalendarWidget QWidget#qt_calendar_navigationbar QWidget { color: rgb(0, 0, 0); background-color: rgba(255, 200, 45, 1); }" ) );
         break;
     }
   }
