@@ -484,8 +484,15 @@ tests:
 #        - b488227a86c3ed58f5b2328238d109e69c55024f86efb1d4876de1f6
 #        type: rasterhash
 #
+
   - algorithm: grass7:i.smap
     name: GRASS7 i.smap
+    condition:
+      grass:
+        # we can only run this test on older GRASS versions -- newer ones
+        # have the raster paths hardcoded into the signature file, and we can't handle
+        # that currently in the test suite
+        less_than: 8000000
     params:
       GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
       blocksize: 1024
@@ -507,6 +514,12 @@ tests:
 
   - algorithm: grass7:i.maxlik
     name: GRASS7 i.maxlik
+    condition:
+      grass:
+        # we can only run this test on older GRASS versions -- newer ones
+        # have the raster paths hardcoded into the signature file, and we can't handle
+        # that currently in the test suite
+        less_than: 8000000
     params:
       GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
       input:
