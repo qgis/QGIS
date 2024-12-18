@@ -12,6 +12,7 @@ __copyright__ = "Copyright 2017, The QGIS Project"
 
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
 from qgis.core import (
+    Qgis,
     QgsFeature,
     QgsGeometry,
     QgsLineSymbol,
@@ -34,6 +35,10 @@ class TestQgsLineSymbolLayers(QgisTestCase):
     def control_path_prefix(cls):
         return "symbol_layer"
 
+    @unittest.skipIf(
+        Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() >= 11,
+        "Broken upstream due to https://github.com/libgeos/geos/issues/1037",
+    )
     def testSimpleLineWithOffset(self):
         """test that rendering a simple line symbol with offset"""
         layer = QgsSimpleLineSymbolLayer(QColor(0, 0, 0))
