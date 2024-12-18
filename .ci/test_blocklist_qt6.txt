@@ -63,6 +63,5 @@ PyQgsServerWFS
 ProcessingQgisAlgorithmsTestPt2
 ProcessingQgisAlgorithmsTestPt4
 ProcessingGdalAlgorithmsVectorTest
-ProcessingGrassAlgorithmsImageryTest
 # PyQgsProviderRegistry runs fine locally on Fedora:rawhide but not on CI
 PyQgsProviderRegistry
