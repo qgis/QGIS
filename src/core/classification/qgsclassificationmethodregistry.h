@@ -48,7 +48,7 @@ class CORE_EXPORT QgsClassificationMethodRegistry
     bool addMethod( QgsClassificationMethod *method SIP_TRANSFER );
 
     //! Returns a new instance of the method for the given id
-    QgsClassificationMethod *method( const QString &id ) SIP_FACTORY;
+    std::unique_ptr< QgsClassificationMethod > method( const QString &id );
 
     //! Returns a map <name, id> of all registered methods.
     QMap<QString, QString> methodNames() const;

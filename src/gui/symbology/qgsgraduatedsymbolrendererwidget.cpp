@@ -872,7 +872,7 @@ void QgsGraduatedSymbolRendererWidget::updateMethodParameters()
   clearParameterWidgets();
 
   const QString methodId = cboGraduatedMode->currentData().toString();
-  QgsClassificationMethod *method = QgsApplication::classificationMethodRegistry()->method( methodId );
+  std::unique_ptr< QgsClassificationMethod > method = QgsApplication::classificationMethodRegistry()->method( methodId );
   Q_ASSERT( method );
 
   // need more context?
@@ -1044,7 +1044,7 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduatedImpl()
   int nclasses = spinGraduatedClasses->value();
 
   const QString methodId = cboGraduatedMode->currentData().toString();
-  QgsClassificationMethod *method = QgsApplication::classificationMethodRegistry()->method( methodId );
+  std::unique_ptr< QgsClassificationMethod > method = QgsApplication::classificationMethodRegistry()->method( methodId );
   Q_ASSERT( method );
 
   int attrNum = mLayer->fields().lookupField( attrName );
@@ -1081,14 +1081,14 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduatedImpl()
   method->setParameterValues( parameterValues );
 
   // set method to renderer
-  mRenderer->setClassificationMethod( method );
+  mRenderer->setClassificationMethod( method.release() );
 
   // create and set new renderer
   mRenderer->setClassAttribute( attrName );
 
   // If complexity >= oN^2, warn for big dataset (more than 50k records)
   // and give the user the chance to cancel
-  if ( method->codeComplexity() > 1 && mLayer->featureCount() > 50000 )
+  if ( mRenderer->classificationMethod()->codeComplexity() > 1 && mLayer->featureCount() > 50000 )
   {
     if ( QMessageBox::Cancel == QMessageBox::question( this, tr( "Apply Classification" ), tr( "Natural break classification (Jenks) is O(n2) complexity, your classification may take a long time.\nPress cancel to abort breaks calculation or OK to continue." ), QMessageBox::Cancel, QMessageBox::Ok ) )
     {

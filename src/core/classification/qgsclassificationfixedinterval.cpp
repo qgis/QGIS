@@ -27,10 +27,10 @@ QgsClassificationFixedInterval::QgsClassificationFixedInterval()
   addParameter( param.release() );
 }
 
-QgsClassificationMethod *QgsClassificationFixedInterval::clone() const
+std::unique_ptr<QgsClassificationMethod> QgsClassificationFixedInterval::clone() const
 {
-  QgsClassificationFixedInterval *c = new QgsClassificationFixedInterval();
-  copyBase( c );
+  std::unique_ptr<QgsClassificationFixedInterval > c = std::make_unique< QgsClassificationFixedInterval >();
+  copyBase( c.get() );
   return c;
 }
 

@@ -123,7 +123,7 @@ Creates a classification method.
 
     virtual ~QgsClassificationMethod();
 
-    virtual QgsClassificationMethod *clone() const = 0 /Factory/;
+    virtual std::unique_ptr< QgsClassificationMethod > clone() const = 0;
 %Docstring
 Returns a clone of the method.
 Implementation can take advantage of copyBase method which copies the parameters of the base class
@@ -296,7 +296,7 @@ Saves the method to a DOM element and return it
 :param context: the read/write context
 %End
 
-    static QgsClassificationMethod *create( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
+    static std::unique_ptr< QgsClassificationMethod > create( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
 Reads the DOM element and return a new classification method from it
 

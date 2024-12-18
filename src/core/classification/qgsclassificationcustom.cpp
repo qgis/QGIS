@@ -25,10 +25,10 @@ QgsClassificationCustom::QgsClassificationCustom()
 }
 
 
-QgsClassificationMethod *QgsClassificationCustom::clone() const
+std::unique_ptr<QgsClassificationMethod> QgsClassificationCustom::clone() const
 {
-  QgsClassificationCustom *c = new QgsClassificationCustom();
-  copyBase( c );
+  std::unique_ptr< QgsClassificationCustom > c = std::make_unique< QgsClassificationCustom >();
+  copyBase( c.get() );
   return c;
 }
 

@@ -30,7 +30,7 @@ class CORE_EXPORT QgsClassificationCustom : public QgsClassificationMethod
   public:
     QgsClassificationCustom();
 
-    QgsClassificationMethod *clone() const override;
+    std::unique_ptr< QgsClassificationMethod > clone() const override;
     QString name() const override;
     QString id() const override;
 
