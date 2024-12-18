@@ -375,16 +375,8 @@ void QgsShortcutsManager::updateActionToolTip( QAction *action, const QString &s
   if ( current.lastIndexOf( rx, -1, &match ) != -1 )
   {
     // Check if it is a valid QKeySequence
-    bool validSequence = true;
-    for ( const QString &part : QKeySequence( match.captured( 1 ) ).toString().split( "," ) )
-    {
-      if ( part.trimmed().isEmpty() )
-      {
-        validSequence = false;
-        break;
-      }
-    }
-    if ( validSequence )
+    const QStringList parts = QKeySequence( match.captured( 1 ) ).toString().split( "," );
+    if ( std::all_of( parts.constBegin(), parts.constEnd(), []( const QString &part ) { return !part.trimmed().isEmpty(); } ) )
     {
       current = current.remove( match.capturedStart( 0 ), match.capturedLength( 0 ) );
     }
