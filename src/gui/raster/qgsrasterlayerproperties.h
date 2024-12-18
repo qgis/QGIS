@@ -46,6 +46,7 @@ class QgsPropertyOverrideButton;
 class QgsRasterTransparencyWidget;
 class QgsRasterAttributeTableWidget;
 class QgsWebView;
+class QgsRasterLabelingWidget;
 
 /**
  * \ingroup gui
@@ -211,6 +212,8 @@ class GUI_EXPORT QgsRasterLayerProperties : public QgsLayerPropertiesDialog, pri
     QgsMetadataWidget *mMetadataWidget = nullptr;
 
     QgsRasterTransparencyWidget *mRasterTransparencyWidget = nullptr;
+
+    QgsRasterLabelingWidget *mLabelingWidget = nullptr;
 
     /**
      * Widget with temporal inputs, to be used by temporal based raster layers.
