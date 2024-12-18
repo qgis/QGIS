@@ -294,6 +294,6 @@ class retile(GdalAlgorithm):
         arguments.extend(credential_options)
 
         return [
-            self.commandName() + (".bat" if isWindows() else ".py"),
+            self.commandName(),
             GdalUtils.escapeAndJoin(arguments),
         ]

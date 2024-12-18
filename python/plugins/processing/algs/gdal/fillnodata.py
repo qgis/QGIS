@@ -204,6 +204,6 @@ class fillnodata(GdalAlgorithm):
             arguments.extend(GdalUtils.parseCreationOptions(options))
 
         return [
-            self.commandName() + (".bat" if isWindows() else ".py"),
+            self.commandName(),
             GdalUtils.escapeAndJoin(arguments),
         ]

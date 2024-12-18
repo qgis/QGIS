@@ -462,6 +462,6 @@ class gdalcalc(GdalAlgorithm):
         arguments.append(out)
 
         return [
-            self.commandName() + (".bat" if isWindows() else ".py"),
+            self.commandName(),
             GdalUtils.escapeAndJoin(arguments),
         ]
