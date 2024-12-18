@@ -82,11 +82,13 @@ QgsRasterLabelSettingsWidget::QgsRasterLabelSettingsWidget( QgsRasterLayer *laye
   setPropertyOverrideButtonsVisible( true );
   mTextFormatsListWidget->setEntityTypes( QList<QgsStyle::StyleEntity>() << QgsStyle::TextFormatEntity );
 
-  delete mLabelingOptionsListWidget->takeItem( 6 ); // callouts
-  delete mLabelingOptionsListWidget->takeItem( 3 ); // mask
+  delete mCalloutItem;
+  mCalloutItem = nullptr;
+  delete mMaskItem;
+  mMaskItem = nullptr;
 
-  mOptionsTab->removeTab( 6 );
-  mOptionsTab->removeTab( 3 );
+  mOptionsTab->removeTab( mOptionsTab->indexOf( calloutsTab ) );
+  mOptionsTab->removeTab( mOptionsTab->indexOf( maskTab ) );
 
   mLabelStackedWidget->removeWidget( mLabelPage_Callouts );
   mLabelStackedWidget->removeWidget( mLabelPage_Mask );

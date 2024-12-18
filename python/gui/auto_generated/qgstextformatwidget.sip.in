@@ -171,6 +171,7 @@ Toggles whether data defined buttons should be shown in the widget.
 
 
 
+
   protected slots:
 
     void updateLinePlacementOptions();

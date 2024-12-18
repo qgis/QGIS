@@ -352,7 +352,7 @@
               <string/>
              </attribute>
             </widget>
-            <widget class="QWidget" name="tab_2">
+            <widget class="QWidget" name="formattingTab">
              <attribute name="icon">
               <iconset resource="../../images/images.qrc">
                <normaloff>:/images/themes/default/propertyicons/labelformatting.svg</normaloff>:/images/themes/default/propertyicons/labelformatting.svg</iconset>
@@ -361,7 +361,7 @@
               <string/>
              </attribute>
             </widget>
-            <widget class="QWidget" name="tab">
+            <widget class="QWidget" name="bufferTab">
              <attribute name="icon">
               <iconset resource="../../images/images.qrc">
                <normaloff>:/images/themes/default/propertyicons/labelbuffer.svg</normaloff>:/images/themes/default/propertyicons/labelbuffer.svg</iconset>
@@ -379,7 +379,7 @@
               <string/>
              </attribute>
             </widget>
-            <widget class="QWidget" name="tab_3">
+            <widget class="QWidget" name="backgroundTab">
              <attribute name="icon">
               <iconset resource="../../images/images.qrc">
                <normaloff>:/images/themes/default/propertyicons/labelbackground.svg</normaloff>:/images/themes/default/propertyicons/labelbackground.svg</iconset>
@@ -388,7 +388,7 @@
               <string/>
              </attribute>
             </widget>
-            <widget class="QWidget" name="tab_4">
+            <widget class="QWidget" name="shadowTab">
              <attribute name="icon">
               <iconset resource="../../images/images.qrc">
                <normaloff>:/images/themes/default/propertyicons/labelshadow.svg</normaloff>:/images/themes/default/propertyicons/labelshadow.svg</iconset>
@@ -397,7 +397,7 @@
               <string/>
              </attribute>
             </widget>
-            <widget class="QWidget" name="callouts">
+            <widget class="QWidget" name="calloutsTab">
              <attribute name="icon">
               <iconset resource="../../images/images.qrc">
                <normaloff>:/images/themes/default/propertyicons/labelcallout.svg</normaloff>:/images/themes/default/propertyicons/labelcallout.svg</iconset>
@@ -409,7 +409,7 @@
               <string>Callouts</string>
              </attribute>
             </widget>
-            <widget class="QWidget" name="widget">
+            <widget class="QWidget" name="placementTab">
              <attribute name="icon">
               <iconset resource="../../images/images.qrc">
                <normaloff>:/images/themes/default/propertyicons/labelplacement.svg</normaloff>:/images/themes/default/propertyicons/labelplacement.svg</iconset>
@@ -418,7 +418,7 @@
               <string/>
              </attribute>
             </widget>
-            <widget class="QWidget" name="tab_6">
+            <widget class="QWidget" name="renderingTab">
              <attribute name="icon">
               <iconset resource="../../images/images.qrc">
                <normaloff>:/images/themes/default/propertyicons/render.svg</normaloff>:/images/themes/default/propertyicons/render.svg</iconset>
@@ -486,112 +486,6 @@
                   <height>20</height>
                  </size>
                 </property>
-                <item>
-                 <property name="text">
-                  <string>Text</string>
-                 </property>
-                 <property name="toolTip">
-                  <string>Text style</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../../images/images.qrc">
-                   <normaloff>:/images/themes/default/propertyicons/labeltext.svg</normaloff>:/images/themes/default/propertyicons/labeltext.svg</iconset>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Formatting</string>
-                 </property>
-                 <property name="toolTip">
-                  <string>Formatting</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../../images/images.qrc">
-                   <normaloff>:/images/themes/default/propertyicons/labelformatting.svg</normaloff>:/images/themes/default/propertyicons/labelformatting.svg</iconset>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Buffer</string>
-                 </property>
-                 <property name="toolTip">
-                  <string>Buffer</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../../images/images.qrc">
-                   <normaloff>:/images/themes/default/propertyicons/labelbuffer.svg</normaloff>:/images/themes/default/propertyicons/labelbuffer.svg</iconset>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Mask</string>
-                 </property>
-                 <property name="icon">
-                  <iconset>
-                   <normalon>:/images/themes/default/propertyicons/labelmask.svg</normalon>
-                  </iconset>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Background</string>
-                 </property>
-                 <property name="toolTip">
-                  <string>Background</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../../images/images.qrc">
-                   <normaloff>:/images/themes/default/propertyicons/labelbackground.svg</normaloff>:/images/themes/default/propertyicons/labelbackground.svg</iconset>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Shadow</string>
-                 </property>
-                 <property name="toolTip">
-                  <string>Shadow</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../../images/images.qrc">
-                   <normaloff>:/images/themes/default/propertyicons/labelshadow.svg</normaloff>:/images/themes/default/propertyicons/labelshadow.svg</iconset>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Callouts</string>
-                 </property>
-                 <property name="toolTip">
-                  <string>Callouts</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../../images/images.qrc">
-                   <normaloff>:/images/themes/default/propertyicons/labelcallout.svg</normaloff>:/images/themes/default/propertyicons/labelcallout.svg</iconset>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Placement</string>
-                 </property>
-                 <property name="toolTip">
-                  <string>Placement</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../../images/images.qrc">
-                   <normaloff>:/images/themes/default/propertyicons/labelplacement.svg</normaloff>:/images/themes/default/propertyicons/labelplacement.svg</iconset>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Rendering</string>
-                 </property>
-                 <property name="toolTip">
-                  <string>Rendering</string>
-                 </property>
-                 <property name="icon">
-                  <iconset resource="../../images/images.qrc">
-                   <normaloff>:/images/themes/default/propertyicons/render.svg</normaloff>:/images/themes/default/propertyicons/render.svg</iconset>
-                 </property>
-                </item>
                </widget>
               </item>
              </layout>
@@ -1217,7 +1111,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>347</width>
+                       <width>350</width>
                        <height>755</height>
                       </rect>
                      </property>
@@ -2214,7 +2108,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>273</width>
+                       <width>276</width>
                        <height>299</height>
                       </rect>
                      </property>
@@ -2560,7 +2454,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>273</width>
+                       <width>276</width>
                        <height>284</height>
                       </rect>
                      </property>
@@ -2838,7 +2732,7 @@ font-style: italic;</string>
                       <rect>
                        <x>0</x>
                        <y>0</y>
-                       <width>418</width>
+                       <width>471</width>
                        <height>731</height>
                       </rect>
                      </property>
@@ -5973,9 +5867,9 @@ font-style: italic;</string>
                      <property name="geometry">
                       <rect>
                        <x>0</x>
-                       <y>-463</y>
+                       <y>0</y>
                        <width>471</width>
-                       <height>849</height>
+                       <height>865</height>
                       </rect>
                      </property>
                      <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -7266,38 +7160,5 @@ This limit is inclusive, that means the label will be displayed on this scale.</
  <resources>
   <include location="../../images/images.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>mOptionsTab</sender>
-   <signal>currentChanged(int)</signal>
-   <receiver>mLabelStackedWidget</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>164</x>
-     <y>205</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>689</x>
-     <y>277</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>mLabelingOptionsListWidget</sender>
-   <signal>currentRowChanged(int)</signal>
-   <receiver>mLabelStackedWidget</receiver>
-   <slot>setCurrentIndex(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>34</x>
-     <y>599</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>633</x>
-     <y>411</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>
