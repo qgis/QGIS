@@ -10998,23 +10998,6 @@ Qgis.MouseHandlesAction.__doc__ = """Action to be performed by the mouse handles
 # --
 Qgis.MouseHandlesAction.baseClass = Qgis
 # monkey patching scoped based enum
-Qgis.PointCloudZoomOutRenderBehavior.RenderExtents.__doc__ = "Render just point cloud extends when zoomed out"
-Qgis.PointCloudZoomOutRenderBehavior.RenderOverview.__doc__ = "Render overview point cloud when zoomed out"
-Qgis.PointCloudZoomOutRenderBehavior.RenderOverviewAndExtents.__doc__ = "Render extent polygons over overview point cloud"
-Qgis.PointCloudZoomOutRenderBehavior.__doc__ = """Point cloud zoom out options
-
-.. versionadded:: 3.42
-
-* ``RenderExtents``: Render just point cloud extends when zoomed out
-* ``RenderOverview``: Render overview point cloud when zoomed out
-* ``RenderOverviewAndExtents``: Render extent polygons over overview point cloud
-
-"""
-# --
-Qgis.PointCloudZoomOutRenderBehavior.baseClass = Qgis
-# --
-Qgis.MouseHandlesAction.baseClass = Qgis
-# monkey patching scoped based enum
 Qgis.MeshRangeLimit.NotSet.__doc__ = "User defined"
 Qgis.MeshRangeLimit.MinimumMaximum.__doc__ = "Real min-max values"
 Qgis.MeshRangeLimit.__doc__ = """Describes the limits used to compute mesh ranges (min/max values).
@@ -11042,6 +11025,21 @@ Qgis.MeshRangeExtent.__doc__ = """Describes the extent used to compute mesh rang
 """
 # --
 Qgis.MeshRangeExtent.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.PointCloudZoomOutRenderBehavior.RenderExtents.__doc__ = "Render only point cloud extents when zoomed out"
+Qgis.PointCloudZoomOutRenderBehavior.RenderOverview.__doc__ = "Render overview point cloud when zoomed out"
+Qgis.PointCloudZoomOutRenderBehavior.RenderOverviewAndExtents.__doc__ = "Render point cloud extents over overview point cloud"
+Qgis.PointCloudZoomOutRenderBehavior.__doc__ = """Point cloud zoom out options
+
+.. versionadded:: 3.42
+
+* ``RenderExtents``: Render only point cloud extents when zoomed out
+* ``RenderOverview``: Render overview point cloud when zoomed out
+* ``RenderOverviewAndExtents``: Render point cloud extents over overview point cloud
+
+"""
+# --
+Qgis.PointCloudZoomOutRenderBehavior.baseClass = Qgis
 # monkey patching scoped based enum
 Qgis.PointCloudAccessType.Local.__doc__ = "Local means the source is a local file on the machine"
 Qgis.PointCloudAccessType.Remote.__doc__ = "Remote means it's loaded through a protocol like HTTP"

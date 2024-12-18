@@ -129,6 +129,7 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
   if ( !mLayer->dataProvider()->subIndexes().isEmpty() )
   {
     mLabelOptions->setDialogTitle( tr( "Customize label text" ) );
+    mLabelOptions->setText( tr( "Label format" ) );
     connect( mLabels, &QCheckBox::stateChanged, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
     connect( mLabelOptions, &QgsFontButton::changed, this, &QgsPointCloudRendererPropertiesWidget::emitWidgetChanged );
     mZoomOutOptions->addItem( tr( "Show Extents Only" ), QVariant::fromValue( Qgis::PointCloudZoomOutRenderBehavior::RenderExtents ) );
@@ -146,8 +147,8 @@ QgsPointCloudRendererPropertiesWidget::QgsPointCloudRendererPropertiesWidget( Qg
       mZoomOutOptions->setEnabled( false );
     }
 
-    connect( mZoomOutOptions, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int currentZoomOutOption ) {
-      switch ( static_cast<Qgis::PointCloudZoomOutRenderBehavior>( currentZoomOutOption ) )
+    connect( mZoomOutOptions, qOverload<int>( &QComboBox::currentIndexChanged ), this, [this]( int ) {
+      switch ( mZoomOutOptions->currentData().value<Qgis::PointCloudZoomOutRenderBehavior>() )
       {
         case Qgis::PointCloudZoomOutRenderBehavior::RenderOverview:
           mLabels->setEnabled( false );
