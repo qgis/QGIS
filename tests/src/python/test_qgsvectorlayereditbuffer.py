@@ -11,6 +11,7 @@ __date__ = "15/07/2016"
 __copyright__ = "Copyright 2016, The QGIS Project"
 
 import os
+from osgeo import gdal
 
 from qgis.PyQt.QtCore import QTemporaryDir, QVariant
 from qgis.PyQt.QtTest import QSignalSpy
@@ -29,6 +30,10 @@ import unittest
 from qgis.testing import start_app, QgisTestCase
 
 start_app()
+
+
+def GDAL_COMPUTE_VERSION(maj, min, rev):
+    return (maj) * 1000000 + (min) * 10000 + (rev) * 100
 
 
 def createEmptyLayer():
@@ -843,7 +848,12 @@ class TestQgsVectorLayerEditBuffer(QgisTestCase):
                 self.assertEqual(f.attribute(2), None)
 
         _test(Qgis.TransactionMode.Disabled)
-        _test(Qgis.TransactionMode.AutomaticGroups)
+
+        # THIS FUNCTIONALITY IS BROKEN ON NEWER GDAL VERSIONS, DUE TO INCORRECT
+        # assumptions at time of development. See https://github.com/qgis/QGIS/pull/59797#issuecomment-2544133498
+        if int(gdal.VersionInfo("VERSION_NUM")) < GDAL_COMPUTE_VERSION(3, 5, 0):
+            _test(Qgis.TransactionMode.AutomaticGroups)
+
         _test(Qgis.TransactionMode.BufferedGroups)
 
 
