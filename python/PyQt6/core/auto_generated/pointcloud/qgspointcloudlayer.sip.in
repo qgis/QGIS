@@ -86,6 +86,13 @@ Constructor - creates a point cloud layer
     virtual QgsPointCloudDataProvider *dataProvider();
 
 
+    virtual bool supportsEditing() const;
+
+    virtual bool isEditable() const;
+
+    virtual bool isModified() const;
+
+
     virtual bool readXml( const QDomNode &layerNode, QgsReadWriteContext &context );
 
 
@@ -201,6 +208,74 @@ Returns the status of point cloud statistics calculation
 
 .. versionadded:: 3.26
 %End
+
+    bool startEditing();
+%Docstring
+Makes the layer editable.
+
+This starts an edit session on this layer. Changes made in this edit session will not
+be made persistent until :py:func:`~QgsPointCloudLayer.commitChanges` is called, and can be reverted by calling
+:py:func:`~QgsPointCloudLayer.rollBack`.
+
+:return: ``True`` if the layer was successfully made editable, or ``False`` if the operation
+         failed (e.g. due to an underlying read-only data source, or lack of edit support
+         by the backend data provider).
+
+.. seealso:: :py:func:`commitChanges`
+
+.. seealso:: :py:func:`rollBack`
+
+.. versionadded:: 3.42
+%End
+
+    bool commitChanges( bool stopEditing = true );
+%Docstring
+Attempts to commit to the underlying data provider any buffered changes made since the
+last to call to :py:func:`~QgsPointCloudLayer.startEditing`.
+
+Returns the result of the attempt. If a commit fails (i.e. ``False`` is returned), the
+in-memory changes are left untouched and are not discarded. This allows editing to
+continue if the commit failed on e.g. a disallowed value for an attribute - the user
+can re-edit and try again.
+
+If the commit failed, an error message may returned by :py:func:`~QgsPointCloudLayer.commitError`.
+
+By setting ``stopEditing`` to ``False``, the layer will stay in editing mode.
+Otherwise the layer editing mode will be disabled if the commit is successful.
+
+.. seealso:: :py:func:`startEditing`
+
+.. seealso:: :py:func:`commitError`
+
+.. seealso:: :py:func:`rollBack`
+
+.. versionadded:: 3.42
+%End
+
+    QString commitError() const;
+%Docstring
+Returns the last error message generated when attempting
+to commit changes to the layer.
+
+.. seealso:: :py:func:`commitChanges`
+
+.. versionadded:: 3.42
+%End
+
+    bool rollBack();
+%Docstring
+Stops a current editing operation and discards any uncommitted edits.
+
+.. seealso:: :py:func:`startEditing`
+
+.. seealso:: :py:func:`commitChanges`
+
+.. versionadded:: 3.42
+%End
+
+
+
+
   signals:
 
     void subsetStringChanged();

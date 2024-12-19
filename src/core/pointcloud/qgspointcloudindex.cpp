@@ -195,6 +195,11 @@ QgsPointCloudNode QgsAbstractPointCloudIndex::getNode( const QgsPointCloudNodeId
   return QgsPointCloudNode( id, pointCount, children, bounds.width() / mSpan, bounds );
 }
 
+bool QgsAbstractPointCloudIndex::updateNodeData( const QHash<QgsPointCloudNodeId, QByteArray> & )
+{
+  return false;
+}
+
 QgsPointCloudAttributeCollection QgsAbstractPointCloudIndex::attributes() const
 {
   return mAttributes;
