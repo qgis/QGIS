@@ -19,6 +19,7 @@
 #include "qgsmaptooledit.h"
 #include "qgis_app.h"
 #include "qgsrubberband.h"
+#include "qgssnappingconfig.h"
 
 class APP_EXPORT QgsMapToolTrimExtendFeature : public QgsMapToolEdit
 {
@@ -34,6 +35,9 @@ class APP_EXPORT QgsMapToolTrimExtendFeature : public QgsMapToolEdit
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     void keyPressEvent( QKeyEvent *e ) override;
+
+    //! called when map tool is being activated
+    void activate() override;
 
     //! called when map tool is being deactivated
     void deactivate() override;
@@ -81,6 +85,9 @@ class APP_EXPORT QgsMapToolTrimExtendFeature : public QgsMapToolEdit
     };
     //! The first step (0): choose the limit. The second step (1): choose the segment to trim/extend
     Step mStep = StepLimit;
+
+    //! Snapping config that will be restored on deactivation
+    QgsSnappingConfig mOriginalSnappingConfig;
 };
 
 #endif // QGSMAPTOOLTRIMEXTENDFEATURE_H

@@ -387,8 +387,25 @@ void QgsMapToolTrimExtendFeature::reset()
   mVlayer = nullptr;
   mLimitLayer = nullptr;
 }
+void QgsMapToolTrimExtendFeature::activate()
+{
+  QgsMapTool::activate();
+
+  // Save the original snapping configuration
+  mOriginalSnappingConfig = mCanvas->snappingUtils()->config();
+
+  // Enable Snapping & Snapping on Segment
+  QgsSnappingConfig snappingConfig = mOriginalSnappingConfig;
+  snappingConfig.setEnabled( true );
+  Qgis::SnappingTypes flags = snappingConfig.typeFlag();
+  flags |= Qgis::SnappingType::Segment;
+  snappingConfig.setTypeFlag( flags );
+  mCanvas->snappingUtils()->setConfig( snappingConfig );
+}
 void QgsMapToolTrimExtendFeature::deactivate()
 {
   reset();
+  // Restore the original snapping configuration
+  mCanvas->snappingUtils()->setConfig( mOriginalSnappingConfig );
   QgsMapTool::deactivate();
 }
