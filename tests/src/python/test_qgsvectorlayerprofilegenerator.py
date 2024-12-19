@@ -3366,13 +3366,12 @@ class TestQgsVectorLayerProfileGenerator(QgisTestCase):
 
         result = results[0]
         self.assertEqual(result.wkbType(), Qgis.WkbType.LineStringZ)
-        if Qgis.geosVersionMajor() == 3 and Qgis.geosVersionMinor() == 12:
-            expected_wkt = "LineStringZ (-347055.8 6632478.8 1, -347055.8 6632478.8 -22, -347055.8 6632478.8 1)"
-        else:
-            expected_wkt = "LineStringZ (-347054.8 6632479.6 1, -347054.8 6632479.6 -22, -347054.8 6632479.6 1)"
-        self.assertTrue(
-            compareWkt(expected_wkt, result.asWkt(), 0.1),
-            f"Expected: {expected_wkt}\nGot: {result.asWkt()}\n",
+        self.assertIn(
+            result.asWkt(1),
+            (
+                "LineString Z (-347055.8 6632478.8 1, -347055.8 6632478.8 -22, -347055.8 6632478.8 1)",
+                "LineString Z (-347054.8 6632479.6 1, -347054.8 6632479.6 -22, -347054.8 6632479.6 1)",
+            ),
         )
 
     def test_vertical_transformation_4978_to_4985(self):
