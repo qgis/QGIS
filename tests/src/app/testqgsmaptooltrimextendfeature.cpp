@@ -65,7 +65,7 @@ class TestQgsMapToolTrimExtendFeature : public QObject
       //       |          \|       |
       //       |           + (2,1) |
       // (0,0) +-------------------+ (3,0)
-      vlPolygon.reset( new QgsVectorLayer( QStringLiteral( "MultiPolygon?field=fld:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) ) );
+      vlPolygon.reset( new QgsVectorLayer( QStringLiteral( "MultiPolygon?crs=EPSG:3946&field=fld:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) ) );
       const int idx = vlPolygon->fields().indexFromName( QStringLiteral( "fld" ) );
       QVERIFY( idx != -1 );
       f1.initAttributes( 1 );
@@ -606,7 +606,7 @@ class TestQgsMapToolTrimExtendFeature : public QObject
         pt.toQPointF().toPoint(),
         Qt::LeftButton,
         Qt::NoButton,
-        Qt::ControlModifier
+        Qt::ShiftModifier
       ) );
       tool->canvasReleaseEvent( event.get() );
 

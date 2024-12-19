@@ -141,10 +141,20 @@ void QgsMapToolTrimExtendFeature::canvasMoveEvent( QgsMapMouseEvent *e )
         if ( !getPoints( match, pExtend1, pExtend2 ) )
           break;
 
-        QgsPoint pLimit1Projected, pLimit2Projected;
         QgsCoordinateTransform transform( mLimitLayer->crs(), mVlayer->crs(), mCanvas->mapSettings().transformContext() );
-        pLimit1Projected = QgsPoint( transform.transform( pLimit1 ) );
-        pLimit2Projected = QgsPoint( transform.transform( pLimit2 ) );
+
+        QgsPoint pLimit1Projected( pLimit1 );
+        QgsPoint pLimit2Projected( pLimit2 );
+        if ( !transform.isShortCircuited() )
+        {
+          const QgsPointXY transformedP1 = transform.transform( pLimit1 );
+          const QgsPointXY transformedP2 = transform.transform( pLimit2 );
+          pLimit1Projected.setX( transformedP1.x() );
+          pLimit1Projected.setY( transformedP1.y() );
+          pLimit2Projected.setX( transformedP2.x() );
+          pLimit2Projected.setY( transformedP2.y() );
+        }
+
         // No need to trim/extend if segments are continuous
         if ( ( ( pLimit1Projected == pExtend1 ) || ( pLimit1Projected == pExtend2 ) ) || ( ( pLimit2Projected == pExtend1 ) || ( pLimit2Projected == pExtend2 ) ) )
           break;
