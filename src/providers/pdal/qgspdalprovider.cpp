@@ -165,7 +165,7 @@ void QgsPdalProvider::loadIndex()
     const QFileInfo fi( outputFile );
     if ( fi.isFile() )
     {
-      mIndex = new QgsCopcPointCloudIndex;
+      mIndex = QgsPointCloudIndex( new QgsCopcPointCloudIndex );
       mIndex.load( outputFile );
     }
   }
@@ -177,7 +177,7 @@ void QgsPdalProvider::loadIndex()
     const QFileInfo fi( outEptJson );
     if ( fi.isFile() )
     {
-      mIndex = new QgsEptPointCloudIndex;
+      mIndex = QgsPointCloudIndex( new QgsEptPointCloudIndex );
       mIndex.load( outEptJson );
     }
   }

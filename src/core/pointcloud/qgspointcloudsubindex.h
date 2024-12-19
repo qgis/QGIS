@@ -74,7 +74,7 @@ class QgsPointCloudSubIndex
     qint64 pointCount() const { return mPointCount; }
 
   private:
-    QgsPointCloudIndex mIndex = nullptr;
+    QgsPointCloudIndex mIndex = QgsPointCloudIndex( nullptr );
     QString mUri;
     QgsRectangle mExtent;
     QgsGeometry mGeometry;
