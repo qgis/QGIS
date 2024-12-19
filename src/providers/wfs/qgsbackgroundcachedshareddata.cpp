@@ -642,6 +642,8 @@ void QgsBackgroundCachedSharedData::serializeFeatures( QVector<QgsFeatureUniqueI
           }
           cachedFeature.setAttribute( idx, stringValue );
         }
+        else if ( mFields.at( i ).type() == QMetaType::Type::Bool ) // WFS boolean fields are stored as varchar in underlying cache sqlite database
+          cachedFeature.setAttribute( idx, QgsSqliteUtils::quotedValue( QVariant::fromValue( v.toBool() ) ) );
         else if ( QgsWFSUtils::isCompatibleType( static_cast<QMetaType::Type>( v.userType() ), fieldType ) )
           cachedFeature.setAttribute( idx, v );
         else
