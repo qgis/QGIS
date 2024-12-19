@@ -159,9 +159,9 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( Qgs3DMapSettings 
   const QgsCoordinateTransform coordinateTransform( pcl->crs3D(), map->crs(), map->transformContext() );
 
   Qt3DCore::QEntity *entity = nullptr;
-  if ( pcl->dataProvider()->index() )
+  if ( pcl->index() )
   {
-    entity = new QgsPointCloudLayerChunkedEntity( map, pcl->dataProvider()->index(), coordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), static_cast<float>( maximumScreenError() ), showBoundingBoxes(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zScale(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zOffset(), mPointBudget );
+    entity = new QgsPointCloudLayerChunkedEntity( map, pcl->index(), coordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), static_cast<float>( maximumScreenError() ), showBoundingBoxes(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zScale(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zOffset(), mPointBudget );
   }
   else if ( !pcl->dataProvider()->subIndexes().isEmpty() )
   {

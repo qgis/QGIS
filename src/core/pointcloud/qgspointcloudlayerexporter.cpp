@@ -55,7 +55,7 @@ QString QgsPointCloudLayerExporter::getOgrDriverName( ExportFormat format )
 
 QgsPointCloudLayerExporter::QgsPointCloudLayerExporter( QgsPointCloudLayer *layer )
   : mLayerAttributeCollection( layer->attributes() )
-  , mIndex( layer->dataProvider()->index() )
+  , mIndex( layer->index() )
   , mSourceCrs( QgsCoordinateReferenceSystem( layer->crs() ) )
   , mTargetCrs( QgsCoordinateReferenceSystem( layer->crs() ) )
 {

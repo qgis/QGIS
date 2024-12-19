@@ -273,6 +273,15 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
     //! Returns object for a given node
     virtual QgsPointCloudNode getNode( const QgsPointCloudNodeId &id ) const;
 
+    /**
+     * Tries to update the data for the specified nodes.
+     * Subclasses that support editing should override this to handle storing the data.
+     * Default implementation does nothing, returns false.
+     * \returns TRUE on success, otherwise FALSE
+     * \since QGIS 3.42
+     */
+    virtual bool updateNodeData( const QHash<QgsPointCloudNodeId, QByteArray> &data );
+
     //! Returns all attributes that are stored in the file
     QgsPointCloudAttributeCollection attributes() const;
 

@@ -361,10 +361,10 @@ QgsPointCloudLayerProfileGenerator::QgsPointCloudLayerProfileGenerator( QgsPoint
   , mZScale( layer->elevationProperties()->zScale() )
   , mStepDistance( request.stepDistance() )
 {
-  if ( mLayer->dataProvider()->index() )
+  if ( mLayer->index() )
   {
-    mScale = mLayer->dataProvider()->index().scale();
-    mOffset = mLayer->dataProvider()->index().offset();
+    mScale = mLayer->index().scale();
+    mOffset = mLayer->index().offset();
   }
 }
 
@@ -390,7 +390,7 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
   // TODO: fix when QgsPointCloudLayerRenderer is made thread safe to use same approach
 
   QVector<QgsPointCloudIndex> indexes;
-  QgsPointCloudIndex mainIndex = mLayer->dataProvider()->index();
+  QgsPointCloudIndex mainIndex = mLayer->index();
   if ( mainIndex && mainIndex.isValid() )
     indexes.append( mainIndex );
 

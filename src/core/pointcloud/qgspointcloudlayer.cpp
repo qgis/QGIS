@@ -17,6 +17,8 @@
 
 #include "qgspointcloudlayer.h"
 #include "moc_qgspointcloudlayer.cpp"
+#include "qgspointcloudeditingindex.h"
+#include "qgspointcloudlayereditutils.h"
 #include "qgspointcloudlayerrenderer.h"
 #include "qgspointcloudindex.h"
 #include "qgspointcloudstatistics.h"
@@ -976,4 +978,115 @@ void QgsPointCloudLayer::loadIndexesForRenderContext( QgsRenderContext &renderer
       }
     }
   }
+}
+
+bool QgsPointCloudLayer::startEditing()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  if ( mEditIndex )
+    return false;
+
+  mEditIndex = std::make_unique<QgsPointCloudEditingIndex>( this );
+
+  if ( !mEditIndex->isValid() )
+  {
+    mEditIndex.reset();
+    return false;
+  }
+
+  emit editingStarted();
+  return true;
+}
+
+bool QgsPointCloudLayer::commitChanges( bool stopEditing )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  if ( !mEditIndex ||
+       !mEditIndex->commitChanges() )
+    return false;
+
+  if ( stopEditing )
+  {
+    mEditIndex.reset();
+    emit editingStopped();
+  }
+
+  return true;
+}
+
+QString QgsPointCloudLayer::commitError() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  return mCommitError;
+}
+
+bool QgsPointCloudLayer::rollBack()
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  if ( !mEditIndex )
+    return false;
+
+  if ( isModified() )
+  {
+    emit layerModified();
+    triggerRepaint();
+  }
+
+  mEditIndex.reset();
+  emit editingStopped();
+
+  return true;
+}
+
+bool QgsPointCloudLayer::supportsEditing() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  return mDataProvider && mDataProvider->capabilities() & QgsPointCloudDataProvider::Capability::ChangeAttributeValues;
+}
+
+bool QgsPointCloudLayer::isEditable() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  if ( mEditIndex )
+    return true;
+
+  return false;
+}
+
+bool QgsPointCloudLayer::isModified() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  if ( !mEditIndex )
+    return false;
+
+  return mEditIndex->isModified();
+}
+
+bool QgsPointCloudLayer::changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &pts, const QgsPointCloudAttribute &attribute, double value )
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  if ( !mEditIndex )
+    return false;
+
+  QgsPointCloudLayerEditUtils utils( this );
+
+  const bool success = utils.changeAttributeValue( n, pts, attribute, value );
+  if ( success )
+  {
+    emit layerModified();
+  }
+
+  return success;
+}
+
+QgsPointCloudIndex *QgsPointCloudLayer::index() const
+{
+  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
+  if ( mEditIndex )
+    return mEditIndex.get();
+
+  if ( mDataProvider )
+    return mDataProvider->index();
+
+  return nullptr;
 }
