@@ -236,7 +236,7 @@ bool QgsPointCloudLayerRenderer::render()
   return !canceled;
 }
 
-bool QgsPointCloudLayerRenderer::renderIndex( QgsPointCloudIndex pc )
+bool QgsPointCloudLayerRenderer::renderIndex( QgsPointCloudIndex &pc )
 {
   QgsPointCloudRenderContext context( *renderContext(),
                                       pc.scale(),
@@ -340,7 +340,7 @@ bool QgsPointCloudLayerRenderer::renderIndex( QgsPointCloudIndex pc )
   return !canceled;
 }
 
-int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled )
+int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled )
 {
   QPainter *finalPainter = context.renderContext().painter();
   if ( mRenderer->renderAsTriangles() && context.renderContext().previewRenderPainter() )
@@ -398,7 +398,7 @@ int QgsPointCloudLayerRenderer::renderNodesSync( const QVector<QgsPointCloudNode
   return nodesDrawn;
 }
 
-int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled )
+int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled )
 {
   if ( context.feedback() && context.feedback()->isCanceled() )
     return 0;
@@ -498,7 +498,7 @@ int QgsPointCloudLayerRenderer::renderNodesAsync( const QVector<QgsPointCloudNod
   return nodesDrawn;
 }
 
-int QgsPointCloudLayerRenderer::renderNodesSorted( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled, Qgis::PointCloudDrawOrder order )
+int QgsPointCloudLayerRenderer::renderNodesSorted( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRenderContext &context, QgsPointCloudRequest &request, bool &canceled, Qgis::PointCloudDrawOrder order )
 {
   int blockCount = 0;
   int pointCount = 0;
@@ -770,7 +770,7 @@ void QgsPointCloudLayerRenderer::setLayerRenderingTimeHint( int time )
   mRenderTimeHint = time;
 }
 
-QVector<QgsPointCloudNodeId> QgsPointCloudLayerRenderer::traverseTree( const QgsPointCloudIndex pc, const QgsRenderContext &context, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels )
+QVector<QgsPointCloudNodeId> QgsPointCloudLayerRenderer::traverseTree( const QgsPointCloudIndex &pc, const QgsRenderContext &context, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels )
 {
   QVector<QgsPointCloudNodeId> nodes;
 

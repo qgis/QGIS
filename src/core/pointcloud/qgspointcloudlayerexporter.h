@@ -256,7 +256,7 @@ class CORE_EXPORT QgsPointCloudLayerExporter SIP_NODEFAULTCTORS
 
     const QgsPointCloudAttributeCollection mLayerAttributeCollection;
 
-    QgsPointCloudIndex mIndex = nullptr;
+    QgsPointCloudIndex mIndex = QgsPointCloudIndex( nullptr );
     QString mName = QObject::tr( "Exported" );
     ExportFormat mFormat = ExportFormat::Memory;
     QString mFilename;

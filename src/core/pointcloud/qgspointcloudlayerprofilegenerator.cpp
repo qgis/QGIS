@@ -599,7 +599,7 @@ QgsFeedback *QgsPointCloudLayerProfileGenerator::feedback() const
   return mFeedback.get();
 }
 
-QVector<QgsPointCloudNodeId> QgsPointCloudLayerProfileGenerator::traverseTree( const QgsPointCloudIndex pc, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange )
+QVector<QgsPointCloudNodeId> QgsPointCloudLayerProfileGenerator::traverseTree( const QgsPointCloudIndex &pc, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange )
 {
   QVector<QgsPointCloudNodeId> nodes;
 
@@ -636,7 +636,7 @@ QVector<QgsPointCloudNodeId> QgsPointCloudLayerProfileGenerator::traverseTree( c
   return nodes;
 }
 
-int QgsPointCloudLayerProfileGenerator::visitNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange )
+int QgsPointCloudLayerProfileGenerator::visitNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange )
 {
   int nodesDrawn = 0;
   for ( const QgsPointCloudNodeId &n : nodes )
@@ -656,7 +656,7 @@ int QgsPointCloudLayerProfileGenerator::visitNodesSync( const QVector<QgsPointCl
   return nodesDrawn;
 }
 
-int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange )
+int QgsPointCloudLayerProfileGenerator::visitNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex &pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange )
 {
   int nodesDrawn = 0;
 

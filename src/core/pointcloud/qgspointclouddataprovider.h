@@ -157,7 +157,7 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      *
      * \note Not available in Python bindings
      */
-    virtual QgsPointCloudIndex index() const SIP_SKIP {return nullptr;}
+    virtual QgsPointCloudIndex index() const SIP_SKIP {return QgsPointCloudIndex( nullptr );}
 
     /**
      * Returns a list of sub indexes available if the provider supports multiple indexes, empty list otherwise.
@@ -279,10 +279,10 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
     QString mSubsetString;
 
     //! Identify in a specific index (used for sub-indexes)
-    QVector<QVariantMap> identify( QgsPointCloudIndex index, double maxError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange, int pointsLimit ) SIP_SKIP ;
+    QVector<QVariantMap> identify( QgsPointCloudIndex &index, double maxError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange, int pointsLimit ) SIP_SKIP ;
 
   private:
-    QVector<QgsPointCloudNodeId> traverseTree( const QgsPointCloudIndex pc, QgsPointCloudNode node, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
+    QVector<QgsPointCloudNodeId> traverseTree( const QgsPointCloudIndex &pc, QgsPointCloudNode node, double maxError, double nodeError, const QgsGeometry &extentGeometry, const QgsDoubleRange &extentZRange );
 
 };
 

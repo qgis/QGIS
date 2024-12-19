@@ -5721,7 +5721,7 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( MeshRangeExtent )
 
-    /*
+    /**
      * The access type of the data, local is for local files and remote for remote files (over HTTP).
      * \see QgsPointCloudIndex
      *

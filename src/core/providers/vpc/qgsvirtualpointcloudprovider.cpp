@@ -119,7 +119,7 @@ QgsPointCloudIndex QgsVirtualPointCloudProvider::index() const
   // non fatal for now -- 2d rendering of point clouds is not thread safe and calls this
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS_NON_FATAL
 
-  return nullptr;
+  return QgsPointCloudIndex( nullptr );
 }
 
 qint64 QgsVirtualPointCloudProvider::pointCount() const
@@ -391,9 +391,9 @@ void QgsVirtualPointCloudProvider::loadSubIndex( int i )
     return;
 
   if ( sl.uri().endsWith( QStringLiteral( "copc.laz" ), Qt::CaseSensitivity::CaseInsensitive ) )
-    sl.setIndex( new QgsCopcPointCloudIndex() );
+    sl.setIndex( QgsPointCloudIndex( new QgsCopcPointCloudIndex() ) );
   else if ( sl.uri().endsWith( QStringLiteral( "ept.json" ), Qt::CaseSensitivity::CaseInsensitive ) )
-    sl.setIndex( new QgsEptPointCloudIndex() );
+    sl.setIndex( QgsPointCloudIndex( new QgsEptPointCloudIndex() ) );
 
   if ( !sl.index() )
     return;

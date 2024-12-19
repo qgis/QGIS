@@ -306,21 +306,23 @@ QVector<QVariantMap> QgsPointCloudDataProvider::identify(
   {
     // Check if the sub-index is relevant and if it is loaded. We shouldn't
     // need to identify points in unloaded indices.
-    if ( !subidx.index()
+    QgsPointCloudIndex index = subidx.index();
+    if ( !index
          || ( !subidx.zRange().overlaps( extentZRange ) )
          || !subidx.polygonBounds().intersects( extentGeometry ) )
       continue;
-    acceptedPoints.append( identify( subidx.index(), maxError, extentGeometry, extentZRange, pointsLimit ) );
+    acceptedPoints.append( identify( index, maxError, extentGeometry, extentZRange, pointsLimit ) );
   }
 
   // Then look at main index
-  acceptedPoints.append( identify( index(), maxError, extentGeometry, extentZRange, pointsLimit ) );
+  QgsPointCloudIndex mainIndex = index();
+  acceptedPoints.append( identify( mainIndex, maxError, extentGeometry, extentZRange, pointsLimit ) );
 
   return acceptedPoints;
 }
 
 QVector<QVariantMap> QgsPointCloudDataProvider::identify(
-  QgsPointCloudIndex index, double maxError,
+  QgsPointCloudIndex &index, double maxError,
   const QgsGeometry &extentGeometry,
   const QgsDoubleRange &extentZRange, int pointsLimit )
 {
@@ -347,7 +349,7 @@ QVector<QVariantMap> QgsPointCloudDataProvider::identify(
 }
 
 QVector<QgsPointCloudNodeId> QgsPointCloudDataProvider::traverseTree(
-  const QgsPointCloudIndex pc,
+  const QgsPointCloudIndex &pc,
   QgsPointCloudNode node,
   double maxError,
   double nodeError,
@@ -387,7 +389,7 @@ bool QgsPointCloudDataProvider::setSubsetString( const QString &subset, bool upd
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   Q_UNUSED( updateFeatureCount )
-  auto i = index();
+  QgsPointCloudIndex i = index();
   if ( !i )
     return false;
 

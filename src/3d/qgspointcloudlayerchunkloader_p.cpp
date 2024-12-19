@@ -91,7 +91,8 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
       return;
     }
 
-    mHandler->processNode( pc, pcNode, mContext );
+    QgsPointCloudIndex pc2 = pc; // Copy to discard const
+    mHandler->processNode( pc2, pcNode, mContext );
 
     if ( mContext.isCanceled() )
     {
@@ -100,7 +101,7 @@ QgsPointCloudLayerChunkLoader::QgsPointCloudLayerChunkLoader( const QgsPointClou
     }
 
     if ( mContext.symbol()->renderAsTriangles() )
-      mHandler->triangulate( pc, pcNode, mContext, box3D );
+      mHandler->triangulate( pc2, pcNode, mContext, box3D );
   } );
 
   // emit finished() as soon as the handler is populated with features
