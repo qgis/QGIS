@@ -369,9 +369,18 @@ void QgsShortcutsManager::shortcutDestroyed( QShortcut *shortcut )
 void QgsShortcutsManager::updateActionToolTip( QAction *action, const QString &sequence )
 {
   QString current = action->toolTip();
-  // Remove the old shortcut.
-  const thread_local QRegularExpression rx( QStringLiteral( "\\(.*\\)" ) );
-  current.replace( rx, QString() );
+  const thread_local QRegularExpression rx( QStringLiteral( "\\((.*)\\)" ) );
+  // Look for the last occurrence of text inside parentheses
+  QRegularExpressionMatch match;
+  if ( current.lastIndexOf( rx, -1, &match ) != -1 )
+  {
+    // Check if it is a valid QKeySequence
+    const QStringList parts = QKeySequence( match.captured( 1 ) ).toString().split( "," );
+    if ( std::all_of( parts.constBegin(), parts.constEnd(), []( const QString &part ) { return !part.trimmed().isEmpty(); } ) )
+    {
+      current = current.remove( match.capturedStart( 0 ), match.capturedLength( 0 ) );
+    }
+  }
 
   if ( !sequence.isEmpty() )
   {
