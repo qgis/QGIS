@@ -192,18 +192,6 @@ void QgsLayoutAtlasWidget::mAtlasSingleFileCheckBox_stateChanged( int state )
 {
   if ( !mLayout )
     return;
-
-  if ( state == Qt::Checked )
-  {
-    mAtlasFilenamePatternEdit->setEnabled( false );
-    mAtlasFilenameExpressionButton->setEnabled( false );
-  }
-  else
-  {
-    mAtlasFilenamePatternEdit->setEnabled( true );
-    mAtlasFilenameExpressionButton->setEnabled( true );
-  }
-
   mLayout->setCustomProperty( QStringLiteral( "singleFile" ), state == Qt::Checked );
 }
 
@@ -400,8 +388,6 @@ void QgsLayoutAtlasWidget::updateGuiElements()
 
   const bool singleFile = mLayout->customProperty( QStringLiteral( "singleFile" ) ).toBool();
   mAtlasSingleFileCheckBox->setCheckState( singleFile ? Qt::Checked : Qt::Unchecked );
-  mAtlasFilenamePatternEdit->setEnabled( !singleFile );
-  mAtlasFilenameExpressionButton->setEnabled( !singleFile );
 
   mAtlasSortFeatureCheckBox->setCheckState( mAtlas->sortFeatures() ? Qt::Checked : Qt::Unchecked );
   mAtlasSortFeatureDirectionButton->setEnabled( mAtlas->sortFeatures() );
