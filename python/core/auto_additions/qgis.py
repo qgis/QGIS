@@ -11025,6 +11025,21 @@ Qgis.MeshRangeExtent.__doc__ = """Describes the extent used to compute mesh rang
 """
 # --
 Qgis.MeshRangeExtent.baseClass = Qgis
+# monkey patching scoped based enum
+Qgis.PointCloudAccessType.Local.__doc__ = "Local means the source is a local file on the machine"
+Qgis.PointCloudAccessType.Remote.__doc__ = "Remote means it's loaded through a protocol like HTTP"
+Qgis.PointCloudAccessType.__doc__ = """The access type of the data, local is for local files and remote for remote files (over HTTP).
+
+.. seealso:: :py:class:`QgsPointCloudIndex`
+
+.. versionadded:: 3.42
+
+* ``Local``: Local means the source is a local file on the machine
+* ``Remote``: Remote means it's loaded through a protocol like HTTP
+
+"""
+# --
+Qgis.PointCloudAccessType.baseClass = Qgis
 from enum import Enum
 
 

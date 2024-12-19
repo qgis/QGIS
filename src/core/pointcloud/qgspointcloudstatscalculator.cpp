@@ -64,7 +64,7 @@ struct StatsProcessor
         return QgsPointCloudStatistics();
 
       std::unique_ptr<QgsPointCloudBlock> block = nullptr;
-      if ( mIndex.accessType() == QgsPointCloudAccessType::Local )
+      if ( mIndex.accessType() == Qgis::PointCloudAccessType::Local )
       {
         block = mIndex.nodeData( nodeId, mRequest );
       }

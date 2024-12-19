@@ -147,12 +147,6 @@ Returns bounding box of specific node
 
 };
 
-enum class QgsPointCloudAccessType
-{
-  Local,
-  Remote
-};
-
 
 
 
@@ -196,7 +190,7 @@ Returns the error that occurred during the loading of the index.
 .. seealso:: :py:func:`QgsAbstractPointCloudIndex.error`
 %End
 
-    QgsPointCloudAccessType accessType() const;
+    Qgis::PointCloudAccessType accessType() const;
 %Docstring
 Returns the access type of the data
 If the access type is Remote, data will be fetched from an HTTP server either synchronously or asynchronously

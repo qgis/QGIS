@@ -198,13 +198,6 @@ class CORE_EXPORT QgsPointCloudNode
     QgsBox3D mBounds;
 };
 
-//! The access type of the data, local is for local files and remote for remote files (over HTTP)
-enum class QgsPointCloudAccessType
-{
-  Local, //!< Local means the source is a local file on the machine
-  Remote //!< Remote means it's loaded through a protocol like HTTP
-};
-
 
 #ifndef SIP_RUN
 
@@ -249,7 +242,7 @@ class CORE_EXPORT QgsAbstractPointCloudIndex
      * If the access type is local, the data is stored locally as a file and will only be fetch synchronously ( blocking request with nodeData only )
      * \note Always make sure to check before trying to use asyncNodeData since it is not supported in the case of local access type
      */
-    virtual QgsPointCloudAccessType accessType() const = 0;
+    virtual Qgis::PointCloudAccessType accessType() const = 0;
 
     //! Returns the coordinate reference system of the point cloud index
     virtual QgsCoordinateReferenceSystem crs() const = 0;
@@ -448,7 +441,7 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
     *
     * \see QgsAbstractPointCloudIndex::accessType
      */
-    QgsPointCloudAccessType accessType() const;
+    Qgis::PointCloudAccessType accessType() const;
 
     /**
     * Returns the coordinate reference system of the point cloud index

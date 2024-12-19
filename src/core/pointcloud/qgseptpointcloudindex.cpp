@@ -68,9 +68,9 @@ void QgsEptPointCloudIndex::load( const QString &urlString )
   QUrl url = urlString;
   // Treat non-URLs as local files
   if ( url.isValid() && ( url.scheme() == "http" || url.scheme() == "https" ) )
-    mAccessType = QgsPointCloudAccessType::Remote;
+    mAccessType = Qgis::PointCloudAccessType::Remote;
   else
-    mAccessType = QgsPointCloudAccessType::Local;
+    mAccessType = Qgis::PointCloudAccessType::Local;
   mUri = urlString;
 
   QStringList splitUrl = mUri.split( '/' );
@@ -78,7 +78,7 @@ void QgsEptPointCloudIndex::load( const QString &urlString )
   mUrlDirectoryPart = splitUrl.join( '/' );
 
   QByteArray content;
-  if ( mAccessType == QgsPointCloudAccessType::Remote )
+  if ( mAccessType == Qgis::PointCloudAccessType::Remote )
   {
     QNetworkRequest nr = QNetworkRequest( QUrl( mUri ) );
     QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsEptPointCloudIndex" ) );
@@ -111,7 +111,7 @@ void QgsEptPointCloudIndex::load( const QString &urlString )
     // try to import the metadata too!
     const QString manifestPath = mUrlDirectoryPart + QStringLiteral( "/ept-sources/manifest.json" );
     QByteArray manifestJson;
-    if ( mAccessType == QgsPointCloudAccessType::Remote )
+    if ( mAccessType == Qgis::PointCloudAccessType::Remote )
     {
       QUrl manifestUrl( manifestPath );
 
@@ -159,7 +159,7 @@ void QgsEptPointCloudIndex::loadManifest( const QByteArray &manifestJson )
   const QString fullMetadataPath = mUrlDirectoryPart + QStringLiteral( "/ept-sources/" ) + metadataPath;
 
   QByteArray metadataJson;
-  if ( mAccessType == QgsPointCloudAccessType::Remote )
+  if ( mAccessType == Qgis::PointCloudAccessType::Remote )
   {
     QUrl metadataUrl( fullMetadataPath );
     QNetworkRequest nr = QNetworkRequest( QUrl( metadataUrl ) );
@@ -377,7 +377,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsEptPointCloudIndex::nodeData( const QgsPo
   }
 
   std::unique_ptr<QgsPointCloudBlock> block;
-  if ( mAccessType == QgsPointCloudAccessType::Remote )
+  if ( mAccessType == Qgis::PointCloudAccessType::Remote )
   {
     std::unique_ptr<QgsPointCloudBlockRequest> blockRequest( asyncNodeData( n, request ) );
     if ( !blockRequest )
@@ -432,7 +432,7 @@ QgsPointCloudBlockRequest *QgsEptPointCloudIndex::asyncNodeData( const QgsPointC
            scale(), offset(), mFilterExpression, request.filterRect() );
   }
 
-  if ( mAccessType != QgsPointCloudAccessType::Remote )
+  if ( mAccessType != Qgis::PointCloudAccessType::Remote )
     return nullptr;
 
   if ( !loadNodeHierarchy( n ) )
@@ -544,7 +544,7 @@ bool QgsEptPointCloudIndex::loadSingleNodeHierarchy( const QgsPointCloudNodeId &
   const QString filePath = QStringLiteral( "%1/ept-hierarchy/%2.json" ).arg( mUrlDirectoryPart, nodeId.toString() );
 
   QByteArray dataJsonH;
-  if ( mAccessType == QgsPointCloudAccessType::Remote )
+  if ( mAccessType == Qgis::PointCloudAccessType::Remote )
   {
     QNetworkRequest nr( filePath );
     QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsEptPointCloudIndex" ) );
@@ -646,7 +646,7 @@ bool QgsEptPointCloudIndex::isValid() const
   return mIsValid;
 }
 
-QgsPointCloudAccessType QgsEptPointCloudIndex::accessType() const
+Qgis::PointCloudAccessType QgsEptPointCloudIndex::accessType() const
 {
   return mAccessType;
 }

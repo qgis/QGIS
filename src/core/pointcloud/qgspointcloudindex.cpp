@@ -348,7 +348,7 @@ QString QgsPointCloudIndex::error() const
   return mIndex ? mIndex->error() : QStringLiteral( "Index is NULL" );
 }
 
-QgsPointCloudAccessType QgsPointCloudIndex::accessType() const
+Qgis::PointCloudAccessType QgsPointCloudIndex::accessType() const
 {
   Q_ASSERT( mIndex );
   return mIndex->accessType();

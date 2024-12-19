@@ -61,7 +61,7 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
     QVariantMap originalMetadata() const override { return mOriginalMetadata; }
 
     bool isValid() const override;
-    QgsPointCloudAccessType accessType() const override { return mAccessType; };
+    Qgis::PointCloudAccessType accessType() const override { return mAccessType; };
 
     /**
      * Writes the statistics object \a stats into the COPC dataset as an Extended Variable Length Record (EVLR).
@@ -107,7 +107,7 @@ class CORE_EXPORT QgsCopcPointCloudIndex: public QgsAbstractPointCloudIndex
     QByteArray fetchCopcStatisticsEvlrData() const;
 
     bool mIsValid = false;
-    QgsPointCloudAccessType mAccessType = QgsPointCloudAccessType::Local;
+    Qgis::PointCloudAccessType mAccessType = Qgis::PointCloudAccessType::Local;
     mutable std::ifstream mCopcFile;
     mutable lazperf::copc_info_vlr mCopcInfoVlr;
     mutable QHash<QgsPointCloudNodeId, QPair<uint64_t, int32_t>> mHierarchyNodePos; //!< Additional data hierarchy for COPC
