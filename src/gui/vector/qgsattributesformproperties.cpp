@@ -43,6 +43,7 @@
 #include "qgsfieldcombobox.h"
 #include "qgsexpressionfinder.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgshelp.h"
 
 QgsAttributesFormProperties::QgsAttributesFormProperties( QgsVectorLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -1507,10 +1508,13 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       emit qmlCode->textChanged();
       qmlLayout->addWidget( qmlPreviewBox );
 
-      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help );
 
       connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
       connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [=] {
+        QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#other-widgets" ) );
+      } );
 
       mainLayout->addWidget( buttonBox );
 
@@ -1610,10 +1614,13 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       emit htmlCode->textChanged();
       htmlLayout->addWidget( htmlPreviewBox );
 
-      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help );
 
       connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
       connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [=] {
+        QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#other-widgets" ) );
+      } );
 
       mainLayout->addWidget( buttonBox );
 
@@ -1711,10 +1718,13 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       emit text->textChanged();
       textLayout->addWidget( textPreviewBox );
 
-      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help );
 
       connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
       connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [=] {
+        QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#other-widgets" ) );
+      } );
 
       mainLayout->addWidget( buttonBox );
 
@@ -1752,11 +1762,13 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       cbLayout->addWidget( new QLabel( tr( "Draw horizontal line" ), &dlg ) );
       cbLayout->addWidget( cb );
 
-
-      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel );
+      QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help );
 
       connect( buttonBox, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
       connect( buttonBox, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
+      connect( buttonBox, &QDialogButtonBox::helpRequested, &dlg, [=] {
+        QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#other-widgets" ) );
+      } );
 
       mainLayout->addWidget( buttonBox );
 
