@@ -48,6 +48,8 @@
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsactionmenu.h"
 
+const std::unique_ptr<QgsSettingsEntryVariant> QgsDualView::conditionalFormattingSplitterState = std::make_unique<QgsSettingsEntryVariant>( QStringLiteral( "attribute-table-splitter-state" ), QgsSettingsTree::sTreeWindowState, QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray ), QStringLiteral( "State of conditionnal formatting splitter's layout so it could be restored when opening attribute table view." ) );
+const std::unique_ptr<QgsSettingsEntryVariant> QgsDualView::attributeEditorSplitterState = std::make_unique<QgsSettingsEntryVariant>( QStringLiteral( "attribute-editor-splitter-state" ), QgsSettingsTree::sTreeWindowState, QgsVariantUtils::createNullVariant( QMetaType::Type::QByteArray ), QStringLiteral( "State of attribute editor splitter's layout so it could be restored when opening attribute editor view." ) );
 
 QgsDualView::QgsDualView( QWidget *parent )
   : QStackedWidget( parent )
@@ -69,7 +71,10 @@ QgsDualView::QgsDualView( QWidget *parent )
   mConditionalFormatWidget->setDockMode( true );
 
   const QgsSettings settings;
-  mConditionalSplitter->restoreState( settings.value( QStringLiteral( "/qgis/attributeTable/splitterState" ), QByteArray() ).toByteArray() );
+  // copy old setting
+  conditionalFormattingSplitterState->copyValueFromKey( QStringLiteral( "/qgis/attributeTable/splitterState" ), true );
+  mConditionalSplitter->restoreState( conditionalFormattingSplitterState->value().toByteArray() );
+  mAttributeEditorViewSplitter->restoreState( attributeEditorSplitterState->value().toByteArray() );
 
   mPreviewColumnsMenu = new QMenu( this );
   mActionPreviewColumnsMenu->setMenu( mPreviewColumnsMenu );
@@ -114,8 +119,6 @@ QgsDualView::QgsDualView( QWidget *parent )
 
 QgsDualView::~QgsDualView()
 {
-  QgsSettings settings;
-  settings.setValue( QStringLiteral( "/qgis/attributeTable/splitterState" ), mConditionalSplitter->saveState() );
 }
 
 void QgsDualView::init( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsFeatureRequest &request, const QgsAttributeEditorContext &context, bool loadFeatures, bool showFirstFeature )
@@ -815,6 +818,14 @@ void QgsDualView::hideEvent( QHideEvent *event )
 {
   Q_UNUSED( event )
   saveRecentDisplayExpressions();
+
+  // Better to save settings here than in destructor. This last can be called after a new
+  // project is loaded. So, when Qgis::ProjectFlag::RememberAttributeTableWindowsBetweenSessions is set,
+  // a new QgsDualView is created at project loading and we restore the old settings before saving the
+  // new one.
+  // And also, we override close event to just hide in QgsDockableWidgetHelper::eventFilter, that's why hideEvent
+  conditionalFormattingSplitterState->setValue( mConditionalSplitter->saveState() );
+  attributeEditorSplitterState->setValue( mAttributeEditorViewSplitter->saveState() );
 }
 
 void QgsDualView::viewWillShowContextMenu( QMenu *menu, const QModelIndex &masterIndex )
