@@ -152,6 +152,8 @@ class QgsMeshEditDigitizingAction : public QWidgetAction
   private:
     QComboBox *mComboZValueType = nullptr;
     QCheckBox *mCheckBoxRefineNeighboringFaces = nullptr;
+
+    friend class TestQgsMapToolEditMesh;
 };
 
 class APP_EXPORT QgsMapToolEditMeshFrame : public QgsMapToolAdvancedDigitizing
