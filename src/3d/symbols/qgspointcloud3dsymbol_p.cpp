@@ -546,11 +546,11 @@ void QgsPointCloud3DSymbolHandler::triangulate( QgsPointCloudIndex pc, const Qgs
 std::unique_ptr<QgsPointCloudBlock> QgsPointCloud3DSymbolHandler::pointCloudBlock( QgsPointCloudIndex pc, const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request, const QgsPointCloud3DRenderContext &context )
 {
   std::unique_ptr<QgsPointCloudBlock> block;
-  if ( pc.accessType() == QgsPointCloudAccessType::Local )
+  if ( pc.accessType() == Qgis::PointCloudAccessType::Local )
   {
     block = pc.nodeData( n, request );
   }
-  else if ( pc.accessType() == QgsPointCloudAccessType::Remote )
+  else if ( pc.accessType() == Qgis::PointCloudAccessType::Remote )
   {
     QgsPointCloudNode node = pc.getNode( n );
     if ( node.pointCount() < 1 )

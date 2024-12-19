@@ -5721,6 +5721,19 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( MeshRangeExtent )
 
+    /*
+     * The access type of the data, local is for local files and remote for remote files (over HTTP).
+     * \see QgsPointCloudIndex
+     *
+     * \since QGIS 3.42
+     */
+    enum class PointCloudAccessType : int
+    {
+      Local, //!< Local means the source is a local file on the machine
+      Remote //!< Remote means it's loaded through a protocol like HTTP
+    };
+    Q_ENUM( PointCloudAccessType )
+
     /**
      * Identify search radius in mm
      */

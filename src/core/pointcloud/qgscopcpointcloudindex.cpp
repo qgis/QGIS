@@ -65,10 +65,10 @@ void QgsCopcPointCloudIndex::load( const QString &urlString )
   QUrl url = urlString;
   // Treat non-URLs as local files
   if ( url.isValid() && ( url.scheme() == "http" || url.scheme() == "https" ) )
-    mAccessType = QgsPointCloudAccessType::Remote;
+    mAccessType = Qgis::PointCloudAccessType::Remote;
   else
   {
-    mAccessType = QgsPointCloudAccessType::Local;
+    mAccessType = Qgis::PointCloudAccessType::Local;
     mCopcFile.open( QgsLazDecoder::toNativePath( urlString ), std::ios::binary );
     if ( mCopcFile.fail() )
     {
@@ -79,7 +79,7 @@ void QgsCopcPointCloudIndex::load( const QString &urlString )
   }
   mUri = urlString;
 
-  if ( mAccessType == QgsPointCloudAccessType::Remote )
+  if ( mAccessType == Qgis::PointCloudAccessType::Remote )
     mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromUrl( url ) ) );
   else
     mLazInfo.reset( new QgsLazInfo( QgsLazInfo::fromFile( mCopcFile ) ) );
@@ -152,7 +152,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const QgsP
   }
 
   std::unique_ptr<QgsPointCloudBlock> block;
-  if ( mAccessType == QgsPointCloudAccessType::Local )
+  if ( mAccessType == Qgis::PointCloudAccessType::Local )
   {
     const bool found = fetchNodeHierarchy( n );
     if ( !found )
@@ -205,7 +205,7 @@ std::unique_ptr<QgsPointCloudBlock> QgsCopcPointCloudIndex::nodeData( const QgsP
 
 QgsPointCloudBlockRequest *QgsCopcPointCloudIndex::asyncNodeData( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request )
 {
-  if ( mAccessType == QgsPointCloudAccessType::Local )
+  if ( mAccessType == Qgis::PointCloudAccessType::Local )
     return nullptr; // TODO
   if ( QgsPointCloudBlock *cached = getNodeDataFromCache( n, request ) )
   {
@@ -249,7 +249,7 @@ bool QgsCopcPointCloudIndex::loadHierarchy() const
 
 bool QgsCopcPointCloudIndex::writeStatistics( QgsPointCloudStatistics &stats )
 {
-  if ( mAccessType == QgsPointCloudAccessType::Remote )
+  if ( mAccessType == Qgis::PointCloudAccessType::Remote )
   {
     QgsMessageLog::logMessage( QObject::tr( "Can't write statistics to remote file \"%1\"" ).arg( mUri ) );
     return false;
@@ -358,7 +358,7 @@ void QgsCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteS
 
   switch ( mAccessType )
   {
-    case QgsPointCloudAccessType::Local:
+    case Qgis::PointCloudAccessType::Local:
     {
       mCopcFile.seekg( offset );
       std::unique_ptr<char []> data( new char[ byteSize ] );
@@ -367,7 +367,7 @@ void QgsCopcPointCloudIndex::fetchHierarchyPage( uint64_t offset, uint64_t byteS
       populateHierarchy( data.get(), byteSize );
       return;
     }
-    case QgsPointCloudAccessType::Remote:
+    case Qgis::PointCloudAccessType::Remote:
     {
       QNetworkRequest nr = QNetworkRequest( QUrl( mUri ) );
       QgsSetRequestInitiatorClass( nr, QStringLiteral( "QgsCopcPointCloudIndex" ) );
@@ -472,7 +472,7 @@ void QgsCopcPointCloudIndex::copyCommonProperties( QgsCopcPointCloudIndex *desti
   destination->mIsValid = mIsValid;
   destination->mAccessType = mAccessType;
   destination->mUri = mUri;
-  if ( mAccessType == QgsPointCloudAccessType::Local )
+  if ( mAccessType == Qgis::PointCloudAccessType::Local )
     destination->mCopcFile.open( QgsLazDecoder::toNativePath( mUri ), std::ios::binary );
   destination->mCopcInfoVlr = mCopcInfoVlr;
   destination->mHierarchyNodePos = mHierarchyNodePos;
@@ -482,7 +482,7 @@ void QgsCopcPointCloudIndex::copyCommonProperties( QgsCopcPointCloudIndex *desti
 
 QByteArray QgsCopcPointCloudIndex::fetchCopcStatisticsEvlrData() const
 {
-  Q_ASSERT( mAccessType == QgsPointCloudAccessType::Local ); // TODO: Remote
+  Q_ASSERT( mAccessType == Qgis::PointCloudAccessType::Local ); // TODO: Remote
   uint64_t offset = mLazInfo->firstEvlrOffset();
   uint32_t evlrCount = mLazInfo->evlrCount();
 

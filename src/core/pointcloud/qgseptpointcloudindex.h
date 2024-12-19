@@ -56,7 +56,7 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsAbstractPointCloudIndex
     QgsPointCloudStatistics metadataStatistics() const override;
 
     bool isValid() const override;
-    QgsPointCloudAccessType accessType() const override;
+    Qgis::PointCloudAccessType accessType() const override;
 
     /**
      * Copies common properties to the \a destination index
@@ -73,7 +73,7 @@ class CORE_EXPORT QgsEptPointCloudIndex: public QgsAbstractPointCloudIndex
     bool loadNodeHierarchy( const QgsPointCloudNodeId &nodeId ) const;
 
     bool mIsValid = false;
-    QgsPointCloudAccessType mAccessType = QgsPointCloudAccessType::Local;
+    Qgis::PointCloudAccessType mAccessType = Qgis::PointCloudAccessType::Local;
     QString mDataType;
     QString mWkt;
 

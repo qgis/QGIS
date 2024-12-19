@@ -315,12 +315,12 @@ bool QgsPointCloudLayerRenderer::renderIndex( QgsPointCloudIndex pc )
     {
       switch ( pc.accessType() )
       {
-        case QgsPointCloudAccessType::Local:
+        case Qgis::PointCloudAccessType::Local:
         {
           nodesDrawn += renderNodesSync( nodes, pc, context, request, canceled );
           break;
         }
-        case QgsPointCloudAccessType::Remote:
+        case Qgis::PointCloudAccessType::Remote:
         {
           nodesDrawn += renderNodesAsync( nodes, pc, context, request, canceled );
           break;

@@ -542,12 +542,12 @@ bool QgsPointCloudLayerProfileGenerator::generateProfile( const QgsProfileGenera
 
     switch ( pc.accessType() )
     {
-      case QgsPointCloudAccessType::Local:
+      case Qgis::PointCloudAccessType::Local:
       {
         visitNodesSync( nodes, pc, request, context.elevationRange() );
         break;
       }
-      case QgsPointCloudAccessType::Remote:
+      case Qgis::PointCloudAccessType::Remote:
       {
         visitNodesAsync( nodes, pc, request, context.elevationRange() );
         break;
