@@ -45,11 +45,11 @@ Sample usage of the :py:class:`QgsRasterLayer` class:
 
     static const QgsContrastEnhancement::ContrastEnhancementAlgorithm MULTIPLE_BAND_MULTI_BYTE_ENHANCEMENT_ALGORITHM;
 
-    static const QgsRasterMinMaxOrigin::Limits SINGLE_BAND_MIN_MAX_LIMITS;
+    static const Qgis::RasterRangeLimit SINGLE_BAND_MIN_MAX_LIMITS;
 
-    static const QgsRasterMinMaxOrigin::Limits MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS;
+    static const Qgis::RasterRangeLimit MULTIPLE_BAND_SINGLE_BYTE_MIN_MAX_LIMITS;
 
-    static const QgsRasterMinMaxOrigin::Limits MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS;
+    static const Qgis::RasterRangeLimit MULTIPLE_BAND_MULTI_BYTE_MIN_MAX_LIMITS;
 
     QgsRasterLayer();
 %Docstring
@@ -124,7 +124,7 @@ returned in ``retError``.
 Returns time stamp for given file name
 %End
 
- void setDataProvider( const QString &provider ) /Deprecated/;
+ void setDataProvider( const QString &provider ) /Deprecated="Since 3.40. Use the version with ProviderOptions instead."/;
 %Docstring
 Set the data provider.
 
@@ -286,7 +286,7 @@ This will be ``None`` if the layer is invalid.
 This is an overloaded version of the :py:func:`~QgsRasterLayer.draw` function that is called by both :py:func:`~QgsRasterLayer.draw` and thumbnailAsPixmap
 %End
 
- QgsLegendColorList legendSymbologyItems() const /Deprecated/;
+ QgsLegendColorList legendSymbologyItems() const /Deprecated="Since 3.40. Use QgsRasterRenderer.createLegendNodes() instead."/;
 %Docstring
 Returns a list with classification items (Text and color).
 
@@ -339,7 +339,7 @@ In a world file, this is normally the first row (without the sign).
 
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
-                                 QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax,
+                                 Qgis::RasterRangeLimit limits = Qgis::RasterRangeLimit::MinimumMaximum,
                                  const QgsRectangle &extent = QgsRectangle(),
                                  int sampleSize = QgsRasterLayer::SAMPLE_SIZE,
                                  bool generateLookupTableFlag = true );
@@ -352,7 +352,6 @@ Set contrast enhancement algorithm
 :param sampleSize: Size of data sample to calculate limits, if 0, use full resolution
 :param generateLookupTableFlag: Generate lookup table.
 %End
-
 
 
     virtual QString subsetString() const;
@@ -401,6 +400,60 @@ Draws a preview of the rasterlayer into a QImage
     virtual bool accept( QgsStyleEntityVisitorInterface *visitor ) const;
 
 
+    bool labelsEnabled() const;
+%Docstring
+Returns whether the layer contains labels which are enabled and should be drawn.
+
+:return: ``True`` if layer contains enabled labels
+
+.. seealso:: :py:func:`setLabelsEnabled`
+
+.. seealso:: :py:func:`labeling`
+
+.. versionadded:: 3.42
+%End
+
+    void setLabelsEnabled( bool enabled );
+%Docstring
+Sets whether labels should be ``enabled`` for the layer.
+
+.. note::
+
+   Labels will only be rendered if :py:func:`~QgsRasterLayer.labelsEnabled` is ``True`` and a labeling
+   object is returned by :py:func:`~QgsRasterLayer.labeling`.
+
+.. seealso:: :py:func:`labelsEnabled`
+
+.. seealso:: :py:func:`labeling`
+
+.. versionadded:: 3.42
+%End
+
+
+    QgsAbstractRasterLayerLabeling *labeling();
+%Docstring
+Access to labeling configuration. May be ``None`` if labeling is not used.
+
+.. note::
+
+   Labels will only be rendered if :py:func:`~QgsRasterLayer.labelsEnabled` returns ``True``.
+
+.. seealso:: :py:func:`labelsEnabled`
+
+.. seealso:: :py:func:`setLabeling`
+
+.. versionadded:: 3.42
+%End
+
+    void setLabeling( QgsAbstractRasterLayerLabeling *labeling /Transfer/ );
+%Docstring
+Sets labeling configuration. Takes ownership of the object.
+
+.. seealso:: :py:func:`labeling`
+
+.. versionadded:: 3.42
+%End
+
     bool writeSld( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QVariantMap &props = QVariantMap() ) const;
 %Docstring
 Writes the symbology of the layer into the document provided in SLD 1.0.0 format
@@ -428,6 +481,7 @@ to be drawn outside the data extent.
     virtual QgsMapLayerTemporalProperties *temporalProperties();
 
     virtual QgsMapLayerElevationProperties *elevationProperties();
+
 
 
   public slots:

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmeshvariablestrokewidthwidget.h"
+#include "moc_qgsmeshvariablestrokewidthwidget.cpp"
 
 #include <QDialog>
 #include <QDialogButtonBox>
@@ -25,16 +26,15 @@ QgsMeshVariableStrokeWidthWidget::QgsMeshVariableStrokeWidthWidget(
   const QgsInterpolatedLineWidth &variableStrokeWidth,
   double defaultMinimumvalue,
   double defaultMaximumValue,
-  QWidget *parent ):
-  QgsPanelWidget( parent ),
-  mDefaultMinimumValue( defaultMinimumvalue ),
-  mDefaultMaximumValue( defaultMaximumValue )
+  QWidget *parent
+)
+  : QgsPanelWidget( parent ), mDefaultMinimumValue( defaultMinimumvalue ), mDefaultMaximumValue( defaultMaximumValue )
 {
   setupUi( this );
 
-  mValueMinimumSpinBox->setSpecialValueText( QString( ) );
+  mValueMinimumSpinBox->setSpecialValueText( QString() );
   mValueMinimumSpinBox->setClearValueMode( QgsDoubleSpinBox::ClearValueMode::MinimumValue );
-  mValueMaximumSpinBox->setSpecialValueText( QString( ) );
+  mValueMaximumSpinBox->setSpecialValueText( QString() );
   mValueMaximumSpinBox->setClearValueMode( QgsDoubleSpinBox::ClearValueMode::MinimumValue );
 
   setPanelTitle( tr( "Variable Stroke Width" ) );
@@ -86,7 +86,8 @@ void QgsMeshVariableStrokeWidthWidget::defaultMinMax()
   emit widgetChanged();
 }
 
-QgsMeshVariableStrokeWidthButton::QgsMeshVariableStrokeWidthButton( QWidget *parent ): QPushButton( parent )
+QgsMeshVariableStrokeWidthButton::QgsMeshVariableStrokeWidthButton( QWidget *parent )
+  : QPushButton( parent )
 {
   updateText();
   connect( this, &QPushButton::clicked, this, &QgsMeshVariableStrokeWidthButton::openWidget );
@@ -106,16 +107,11 @@ void QgsMeshVariableStrokeWidthButton::setVariableStrokeWidth( const QgsInterpol
 void QgsMeshVariableStrokeWidthButton::openWidget()
 {
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
-  QgsMeshVariableStrokeWidthWidget *widget =
-    new QgsMeshVariableStrokeWidthWidget( mVariableStrokeWidth,
-                                          mMinimumDefaultValue,
-                                          mMaximumDefaultValue,
-                                          panel );
+  QgsMeshVariableStrokeWidthWidget *widget = new QgsMeshVariableStrokeWidthWidget( mVariableStrokeWidth, mMinimumDefaultValue, mMaximumDefaultValue, panel );
 
   if ( panel && panel->dockMode() )
   {
-    connect( widget, &QgsMeshVariableStrokeWidthWidget::widgetChanged, this, [this, widget]
-    {
+    connect( widget, &QgsMeshVariableStrokeWidthWidget::widgetChanged, this, [this, widget] {
       // Update strokeWidth toward button
       this->setVariableStrokeWidth( widget->variableStrokeWidth() );
       this->emit widgetChanged();
@@ -150,9 +146,7 @@ void QgsMeshVariableStrokeWidthButton::openWidget()
 
 void QgsMeshVariableStrokeWidthButton::updateText()
 {
-  setText( QString( "%1 - %2" ).
-           arg( QLocale().toString( mVariableStrokeWidth.minimumWidth(), 'g', 3 ),
-                QLocale().toString( mVariableStrokeWidth.maximumWidth(), 'g', 3 ) ) );
+  setText( QString( "%1 - %2" ).arg( QLocale().toString( mVariableStrokeWidth.minimumWidth(), 'g', 3 ), QLocale().toString( mVariableStrokeWidth.maximumWidth(), 'g', 3 ) ) );
 }
 
 double QgsMeshVariableStrokeWidthWidget::lineEditValue( const QgsDoubleSpinBox *lineEdit ) const
@@ -164,4 +158,3 @@ double QgsMeshVariableStrokeWidthWidget::lineEditValue( const QgsDoubleSpinBox *
 
   return lineEdit->value();
 }
-

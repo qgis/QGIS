@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstiledscenelayerproperties.h"
+#include "moc_qgstiledscenelayerproperties.cpp"
 #include "qgsmaplayerconfigwidget.h"
 #include "qgstiledscenelayer.h"
 #include "qgsmetadatawidget.h"
@@ -71,8 +72,7 @@ QgsTiledSceneLayerProperties::QgsTiledSceneLayerProperties( QgsTiledSceneLayer *
   QgsSettings settings;
   if ( !settings.contains( QStringLiteral( "/Windows/TiledSceneLayerProperties/tab" ) ) )
   {
-    settings.setValue( QStringLiteral( "Windows/TiledSceneLayerProperties/tab" ),
-                       mOptStackedWidget->indexOf( mOptsPage_Information ) );
+    settings.setValue( QStringLiteral( "Windows/TiledSceneLayerProperties/tab" ), mOptStackedWidget->indexOf( mOptsPage_Information ) );
   }
 
   mBtnStyle = new QPushButton( tr( "Style" ) );
@@ -189,4 +189,3 @@ void QgsTiledSceneLayerProperties::crsChanged( const QgsCoordinateReferenceSyste
   mLayer->setCrs( crs );
   mMetadataWidget->crsChanged();
 }
-

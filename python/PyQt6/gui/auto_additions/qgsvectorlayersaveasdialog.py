@@ -29,5 +29,5 @@ QgsVectorLayerSaveAsDialog.Options.baseClass = QgsVectorLayerSaveAsDialog
 Options = QgsVectorLayerSaveAsDialog  # dirty hack since SIP seems to introduce the flags in module
 try:
     QgsVectorLayerSaveAsDialog.__group__ = ['ogr']
-except NameError:
+except (NameError, AttributeError):
     pass

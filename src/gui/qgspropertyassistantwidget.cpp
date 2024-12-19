@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgspropertyassistantwidget.h"
+#include "moc_qgspropertyassistantwidget.cpp"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
 #include "qgsmapsettings.h"
@@ -30,9 +31,7 @@
 #include "qgsstringutils.h"
 #include "qgsgui.h"
 
-QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
-    const QgsPropertyDefinition &definition, const QgsProperty &initialState,
-    const QgsVectorLayer *layer )
+QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent, const QgsPropertyDefinition &definition, const QgsProperty &initialState, const QgsVectorLayer *layer )
   : QgsPanelWidget( parent )
   , mDefinition( definition )
   , mLayer( layer )
@@ -49,7 +48,7 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
   maxValueSpinBox->setShowClearButton( false );
 
   // TODO expression widget shouldn't require a non-const layer
-  mExpressionWidget->setLayer( const_cast< QgsVectorLayer * >( mLayer ) );
+  mExpressionWidget->setLayer( const_cast<QgsVectorLayer *>( mLayer ) );
   mExpressionWidget->setFilters( QgsFieldProxyModel::Numeric );
   mExpressionWidget->setField( initialState.propertyType() == Qgis::PropertyType::Expression ? initialState.expressionString() : initialState.field() );
 
@@ -70,7 +69,7 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
 
   if ( mLayer )
   {
-    mLayerTreeLayer = new QgsLayerTreeLayer( const_cast< QgsVectorLayer * >( mLayer ) );
+    mLayerTreeLayer = new QgsLayerTreeLayer( const_cast<QgsVectorLayer *>( mLayer ) );
     mRoot.addChildNode( mLayerTreeLayer ); // takes ownership
   }
   mLegendPreview->setModel( &mPreviewList );
@@ -124,19 +123,17 @@ QgsPropertyAssistantWidget::QgsPropertyAssistantWidget( QWidget *parent,
     mCurveEditor->setMaxHistogramValueRange( maxValueSpinBox->value() );
 
     mCurveEditor->setHistogramSource( mLayer, mExpressionWidget->currentField() );
-    connect( mExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) > ( &QgsFieldExpressionWidget::fieldChanged ), this, [ = ]( const QString & expression )
-    {
+    connect( mExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, [=]( const QString &expression ) {
       mCurveEditor->setHistogramSource( mLayer, expression );
-    }
-           );
-    connect( minValueSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), mCurveEditor, &QgsCurveEditorWidget::setMinHistogramValueRange );
-    connect( maxValueSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), mCurveEditor, &QgsCurveEditorWidget::setMaxHistogramValueRange );
+    } );
+    connect( minValueSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), mCurveEditor, &QgsCurveEditorWidget::setMinHistogramValueRange );
+    connect( maxValueSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), mCurveEditor, &QgsCurveEditorWidget::setMaxHistogramValueRange );
   }
   mTransformCurveCheckBox->setVisible( mTransformerWidget );
 
-  connect( minValueSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertyAssistantWidget::widgetChanged );
-  connect( maxValueSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertyAssistantWidget::widgetChanged );
-  connect( mExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) > ( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsPropertyAssistantWidget::widgetChanged );
+  connect( minValueSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertyAssistantWidget::widgetChanged );
+  connect( maxValueSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertyAssistantWidget::widgetChanged );
+  connect( mExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsPropertyAssistantWidget::widgetChanged );
   connect( mTransformCurveCheckBox, &QgsCollapsibleGroupBox::toggled, this, &QgsPropertyAssistantWidget::widgetChanged );
   connect( mCurveEditor, &QgsCurveEditorWidget::changed, this, &QgsPropertyAssistantWidget::widgetChanged );
   connect( this, &QgsPropertyAssistantWidget::widgetChanged, this, &QgsPropertyAssistantWidget::updatePreview );
@@ -159,7 +156,7 @@ void QgsPropertyAssistantWidget::updateProperty( QgsProperty &property )
 
   if ( mTransformerWidget )
   {
-    std::unique_ptr< QgsPropertyTransformer> t( mTransformerWidget->createTransformer( minValueSpinBox->value(), maxValueSpinBox->value() ) );
+    std::unique_ptr<QgsPropertyTransformer> t( mTransformerWidget->createTransformer( minValueSpinBox->value(), maxValueSpinBox->value() ) );
     if ( mTransformCurveCheckBox->isChecked() )
     {
       t->setCurveTransform( new QgsCurveTransform( mCurveEditor->curve() ) );
@@ -219,12 +216,10 @@ void QgsPropertyAssistantWidget::updatePreview()
   mLegendPreview->setIconSize( QSize( 512, 512 ) );
   mPreviewList.clear();
 
-  QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( minValueSpinBox->value(),
-                         maxValueSpinBox->value(), 8 );
+  QList<double> breaks = QgsSymbolLayerUtils::prettyBreaks( minValueSpinBox->value(), maxValueSpinBox->value(), 8 );
 
   QgsCurveTransform curve = mCurveEditor->curve();
-  const QList< QgsSymbolLegendNode * > nodes = mTransformerWidget->generatePreviews( breaks, mLayerTreeLayer, mSymbol.get(), minValueSpinBox->value(),
-      maxValueSpinBox->value(), mTransformCurveCheckBox->isChecked() ? &curve : nullptr );
+  const QList<QgsSymbolLegendNode *> nodes = mTransformerWidget->generatePreviews( breaks, mLayerTreeLayer, mSymbol.get(), minValueSpinBox->value(), maxValueSpinBox->value(), mTransformCurveCheckBox->isChecked() ? &curve : nullptr );
 
   int widthMax = 0;
   int i = 0;
@@ -277,10 +272,8 @@ bool QgsPropertyAssistantWidget::computeValuesFromExpression( const QString &exp
   const QSet<QString> referencedCols( e.referencedColumns() );
 
   QgsFeatureIterator fit = mLayer->getFeatures(
-                             QgsFeatureRequest().setFlags( e.needsGeometry()
-                                 ? Qgis::FeatureRequestFlag::NoFlags
-                                 : Qgis::FeatureRequestFlag::NoGeometry )
-                             .setSubsetOfAttributes( referencedCols, mLayer->fields() ) );
+    QgsFeatureRequest().setFlags( e.needsGeometry() ? Qgis::FeatureRequestFlag::NoFlags : Qgis::FeatureRequestFlag::NoGeometry ).setSubsetOfAttributes( referencedCols, mLayer->fields() )
+  );
 
   // create list of non-null attribute values
   double min = std::numeric_limits<double>::max();
@@ -363,7 +356,7 @@ QgsPropertySizeAssistantWidget::QgsPropertySizeAssistantWidget( QWidget *parent,
   maxSizeSpinBox->setShowClearButton( false );
   nullSizeSpinBox->setShowClearButton( false );
 
-  if ( const QgsSizeScaleTransformer *sizeTransform = dynamic_cast< const QgsSizeScaleTransformer * >( initialState.transformer() ) )
+  if ( const QgsSizeScaleTransformer *sizeTransform = dynamic_cast<const QgsSizeScaleTransformer *>( initialState.transformer() ) )
   {
     minSizeSpinBox->setValue( sizeTransform->minSize() );
     maxSizeSpinBox->setValue( sizeTransform->maxSize() );
@@ -374,38 +367,36 @@ QgsPropertySizeAssistantWidget::QgsPropertySizeAssistantWidget( QWidget *parent,
 
   exponentSpinBox->setEnabled( scaleMethodComboBox->currentData().toInt() == QgsSizeScaleTransformer::Exponential );
 
-  connect( minSizeSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
-  connect( maxSizeSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
-  connect( nullSizeSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
-  connect( exponentSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
-  connect( scaleMethodComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
-  connect( scaleMethodComboBox, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::currentIndexChanged ), this,
-           [ = ]
-  {
+  connect( minSizeSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
+  connect( maxSizeSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
+  connect( nullSizeSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
+  connect( exponentSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
+  connect( scaleMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
+  connect( scaleMethodComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=] {
     exponentSpinBox->setEnabled( scaleMethodComboBox->currentData().toInt() == QgsSizeScaleTransformer::Exponential );
-  }
-         );
+  } );
 }
 
 QgsSizeScaleTransformer *QgsPropertySizeAssistantWidget::createTransformer( double minValue, double maxValue ) const
 {
   QgsSizeScaleTransformer *transformer = new QgsSizeScaleTransformer(
-    static_cast< QgsSizeScaleTransformer::ScaleType >( scaleMethodComboBox->currentData().toInt() ),
+    static_cast<QgsSizeScaleTransformer::ScaleType>( scaleMethodComboBox->currentData().toInt() ),
     minValue,
     maxValue,
     minSizeSpinBox->value(),
     maxSizeSpinBox->value(),
     nullSizeSpinBox->value(),
-    exponentSpinBox->value() );
+    exponentSpinBox->value()
+  );
   return transformer;
 }
 
-QList< QgsSymbolLegendNode * > QgsPropertySizeAssistantWidget::generatePreviews( const QList<double> &breaks, QgsLayerTreeLayer *parent, const QgsSymbol *symbol, double minValue, double maxValue, QgsCurveTransform *curve ) const
+QList<QgsSymbolLegendNode *> QgsPropertySizeAssistantWidget::generatePreviews( const QList<double> &breaks, QgsLayerTreeLayer *parent, const QgsSymbol *symbol, double minValue, double maxValue, QgsCurveTransform *curve ) const
 {
-  QList< QgsSymbolLegendNode * > nodes;
+  QList<QgsSymbolLegendNode *> nodes;
 
   const QgsSymbol *legendSymbol = symbol;
-  std::unique_ptr< QgsSymbol > tempSymbol;
+  std::unique_ptr<QgsSymbol> tempSymbol;
 
   if ( !legendSymbol )
   {
@@ -422,16 +413,16 @@ QList< QgsSymbolLegendNode * > QgsPropertySizeAssistantWidget::generatePreviews(
   if ( !legendSymbol )
     return nodes;
 
-  std::unique_ptr< QgsSizeScaleTransformer > t( createTransformer( minValue, maxValue ) );
+  std::unique_ptr<QgsSizeScaleTransformer> t( createTransformer( minValue, maxValue ) );
   if ( curve )
     t->setCurveTransform( new QgsCurveTransform( *curve ) );
 
   for ( int i = 0; i < breaks.length(); i++ )
   {
-    std::unique_ptr< QgsSymbolLegendNode > node;
+    std::unique_ptr<QgsSymbolLegendNode> node;
     if ( dynamic_cast<const QgsMarkerSymbol *>( legendSymbol ) )
     {
-      std::unique_ptr< QgsMarkerSymbol > symbolClone( static_cast<QgsMarkerSymbol *>( legendSymbol->clone() ) );
+      std::unique_ptr<QgsMarkerSymbol> symbolClone( static_cast<QgsMarkerSymbol *>( legendSymbol->clone() ) );
       symbolClone->setDataDefinedSize( QgsProperty() );
       symbolClone->setDataDefinedAngle( QgsProperty() ); // to avoid symbol not being drawn
       symbolClone->setSize( t->size( breaks[i] ) );
@@ -439,7 +430,7 @@ QList< QgsSymbolLegendNode * > QgsPropertySizeAssistantWidget::generatePreviews(
     }
     else if ( dynamic_cast<const QgsLineSymbol *>( legendSymbol ) )
     {
-      std::unique_ptr< QgsLineSymbol > symbolClone( static_cast<QgsLineSymbol *>( legendSymbol->clone() ) );
+      std::unique_ptr<QgsLineSymbol> symbolClone( static_cast<QgsLineSymbol *>( legendSymbol->clone() ) );
       symbolClone->setDataDefinedWidth( QgsProperty() );
       symbolClone->setWidth( t->size( breaks[i] ) );
       node.reset( new QgsSymbolLegendNode( parent, QgsLegendSymbolItem( symbolClone.get(), QString::number( i ), QString() ) ) );
@@ -452,7 +443,7 @@ QList< QgsSymbolLegendNode * > QgsPropertySizeAssistantWidget::generatePreviews(
 
 QList<QgsSymbolLegendNode *> QgsPropertyAbstractTransformerWidget::generatePreviews( const QList<double> &, QgsLayerTreeLayer *, const QgsSymbol *, double, double, QgsCurveTransform * ) const
 {
-  return QList< QgsSymbolLegendNode * >();
+  return QList<QgsSymbolLegendNode *>();
 }
 
 QgsPropertyColorAssistantWidget::QgsPropertyColorAssistantWidget( QWidget *parent, const QgsPropertyDefinition &definition, const QgsProperty &initialState )
@@ -469,7 +460,7 @@ QgsPropertyColorAssistantWidget::QgsPropertyColorAssistantWidget( QWidget *paren
   mNullColorButton->setContext( QStringLiteral( "symbology" ) );
   mNullColorButton->setNoColorString( tr( "Transparent" ) );
 
-  if ( const QgsColorRampTransformer *colorTransform = dynamic_cast< const QgsColorRampTransformer * >( initialState.transformer() ) )
+  if ( const QgsColorRampTransformer *colorTransform = dynamic_cast<const QgsColorRampTransformer *>( initialState.transformer() ) )
   {
     mNullColorButton->setColor( colorTransform->nullColor() );
     if ( colorTransform->colorRamp() )
@@ -482,7 +473,7 @@ QgsPropertyColorAssistantWidget::QgsPropertyColorAssistantWidget( QWidget *paren
   if ( !mColorRampButton->colorRamp() )
   {
     // set a default ramp
-    std::unique_ptr< QgsColorRamp > colorRamp( QgsProject::instance()->styleSettings()->defaultColorRamp() );
+    std::unique_ptr<QgsColorRamp> colorRamp( QgsProject::instance()->styleSettings()->defaultColorRamp() );
     if ( !colorRamp )
     {
       colorRamp.reset( QgsStyle::defaultStyle()->colorRamp( QStringLiteral( "Blues" ) ) );
@@ -499,16 +490,17 @@ QgsColorRampTransformer *QgsPropertyColorAssistantWidget::createTransformer( dou
     maxValue,
     mColorRampButton->colorRamp(),
     mNullColorButton->color(),
-    mColorRampButton->colorRampName() );
+    mColorRampButton->colorRampName()
+  );
   return transformer;
 }
 
 QList<QgsSymbolLegendNode *> QgsPropertyColorAssistantWidget::generatePreviews( const QList<double> &breaks, QgsLayerTreeLayer *parent, const QgsSymbol *symbol, double minValue, double maxValue, QgsCurveTransform *curve ) const
 {
-  QList< QgsSymbolLegendNode * > nodes;
+  QList<QgsSymbolLegendNode *> nodes;
 
   const QgsMarkerSymbol *legendSymbol = dynamic_cast<const QgsMarkerSymbol *>( symbol );
-  std::unique_ptr< QgsMarkerSymbol > tempSymbol;
+  std::unique_ptr<QgsMarkerSymbol> tempSymbol;
 
   if ( !legendSymbol )
   {
@@ -518,14 +510,14 @@ QList<QgsSymbolLegendNode *> QgsPropertyColorAssistantWidget::generatePreviews( 
   if ( !legendSymbol )
     return nodes;
 
-  std::unique_ptr< QgsColorRampTransformer > t( createTransformer( minValue, maxValue ) );
+  std::unique_ptr<QgsColorRampTransformer> t( createTransformer( minValue, maxValue ) );
   if ( curve )
     t->setCurveTransform( new QgsCurveTransform( *curve ) );
 
   for ( int i = 0; i < breaks.length(); i++ )
   {
-    std::unique_ptr< QgsSymbolLegendNode > node;
-    std::unique_ptr< QgsMarkerSymbol > symbolClone( static_cast<QgsMarkerSymbol *>( legendSymbol->clone() ) );
+    std::unique_ptr<QgsSymbolLegendNode> node;
+    std::unique_ptr<QgsMarkerSymbol> symbolClone( static_cast<QgsMarkerSymbol *>( legendSymbol->clone() ) );
     symbolClone->setColor( t->color( breaks[i] ) );
     node.reset( new QgsSymbolLegendNode( parent, QgsLegendSymbolItem( symbolClone.get(), QString::number( i ), QString() ) ) );
     if ( node )
@@ -624,7 +616,7 @@ QgsPropertyGenericNumericAssistantWidget::QgsPropertyGenericNumericAssistantWidg
     }
   }
 
-  if ( const QgsGenericNumericTransformer *transform = dynamic_cast< const QgsGenericNumericTransformer * >( initialState.transformer() ) )
+  if ( const QgsGenericNumericTransformer *transform = dynamic_cast<const QgsGenericNumericTransformer *>( initialState.transformer() ) )
   {
     minOutputSpinBox->setValue( transform->minOutputValue() );
     maxOutputSpinBox->setValue( transform->maxOutputValue() );
@@ -632,10 +624,10 @@ QgsPropertyGenericNumericAssistantWidget::QgsPropertyGenericNumericAssistantWidg
     exponentSpinBox->setValue( transform->exponent() );
   }
 
-  connect( minOutputSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
-  connect( maxOutputSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
-  connect( nullOutputSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
-  connect( exponentSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
+  connect( minOutputSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
+  connect( maxOutputSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
+  connect( nullOutputSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
+  connect( exponentSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPropertySizeAssistantWidget::widgetChanged );
 }
 
 QgsGenericNumericTransformer *QgsPropertyGenericNumericAssistantWidget::createTransformer( double minValue, double maxValue ) const
@@ -646,7 +638,8 @@ QgsGenericNumericTransformer *QgsPropertyGenericNumericAssistantWidget::createTr
     minOutputSpinBox->value(),
     maxOutputSpinBox->value(),
     nullOutputSpinBox->value(),
-    exponentSpinBox->value() );
+    exponentSpinBox->value()
+  );
   return transformer;
 }
 

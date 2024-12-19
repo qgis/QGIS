@@ -39,7 +39,7 @@ class QgsLocaleAwareNumericLineEditDelegate;
  * \class QgsPalettedRendererClassGatherer
 * Calculated raster stats for paletted renderer in a thread
 */
-class QgsPalettedRendererClassGatherer: public QThread
+class QgsPalettedRendererClassGatherer : public QThread
 {
     Q_OBJECT
 
@@ -79,10 +79,9 @@ class QgsPalettedRendererClassGatherer: public QThread
     void progressChanged( double progress );
 
   private:
-
-    std::unique_ptr< QgsRasterDataProvider > mProvider;
+    std::unique_ptr<QgsRasterDataProvider> mProvider;
     int mBandNumber;
-    std::unique_ptr< QgsColorRamp > mRamp;
+    std::unique_ptr<QgsColorRamp> mRamp;
     QString mSubstring;
     QgsPalettedRasterRenderer::ClassData mClasses;
     QgsRasterBlockFeedback *mFeedback = nullptr;
@@ -95,7 +94,6 @@ class QgsPalettedRendererModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     enum Column
     {
       ValueColumn = 0,
@@ -136,18 +134,14 @@ class QgsPalettedRendererModel : public QAbstractItemModel
     void classesChanged();
 
   private:
-
     QgsPalettedRasterRenderer::ClassData mData;
-
-
 };
 
-class QgsPalettedRendererProxyModel: public QSortFilterProxyModel
+class QgsPalettedRendererProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
 
   public:
-
     QgsPalettedRendererProxyModel( QObject *parent = 0 )
       : QSortFilterProxyModel( parent )
     {
@@ -157,16 +151,14 @@ class QgsPalettedRendererProxyModel: public QSortFilterProxyModel
     QgsPalettedRasterRenderer::ClassData classData() const;
 
   protected:
-
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override
     {
       const QModelIndex lv { left.model()->index( left.row(), static_cast<int>( QgsPalettedRendererModel::Column::ValueColumn ), left.parent() ) };
       const QModelIndex rv { right.model()->index( right.row(), static_cast<int>( QgsPalettedRendererModel::Column::ValueColumn ), right.parent() ) };
-      const double leftData { sourceModel()->data( lv ).toDouble( ) };
-      const double rightData { sourceModel()->data( rv ).toDouble( ) };
+      const double leftData { sourceModel()->data( lv ).toDouble() };
+      const double rightData { sourceModel()->data( rv ).toDouble() };
       return leftData < rightData;
     }
-
 };
 
 ///@endcond PRIVATE
@@ -176,12 +168,11 @@ class QgsPalettedRendererProxyModel: public QSortFilterProxyModel
  * \ingroup gui
  * \class QgsPalettedRendererWidget
  */
-class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, private Ui::QgsPalettedRendererWidgetBase
+class GUI_EXPORT QgsPalettedRendererWidget : public QgsRasterRendererWidget, private Ui::QgsPalettedRendererWidgetBase
 {
     Q_OBJECT
 
   public:
-
     QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
     ~QgsPalettedRendererWidget() override;
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsPalettedRendererWidget( layer, extent ); }
@@ -194,10 +185,8 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
     void setFromRenderer( const QgsRasterRenderer *r );
 
   private:
-
     QMenu *mContextMenu = nullptr;
     QMenu *mAdvancedMenu = nullptr;
-    QAction *mLoadFromLayerAction = nullptr;
     QgsPalettedRendererModel *mModel = nullptr;
     QgsPalettedRendererProxyModel *mProxyModel = nullptr;
 
@@ -227,7 +216,6 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
     void gatheredClasses();
     void gathererThreadFinished();
     void layerWillBeRemoved( QgsMapLayer *layer );
-
 };
 
 #endif // QGSPALETTEDRENDERERWIDGET_H

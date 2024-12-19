@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsbrushstylecombobox.h"
+#include "moc_qgsbrushstylecombobox.cpp"
 #include "qgsguiutils.h"
 
 #include <QList>
@@ -27,7 +28,7 @@
 QgsBrushStyleComboBox::QgsBrushStyleComboBox( QWidget *parent )
   : QComboBox( parent )
 {
-  QList < QPair<Qt::BrushStyle, QString> > styles;
+  QList<QPair<Qt::BrushStyle, QString>> styles;
   styles << qMakePair( Qt::SolidPattern, tr( "Solid" ) )
          << qMakePair( Qt::NoBrush, tr( "No Brush" ) )
          << qMakePair( Qt::HorPattern, tr( "Horizontal" ) )
@@ -55,7 +56,6 @@ QgsBrushStyleComboBox::QgsBrushStyleComboBox( QWidget *parent )
   }
 
   setCurrentIndex( 1 );
-
 }
 
 

@@ -26,8 +26,8 @@ class TestQgsMapRendererJob : public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testNormal();
 
@@ -73,7 +73,6 @@ void TestQgsMapRendererJob::initTestCase()
   mLayerIds << _loadLayer( "/data/gis/sas/trans-trail-l.dbf" );
   mLayerIds << _loadLayer( "/data/gis/sas/bnd-ocean-a.shp" );
   mLayerIds << _loadLayer( "/data/gis/sas/bnd-political-boundary-a.shp" );
-
 }
 
 void TestQgsMapRendererJob::cleanupTestCase()

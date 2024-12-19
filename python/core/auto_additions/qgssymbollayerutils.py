@@ -22,6 +22,7 @@ try:
     QgsSymbolLayerUtils.decodeBrushStyle = staticmethod(QgsSymbolLayerUtils.decodeBrushStyle)
     QgsSymbolLayerUtils.encodeSldBrushStyle = staticmethod(QgsSymbolLayerUtils.encodeSldBrushStyle)
     QgsSymbolLayerUtils.decodeSldBrushStyle = staticmethod(QgsSymbolLayerUtils.decodeSldBrushStyle)
+    QgsSymbolLayerUtils.hasSldSymbolizer = staticmethod(QgsSymbolLayerUtils.hasSldSymbolizer)
     QgsSymbolLayerUtils.decodeCoordinateReference = staticmethod(QgsSymbolLayerUtils.decodeCoordinateReference)
     QgsSymbolLayerUtils.encodeCoordinateReference = staticmethod(QgsSymbolLayerUtils.encodeCoordinateReference)
     QgsSymbolLayerUtils.decodeArrowHeadType = staticmethod(QgsSymbolLayerUtils.decodeArrowHeadType)
@@ -162,5 +163,5 @@ try:
     QgsSymbolLayerUtils.resetSymbolLayerIds = staticmethod(QgsSymbolLayerUtils.resetSymbolLayerIds)
     QgsSymbolLayerUtils.collectSymbolLayerClipGeometries = staticmethod(QgsSymbolLayerUtils.collectSymbolLayerClipGeometries)
     QgsSymbolLayerUtils.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

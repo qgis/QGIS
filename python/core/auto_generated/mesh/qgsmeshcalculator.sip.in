@@ -49,7 +49,7 @@ Resulting dataset is always scalar
                                          const QgsRectangle &outputExtent,
                                          double startTime,
                                          double endTime,
-                                         QgsMeshLayer *layer ) /Deprecated/;
+                                         QgsMeshLayer *layer ) /Deprecated="Since 3.12. "/;
 %Docstring
 Creates calculator with bounding box (rectangular) mask
 
@@ -68,7 +68,7 @@ Creates calculator with bounding box (rectangular) mask
                                          const QgsGeometry &outputMask,
                                          double startTime,
                                          double endTime,
-                                         QgsMeshLayer *layer ) /Deprecated/;
+                                         QgsMeshLayer *layer ) /Deprecated="Since 3.12. "/;
 %Docstring
 Creates calculator with geometry mask
 
@@ -182,7 +182,7 @@ Starts the calculation, creates new dataset group and adds it to the mesh layer
 %End
 
  static Result expression_valid( const QString &formulaString,
-        QgsMeshLayer *layer ) /Deprecated/;
+        QgsMeshLayer *layer ) /Deprecated="Since 3.12. Use expressionIsValid."/;
 %Docstring
 Returns whether formula is valid for particular mesh layer
 

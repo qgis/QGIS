@@ -32,10 +32,10 @@ QString QgsClassificationQuantile::id() const
   return QStringLiteral( "Quantile" );
 }
 
-QgsClassificationMethod *QgsClassificationQuantile::clone() const
+std::unique_ptr<QgsClassificationMethod> QgsClassificationQuantile::clone() const
 {
-  QgsClassificationQuantile *c = new QgsClassificationQuantile();
-  copyBase( c );
+  std::unique_ptr<QgsClassificationQuantile > c = std::make_unique< QgsClassificationQuantile >();
+  copyBase( c.get() );
   return c;
 }
 

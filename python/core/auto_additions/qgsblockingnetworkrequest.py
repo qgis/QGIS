@@ -16,5 +16,5 @@ try:
     QgsBlockingNetworkRequest.__attribute_docs__ = {'downloadProgress': 'Emitted when when data arrives during a request.\n', 'downloadFinished': 'Emitted once a request has finished downloading.\n\n.. deprecated:: 3.40\n\n   Use the :py:func:`~QgsBlockingNetworkRequest.finished` signal instead.\n', 'uploadProgress': 'Emitted when when data are sent during a request.\n\n.. versionadded:: 3.22\n', 'finished': 'Emitted once a request has finished.\n'}
     QgsBlockingNetworkRequest.__signal_arguments__ = {'downloadProgress': ['bytesReceived: int', 'bytesTotal: int'], 'uploadProgress': ['bytesReceived: int', 'bytesTotal: int']}
     QgsBlockingNetworkRequest.__group__ = ['network']
-except NameError:
+except (NameError, AttributeError):
     pass

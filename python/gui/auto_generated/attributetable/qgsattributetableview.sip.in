@@ -24,7 +24,6 @@ Or this can be used within the :py:class:`QgsDualView` stacked widget.
 #include "qgsattributetableview.h"
 %End
   public:
-
     QgsAttributeTableView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsAttributeTableView
@@ -82,8 +81,8 @@ Closes the editor delegate for the current item, committing its changes to the m
 
 .. versionadded:: 3.30
 %End
-  protected:
 
+  protected:
     virtual void mousePressEvent( QMouseEvent *event );
 
 %Docstring
@@ -156,7 +155,7 @@ Emitted when a column in the view has been resized.
 :param width: new width in pixel
 %End
 
- void finished() /Deprecated/;
+ void finished() /Deprecated="Since 3.40. No longer used."/;
 %Docstring
 
 .. deprecated:: 3.40

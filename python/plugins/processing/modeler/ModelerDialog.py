@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "August 2012"
+__copyright__ = "(C) 2012, Victor Olaya"
 
 import os
 import re
@@ -32,29 +32,34 @@ from qgis.PyQt.QtCore import (
     QPointF,
     pyqtSignal,
     QUrl,
-    QFileInfo)
-from qgis.PyQt.QtWidgets import (QMessageBox,
-                                 QFileDialog)
-from qgis.core import (Qgis,
-                       QgsApplication,
-                       QgsProcessing,
-                       QgsProject,
-                       QgsProcessingModelParameter,
-                       QgsProcessingModelAlgorithm,
-                       QgsSettings,
-                       QgsProcessingContext,
-                       QgsFileUtils
-                       )
-from qgis.gui import (QgsProcessingParameterDefinitionDialog,
-                      QgsProcessingParameterWidgetContext,
-                      QgsModelGraphicsScene,
-                      QgsModelDesignerDialog,
-                      QgsProcessingContextGenerator,
-                      QgsProcessingParametersGenerator)
+    QFileInfo,
+)
+from qgis.PyQt.QtWidgets import QMessageBox, QFileDialog
+from qgis.core import (
+    Qgis,
+    QgsApplication,
+    QgsProcessing,
+    QgsProject,
+    QgsProcessingModelParameter,
+    QgsProcessingModelAlgorithm,
+    QgsSettings,
+    QgsProcessingContext,
+    QgsFileUtils,
+)
+from qgis.gui import (
+    QgsProcessingParameterDefinitionDialog,
+    QgsProcessingParameterWidgetContext,
+    QgsModelGraphicsScene,
+    QgsModelDesignerDialog,
+    QgsProcessingContextGenerator,
+    QgsProcessingParametersGenerator,
+)
 from qgis.utils import iface
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
-from processing.modeler.ModelerParameterDefinitionDialog import ModelerParameterDefinitionDialog
+from processing.modeler.ModelerParameterDefinitionDialog import (
+    ModelerParameterDefinitionDialog,
+)
 from processing.modeler.ModelerParametersDialog import ModelerParametersDialog
 from processing.modeler.ModelerScene import ModelerScene
 from processing.modeler.ModelerUtils import ModelerUtils
@@ -131,12 +136,18 @@ class ModelerDialog(QgsModelDesignerDialog):
 
         self.model().setSourceFilePath(None)
 
-        project_provider = QgsApplication.processingRegistry().providerById(PROJECT_PROVIDER_ID)
+        project_provider = QgsApplication.processingRegistry().providerById(
+            PROJECT_PROVIDER_ID
+        )
         project_provider.add_model(self.model())
 
         self.update_model.emit()
-        self.messageBar().pushMessage("", self.tr("Model was saved inside current project"), level=Qgis.MessageLevel.Success,
-                                      duration=5)
+        self.messageBar().pushMessage(
+            "",
+            self.tr("Model was saved inside current project"),
+            level=Qgis.MessageLevel.Success,
+            duration=5,
+        )
 
         self.setDirty(False)
         QgsProject.instance().setDirty(True)
@@ -152,21 +163,25 @@ class ModelerDialog(QgsModelDesignerDialog):
             if self.model().sourceFilePath():
                 initial_path = Path(self.model().sourceFilePath())
             elif self.model().name():
-                initial_path = Path(ModelerUtils.modelsFolders()[0]) / (self.model().name() + '.model3')
+                initial_path = Path(ModelerUtils.modelsFolders()[0]) / (
+                    self.model().name() + ".model3"
+                )
             else:
                 initial_path = Path(ModelerUtils.modelsFolders()[0])
 
-            filename, _ = QFileDialog.getSaveFileName(self,
-                                                      self.tr('Save Model'),
-                                                      initial_path.as_posix(),
-                                                      self.tr('Processing models (*.model3 *.MODEL3)'))
+            filename, _ = QFileDialog.getSaveFileName(
+                self,
+                self.tr("Save Model"),
+                initial_path.as_posix(),
+                self.tr("Processing models (*.model3 *.MODEL3)"),
+            )
             if not filename:
                 return False
 
-            filename = QgsFileUtils.ensureFileNameHasExtension(filename, ['model3'])
+            filename = QgsFileUtils.ensureFileNameHasExtension(filename, ["model3"])
             self.model().setSourceFilePath(filename)
 
-            if not self.model().name() or self.model().name() == self.tr('model'):
+            if not self.model().name() or self.model().name() == self.tr("model"):
                 self.setModelName(Path(filename).stem)
             elif saveAs and model_name_matched_file_name:
                 # if saving as, and the model name used to match the filename, then automatically update the
@@ -175,20 +190,35 @@ class ModelerDialog(QgsModelDesignerDialog):
 
         if not self.model().toFile(filename):
             if saveAs:
-                QMessageBox.warning(self, self.tr('I/O error'),
-                                    self.tr('Unable to save edits. Reason:\n {0}').format(str(sys.exc_info()[1])))
+                QMessageBox.warning(
+                    self,
+                    self.tr("I/O error"),
+                    self.tr("Unable to save edits. Reason:\n {0}").format(
+                        str(sys.exc_info()[1])
+                    ),
+                )
             else:
-                QMessageBox.warning(self, self.tr("Can't save model"),
-                                    self.tr(
-                                        "This model can't be saved in its original location (probably you do not "
-                                        "have permission to do it). Please, use the 'Save as…' option."))
+                QMessageBox.warning(
+                    self,
+                    self.tr("Can't save model"),
+                    self.tr(
+                        "This model can't be saved in its original location (probably you do not "
+                        "have permission to do it). Please, use the 'Save as…' option."
+                    ),
+                )
             return False
 
         self.update_model.emit()
         if saveAs:
-            self.messageBar().pushMessage("", self.tr("Model was saved to <a href=\"{}\">{}</a>").format(
-                QUrl.fromLocalFile(filename).toString(), QDir.toNativeSeparators(filename)), level=Qgis.MessageLevel.Success,
-                duration=5)
+            self.messageBar().pushMessage(
+                "",
+                self.tr('Model was saved to <a href="{}">{}</a>').format(
+                    QUrl.fromLocalFile(filename).toString(),
+                    QDir.toNativeSeparators(filename),
+                ),
+                level=Qgis.MessageLevel.Success,
+                duration=5,
+            )
 
         self.setDirty(False)
         return True
@@ -198,25 +228,30 @@ class ModelerDialog(QgsModelDesignerDialog):
             return
 
         settings = QgsSettings()
-        last_dir = settings.value('Processing/lastModelsDir', QDir.homePath())
-        filename, selected_filter = QFileDialog.getOpenFileName(self,
-                                                                self.tr('Open Model'),
-                                                                last_dir,
-                                                                self.tr('Processing models (*.model3 *.MODEL3)'))
+        last_dir = settings.value("Processing/lastModelsDir", QDir.homePath())
+        filename, selected_filter = QFileDialog.getOpenFileName(
+            self,
+            self.tr("Open Model"),
+            last_dir,
+            self.tr("Processing models (*.model3 *.MODEL3)"),
+        )
         if filename:
-            settings.setValue('Processing/lastModelsDir',
-                              QFileInfo(filename).absoluteDir().absolutePath())
+            settings.setValue(
+                "Processing/lastModelsDir",
+                QFileInfo(filename).absoluteDir().absolutePath(),
+            )
             self.loadModel(filename)
 
     def repaintModel(self, showControls=True):
         scene = ModelerScene(self)
-        scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE,
-                                  self.CANVAS_SIZE))
+        scene.setSceneRect(QRectF(0, 0, self.CANVAS_SIZE, self.CANVAS_SIZE))
 
         if not showControls:
             scene.setFlag(QgsModelGraphicsScene.Flag.FlagHideControls)
 
-        showComments = QgsSettings().value("/Processing/Modeler/ShowComments", True, bool)
+        showComments = QgsSettings().value(
+            "/Processing/Modeler/ShowComments", True, bool
+        )
         if not showComments:
             scene.setFlag(QgsModelGraphicsScene.Flag.FlagHideComments)
 
@@ -251,7 +286,10 @@ class ModelerDialog(QgsModelDesignerDialog):
         parameter.setName(name)
 
     def addInput(self, paramType, pos=None):
-        if paramType not in [param.id() for param in QgsApplication.instance().processingRegistry().parameterTypes()]:
+        if paramType not in [
+            param.id()
+            for param in QgsApplication.instance().processingRegistry().parameterTypes()
+        ]:
             return
 
         new_param = None
@@ -265,10 +303,12 @@ class ModelerDialog(QgsModelDesignerDialog):
             # yay, use new API!
             context = createContext()
             widget_context = self.create_widget_context()
-            dlg = QgsProcessingParameterDefinitionDialog(type=paramType,
-                                                         context=context,
-                                                         widgetContext=widget_context,
-                                                         algorithm=self.model())
+            dlg = QgsProcessingParameterDefinitionDialog(
+                type=paramType,
+                context=context,
+                widgetContext=widget_context,
+                algorithm=self.model(),
+            )
             dlg.registerProcessingContextGenerator(self.context_generator)
             if dlg.exec():
                 new_param = dlg.createParameter()
@@ -285,11 +325,12 @@ class ModelerDialog(QgsModelDesignerDialog):
             component.setPosition(pos)
 
             component.comment().setDescription(comment)
-            component.comment().setPosition(component.position() + QPointF(
-                component.size().width(),
-                -1.5 * component.size().height()))
+            component.comment().setPosition(
+                component.position()
+                + QPointF(component.size().width(), -1.5 * component.size().height())
+            )
 
-            self.beginUndoCommand(self.tr('Add Model Input'))
+            self.beginUndoCommand(self.tr("Add Model Input"))
             self.model().addModelParameter(new_param, component)
             self.repaintModel()
             # self.view().ensureVisible(self.scene.getLastParameterItem())
@@ -300,7 +341,12 @@ class ModelerDialog(QgsModelDesignerDialog):
         BOX_WIDTH = 200
         BOX_HEIGHT = 80
         if len(self.model().parameterComponents()) > 0:
-            maxX = max([i.position().x() for i in list(self.model().parameterComponents().values())])
+            maxX = max(
+                [
+                    i.position().x()
+                    for i in list(self.model().parameterComponents().values())
+                ]
+            )
             newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
         else:
             newX = MARGIN + BOX_WIDTH / 2
@@ -319,17 +365,19 @@ class ModelerDialog(QgsModelDesignerDialog):
             else:
                 alg.setPosition(pos)
 
-            alg.comment().setPosition(alg.position() + QPointF(
-                alg.size().width(),
-                -1.5 * alg.size().height()))
+            alg.comment().setPosition(
+                alg.position() + QPointF(alg.size().width(), -1.5 * alg.size().height())
+            )
 
             output_offset_x = alg.size().width()
             output_offset_y = 1.5 * alg.size().height()
             for out in alg.modelOutputs():
-                alg.modelOutput(out).setPosition(alg.position() + QPointF(output_offset_x, output_offset_y))
+                alg.modelOutput(out).setPosition(
+                    alg.position() + QPointF(output_offset_x, output_offset_y)
+                )
                 output_offset_y += 1.5 * alg.modelOutput(out).size().height()
 
-            self.beginUndoCommand(self.tr('Add Algorithm'))
+            self.beginUndoCommand(self.tr("Add Algorithm"))
             id = self.model().addChildAlgorithm(alg)
             self.repaintModel()
             self.endUndoCommand()
@@ -337,10 +385,15 @@ class ModelerDialog(QgsModelDesignerDialog):
             res, errors = self.model().validateChildAlgorithm(id)
             if not res:
                 self.view().scene().showWarning(
-                    QCoreApplication.translate('ModelerDialog', 'Algorithm “{}” is invalid').format(alg.description()),
-                    self.tr('Algorithm is Invalid'),
-                    QCoreApplication.translate('ModelerDialog', "<p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul>").format(alg.description(), '</li><li>'.join(errors)),
-                    level=Qgis.MessageLevel.Warning
+                    QCoreApplication.translate(
+                        "ModelerDialog", "Algorithm “{}” is invalid"
+                    ).format(alg.description()),
+                    self.tr("Algorithm is Invalid"),
+                    QCoreApplication.translate(
+                        "ModelerDialog",
+                        "<p>The “{}” algorithm is invalid, because:</p><ul><li>{}</li></ul>",
+                    ).format(alg.description(), "</li><li>".join(errors)),
+                    level=Qgis.MessageLevel.Warning,
                 )
             else:
                 self.view().scene().messageBar().clearWidgets()
@@ -350,11 +403,20 @@ class ModelerDialog(QgsModelDesignerDialog):
         BOX_WIDTH = 200
         BOX_HEIGHT = 80
         if self.model().childAlgorithms():
-            maxX = max([alg.position().x() for alg in list(self.model().childAlgorithms().values())])
-            maxY = max([alg.position().y() for alg in list(self.model().childAlgorithms().values())])
+            maxX = max(
+                [
+                    alg.position().x()
+                    for alg in list(self.model().childAlgorithms().values())
+                ]
+            )
+            maxY = max(
+                [
+                    alg.position().y()
+                    for alg in list(self.model().childAlgorithms().values())
+                ]
+            )
             newX = min(MARGIN + BOX_WIDTH + maxX, self.CANVAS_SIZE - BOX_WIDTH)
-            newY = min(MARGIN + BOX_HEIGHT + maxY, self.CANVAS_SIZE
-                       - BOX_HEIGHT)
+            newY = min(MARGIN + BOX_HEIGHT + maxY, self.CANVAS_SIZE - BOX_HEIGHT)
         else:
             newX = MARGIN + BOX_WIDTH / 2
             newY = MARGIN * 2 + BOX_HEIGHT + BOX_HEIGHT / 2
@@ -363,5 +425,12 @@ class ModelerDialog(QgsModelDesignerDialog):
     def exportAsScriptAlgorithm(self):
         dlg = ScriptEditorDialog(parent=iface.mainWindow())
 
-        dlg.editor.setText('\n'.join(self.model().asPythonCode(QgsProcessing.PythonOutputType.PythonQgsProcessingAlgorithmSubclass, 4)))
+        dlg.editor.setText(
+            "\n".join(
+                self.model().asPythonCode(
+                    QgsProcessing.PythonOutputType.PythonQgsProcessingAlgorithmSubclass,
+                    4,
+                )
+            )
+        )
         dlg.show()

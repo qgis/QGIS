@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsmaplayerelevationproperties.h"
+#include "moc_qgsmaplayerelevationproperties.cpp"
 #include <mutex>
 
 

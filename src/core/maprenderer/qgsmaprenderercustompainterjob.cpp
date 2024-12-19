@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaprenderercustompainterjob.h"
+#include "moc_qgsmaprenderercustompainterjob.cpp"
 
 #include "qgsfeedback.h"
 #include "qgslabelingengine.h"

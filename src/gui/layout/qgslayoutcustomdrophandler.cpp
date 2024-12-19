@@ -14,12 +14,12 @@
  ***************************************************************************/
 
 #include "qgslayoutcustomdrophandler.h"
+#include "moc_qgslayoutcustomdrophandler.cpp"
 #include <QPointF>
 
 QgsLayoutCustomDropHandler::QgsLayoutCustomDropHandler( QObject *parent )
   : QObject( parent )
 {
-
 }
 
 bool QgsLayoutCustomDropHandler::handleFileDrop( QgsLayoutDesignerInterface *, const QString & )

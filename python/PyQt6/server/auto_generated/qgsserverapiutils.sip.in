@@ -25,7 +25,6 @@ The :py:class:`QgsServerApiUtils` class contains helper functions to handle comm
 #include "qgsserverapiutils.h"
 %End
   public:
-
     static QgsRectangle parseBbox( const QString &bbox );
 %Docstring
 Parses a comma separated ``bbox`` into a (possibly empty) :py:class:`QgsRectangle`.
@@ -35,14 +34,14 @@ Parses a comma separated ``bbox`` into a (possibly empty) :py:class:`QgsRectangl
    Z values (i.e. a 6 elements bbox) are silently discarded
 %End
 
-    static QList< QgsServerWmsDimensionProperties::WmsDimensionInfo > temporalDimensions( const QgsVectorLayer *layer );
+    static QList<QgsServerWmsDimensionProperties::WmsDimensionInfo> temporalDimensions( const QgsVectorLayer *layer );
 %Docstring
 Returns a list of temporal dimensions information for the given ``layer`` (either configured in wmsDimensions or the first date/datetime field)
 
 .. versionadded:: 3.12
 %End
 
-    static QgsDateRange parseTemporalDateInterval( const QString &interval ) throw( QgsServerApiBadRequestException );
+    static QgsDateRange parseTemporalDateInterval( const QString &interval );
 %Docstring
 Parses a date ``interval`` and returns a :py:class:`QgsDateRange`
 
@@ -51,7 +50,7 @@ Parses a date ``interval`` and returns a :py:class:`QgsDateRange`
 .. versionadded:: 3.12
 %End
 
-    static QgsDateTimeRange parseTemporalDateTimeInterval( const QString &interval ) throw( QgsServerApiBadRequestException );
+    static QgsDateTimeRange parseTemporalDateTimeInterval( const QString &interval );
 %Docstring
 Parses a datetime ``interval`` and returns a :py:class:`QgsDateTimeRange`
 
@@ -61,7 +60,7 @@ Parses a datetime ``interval`` and returns a :py:class:`QgsDateTimeRange`
 %End
 
 
-    static QString fieldName( const QString &name, const QgsVectorLayer *layer ) throw( QgsServerApiBadRequestException );
+    static QString fieldName( const QString &name, const QgsVectorLayer *layer );
 %Docstring
 Given a field ``name`` (or display name) and a ``layer`` returns the actual name of the field.
 
@@ -137,7 +136,7 @@ Returns the list of CRSs (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84) 
 Information is read from project WMS configuration.
 %End
 
- static QString crsToOgcUri( const QgsCoordinateReferenceSystem &crs ) /Deprecated/;
+ static QString crsToOgcUri( const QgsCoordinateReferenceSystem &crs ) /Deprecated="Since 3.30. Use QgsCoordinateReferenceSystem.toOgcUri() instead."/;
 %Docstring
 Returns a ``crs`` as OGC URI (format: http://www.opengis.net/def/crs/OGC/1.3/CRS84)
 Returns an empty string on failure.
@@ -151,7 +150,6 @@ Returns an empty string on failure.
 %Docstring
 Appends MAP query string parameter from current ``requestUrl`` to the given ``path``
 %End
-
 };
 /************************************************************************
  * This file has been generated automatically from                      *

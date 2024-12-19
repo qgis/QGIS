@@ -15,7 +15,7 @@
 
 #include "qgsproviderguimetadata.h"
 
-class QgsVirtualLayerProviderGuiMetadata final: public QgsProviderGuiMetadata
+class QgsVirtualLayerProviderGuiMetadata final : public QgsProviderGuiMetadata
 {
   public:
     QgsVirtualLayerProviderGuiMetadata();

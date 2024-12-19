@@ -20,7 +20,7 @@ typically used to render grayscale images as false color.
 
 %TypeHeaderCode
 #include "qgsrastershaderfunction.h"
-#include <qgscolorrampshader.h>
+#include "qgscolorrampshader.h"
 %End
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsColorRampShader *>( sipCpp ) != NULL )

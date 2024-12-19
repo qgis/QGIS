@@ -49,9 +49,7 @@ class QgsFeature;
  */
 class SERVER_EXPORT QgsAccessControlFilter
 {
-
   public:
-
     /**
      * Constructor
      * QgsServerInterface passed to plugins constructors
@@ -64,10 +62,10 @@ class SERVER_EXPORT QgsAccessControlFilter
     //! Describe the layer permission
     struct LayerPermissions
     {
-      bool canRead;
-      bool canUpdate;
-      bool canInsert;
-      bool canDelete;
+        bool canRead;
+        bool canUpdate;
+        bool canInsert;
+        bool canDelete;
     };
 
     //! Returns the QgsServerInterface instance
@@ -117,10 +115,8 @@ class SERVER_EXPORT QgsAccessControlFilter
     virtual QString cacheKey() const;
 
   private:
-
     //! The server interface
     const QgsServerInterface *mServerInterface = nullptr;
-
 };
 
 //! The registry definition

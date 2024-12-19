@@ -678,7 +678,7 @@ Returns the map unit scale for the interval between symbols.
 .. seealso:: :py:func:`interval`
 %End
 
- Qgis::MarkerLinePlacement placement() const /Deprecated/;
+ Qgis::MarkerLinePlacement placement() const /Deprecated="Since 3.40. Use placements() instead."/;
 %Docstring
 Returns the placement of the symbols.
 
@@ -689,7 +689,7 @@ Returns the placement of the symbols.
    Use :py:func:`~QgsTemplatedLineSymbolLayerBase.placements` instead.
 %End
 
- void setPlacement( Qgis::MarkerLinePlacement placement ) /Deprecated/;
+ void setPlacement( Qgis::MarkerLinePlacement placement ) /Deprecated="Since 3.40. Use setPlacements() instead."/;
 %Docstring
 Sets the ``placement`` of the symbols.
 
@@ -1041,7 +1041,7 @@ Creates a new QgsMarkerLineSymbolLayer from an SLD XML DOM ``element``.
     virtual void setDataDefinedProperty( QgsSymbolLayer::Property key, const QgsProperty &property );
 
 
- bool rotateMarker() const /Deprecated/;
+ bool rotateMarker() const /Deprecated="Since 3.40. Use rotateSymbols() instead."/;
 %Docstring
 Shall the marker be rotated.
 
@@ -1052,7 +1052,7 @@ Shall the marker be rotated.
    Use :py:func:`~QgsMarkerLineSymbolLayer.rotateSymbols` instead.
 %End
 
- void setRotateMarker( bool rotate ) /Deprecated/;
+ void setRotateMarker( bool rotate ) /Deprecated="Since 3.40. Use setRotateSymbols() instead."/;
 %Docstring
 Shall the marker be rotated.
 

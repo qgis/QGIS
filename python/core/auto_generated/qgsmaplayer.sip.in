@@ -243,7 +243,7 @@ Returns the layer data provider's metadata, it may be ``None``.
 .. versionadded:: 3.40
 %End
 
- void setShortName( const QString &shortName ) /Deprecated/;
+ void setShortName( const QString &shortName ) /Deprecated="Since 3.38. Use serverProperties()->setShortName() instead."/;
 %Docstring
 Sets the short name of the layer used by QGIS Server to identify the layer.
 
@@ -252,7 +252,7 @@ Sets the short name of the layer used by QGIS Server to identify the layer.
    Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setShortName` instead.
 %End
 
- QString shortName() const /Deprecated/;
+ QString shortName() const /Deprecated="Since 3.38. Use serverProperties()->shortName() instead."/;
 %Docstring
 Returns the short name of the layer used by QGIS Server to identify the layer.
 
@@ -261,7 +261,7 @@ Returns the short name of the layer used by QGIS Server to identify the layer.
    Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.shortName` instead.
 %End
 
- void setTitle( const QString &title ) /Deprecated/;
+ void setTitle( const QString &title ) /Deprecated="Since 3.38. Use serverProperties()->setTitle() instead."/;
 %Docstring
 Sets the title of the layer used by QGIS Server in GetCapabilities request.
 
@@ -270,7 +270,7 @@ Sets the title of the layer used by QGIS Server in GetCapabilities request.
    Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setTitle` instead.
 %End
 
- QString title() const /Deprecated/;
+ QString title() const /Deprecated="Since 3.38. Use serverProperties()->title() instead."/;
 %Docstring
 Returns the title of the layer used by QGIS Server in GetCapabilities request.
 
@@ -279,7 +279,7 @@ Returns the title of the layer used by QGIS Server in GetCapabilities request.
    Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.title` instead.
 %End
 
- void setAbstract( const QString &abstract ) /Deprecated/;
+ void setAbstract( const QString &abstract ) /Deprecated="Since 3.38. Use serverProperties()->setAbstract() instead."/;
 %Docstring
 Sets the abstract of the layer used by QGIS Server in GetCapabilities request.
 
@@ -288,7 +288,7 @@ Sets the abstract of the layer used by QGIS Server in GetCapabilities request.
    Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setAbstract` instead.
 %End
 
- QString abstract() const /Deprecated/;
+ QString abstract() const /Deprecated="Since 3.38. Use serverProperties()->abstract() instead."/;
 %Docstring
 Returns the abstract of the layer used by QGIS Server in GetCapabilities request.
 
@@ -297,7 +297,7 @@ Returns the abstract of the layer used by QGIS Server in GetCapabilities request
    Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.abstract` instead.
 %End
 
- void setKeywordList( const QString &keywords ) /Deprecated/;
+ void setKeywordList( const QString &keywords ) /Deprecated="Since 3.38. Use serverProperties()->setKeywordList() instead."/;
 %Docstring
 Sets the keyword list of the layerused by QGIS Server in GetCapabilities request.
 
@@ -306,7 +306,7 @@ Sets the keyword list of the layerused by QGIS Server in GetCapabilities request
    Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setKeywordList` instead.
 %End
 
- QString keywordList() const /Deprecated/;
+ QString keywordList() const /Deprecated="Since 3.38. Use serverProperties()->keywordList() instead."/;
 %Docstring
 Returns the keyword list of the layer used by QGIS Server in GetCapabilities request.
 
@@ -315,7 +315,7 @@ Returns the keyword list of the layer used by QGIS Server in GetCapabilities req
    Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.keywordList` instead.
 %End
 
- void setDataUrl( const QString &dataUrl ) /Deprecated/;
+ void setDataUrl( const QString &dataUrl ) /Deprecated="Since 3.38. Use serverProperties()->setDataUrl() instead."/;
 %Docstring
 Sets the DataUrl of the layer used by QGIS Server in GetCapabilities request.
 
@@ -324,7 +324,7 @@ Sets the DataUrl of the layer used by QGIS Server in GetCapabilities request.
    Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setDataUrl` instead.
 %End
 
- QString dataUrl() const /Deprecated/;
+ QString dataUrl() const /Deprecated="Since 3.38. Use serverProperties()->dataUrl() instead."/;
 %Docstring
 Returns the DataUrl of the layer used by QGIS Server in GetCapabilities request.
 
@@ -333,7 +333,7 @@ Returns the DataUrl of the layer used by QGIS Server in GetCapabilities request.
    Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.dataUrl` instead.
 %End
 
- void setDataUrlFormat( const QString &dataUrlFormat ) /Deprecated/;
+ void setDataUrlFormat( const QString &dataUrlFormat ) /Deprecated="Since 3.38. Use serverProperties()->setDataUrlFormat() instead."/;
 %Docstring
 Sets the DataUrl format of the layer used by QGIS Server in GetCapabilities request.
 
@@ -342,7 +342,7 @@ Sets the DataUrl format of the layer used by QGIS Server in GetCapabilities requ
    Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setDataUrlFormat` instead.
 %End
 
- QString dataUrlFormat() const /Deprecated/;
+ QString dataUrlFormat() const /Deprecated="Since 3.38. Use serverProperties()->dataUrlFormat() instead."/;
 %Docstring
 Returns the DataUrl format of the layer used by QGIS Server in GetCapabilities request.
 
@@ -351,7 +351,7 @@ Returns the DataUrl format of the layer used by QGIS Server in GetCapabilities r
    Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.dataUrlFormat` instead.
 %End
 
- void setAttribution( const QString &attrib ) /Deprecated/;
+ void setAttribution( const QString &attrib ) /Deprecated="Since 3.38. Use serverProperties()->setAttribution() instead."/;
 %Docstring
 Sets the attribution of the layerused by QGIS Server in GetCapabilities request.
 
@@ -360,7 +360,7 @@ Sets the attribution of the layerused by QGIS Server in GetCapabilities request.
    Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setAttribution` instead.
 %End
 
- QString attribution() const /Deprecated/;
+ QString attribution() const /Deprecated="Since 3.38. Use serverProperties()->attribution() instead."/;
 %Docstring
 Returns the attribution of the layer used by QGIS Server in GetCapabilities request.
 
@@ -369,7 +369,7 @@ Returns the attribution of the layer used by QGIS Server in GetCapabilities requ
    Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.attribution` instead.
 %End
 
- void setAttributionUrl( const QString &attribUrl ) /Deprecated/;
+ void setAttributionUrl( const QString &attribUrl ) /Deprecated="Since 3.38. Use serverProperties()->setAttributionUrl() instead."/;
 %Docstring
 Sets the attribution URL of the layer used by QGIS Server in GetCapabilities request.
 
@@ -378,7 +378,7 @@ Sets the attribution URL of the layer used by QGIS Server in GetCapabilities req
    Use :py:func:`~QgsMapLayer.serverProperties`->:py:func:`~QgsMapLayer.setAttributionUrl` instead.
 %End
 
- QString attributionUrl() const /Deprecated/;
+ QString attributionUrl() const /Deprecated="Since 3.38. Use serverProperties()->attributionUrl() instead."/;
 %Docstring
 Returns the attribution URL of the layer used by QGIS Server in GetCapabilities request.
 
@@ -394,7 +394,7 @@ Returns QGIS Server Properties for the map layer
 
 .. versionadded:: 3.22
 %End
- void setMetadataUrl( const QString &metaUrl ) /Deprecated/;
+ void setMetadataUrl( const QString &metaUrl ) /Deprecated="Since 3.22. "/;
 %Docstring
 Sets the metadata URL of the layer
 used by QGIS Server in GetCapabilities request.
@@ -406,7 +406,7 @@ Since QGIS 3.22, it edits the first metadata URL link.
 .. deprecated:: 3.22
 %End
 
- QString metadataUrl() const /Deprecated/;
+ QString metadataUrl() const /Deprecated="Since 3.22. "/;
 %Docstring
 Returns the metadata URL of the layer
 used by QGIS Server in GetCapabilities request.
@@ -420,7 +420,7 @@ Since QGIS 3.22, it returns the first metadata URL link.
 .. deprecated:: 3.22
 %End
 
- void setMetadataUrlType( const QString &metaUrlType ) /Deprecated/;
+ void setMetadataUrlType( const QString &metaUrlType ) /Deprecated="Since 3.22. "/;
 %Docstring
 Set the metadata type of the layer
 used by QGIS Server in GetCapabilities request
@@ -432,7 +432,7 @@ Since QGIS 3.22, it edits the first metadata URL type.
 .. deprecated:: 3.22
 %End
 
- QString metadataUrlType() const /Deprecated/;
+ QString metadataUrlType() const /Deprecated="Since 3.22. "/;
 %Docstring
 Returns the metadata type of the layer
 used by QGIS Server in GetCapabilities request.
@@ -446,7 +446,7 @@ Since QGIS 3.22, it returns the first metadata URL type.
 .. deprecated:: 3.22
 %End
 
- void setMetadataUrlFormat( const QString &metaUrlFormat ) /Deprecated/;
+ void setMetadataUrlFormat( const QString &metaUrlFormat ) /Deprecated="Since 3.22. "/;
 %Docstring
 Sets the metadata format of the layer
 used by QGIS Server in GetCapabilities request.
@@ -458,7 +458,7 @@ Since QGIS 3.22, it edits the first metadata URL format.
 .. deprecated:: 3.22
 %End
 
- QString metadataUrlFormat() const /Deprecated/;
+ QString metadataUrlFormat() const /Deprecated="Since 3.22. "/;
 %Docstring
 Returns the metadata format of the layer
 used by QGIS Server in GetCapabilities request.
@@ -1174,7 +1174,7 @@ record in the users style table in their personal qgis.db)
 .. seealso:: :py:func:`saveNamedStyle`
 %End
 
- virtual QString saveDefaultStyle( bool &resultFlag /Out/ ) /Deprecated/;
+ virtual QString saveDefaultStyle( bool &resultFlag /Out/ ) /Deprecated="Since 3.26. "/;
 %Docstring
 Save the properties of this layer as the default style
 (either as a .qml file on disk or as a
@@ -1559,7 +1559,7 @@ Returns whether scale based visibility is enabled for the layer.
 .. seealso:: :py:func:`isInScaleRange`
 %End
 
- bool hasAutoRefreshEnabled() const /Deprecated/;
+ bool hasAutoRefreshEnabled() const /Deprecated="Since 3.40. Use autoRefreshMode() instead."/;
 %Docstring
 Returns ``True`` if auto refresh is enabled for the layer.
 
@@ -1607,7 +1607,7 @@ canvas must be refreshed separately in order to view the refreshed layer.
 .. seealso:: :py:func:`setAutoRefreshEnabled`
 %End
 
- void setAutoRefreshEnabled( bool enabled ) /Deprecated/;
+ void setAutoRefreshEnabled( bool enabled ) /Deprecated="Since 3.40. Use setAutoRefreshMode() instead."/;
 %Docstring
 Sets whether auto refresh is enabled for the layer.
 

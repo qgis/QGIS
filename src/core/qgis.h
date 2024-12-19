@@ -1192,7 +1192,7 @@ class CORE_EXPORT Qgis
       Right SIP_MONKEYPATCH_COMPAT_NAME( QuadrantRight ), //!< Right middle
       BelowLeft SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelowLeft ), //!< Below left
       Below SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelow ), //!< Below center
-      BelowRight SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelowRight ), //!< BelowRight
+      BelowRight SIP_MONKEYPATCH_COMPAT_NAME( QuadrantBelowRight ), //!< Below right
     };
     Q_ENUM( LabelQuadrantPosition )
 
@@ -1378,12 +1378,30 @@ class CORE_EXPORT Qgis
      */
     enum class RasterResamplingStage SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterPipe, ResamplingStage ) : int
       {
-      //! Resampling occurs in ResamplingFilter
-      ResampleFilter,
-      //! Resampling occurs in Provider
-      Provider
+      ResampleFilter, //!< Resampling occurs in ResamplingFilter
+      Provider, //!< Resampling occurs in Provider
     };
     Q_ENUM( RasterResamplingStage )
+
+    /**
+     * Resampling method for raster provider-level resampling.
+     *
+     * \note Prior to QGIS 3.42 this was available as QgsRasterDataProvider::ResamplingMethod
+     *
+     * \since QGIS 3.42
+     */
+    enum class RasterResamplingMethod SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterDataProvider, ResamplingMethod ) : int
+      {
+      Nearest, //!< Nearest-neighbour resampling
+      Bilinear, //!< Bilinear (2x2 kernel) resampling
+      Cubic, //!< Cubic Convolution Approximation (4x4 kernel) resampling
+      CubicSpline, //!< Cubic B-Spline Approximation (4x4 kernel)
+      Lanczos, //!< Lanczos windowed sinc interpolation (6x6 kernel)
+      Average, //!< Average resampling
+      Mode, //!< Mode (selects the value which appears most often of all the sampled points)
+      Gauss //!< Gauss blurring
+    };
+    Q_ENUM( RasterResamplingMethod )
 
     /**
      * Flags which control behavior of raster renderers.
@@ -1424,6 +1442,51 @@ class CORE_EXPORT Qgis
      */
     Q_DECLARE_FLAGS( RasterRendererCapabilities, RasterRendererCapability )
     Q_FLAG( RasterRendererCapabilities )
+
+    /**
+     * Describes the limits used to compute raster ranges (min/max values).
+     *
+     * \note Prior to QGIS 3.42 this was available as QgsRasterMinMaxOrigin::Limits
+     *
+     * \since QGIS 3.42
+     */
+    enum class RasterRangeLimit SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterMinMaxOrigin, Limits ) : int
+      {
+      NotSet SIP_MONKEYPATCH_COMPAT_NAME( None_ ), //!< User defined
+      MinimumMaximum SIP_MONKEYPATCH_COMPAT_NAME( MinMax ), //!< Real min-max values
+      StdDev, //!< Range is [ mean - stdDevFactor() * stddev, mean + stdDevFactor() * stddev ]
+      CumulativeCut //!< Range is [ min + cumulativeCutLower() * (max - min), min + cumulativeCutUpper() * (max - min) ]
+    };
+    Q_ENUM( RasterRangeLimit )
+
+    /**
+     * Describes the extent used to compute raster ranges (min/max values).
+     *
+     * \note Prior to QGIS 3.42 this was available as QgsRasterMinMaxOrigin::Extent
+     *
+     * \since QGIS 3.42
+     */
+    enum class RasterRangeExtent SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterMinMaxOrigin, Extent ) : int
+      {
+      WholeRaster SIP_MONKEYPATCH_COMPAT_NAME( None_ ), //!< Whole raster is used to compute statistics
+      FixedCanvas SIP_MONKEYPATCH_COMPAT_NAME( CurrentCanvas ), //!< Current extent of the canvas (at the time of computation) is used to compute statistics
+      UpdatedCanvas, //!< Constantly updated extent of the canvas is used to compute statistics
+    };
+    Q_ENUM( RasterRangeExtent )
+
+    /**
+     * Describes the accuracy used to compute raster ranges (min/max values).
+     *
+     * \note Prior to QGIS 3.42 this was available as QgsRasterMinMaxOrigin::StatAccuracy
+     *
+     * \since QGIS 3.42
+     */
+    enum class RasterRangeAccuracy SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsRasterMinMaxOrigin, StatAccuracy ): int
+      {
+      Exact, //!< Exact statistics
+      Estimated, //!< Approximated statistics
+    };
+    Q_ENUM( RasterRangeAccuracy )
 
     /**
      * \brief The RasterAttributeTableFieldUsage enum represents the usage of a Raster Attribute Table field.
@@ -2712,14 +2775,22 @@ class CORE_EXPORT Qgis
      *
      * \since QGIS 3.28
      */
-    enum class TextComponent SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, TextPart ) : int
-      {
-      Text, //!< Text component
-      Buffer, //!< Buffer component
-      Background, //!< Background shape
-      Shadow, //!< Drop shadow
+    enum class TextComponent SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsTextRenderer, TextPart ) : int SIP_ENUM_BASETYPE( IntFlag )
+    {
+      Text = 1 << 0, //!< Text component
+      Buffer = 1 << 1, //!< Buffer component
+      Background = 1 << 2, //!< Background shape
+      Shadow = 1 << 3, //!< Drop shadow
     };
     Q_ENUM( TextComponent )
+
+    /**
+     * Text components.
+     *
+     * \since QGIS 3.42
+     */
+    Q_DECLARE_FLAGS( TextComponents, TextComponent )
+    Q_FLAG( TextComponents )
 
     /**
      * Text horizontal alignment.
@@ -5341,6 +5412,9 @@ class CORE_EXPORT Qgis
     };
     Q_ENUM( VsiHandlerType )
 
+    // TODO QGIS 4: make All include all values (we can't do this before 4.0, as we need to keep
+    // compatibility with code which expects all these statistics to give numeric results)
+
     /**
      * Statistics to be calculated during a zonal statistics operation.
      *
@@ -5348,19 +5422,22 @@ class CORE_EXPORT Qgis
      */
     enum class ZonalStatistic : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      Count = 1,  //!< Pixel count
-      Sum = 2,  //!< Sum of pixel values
-      Mean = 4,  //!< Mean of pixel values
-      Median = 8, //!< Median of pixel values
-      StDev = 16, //!< Standard deviation of pixel values
-      Min = 32,  //!< Min of pixel values
-      Max = 64,  //!< Max of pixel values
-      Range = 128, //!< Range of pixel values (max - min)
-      Minority = 256, //!< Minority of pixel values
-      Majority = 512, //!< Majority of pixel values
-      Variety = 1024, //!< Variety (count of distinct) pixel values
-      Variance = 2048, //!< Variance of pixel values
-      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance, //!< All statistics
+      Count = 1 << 0,  //!< Pixel count
+      Sum = 1 << 1,  //!< Sum of pixel values
+      Mean = 1 << 2,  //!< Mean of pixel values
+      Median = 1 << 3, //!< Median of pixel values
+      StDev = 1 << 4, //!< Standard deviation of pixel values
+      Min = 1 << 5,  //!< Min of pixel values
+      Max = 1 << 6,  //!< Max of pixel values
+      Range = 1 << 7, //!< Range of pixel values (max - min)
+      Minority = 1 << 8, //!< Minority of pixel values
+      Majority = 1 << 9, //!< Majority of pixel values
+      Variety = 1 << 10, //!< Variety (count of distinct) pixel values
+      Variance = 1 << 11, //!< Variance of pixel values
+      MinimumPoint = 1 << 12, //!< Pixel centroid for minimum pixel value \since QGIS 3.42
+      MaximumPoint = 1 << 13, //!< Pixel centroid for maximum pixel value \since QGIS 3.42
+      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance, //!< All statistics. For QGIS 3.x this includes ONLY numeric statistics, but for 4.0 this will be extended to included non-numeric statistics. Consider using AllNumeric instead.
+      AllNumeric = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance, //!< All numeric statistics \since QGIS 3.42
       Default = Count | Sum | Mean, //!< Default statistics
     };
     Q_ENUM( ZonalStatistic )
@@ -5574,6 +5651,77 @@ class CORE_EXPORT Qgis
     Q_ENUM( ColorModel )
 
     /**
+     * Documentation API
+     *
+     * \since QGIS 3.42
+     */
+    enum class DocumentationApi : int
+    {
+      PyQgis, //!< PyQgis API documentation
+      PyQgisSearch, //!< Search in PyQgis API documentation
+      CppQgis, //!< C++ QGIS API documentation
+      Qt, //!< Qt API documentation
+    };
+    Q_ENUM( DocumentationApi )
+
+    /**
+     * Documentation API browser
+     *
+     * \since QGIS 3.42
+     */
+    enum class DocumentationBrowser : int
+    {
+      DeveloperToolsPanel, //!< Embedded webview in the DevTools panel
+      SystemWebBrowser, //!< Default system web browser
+    };
+    Q_ENUM( DocumentationBrowser )
+
+    /**
+     * Action to be performed by the mouse handles
+     *
+     * \since QGIS 3.42
+     */
+    enum class MouseHandlesAction : int
+    {
+      MoveItem, //!< Move item
+      ResizeUp, //!< Resize up (Top handle)
+      ResizeDown, //!< Resize down (Bottom handle)
+      ResizeLeft, //!< Resize left (Left handle)
+      ResizeRight, //!< Resize right (Right handle)
+      ResizeLeftUp, //!< Resize left up (Top left handle)
+      ResizeRightUp, //!< Resize right up (Top right handle)
+      ResizeLeftDown, //!< Resize left down (Bottom left handle)
+      ResizeRightDown, //!< Resize right down (Bottom right handle)
+      SelectItem, //!< Select item
+      NoAction //!< No action
+    };
+    Q_ENUM( MouseHandlesAction )
+
+    /**
+     * Describes the limits used to compute mesh ranges (min/max values).
+     * \since QGIS 3.42
+     */
+    enum class MeshRangeLimit : int
+    {
+      NotSet, //!< User defined
+      MinimumMaximum,  //!< Real min-max values
+    };
+    Q_ENUM( MeshRangeLimit )
+
+    /**
+     * Describes the extent used to compute mesh ranges (min/max values).
+     *
+     * \since QGIS 3.42
+     */
+    enum class MeshRangeExtent : int
+    {
+      WholeMesh, //!< Whole mesh is used to compute statistics
+      FixedCanvas, //!< Current extent of the canvas (at the time of computation) is used to compute statistics
+      UpdatedCanvas, //!< Constantly updated extent of the canvas is used to compute statistics
+    };
+    Q_ENUM( MeshRangeExtent )
+
+    /**
      * Identify search radius in mm
      */
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -5729,6 +5877,7 @@ Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolLayerUserFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolPreviewFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::SymbolRenderHints )
+Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TextComponents )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TextRendererFlags )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneProviderCapabilities )
 Q_DECLARE_OPERATORS_FOR_FLAGS( Qgis::TiledSceneRendererFlags )

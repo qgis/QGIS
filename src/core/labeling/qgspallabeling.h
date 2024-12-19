@@ -633,15 +633,16 @@ class CORE_EXPORT QgsPalLayerSettings
     /**
      * Calculates the space required to render the provided \a text in map units.
      * Results will be written to \a labelX and \a labelY.
+     *
      * If the text orientation is set to rotation-based, the spaced taken to render
-     * vertically oriented text will be written to \a rotatedLabelX and \a rotatedLabelY .
+     * vertically oriented text will be written to \a rotatedLabelX and \a rotatedLabelY.
+     *
+     * \warning This method only returns an approximate label size, and eg will not consider
+     * HTML formatted text correctly.
+     *
+     * \deprecated QGIS 3.40. Will be removed from public API in QGIS 4.0.
      */
-#ifndef SIP_RUN
-    void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr, double *rotatedLabelX SIP_OUT = nullptr, double *rotatedLabelY SIP_OUT = nullptr,
-                             QgsTextFormat *format = nullptr, QgsTextDocument *document = nullptr, QgsTextDocumentMetrics *documentMetrics = nullptr, QRectF *outerBounds = nullptr );
-#else
-    void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr, double *rotatedLabelX SIP_OUT = nullptr, double *rotatedLabelY SIP_OUT = nullptr );
-#endif
+    Q_DECL_DEPRECATED void calculateLabelSize( const QFontMetricsF *fm, const QString &text, double &labelX, double &labelY, const QgsFeature *f = nullptr, QgsRenderContext *context = nullptr, double *rotatedLabelX SIP_OUT = nullptr, double *rotatedLabelY SIP_OUT = nullptr ) SIP_DEPRECATED;
 
     /**
      * Registers a feature for labeling.
@@ -674,6 +675,7 @@ class CORE_EXPORT QgsPalLayerSettings
      */
     std::unique_ptr< QgsLabelFeature > registerFeatureWithDetails( const QgsFeature &feature, QgsRenderContext &context,
         QgsGeometry obstacleGeometry = QgsGeometry(), const QgsSymbol *symbol = nullptr );
+
 #endif
 
     /**
@@ -749,7 +751,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * \note Not available in Python bindings
      * \since QGIS 3.16
      */
-    const QgsLabelLineSettings &lineSettings() const { return mLineSettings; } SIP_SKIP
+    const QgsLabelLineSettings &lineSettings() const SIP_SKIP { return mLineSettings; }
 
     /**
      * Returns the label line settings, which contain settings related to how the label
@@ -778,7 +780,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * \note Not available in Python bindings
      * \since QGIS 3.38
      */
-    const QgsLabelPointSettings &pointSettings() const { return mPointSettings; } SIP_SKIP
+    const QgsLabelPointSettings &pointSettings() const SIP_SKIP { return mPointSettings; }
 
     /**
      * Returns the label point settings, which contain settings related to how the label
@@ -806,7 +808,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * \note Not available in Python bindings
      * \since QGIS 3.10.2
      */
-    const QgsLabelObstacleSettings &obstacleSettings() const { return mObstacleSettings; } SIP_SKIP
+    const QgsLabelObstacleSettings &obstacleSettings() const SIP_SKIP { return mObstacleSettings; }
 
     /**
      * Returns the label obstacle settings.
@@ -828,7 +830,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * \note Not available in Python bindings
      * \since QGIS 3.12
      */
-    const QgsLabelThinningSettings &thinningSettings() const { return mThinningSettings; } SIP_SKIP
+    const QgsLabelThinningSettings &thinningSettings() const SIP_SKIP { return mThinningSettings; }
 
     /**
      * Returns the label thinning settings.
@@ -850,7 +852,7 @@ class CORE_EXPORT QgsPalLayerSettings
      * \note Not available in Python bindings
      * \since QGIS 3.26
      */
-    const QgsLabelPlacementSettings &placementSettings() const { return mPlacementSettings; } SIP_SKIP
+    const QgsLabelPlacementSettings &placementSettings() const SIP_SKIP { return mPlacementSettings; }
 
     /**
      * Returns the label placement settings.
@@ -925,6 +927,21 @@ class CORE_EXPORT QgsPalLayerSettings
      * Reads a data defined property from a QGIS 2.x project.
      */
     void readOldDataDefinedProperty( QgsVectorLayer *layer, QgsPalLayerSettings::Property p );
+
+    /**
+     * Calculates the space required to render the provided \a text in map units.
+     * Results will be written to \a size.
+     *
+     * If the text orientation is set to rotation-based, the space taken to render
+     * vertically oriented text will be written to \a rotatedSize.
+     */
+    void calculateLabelSize( const QFontMetricsF &fm, const QString &text, QgsRenderContext &context,
+                             const QgsTextFormat &format,
+                             QgsTextDocument *document,
+                             QgsTextDocumentMetrics *documentMetrics,
+                             QSizeF &size, QSizeF &rotatedSize,
+                             QRectF &outerBounds );
+
 
     enum DataDefinedValueType
     {
@@ -1009,18 +1026,6 @@ class CORE_EXPORT QgsPalLayerSettings
     static void initPropertyDefinitions();
 };
 
-/**
- * \ingroup core
- * \brief Represents a label candidate.
- */
-class CORE_EXPORT QgsLabelCandidate
-{
-  public:
-    QgsLabelCandidate( const QRectF &r, double c ): rect( r ), cost( c ) {}
-
-    QRectF rect;
-    double cost;
-};
 
 /**
  * \ingroup core
@@ -1035,9 +1040,6 @@ class CORE_EXPORT QgsPalLabeling
      * Called to find out whether a specified \a layer is used for labeling.
      */
     static bool staticWillUseLayer( const QgsMapLayer *layer );
-
-    //! \note not available in Python bindings
-    static void drawLabelCandidateRect( pal::LabelPosition *lp, QPainter *painter, const QgsMapToPixel *xform, QList<QgsLabelCandidate> *candidates = nullptr ) SIP_SKIP;
 
     /**
      * Prepares a geometry for registration with PAL. Handles reprojection, rotation, clipping, etc.

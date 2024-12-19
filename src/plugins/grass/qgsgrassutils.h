@@ -29,7 +29,6 @@ class QgisInterface;
  */
 class QgsGrassUtils
 {
-
   public:
     //! Constructor
     QgsGrassUtils() = default;
@@ -39,8 +38,7 @@ class QgsGrassUtils
     static QString vectorLayerName( QString map, QString layer, int nLayers );
 
     // Add all vector layers to QGIS view
-    static void addVectorLayers( QgisInterface *iface,
-                                 QString gisbase, QString location, QString mapset, QString map );
+    static void addVectorLayers( QgisInterface *iface, QString gisbase, QString location, QString mapset, QString map );
 
     // Check if element exists in current mapset
     static bool itemExists( QString element, QString item );
@@ -53,7 +51,7 @@ class QgsGrassUtils
  * \class QgsGrassElementDialog
  * \brief Dialog for entering a name for a new GRASS element.
  */
-class QgsGrassElementDialog: public QObject
+class QgsGrassElementDialog : public QObject
 {
     Q_OBJECT
 
@@ -64,10 +62,7 @@ class QgsGrassElementDialog: public QObject
   public:
     //! Gets a name for new GRASS element (map)
     // \param source local source
-    QString getItem( QString element,
-                     QString title, QString label,
-                     QString text, QString source = QString(),
-                     bool *ok = nullptr );
+    QString getItem( QString element, QString title, QString label, QString text, QString source = QString(), bool *ok = nullptr );
 
   public slots:
     void textChanged();

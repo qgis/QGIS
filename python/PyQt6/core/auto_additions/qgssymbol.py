@@ -4,6 +4,9 @@ QgsSymbol.PropertyOpacity = QgsSymbol.Property.Opacity
 QgsSymbol.Property.PropertyOpacity = QgsSymbol.Property.Opacity
 QgsSymbol.PropertyOpacity.is_monkey_patched = True
 QgsSymbol.PropertyOpacity.__doc__ = "Opacity"
+QgsSymbol.ExtentBuffer = QgsSymbol.Property.ExtentBuffer
+QgsSymbol.ExtentBuffer.is_monkey_patched = True
+QgsSymbol.ExtentBuffer.__doc__ = "Extent buffer \n.. versionadded:: 3.42"
 QgsSymbol.Property.__doc__ = """Data definable properties.
 
 .. versionadded:: 3.18
@@ -11,6 +14,10 @@ QgsSymbol.Property.__doc__ = """Data definable properties.
 * ``Opacity``: Opacity
 
   Available as ``QgsSymbol.PropertyOpacity`` in older QGIS releases.
+
+* ``ExtentBuffer``: Extent buffer
+
+  .. versionadded:: 3.42
 
 
 """
@@ -24,13 +31,13 @@ try:
     QgsSymbol._getPolygonRing = staticmethod(QgsSymbol._getPolygonRing)
     QgsSymbol._getPolygon = staticmethod(QgsSymbol._getPolygon)
     QgsSymbol.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsSymbolAnimationSettings.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsSymbolBufferSettings.__group__ = ['symbology']
-except NameError:
+except (NameError, AttributeError):
     pass

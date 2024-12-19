@@ -183,7 +183,7 @@ Creates a DOM element representing the range in SLD format.
 typedef QList<QgsRendererRange> QgsRangeList;
 
 
-class QgsRendererRangeLabelFormat /Deprecated/
+class QgsRendererRangeLabelFormat /Deprecated="Since 3.10. Use QgsClassificationMethod instead."/
 {
 %Docstring(signature="appended")
 

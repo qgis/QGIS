@@ -19,7 +19,7 @@
 #include "qgsproviderguimetadata.h"
 
 
-class QgsWfsProviderGuiMetadata: public QgsProviderGuiMetadata
+class QgsWfsProviderGuiMetadata : public QgsProviderGuiMetadata
 {
   public:
     QgsWfsProviderGuiMetadata();

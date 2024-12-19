@@ -10,7 +10,7 @@
 
 
 
-class QgsTinInterpolator: QgsInterpolator
+class QgsTinInterpolator : QgsInterpolator
 {
 %Docstring(signature="appended")
 Interpolation in a triangular irregular network
@@ -20,7 +20,6 @@ Interpolation in a triangular irregular network
 #include "qgstininterpolator.h"
 %End
   public:
-
     enum TinInterpolation /BaseType=IntEnum/
     {
       Linear,

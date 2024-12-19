@@ -2,5 +2,5 @@
 try:
     QgsColorEffect.create = staticmethod(QgsColorEffect.create)
     QgsColorEffect.__group__ = ['effects']
-except NameError:
+except (NameError, AttributeError):
     pass

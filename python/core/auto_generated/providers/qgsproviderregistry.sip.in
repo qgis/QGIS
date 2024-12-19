@@ -51,7 +51,7 @@ Means of accessing canonical single instance
 
     ~QgsProviderRegistry();
 
- QString library( const QString &providerKey ) const /Deprecated/;
+ QString library( const QString &providerKey ) const /Deprecated="Since 3.10. Providers may not need to be loaded from a library (empty string returned)."/;
 %Docstring
 Returns path for the library of the provider.
 
@@ -96,7 +96,7 @@ Creates a new instance of a provider.
 .. seealso:: :py:func:`createRasterDataProvider`
 %End
 
- Qgis::DataItemProviderCapabilities providerCapabilities( const QString &providerKey ) const /Deprecated/;
+ Qgis::DataItemProviderCapabilities providerCapabilities( const QString &providerKey ) const /Deprecated="Since 3.10. Use instead capabilities() method of individual data item provider."/;
 %Docstring
 Returns the provider capabilities
 
@@ -205,7 +205,7 @@ If a provider does not work with paths, unmodified URI will be returned.
 .. versionadded:: 3.30
 %End
 
- QWidget *createSelectionWidget( const QString &providerKey, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone ) /Deprecated/;
+ QWidget *createSelectionWidget( const QString &providerKey, QWidget *parent = 0, Qt::WindowFlags fl = Qt::WindowFlags(), QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Standalone ) /Deprecated="Since 3.10. Use QgsGui.sourceSelectProviderRegistry()->createDataSourceWidget() instead."/;
 %Docstring
 Returns a new widget for selecting layers from a provider.
 Either the ``parent`` widget must be set or the caller becomes
@@ -336,7 +336,7 @@ Returns new instance of transaction. Ownership is transferred to the caller
 .. versionadded:: 3.10
 %End
 
- QFunctionPointer function( const QString &providerKey, const QString &functionName ) const /Deprecated/;
+ QFunctionPointer function( const QString &providerKey, const QString &functionName ) const /Deprecated="Since 3.10. Any provider functionality should be accessed through QgsProviderMetadata."/;
 %Docstring
 Gets pointer to provider function
 
@@ -351,7 +351,7 @@ Gets pointer to provider function
    Any provider functionality should be accessed through :py:class:`QgsProviderMetadata`.
 %End
 
- QLibrary *createProviderLibrary( const QString &providerKey ) const /Factory,Deprecated/;
+ QLibrary *createProviderLibrary( const QString &providerKey ) const /Factory,Deprecated="Since 3.10. Providers may not need to be loaded from a library."/;
 %Docstring
 Returns a new QLibrary for the specified ``providerKey``. Ownership of the returned
 object is transferred to the caller and the caller is responsible for deleting it.
@@ -749,7 +749,7 @@ Returns a string containing the available directory drivers
 Returns a string containing the available protocol drivers
 %End
 
- void registerGuis( QWidget *widget ) /Deprecated/;
+ void registerGuis( QWidget *widget ) /Deprecated="Since 3.10. Does nothing - use QgsGui.providerGuiRegistry()."/;
 %Docstring
 
 .. deprecated:: 3.10

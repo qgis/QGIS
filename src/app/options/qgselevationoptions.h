@@ -30,14 +30,12 @@ class QgsElevationOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsEl
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsElevationOptionsWidget with the specified \a parent widget.
      */
     QgsElevationOptionsWidget( QWidget *parent );
     QString helpKey() const override;
     void apply() override;
-
 };
 
 
@@ -46,7 +44,6 @@ class QgsElevationOptionsFactory : public QgsOptionsWidgetFactory
     Q_OBJECT
 
   public:
-
     QgsElevationOptionsFactory();
 
     QIcon icon() const override;

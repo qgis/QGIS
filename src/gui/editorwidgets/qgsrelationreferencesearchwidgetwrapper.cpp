@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrelationreferencesearchwidgetwrapper.h"
+#include "moc_qgsrelationreferencesearchwidgetwrapper.cpp"
 
 #include "qgsfields.h"
 #include "qgsvaluerelationwidgetfactory.h"
@@ -30,7 +31,6 @@ QgsRelationReferenceSearchWidgetWrapper::QgsRelationReferenceSearchWidgetWrapper
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
   , mCanvas( canvas )
 {
-
 }
 
 bool QgsRelationReferenceSearchWidgetWrapper::applyDirectly()
@@ -46,13 +46,13 @@ QString QgsRelationReferenceSearchWidgetWrapper::expression() const
 QVariant QgsRelationReferenceSearchWidgetWrapper::value() const
 {
   if ( !mWidget )
-    return QVariant( );
+    return QVariant();
 
   const QVariantList fkeys = mWidget->foreignKeys();
 
   if ( fkeys.isEmpty() )
   {
-    return QVariant( );
+    return QVariant();
   }
   else
   {
@@ -186,9 +186,7 @@ void QgsRelationReferenceSearchWidgetWrapper::setExpression( const QString &expr
   else
   {
     str = QStringLiteral( "%1 = '%3'" )
-          .arg( QgsExpression::quotedColumnRef( fieldName ),
-                exp.replace( '\'', QLatin1String( "''" ) )
-              );
+            .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', QLatin1String( "''" ) ) );
   }
   mExpression = str;
 }
@@ -234,5 +232,3 @@ void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor )
   mWidget->showIndeterminateState();
   connect( mWidget, &QgsRelationReferenceWidget::foreignKeysChanged, this, &QgsRelationReferenceSearchWidgetWrapper::onValuesChanged );
 }
-
-

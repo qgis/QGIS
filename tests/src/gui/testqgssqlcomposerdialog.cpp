@@ -19,7 +19,7 @@
 #include <qgslogger.h>
 #include <qgssqlcomposerdialog.h>
 
-class TestQgsSQLComposerDialog: public QObject
+class TestQgsSQLComposerDialog : public QObject
 {
     Q_OBJECT
   private slots:
@@ -30,6 +30,7 @@ class TestQgsSQLComposerDialog: public QObject
     void testSelectSpatialPredicate();
     void testSelectOperator();
     void testJoins();
+
   private:
     bool runTest();
 };
@@ -224,9 +225,7 @@ void TestQgsSQLComposerDialog::testSelectColumn()
   if ( !runTest() )
     return;
   QgsSQLComposerDialog d;
-  d.addColumnNames( QList<QgsSQLComposerDialog::PairNameType>() <<
-                    QgsSQLComposerDialog::PairNameType( QStringLiteral( "a" ), QString() ) <<
-                    QgsSQLComposerDialog::PairNameType( QStringLiteral( "b" ), QStringLiteral( "type" ) ), QStringLiteral( "my_table" ) );
+  d.addColumnNames( QList<QgsSQLComposerDialog::PairNameType>() << QgsSQLComposerDialog::PairNameType( QStringLiteral( "a" ), QString() ) << QgsSQLComposerDialog::PairNameType( QStringLiteral( "b" ), QStringLiteral( "type" ) ), QStringLiteral( "my_table" ) );
 
   QCOMPARE( getColumnsCombo( d )->itemText( 1 ), QString( "a" ) );
   QCOMPARE( getColumnsCombo( d )->itemText( 2 ), QString( "b (type)" ) );

@@ -18,6 +18,7 @@
 #include <QObject>
 
 #include "qgsgpsbearingitem.h"
+#include "moc_qgsgpsbearingitem.cpp"
 #include "qgscoordinatetransform.h"
 #include "qgsmapcanvas.h"
 #include "qgsexception.h"
@@ -90,8 +91,7 @@ void QgsGpsBearingItem::updateLine()
     double totalLength = 0;
     try
     {
-      totalLength = 2 * da1.measureLine( mMapCanvas->mapSettings().extent().center(), QgsPointXY( mMapCanvas->mapSettings().extent().xMaximum(),
-                                         mMapCanvas->mapSettings().extent().yMaximum() ) );
+      totalLength = 2 * da1.measureLine( mMapCanvas->mapSettings().extent().center(), QgsPointXY( mMapCanvas->mapSettings().extent().xMaximum(), mMapCanvas->mapSettings().extent().yMaximum() ) );
     }
     catch ( QgsCsException & )
     {

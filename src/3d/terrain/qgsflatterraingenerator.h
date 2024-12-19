@@ -52,6 +52,10 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
 {
     Q_OBJECT
   public:
+    /**
+     * Creates a new instance of a QgsFlatTerrainGenerator object.
+     */
+    static QgsTerrainGenerator *create() SIP_FACTORY;
 
     QgsFlatTerrainGenerator() = default;
 
@@ -62,22 +66,15 @@ class _3D_EXPORT QgsFlatTerrainGenerator : public QgsTerrainGenerator
     QgsRectangle rootChunkExtent() const override;
     void setExtent( const QgsRectangle &extent ) override;
     void rootChunkHeightRange( float &hMin, float &hMax ) const override;
-    void writeXml( QDomElement &elem ) const override;
-    void readXml( const QDomElement &elem ) override;
 
-    //! Sets CRS of the terrain
-    void setCrs( const QgsCoordinateReferenceSystem &crs );
-    //! Returns CRS of the terrain
+    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) override;
     QgsCoordinateReferenceSystem crs() const override { return mCrs; }
 
   private:
-
     void updateTilingScheme();
 
     QgsCoordinateReferenceSystem mCrs;
 };
-
-
 
 
 #endif // QGSFLATTERRAINGENERATOR_H

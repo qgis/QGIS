@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayerstylewidget.h"
+#include "moc_qgspointcloudlayerstylewidget.cpp"
 #include "qgspointcloudrendererpropertieswidget.h"
 #include "qgsstyle.h"
 #include "qgsapplication.h"
@@ -29,7 +30,7 @@ QgsPointCloudRendererWidgetFactory::QgsPointCloudRendererWidgetFactory( QObject 
 
 QgsMapLayerConfigWidget *QgsPointCloudRendererWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *, bool, QWidget *parent ) const
 {
-  return new QgsPointCloudRendererPropertiesWidget( qobject_cast< QgsPointCloudLayer * >( layer ), QgsStyle::defaultStyle(), parent );
+  return new QgsPointCloudRendererPropertiesWidget( qobject_cast<QgsPointCloudLayer *>( layer ), QgsStyle::defaultStyle(), parent );
 }
 
 bool QgsPointCloudRendererWidgetFactory::supportLayerPropertiesDialog() const

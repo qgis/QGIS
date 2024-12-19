@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapeellipsecenterpoint.h"
+#include "moc_qgsmaptoolshapeellipsecenterpoint.cpp"
 #include "qgsgeometryrubberband.h"
 #include "qgspoint.h"
 #include "qgsmapmouseevent.h"

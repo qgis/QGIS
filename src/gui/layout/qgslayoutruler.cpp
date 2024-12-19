@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgslayoutruler.h"
+#include "moc_qgslayoutruler.cpp"
 #include "qgslayout.h"
 #include "qgis.h"
 #include "qgslayoutview.h"
@@ -27,8 +28,8 @@
 const int RULER_FONT_SIZE = 8;
 const unsigned int COUNT_VALID_MULTIPLES = 3;
 const unsigned int COUNT_VALID_MAGNITUDES = 5;
-const int QgsLayoutRuler::VALID_SCALE_MULTIPLES[] = {1, 2, 5};
-const int QgsLayoutRuler::VALID_SCALE_MAGNITUDES[] = {1, 10, 100, 1000, 10000};
+const int QgsLayoutRuler::VALID_SCALE_MULTIPLES[] = { 1, 2, 5 };
+const int QgsLayoutRuler::VALID_SCALE_MAGNITUDES[] = { 1, 10, 100, 1000, 10000 };
 
 QgsLayoutRuler::QgsLayoutRuler( QWidget *parent, Qt::Orientation orientation )
   : QWidget( parent )
@@ -61,13 +62,11 @@ QgsLayoutRuler::QgsLayoutRuler( QWidget *parent, Qt::Orientation orientation )
   switch ( mOrientation )
   {
     case Qt::Horizontal:
-      mGuideMarker << QPoint( -guideMarkerSize / 2, mRulerMinSize - guideMarkerSize ) << QPoint( 0, mRulerMinSize ) <<
-                   QPoint( guideMarkerSize / 2, mRulerMinSize - guideMarkerSize );
+      mGuideMarker << QPoint( -guideMarkerSize / 2, mRulerMinSize - guideMarkerSize ) << QPoint( 0, mRulerMinSize ) << QPoint( guideMarkerSize / 2, mRulerMinSize - guideMarkerSize );
       break;
 
     case Qt::Vertical:
-      mGuideMarker << QPoint( mRulerMinSize - guideMarkerSize, -guideMarkerSize / 2 ) << QPoint( mRulerMinSize, 0 ) <<
-                   QPoint( mRulerMinSize - guideMarkerSize, guideMarkerSize / 2 );
+      mGuideMarker << QPoint( mRulerMinSize - guideMarkerSize, -guideMarkerSize / 2 ) << QPoint( mRulerMinSize, 0 ) << QPoint( mRulerMinSize - guideMarkerSize, guideMarkerSize / 2 );
       break;
   }
 }
@@ -153,7 +152,7 @@ void QgsLayoutRuler::paintEvent( QPaintEvent *event )
         return;
       }
 
-      const double startY = t.map( QPointF( 0, 0 ) ).y(); //start position in mm (total including space between pages)
+      const double startY = t.map( QPointF( 0, 0 ) ).y();      //start position in mm (total including space between pages)
       const double endY = t.map( QPointF( 0, height() ) ).y(); //stop position in mm (total including space between pages)
 
       // work out start page
@@ -282,8 +281,8 @@ void QgsLayoutRuler::drawMarkerPos( QPainter *painter )
 
 void QgsLayoutRuler::drawGuideMarkers( QPainter *p, QgsLayout *layout )
 {
-  const QList< QgsLayoutItemPage * > visiblePages = mView->visiblePages();
-  const QList< QgsLayoutGuide * > guides = layout->guides().guides( mOrientation == Qt::Horizontal ? Qt::Vertical : Qt::Horizontal );
+  const QList<QgsLayoutItemPage *> visiblePages = mView->visiblePages();
+  const QList<QgsLayoutGuide *> guides = layout->guides().guides( mOrientation == Qt::Horizontal ? Qt::Vertical : Qt::Horizontal );
   const QgsScopedQPainterState painterState( p );
   p->setRenderHint( QPainter::Antialiasing, true );
   p->setPen( Qt::NoPen );
@@ -357,7 +356,7 @@ void QgsLayoutRuler::createTemporaryGuideItem()
 QPointF QgsLayoutRuler::convertLocalPointToLayout( QPoint localPoint ) const
 {
   const QPoint viewPoint = mView->mapFromGlobal( mapToGlobal( localPoint ) );
-  return  mView->mapToScene( viewPoint );
+  return mView->mapToScene( viewPoint );
 }
 
 QPoint QgsLayoutRuler::convertLayoutPointToLocal( QPointF layoutPoint ) const
@@ -372,8 +371,8 @@ QgsLayoutGuide *QgsLayoutRuler::guideAtPoint( QPoint localPoint ) const
     return nullptr;
 
   const QPointF layoutPoint = convertLocalPointToLayout( localPoint );
-  const QList< QgsLayoutItemPage * > visiblePages = mView->visiblePages();
-  const QList< QgsLayoutGuide * > guides = mView->currentLayout()->guides().guides( mOrientation == Qt::Horizontal ? Qt::Vertical : Qt::Horizontal );
+  const QList<QgsLayoutItemPage *> visiblePages = mView->visiblePages();
+  const QList<QgsLayoutGuide *> guides = mView->currentLayout()->guides().guides( mOrientation == Qt::Horizontal ? Qt::Vertical : Qt::Horizontal );
   QgsLayoutGuide *closestGuide = nullptr;
   double minDelta = std::numeric_limits<double>::max();
   const auto constGuides = guides;
@@ -784,7 +783,7 @@ void QgsLayoutRuler::mouseReleaseEvent( QMouseEvent *event )
       if ( !page )
         return; // dragged outside of a page
 
-      std::unique_ptr< QgsLayoutGuide > guide;
+      std::unique_ptr<QgsLayoutGuide> guide;
       switch ( mOrientation )
       {
         case Qt::Horizontal:

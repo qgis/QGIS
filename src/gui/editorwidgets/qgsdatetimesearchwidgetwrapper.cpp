@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsdatetimesearchwidgetwrapper.h"
+#include "moc_qgsdatetimesearchwidgetwrapper.cpp"
 
 #include "qgsfields.h"
 #include "qgsdatetimeeditfactory.h"
@@ -43,7 +44,7 @@ QString QgsDateTimeSearchWidgetWrapper::expression() const
 
 QVariant QgsDateTimeSearchWidgetWrapper::value() const
 {
-  if ( ! mDateTimeEdit )
+  if ( !mDateTimeEdit )
     return QDateTime();
 
   const bool fieldIsoFormat = config( QStringLiteral( "field_iso_format" ), false ).toBool();
@@ -126,9 +127,7 @@ void QgsDateTimeSearchWidgetWrapper::setExpression( const QString &expression )
   const QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
   const QString str = QStringLiteral( "%1 = '%3'" )
-                      .arg( QgsExpression::quotedColumnRef( fieldName ),
-                            exp.replace( '\'', QLatin1String( "''" ) )
-                          );
+                        .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', QLatin1String( "''" ) ) );
   mExpression = str;
 }
 
@@ -179,5 +178,3 @@ void QgsDateTimeSearchWidgetWrapper::initWidget( QWidget *editor )
     connect( mDateTimeEdit, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeSearchWidgetWrapper::dateTimeChanged );
   }
 }
-
-

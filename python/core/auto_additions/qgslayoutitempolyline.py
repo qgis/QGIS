@@ -2,5 +2,5 @@
 try:
     QgsLayoutItemPolyline.create = staticmethod(QgsLayoutItemPolyline.create)
     QgsLayoutItemPolyline.__group__ = ['layout']
-except NameError:
+except (NameError, AttributeError):
     pass

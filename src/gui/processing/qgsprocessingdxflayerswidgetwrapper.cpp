@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingdxflayerswidgetwrapper.h"
+#include "moc_qgsprocessingdxflayerswidgetwrapper.cpp"
 
 #include <QBoxLayout>
 #include <QLineEdit>
@@ -87,7 +88,8 @@ QVariant QgsProcessingDxfLayerDetailsWidget::value() const
 QgsProcessingDxfLayersPanelWidget::QgsProcessingDxfLayersPanelWidget(
   const QVariant &value,
   QgsProject *project,
-  QWidget *parent )
+  QWidget *parent
+)
   : QgsProcessingMultipleSelectionPanelWidget( QVariantList(), QVariantList(), parent )
   , mProject( project )
 {
@@ -106,13 +108,13 @@ QgsProcessingDxfLayersPanelWidget::QgsProcessingDxfLayersPanelWidget(
   {
     const QgsDxfExport::DxfLayer layer = QgsProcessingParameterDxfLayers::variantMapAsLayer( v.toMap(), mContext );
     if ( !layer.layer() )
-      continue;  // skip any invalid layers
+      continue; // skip any invalid layers
 
     addOption( v, titleForLayer( layer ), true );
     seenVectorLayers.insert( layer.layer() );
   }
 
-  const QList<QgsVectorLayer *> options = QgsProcessingUtils::compatibleVectorLayers( project, QList< int >() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) );
+  const QList<QgsVectorLayer *> options = QgsProcessingUtils::compatibleVectorLayers( project, QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorAnyGeometry ) );
   for ( const QgsVectorLayer *layer : options )
   {
     if ( seenVectorLayers.contains( layer ) )
@@ -149,8 +151,7 @@ void QgsProcessingDxfLayersPanelWidget::configureLayer()
     widget->setPanelTitle( tr( "Configure Layer" ) );
     widget->buttonBox()->hide();
 
-    connect( widget, &QgsProcessingDxfLayerDetailsWidget::widgetChanged, this, [ = ]()
-    {
+    connect( widget, &QgsProcessingDxfLayerDetailsWidget::widgetChanged, this, [=]() {
       setItemValue( item, widget->value() );
     } );
     panel->openPanel( widget );
@@ -252,8 +253,7 @@ void QgsProcessingDxfLayersWidget::showDialog()
   {
     QgsProcessingDxfLayersPanelWidget *widget = new QgsProcessingDxfLayersPanelWidget( mValue, mProject );
     widget->setPanelTitle( tr( "Input layers" ) );
-    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [ = ]()
-    {
+    connect( widget, &QgsProcessingMultipleSelectionPanelWidget::selectionChanged, this, [=]() {
       setValue( widget->selectedOptions() );
     } );
     connect( widget, &QgsProcessingMultipleSelectionPanelWidget::acceptClicked, widget, &QgsPanelWidget::acceptPanel );
@@ -306,8 +306,7 @@ QWidget *QgsProcessingDxfLayersWidgetWrapper::createWidget()
 {
   mPanel = new QgsProcessingDxfLayersWidget( nullptr );
   mPanel->setProject( widgetContext().project() );
-  connect( mPanel, &QgsProcessingDxfLayersWidget::changed, this, [ = ]
-  {
+  connect( mPanel, &QgsProcessingDxfLayersWidget::changed, this, [=] {
     emit widgetValueHasChanged( this );
   } );
   return mPanel;

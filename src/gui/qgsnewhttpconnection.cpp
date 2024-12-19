@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewhttpconnection.h"
+#include "moc_qgsnewhttpconnection.cpp"
 #include "qgsauthsettingswidget.h"
 #include "qgssettings.h"
 #include "qgshelp.h"
@@ -30,6 +31,8 @@
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 #include <QUrlQuery>
+
+const QgsSettingsEntryBool *QgsNewHttpConnection::settingsIgnoreReportedLayerExtentsDefault = new QgsSettingsEntryBool( QStringLiteral( "ignore-reported-layer-extents-default" ), sTreeHttpConnectionDialog, false );
 
 QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes types, const QString &serviceName, const QString &connectionName, QgsNewHttpConnection::Flags flags, Qt::WindowFlags fl )
   : QDialog( parent, fl )
@@ -84,17 +87,13 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
   cmbVersion->addItem( tr( "1.1" ) );
   cmbVersion->addItem( tr( "2.0" ) );
   cmbVersion->addItem( tr( "OGC API - Features" ) );
-  connect( cmbVersion,
-           static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-           this, &QgsNewHttpConnection::wfsVersionCurrentIndexChanged );
+  connect( cmbVersion, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewHttpConnection::wfsVersionCurrentIndexChanged );
 
   cmbFeaturePaging->clear();
   cmbFeaturePaging->addItem( tr( "Default (trust server capabilities)" ) );
   cmbFeaturePaging->addItem( tr( "Enabled" ) );
   cmbFeaturePaging->addItem( tr( "Disabled" ) );
-  connect( cmbFeaturePaging,
-           static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-           this, &QgsNewHttpConnection::wfsFeaturePagingCurrentIndexChanged );
+  connect( cmbFeaturePaging, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewHttpConnection::wfsFeaturePagingCurrentIndexChanged );
 
   if ( !connectionName.isEmpty() )
   {
@@ -156,6 +155,8 @@ QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes typ
       mGroupBox->layout()->removeWidget( lblTilePixelRatio );
     }
   }
+
+  cbxWmsIgnoreReportedLayerExtents->setChecked( settingsIgnoreReportedLayerExtentsDefault->value() );
 
   if ( !( flags & FlagShowTestConnection ) )
   {
@@ -235,24 +236,15 @@ bool QgsNewHttpConnection::validate()
 {
   const QString newConnectionName = txtName->text();
 
-  bool urlExists = QgsOwsConnection::settingsUrl->exists( {mServiceName.toLower(), newConnectionName} );
+  bool urlExists = QgsOwsConnection::settingsUrl->exists( { mServiceName.toLower(), newConnectionName } );
 
   // warn if entry was renamed to an existing connection
-  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( newConnectionName, Qt::CaseInsensitive ) != 0 ) &&
-       urlExists &&
-       QMessageBox::question( this,
-                              tr( "Save Connection" ),
-                              tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
-                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( newConnectionName, Qt::CaseInsensitive ) != 0 ) && urlExists && QMessageBox::question( this, tr( "Save Connection" ), tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return false;
   }
 
-  if ( ! mAuthSettings->password().isEmpty() &&
-       QMessageBox::question( this,
-                              tr( "Saving Passwords" ),
-                              tr( "WARNING: You have entered a password. It will be stored in unsecured plain text in your project files and your home directory (Unix-like OS) or user profile (Windows). If you want to avoid this, press Cancel and either:\n\na) Don't provide a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your credentials in an HTTP Basic Authentication method and store them in an encrypted database." ),
-                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( !mAuthSettings->password().isEmpty() && QMessageBox::question( this, tr( "Saving Passwords" ), tr( "WARNING: You have entered a password. It will be stored in unsecured plain text in your project files and your home directory (Unix-like OS) or user profile (Windows). If you want to avoid this, press Cancel and either:\n\na) Don't provide a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your credentials in an HTTP Basic Authentication method and store them in an encrypted database." ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return false;
   }
@@ -342,7 +334,7 @@ void QgsNewHttpConnection::updateServiceSpecificSettings()
   // Enable/disable these items per WFS versions
   wfsVersionCurrentIndexChanged( versionIdx );
 
-  mHttpHeaders->setHeaders( QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( {mServiceName.toLower(), mOriginalConnName} ) ) );
+  mHttpHeaders->setHeaders( QgsHttpHeaders( QgsOwsConnection::settingsHeaders->value( { mServiceName.toLower(), mOriginalConnName } ) ) );
 
   txtMaxNumFeatures->setText( QgsOwsConnection::settingsMaxNumFeatures->value( detailsParameters ) );
 
@@ -362,16 +354,14 @@ QUrl QgsNewHttpConnection::urlTrimmed() const
 {
   QUrl url( txtUrl->text().trimmed() );
   QUrlQuery query( url );
-  const QList<QPair<QString, QString> > items = query.queryItems( QUrl::FullyEncoded );
-  QHash< QString, QPair<QString, QString> > params;
+  const QList<QPair<QString, QString>> items = query.queryItems( QUrl::FullyEncoded );
+  QHash<QString, QPair<QString, QString>> params;
   for ( const QPair<QString, QString> &it : items )
   {
     params.insert( it.first.toUpper(), it );
   }
 
-  if ( params[QStringLiteral( "SERVICE" )].second.toUpper() == "WMS" ||
-       params[QStringLiteral( "SERVICE" )].second.toUpper() == "WFS" ||
-       params[QStringLiteral( "SERVICE" )].second.toUpper() == "WCS" )
+  if ( params[QStringLiteral( "SERVICE" )].second.toUpper() == "WMS" || params[QStringLiteral( "SERVICE" )].second.toUpper() == "WFS" || params[QStringLiteral( "SERVICE" )].second.toUpper() == "WCS" )
   {
     query.removeQueryItem( params.value( QStringLiteral( "SERVICE" ) ).first );
     query.removeQueryItem( params.value( QStringLiteral( "REQUEST" ) ).first );
@@ -399,11 +389,11 @@ void QgsNewHttpConnection::accept()
   // on rename delete original entry first
   if ( !mOriginalConnName.isNull() && mOriginalConnName != newConnectionName )
   {
-    QgsOwsConnection::sTreeOwsConnections->deleteItem( mOriginalConnName, {mServiceName.toLower()} );
+    QgsOwsConnection::sTreeOwsConnections->deleteItem( mOriginalConnName, { mServiceName.toLower() } );
     settings.sync();
   }
 
-  QStringList detailsParameters = {mServiceName.toLower(), newConnectionName};
+  QStringList detailsParameters = { mServiceName.toLower(), newConnectionName };
 
   const QUrl url( urlTrimmed() );
   QgsOwsConnection::settingsUrl->setValue( url.toString(), detailsParameters );
@@ -476,7 +466,7 @@ void QgsNewHttpConnection::accept()
     QgsOwsConnection::settingsPagingEnabled->setValue( pagingEnabled, detailsParameters );
   }
 
-  QStringList credentialsParameters = {mServiceName.toLower(), newConnectionName};
+  QStringList credentialsParameters = { mServiceName.toLower(), newConnectionName };
   QgsOwsConnection::settingsUsername->setValue( mAuthSettings->username(), credentialsParameters );
   QgsOwsConnection::settingsPassword->setValue( mAuthSettings->password(), credentialsParameters );
   QgsOwsConnection::settingsAuthCfg->setValue( mAuthSettings->configId(), credentialsParameters );
@@ -484,7 +474,7 @@ void QgsNewHttpConnection::accept()
   if ( mHttpHeaders->isVisible() )
     QgsOwsConnection::settingsHeaders->setValue( mHttpHeaders->httpHeaders().headers(), credentialsParameters );
 
-  QgsOwsConnection::sTreeOwsConnections->setSelectedItem( newConnectionName, {mServiceName.toLower()} );
+  QgsOwsConnection::sTreeOwsConnections->setSelectedItem( newConnectionName, { mServiceName.toLower() } );
 
   QDialog::accept();
 }

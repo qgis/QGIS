@@ -25,22 +25,19 @@ class QgsAuthOAuth2Config;
  * \ingroup auth_plugins
  * \since QGIS 3.4
  */
-class QgsO2: public O2
+class QgsO2 : public O2
 {
-
     Q_OBJECT
 
   public:
-
     /**
      * Construct QgsO2
      * \param authcfg authentication configuration id
-     * \param oauth2config OAuth2 configuration
+     * \param oauth2config OAuth2 configuration. Will be reparented to this object.
      * \param parent
      * \param manager QGIS network access manager instance
      */
-    explicit QgsO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config = nullptr,
-                    QObject *parent = nullptr, QNetworkAccessManager *manager = nullptr );
+    explicit QgsO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config = nullptr, QObject *parent = nullptr, QNetworkAccessManager *manager = nullptr );
 
     ~QgsO2() override;
 
@@ -53,7 +50,7 @@ class QgsO2: public O2
     Q_PROPERTY( QString state READ state WRITE setState NOTIFY stateChanged )
 
     //! Retrieve oauth2 state
-    QString state() const  { return state_; }
+    QString state() const { return state_; }
 
     //! Store oauth2 state to a random value when called
     void setState( const QString &value );
@@ -81,16 +78,12 @@ class QgsO2: public O2
     //! Triggered when auth code was set
     void onSetAuthCode( const QString &code );
 
-    //! Authenticate.
-    void link() override;
-
   protected slots:
 
     //! Handle verification response.
     void onVerificationReceived( QMap<QString, QString> response ) override;
 
   protected:
-
     QNetworkAccessManager *getManager() override;
 
   signals:
@@ -102,6 +95,11 @@ class QgsO2: public O2
     void getAuthCode();
 
   private:
+    // block from calling externally -- this may be dangerous, we want to prevent
+    // anyone from calling this from a different thread
+    // Use instead QgsOAuth2Factory::requestLink
+    void link() override;
+
     void initOAuthConfig();
 
     void setSettingsStore( bool persist = false );
@@ -119,6 +117,7 @@ class QgsO2: public O2
     int mExpirationDelay = 0;
 
     static QString O2_OAUTH2_STATE;
+    friend class QgsOAuth2Factory;
 };
 
 #endif // QGSO2_H

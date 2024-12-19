@@ -30,9 +30,7 @@
  */
 class QgsRasterDtmSlopeBasedFilterAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsRasterDtmSlopeBasedFilterAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -46,12 +44,10 @@ class QgsRasterDtmSlopeBasedFilterAlgorithm : public QgsProcessingAlgorithm
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
-    std::unique_ptr< QgsRasterInterface > mInterface;
+    std::unique_ptr<QgsRasterInterface> mInterface;
     bool mHasNoDataValue = false;
     double mNoData = 0;
     int mBand = 1;
@@ -67,5 +63,3 @@ class QgsRasterDtmSlopeBasedFilterAlgorithm : public QgsProcessingAlgorithm
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMRASTERDTMSLOPEBASEDFILTER_H
-
-

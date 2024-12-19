@@ -1,6 +1,6 @@
-#ifndef DOXYGEN_SKIP                                                            
-/* $Id:$ */               
-#endif /* DOXYGEN_SKIP */                                                       
+#ifndef DOXYGEN_SKIP
+/* $Id:$ */
+#endif /* DOXYGEN_SKIP */
 
 /*! \mainpage QGIS
 
@@ -33,6 +33,7 @@ the documentation</a> available.
 See \ref api_break for information about incompatible changes to API between releases.
 
 Earlier versions of the documentation are also available on the QGIS website:
+<a href="https://qgis.org/api/3.40">3.40 (LTR)</a>,
 <a href="https://qgis.org/api/3.38">3.38</a>,
 <a href="https://qgis.org/api/3.36">3.36</a>,
 <a href="https://qgis.org/api/3.34">3.34 (LTR)</a>,
@@ -67,13 +68,13 @@ Earlier versions of the documentation are also available on the QGIS website:
 <a href="https://qgis.org/api/1.6">1.6</a>
 
 \section qgsquick_docs QgsQuick library documentation
- 
+
 See \ref qgsquick for information about QGIS Quick (QML) components library
 
 \section index_maillist Mailing Lists
 
 For support we encourage you to join our <a
-href="https://qgis.org/en/site/forusers/support.html#mailing-lists">mailing lists</a> for
+href="https://qgis.org/resources/support/#mailing-lists">mailing lists</a> for
 users and developers.
 Some QGIS users and developers can also often be found on channels such as Matrix, Telegram, ...
 

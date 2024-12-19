@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsgrassselect.h"
+#include "moc_qgsgrassselect.cpp"
 #include "qgsgrass.h"
 
 #include "qgslogger.h"
@@ -250,8 +251,7 @@ void QgsGrassSelect::setMaps()
 
   if ( type == Vector ) // vector
   {
-    QStringList list = QgsGrass::vectors( egisdbase->text(),
-                                          elocation->currentText(), emapset->currentText() );
+    QStringList list = QgsGrass::vectors( egisdbase->text(), elocation->currentText(), emapset->currentText() );
 
     for ( int j = 0; j < list.count(); j++ )
     {
@@ -260,13 +260,11 @@ void QgsGrassSelect::setMaps()
         sel = idx;
       idx++;
     }
-
   }
   else if ( type == Raster )
   {
     /* add cells */
-    QStringList list = QgsGrass::rasters( egisdbase->text(),
-                                          elocation->currentText(), emapset->currentText() );
+    QStringList list = QgsGrass::rasters( egisdbase->text(), elocation->currentText(), emapset->currentText() );
 
     for ( int j = 0; j < list.count(); j++ )
     {
@@ -343,9 +341,7 @@ void QgsGrassSelect::setLayers()
   QStringList layers;
   try
   {
-    layers  = QgsGrass::vectorLayers( egisdbase->text(),
-                                      elocation->currentText(), emapset->currentText(),
-                                      emap->currentText().toUtf8() );
+    layers = QgsGrass::vectorLayers( egisdbase->text(), elocation->currentText(), emapset->currentText(), emap->currentText().toUtf8() );
   }
   catch ( QgsGrass::Exception &e )
   {
@@ -398,8 +394,7 @@ void QgsGrassSelect::setLayers()
 
 void QgsGrassSelect::GisdbaseBrowse_clicked()
 {
-  QString Gisdbase = QFileDialog::getExistingDirectory( this,
-                     tr( "Choose existing GISDBASE" ), egisdbase->text() );
+  QString Gisdbase = QFileDialog::getExistingDirectory( this, tr( "Choose existing GISDBASE" ), egisdbase->text() );
 
   if ( !Gisdbase.isNull() )
   {
@@ -444,8 +439,7 @@ void QgsGrassSelect::accept()
   {
     if ( elayer->count() == 0 )
     {
-      QMessageBox::warning( nullptr, tr( "No layer" ),
-                            tr( "No layers available in this map" ) );
+      QMessageBox::warning( nullptr, tr( "No layer" ), tr( "No layers available in this map" ) );
       return;
     }
     sLastVectorMap = map;

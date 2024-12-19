@@ -20,6 +20,7 @@
 #include "qgslogger.h"
 
 #include "qgspanelwidgetstack.h"
+#include "moc_qgspanelwidgetstack.cpp"
 
 #include "qgspanelwidget.h"
 

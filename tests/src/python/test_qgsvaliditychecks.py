@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '03/12/2018'
-__copyright__ = 'Copyright 2018, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "03/12/2018"
+__copyright__ = "Copyright 2018, The QGIS Project"
 
 
 from qgis.core import (
@@ -63,8 +64,8 @@ def my_check(context, feedback):
 def my_check2(context, feedback):
     res = QgsValidityCheckResult()
     res.type = QgsValidityCheckResult.Type.Warning
-    res.title = 'test'
-    res.detailedDescription = 'blah blah'
+    res.title = "test"
+    res.detailedDescription = "blah blah"
     return [res]
 
 
@@ -80,25 +81,27 @@ class TestQgsValidityChecks(QgisTestCase):
 
         context = TestContext()
         feedback = QgsFeedback()
-        res = QgsApplication.validityCheckRegistry().runChecks(QgsAbstractValidityCheck.Type.TypeLayoutCheck, context, feedback)
+        res = QgsApplication.validityCheckRegistry().runChecks(
+            QgsAbstractValidityCheck.Type.TypeLayoutCheck, context, feedback
+        )
         self.assertEqual(len(res), 1)
-        self.assertEqual(res[0].title, 'test')
+        self.assertEqual(res[0].title, "test")
 
     def testRegistry(self):
         registry = QgsValidityCheckRegistry()
         self.assertFalse(registry.checks())
 
         # add a new check
-        c1 = TestCheck('c1', 'my check', 1, [])
+        c1 = TestCheck("c1", "my check", 1, [])
         registry.addCheck(c1)
         self.assertEqual(registry.checks(), [c1])
 
-        c2 = TestCheck('c2', 'my check2', 1, [])
+        c2 = TestCheck("c2", "my check2", 1, [])
         registry.addCheck(c2)
         self.assertEqual(registry.checks(), [c1, c2])
 
         registry.removeCheck(None)
-        c3 = TestCheck('c3', 'my check3', 1, [])
+        c3 = TestCheck("c3", "my check3", 1, [])
         # not in registry yet
         registry.removeCheck(c3)
 
@@ -110,11 +113,11 @@ class TestQgsValidityChecks(QgisTestCase):
 
     def testRegistryChecks(self):
         registry = QgsValidityCheckRegistry()
-        c1 = TestCheck('c1', 'my check', 1, [])
+        c1 = TestCheck("c1", "my check", 1, [])
         registry.addCheck(c1)
-        c2 = TestCheck('c2', 'my check2', 2, [])
+        c2 = TestCheck("c2", "my check2", 2, [])
         registry.addCheck(c2)
-        c3 = TestCheck('c3', 'my check3', 1, [])
+        c3 = TestCheck("c3", "my check3", 1, [])
         registry.addCheck(c3)
 
         self.assertFalse(registry.checks(0))
@@ -125,45 +128,63 @@ class TestQgsValidityChecks(QgisTestCase):
         registry = QgsValidityCheckRegistry()
         res1 = QgsValidityCheckResult()
         res1.type = QgsValidityCheckResult.Type.Warning
-        res1.title = 'test'
-        res1.detailedDescription = 'blah blah'
+        res1.title = "test"
+        res1.detailedDescription = "blah blah"
 
-        c1 = TestCheck('c1', 'my check', 1, [res1])
+        c1 = TestCheck("c1", "my check", 1, [res1])
         registry.addCheck(c1)
 
         res2 = QgsValidityCheckResult()
         res2.type = QgsValidityCheckResult.Type.Critical
-        res2.title = 'test2'
-        res2.detailedDescription = 'blah blah2'
-        c2 = TestCheck('c2', 'my check2', 2, [res2])
+        res2.title = "test2"
+        res2.detailedDescription = "blah blah2"
+        c2 = TestCheck("c2", "my check2", 2, [res2])
         registry.addCheck(c2)
 
         res3 = QgsValidityCheckResult()
         res3.type = QgsValidityCheckResult.Type.Warning
-        res3.title = 'test3'
-        res3.detailedDescription = 'blah blah3'
+        res3.title = "test3"
+        res3.detailedDescription = "blah blah3"
         res4 = QgsValidityCheckResult()
         res4.type = QgsValidityCheckResult.Type.Warning
-        res4.title = 'test4'
-        res4.detailedDescription = 'blah blah4'
-        c3 = TestCheck('c3', 'my check3', 1, [res3, res4])
+        res4.title = "test4"
+        res4.detailedDescription = "blah blah4"
+        c3 = TestCheck("c3", "my check3", 1, [res3, res4])
         registry.addCheck(c3)
 
         context = TestContext()
         feedback = QgsFeedback()
         self.assertFalse(registry.runChecks(0, context, feedback))
 
-        self.assertEqual([r.type for r in registry.runChecks(1, context, feedback)],
-                         [QgsValidityCheckResult.Type.Warning, QgsValidityCheckResult.Type.Warning,
-                          QgsValidityCheckResult.Type.Warning])
-        self.assertEqual([r.title for r in registry.runChecks(1, context, feedback)], ['test', 'test3', 'test4'])
-        self.assertEqual([r.detailedDescription for r in registry.runChecks(1, context, feedback)],
-                         ['blah blah', 'blah blah3', 'blah blah4'])
+        self.assertEqual(
+            [r.type for r in registry.runChecks(1, context, feedback)],
+            [
+                QgsValidityCheckResult.Type.Warning,
+                QgsValidityCheckResult.Type.Warning,
+                QgsValidityCheckResult.Type.Warning,
+            ],
+        )
+        self.assertEqual(
+            [r.title for r in registry.runChecks(1, context, feedback)],
+            ["test", "test3", "test4"],
+        )
+        self.assertEqual(
+            [r.detailedDescription for r in registry.runChecks(1, context, feedback)],
+            ["blah blah", "blah blah3", "blah blah4"],
+        )
 
-        self.assertEqual([r.type for r in registry.runChecks(2, context, feedback)], [QgsValidityCheckResult.Type.Critical])
-        self.assertEqual([r.title for r in registry.runChecks(2, context, feedback)], ['test2'])
-        self.assertEqual([r.detailedDescription for r in registry.runChecks(2, context, feedback)], ['blah blah2'])
+        self.assertEqual(
+            [r.type for r in registry.runChecks(2, context, feedback)],
+            [QgsValidityCheckResult.Type.Critical],
+        )
+        self.assertEqual(
+            [r.title for r in registry.runChecks(2, context, feedback)], ["test2"]
+        )
+        self.assertEqual(
+            [r.detailedDescription for r in registry.runChecks(2, context, feedback)],
+            ["blah blah2"],
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

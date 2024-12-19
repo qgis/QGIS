@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscheckboxsearchwidgetwrapper.h"
+#include "moc_qgscheckboxsearchwidgetwrapper.cpp"
 
 #include "qgsfields.h"
 #include "qgscheckboxwidgetfactory.h"
@@ -131,9 +132,7 @@ void QgsCheckboxSearchWidgetWrapper::setExpression( const QString &expression )
   const QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
   const QString str = QStringLiteral( "%1 = '%3'" )
-                      .arg( QgsExpression::quotedColumnRef( fieldName ),
-                            exp.replace( '\'', QLatin1String( "''" ) )
-                          );
+                        .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', QLatin1String( "''" ) ) );
   mExpression = str;
 }
 
@@ -166,5 +165,3 @@ void QgsCheckboxSearchWidgetWrapper::initWidget( QWidget *editor )
     connect( mCheckBox, &QCheckBox::stateChanged, this, &QgsCheckboxSearchWidgetWrapper::stateChanged );
   }
 }
-
-

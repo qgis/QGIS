@@ -31,9 +31,7 @@
  */
 class QgsMergeVectorAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsMergeVectorAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmMergeLayers.svg" ) ); }
@@ -49,14 +47,9 @@ class QgsMergeVectorAlgorithm : public QgsProcessingAlgorithm
     QgsMergeVectorAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMMERGEVECTOR_H
-
-

@@ -9,7 +9,7 @@
 
 
 
-class QgsAnnotationItemCommonPropertiesWidget: QWidget
+class QgsAnnotationItemCommonPropertiesWidget : QWidget
 {
 %Docstring(signature="appended")
 
@@ -22,7 +22,6 @@ A widget for configuring common properties for :py:class:`QgsAnnotationItems`
 #include "qgsannotationitemcommonpropertieswidget.h"
 %End
   public:
-
     QgsAnnotationItemCommonPropertiesWidget( QWidget *parent /TransferThis/ );
 %Docstring
 Constructor for QgsAnnotationItemCommonPropertiesWidget.

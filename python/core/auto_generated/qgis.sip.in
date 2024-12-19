@@ -828,10 +828,20 @@ The development version
 
     enum class RasterResamplingStage
       {
-      //! Resampling occurs in ResamplingFilter
       ResampleFilter,
-      //! Resampling occurs in Provider
-      Provider
+      Provider,
+    };
+
+    enum class RasterResamplingMethod
+      {
+      Nearest,
+      Bilinear,
+      Cubic,
+      CubicSpline,
+      Lanczos,
+      Average,
+      Mode,
+      Gauss
     };
 
     enum class RasterRendererFlag
@@ -851,6 +861,27 @@ The development version
 
     typedef QFlags<Qgis::RasterRendererCapability> RasterRendererCapabilities;
 
+
+    enum class RasterRangeLimit
+      {
+      NotSet,
+      MinimumMaximum,
+      StdDev,
+      CumulativeCut
+    };
+
+    enum class RasterRangeExtent
+      {
+      WholeRaster,
+      FixedCanvas,
+      UpdatedCanvas,
+    };
+
+    enum class RasterRangeAccuracy
+      {
+      Exact,
+      Estimated,
+    };
 
     enum class RasterAttributeTableFieldUsage
     {
@@ -1592,12 +1623,15 @@ The development version
     };
 
     enum class TextComponent
-      {
+    {
       Text,
       Buffer,
       Background,
       Shadow,
     };
+
+    typedef QFlags<Qgis::TextComponent> TextComponents;
+
 
     enum class TextHorizontalAlignment
       {
@@ -3017,6 +3051,7 @@ The development version
       Other,
     };
 
+
     enum class ZonalStatistic
     {
       Count,
@@ -3031,7 +3066,10 @@ The development version
       Majority,
       Variety,
       Variance,
+      MinimumPoint,
+      MaximumPoint,
       All,
+      AllNumeric,
       Default,
     };
 
@@ -3167,6 +3205,48 @@ The development version
     {
       Rgb,
       Cmyk,
+    };
+
+    enum class DocumentationApi
+    {
+      PyQgis,
+      PyQgisSearch,
+      CppQgis,
+      Qt,
+    };
+
+    enum class DocumentationBrowser
+    {
+      DeveloperToolsPanel,
+      SystemWebBrowser,
+    };
+
+    enum class MouseHandlesAction
+    {
+      MoveItem,
+      ResizeUp,
+      ResizeDown,
+      ResizeLeft,
+      ResizeRight,
+      ResizeLeftUp,
+      ResizeRightUp,
+      ResizeLeftDown,
+      ResizeRightDown,
+      SelectItem,
+      NoAction
+    };
+
+    enum class MeshRangeLimit
+    {
+      NotSet,
+      MinimumMaximum,
+    };
+
+    enum class MeshRangeExtent
+    {
+      WholeMesh,
+      FixedCanvas,
+      UpdatedCanvas,
     };
 
     static const double DEFAULT_SEARCH_RADIUS_MM;
@@ -3328,6 +3408,8 @@ QFlags<Qgis::SymbolLayerUserFlag> operator|(Qgis::SymbolLayerUserFlag f1, QFlags
 QFlags<Qgis::SymbolPreviewFlag> operator|(Qgis::SymbolPreviewFlag f1, QFlags<Qgis::SymbolPreviewFlag> f2);
 
 QFlags<Qgis::SymbolRenderHint> operator|(Qgis::SymbolRenderHint f1, QFlags<Qgis::SymbolRenderHint> f2);
+
+QFlags<Qgis::TextComponent> operator|(Qgis::TextComponent f1, QFlags<Qgis::TextComponent> f2);
 
 QFlags<Qgis::TextRendererFlag> operator|(Qgis::TextRendererFlag f1, QFlags<Qgis::TextRendererFlag> f2);
 

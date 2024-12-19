@@ -43,6 +43,24 @@ If ``noZ`` is ``True``, then a 2-dimensional tessellation only will be performed
 .. versionadded:: 3.10
 %End
 
+    void setOutputZUp( bool zUp );
+%Docstring
+Sets whether the "up" direction should be the Z axis on output (``True``),
+otherwise the "up" direction will be the Y axis (``False``). The default
+value is ``False`` (to keep compatibility for existing tessellator use cases).
+
+.. versionadded:: 3.42
+%End
+
+    bool isOutputZUp() const;
+%Docstring
+Returns whether the "up" direction should be the Z axis on output (``True``),
+otherwise the "up" direction will be the Y axis (``False``). The default
+value is ``False`` (to keep compatibility for existing tessellator use cases).
+
+.. versionadded:: 3.42
+%End
+
     void addPolygon( const QgsPolygon &polygon, float extrusionHeight );
 %Docstring
 Tessellates a triangle and adds its vertex entries to the output data array

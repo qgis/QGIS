@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "offline_editing_plugin.h"
+#include "moc_offline_editing_plugin.cpp"
 #include "offline_editing_plugin_gui.h"
 #include "offline_editing_progress_dialog.h"
 
@@ -84,7 +85,7 @@ void QgsOfflineEditingPlugin::initGui()
   connect( mQGisIface, &QgisInterface::newProjectCreated, this, &QgsOfflineEditingPlugin::updateActions );
   connect( QgsProject::instance(), &QgsProject::writeProject, this, &QgsOfflineEditingPlugin::updateActions );
   connect( QgsProject::instance(), &QgsProject::layerWasAdded, this, &QgsOfflineEditingPlugin::updateActions );
-  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ), this, &QgsOfflineEditingPlugin::updateActions );
+  connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QString & )>( &QgsProject::layerWillBeRemoved ), this, &QgsOfflineEditingPlugin::updateActions );
   updateActions();
 }
 

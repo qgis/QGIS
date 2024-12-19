@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsundowidget.h"
+#include "moc_qgsundowidget.cpp"
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -169,7 +170,7 @@ void QgsUndoWidget::setUndoStack( QUndoStack *undoStack )
   mUndoView->setStack( undoStack );
   mUndoView->setObjectName( QStringLiteral( "undoView" ) );
   mGridLayout->addWidget( mUndoView, 0, 0, 1, 2 );
-//  setWidget( dockWidgetContents );
+  //  setWidget( dockWidgetContents );
   connect( mUndoStack, &QUndoStack::canUndoChanged, this, &QgsUndoWidget::undoChanged );
   connect( mUndoStack, &QUndoStack::canRedoChanged, this, &QgsUndoWidget::redoChanged );
 
@@ -179,4 +180,3 @@ void QgsUndoWidget::setUndoStack( QUndoStack *undoStack )
   mUndoButton->setDisabled( !mUndoStack->canUndo() );
   mRedoButton->setDisabled( !mUndoStack->canRedo() );
 }
-

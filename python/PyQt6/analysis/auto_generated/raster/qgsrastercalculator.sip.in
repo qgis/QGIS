@@ -20,7 +20,6 @@ Represents an individual raster layer/band number entry within a raster calculat
 #include "qgsrastercalculator.h"
 %End
   public:
-
     static QVector<QgsRasterCalculatorEntry> rasterEntries();
 %Docstring
 Creates a list of raster entries from the current project.
@@ -51,7 +50,6 @@ Performs raster layer calculations.
 #include "qgsrastercalculator.h"
 %End
   public:
-
     enum Result /BaseType=IntEnum/
     {
       Success,
@@ -65,10 +63,7 @@ Performs raster layer calculations.
     };
 
 
-    QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
-                         const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows,
-                         const QVector<QgsRasterCalculatorEntry> &rasterEntries,
-                         const QgsCoordinateTransformContext &transformContext );
+    QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries, const QgsCoordinateTransformContext &transformContext );
 %Docstring
 QgsRasterCalculator constructor.
 
@@ -84,11 +79,7 @@ QgsRasterCalculator constructor.
 .. versionadded:: 3.8
 %End
 
-    QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
-                         const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs,
-                         int nOutputColumns, int nOutputRows,
-                         const QVector<QgsRasterCalculatorEntry> &rasterEntries,
-                         const QgsCoordinateTransformContext &transformContext );
+    QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries, const QgsCoordinateTransformContext &transformContext );
 %Docstring
 QgsRasterCalculator constructor.
 
@@ -106,8 +97,7 @@ QgsRasterCalculator constructor.
 %End
 
 
- QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
-                                           const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries ) /Deprecated/;
+ QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries ) /Deprecated="Since 3.8. Use the version with transformContext instead."/;
 %Docstring
 QgsRasterCalculator constructor.
 
@@ -124,8 +114,7 @@ QgsRasterCalculator constructor.
    Use the version with transformContext instead.
 %End
 
- QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat,
-                                           const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries ) /Deprecated/;
+ QgsRasterCalculator( const QString &formulaString, const QString &outputFile, const QString &outputFormat, const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries ) /Deprecated="Since 3.8. Use the version with transformContext instead."/;
 %Docstring
 QgsRasterCalculator constructor.
 

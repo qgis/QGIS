@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsrangeconfigdlg.h"
+#include "moc_qgsrangeconfigdlg.cpp"
 
 #include "qgsvectorlayer.h"
 
@@ -98,16 +99,16 @@ QgsRangeConfigDlg::QgsRangeConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget 
   valuesLabel->setText( text );
 
   connect( rangeWidget, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRangeConfigDlg::rangeWidgetChanged );
-  connect( minimumSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
-  connect( maximumSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
-  connect( stepSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
-  connect( minimumDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
-  connect( maximumDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
-  connect( stepDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( minimumSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( maximumSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( stepSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( minimumDoubleSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( maximumDoubleSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
+  connect( stepDoubleSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsEditorConfigWidget::changed );
   connect( rangeWidget, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsEditorConfigWidget::changed );
   connect( allowNullCheckBox, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
   connect( suffixLineEdit, &QLineEdit::textChanged, this, &QgsEditorConfigWidget::changed );
-  connect( precisionSpinBox, qOverload< int > ( &QSpinBox::valueChanged ), this, &QgsRangeConfigDlg::setPrecision );
+  connect( precisionSpinBox, qOverload<int>( &QSpinBox::valueChanged ), this, &QgsRangeConfigDlg::setPrecision );
 }
 
 QVariantMap QgsRangeConfigDlg::config()
@@ -149,8 +150,8 @@ QVariantMap QgsRangeConfigDlg::config()
 
 void QgsRangeConfigDlg::setConfig( const QVariantMap &config )
 {
-  minimumDoubleSpinBox->setValue( config.value( QStringLiteral( "Min" ), std::numeric_limits<double>::lowest() ).toDouble( ) );
-  maximumDoubleSpinBox->setValue( config.value( QStringLiteral( "Max" ), std::numeric_limits<double>::max() ).toDouble( ) );
+  minimumDoubleSpinBox->setValue( config.value( QStringLiteral( "Min" ), std::numeric_limits<double>::lowest() ).toDouble() );
+  maximumDoubleSpinBox->setValue( config.value( QStringLiteral( "Max" ), std::numeric_limits<double>::max() ).toDouble() );
   stepDoubleSpinBox->setValue( config.value( QStringLiteral( "Step" ), 1.0 ).toDouble() );
   minimumSpinBox->setValue( config.value( QStringLiteral( "Min" ), std::numeric_limits<int>::lowest() ).toInt() );
   maximumSpinBox->setValue( config.value( QStringLiteral( "Max" ), std::numeric_limits<int>::max() ).toInt() );
@@ -158,7 +159,7 @@ void QgsRangeConfigDlg::setConfig( const QVariantMap &config )
   rangeWidget->setCurrentIndex( rangeWidget->findData( config.value( QStringLiteral( "Style" ), "SpinBox" ) ) );
   suffixLineEdit->setText( config.value( QStringLiteral( "Suffix" ) ).toString() );
   allowNullCheckBox->setChecked( config.value( QStringLiteral( "AllowNull" ), true ).toBool() );
-  precisionSpinBox->setValue( config.value( QStringLiteral( "Precision" ), layer()->fields().at( field() ).precision() ).toInt( ) );
+  precisionSpinBox->setValue( config.value( QStringLiteral( "Precision" ), layer()->fields().at( field() ).precision() ).toInt() );
 }
 
 void QgsRangeConfigDlg::rangeWidgetChanged( int index )

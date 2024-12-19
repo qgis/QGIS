@@ -62,8 +62,7 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
      * \param identitytype Type of the identity to import
      * \param parent Parent widget
      */
-    explicit QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype,
-                                          QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsAuthImportIdentityDialog( QgsAuthImportIdentityDialog::IdentityType identitytype, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Gets identity type
     QgsAuthImportIdentityDialog::IdentityType identityType();
@@ -83,11 +82,8 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
     void validateIdentity();
 
 
-
     void clearValidation();
-    void writeValidation( const QString &msg,
-                          QgsAuthImportIdentityDialog::Validity valid,
-                          bool append = false );
+    void writeValidation( const QString &msg, QgsAuthImportIdentityDialog::Validity valid, bool append = false );
 
     // Cert Identity - PkiPaths
     void lePkiPathsKeyPass_textChanged( const QString &pass );
@@ -112,7 +108,7 @@ class GUI_EXPORT QgsAuthImportIdentityDialog : public QDialog, private Ui::QgsAu
 
     QPushButton *okButton();
 
-    QgsAuthImportIdentityDialog::IdentityType  mIdentityType;
+    QgsAuthImportIdentityDialog::IdentityType mIdentityType;
     QPair<QSslCertificate, QSslKey> mCertBundle;
     QgsPkiBundle mPkiBundle;
 

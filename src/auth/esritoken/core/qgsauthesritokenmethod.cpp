@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsauthesritokenmethod.h"
+#include "moc_qgsauthesritokenmethod.cpp"
 
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
@@ -39,10 +40,7 @@ QgsAuthEsriTokenMethod::QgsAuthEsriTokenMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest );
-  setDataProviders( QStringList()
-                    << QStringLiteral( "arcgismapserver" )
-                    << QStringLiteral( "arcgisfeatureserver" ) );
-
+  setDataProviders( QStringList() << QStringLiteral( "arcgismapserver" ) << QStringLiteral( "arcgisfeatureserver" ) );
 }
 
 QString QgsAuthEsriTokenMethod::key() const
@@ -60,8 +58,7 @@ QString QgsAuthEsriTokenMethod::displayDescription() const
   return AUTH_METHOD_DISPLAY_DESCRIPTION;
 }
 
-bool QgsAuthEsriTokenMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
-    const QString &dataprovider )
+bool QgsAuthEsriTokenMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider )
 {
   Q_UNUSED( dataprovider )
   const QgsAuthMethodConfig config = getMethodConfig( authcfg );
@@ -75,7 +72,7 @@ bool QgsAuthEsriTokenMethod::updateNetworkRequest( QNetworkRequest &request, con
 
   if ( !token.isEmpty() )
   {
-    request.setRawHeader( "X-Esri-Authorization",  QStringLiteral( "Bearer %1 " ).arg( token ).toLocal8Bit() );
+    request.setRawHeader( "X-Esri-Authorization", QStringLiteral( "Bearer %1 " ).arg( token ).toLocal8Bit() );
   }
   return true;
 }

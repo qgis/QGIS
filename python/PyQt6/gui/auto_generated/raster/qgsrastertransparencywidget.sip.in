@@ -21,7 +21,6 @@ Widget to control a layers transparency and related options
 #include "qgsrastertransparencywidget.h"
 %End
   public:
-
     QgsRasterTransparencyWidget( QgsRasterLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 %Docstring
 Widget to control a layers transparency and related options
@@ -61,7 +60,6 @@ Apply any changes on the widget to the set layer.
 %End
 
   protected:
-
 
 };
 /************************************************************************

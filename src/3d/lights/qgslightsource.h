@@ -45,9 +45,7 @@ namespace Qt3DCore
  */
 class _3D_EXPORT QgsLightSource SIP_ABSTRACT
 {
-
   public:
-
     virtual ~QgsLightSource();
 
     /**

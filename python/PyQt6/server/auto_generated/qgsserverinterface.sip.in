@@ -31,7 +31,6 @@ a certain priority through the :py:func:`~registerFilter` method.
 %End
   public:
 
-
     virtual ~QgsServerInterface();
 
 

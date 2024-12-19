@@ -45,7 +45,7 @@ class QgsPaintEffect;
 class QgsDataDefinedSizeLegend;
 class QgsLineSymbol;
 
-namespace pal { class Layer; } SIP_SKIP
+namespace pal SIP_SKIP { class Layer; }
 
 /**
  * \ingroup core
@@ -224,7 +224,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * \see setRenderer()
      * \note not available in Python bindings
      */
-    const QgsDiagramRenderer *renderer() const { return mRenderer; } SIP_SKIP
+    const QgsDiagramRenderer *renderer() const SIP_SKIP { return mRenderer; }
 
     /**
      * Sets the diagram renderer associated with the layer.
@@ -297,7 +297,7 @@ class CORE_EXPORT QgsDiagramLayerSettings
      * \see Property
      * \note not available in Python bindings
      */
-    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
+    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
 
     /**
      * Sets the diagram's property collection, used for data defined overrides.

@@ -14,10 +14,10 @@ class O0_EXPORT O0SettingsStore: public O0AbstractStore {
 
 public:
     /// Constructor
-    explicit O0SettingsStore(const QString &encryptionKey, QObject *parent = 0);
+    explicit O0SettingsStore(const QString &encryptionKey, QObject *parent = nullptr);
 
     /// Construct with an explicit QSettings instance
-    explicit O0SettingsStore(QSettings *settings, const QString &encryptionKey, QObject *parent = 0);
+    explicit O0SettingsStore(QSettings *settings, const QString &encryptionKey, QObject *parent = nullptr);
 
     /// Group key prefix
     Q_PROPERTY(QString groupKey READ groupKey WRITE setGroupKey NOTIFY groupKeyChanged)
@@ -25,10 +25,10 @@ public:
     void setGroupKey(const QString &groupKey);
 
     /// Get a string value for a key
-    QString value(const QString &key, const QString &defaultValue = QString());
+    QString value(const QString &key, const QString &defaultValue = QString()) override;
 
     /// Set a string value for a key
-    void setValue(const QString &key, const QString &value);
+    void setValue(const QString &key, const QString &value) override;
 
 Q_SIGNALS:
     // Property change signals

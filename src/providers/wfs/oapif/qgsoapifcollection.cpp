@@ -18,6 +18,7 @@ using namespace nlohmann;
 
 #include "qgslogger.h"
 #include "qgsoapifcollection.h"
+#include "moc_qgsoapifcollection.cpp"
 #include "qgsoapifutils.h"
 #include "qgsoapifprovider.h"
 
@@ -52,9 +53,7 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
   mLayerMetadata.setType( QStringLiteral( "dataset" ) );
 
   const auto links = QgsOAPIFJson::parseLinks( j );
-  const auto selfUrl = QgsOAPIFJson::findLink( links,
-                       QStringLiteral( "self" ),
-  { QStringLiteral( "application/json" ) } );
+  const auto selfUrl = QgsOAPIFJson::findLink( links, QStringLiteral( "self" ), { QStringLiteral( "application/json" ) } );
   if ( !selfUrl.isEmpty() )
   {
     mLayerMetadata.setIdentifier( selfUrl );
@@ -64,9 +63,7 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
     mLayerMetadata.setIdentifier( mId );
   }
 
-  const auto parentUrl = QgsOAPIFJson::findLink( links,
-                         QStringLiteral( "parent" ),
-  { QStringLiteral( "application/json" ) } );
+  const auto parentUrl = QgsOAPIFJson::findLink( links, QStringLiteral( "parent" ), { QStringLiteral( "application/json" ) } );
   if ( !parentUrl.isEmpty() )
   {
     mLayerMetadata.setParentIdentifier( parentUrl );
@@ -112,7 +109,8 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
       if ( spatial.is_object() && spatial.contains( "bbox" ) )
       {
         QgsCoordinateReferenceSystem crs( QgsCoordinateReferenceSystem::fromOgcWmsCrs(
-                                            QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS ) );
+          QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS
+        ) );
         if ( spatial.contains( "crs" ) )
         {
           const auto jCrs = spatial["crs"];
@@ -125,7 +123,7 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
         const auto jBboxes = spatial["bbox"];
         if ( jBboxes.is_array() )
         {
-          QList<  QgsLayerMetadata::SpatialExtent > spatialExtents;
+          QList<QgsLayerMetadata::SpatialExtent> spatialExtents;
           bool firstBbox = true;
           for ( const auto &jBbox : jBboxes )
           {
@@ -159,8 +157,7 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
                   mBboxCrs = crs;
                   mBbox.set( values[0], values[1], values[3], values[4] );
                 }
-                spatialExtent.bounds = QgsBox3D( values[0], values[1], values[2],
-                                                 values[3], values[4], values[5] );
+                spatialExtent.bounds = QgsBox3D( values[0], values[1], values[2], values[3], values[4], values[5] );
               }
               if ( values.size() == 4 || values.size() == 6 )
               {
@@ -194,9 +191,10 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
           mBbox.set( values[0], values[1], values[2], values[3] );
           QgsLayerMetadata::SpatialExtent spatialExtent;
           spatialExtent.extentCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs(
-                                      QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS );
+            QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS
+          );
           mLayerMetadata.setCrs( spatialExtent.extentCrs );
-          metadataExtent.setSpatialExtents( QList<  QgsLayerMetadata::SpatialExtent >() << spatialExtent );
+          metadataExtent.setSpatialExtents( QList<QgsLayerMetadata::SpatialExtent>() << spatialExtent );
         }
       }
     }
@@ -210,7 +208,7 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
         const auto jIntervals = temporal["interval"];
         if ( jIntervals.is_array() )
         {
-          QList< QgsDateTimeRange > temporalExtents;
+          QList<QgsDateTimeRange> temporalExtents;
           for ( const auto &jInterval : jIntervals )
           {
             if ( jInterval.is_array() && jInterval.size() == 2 )
@@ -263,7 +261,7 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
     {
       if ( link.rel == QLatin1String( "license" ) )
       {
-        const auto license =  !link.title.isEmpty() ? link.title : link.href;
+        const auto license = !link.title.isEmpty() ? link.title : link.href;
         if ( licenseSet.find( license ) == licenseSet.end() )
         {
           licenseSet.insert( license );
@@ -328,9 +326,7 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
   {
     json jCrs = j["crs"];
     // Resolve "#/crs" link
-    if ( jCrs.is_array() && jCrs.size() == 1 &&
-         jCrs[0].is_string() && jCrs[0].get<std::string>() == "#/crs" &&
-         jCollections.is_object() && jCollections.contains( "crs" ) )
+    if ( jCrs.is_array() && jCrs.size() == 1 && jCrs[0].is_string() && jCrs[0].get<std::string>() == "#/crs" && jCollections.is_object() && jCollections.contains( "crs" ) )
     {
       jCrs = jCollections["crs"];
     }
@@ -362,7 +358,8 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
   if ( mCrsList.isEmpty() )
   {
     QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs(
-                                         QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS );
+      QgsOapifProvider::OAPIF_PROVIDER_DEFAULT_CRS
+    );
     mLayerMetadata.setCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( crs.authid() ) );
     mCrsList.append( crs.authid() );
   }
@@ -372,9 +369,8 @@ bool QgsOapifCollection::deserialize( const json &j, const json &jCollections )
 
 // -----------------------------------------
 
-QgsOapifCollectionsRequest::QgsOapifCollectionsRequest( const QgsDataSourceUri &baseUri, const QString &url ):
-  QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), baseUri.authConfigId() ), tr( "OAPIF" ) ),
-  mUrl( url )
+QgsOapifCollectionsRequest::QgsOapifCollectionsRequest( const QgsDataSourceUri &baseUri, const QString &url )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), baseUri.authConfigId() ), tr( "OAPIF" ) ), mUrl( url )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main
@@ -441,7 +437,7 @@ void QgsOapifCollectionsRequest::processReply()
     {
       if ( link.rel == QLatin1String( "license" ) )
       {
-        const auto license =  !link.title.isEmpty() ? link.title : link.href;
+        const auto license = !link.title.isEmpty() ? link.title : link.href;
         if ( licenseSet.find( license ) == licenseSet.end() )
         {
           licenseSet.insert( license );
@@ -473,9 +469,7 @@ void QgsOapifCollectionsRequest::processReply()
     }
 
     // Paging informal extension used by api.planet.com/
-    mNextUrl = QgsOAPIFJson::findLink( links,
-                                       QStringLiteral( "next" ),
-    {  QStringLiteral( "application/json" ) } );
+    mNextUrl = QgsOAPIFJson::findLink( links, QStringLiteral( "next" ), { QStringLiteral( "application/json" ) } );
   }
   catch ( const json::parse_error &ex )
   {
@@ -491,9 +485,8 @@ void QgsOapifCollectionsRequest::processReply()
 
 // -----------------------------------------
 
-QgsOapifCollectionRequest::QgsOapifCollectionRequest( const QgsDataSourceUri &baseUri, const QString &url ):
-  QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), baseUri.authConfigId() ), tr( "OAPIF" ) ),
-  mUrl( url )
+QgsOapifCollectionRequest::QgsOapifCollectionRequest( const QgsDataSourceUri &baseUri, const QString &url )
+  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), baseUri.authConfigId() ), tr( "OAPIF" ) ), mUrl( url )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main

@@ -304,7 +304,7 @@ Returns whether the faces are active for particular dataset
         const QVector<QgsMeshDataBlock> &datasetValues,
         const QVector<QgsMeshDataBlock> &datasetActive,
         const QVector<double> &times
-                                                      ) /Deprecated/;
+                                                      ) /Deprecated="Since 3.12.3. "/;
 %Docstring
 Creates a new dataset group from a data and
 persists it into a destination path
@@ -465,6 +465,17 @@ Returns the mesh driver metadata of the provider
 Closes the data provider and free every resources used
 
 .. versionadded:: 3.22
+%End
+
+    virtual bool removeDatasetGroup( int index ) = 0;
+%Docstring
+Remove dataset group from the mesh
+
+emits dataChanged when successful
+
+:return: ``True`` on success
+
+.. versionadded:: 3.42
 %End
 
   signals:

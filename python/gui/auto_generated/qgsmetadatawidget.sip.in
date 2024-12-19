@@ -21,7 +21,6 @@ A wizard to edit metadata on a map layer.
 #include "qgsmetadatawidget.h"
 %End
   public:
-
     enum Mode
     {
       LayerMetadata,

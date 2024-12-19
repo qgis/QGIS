@@ -19,7 +19,7 @@
 #include "qgsdummyconfigdlg.h"
 
 QgsClassificationWidgetWrapperFactory::QgsClassificationWidgetWrapperFactory( const QString &name )
-  :  QgsEditorWidgetFactory( name )
+  : QgsEditorWidgetFactory( name )
 {
 }
 

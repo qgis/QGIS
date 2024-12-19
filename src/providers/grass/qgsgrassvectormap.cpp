@@ -24,13 +24,14 @@
 #include "qgslogger.h"
 #include "qgsgrass.h"
 #include "qgsgrassvectormap.h"
+#include "moc_qgsgrassvectormap.cpp"
 #include "qgsgrassvectormaplayer.h"
 #include "qgsgrassundocommand.h"
 
 extern "C"
 {
 #include <grass/version.h>
-#if defined(_MSC_VER) && defined(M_PI_4)
+#if defined( _MSC_VER ) && defined( M_PI_4 )
 #undef M_PI_4 //avoid redefinition warning
 #endif
 #include <grass/gprojects.h>
@@ -111,7 +112,7 @@ bool QgsGrassVectorMap::openMap()
   QgsGrass::setLocation( mGrassObject.gisdbase(), mGrassObject.location() );
 
   // Find the vector
-  const char *ms = G_find_vector2( mGrassObject.name().toUtf8().constData(),  mGrassObject.mapset().toUtf8().constData() );
+  const char *ms = G_find_vector2( mGrassObject.name().toUtf8().constData(), mGrassObject.mapset().toUtf8().constData() );
 
   if ( !ms )
   {
@@ -151,9 +152,7 @@ bool QgsGrassVectorMap::openMap()
   }
   else if ( level == 1 )
   {
-    QMessageBox::StandardButton ret = QMessageBox::question( nullptr, QStringLiteral( "Warning" ),
-                                      QObject::tr( "GRASS vector map %1 does not have topology. Build topology?" ).arg( mGrassObject.name() ),
-                                      QMessageBox::Ok | QMessageBox::Cancel );
+    QMessageBox::StandardButton ret = QMessageBox::question( nullptr, QStringLiteral( "Warning" ), QObject::tr( "GRASS vector map %1 does not have topology. Build topology?" ).arg( mGrassObject.name() ), QMessageBox::Ok | QMessageBox::Cancel );
 
     if ( ret == QMessageBox::Cancel )
     {
@@ -418,7 +417,7 @@ void QgsGrassVectorMap::closeLayer( QgsGrassVectorMapLayer *layer )
   lockOpenCloseLayer();
   layer->removeUser();
 
-  if ( layer->userCount() == 0 )   // No more users, free sources
+  if ( layer->userCount() == 0 ) // No more users, free sources
   {
     QgsDebugMsgLevel( "No more users -> clear", 2 );
     layer->clear();
@@ -480,7 +479,6 @@ void QgsGrassVectorMap::update()
 
 bool QgsGrassVectorMap::mapOutdated()
 {
-
   QString dp = mGrassObject.mapsetPath() + "/vector/" + mGrassObject.name();
   QFileInfo di( dp );
 
@@ -501,7 +499,6 @@ bool QgsGrassVectorMap::mapOutdated()
 
 bool QgsGrassVectorMap::attributesOutdated()
 {
-
   QString dp = mGrassObject.mapsetPath() + "/vector/" + mGrassObject.name() + "/dbln";
   QFileInfo di( dp );
 
@@ -516,19 +513,17 @@ bool QgsGrassVectorMap::attributesOutdated()
 
 int QgsGrassVectorMap::numLines()
 {
-
   return ( Vect_get_num_lines( mMap ) );
 }
 
 int QgsGrassVectorMap::numAreas()
 {
-
   return ( Vect_get_num_areas( mMap ) );
 }
 
 QString QgsGrassVectorMap::toString()
 {
-  return mGrassObject.mapsetPath() + "/" +  mGrassObject.name();
+  return mGrassObject.mapsetPath() + "/" + mGrassObject.name();
 }
 
 void QgsGrassVectorMap::printDebug()
@@ -666,7 +661,7 @@ QgsAbstractGeometry *QgsGrassVectorMap::areaGeometry( int id )
   QgsPolygon *polygon = new QgsPolygon();
 
   struct line_pnts *points = Vect_new_line_struct();
-  QgsDebugMsgLevel( QString( "points= %1" ).arg( ( quint64 )points ), 3 );
+  QgsDebugMsgLevel( QString( "points= %1" ).arg( ( quint64 ) points ), 3 );
   // Vect_get_area_points and Vect_get_isle_pointsis using static variable -> lock
   // TODO: Faster to lock the whole feature iterator? Maybe only for areas?
   QgsGrass::lock();
@@ -693,7 +688,7 @@ QgsAbstractGeometry *QgsGrassVectorMap::areaGeometry( int id )
     pointList.reserve( points->n_points );
     for ( int i = 0; i < points->n_points; i++ )
     {
-      pointList <<  QgsPoint( is3d() ? Qgis::WkbType::PointZ : Qgis::WkbType::Point, points->x[i], points->y[i], points->z[i] );
+      pointList << QgsPoint( is3d() ? Qgis::WkbType::PointZ : Qgis::WkbType::Point, points->x[i], points->y[i], points->z[i] );
     }
     ring = new QgsLineString();
     ring->setPoints( pointList );
@@ -710,7 +705,7 @@ void QgsGrassVectorMap::closeAllIterators()
   // cancel and close all iterator
   // Iterators must be connected properly, otherwise may it result in dead lock!
   emit cancelIterators(); // non blocking
-  emit closeIterators(); // blocking
+  emit closeIterators();  // blocking
   QgsDebugMsgLevel( "iterators closed", 2 );
 }
 

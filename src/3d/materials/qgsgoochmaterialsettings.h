@@ -37,7 +37,6 @@ class QDomElement;
 class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
 {
   public:
-
     QgsGoochMaterialSettings() = default;
 
     QString type() const override;
@@ -53,6 +52,7 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
     static bool supportsTechnique( QgsMaterialSettingsRenderingTechnique technique );
 
     QgsGoochMaterialSettings *clone() const override SIP_FACTORY;
+    bool equals( const QgsAbstractMaterialSettings *other ) const override;
 
     //! Returns warm color component
     QColor warm() const { return mWarm; }
@@ -65,13 +65,13 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
     //! Returns specular color component
     QColor specular() const { return mSpecular; }
     //! Returns shininess of the surface
-    float shininess() const { return mShininess; }
+    double shininess() const { return mShininess; }
 
     //! Returns the alpha value
-    float alpha() const { return mAlpha; }
+    double alpha() const { return mAlpha; }
 
     //! Returns the beta value
-    float beta() const { return mBeta; }
+    double beta() const { return mBeta; }
 
     //! Sets warm color component
     void setWarm( const QColor &warm ) { mWarm = warm; }
@@ -84,13 +84,13 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
     //! Sets specular color component
     void setSpecular( const QColor &specular ) { mSpecular = specular; }
     //! Sets shininess of the surface
-    void setShininess( float shininess ) { mShininess = shininess; }
+    void setShininess( double shininess ) { mShininess = shininess; }
 
     //! Sets alpha value
-    void setAlpha( float alpha ) { mAlpha = alpha; }
+    void setAlpha( double alpha ) { mAlpha = alpha; }
 
     //! Sets beta value
-    void setBeta( float beta ) { mBeta = beta; }
+    void setBeta( double beta ) { mBeta = beta; }
 
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const override;
@@ -102,7 +102,7 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
 
     QByteArray dataDefinedVertexColorsAsByte( const QgsExpressionContext &expressionContext ) const override;
     int dataDefinedByteStride() const override;
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     void applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;
 #else
     void applyDataDefinedToGeometry( Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &data ) const override;
@@ -113,23 +113,17 @@ class _3D_EXPORT QgsGoochMaterialSettings : public QgsAbstractMaterialSettings
     // TODO c++20 - replace with = default
     bool operator==( const QgsGoochMaterialSettings &other ) const
     {
-      return mDiffuse == other.mDiffuse &&
-             mSpecular == other.mSpecular &&
-             mWarm == other.mWarm &&
-             mCool == other.mCool &&
-             mShininess == other.mShininess &&
-             mAlpha == other.mAlpha &&
-             mBeta == other.mBeta;
+      return mDiffuse == other.mDiffuse && mSpecular == other.mSpecular && mWarm == other.mWarm && mCool == other.mCool && qgsDoubleNear( mShininess, other.mShininess ) && qgsDoubleNear( mAlpha, other.mAlpha ) && qgsDoubleNear( mBeta, other.mBeta ) && dataDefinedProperties() == other.dataDefinedProperties();
     }
 
   private:
-    QColor mDiffuse{ QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) };
-    QColor mSpecular{ QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
-    QColor mWarm {QColor( 107, 0, 107 ) };
-    QColor mCool {QColor( 255, 130, 0 )};
-    float mShininess = 100.0f;
-    float mAlpha = 0.25f;
-    float mBeta = 0.5f;
+    QColor mDiffuse { QColor::fromRgbF( 0.7f, 0.7f, 0.7f, 1.0f ) };
+    QColor mSpecular { QColor::fromRgbF( 1.0f, 1.0f, 1.0f, 1.0f ) };
+    QColor mWarm { QColor( 107, 0, 107 ) };
+    QColor mCool { QColor( 255, 130, 0 ) };
+    double mShininess = 100.0;
+    double mAlpha = 0.25;
+    double mBeta = 0.5;
 
     //! Constructs a material from shader files
     QgsMaterial *buildMaterial( const QgsMaterialContext &context ) const;

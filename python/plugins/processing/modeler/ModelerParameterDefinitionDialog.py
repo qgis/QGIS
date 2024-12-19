@@ -15,42 +15,43 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'August 2012'
-__copyright__ = '(C) 2012, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "August 2012"
+__copyright__ = "(C) 2012, Victor Olaya"
 
 import math
 
-from qgis.PyQt.QtCore import (Qt,
-                              QByteArray,
-                              QCoreApplication)
-from qgis.PyQt.QtWidgets import (QDialog,
-                                 QVBoxLayout,
-                                 QLabel,
-                                 QLineEdit,
-                                 QComboBox,
-                                 QCheckBox,
-                                 QDialogButtonBox,
-                                 QMessageBox,
-                                 QTabWidget,
-                                 QWidget,
-                                 QTextEdit,
-                                 QHBoxLayout)
+from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication
+from qgis.PyQt.QtWidgets import (
+    QDialog,
+    QVBoxLayout,
+    QLabel,
+    QLineEdit,
+    QComboBox,
+    QCheckBox,
+    QDialogButtonBox,
+    QMessageBox,
+    QTabWidget,
+    QWidget,
+    QTextEdit,
+    QHBoxLayout,
+)
 from qgis.PyQt.QtGui import QColor
 
-from qgis.gui import (QgsProcessingLayerOutputDestinationWidget,
-                      QgsColorButton)
-from qgis.core import (QgsApplication,
-                       QgsSettings,
-                       QgsProcessing,
-                       QgsProcessingParameterDefinition,
-                       QgsProcessingDestinationParameter,
-                       QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterFileDestination,
-                       QgsProcessingParameterFolderDestination,
-                       QgsProcessingParameterRasterDestination,
-                       QgsProcessingParameterVectorDestination,
-                       QgsProcessingModelAlgorithm)
+from qgis.gui import QgsProcessingLayerOutputDestinationWidget, QgsColorButton
+from qgis.core import (
+    QgsApplication,
+    QgsSettings,
+    QgsProcessing,
+    QgsProcessingParameterDefinition,
+    QgsProcessingDestinationParameter,
+    QgsProcessingParameterFeatureSink,
+    QgsProcessingParameterFileDestination,
+    QgsProcessingParameterFolderDestination,
+    QgsProcessingParameterRasterDestination,
+    QgsProcessingParameterVectorDestination,
+    QgsProcessingModelAlgorithm,
+)
 
 from processing.core import parameters
 from processing.modeler.exceptions import UndefinedParameterException
@@ -74,11 +75,17 @@ class ModelerParameterDefinitionDialog(QDialog):
         self.setModal(True)
         self.setupUi()
         settings = QgsSettings()
-        self.restoreGeometry(settings.value("/Processing/modelParametersDefinitionDialogGeometry", QByteArray()))
+        self.restoreGeometry(
+            settings.value(
+                "/Processing/modelParametersDefinitionDialogGeometry", QByteArray()
+            )
+        )
 
     def closeEvent(self, event):
         settings = QgsSettings()
-        settings.setValue("/Processing/modelParametersDefinitionDialogGeometry", self.saveGeometry())
+        settings.setValue(
+            "/Processing/modelParametersDefinitionDialogGeometry", self.saveGeometry()
+        )
         super().closeEvent(event)
 
     def switchToCommentTab(self):
@@ -87,8 +94,12 @@ class ModelerParameterDefinitionDialog(QDialog):
         self.commentEdit.selectAll()
 
     def setupUi(self):
-        type_metadata = QgsApplication.processingRegistry().parameterType(self.param.type() if self.param else self.paramType)
-        self.setWindowTitle(self.tr('{} Parameter Definition').format(type_metadata.name()))
+        type_metadata = QgsApplication.processingRegistry().parameterType(
+            self.param.type() if self.param else self.paramType
+        )
+        self.setWindowTitle(
+            self.tr("{} Parameter Definition").format(type_metadata.name())
+        )
 
         self.mainLayout = QVBoxLayout()
         self.tab = QTabWidget()
@@ -98,7 +109,7 @@ class ModelerParameterDefinitionDialog(QDialog):
 
         self.verticalLayout = QVBoxLayout()
 
-        self.label = QLabel(self.tr('Parameter name'))
+        self.label = QLabel(self.tr("Parameter name"))
         self.verticalLayout.addWidget(self.label)
         self.nameTextBox = QLineEdit()
         self.verticalLayout.addWidget(self.nameTextBox)
@@ -107,31 +118,44 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.nameTextBox.setText(self.param.description())
 
         if isinstance(self.param, QgsProcessingDestinationParameter):
-            self.verticalLayout.addWidget(QLabel(self.tr('Default value')))
-            self.defaultWidget = QgsProcessingLayerOutputDestinationWidget(self.param, defaultSelection=True)
+            self.verticalLayout.addWidget(QLabel(self.tr("Default value")))
+            self.defaultWidget = QgsProcessingLayerOutputDestinationWidget(
+                self.param, defaultSelection=True
+            )
             self.verticalLayout.addWidget(self.defaultWidget)
 
         self.verticalLayout.addSpacing(20)
         self.requiredCheck = QCheckBox()
-        self.requiredCheck.setText(self.tr('Mandatory'))
+        self.requiredCheck.setText(self.tr("Mandatory"))
         self.requiredCheck.setChecked(True)
         if self.param is not None:
-            self.requiredCheck.setChecked(not self.param.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional)
+            self.requiredCheck.setChecked(
+                not self.param.flags()
+                & QgsProcessingParameterDefinition.Flag.FlagOptional
+            )
         self.verticalLayout.addWidget(self.requiredCheck)
 
         self.advancedCheck = QCheckBox()
-        self.advancedCheck.setText(self.tr('Advanced'))
+        self.advancedCheck.setText(self.tr("Advanced"))
         self.advancedCheck.setChecked(False)
         if self.param is not None:
-            self.advancedCheck.setChecked(self.param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced)
+            self.advancedCheck.setChecked(
+                self.param.flags() & QgsProcessingParameterDefinition.Flag.FlagAdvanced
+            )
         self.verticalLayout.addWidget(self.advancedCheck)
 
         # If child algorithm output is mandatory, disable checkbox
         if isinstance(self.param, QgsProcessingDestinationParameter):
-            child = self.alg.childAlgorithms()[self.param.metadata()['_modelChildId']]
-            model_output = child.modelOutput(self.param.metadata()['_modelChildOutputName'])
-            param_def = child.algorithm().parameterDefinition(model_output.childOutputName())
-            if not (param_def.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional):
+            child = self.alg.childAlgorithms()[self.param.metadata()["_modelChildId"]]
+            model_output = child.modelOutput(
+                self.param.metadata()["_modelChildOutputName"]
+            )
+            param_def = child.algorithm().parameterDefinition(
+                model_output.childOutputName()
+            )
+            if not (
+                param_def.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional
+            ):
                 self.requiredCheck.setEnabled(False)
                 self.requiredCheck.setChecked(True)
 
@@ -142,7 +166,7 @@ class ModelerParameterDefinitionDialog(QDialog):
 
         w = QWidget()
         w.setLayout(self.verticalLayout)
-        self.tab.addTab(w, self.tr('Properties'))
+        self.tab.addTab(w, self.tr("Properties"))
 
         self.commentLayout = QVBoxLayout()
         self.commentEdit = QTextEdit()
@@ -151,23 +175,24 @@ class ModelerParameterDefinitionDialog(QDialog):
 
         hl = QHBoxLayout()
         hl.setContentsMargins(0, 0, 0, 0)
-        hl.addWidget(QLabel(self.tr('Color')))
+        hl.addWidget(QLabel(self.tr("Color")))
         self.comment_color_button = QgsColorButton()
         self.comment_color_button.setAllowOpacity(True)
-        self.comment_color_button.setWindowTitle(self.tr('Comment Color'))
-        self.comment_color_button.setShowNull(True, self.tr('Default'))
+        self.comment_color_button.setWindowTitle(self.tr("Comment Color"))
+        self.comment_color_button.setShowNull(True, self.tr("Default"))
         hl.addWidget(self.comment_color_button)
         self.commentLayout.addLayout(hl)
 
         w2 = QWidget()
         w2.setLayout(self.commentLayout)
-        self.tab.addTab(w2, self.tr('Comments'))
+        self.tab.addTab(w2, self.tr("Comments"))
 
         self.buttonBox = QDialogButtonBox(self)
         self.buttonBox.setOrientation(Qt.Orientation.Horizontal)
-        self.buttonBox.setStandardButtons(QDialogButtonBox.StandardButton.Cancel |
-                                          QDialogButtonBox.StandardButton.Ok)
-        self.buttonBox.setObjectName('buttonBox')
+        self.buttonBox.setStandardButtons(
+            QDialogButtonBox.StandardButton.Cancel | QDialogButtonBox.StandardButton.Ok
+        )
+        self.buttonBox.setObjectName("buttonBox")
         self.buttonBox.accepted.connect(self.accept)
         self.buttonBox.rejected.connect(self.reject)
 
@@ -188,47 +213,59 @@ class ModelerParameterDefinitionDialog(QDialog):
             self.comment_color_button.setToNull()
 
     def commentColor(self):
-        return self.comment_color_button.color() if not self.comment_color_button.isNull() else QColor()
+        return (
+            self.comment_color_button.color()
+            if not self.comment_color_button.isNull()
+            else QColor()
+        )
 
     def accept(self):
         description = self.nameTextBox.text()
-        if description.strip() == '':
-            QMessageBox.warning(self, self.tr('Unable to define parameter'),
-                                self.tr('Invalid parameter name'))
+        if description.strip() == "":
+            QMessageBox.warning(
+                self,
+                self.tr("Unable to define parameter"),
+                self.tr("Invalid parameter name"),
+            )
             return
 
         safeName = QgsProcessingModelAlgorithm.safeName(description)
         name = safeName.lower()
 
         # Destination parameter
-        if (isinstance(self.param, QgsProcessingParameterFeatureSink)):
+        if isinstance(self.param, QgsProcessingParameterFeatureSink):
             self.param = QgsProcessingParameterFeatureSink(
                 name=name,
                 description=description,
                 type=self.param.dataType(),
-                defaultValue=self.defaultWidget.value())
-        elif (isinstance(self.param, QgsProcessingParameterFileDestination)):
+                defaultValue=self.defaultWidget.value(),
+            )
+        elif isinstance(self.param, QgsProcessingParameterFileDestination):
             self.param = QgsProcessingParameterFileDestination(
                 name=name,
                 description=description,
                 fileFilter=self.param.fileFilter(),
-                defaultValue=self.defaultWidget.value())
-        elif (isinstance(self.param, QgsProcessingParameterFolderDestination)):
+                defaultValue=self.defaultWidget.value(),
+            )
+        elif isinstance(self.param, QgsProcessingParameterFolderDestination):
             self.param = QgsProcessingParameterFolderDestination(
                 name=name,
                 description=description,
-                defaultValue=self.defaultWidget.value())
-        elif (isinstance(self.param, QgsProcessingParameterRasterDestination)):
+                defaultValue=self.defaultWidget.value(),
+            )
+        elif isinstance(self.param, QgsProcessingParameterRasterDestination):
             self.param = QgsProcessingParameterRasterDestination(
                 name=name,
                 description=description,
-                defaultValue=self.defaultWidget.value())
-        elif (isinstance(self.param, QgsProcessingParameterVectorDestination)):
+                defaultValue=self.defaultWidget.value(),
+            )
+        elif isinstance(self.param, QgsProcessingParameterVectorDestination):
             self.param = QgsProcessingParameterVectorDestination(
                 name=name,
                 description=description,
                 type=self.param.dataType(),
-                defaultValue=self.defaultWidget.value())
+                defaultValue=self.defaultWidget.value(),
+            )
 
         else:
             if self.paramType:
@@ -236,26 +273,40 @@ class ModelerParameterDefinitionDialog(QDialog):
             else:
                 typeId = self.param.type()
 
-            paramTypeDef = QgsApplication.instance().processingRegistry().parameterType(typeId)
+            paramTypeDef = (
+                QgsApplication.instance().processingRegistry().parameterType(typeId)
+            )
             if not paramTypeDef:
-                msg = self.tr('The parameter `{}` is not registered, are you missing a required plugin?').format(typeId)
+                msg = self.tr(
+                    "The parameter `{}` is not registered, are you missing a required plugin?"
+                ).format(typeId)
                 raise UndefinedParameterException(msg)
             self.param = paramTypeDef.create(name)
             self.param.setDescription(description)
             self.param.setMetadata(paramTypeDef.metadata())
 
         if not self.requiredCheck.isChecked():
-            self.param.setFlags(self.param.flags() | QgsProcessingParameterDefinition.Flag.FlagOptional)
+            self.param.setFlags(
+                self.param.flags() | QgsProcessingParameterDefinition.Flag.FlagOptional
+            )
         else:
-            self.param.setFlags(self.param.flags() & ~QgsProcessingParameterDefinition.Flag.FlagOptional)
+            self.param.setFlags(
+                self.param.flags() & ~QgsProcessingParameterDefinition.Flag.FlagOptional
+            )
 
         if self.advancedCheck.isChecked():
-            self.param.setFlags(self.param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced)
+            self.param.setFlags(
+                self.param.flags() | QgsProcessingParameterDefinition.Flag.FlagAdvanced
+            )
         else:
-            self.param.setFlags(self.param.flags() & ~QgsProcessingParameterDefinition.Flag.FlagAdvanced)
+            self.param.setFlags(
+                self.param.flags() & ~QgsProcessingParameterDefinition.Flag.FlagAdvanced
+            )
 
         settings = QgsSettings()
-        settings.setValue("/Processing/modelParametersDefinitionDialogGeometry", self.saveGeometry())
+        settings.setValue(
+            "/Processing/modelParametersDefinitionDialogGeometry", self.saveGeometry()
+        )
 
         QDialog.accept(self)
 
@@ -263,6 +314,8 @@ class ModelerParameterDefinitionDialog(QDialog):
         self.param = None
 
         settings = QgsSettings()
-        settings.setValue("/Processing/modelParametersDefinitionDialogGeometry", self.saveGeometry())
+        settings.setValue(
+            "/Processing/modelParametersDefinitionDialogGeometry", self.saveGeometry()
+        )
 
         QDialog.reject(self)

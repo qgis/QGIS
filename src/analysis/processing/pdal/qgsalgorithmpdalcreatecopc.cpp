@@ -72,7 +72,7 @@ void QgsPdalCreateCopcAlgorithm::initAlgorithm( const QVariantMap & )
 
 QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( layers.empty() )
   {
     feedback->reportError( QObject::tr( "No layers selected" ), true );
@@ -81,7 +81,7 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
   QString untwineExecutable = QProcessEnvironment::systemEnvironment().value( QStringLiteral( "QGIS_UNTWINE_EXECUTABLE" ) );
   if ( untwineExecutable.isEmpty() )
   {
-#if defined(Q_OS_WIN)
+#if defined( Q_OS_WIN )
     untwineExecutable = QgsApplication::libexecPath() + "untwine.exe";
 #else
     untwineExecutable = QgsApplication::libexecPath() + "untwine";
@@ -112,7 +112,7 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
     if ( !layer )
       continue;
 
-    QgsPointCloudLayer *pcl = qobject_cast< QgsPointCloudLayer * >( layer );
+    QgsPointCloudLayer *pcl = qobject_cast<QgsPointCloudLayer *>( layer );
     if ( !pcl )
       continue;
 
@@ -148,7 +148,7 @@ QVariantMap QgsPdalCreateCopcAlgorithm::processAlgorithm( const QVariantMap &par
     // generate COPC files
     options.push_back( { "single_file", std::string() } );
 
-    const std::vector<std::string> files = {pcl->source().toStdString()};
+    const std::vector<std::string> files = { pcl->source().toStdString() };
     untwineProcess.start( files, outputFile.toStdString(), options );
     const int lastPercent = 0;
     while ( true )

@@ -19,7 +19,6 @@ A widget to configure layer tree embedded widgets for a particular map layer.
 #include "qgslayertreeembeddedconfigwidget.h"
 %End
   public:
-
     QgsLayerTreeEmbeddedConfigWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 A widget to configure layer tree embedded widgets for a particular map layer.

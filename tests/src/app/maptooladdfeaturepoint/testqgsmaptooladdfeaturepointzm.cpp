@@ -43,8 +43,8 @@ class TestQgsMapToolAddFeaturePointZM : public QObject
     TestQgsMapToolAddFeaturePointZM();
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
 
     void testPointZM();
 
@@ -94,7 +94,7 @@ void TestQgsMapToolAddFeaturePointZM::initTestCase()
   pointFZM.setGeometry( QgsGeometry::fromWkt( pointWktZM ) );
 
   mLayerPointZM->addFeature( pointFZM );
-  QCOMPARE( mLayerPointZM->featureCount(), ( long )1 );
+  QCOMPARE( mLayerPointZM->featureCount(), ( long ) 1 );
 
   // create the tool
   mCaptureTool = new QgsMapToolAddFeature( mCanvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CapturePoint );
@@ -126,7 +126,7 @@ void TestQgsMapToolAddFeaturePointZM::testPointZM()
   utils.mouseClick( 4, 0, Qt::LeftButton, Qt::KeyboardModifiers(), true );
   QgsFeatureId newFid = utils.newFeatureId( oldFids );
 
-  QCOMPARE( mLayerPointZM->featureCount(), ( long )2 );
+  QCOMPARE( mLayerPointZM->featureCount(), ( long ) 2 );
 
   QString wkt = "Point ZM (4 0 123 333)";
   QCOMPARE( mLayerPointZM->getFeature( newFid ).geometry().asWkt(), wkt );

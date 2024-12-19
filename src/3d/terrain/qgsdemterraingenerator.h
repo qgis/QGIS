@@ -39,6 +39,11 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     Q_OBJECT
 
   public:
+    /**
+     * Creates a new instance of a QgsDemTerrainGenerator object.
+     */
+    static QgsTerrainGenerator *create() SIP_FACTORY;
+
     QgsDemTerrainGenerator() = default;
     ~QgsDemTerrainGenerator() override;
 
@@ -47,12 +52,15 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     //! Returns raster layer with elevation model to be used for terrain generation
     QgsRasterLayer *layer() const;
 
-    //! Sets CRS of the terrain
-    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context );
+    void setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context ) override;
     QgsCoordinateReferenceSystem crs() const override { return mCrs; }
 
     //! Sets resolution of the generator (how many elevation samples on one side of a terrain tile)
-    void setResolution( int resolution ) { mResolution = resolution; updateGenerator(); }
+    void setResolution( int resolution )
+    {
+      mResolution = resolution;
+      updateGenerator();
+    }
     //! Returns resolution of the generator (how many elevation samples on one side of a terrain tile)
     int resolution() const { return mResolution; }
 
@@ -69,9 +77,6 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     QgsRectangle rootChunkExtent() const override;
     void setExtent( const QgsRectangle &extent ) override;
     float heightAt( double x, double y, const Qgs3DRenderContext &context ) const override;
-    void writeXml( QDomElement &elem ) const override;
-    void readXml( const QDomElement &elem ) override;
-    void resolveReferences( const QgsProject &project ) override;
 
     QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
 
@@ -85,7 +90,7 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     QgsCoordinateTransformContext mTransformContext;
 
     //! source layer for heights
-    QgsMapLayerRef mLayer;
+    QPointer<QgsRasterLayer> mLayer;
     //! how many vertices to place on one side of the tile
     int mResolution = 16;
     //! height of the "skirts" at the edges of tiles to hide cracks between adjacent cracks

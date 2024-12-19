@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitemmapoverview.h"
+#include "moc_qgslayoutitemmapoverview.cpp"
 #include "qgslayoutitemmap.h"
 #include "qgslayout.h"
 #include "qgssymbollayerutils.h"

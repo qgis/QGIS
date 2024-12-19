@@ -56,7 +56,7 @@ class ANALYSIS_EXPORT QgsGeometryChecker : public QObject
     QStringList getMessages() const { return mMessages; }
     void setMergeAttributeIndices( const QMap<QString, int> &mergeAttributeIndices ) { mMergeAttributeIndices = mergeAttributeIndices; }
     QgsGeometryCheckContext *getContext() const { return mContext; }
-    const QMap<QString, QgsFeaturePool *> &featurePools() const {return mFeaturePools;}
+    const QMap<QString, QgsFeaturePool *> &featurePools() const { return mFeaturePools; }
 
   signals:
     void errorAdded( QgsGeometryCheckError *error );
@@ -69,6 +69,7 @@ class ANALYSIS_EXPORT QgsGeometryChecker : public QObject
       public:
         explicit RunCheckWrapper( QgsGeometryChecker *instance );
         void operator()( const QgsGeometryCheck *check );
+
       private:
         QgsGeometryChecker *mInstance = nullptr;
     };

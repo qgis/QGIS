@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsrasterlayertemporalproperties.h"
+#include "moc_qgsrasterlayertemporalproperties.cpp"
 #include "qgsrasterdataprovidertemporalcapabilities.h"
 #include "qgsrasterlayer.h"
 

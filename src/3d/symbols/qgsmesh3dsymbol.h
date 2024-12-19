@@ -21,13 +21,10 @@
 #include "qgsabstract3dsymbol.h"
 #include "qgs3dtypes.h"
 #include "qgscolorrampshader.h"
-#include "qgsmeshdataprovider.h"
 
 #include <Qt3DRender/QCullFace>
 
 class QgsAbstractMaterialSettings;
-
-#define SIP_NO_FILE
 
 /**
  * \ingroup 3d
@@ -36,27 +33,21 @@ class QgsAbstractMaterialSettings;
  * \warning This is not considered stable API, and may change in future QGIS releases. It is
  * exposed to the Python bindings as a tech preview only.
  *
- * \note Not available in Python bindings
- *
  * \since QGIS 3.6
  */
 class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
 {
   public:
-
     /**
      * How to render the color of the mesh
      *
      * \since QGIS 3.12
      */
-    enum RenderingStyle
+    enum class RenderingStyle : int
     {
-      //! Render the mesh with a single color
-      SingleColor = 0,
-      //! Render the mesh with a color ramp
-      ColorRamp,
-      //! Render the mesh with the color ramp shader of the 2D rendering
-      ColorRamp2DRendering
+      SingleColor = 0,      //!< Render the mesh with a single color
+      ColorRamp,            //!< Render the mesh with a color ramp
+      ColorRamp2DRendering, //!< Render the mesh with the color ramp shader of the 2D rendering
     };
 
     /**
@@ -64,12 +55,10 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
      *
      * \since QGIS 3.14
      */
-    enum ZValueType
+    enum class ZValueType : int
     {
-      //! Use the Z value of the vertices
-      VerticesZValue = 0,
-      //! Use the value from a dataset (for example, water surface value)
-      ScalarDatasetZvalue
+      VerticesZValue = 0,  //!< Use the Z value of the vertices
+      ScalarDatasetZvalue, //!< Use the value from a dataset (for example, water surface value)
     };
 
     //! Constructor for QgsMesh3DSymbol
@@ -356,12 +345,18 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
      */
     void setLevelOfDetailIndex( int lod );
 
+    bool operator==( const QgsMesh3DSymbol &other ) const;
+    bool operator!=( const QgsMesh3DSymbol &other ) const;
+
   private:
+#ifdef SIP_RUN
+    QgsMesh3DSymbol( const QgsMesh3DSymbol & );
+#endif
 
     //! how to handle altitude of vector features
     Qgis::AltitudeClamping mAltClamping = Qgis::AltitudeClamping::Relative;
-    float mHeight = 0.0f;           //!< Base height of triangles
-    std::unique_ptr< QgsAbstractMaterialSettings > mMaterialSettings;  //!< Defines appearance of objects
+    float mHeight = 0.0f;                                           //!< Base height of triangles
+    std::unique_ptr<QgsAbstractMaterialSettings> mMaterialSettings; //!< Defines appearance of objects
     bool mAddBackFaces = false;
 
     bool mEnabled = true;
@@ -381,7 +376,7 @@ class _3D_EXPORT QgsMesh3DSymbol : public QgsAbstract3DSymbol
     bool mIsVerticalMagnitudeRelative = false;
 
     //! Color rendering settings
-    QgsMesh3DSymbol::RenderingStyle mRenderingStyle = QgsMesh3DSymbol::SingleColor;
+    QgsMesh3DSymbol::RenderingStyle mRenderingStyle = QgsMesh3DSymbol::RenderingStyle::SingleColor;
     QgsColorRampShader mColorRampShader;
     QColor mSingleColor = Qt::darkGreen;
 

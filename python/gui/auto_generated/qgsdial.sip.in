@@ -9,6 +9,7 @@
 
 
 
+
 class QgsDial : QDial
 {
 
@@ -16,7 +17,6 @@ class QgsDial : QDial
 #include "qgsdial.h"
 %End
   public:
-
     QgsDial( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDial
@@ -38,6 +38,7 @@ Constructor for QgsDial
 
 
 };
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

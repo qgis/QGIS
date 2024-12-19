@@ -46,10 +46,10 @@ class TestQgisAppClipboard : public QObject
     TestQgisAppClipboard();
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void copyPaste();
     void copyToText();
@@ -127,7 +127,6 @@ void TestQgisAppClipboard::copyPaste()
 
 void TestQgisAppClipboard::copyToText()
 {
-
   //set clipboard to some QgsFeatures
   QgsFields fields;
   fields.append( QgsField( QStringLiteral( "int_field" ), QMetaType::Type::Int ) );
@@ -180,13 +179,13 @@ void TestQgisAppClipboard::copyToText()
   // GeoJSON
   settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::GeoJSON );
   mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
-  const QString expected =  "{\"features\":[{\"geometry\":{\"coordinates\":[5.0,6.0],\"type\":\"Point\"},\"id\":5,"
-                            "\"properties\":{\"double_field\":9.9,\"int_field\":9,\"string_field\":\"val\"},\"type\":\"Feature\"},"
-                            "{\"geometry\":{\"coordinates\":[7.0,8.0],\"type\":\"Point\"},\"id\":6,"
-                            "\"properties\":{\"double_field\":19.19,\"int_field\":19,\"string_field\":\"val2\"},\"type\":\"Feature\"},"
-                            "{\"geometry\":{\"coordinates\":[9.0,10.0],\"type\":\"Point\"},\"id\":7,"
-                            "\"properties\":{\"double_field\":null,\"int_field\":null,\"string_field\":null},\"type\":\"Feature\"}],"
-                            "\"type\":\"FeatureCollection\"}";
+  const QString expected = "{\"features\":[{\"geometry\":{\"coordinates\":[5.0,6.0],\"type\":\"Point\"},\"id\":5,"
+                           "\"properties\":{\"double_field\":9.9,\"int_field\":9,\"string_field\":\"val\"},\"type\":\"Feature\"},"
+                           "{\"geometry\":{\"coordinates\":[7.0,8.0],\"type\":\"Point\"},\"id\":6,"
+                           "\"properties\":{\"double_field\":19.19,\"int_field\":19,\"string_field\":\"val2\"},\"type\":\"Feature\"},"
+                           "{\"geometry\":{\"coordinates\":[9.0,10.0],\"type\":\"Point\"},\"id\":7,"
+                           "\"properties\":{\"double_field\":null,\"int_field\":null,\"string_field\":null},\"type\":\"Feature\"}],"
+                           "\"type\":\"FeatureCollection\"}";
   QCOMPARE( result, expected );
 
   // test CRS is transformed correctly for GeoJSON
@@ -204,7 +203,7 @@ void TestQgisAppClipboard::copyToText()
   // just test coordinates as integers - that's enough to verify that reprojection has occurred
   // and helps avoid rounding issues
   const thread_local QRegularExpression regex( "\\[([-\\d.]+),([-\\d.]+)\\]" );
-  const QRegularExpressionMatch  match = regex.match( result );
+  const QRegularExpressionMatch match = regex.match( result );
   const QStringList list = match.capturedTexts();
   QCOMPARE( list.count(), 3 );
 
@@ -252,7 +251,6 @@ void TestQgisAppClipboard::copyToText()
   settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::AttributesWithWKB );
   mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
   QCOMPARE( result, QString( "wkb_geom\tint_field\tdouble_field\tstring_field\n010100000000000000000014400000000000001840\t1\t1.1\tSingle line text\n01010000000000000000001c400000000000002040\t2\t2.2\t\"Unix Multiline \nText\"\n010100000000000000000022400000000000002440\t3\t3.3\t\"Windows Multiline \r\nText\"" ) );
-
 }
 
 void TestQgisAppClipboard::copyToTextNoFields()
@@ -290,13 +288,12 @@ void TestQgisAppClipboard::copyToTextNoFields()
   // GeoJSON
   settings.setEnumValue( QStringLiteral( "/qgis/copyFeatureFormat" ), QgsClipboard::GeoJSON );
   mQgisApp->clipboard()->generateClipboardText( result, resultHtml );
-  const QString expected =  "{\"features\":[{\"geometry\":{\"coordinates\":[5.0,6.0],\"type\":\"Point\"},\"id\":5,\"properties\":null,\"type\":\"Feature\"},{\"geometry\":{\"coordinates\":[7.0,8.0],\"type\":\"Point\"},\"id\":6,\"properties\":null,\"type\":\"Feature\"}],\"type\":\"FeatureCollection\"}";
+  const QString expected = "{\"features\":[{\"geometry\":{\"coordinates\":[5.0,6.0],\"type\":\"Point\"},\"id\":5,\"properties\":null,\"type\":\"Feature\"},{\"geometry\":{\"coordinates\":[7.0,8.0],\"type\":\"Point\"},\"id\":6,\"properties\":null,\"type\":\"Feature\"}],\"type\":\"FeatureCollection\"}";
   QCOMPARE( result, expected );
 }
 
 void TestQgisAppClipboard::pasteWkt()
 {
-
   // test issue GH #44989
   QgsFeatureList features = mQgisApp->clipboard()->stringToFeatureList( QStringLiteral( "wkt_geom\tint_field\tstring_field\nPoint (5 6)\t1\tSingle line text\nPoint (7 8)\t2\t\"Unix Multiline \nText\"\nPoint (9 10)\t3\t\"Windows Multiline \r\nText\"" ), QgsFields() );
   QCOMPARE( features.length(), 3 );
@@ -317,12 +314,12 @@ void TestQgisAppClipboard::pasteWkt()
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), Qgis::WkbType::Point );
   QgsGeometry featureGeom = features.at( 0 ).geometry();
-  const QgsPoint *point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
+  const QgsPoint *point = dynamic_cast<const QgsPoint *>( featureGeom.constGet() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isNull() );
   QCOMPARE( features.at( 1 ).geometry().constGet()->wkbType(), Qgis::WkbType::Point );
-  point = dynamic_cast< const QgsPoint * >( features.at( 1 ).geometry().constGet() );
+  point = dynamic_cast<const QgsPoint *>( features.at( 1 ).geometry().constGet() );
   QCOMPARE( point->x(), 111.0 );
   QCOMPARE( point->y(), 30.0 );
 
@@ -337,13 +334,13 @@ void TestQgisAppClipboard::pasteWkt()
   QVERIFY( !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), Qgis::WkbType::Point );
   featureGeom = features.at( 0 ).geometry();
-  point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
+  point = dynamic_cast<const QgsPoint *>( featureGeom.constGet() );
   QCOMPARE( point->x(), 111.0 );
   QCOMPARE( point->y(), 30.0 );
 
   QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isNull() );
   QCOMPARE( features.at( 1 ).geometry().constGet()->wkbType(), Qgis::WkbType::Point );
-  point = dynamic_cast< const QgsPoint * >( features.at( 1 ).geometry().constGet() );
+  point = dynamic_cast<const QgsPoint *>( features.at( 1 ).geometry().constGet() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
 
@@ -427,12 +424,12 @@ void TestQgisAppClipboard::pasteWkt()
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), Qgis::WkbType::Point );
   featureGeom = features.at( 0 ).geometry();
-  point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
+  point = dynamic_cast<const QgsPoint *>( featureGeom.constGet() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isNull() );
   QCOMPARE( features.at( 1 ).geometry().constGet()->wkbType(), Qgis::WkbType::Point );
-  point = dynamic_cast< const QgsPoint * >( features.at( 1 ).geometry().constGet() );
+  point = dynamic_cast<const QgsPoint *>( features.at( 1 ).geometry().constGet() );
   QCOMPARE( point->x(), 111.0 );
   QCOMPARE( point->y(), 30.0 );
 
@@ -444,12 +441,12 @@ void TestQgisAppClipboard::pasteWkt()
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), Qgis::WkbType::Point );
   featureGeom = features.at( 0 ).geometry();
-  point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
+  point = dynamic_cast<const QgsPoint *>( featureGeom.constGet() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QVERIFY( features.at( 1 ).hasGeometry() && !features.at( 1 ).geometry().isNull() );
   QCOMPARE( features.at( 1 ).geometry().constGet()->wkbType(), Qgis::WkbType::Point );
-  point = dynamic_cast< const QgsPoint * >( features.at( 1 ).geometry().constGet() );
+  point = dynamic_cast<const QgsPoint *>( features.at( 1 ).geometry().constGet() );
   QCOMPARE( point->x(), 111.0 );
   QCOMPARE( point->y(), 30.0 );
 }
@@ -466,7 +463,7 @@ void TestQgisAppClipboard::pasteGeoJson()
   QVERIFY( features.at( 0 ).hasGeometry() && !features.at( 0 ).geometry().isNull() );
   QCOMPARE( features.at( 0 ).geometry().constGet()->wkbType(), Qgis::WkbType::Point );
   const QgsGeometry featureGeom = features.at( 0 ).geometry();
-  const QgsPoint *point = dynamic_cast< const QgsPoint * >( featureGeom.constGet() );
+  const QgsPoint *point = dynamic_cast<const QgsPoint *>( featureGeom.constGet() );
   QCOMPARE( point->x(), 125.0 );
   QCOMPARE( point->y(), 10.0 );
   QCOMPARE( features.at( 0 ).attribute( "name" ).toString(), QString( "Dinagat Islands" ) );
@@ -561,7 +558,7 @@ void TestQgisAppClipboard::testVectorTileLayer()
   ds.setParam( "type", "xyz" );
   ds.setParam( "url", QString( "file://%1/{z}-{x}-{y}.pbf" ).arg( dataDir ) );
   ds.setParam( "zmax", "1" );
-  std::unique_ptr< QgsVectorTileLayer > layer = std::make_unique< QgsVectorTileLayer >( ds.encodedUri(), "Vector Tiles Test" );
+  std::unique_ptr<QgsVectorTileLayer> layer = std::make_unique<QgsVectorTileLayer>( ds.encodedUri(), "Vector Tiles Test" );
   QVERIFY( layer->isValid() );
 
   QgsGeometry selectionGeometry = QgsGeometry::fromWkt( QStringLiteral( "Polygon ((13934091.75684908032417297 -1102962.40819426625967026, 11360512.80439674854278564 -2500048.12523981928825378, 12316413.55816475301980972 -5661873.69539554417133331, 16948855.67257896065711975 -6617774.44916355609893799, 18125348.90798573195934296 -2058863.16196227818727493, 15257646.64668171107769012 -735308.27212964743375778, 13934091.75684908032417297 -1102962.40819426625967026))" ) );
@@ -570,7 +567,7 @@ void TestQgisAppClipboard::testVectorTileLayer()
   layer->selectByGeometry( selectionGeometry, context, Qgis::SelectBehavior::SetSelection, Qgis::SelectGeometryRelationship::Intersect );
 
   QCOMPARE( layer->selectedFeatureCount(), 4 );
-  const QList< QgsFeature > features = layer->selectedFeatures();
+  const QList<QgsFeature> features = layer->selectedFeatures();
 
   mQgisApp->clipboard()->replaceWithCopyOf( layer.get() );
 
@@ -583,7 +580,7 @@ void TestQgisAppClipboard::testVectorTileLayer()
 
   QgsFeatureId maritimeId = -1;
   QgsFeatureId oceanId = -1;
-  for ( const QgsFeature &feature :  features )
+  for ( const QgsFeature &feature : features )
   {
     if ( feature.fields().lookupField( QStringLiteral( "maritime" ) ) > -1 )
       maritimeId = feature.id();

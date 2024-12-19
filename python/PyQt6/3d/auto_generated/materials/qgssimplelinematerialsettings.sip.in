@@ -28,7 +28,6 @@ Basic shading material used for rendering simple lines as solid line components.
 #include "qgssimplelinematerialsettings.h"
 %End
   public:
-
     QgsSimpleLineMaterialSettings();
 
     virtual QString type() const;
@@ -45,6 +44,8 @@ Returns a new instance of QgsSimpleLineMaterialSettings.
 %End
 
     virtual QgsSimpleLineMaterialSettings *clone() const /Factory/;
+
+    virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
 
 
     QColor ambient() const;

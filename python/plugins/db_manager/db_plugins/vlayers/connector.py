@@ -29,7 +29,7 @@ from qgis.core import (
     QgsMapLayerType,
     QgsVectorLayer,
     QgsCoordinateReferenceSystem,
-    QgsWkbTypes
+    QgsWkbTypes,
 )
 
 import sqlite3
@@ -172,31 +172,40 @@ class VLayerConnector(DBConnector):
 
     def fieldTypes(self):
         return [
-            "integer", "bigint", "smallint",  # integers
-            "real", "double", "float", "numeric",  # floats
-            "varchar", "varchar(255)", "character(20)", "text",  # strings
-            "date", "datetime"  # date/time
+            "integer",
+            "bigint",
+            "smallint",  # integers
+            "real",
+            "double",
+            "float",
+            "numeric",  # floats
+            "varchar",
+            "varchar(255)",
+            "character(20)",
+            "text",  # strings
+            "date",
+            "datetime",  # date/time
         ]
 
     def getSchemas(self):
         return None
 
     def getTables(self, schema=None, add_sys_tables=False):
-        """ get list of tables """
+        """get list of tables"""
         return self.getVectorTables()
 
     def getVectorTables(self, schema=None):
-        """ get list of table with a geometry column
-                it returns:
-                        name (table name)
-                        is_system_table
-                        type = 'view' (is a view?)
-                        geometry_column:
-                                f_table_name (the table name in geometry_columns may be in a wrong case, use this to load the layer)
-                                f_geometry_column
-                                type
-                                coord_dimension
-                                srid
+        """get list of table with a geometry column
+        it returns:
+                name (table name)
+                is_system_table
+                type = 'view' (is a view?)
+                geometry_column:
+                        f_table_name (the table name in geometry_columns may be in a wrong case, use this to load the layer)
+                        f_geometry_column
+                        type
+                        coord_dimension
+                        srid
         """
         reg = VLayerRegistry.instance()
         VLayerRegistry.instance().reset()
@@ -218,16 +227,27 @@ class VLayerConnector(DBConnector):
                     g_flat = QgsWkbTypes.flatType(g)
                     geomType = QgsWkbTypes.displayString(g_flat).upper()
                     if geomType:
-                        dim = 'XY'
+                        dim = "XY"
                         if QgsWkbTypes.hasZ(g):
-                            dim += 'Z'
+                            dim += "Z"
                         if QgsWkbTypes.hasM(g):
-                            dim += 'M'
+                            dim += "M"
                     srid = l.crs().postgisSrid()
                     if srid not in self.mapSridToName:
                         self.mapSridToName[srid] = l.crs().description()
                     lst.append(
-                        (Table.VectorType, lname, False, False, l.id(), 'geometry', geomType, dim, srid))
+                        (
+                            Table.VectorType,
+                            lname,
+                            False,
+                            False,
+                            l.id(),
+                            "geometry",
+                            geomType,
+                            dim,
+                            srid,
+                        )
+                    )
                 else:
                     lst.append((Table.TableType, lname, False, False))
         return lst
@@ -243,15 +263,17 @@ class VLayerConnector(DBConnector):
         return l.featureCount()
 
     def getTableFields(self, table):
-        """ return list of columns in table """
+        """return list of columns in table"""
         t = table[1]
         l = VLayerRegistry.instance().getLayer(t)
         if not l or not l.isValid():
             return []
         # id, name, type, nonnull, default, pk
         n = l.dataProvider().fields().size()
-        f = [(i, f.name(), f.typeName(), False, None, False)
-             for i, f in enumerate(l.dataProvider().fields())]
+        f = [
+            (i, f.name(), f.typeName(), False, None, False)
+            for i, f in enumerate(l.dataProvider().fields())
+        ]
         if l.isSpatial():
             f += [(n, "geometry", "geometry", False, None, False)]
         return f
@@ -335,7 +357,16 @@ class VLayerConnector(DBConnector):
     def deleteTableColumn(self, table, column):
         print("**unimplemented** deleteTableColumn")
 
-    def updateTableColumn(self, table, column, new_name, new_data_type=None, new_not_null=None, new_default=None, comment=None):
+    def updateTableColumn(
+        self,
+        table,
+        column,
+        new_name,
+        new_data_type=None,
+        new_not_null=None,
+        new_default=None,
+        comment=None,
+    ):
         print("**unimplemented** updateTableColumn")
 
     def renameTableColumn(self, table, column, new_name):
@@ -358,7 +389,9 @@ class VLayerConnector(DBConnector):
         print("**unimplemented** isGeometryColumn")
         return False
 
-    def addGeometryColumn(self, table, geom_column='geometry', geom_type='POINT', srid=-1, dim=2):
+    def addGeometryColumn(
+        self, table, geom_column="geometry", geom_type="POINT", srid=-1, dim=2
+    ):
         print("**unimplemented** addGeometryColumn")
         return False
 
@@ -386,15 +419,15 @@ class VLayerConnector(DBConnector):
         print("**unimplemented** deleteTableIndex")
         return False
 
-    def createSpatialIndex(self, table, geom_column='geometry'):
+    def createSpatialIndex(self, table, geom_column="geometry"):
         print("**unimplemented** createSpatialIndex")
         return False
 
-    def deleteSpatialIndex(self, table, geom_column='geometry'):
+    def deleteSpatialIndex(self, table, geom_column="geometry"):
         print("**unimplemented** deleteSpatialIndex")
         return False
 
-    def hasSpatialIndex(self, table, geom_column='geometry'):
+    def hasSpatialIndex(self, table, geom_column="geometry"):
         print("**unimplemented** hasSpatialIndex")
         return False
 
@@ -408,6 +441,7 @@ class VLayerConnector(DBConnector):
 
     def getSqlDictionary(self):
         from .sql_dictionary import getSqlDictionary
+
         sql_dict = getSqlDictionary()
 
         items = []

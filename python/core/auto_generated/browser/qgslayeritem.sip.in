@@ -86,7 +86,7 @@ Returns the icon name of the given ``layerType``
 .. versionadded:: 3
 %End
 
- virtual bool deleteLayer() /Deprecated/;
+ virtual bool deleteLayer() /Deprecated="Since 3.10. "/;
 %Docstring
 Delete this layer item
 Use :py:class:`QgsDataItemGuiProvider`.deleteLayer instead

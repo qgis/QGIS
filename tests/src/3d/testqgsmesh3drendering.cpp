@@ -41,8 +41,8 @@ class TestQgsMesh3DRendering : public QgsTest
       : QgsTest( QStringLiteral( "Mesh 3D Rendering Tests" ), QStringLiteral( "3d" ) ) {}
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
     void testMeshTerrain();
     void testMesh();
     void testMesh_datasetOnFaces();
@@ -51,12 +51,10 @@ class TestQgsMesh3DRendering : public QgsTest
     void testMeshClipping();
 
   private:
-
     std::unique_ptr<QgsProject> mProject;
     QgsMeshLayer *mLayerMeshTerrain = nullptr;
     QgsMeshLayer *mLayerMeshDataset = nullptr;
     QgsMeshLayer *mLayerMeshSimplified = nullptr;
-
 };
 
 //runs before all tests
@@ -93,7 +91,7 @@ void TestQgsMesh3DRendering::initTestCase()
   QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
   symbolMesh3d->setVerticalDatasetGroupIndex( 0 );
   symbolMesh3d->setVerticalScale( 10 );
-  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::ColorRamp2DRendering );
+  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::RenderingStyle::ColorRamp2DRendering );
   symbolMesh3d->setArrowsEnabled( true );
   symbolMesh3d->setArrowsSpacing( 300 );
   QgsMeshLayer3DRenderer *meshDatasetRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
@@ -153,11 +151,11 @@ void TestQgsMesh3DRendering::testMesh()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
   map->setTerrainGenerator( flatTerrain );
 
   QgsOffscreen3DEngine engine;
@@ -183,7 +181,7 @@ void TestQgsMesh3DRendering::testMesh_datasetOnFaces()
   QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
   symbolMesh3d->setVerticalDatasetGroupIndex( 3 );
   symbolMesh3d->setVerticalScale( 10 );
-  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::ColorRamp2DRendering );
+  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::RenderingStyle::ColorRamp2DRendering );
   symbolMesh3d->setArrowsEnabled( true );
   symbolMesh3d->setArrowsSpacing( 300 );
   QgsMeshLayer3DRenderer *meshDatasetRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
@@ -195,11 +193,11 @@ void TestQgsMesh3DRendering::testMesh_datasetOnFaces()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
   map->setTerrainGenerator( flatTerrain );
 
   QgsOffscreen3DEngine engine;
@@ -290,13 +288,12 @@ void TestQgsMesh3DRendering::testMeshSimplified()
 void TestQgsMesh3DRendering::testFilteredMesh()
 {
   const QgsRectangle fullExtent = mLayerMeshDataset->extent();
-  const QgsRectangle filteredExtent = QgsRectangle( fullExtent.xMinimum(), fullExtent.yMinimum(),
-                                      fullExtent.xMinimum() + fullExtent.width() / 3.0, fullExtent.yMinimum() + fullExtent.height() / 4.0 );
+  const QgsRectangle filteredExtent = QgsRectangle( fullExtent.xMinimum(), fullExtent.yMinimum(), fullExtent.xMinimum() + fullExtent.width() / 3.0, fullExtent.yMinimum() + fullExtent.height() / 4.0 );
 
   QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
   symbolMesh3d->setVerticalDatasetGroupIndex( 0 );
   symbolMesh3d->setVerticalScale( 10 );
-  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::ColorRamp2DRendering );
+  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::RenderingStyle::ColorRamp2DRendering );
   symbolMesh3d->setArrowsEnabled( true );
   symbolMesh3d->setArrowsSpacing( 300 );
   QgsMeshLayer3DRenderer *meshDatasetRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
@@ -308,11 +305,11 @@ void TestQgsMesh3DRendering::testFilteredMesh()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
   map->setTerrainGenerator( flatTerrain );
 
   QgsOffscreen3DEngine engine;
@@ -337,7 +334,7 @@ void TestQgsMesh3DRendering::testMeshClipping()
   QgsMesh3DSymbol *symbolMesh3d = new QgsMesh3DSymbol;
   symbolMesh3d->setVerticalDatasetGroupIndex( 3 );
   symbolMesh3d->setVerticalScale( 10 );
-  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::ColorRamp2DRendering );
+  symbolMesh3d->setRenderingStyle( QgsMesh3DSymbol::RenderingStyle::ColorRamp2DRendering );
   symbolMesh3d->setArrowsEnabled( true );
   symbolMesh3d->setArrowsSpacing( 300 );
   QgsMeshLayer3DRenderer *meshDatasetRenderer3d = new QgsMeshLayer3DRenderer( symbolMesh3d );
@@ -349,11 +346,11 @@ void TestQgsMesh3DRendering::testMeshClipping()
   map->setLayers( QList<QgsMapLayer *>() << mLayerMeshDataset );
   QgsPointLightSettings defaultLight;
   defaultLight.setIntensity( 0.5 );
-  defaultLight.setPosition( QgsVector3D( 0, 1000, 0 ) );
+  defaultLight.setPosition( QgsVector3D( 0, 0, 1000 ) );
   map->setLightSources( { defaultLight.clone() } );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs() );
+  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
   map->setTerrainGenerator( flatTerrain );
 
   QgsOffscreen3DEngine engine;

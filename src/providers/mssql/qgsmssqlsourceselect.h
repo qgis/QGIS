@@ -47,8 +47,6 @@ class QgsMssqlSourceSelectDelegate : public QItemDelegate
 };
 
 
-
-
 /**
  * \class QgsMssqlSourceSelect
  * \brief Dialog to create connections and add tables from MSSQL.
@@ -62,7 +60,6 @@ class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
     Q_OBJECT
 
   public:
-
     //! static function to delete a connection
     static void deleteConnection( const QString &key );
 
@@ -140,7 +137,7 @@ class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
     QStringList mSelectedTables;
     bool mUseEstimatedMetadata = false;
     // Storage for the range of layer type icons
-    QMap<QString, QPair<QString, QIcon> > mLayerIcons;
+    QMap<QString, QPair<QString, QIcon>> mLayerIcons;
 
     //! Model that acts as datasource for mTableTreeWidget
     QgsMssqlTableModel *mTableModel = nullptr;
@@ -148,7 +145,6 @@ class QgsMssqlSourceSelect : public QgsAbstractDbSourceSelect
     void finishList();
 
     void showHelp();
-
 };
 
 #endif // QGSMSSQLSOURCESELECT_H

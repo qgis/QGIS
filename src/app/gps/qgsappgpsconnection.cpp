@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsappgpsconnection.h"
+#include "moc_qgsappgpsconnection.cpp"
 #include "qgsapplication.h"
 #include "qgsgpsconnection.h"
 #include "qgsgpsconnectionregistry.h"
@@ -28,7 +29,6 @@
 QgsAppGpsConnection::QgsAppGpsConnection( QObject *parent )
   : QObject( parent )
 {
-
 }
 
 QgsAppGpsConnection::~QgsAppGpsConnection()
@@ -46,7 +46,7 @@ QgsGpsConnection *QgsAppGpsConnection::connection()
 
 bool QgsAppGpsConnection::isConnected() const
 {
-  return static_cast< bool >( mConnection );
+  return static_cast<bool>( mConnection );
 }
 
 void QgsAppGpsConnection::setConnection( QgsGpsConnection *connection )
@@ -88,7 +88,7 @@ void QgsAppGpsConnection::connectGps()
   {
     connectionType = QgsGpsConnection::settingsGpsConnectionType->value();
     gpsdHost = QgsGpsConnection::settingsGpsdHostName->value();
-    gpsdPort = static_cast< int >( QgsGpsConnection::settingsGpsdPortNumber->value() );
+    gpsdPort = static_cast<int>( QgsGpsConnection::settingsGpsdPortNumber->value() );
     gpsdDevice = QgsGpsConnection::settingsGpsdDeviceName->value();
     serialDevice = QgsGpsConnection::settingsGpsSerialDevice->value();
   }
@@ -159,13 +159,13 @@ void QgsAppGpsConnection::connectGps()
   mDetector = new QgsGpsDetector( port, false );
   connect( mDetector, &QgsGpsDetector::connectionDetected, this, &QgsAppGpsConnection::onConnectionDetected );
   connect( mDetector, &QgsGpsDetector::detectionFailed, this, &QgsAppGpsConnection::onTimeOut );
-  mDetector->advance();   // start the detection process
+  mDetector->advance(); // start the detection process
 }
 
 void QgsAppGpsConnection::disconnectGps()
 {
   // we don't actually delete the connection until everything has had time to respond to the cleanup signals
-  std::unique_ptr< QgsGpsConnection > oldConnection( mConnection );
+  std::unique_ptr<QgsGpsConnection> oldConnection( mConnection );
   mConnection = nullptr;
 
   emit disconnected();
@@ -241,8 +241,7 @@ void QgsAppGpsConnection::showGpsConnectFailureWarning( const QString &message )
   QgisApp::instance()->statusBarIface()->clearMessage();
   mConnectionMessageItem = QgisApp::instance()->messageBar()->createMessage( QString(), message );
   QPushButton *configureButton = new QPushButton( tr( "Configure Device…" ) );
-  connect( configureButton, &QPushButton::clicked, configureButton, [ = ]
-  {
+  connect( configureButton, &QPushButton::clicked, configureButton, [=] {
     QgisApp::instance()->showOptionsDialog( QgisApp::instance(), QStringLiteral( "mGpsOptions" ) );
   } );
   mConnectionMessageItem->layout()->addWidget( configureButton );
@@ -264,4 +263,3 @@ void QgsAppGpsConnection::showMessage( Qgis::MessageLevel level, const QString &
   mConnectionMessageItem = QgisApp::instance()->messageBar()->createMessage( QString(), message );
   QgisApp::instance()->messageBar()->pushWidget( mConnectionMessageItem, level, QgsMessageBar::defaultMessageTimeout( level ) );
 }
-

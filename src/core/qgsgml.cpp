@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgml.h"
+#include "moc_qgsgml.cpp"
 #include "qgsauthmanager.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
@@ -42,7 +43,11 @@
 
 using namespace nlohmann;
 
+#ifndef NS_SEPARATOR_DEFINED
+#define NS_SEPARATOR_DEFINED
 static const char NS_SEPARATOR = '?';
+#endif
+
 static const char *GML_NAMESPACE = "http://www.opengis.net/gml";
 static const char *GML32_NAMESPACE = "http://www.opengis.net/gml/3.2";
 

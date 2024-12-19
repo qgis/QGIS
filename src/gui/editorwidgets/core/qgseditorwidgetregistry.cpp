@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgseditorwidgetregistry.h"
+#include "moc_qgseditorwidgetregistry.cpp"
 
 #include "qgsattributeeditorcontext.h"
 #include "qgsmessagelog.h"
@@ -213,7 +214,7 @@ bool QgsEditorWidgetRegistry::registerWidget( const QString &widgetId, QgsEditor
 
 QString QgsEditorWidgetRegistry::findSuitableWrapper( QWidget *editor, const QString &defaultWidget )
 {
-  QMap<const char *, QPair<int, QString> >::ConstIterator it;
+  QMap<const char *, QPair<int, QString>>::ConstIterator it;
 
   QString widgetid;
 

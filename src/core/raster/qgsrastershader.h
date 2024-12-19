@@ -62,7 +62,7 @@ class CORE_EXPORT QgsRasterShader
     double minimumValue() const { return mMinimumValue; }
 
     QgsRasterShaderFunction *rasterShaderFunction() { return mRasterShaderFunction.get(); }
-    const QgsRasterShaderFunction *rasterShaderFunction() const { return mRasterShaderFunction.get(); } SIP_SKIP
+    const QgsRasterShaderFunction *rasterShaderFunction() const SIP_SKIP { return mRasterShaderFunction.get(); }
 
     /*
      *
@@ -84,7 +84,7 @@ class CORE_EXPORT QgsRasterShader
                 int *returnRedValue SIP_OUT,
                 int *returnGreenValue SIP_OUT,
                 int *returnBlueValue SIP_OUT,
-                int *returnAlpha SIP_OUT );
+                int *returnAlpha SIP_OUT ) const;
 
     /**
      * Generates a new RGBA value based on an original RGBA value.

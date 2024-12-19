@@ -26,7 +26,6 @@ showing an embedded form due to relations)
     static const QMetaObject staticMetaObject;
 
   public:
-
     enum Mode
     {
       SingleEditMode,

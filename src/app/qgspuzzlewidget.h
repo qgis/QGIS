@@ -41,11 +41,11 @@ class QgsPuzzleWidget : public QGraphicsView
   private:
     QgsMapCanvas *mCanvas = nullptr;
     QGraphicsScene *mScene = nullptr;
-    int mSize = 4;  //!< Number of items in one row/column
+    int mSize = 4; //!< Number of items in one row/column
     int mTileWidth = 0, mTileHeight = 0;
     QVector<QGraphicsItem *> mItems;
     QVector<QGraphicsItem *> mTextItems;
-    QVector<int> mPositions;  //!< Indices of items (-1 where the piece is missing)
+    QVector<int> mPositions; //!< Indices of items (-1 where the piece is missing)
 };
 
 #endif // QGSPUZZLEWIDGET_H

@@ -48,13 +48,10 @@ QString QgsZonalHistogramAlgorithm::groupId() const
 
 void QgsZonalHistogramAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_RASTER" ),
-                QObject::tr( "Raster layer" ) ) );
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "RASTER_BAND" ),
-                QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT_RASTER" ) ) );
+  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT_RASTER" ), QObject::tr( "Raster layer" ) ) );
+  addParameter( new QgsProcessingParameterBand( QStringLiteral( "RASTER_BAND" ), QObject::tr( "Band number" ), 1, QStringLiteral( "INPUT_RASTER" ) ) );
 
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT_VECTOR" ),
-                QObject::tr( "Vector layer containing zones" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT_VECTOR" ), QObject::tr( "Vector layer containing zones" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
 
   addParameter( new QgsProcessingParameterString( QStringLiteral( "COLUMN_PREFIX" ), QObject::tr( "Output column prefix" ), QStringLiteral( "HISTO_" ), false, true ) );
 
@@ -93,8 +90,7 @@ bool QgsZonalHistogramAlgorithm::prepareAlgorithm( const QVariantMap &parameters
 
 QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-
-  std::unique_ptr< QgsFeatureSource > zones( parameterAsSource( parameters, QStringLiteral( "INPUT_VECTOR" ), context ) );
+  std::unique_ptr<QgsFeatureSource> zones( parameterAsSource( parameters, QStringLiteral( "INPUT_VECTOR" ), context ) );
   if ( !zones )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT_VECTOR" ) ) );
 
@@ -102,8 +98,8 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
   const double step = count > 0 ? 100.0 / count : 1;
   long current = 0;
 
-  QList< double > uniqueValues;
-  QMap< QgsFeatureId, QHash< double, qgssize > > featuresUniqueValues;
+  QList<double> uniqueValues;
+  QMap<QgsFeatureId, QHash<double, qgssize>> featuresUniqueValues;
 
   // First loop through the zones to build up a list of unique values across all zones to determine sink fields list
   QgsFeatureRequest request;
@@ -140,16 +136,14 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
     QgsRectangle rasterBlockExtent;
     QgsRasterAnalysisUtils::cellInfoForBBox( mRasterExtent, featureRect, mCellSizeX, mCellSizeY, nCellsX, nCellsY, mNbCellsXProvider, mNbCellsYProvider, rasterBlockExtent );
 
-    QHash< double, qgssize > fUniqueValues;
-    QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( mRasterInterface.get(), mRasterBand, featureGeometry, nCellsX, nCellsY, mCellSizeX, mCellSizeY,
-    rasterBlockExtent, [ &fUniqueValues]( double value ) { fUniqueValues[value]++; }, false );
+    QHash<double, qgssize> fUniqueValues;
+    QgsRasterAnalysisUtils::statisticsFromMiddlePointTest( mRasterInterface.get(), mRasterBand, featureGeometry, nCellsX, nCellsY, mCellSizeX, mCellSizeY, rasterBlockExtent, [&fUniqueValues]( double value, const QgsPointXY & ) { fUniqueValues[value]++; }, false );
 
     if ( fUniqueValues.count() < 1 )
     {
       // The cell resolution is probably larger than the polygon area. We switch to slower precise pixel - polygon intersection in this case
       // TODO: eventually deal with weight if needed
-      QgsRasterAnalysisUtils::statisticsFromPreciseIntersection( mRasterInterface.get(), mRasterBand, featureGeometry, nCellsX, nCellsY, mCellSizeX, mCellSizeY,
-      rasterBlockExtent, [ &fUniqueValues]( double value, double ) { fUniqueValues[value]++; }, false );
+      QgsRasterAnalysisUtils::statisticsFromPreciseIntersection( mRasterInterface.get(), mRasterBand, featureGeometry, nCellsX, nCellsY, mCellSizeX, mCellSizeY, rasterBlockExtent, [&fUniqueValues]( double value, double, const QgsPointXY & ) { fUniqueValues[value]++; }, false );
     }
 
     for ( auto it = fUniqueValues.constBegin(); it != fUniqueValues.constEnd(); ++it )
@@ -175,8 +169,7 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
   const QgsFields fields = QgsProcessingUtils::combineFields( zones->fields(), newFields );
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields,
-                                          zones->wkbType(), zones->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, zones->wkbType(), zones->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -184,7 +177,7 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
   while ( it.nextFeature( f ) )
   {
     QgsAttributes attributes = f.attributes();
-    const QHash< double, qgssize > fUniqueValues = featuresUniqueValues.value( f.id() );
+    const QHash<double, qgssize> fUniqueValues = featuresUniqueValues.value( f.id() );
     for ( auto it = uniqueValues.constBegin(); it != uniqueValues.constEnd(); ++it )
     {
       attributes += fUniqueValues.value( *it, 0 );
@@ -198,12 +191,11 @@ QVariantMap QgsZonalHistogramAlgorithm::processAlgorithm( const QVariantMap &par
       throw QgsProcessingException( writeFeatureError( sink.get(), parameters, QStringLiteral( "OUTPUT" ) ) );
   }
 
+  sink->finalize();
+
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );
   return outputs;
 }
 
 ///@endcond
-
-
-

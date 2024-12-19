@@ -19,7 +19,6 @@ Represents a matrix in a raster calculator operation.
 #include "qgsrastermatrix.h"
 %End
   public:
-
     enum TwoArgOperator
     {
       opPLUS,

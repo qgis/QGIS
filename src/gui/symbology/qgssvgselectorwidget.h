@@ -81,12 +81,12 @@ class GUI_EXPORT QgsSvgParametersModel : public QAbstractTableModel
     //! Sets the vector layer
     void setLayer( QgsVectorLayer *layer );
     //! Returns the vector layer
-    QgsVectorLayer *layer() const {return mLayer;}
+    QgsVectorLayer *layer() const { return mLayer; }
 
     //! Sets the expression context generator
     void setExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
     //! Returns the expression context generator
-    const QgsExpressionContextGenerator *expressionContextGenerator() const {return mExpressionContextGenerator;}
+    const QgsExpressionContextGenerator *expressionContextGenerator() const { return mExpressionContextGenerator; }
 
     int rowCount( const QModelIndex &parent ) const override;
     int columnCount( const QModelIndex &parent ) const override;
@@ -106,11 +106,11 @@ class GUI_EXPORT QgsSvgParametersModel : public QAbstractTableModel
   private:
     struct Parameter
     {
-      Parameter( const QString &name, const QgsProperty &property )
-        : name( name ), property( property ) {}
+        Parameter( const QString &name, const QgsProperty &property )
+          : name( name ), property( property ) {}
 
-      QString name;
-      QgsProperty property;
+        QString name;
+        QgsProperty property;
     };
 
     QList<Parameter> mParameters;
@@ -140,7 +140,6 @@ class GUI_EXPORT QgsSvgParameterValueDelegate : public QItemDelegate
 };
 
 
-
 /**
  * \ingroup gui
  * \class QgsSvgSelectorLoader
@@ -151,7 +150,6 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSvgSelectorLoader
      * \param parent parent object
@@ -192,18 +190,16 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
     void foundSvgs( QStringList svgs );
 
   private:
-
     QString mPath;
     bool mCanceled = false;
     QStringList mQueuedSvgs;
 
     QElapsedTimer mTimer;
     int mTimerThreshold = 0;
-    QSet< QString > mTraversedPaths;
+    QSet<QString> mTraversedPaths;
 
     void loadPath( const QString &path );
     void loadImages( const QString &path );
-
 };
 
 /**
@@ -216,7 +212,6 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSvgGroupLoader
      * \param parent parent object
@@ -256,13 +251,11 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
     void foundPath( const QString &parentPath, const QString &path );
 
   private:
-
     QStringList mParentPaths;
     bool mCanceled = false;
-    QSet< QString > mTraversedPaths;
+    QSet<QString> mTraversedPaths;
 
     void loadGroup( const QString &parentPath );
-
 };
 
 ///@endcond
@@ -281,7 +274,6 @@ class GUI_EXPORT QgsSvgSelectorFilterModel : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for creating a model for SVG files in a specific path.
      * \param parent parent object
@@ -306,7 +298,6 @@ class GUI_EXPORT QgsSvgSelectorListModel : public QAbstractListModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsSvgSelectorListModel. All SVGs in folders from the application SVG
      * search paths will be shown.
@@ -364,7 +355,7 @@ class GUI_EXPORT QgsSvgSelectorGroupsModel : public QStandardItemModel
 
   private:
     QgsSvgGroupLoader *mLoader = nullptr;
-    QHash< QString, QStandardItem * > mPathItemHash;
+    QHash<QString, QStandardItem *> mPathItemHash;
 
   private slots:
 
@@ -382,7 +373,6 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     Q_OBJECT
 
   public:
-
     //! Constructor for QgsSvgSelectorWidget
     QgsSvgSelectorWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -398,7 +388,7 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
      * Returns the source line edit
      * \since QGIS 3.16
      */
-    QgsPictureSourceLineEditBase *sourceLineEdit() const {return mSourceLineEdit;}
+    QgsPictureSourceLineEditBase *sourceLineEdit() const { return mSourceLineEdit; }
 
     /**
      * Defines if the group box to fill parameters is visible
@@ -411,13 +401,13 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
      * \since QGIS 3.18
      * \deprecated QGIS 3.40. Use allowParameters().
      */
-    Q_DECL_DEPRECATED bool allowParamerters() const SIP_DEPRECATED {return mAllowParameters;} // spellok
+    Q_DECL_DEPRECATED bool allowParamerters() const SIP_DEPRECATED { return mAllowParameters; } // spellok
 
     /**
      * Returns if the group box to fill parameters is visible
      * \since QGIS 3.38
      */
-    bool allowParameters() const {return mAllowParameters;}
+    bool allowParameters() const { return mAllowParameters; }
 
     /**
      * Defines if the SVG browser should be visible
@@ -429,7 +419,7 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
      * Returns if the SVG browser should be visible
      * \since QGIS 3.20
      */
-    bool browserVisible() const {return mBrowserVisible;}
+    bool browserVisible() const { return mBrowserVisible; }
 
     /**
      * Returns the property override tool button of the file line edit
@@ -485,14 +475,10 @@ class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
 {
     Q_OBJECT
   public:
-
     /**
      * Constructor for QgsSvgSelectorDialog.
      */
-    QgsSvgSelectorDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                          Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
-                          QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
-                          Qt::Orientation orientation = Qt::Horizontal );
+    QgsSvgSelectorDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok, Qt::Orientation orientation = Qt::Horizontal );
 
     //! Returns pointer to the embedded SVG selector widget
     QgsSvgSelectorWidget *svgSelector() { return mSvgSelector; }

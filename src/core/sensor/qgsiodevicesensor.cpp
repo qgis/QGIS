@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsiodevicesensor.h"
+#include "moc_qgsiodevicesensor.cpp"
 #include "qgssensorregistry.h"
 
 #include <QDomElement>

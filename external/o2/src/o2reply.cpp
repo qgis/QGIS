@@ -3,10 +3,14 @@
 
 #include "o2reply.h"
 
-O2Reply::O2Reply(QNetworkReply *r, int timeOut, QObject *parent): QTimer(parent), reply(r) {
+O2Reply::O2Reply(QNetworkReply *reply, int timeOut, QObject *parent): QTimer(parent), reply(reply) {
     setSingleShot(true);
+#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
     connect(this, SIGNAL(error(QNetworkReply::NetworkError)), reply, SIGNAL(error(QNetworkReply::NetworkError)), Qt::QueuedConnection);
-    connect(this, SIGNAL(timeout()), this, SLOT(onTimeOut()), Qt::QueuedConnection);
+#else
+    connect(this, &O2Reply::error, reply, &QNetworkReply::errorOccurred, Qt::QueuedConnection);
+#endif
+    connect(this, &QTimer::timeout, this, &O2Reply::onTimeOut, Qt::QueuedConnection);
     start(timeOut);
 }
 
@@ -15,7 +19,7 @@ void O2Reply::onTimeOut() {
 }
 
 O2ReplyList::~O2ReplyList() {
-    foreach (O2Reply *timedReply, replies_) {
+    for (O2Reply *timedReply: qAsConst(replies_)) {
         delete timedReply;
     }
 }
@@ -38,16 +42,16 @@ void O2ReplyList::remove(QNetworkReply *reply) {
     }
 }
 
-O2Reply *O2ReplyList::find(QNetworkReply *reply) {
-    foreach (O2Reply *timedReply, replies_) {
+O2Reply *O2ReplyList::find(const QNetworkReply *reply) {
+    for (O2Reply *timedReply: qAsConst(replies_)) {
         if (timedReply->reply == reply) {
             return timedReply;
         }
     }
-    return 0;
+    return nullptr;
 }
 
-bool O2ReplyList::ignoreSslErrors()
+bool O2ReplyList::ignoreSslErrors() const
 {
     return ignoreSslErrors_;
 }

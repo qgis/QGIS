@@ -33,6 +33,7 @@
 #include "qgsshadowsettings.h"
 #include "qgstemporalrangeobject.h"
 #include "qgsambientocclusionsettings.h"
+#include "qgsabstractterrainsettings.h"
 
 class QgsMapLayer;
 class QgsRasterLayer;
@@ -55,7 +56,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 {
     Q_OBJECT
   public:
-
     Qgs3DMapSettings();
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
     ~Qgs3DMapSettings() override;
@@ -220,30 +220,62 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void configureTerrainFromProject( QgsProjectElevationProperties *properties, const QgsRectangle &fullExtent ) SIP_SKIP;
 
     /**
+     * Returns the terrain settings.
+     *
+     * \warning Modifications should never be made to the returned object. Instead use setTerrainSettings(), so that
+     * the corresponding changed signals are correctly emitted.
+     *
+     * \see setTerrainSettings()
+     * \since QGIS 3.42
+     */
+    const QgsAbstractTerrainSettings *terrainSettings() const;
+
+    /**
+     * Sets the terrain settings.
+     *
+     * \see terrainSettings()
+     * \since QGIS 3.42
+     */
+    void setTerrainSettings( QgsAbstractTerrainSettings *settings SIP_TRANSFER );
+
+    /**
      * Sets vertical scale (exaggeration) of terrain
      * (1 = true scale, > 1 = hills get more pronounced)
+     *
+     * \deprecated QGIS 3.42. Use terrainSettings() instead.
      */
-    void setTerrainVerticalScale( double zScale );
-    //! Returns vertical scale (exaggeration) of terrain
-    double terrainVerticalScale() const;
+    Q_DECL_DEPRECATED void setTerrainVerticalScale( double zScale ) SIP_DEPRECATED;
+
+    /**
+     * Returns vertical scale (exaggeration) of terrain
+     *
+     * \deprecated QGIS 3.42. Use terrainSettings() instead.
+     */
+    Q_DECL_DEPRECATED double terrainVerticalScale() const SIP_DEPRECATED;
 
     /**
      * Sets resolution (in pixels) of the texture of a terrain tile
      * \see mapTileResolution()
+     *
+     * \deprecated QGIS 3.42. Use terrainSettings() instead.
      */
-    void setMapTileResolution( int res );
+    Q_DECL_DEPRECATED void setMapTileResolution( int res ) SIP_DEPRECATED;
 
     /**
      * Returns resolution (in pixels) of the texture of a terrain tile. This parameter influences
      * how many zoom levels for terrain tiles there will be (together with maxTerrainGroundError())
+     *
+     * \deprecated QGIS 3.42. Use terrainSettings() instead.
      */
-    int mapTileResolution() const;
+    Q_DECL_DEPRECATED int mapTileResolution() const SIP_DEPRECATED;
 
     /**
      * Sets maximum allowed screen error of terrain tiles in pixels.
      * \see maxTerrainScreenError()
+     *
+     * \deprecated QGIS 3.42. Use terrainSettings() instead.
      */
-    void setMaxTerrainScreenError( float error );
+    Q_DECL_DEPRECATED void setMaxTerrainScreenError( double error ) SIP_DEPRECATED;
 
     /**
      * Returns maximum allowed screen error of terrain tiles in pixels. This parameter decides
@@ -251,34 +283,42 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      * Each tile has its error defined in world units - this error gets projected to screen pixels
      * according to camera view and if the tile's error is greater than the allowed error, it will
      * be swapped by more detailed tiles with lower error.
+     *
+     * \deprecated QGIS 3.42. Use terrainSettings() instead.
      */
-    float maxTerrainScreenError() const;
+    Q_DECL_DEPRECATED double maxTerrainScreenError() const SIP_DEPRECATED;
 
     /**
-     * Returns maximum ground error of terrain tiles in world units.
+     * Sets the maximum ground error of terrain tiles in world units.
      * \see maxTerrainGroundError()
+     *
+     * \deprecated QGIS 3.42. Use terrainSettings() instead.
      */
-    void setMaxTerrainGroundError( float error );
+    Q_DECL_DEPRECATED void setMaxTerrainGroundError( double error ) SIP_DEPRECATED;
 
     /**
      * Returns maximum ground error of terrain tiles in world units. This parameter influences
      * how many zoom levels there will be (together with mapTileResolution()).
      * This value tells that when the given ground error is reached (e.g. 10 meters), it makes no sense
      * to further split terrain tiles into finer ones because they will not add extra details anymore.
+     *
+     * \deprecated QGIS 3.42. Use terrainSettings() instead.
      */
-    float maxTerrainGroundError() const;
+    Q_DECL_DEPRECATED double maxTerrainGroundError() const SIP_DEPRECATED;
 
     /**
      * Sets the terrain elevation offset (used to move the terrain up or down)
      * \see terrainElevationOffset()
-     * \since QGIS 3.18
+     * \deprecated QGIS 3.42. Use terrainSettings() instead.
      */
-    void setTerrainElevationOffset( float offset );
+    Q_DECL_DEPRECATED void setTerrainElevationOffset( double offset ) SIP_DEPRECATED;
 
     /**
      * Returns the elevation offset of the terrain (used to move the terrain up or down)
+     *
+     * \deprecated QGIS 3.42. Use terrainSettings() instead.
      */
-    float terrainElevationOffset() const;
+    Q_DECL_DEPRECATED double terrainElevationOffset() const SIP_DEPRECATED;
 
     /**
      * Sets terrain generator and sets extent() as the generator's extent.
@@ -430,6 +470,19 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     void setEyeDomeLightingDistance( int distance );
     //! Returns the eye dome lighting distance value (contributes to the contrast of the image)
     int eyeDomeLightingDistance() const;
+
+    /**
+    * Sets whether scene updates on camera movement should be enabled
+    * \note By default, scene is updating on camera movement. Useful for debugging purposes.
+    * \since QGIS 3.42
+    */
+    void setStopUpdates( bool enabled );
+
+    /**
+     * Returns whether the scene updates on camera movement
+     * \since QGIS 3.42
+     */
+    bool stopUpdates() const;
 
     /**
      * Sets the debugging settings of the shadow map
@@ -707,6 +760,18 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void setShowExtentIn2DView( bool show );
 
+    /**
+     * Sets whether the debug side panel is shown
+     * \since QGIS 3.42
+     */
+    void setShowDebugPanel( bool enabled );
+
+    /**
+     * Returns whether the debug side panel is shown
+     * \since QGIS 3.42
+     */
+    bool showDebugPanel() const;
+
   signals:
 
     /**
@@ -731,20 +796,45 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     //! Emitted when the terrain generator has changed
     void terrainGeneratorChanged();
-    //! Emitted when the vertical scale of the terrain has changed
-    void terrainVerticalScaleChanged();
-    //! Emitted when the map tile resoulution has changed
-    void mapTileResolutionChanged();
-    //! Emitted when the maximum terrain screen error has changed
-    void maxTerrainScreenErrorChanged();
-    //! Emitted when the maximum terrain ground error has changed
-    void maxTerrainGroundErrorChanged();
+
+    /**
+     * Emitted when the terrain settings are changed.
+     *
+     * \since QGIS 3.42
+     */
+    void terrainSettingsChanged();
+
+    /**
+     * Emitted when the vertical scale of the terrain has changed
+     * \deprecated QGIS 3.42. Use terrainSettingsChanged() instead.
+     */
+    Q_DECL_DEPRECATED void terrainVerticalScaleChanged() SIP_DEPRECATED;
+
+    /**
+     * Emitted when the map tile resoulution has changed
+     * \deprecated QGIS 3.42. Use terrainSettingsChanged() instead.
+     */
+    Q_DECL_DEPRECATED void mapTileResolutionChanged() SIP_DEPRECATED;
+
+    /**
+     * Emitted when the maximum terrain screen error has changed
+     * \deprecated QGIS 3.42. Use terrainSettingsChanged() instead.
+     */
+    Q_DECL_DEPRECATED void maxTerrainScreenErrorChanged() SIP_DEPRECATED;
+
+    /**
+     * Emitted when the maximum terrain ground error has changed
+     *
+     * \deprecated QGIS 3.42. Use terrainSettingsChanged() instead.
+     */
+    Q_DECL_DEPRECATED void maxTerrainGroundErrorChanged() SIP_DEPRECATED;
 
     /**
      * Emitted when the terrain elevation offset is changed
-     * \since QGIS 3.16
+     *
+     * \deprecated QGIS 3.42. Use terrainSettingsChanged() instead.
      */
-    void terrainElevationOffsetChanged( float newElevation );
+    Q_DECL_DEPRECATED void terrainElevationOffsetChanged( double newElevation ) SIP_DEPRECATED;
 
     /**
      * Emitted when terrain shading enabled flag or terrain shading material has changed
@@ -789,6 +879,12 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
 
     //! Emitted when the flag whether labels are displayed on terrain tiles has changed
     void showLabelsChanged();
+
+    /**
+     * Emitted when the flag whether to keep updating scene has changed
+     * \since QGIS 3.42
+     */
+    void stopUpdatesChanged();
 
     /**
      * Emitted when the flag whether eye dome lighting is used has changed
@@ -920,6 +1016,20 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
      */
     void showExtentIn2DViewChanged();
 
+    /**
+     * Emitted when the Show debug panel checkbox changes value
+     * \see setShowDebugPanel()
+     * \since QGIS 3.42
+     */
+    void showDebugPanelChanged( bool shown );
+
+    /**
+     * Emitted when the world's origin point has been shifted
+     * \see setOrigin()
+     * \since QGIS 3.42
+     */
+    void originChanged();
+
   private:
 #ifdef SIP_RUN
     Qgs3DMapSettings &operator=( const Qgs3DMapSettings & );
@@ -932,40 +1042,38 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
   private:
     //! Offset in map CRS coordinates at which our 3D world has origin (0,0,0)
     QgsVector3D mOrigin;
-    QgsCoordinateReferenceSystem mCrs;   //!< Destination coordinate system of the world
-    QColor mBackgroundColor = Qt::black;   //!< Background color of the scene
-    QColor mSelectionColor; //!< Color to be used for selected map features
-    double mTerrainVerticalScale = 1;   //!< Multiplier of terrain heights to make the terrain shape more pronounced
-    std::unique_ptr<QgsTerrainGenerator> mTerrainGenerator;  //!< Implementation of the terrain generation
-    int mMapTileResolution = 512;   //!< Size of map textures of tiles in pixels (width/height)
-    float mMaxTerrainScreenError = 3.f;   //!< Maximum allowed terrain error in pixels (determines when tiles are switched to more detailed ones)
-    float mMaxTerrainGroundError = 1.f;  //!< Maximum allowed horizontal map error in map units (determines how many zoom levels will be used)
-    float mTerrainElevationOffset = 0.0f; //!< Terrain elevation offset (used to adjust the position of the terrain and move it up and down)
-    bool mTerrainShadingEnabled = false;   //!< Whether terrain should be shaded taking lights into account
-    QgsPhongMaterialSettings mTerrainShadingMaterial;  //!< Material to use for the terrain (if shading is enabled). Diffuse color is ignored.
-    QString mTerrainMapTheme;  //!< Name of map theme used for terrain's texture (empty means use the current map theme)
-    bool mShowTerrainBoundingBoxes = false;  //!< Whether to show bounding boxes of entities - useful for debugging
-    bool mShowTerrainTileInfo = false;  //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
-    bool mShowCameraViewCenter = false;  //!< Whether to show camera view center as a sphere - useful for debugging
-    bool mShowCameraRotationCenter = false; //!< Whether to show camera rotation center as a sphere - useful for debugging
-    bool mShowLightSources = false; //!< Whether to show the origin of light sources
-    bool mShowLabels = false; //!< Whether to display labels on terrain tiles
-    QList< QgsLightSource * > mLightSources; //!< List of light sources in the scene (owned by the settings)
-    float mFieldOfView = 45.0f; //<! Camera lens field of view value
-    Qt3DRender::QCameraLens::ProjectionType mProjectionType = Qt3DRender::QCameraLens::PerspectiveProjection;  //<! Camera lens projection type
+    QgsCoordinateReferenceSystem mCrs;                      //!< Destination coordinate system of the world
+    QColor mBackgroundColor = Qt::black;                    //!< Background color of the scene
+    QColor mSelectionColor;                                 //!< Color to be used for selected map features
+    std::unique_ptr<QgsTerrainGenerator> mTerrainGenerator; //!< Implementation of the terrain generation
+    std::unique_ptr<QgsAbstractTerrainSettings> mTerrainSettings;
+    bool mTerrainShadingEnabled = false;                                                                      //!< Whether terrain should be shaded taking lights into account
+    QgsPhongMaterialSettings mTerrainShadingMaterial;                                                         //!< Material to use for the terrain (if shading is enabled). Diffuse color is ignored.
+    QString mTerrainMapTheme;                                                                                 //!< Name of map theme used for terrain's texture (empty means use the current map theme)
+    bool mShowTerrainBoundingBoxes = false;                                                                   //!< Whether to show bounding boxes of entities - useful for debugging
+    bool mShowTerrainTileInfo = false;                                                                        //!< Whether to draw extra information about terrain tiles to the textures - useful for debugging
+    bool mShowCameraViewCenter = false;                                                                       //!< Whether to show camera view center as a sphere - useful for debugging
+    bool mShowCameraRotationCenter = false;                                                                   //!< Whether to show camera rotation center as a sphere - useful for debugging
+    bool mShowLightSources = false;                                                                           //!< Whether to show the origin of light sources
+    bool mShowLabels = false;                                                                                 //!< Whether to display labels on terrain tiles
+    bool mStopUpdates = false;                                                                                //!< Whether to stop updating scene on zoom
+    bool mShowDebugPanel = false;                                                                             //!< Whether to show debug panel
+    QList<QgsLightSource *> mLightSources;                                                                    //!< List of light sources in the scene (owned by the settings)
+    float mFieldOfView = 45.0f;                                                                               //<! Camera lens field of view value
+    Qt3DRender::QCameraLens::ProjectionType mProjectionType = Qt3DRender::QCameraLens::PerspectiveProjection; //<! Camera lens projection type
     Qgis::NavigationMode mCameraNavigationMode = Qgis::NavigationMode::TerrainBased;
     double mCameraMovementSpeed = 5.0;
-    QList<QgsMapLayerRef> mLayers;   //!< Layers to be rendered
+    QList<QgsMapLayerRef> mLayers; //!< Layers to be rendered
     //! Coordinate transform context
     QgsCoordinateTransformContext mTransformContext;
     QgsPathResolver mPathResolver;
-    QgsMapThemeCollection *mMapThemes = nullptr;   //!< Pointer to map themes (e.g. from the current project) to resolve map theme content from the name
-    double mDpi = 96;  //!< Dot per inch value for the screen / painter
+    QgsMapThemeCollection *mMapThemes = nullptr; //!< Pointer to map themes (e.g. from the current project) to resolve map theme content from the name
+    double mDpi = 96;                            //!< Dot per inch value for the screen / painter
     bool mIsFpsCounterEnabled = false;
 
-    bool mIsSkyboxEnabled = false;  //!< Whether the skybox is enabled
-    QgsSkyboxSettings mSkyboxSettings; //!< Skybox related configuration
-    QgsShadowSettings mShadowSettings; //!< Shadow rendering related settings
+    bool mIsSkyboxEnabled = false;                         //!< Whether the skybox is enabled
+    QgsSkyboxSettings mSkyboxSettings;                     //!< Skybox related configuration
+    QgsShadowSettings mShadowSettings;                     //!< Shadow rendering related settings
     QgsAmbientOcclusionSettings mAmbientOcclusionSettings; //!< Screen Space Ambient Occlusion related settings
 
     bool mEyeDomeLightingEnabled = false;
@@ -980,7 +1088,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     double mDebugShadowMapSize = 0.2;
 
     bool mDebugDepthMapEnabled = false;
-    Qt::Corner mDebugDepthMapCorner = Qt::Corner::TopRightCorner;
+    Qt::Corner mDebugDepthMapCorner = Qt::Corner::BottomLeftCorner;
     double mDebugDepthMapSize = 0.2;
 
     bool mTerrainRenderingEnabled = true;
@@ -994,7 +1102,6 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject, public QgsTemporalRangeObjec
     QgsRectangle mExtent; //!< 2d extent used to limit the 3d view
 
     bool mShowExtentIn2DView = false;
-
 };
 
 

@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include "qgssubstitutionlistwidget.h"
+#include "moc_qgssubstitutionlistwidget.cpp"
 #include "qgsgui.h"
 
 #include <QDialogButtonBox>
@@ -53,7 +54,7 @@ void QgsSubstitutionListWidget::setSubstitutions( const QgsStringReplacementColl
 
 QgsStringReplacementCollection QgsSubstitutionListWidget::substitutions() const
 {
-  QList< QgsStringReplacement > result;
+  QList<QgsStringReplacement> result;
   for ( int i = 0; i < mTableSubstitutions->rowCount(); ++i )
   {
     if ( !mTableSubstitutions->item( i, 0 ) )
@@ -65,10 +66,7 @@ QgsStringReplacementCollection QgsSubstitutionListWidget::substitutions() const
     QCheckBox *chkCaseSensitive = qobject_cast<QCheckBox *>( mTableSubstitutions->cellWidget( i, 2 ) );
     QCheckBox *chkWholeWord = qobject_cast<QCheckBox *>( mTableSubstitutions->cellWidget( i, 3 ) );
 
-    const QgsStringReplacement replacement( mTableSubstitutions->item( i, 0 )->text(),
-                                            mTableSubstitutions->item( i, 1 )->text(),
-                                            chkCaseSensitive->isChecked(),
-                                            chkWholeWord->isChecked() );
+    const QgsStringReplacement replacement( mTableSubstitutions->item( i, 0 )->text(), mTableSubstitutions->item( i, 1 )->text(), chkCaseSensitive->isChecked(), chkWholeWord->isChecked() );
     result << replacement;
   }
   return QgsStringReplacementCollection( result );
@@ -95,8 +93,7 @@ void QgsSubstitutionListWidget::tableChanged()
 
 void QgsSubstitutionListWidget::mButtonExport_clicked()
 {
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Substitutions" ), QDir::homePath(),
-                     tr( "XML files (*.xml *.XML)" ) );
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Substitutions" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   // return dialog focus on Mac
   activateWindow();
   raise();
@@ -121,10 +118,7 @@ void QgsSubstitutionListWidget::mButtonExport_clicked()
   QFile file( fileName );
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
-    QMessageBox::warning( nullptr, tr( "Export Substitutions" ),
-                          tr( "Cannot write file %1:\n%2" ).arg( fileName, file.errorString() ),
-                          QMessageBox::Ok,
-                          QMessageBox::Ok );
+    QMessageBox::warning( nullptr, tr( "Export Substitutions" ), tr( "Cannot write file %1:\n%2" ).arg( fileName, file.errorString() ), QMessageBox::Ok, QMessageBox::Ok );
     return;
   }
 
@@ -134,8 +128,7 @@ void QgsSubstitutionListWidget::mButtonExport_clicked()
 
 void QgsSubstitutionListWidget::mButtonImport_clicked()
 {
-  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Substitutions" ), QDir::homePath(),
-                           tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Substitutions" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -144,10 +137,7 @@ void QgsSubstitutionListWidget::mButtonImport_clicked()
   QFile file( fileName );
   if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    QMessageBox::warning( nullptr, tr( "Import Substitutions" ),
-                          tr( "Cannot read file %1:\n%2" ).arg( fileName, file.errorString() ),
-                          QMessageBox::Ok,
-                          QMessageBox::Ok );
+    QMessageBox::warning( nullptr, tr( "Import Substitutions" ), tr( "Cannot read file %1:\n%2" ).arg( fileName, file.errorString() ), QMessageBox::Ok, QMessageBox::Ok );
     return;
   }
 
@@ -158,23 +148,14 @@ void QgsSubstitutionListWidget::mButtonImport_clicked()
 
   if ( !doc.setContent( &file, true, &errorStr, &errorLine, &errorColumn ) )
   {
-    QMessageBox::warning( nullptr, tr( "Import substitutions" ),
-                          tr( "Parse error at line %1, column %2:\n%3" )
-                          .arg( errorLine )
-                          .arg( errorColumn )
-                          .arg( errorStr ),
-                          QMessageBox::Ok,
-                          QMessageBox::Ok );
+    QMessageBox::warning( nullptr, tr( "Import substitutions" ), tr( "Parse error at line %1, column %2:\n%3" ).arg( errorLine ).arg( errorColumn ).arg( errorStr ), QMessageBox::Ok, QMessageBox::Ok );
     return;
   }
 
   const QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "substitutions" ) )
   {
-    QMessageBox::warning( nullptr, tr( "Import Substitutions" ),
-                          tr( "The selected file is not a substitution list." ),
-                          QMessageBox::Ok,
-                          QMessageBox::Ok );
+    QMessageBox::warning( nullptr, tr( "Import Substitutions" ), tr( "The selected file is not a substitution list." ), QMessageBox::Ok, QMessageBox::Ok );
     return;
   }
 

@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslayoutitempolyline.h"
+#include "moc_qgslayoutitempolyline.cpp"
 #include "qgslayoutitemregistry.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorutils.h"
@@ -83,20 +84,15 @@ bool QgsLayoutItemPolyline::_addNode( const int indexPoint,
 
 bool QgsLayoutItemPolyline::_removeNode( const int index )
 {
-  if ( index < 0 || index >= mPolygon.size() )
+  if ( index < 0 || index >= mPolygon.size() || mPolygon.size() <= 2 )
     return false;
 
   mPolygon.remove( index );
 
-  if ( mPolygon.size() < 2 )
-    mPolygon.clear();
-  else
-  {
-    int newSelectNode = index;
-    if ( index >= mPolygon.size() )
-      newSelectNode = mPolygon.size() - 1;
-    setSelectedNode( newSelectNode );
-  }
+  int newSelectNode = index;
+  if ( index >= mPolygon.size() )
+    newSelectNode = mPolygon.size() - 1;
+  setSelectedNode( newSelectNode );
 
   return true;
 }
@@ -342,6 +338,23 @@ QPainterPath QgsLayoutItemPolyline::shape() const
   const QPainterPath strokedOutline = ps.createStroke( path );
 
   return strokedOutline;
+}
+
+bool QgsLayoutItemPolyline::isValid() const
+{
+  // A Polyline is valid if it has at least 2 unique points
+  QList<QPointF> uniquePoints;
+  int seen = 0;
+  for ( QPointF point : mPolygon )
+  {
+    if ( !uniquePoints.contains( point ) )
+    {
+      uniquePoints.append( point );
+      if ( ++seen > 1 )
+        return true;
+    }
+  }
+  return false;
 }
 
 QgsLineSymbol *QgsLayoutItemPolyline::symbol()

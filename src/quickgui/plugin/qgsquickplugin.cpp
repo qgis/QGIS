@@ -36,39 +36,39 @@
 #include "qgsquickmaptransform.h"
 #include "qgsquickelevationprofilecanvas.h"
 #include "qgsquickplugin.h"
+#include "moc_qgsquickplugin.cpp"
 #include "qgsquickutils.h"
 
 static QObject *buildUtilsSingleton( QQmlEngine *engine, QJSEngine *scriptEngine )
 {
   Q_UNUSED( engine )
   Q_UNUSED( scriptEngine )
-  return new QgsQuickUtils();  // the object will be owned by QML engine and destroyed by the engine on exit
+  return new QgsQuickUtils(); // the object will be owned by QML engine and destroyed by the engine on exit
 }
 
 void QgsQuickPlugin::registerTypes( const char *uri )
 {
-  qRegisterMetaType< QList<QgsMapLayer *> >( "QList<QgsMapLayer*>" );
-  qRegisterMetaType< QgsAttributes > ( "QgsAttributes" );
-  qRegisterMetaType< QgsCoordinateReferenceSystem >( "QgsCoordinateReferenceSystem" );
-  qRegisterMetaType< QgsCoordinateTransformContext >( "QgsCoordinateTransformContext" );
-  qRegisterMetaType< QgsFeature > ( "QgsFeature" );
-  qRegisterMetaType< QgsFeatureId > ( "QgsFeatureId" );
-  qRegisterMetaType< QgsPoint >( "QgsPoint" );
-  qRegisterMetaType< QgsPointXY >( "QgsPointXY" );
-  qRegisterMetaType< Qgis::SystemOfMeasurement >( "Qgis::SystemOfMeasurement" );
-  qRegisterMetaType< Qgis::DistanceUnit >( "Qgis::DistanceUnit" );
-  qRegisterMetaType< QgsCoordinateFormatter::FormatFlags >( "QgsCoordinateFormatter::FormatFlags" );
-  qRegisterMetaType< QgsCoordinateFormatter::Format >( "QgsCoordinateFormatter::Format" );
-  qRegisterMetaType< QVariant::Type >( "QVariant::Type" );
+  qRegisterMetaType<QList<QgsMapLayer *>>( "QList<QgsMapLayer*>" );
+  qRegisterMetaType<QgsAttributes>( "QgsAttributes" );
+  qRegisterMetaType<QgsCoordinateReferenceSystem>( "QgsCoordinateReferenceSystem" );
+  qRegisterMetaType<QgsCoordinateTransformContext>( "QgsCoordinateTransformContext" );
+  qRegisterMetaType<QgsFeature>( "QgsFeature" );
+  qRegisterMetaType<QgsFeatureId>( "QgsFeatureId" );
+  qRegisterMetaType<QgsPoint>( "QgsPoint" );
+  qRegisterMetaType<QgsPointXY>( "QgsPointXY" );
+  qRegisterMetaType<Qgis::SystemOfMeasurement>( "Qgis::SystemOfMeasurement" );
+  qRegisterMetaType<Qgis::DistanceUnit>( "Qgis::DistanceUnit" );
+  qRegisterMetaType<QgsCoordinateFormatter::FormatFlags>( "QgsCoordinateFormatter::FormatFlags" );
+  qRegisterMetaType<QgsCoordinateFormatter::Format>( "QgsCoordinateFormatter::Format" );
+  qRegisterMetaType<QVariant::Type>( "QVariant::Type" );
 
-  qmlRegisterUncreatableType< QgsUnitTypes >( uri, 0, 1, "QgsUnitTypes", "Only enums from QgsUnitTypes can be used" );
-  qmlRegisterType< QgsProject >( uri, 0, 1, "Project" );
-  qmlRegisterType< QgsQuickMapCanvasMap >( uri, 0, 1, "MapCanvasMap" );
-  qmlRegisterType< QgsQuickMapSettings >( uri, 0, 1, "MapSettings" );
-  qmlRegisterType< QgsQuickMapTransform >( uri, 0, 1, "MapTransform" );
-  qmlRegisterType< QgsQuickElevationProfileCanvas >( uri, 0, 1, "ElevationProfileCanvas" );
-  qmlRegisterType< QgsVectorLayer >( uri, 0, 1, "VectorLayer" );
+  qmlRegisterUncreatableType<QgsUnitTypes>( uri, 0, 1, "QgsUnitTypes", "Only enums from QgsUnitTypes can be used" );
+  qmlRegisterType<QgsProject>( uri, 0, 1, "Project" );
+  qmlRegisterType<QgsQuickMapCanvasMap>( uri, 0, 1, "MapCanvasMap" );
+  qmlRegisterType<QgsQuickMapSettings>( uri, 0, 1, "MapSettings" );
+  qmlRegisterType<QgsQuickMapTransform>( uri, 0, 1, "MapTransform" );
+  qmlRegisterType<QgsQuickElevationProfileCanvas>( uri, 0, 1, "ElevationProfileCanvas" );
+  qmlRegisterType<QgsVectorLayer>( uri, 0, 1, "VectorLayer" );
 
-  qmlRegisterSingletonType< QgsQuickUtils >( uri, 0, 1, "Utils", buildUtilsSingleton );
-
+  qmlRegisterSingletonType<QgsQuickUtils>( uri, 0, 1, "Utils", buildUtilsSingleton );
 }

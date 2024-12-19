@@ -375,7 +375,6 @@ void QgsRuleBasedRenderer::Rule::toSld( QDomDocument &doc, QDomElement &element,
   if ( mSymbol )
   {
     QDomElement ruleElem = doc.createElement( QStringLiteral( "se:Rule" ) );
-    element.appendChild( ruleElem );
 
     //XXX: <se:Name> is the rule identifier, but our the Rule objects
     // have no properties could be used as identifier. Use the label.
@@ -409,6 +408,13 @@ void QgsRuleBasedRenderer::Rule::toSld( QDomDocument &doc, QDomElement &element,
     QgsSymbolLayerUtils::applyScaleDependency( doc, ruleElem, props );
 
     mSymbol->toSld( doc, ruleElem, props );
+
+    // Only create rules if symbol could be converted to SLD, and is not an "empty" symbol. Otherwise we do not generate a rule, as
+    // SLD spec requires a Symbolizer element to be present
+    if ( QgsSymbolLayerUtils::hasSldSymbolizer( ruleElem ) )
+    {
+      element.appendChild( ruleElem );
+    }
   }
 
   // loop into children rule list
@@ -744,8 +750,7 @@ QgsRuleBasedRenderer::RuleList QgsRuleBasedRenderer::Rule::rulesForFeature( cons
   if ( onlyActive )
     listChildren = mActiveChildren;
 
-  const auto constListChildren = listChildren;
-  for ( Rule *rule : constListChildren )
+  for ( Rule *rule : std::as_const( listChildren ) )
   {
     lst += rule->rulesForFeature( feature, context, onlyActive );
   }

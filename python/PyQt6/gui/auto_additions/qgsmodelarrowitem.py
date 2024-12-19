@@ -3,5 +3,5 @@ QgsModelArrowItem.Circle = QgsModelArrowItem.Marker.Circle
 QgsModelArrowItem.ArrowHead = QgsModelArrowItem.Marker.ArrowHead
 try:
     QgsModelArrowItem.__group__ = ['processing', 'models']
-except NameError:
+except (NameError, AttributeError):
     pass

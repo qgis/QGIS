@@ -18,6 +18,13 @@ struct QgsPointCloudAttributeStatistics
   double mean;
   double stDev;
   int count;
+
+  int singleClassCount( int cls ) const;
+%Docstring
+Returns the count of points in given class or -1 on error
+
+.. versionadded:: 3.42
+%End
 };
 
 class QgsPointCloudStatistics
@@ -96,7 +103,7 @@ Merges the current statistics with the statistics from ``stats``
 Converts the current statistics object into JSON object
 %End
 
-    static QgsPointCloudStatistics fromStatisticsJson( QByteArray stats );
+    static QgsPointCloudStatistics fromStatisticsJson( const QByteArray &stats );
 %Docstring
 Creates a statistics object from the JSON object ``stats``
 %End

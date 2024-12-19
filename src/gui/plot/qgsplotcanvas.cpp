@@ -17,6 +17,7 @@
  ***************************************************************************/
 
 #include "qgsplotcanvas.h"
+#include "moc_qgsplotcanvas.cpp"
 #include "qgsplotmouseevent.h"
 #include "qgsplottool.h"
 #include "qgslogger.h"
@@ -78,12 +79,10 @@ QgsPlotCanvas::~QgsPlotCanvas()
 
 void QgsPlotCanvas::cancelJobs()
 {
-
 }
 
 void QgsPlotCanvas::refresh()
 {
-
 }
 
 void QgsPlotCanvas::showContextMenu( QgsPlotMouseEvent *event )
@@ -110,7 +109,7 @@ void QgsPlotCanvas::keyPressEvent( QKeyEvent *event )
   if ( mTool && event->isAccepted() )
     return;
 
-  if ( event->key() == Qt::Key_Space && ! event->isAutoRepeat() )
+  if ( event->key() == Qt::Key_Space && !event->isAutoRepeat() )
   {
     if ( !( event->modifiers() & Qt::ControlModifier ) )
     {
@@ -276,22 +275,18 @@ QgsPointXY QgsPlotCanvas::toCanvasCoordinates( const QgsPoint & ) const
 
 void QgsPlotCanvas::panContentsBy( double, double )
 {
-
 }
 
 void QgsPlotCanvas::centerPlotOn( double, double )
 {
-
 }
 
 void QgsPlotCanvas::scalePlot( double )
 {
-
 }
 
 void QgsPlotCanvas::zoomToRect( const QRectF & )
 {
-
 }
 
 QgsPointXY QgsPlotCanvas::snapToPlot( QPoint )
@@ -310,7 +305,6 @@ bool QgsPlotCanvas::viewportEvent( QEvent *event )
 
 void QgsPlotCanvas::wheelZoom( QWheelEvent * )
 {
-
 }
 
 bool QgsPlotCanvas::event( QEvent *e )

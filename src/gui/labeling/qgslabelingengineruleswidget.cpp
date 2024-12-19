@@ -14,11 +14,13 @@
  ***************************************************************************/
 
 #include "qgslabelingengineruleswidget.h"
+#include "moc_qgslabelingengineruleswidget.cpp"
 #include "qgsapplication.h"
 #include "qgslabelingengineruleregistry.h"
 #include "qgslabelingenginerule.h"
 #include "qgslabelingenginerulewidget.h"
 #include "qgsgui.h"
+#include "qgshelp.h"
 
 #include <QMenu>
 #include <QAction>
@@ -32,7 +34,6 @@
 QgsLabelingEngineRulesModel::QgsLabelingEngineRulesModel( QObject *parent )
   : QAbstractItemModel( parent )
 {
-
 }
 
 Qt::ItemFlags QgsLabelingEngineRulesModel::flags( const QModelIndex &index ) const
@@ -67,7 +68,7 @@ int QgsLabelingEngineRulesModel::rowCount( const QModelIndex &parent ) const
   if ( parent.isValid() )
     return 0;
 
-  return static_cast< int >( mRules.size() );
+  return static_cast<int>( mRules.size() );
 }
 
 int QgsLabelingEngineRulesModel::columnCount( const QModelIndex &parent ) const
@@ -124,13 +125,13 @@ QModelIndex QgsLabelingEngineRulesModel::index( int row, int column, const QMode
 
 bool QgsLabelingEngineRulesModel::removeRows( int row, int count, const QModelIndex &parent )
 {
-  if ( row < 0 || row >= static_cast< int >( mRules.size() ) )
+  if ( row < 0 || row >= static_cast<int>( mRules.size() ) )
     return false;
 
   beginRemoveRows( parent, row, row + count - 1 );
   for ( int i = 0; i < count; i++ )
   {
-    if ( row < static_cast< int >( mRules.size() ) )
+    if ( row < static_cast<int>( mRules.size() ) )
     {
       mRules.erase( mRules.begin() + row );
     }
@@ -188,7 +189,7 @@ void QgsLabelingEngineRulesModel::setRules( const QList<QgsAbstractLabelingEngin
 
 void QgsLabelingEngineRulesModel::addRule( std::unique_ptr<QgsAbstractLabelingEngineRule> &rule )
 {
-  beginInsertRows( QModelIndex(), static_cast< int >( mRules.size() ), static_cast< int >( mRules.size() ) );
+  beginInsertRows( QModelIndex(), static_cast<int>( mRules.size() ), static_cast<int>( mRules.size() ) );
   mRules.emplace_back( std::move( rule ) );
   endInsertRows();
 }
@@ -198,10 +199,10 @@ QgsAbstractLabelingEngineRule *QgsLabelingEngineRulesModel::ruleAtIndex( const Q
   if ( !index.isValid() )
     return nullptr;
 
-  if ( index.row() < 0 || index.row() >= static_cast< int >( mRules.size() ) )
+  if ( index.row() < 0 || index.row() >= static_cast<int>( mRules.size() ) )
     return nullptr;
 
-  return mRules[ index.row() ].get();
+  return mRules[index.row()].get();
 }
 
 void QgsLabelingEngineRulesModel::changeRule( const QModelIndex &index, std::unique_ptr<QgsAbstractLabelingEngineRule> &rule )
@@ -209,17 +210,17 @@ void QgsLabelingEngineRulesModel::changeRule( const QModelIndex &index, std::uni
   if ( !index.isValid() )
     return;
 
-  if ( index.row() < 0 || index.row() >= static_cast< int >( mRules.size() ) )
+  if ( index.row() < 0 || index.row() >= static_cast<int>( mRules.size() ) )
     return;
 
-  mRules[index.row() ] = std::move( rule );
+  mRules[index.row()] = std::move( rule );
   emit dataChanged( index, index );
 }
 
 QList<QgsAbstractLabelingEngineRule *> QgsLabelingEngineRulesModel::rules() const
 {
   QList<QgsAbstractLabelingEngineRule *> res;
-  res.reserve( static_cast< int >( mRules.size() ) );
+  res.reserve( static_cast<int>( mRules.size() ) );
   for ( auto &it : mRules )
   {
     res.append( it->clone() );
@@ -270,21 +271,19 @@ void QgsLabelingEngineRulesWidget::createTypesMenu()
   mAddRuleMenu->clear();
 
   const QStringList ruleIds = QgsApplication::labelingEngineRuleRegistry()->ruleIds();
-  QList< QAction * > actions;
+  QList<QAction *> actions;
   for ( const QString &id : ruleIds )
   {
-    if ( ! QgsApplication::labelingEngineRuleRegistry()->isAvailable( id ) )
+    if ( !QgsApplication::labelingEngineRuleRegistry()->isAvailable( id ) )
       continue;
 
     QAction *action = new QAction( QgsApplication::labelingEngineRuleRegistry()->create( id )->displayType() );
-    connect( action, &QAction::triggered, this, [this, id ]
-    {
+    connect( action, &QAction::triggered, this, [this, id] {
       createRule( id );
     } );
     actions << action;
   }
-  std::sort( actions.begin(), actions.end(), []( const QAction * a, const QAction * b ) -> bool
-  {
+  std::sort( actions.begin(), actions.end(), []( const QAction *a, const QAction *b ) -> bool {
     return QString::localeAwareCompare( a->text(), b->text() ) < 0;
   } );
   mAddRuleMenu->addActions( actions );
@@ -292,7 +291,7 @@ void QgsLabelingEngineRulesWidget::createTypesMenu()
 
 void QgsLabelingEngineRulesWidget::createRule( const QString &id )
 {
-  std::unique_ptr< QgsAbstractLabelingEngineRule > rule( QgsApplication::labelingEngineRuleRegistry()->create( id ) );
+  std::unique_ptr<QgsAbstractLabelingEngineRule> rule( QgsApplication::labelingEngineRuleRegistry()->create( id ) );
   if ( rule )
   {
     rule->setName( rule->displayType() );
@@ -350,9 +349,8 @@ void QgsLabelingEngineRulesWidget::editRule( const QModelIndex &index )
   {
     widget->setPanelTitle( rule->name().isEmpty() ? tr( "Configure Rule" ) : rule->name() );
     widget->setRule( rule );
-    connect( widget, &QgsLabelingEngineRuleWidget::changed, this, [ = ]
-    {
-      std::unique_ptr< QgsAbstractLabelingEngineRule > updatedRule( widget->rule() );
+    connect( widget, &QgsLabelingEngineRuleWidget::changed, this, [=] {
+      std::unique_ptr<QgsAbstractLabelingEngineRule> updatedRule( widget->rule() );
       mModel->changeRule( index, updatedRule );
       emit changed();
     } );
@@ -364,7 +362,7 @@ void QgsLabelingEngineRulesWidget::editRule( const QModelIndex &index )
     dialog.setRule( rule );
     if ( dialog.exec() )
     {
-      std::unique_ptr< QgsAbstractLabelingEngineRule > updatedRule( dialog.rule() );
+      std::unique_ptr<QgsAbstractLabelingEngineRule> updatedRule( dialog.rule() );
       mModel->changeRule( index, updatedRule );
       emit changed();
     }
@@ -374,7 +372,7 @@ void QgsLabelingEngineRulesWidget::editRule( const QModelIndex &index )
 void QgsLabelingEngineRulesWidget::removeRules()
 {
   const QItemSelection selection = viewRules->selectionModel()->selection();
-  QList< int > rows;
+  QList<int> rows;
   for ( const QItemSelectionRange &range : selection )
   {
     if ( range.isValid() )
@@ -411,7 +409,7 @@ QgsLabelingEngineRulesDialog::QgsLabelingEngineRulesDialog( QWidget *parent, Qt:
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->addWidget( mWidget );
 
-  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, this );
+  mButtonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help, Qt::Horizontal, this );
   layout->addWidget( mButtonBox );
 
   setLayout( layout );
@@ -419,9 +417,12 @@ QgsLabelingEngineRulesDialog::QgsLabelingEngineRulesDialog( QWidget *parent, Qt:
 
   connect( mButtonBox->button( QDialogButtonBox::Ok ), &QAbstractButton::clicked, this, &QDialog::accept );
   connect( mButtonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked, this, &QDialog::reject );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [=] {
+    QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#labeling-rules" ) );
+  } );
 }
 
-void QgsLabelingEngineRulesDialog::setRules( const QList< QgsAbstractLabelingEngineRule *> &rules )
+void QgsLabelingEngineRulesDialog::setRules( const QList<QgsAbstractLabelingEngineRule *> &rules )
 {
   mWidget->setRules( rules );
 }

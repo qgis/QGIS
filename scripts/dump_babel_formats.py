@@ -21,12 +21,12 @@
 Dumps a list of babel formats for inclusion in QgsBabelFormatRegistry::QgsBabelFormatRegistry()
 """
 
-__author__ = 'Nyall Dawson'
-__date__ = 'July 2021'
-__copyright__ = '(C) 2021, Nyall Dawson'
+__author__ = "Nyall Dawson"
+__date__ = "July 2021"
+__copyright__ = "(C) 2021, Nyall Dawson"
 
-import subprocess
 import re
+import subprocess
 
 
 def process_lines(lines):
@@ -38,25 +38,33 @@ def process_lines(lines):
     while current_line < len(lines):
         line = lines[current_line]
 
-        fields = line.split('\t')
+        fields = line.split("\t")
         assert len(fields) >= 5, fields
 
         current_line += 1
         html_pages = []
-        while lines[current_line].startswith('http'):
+        while lines[current_line].startswith("http"):
             html_pages.append(lines[current_line])
             current_line += 1
 
-        while current_line < len(lines) and lines[current_line].startswith('option'):
-            options = lines[current_line].split('\t')
+        while current_line < len(lines) and lines[current_line].startswith("option"):
+            options = lines[current_line].split("\t")
             assert len(options) >= 9, options
 
-            name, description, option_type, option_def, option_min, option_max, option_html = options[:7]
+            (
+                name,
+                description,
+                option_type,
+                option_def,
+                option_min,
+                option_max,
+                option_html,
+            ) = options[:7]
             # print(name, description, option_type, option_def, option_min, option_max, option_html)
 
             option_http_pages = []
             current_line += 1
-            while current_line < len(lines) and lines[current_line].startswith('http'):
+            while current_line < len(lines) and lines[current_line].startswith("http"):
                 option_http_pages.append(lines[current_line])
                 current_line += 1
 
@@ -64,31 +72,42 @@ def process_lines(lines):
         description = fields[4]
 
         # remove odd comment from description!
-        description = description.replace(' [ Get Jonathon Johnson to describe', '')
+        description = description.replace(" [ Get Jonathon Johnson to describe", "")
 
-        read_waypoints = fields[1][0] == 'r'
-        read_tracks = fields[1][2] == 'r'
-        read_routes = fields[1][4] == 'r'
-        write_waypoints = fields[1][1] == 'w'
-        write_tracks = fields[1][3] == 'w'
-        write_routes = fields[1][5] == 'w'
-        is_file_format = fields[0] == 'file'
-        is_device_format = fields[0] == 'serial'
-        extensions = fields[3].split('/')
+        read_waypoints = fields[1][0] == "r"
+        read_tracks = fields[1][2] == "r"
+        read_routes = fields[1][4] == "r"
+        write_waypoints = fields[1][1] == "w"
+        write_tracks = fields[1][3] == "w"
+        write_routes = fields[1][5] == "w"
+        is_file_format = fields[0] == "file"
+        is_device_format = fields[0] == "serial"
+        extensions = fields[3].split("/")
 
         if is_file_format and any([read_routes, read_tracks, read_waypoints]):
             capabilities = []
             if read_waypoints:
-                capabilities.append('Qgis::BabelFormatCapability::Waypoints')
+                capabilities.append("Qgis::BabelFormatCapability::Waypoints")
             if read_routes:
-                capabilities.append('Qgis::BabelFormatCapability::Routes')
+                capabilities.append("Qgis::BabelFormatCapability::Routes")
             if read_tracks:
-                capabilities.append('Qgis::BabelFormatCapability::Tracks')
-            capabilities_string = ' | '.join(capabilities)
+                capabilities.append("Qgis::BabelFormatCapability::Tracks")
+            capabilities_string = " | ".join(capabilities)
 
-            extensions_string = '{' + ', '.join([f'QStringLiteral( "{ext.strip()}" )' for ext in extensions if ext.strip()]) + '}'
-            format_out[
-                name] = f'mImporters[QStringLiteral( "{name}" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "{name}" ), QStringLiteral( "{description}" ), {capabilities_string}, {extensions_string} );'
+            extensions_string = (
+                "{"
+                + ", ".join(
+                    [
+                        f'QStringLiteral( "{ext.strip()}" )'
+                        for ext in extensions
+                        if ext.strip()
+                    ]
+                )
+                + "}"
+            )
+            format_out[name] = (
+                f'mImporters[QStringLiteral( "{name}" )] = new QgsBabelSimpleImportFormat( QStringLiteral( "{name}" ), QStringLiteral( "{description}" ), {capabilities_string}, {extensions_string} );'
+            )
 
     for format_name in sorted(format_out.keys(), key=lambda x: x.lower()):
         print(format_out[format_name])

@@ -35,9 +35,9 @@ void Bezier3D::calcFirstDer( float t, Vector3D *v )
     for ( int n = 1; n <= int( mControlPoly->count() - 1 ); n++ )
     {
       const double bernst = MathUtils::calcBernsteinPoly( mControlPoly->count() - 2, n - 1, t );
-      v->setX( v->getX() + ( ( *mControlPoly )[n]->x() - ( *mControlPoly )[n - 1]->x() )*bernst );
-      v->setY( v->getY() + ( ( *mControlPoly )[n]->y() - ( *mControlPoly )[n - 1]->y() )*bernst );
-      v->setZ( v->getZ() + ( ( *mControlPoly )[n]->z() - ( *mControlPoly )[n - 1]->z() )*bernst );
+      v->setX( v->getX() + ( ( *mControlPoly )[n]->x() - ( *mControlPoly )[n - 1]->x() ) * bernst );
+      v->setY( v->getY() + ( ( *mControlPoly )[n]->y() - ( *mControlPoly )[n - 1]->y() ) * bernst );
+      v->setZ( v->getZ() + ( ( *mControlPoly )[n]->z() - ( *mControlPoly )[n - 1]->z() ) * bernst );
     }
     v->setX( v->getX() * ( mControlPoly->count() - 1 ) );
     v->setY( v->getY() * ( mControlPoly->count() - 1 ) );
@@ -52,7 +52,6 @@ void Bezier3D::calcFirstDer( float t, Vector3D *v )
 
 void Bezier3D::calcPoint( float t, QgsPoint *p )
 {
-
   if ( p && mControlPoly )
   {
     p->setX( 0 );
@@ -62,9 +61,9 @@ void Bezier3D::calcPoint( float t, QgsPoint *p )
     for ( int n = 1; n <= int( mControlPoly->count() ); n++ )
     {
       const double bernst = MathUtils::calcBernsteinPoly( mControlPoly->count() - 1, n - 1, t );
-      p->setX( p->x() + ( *mControlPoly )[n - 1]->x()*bernst );
-      p->setY( p->y() + ( *mControlPoly )[n - 1]->y()*bernst );
-      p->setZ( p->z() + ( *mControlPoly )[n - 1]->z()*bernst );
+      p->setX( p->x() + ( *mControlPoly )[n - 1]->x() * bernst );
+      p->setY( p->y() + ( *mControlPoly )[n - 1]->y() * bernst );
+      p->setZ( p->z() + ( *mControlPoly )[n - 1]->z() * bernst );
     }
   }
 
@@ -91,13 +90,13 @@ void Bezier3D::calcSecDer( float t, Vector3D *v )
     for ( int n = 1; n <= int( nodes - 2 ); n++ )
     {
       const double bernst = MathUtils::calcBernsteinPoly( nodes - 3, n - 1, t );
-      v->setX( v->getX() + ( ( *mControlPoly )[n + 1]->x() - 2 * ( *mControlPoly )[n]->x() + ( *mControlPoly )[n - 1]->x() )*bernst );
-      v->setY( v->getY() + ( ( *mControlPoly )[n + 1]->y() - 2 * ( *mControlPoly )[n]->y() + ( *mControlPoly )[n - 1]->y() )*bernst );
-      v->setZ( v->getZ() + ( ( *mControlPoly )[n + 1]->z() - 2 * ( *mControlPoly )[n]->z() + ( *mControlPoly )[n - 1]->z() )*bernst );
+      v->setX( v->getX() + ( ( *mControlPoly )[n + 1]->x() - 2 * ( *mControlPoly )[n]->x() + ( *mControlPoly )[n - 1]->x() ) * bernst );
+      v->setY( v->getY() + ( ( *mControlPoly )[n + 1]->y() - 2 * ( *mControlPoly )[n]->y() + ( *mControlPoly )[n - 1]->y() ) * bernst );
+      v->setZ( v->getZ() + ( ( *mControlPoly )[n + 1]->z() - 2 * ( *mControlPoly )[n]->z() + ( *mControlPoly )[n - 1]->z() ) * bernst );
     }
-    v->setX( v->getX()*MathUtils::faculty( nodes - 1 ) / MathUtils::faculty( nodes - 3 ) );
-    v->setY( v->getY()*MathUtils::faculty( nodes - 1 ) / MathUtils::faculty( nodes - 3 ) );
-    v->setZ( v->getZ()*MathUtils::faculty( nodes - 1 ) / MathUtils::faculty( nodes - 3 ) );
+    v->setX( v->getX() * MathUtils::faculty( nodes - 1 ) / MathUtils::faculty( nodes - 3 ) );
+    v->setY( v->getY() * MathUtils::faculty( nodes - 1 ) / MathUtils::faculty( nodes - 3 ) );
+    v->setZ( v->getZ() * MathUtils::faculty( nodes - 1 ) / MathUtils::faculty( nodes - 3 ) );
   }
 
   else
@@ -107,12 +106,12 @@ void Bezier3D::calcSecDer( float t, Vector3D *v )
 }
 
 
-void Bezier3D::changeDirection()//does this work correctly? more testing is needed.
+void Bezier3D::changeDirection() //does this work correctly? more testing is needed.
 {
   if ( mControlPoly )
   {
-    QgsPoint **pointer = new QgsPoint*[mControlPoly->count()];//create an array to temporarily store pointer to the control points
-    for ( int i = 0; i < mControlPoly->count(); i++ )//store the points
+    QgsPoint **pointer = new QgsPoint *[mControlPoly->count()]; //create an array to temporarily store pointer to the control points
+    for ( int i = 0; i < mControlPoly->count(); i++ )           //store the points
     {
       pointer[i] = ( *mControlPoly )[i];
     }
@@ -121,7 +120,7 @@ void Bezier3D::changeDirection()//does this work correctly? more testing is need
     {
       mControlPoly->insert( i, pointer[( mControlPoly->count() - 1 ) - i] );
     }
-    delete [] pointer;
+    delete[] pointer;
   }
 
   else
@@ -129,35 +128,3 @@ void Bezier3D::changeDirection()//does this work correctly? more testing is need
     QgsDebugError( QStringLiteral( "warning: null pointer" ) );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

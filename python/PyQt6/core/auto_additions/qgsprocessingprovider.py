@@ -2,5 +2,5 @@
 try:
     QgsProcessingProvider.__attribute_docs__ = {'algorithmsLoaded': 'Emitted when the provider has loaded (or refreshed) its list of available\nalgorithms.\n\n.. seealso:: :py:func:`refreshAlgorithms`\n'}
     QgsProcessingProvider.__group__ = ['processing']
-except NameError:
+except (NameError, AttributeError):
     pass

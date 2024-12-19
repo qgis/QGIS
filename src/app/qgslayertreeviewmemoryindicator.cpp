@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewmemoryindicator.h"
+#include "moc_qgslayertreeviewmemoryindicator.cpp"
 #include "qgslayertreeview.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
@@ -61,4 +62,3 @@ QString QgsLayerTreeViewMemoryIndicatorProvider::tooltipText( QgsMapLayer *layer
 
   return tr( "<b>Temporary layer only!</b><br>Contents will be discarded after closing QGIS." );
 }
-

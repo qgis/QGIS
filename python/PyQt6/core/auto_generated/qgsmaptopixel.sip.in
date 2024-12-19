@@ -131,13 +131,13 @@ Transforms device coordinates to map (world) coordinates.
 :return: :py:class:`QgsPointXY` in map coorndiates
 %End
 
- QgsPointXY toMapPoint( double x, double y ) const /Deprecated/;
+ QgsPointXY toMapPoint( double x, double y ) const /Deprecated="Since 3.4. Use toMapCoordinates() instead."/;
 %Docstring
 Transforms device coordinates to map (world) coordinates.
 
 .. deprecated:: 3.4
 
-   Use toMapCoordinates instead.
+   Use :py:func:`~QgsMapToPixel.toMapCoordinates` instead.
 %End
 
     void setMapUnitsPerPixel( double mapUnitsPerPixel );

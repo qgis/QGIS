@@ -15,6 +15,9 @@ if(NOT "${CMAKE_VERSION}" VERSION_LESS "3.27")
   # include(Dart) still used, as is the "Experimental" target
   cmake_policy(SET CMP0145 OLD)
 endif()
+if("${CMAKE_VERSION}" VERSION_GREATER_EQUAL "3.31")
+  cmake_policy(SET CMP0177 NEW)
+endif()
 
 # don't relink it only the shared object changes
 set(CMAKE_LINK_DEPENDS_NO_SHARED ON)
@@ -26,31 +29,39 @@ set (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be bui
 set (WITH_GUI TRUE CACHE BOOL "Determines whether QGIS GUI library should be built")
 set(WITH_VCPKG FALSE CACHE BOOL "Use the vcpkg submodule for dependency management.")
 
-set(WITH_VCPKG TRUE CACHE BOOL "Use the vcpkg submodule for dependency management.")
 set(SDK_PATH "" CACHE STRING "Build with VCPKG SDK")
 
 if(NOT SDK_PATH STREQUAL "")
   message(STATUS "Building with SDK -- ${SDK_PATH}")
   set(CMAKE_TOOLCHAIN_FILE "${SDK_PATH}/scripts/buildsystems/vcpkg.cmake")
+  set(VCPKG_INSTALL_PREFIX "${SDK_PATH}/installed")
   if(APPLE AND NOT VCPKG_TARGET_TRIPLET)
-    set(VCPKG_TARGET_TRIPLET "x64-osx-dynamic")
+    message(FATAL_ERROR "VCPKG_TARGET_TRIPLET not set (set it to arm64-osx-dynamic-release or x64-osx-dynamic-release")
   endif()
   set(WITH_VCPKG ON)
 elseif(WITH_VCPKG)
   message(STATUS "Building local dependencies with VCPKG --")
+  set(VCPKG_INSTALL_PREFIX "${CMAKE_BINARY_DIR}/vcpkg_installed")
   include(VcpkgToolchain)
 else()
   message(STATUS "Building with system libraries --")
 endif()
 
 if(WITH_VCPKG)
-  list(APPEND CMAKE_PROGRAM_PATH "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}/")
+  if(WIN32)
+    list(APPEND CMAKE_PROGRAM_PATH "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}/tools/python3/Scripts/")
+  else()
+    list(APPEND CMAKE_PROGRAM_PATH "${VCPKG_INSTALL_PREFIX}/${VCPKG_TARGET_TRIPLET}/bin")
+  endif()
+  set(PREFER_INTERNAL_LIBS FALSE)
+else()
+  set(PREFER_INTERNAL_LIBS TRUE)
 endif()
 
 #############################################################
 # Project and version
 set(CPACK_PACKAGE_VERSION_MAJOR "3")
-set(CPACK_PACKAGE_VERSION_MINOR "39")
+set(CPACK_PACKAGE_VERSION_MINOR "41")
 set(CPACK_PACKAGE_VERSION_PATCH "0")
 set(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
 set(RELEASE_NAME "Master")
@@ -71,7 +82,7 @@ set (ENABLE_LOCAL_BUILD_SHORTCUTS FALSE CACHE BOOL "Disables some build steps wh
 #############################################################
 if (APPLE)
   # QGIS custom dependencies package from qgis/QGIS-Mac-Packager
-  # they can be downloaded from https://qgis.org/downloads/macos/qgis-deps
+  # they can be downloaded from https://download.qgis.org/downloads/macos/deps/
   # and extracted to /opt/QGIS/qgis-deps-<deps-version>/stage
   set (QGIS_MAC_DEPS_DIR "" CACHE PATH "Path to QGIS Mac custom dependencies directory")
 
@@ -117,11 +128,61 @@ option(USE_CCACHE "Use ccache" ON)
 if (USE_CCACHE)
   find_program(CCACHE_FOUND ccache)
   if(CCACHE_FOUND)
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
     message(STATUS "ccache found")
+    execute_process(COMMAND ccache --help OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE CCACHE_HELP)
+    execute_process(COMMAND ccache --get-config sloppiness OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE CCACHE_SLOPPINESS)
+    execute_process(COMMAND ccache --get-config compiler_type OUTPUT_STRIP_TRAILING_WHITESPACE OUTPUT_VARIABLE CCACHE_COMPILER_TYPE)
+    string(FIND "${CCACHE_SLOPPINESS}" "pch_defines" fpch_defines_found_index)
+    string(FIND "${CCACHE_SLOPPINESS}" "time_macros" time_macros_found_index)
+    string(FIND "${CCACHE_SLOPPINESS}" "include_file_mtime" include_file_mtime_found_index)
+    string(FIND "${CCACHE_SLOPPINESS}" "include_file_ctime" include_file_ctime_found_index)
+    # Detect if we have ccache >= 4.8 which accepts passing configuration settings when invoking the compiler
+    string(FIND "${CCACHE_HELP}" "ccache [KEY=VALUE ...] compiler" ccache_key_value_found_index)
+    if (fpch_defines_found_index EQUAL -1 OR time_macros_found_index EQUAL -1 OR
+        (BUILD_WITH_QT6 AND (include_file_mtime_found_index EQUAL -1 OR include_file_ctime_found_index EQUAL -1)))
+        set(CCACHE_SLOPPINESS_REQUIRED "pch_defines,time_macros")
+        if (BUILD_WITH_QT6 AND (include_file_mtime_found_index EQUAL -1 OR include_file_ctime_found_index EQUAL -1))
+          string(APPEND CCACHE_SLOPPINESS_REQUIRED ",include_file_mtime,include_file_ctime")
+        endif()
+    else()
+        set(CCACHE_SLOPPINESS_REQUIRED "")
+    endif()
+    if (BUILD_WITH_QT6 AND CMAKE_CXX_COMPILER STREQUAL "/usr/bin/c++" AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND NOT "${CCACHE_COMPILER_TYPE}" STREQUAL "gcc")
+        # Cf https://github.com/ccache/ccache/discussions/959
+        set(CCACHE_COMPILER_TYPE_GCC_REQUIRED ON)
+    else()
+        set(CCACHE_COMPILER_TYPE_GCC_REQUIRED OFF)
+    endif()
+    set(CCACHE_INVOCATION_COMMAND "ccache")
+    if (MSVC)
+       # CCache doesn't work yet with precompiled headers (cf https://github.com/ccache/ccache/issues/1383)
+       # so no need to set specific ccache configuration items
+    elseif (ccache_key_value_found_index EQUAL -1 )
+      if (CCACHE_SLOPPINESS_REQUIRED)
+          message(FATAL_ERROR "The use of precompiled headers only works if the ccache 'sloppiness' settings contains 'pch_defines' and 'time_macros'. Consider running 'ccache --set-config sloppiness=${CCACHE_SLOPPINESS_REQUIRED}' to define them")
+      endif()
+      if (CCACHE_COMPILER_TYPE_GCC_REQUIRED)
+          message(FATAL_ERROR "The use of precompiled headers only works properly with QT6 if the ccache 'compiler_type' settings is set to 'gcc'. Consider running 'ccache --set-config compiler_type=gcc'")
+      endif()
+    else()
+      if (CCACHE_SLOPPINESS_REQUIRED)
+        string(APPEND CCACHE_INVOCATION_COMMAND " sloppiness=${CCACHE_SLOPPINESS_REQUIRED}")
+      endif()
+      if (CCACHE_COMPILER_TYPE_GCC_REQUIRED)
+        string(APPEND CCACHE_INVOCATION_COMMAND " compiler_type=gcc")
+      endif()
+    endif()
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_INVOCATION_COMMAND}")
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK "${CCACHE_INVOCATION_COMMAND}")
   endif(CCACHE_FOUND)
 endif(USE_CCACHE)
+
+if (USE_CCACHE AND MSVC)
+  # CCache doesn't work yet with precompiled headers (cf https://github.com/ccache/ccache/issues/1383)
+  set(USE_PRECOMPILED_HEADERS OFF)
+else()
+  set(USE_PRECOMPILED_HEADERS ON)
+endif()
 
 if (IOS)
     set (DEFAULT_FORCE_STATIC_LIBS TRUE)
@@ -272,7 +333,8 @@ if(WITH_CORE)
   endif()
 
   # try to configure and build POLY2TRI support
-  set (WITH_INTERNAL_POLY2TRI TRUE CACHE BOOL "Determines whether POLY2TRI should be built from internal copy")
+  set (WITH_INTERNAL_POLY2TRI ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether POLY2TRI should be built from internal copy")
+  set (WITH_INTERNAL_MESHOPTIMIZER ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether MESHOPTIMIZER should be built from internal copy")
 
   # try to configure and build POSTGRESQL support
   set (WITH_POSTGRESQL TRUE CACHE BOOL "Determines whether POSTGRESQL support should be built")
@@ -385,7 +447,7 @@ if(WITH_CORE)
   find_package(EXPAT REQUIRED)
   find_package(Spatialindex REQUIRED)
   find_package(LibZip REQUIRED)
-  set (WITH_INTERNAL_NLOHMANN_JSON ON CACHE BOOL "Determines whether the vendored copy of nlohmann-json should be used")
+  set (WITH_INTERNAL_NLOHMANN_JSON ${PREFER_INTERNAL_LIBS} CACHE BOOL "Determines whether the vendored copy of nlohmann-json should be used")
   find_package(nlohmann_json REQUIRED)
 
   # The following bypasses the FindSQLite3 module introduced in CMake 3.14
@@ -815,10 +877,14 @@ if(MSVC)
   add_definitions(-DNOMINMAX)
 endif()
 
-# Prevent build when Qt api deprecated before this Qt version is used:
-add_definitions(-DQT_DEPRECATED_WARNINGS)
-# Unfortunately Qwt uses deprecated QString::null in headers, preventing this being raised above 5.8
-add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
+if(BUILD_WITH_QT6)
+  # Qt deprecated warnings are too noisy for now -- we have a LOT of QVariant::Type usage
+  # in order to maintain Qt5 compatibility
+  add_definitions(-DQT_NO_DEPRECATED_WARNINGS)
+else()
+  # Unfortunately Qwt uses deprecated QString::null in headers, preventing this being raised above 5.8
+  add_definitions(-DQT_DISABLE_DEPRECATED_BEFORE=0x050800)
+endif()
 
 # For fast string concatenation
 add_definitions(-DQT_USE_QSTRINGBUILDER)
@@ -1066,6 +1132,8 @@ endif()
 
 # whether to install required system libs in the output package
 set(QGIS_INSTALL_SYS_LIBS TRUE CACHE BOOL "If set to TRUE install all required system libs in the output package")
+
+option(ENABLE_UNITY_BUILDS "Enable Unity builds, that is compiling several .cpp files in the same compilation unit (EXPERIMENTAL. Not recommended for production builds)" OFF)
 
 #############################################################
 # Python

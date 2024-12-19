@@ -69,7 +69,7 @@ Ownership of the returned provider is passed to the caller.
 
 
  Qgis::RasterFileWriterResult writeRaster( const QgsRasterPipe *pipe, int nCols, int nRows, const QgsRectangle &outputExtent,
-        const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = 0 ) /Deprecated/;
+        const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = 0 ) /Deprecated="Since 3.8. Use version with transformContext instead."/;
 %Docstring
 Write raster file
 

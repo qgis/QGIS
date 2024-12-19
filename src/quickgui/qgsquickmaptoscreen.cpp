@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsquickmaptoscreen.h"
+#include "moc_qgsquickmaptoscreen.cpp"
 #include "qgspoint.h"
 
 QgsQuickMapToScreen::QgsQuickMapToScreen( QObject *parent )

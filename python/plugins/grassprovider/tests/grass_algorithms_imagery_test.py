@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Médéric Ribreux'
-__date__ = 'May 2016'
-__copyright__ = '(C) 2016, Médéric Ribreux'
+__author__ = "Médéric Ribreux"
+__date__ = "May 2016"
+__copyright__ = "(C) 2016, Médéric Ribreux"
 
 import AlgorithmsTestBase
 
@@ -25,10 +25,7 @@ import nose2
 import shutil
 
 from qgis.core import QgsApplication
-from qgis.testing import (
-    QgisTestCase,
-    start_app
-)
+from qgis.testing import QgisTestCase, start_app
 from grassprovider.grass_provider import GrassProvider
 from grassprovider.grass_utils import GrassUtils
 
@@ -51,8 +48,8 @@ class TestGrassAlgorithmsImageryTest(QgisTestCase, AlgorithmsTestBase.Algorithms
             shutil.rmtree(path)
 
     def definition_file(self):
-        return 'grass_algorithms_imagery_tests.yaml'
+        return "grass_algorithms_imagery_tests.yaml"
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     nose2.main()

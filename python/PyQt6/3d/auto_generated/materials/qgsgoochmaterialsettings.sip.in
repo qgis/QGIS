@@ -28,7 +28,6 @@ with three color components: ambient, diffuse and specular.
 #include "qgsgoochmaterialsettings.h"
 %End
   public:
-
     QgsGoochMaterialSettings();
 
     virtual QString type() const;
@@ -45,6 +44,8 @@ Returns ``True`` if the specified ``technique`` is supported by the Gooch materi
 %End
 
     virtual QgsGoochMaterialSettings *clone() const /Factory/;
+
+    virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
 
 
     QColor warm() const;
@@ -65,17 +66,17 @@ Returns diffuse color component
 %Docstring
 Returns specular color component
 %End
-    float shininess() const;
+    double shininess() const;
 %Docstring
 Returns shininess of the surface
 %End
 
-    float alpha() const;
+    double alpha() const;
 %Docstring
 Returns the alpha value
 %End
 
-    float beta() const;
+    double beta() const;
 %Docstring
 Returns the beta value
 %End
@@ -98,17 +99,17 @@ Sets diffuse color component
 %Docstring
 Sets specular color component
 %End
-    void setShininess( float shininess );
+    void setShininess( double shininess );
 %Docstring
 Sets shininess of the surface
 %End
 
-    void setAlpha( float alpha );
+    void setAlpha( double alpha );
 %Docstring
 Sets alpha value
 %End
 
-    void setBeta( float beta );
+    void setBeta( double beta );
 %Docstring
 Sets beta value
 %End

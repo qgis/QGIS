@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsdbqueryhistoryprovider.h"
+#include "moc_qgsdbqueryhistoryprovider.cpp"
 #include "qgscodeeditorsql.h"
 #include "qgshistoryentry.h"
 #include "qgsprovidermetadata.h"
@@ -32,7 +33,6 @@
 class DatabaseQueryHistoryNode : public QgsHistoryEntryGroup
 {
   public:
-
     DatabaseQueryHistoryNode( const QgsHistoryEntry &entry, QgsDatabaseQueryHistoryProvider *provider )
       : QgsHistoryEntryGroup()
       , mEntry( entry )
@@ -41,16 +41,13 @@ class DatabaseQueryHistoryNode : public QgsHistoryEntryGroup
     }
 
   protected:
-
     QgsHistoryEntry mEntry;
     QgsDatabaseQueryHistoryProvider *mProvider = nullptr;
-
 };
 
 class DatabaseQueryValueNode : public DatabaseQueryHistoryNode
 {
   public:
-
     DatabaseQueryValueNode( const QgsHistoryEntry &entry, QgsDatabaseQueryHistoryProvider *provider, const QString &value )
       : DatabaseQueryHistoryNode( entry, provider )
       , mValue( value )
@@ -75,15 +72,12 @@ class DatabaseQueryValueNode : public DatabaseQueryHistoryNode
     }
 
   private:
-
     QString mValue;
-
 };
 
 class DatabaseQueryRootNode : public DatabaseQueryHistoryNode
 {
   public:
-
     DatabaseQueryRootNode( const QgsHistoryEntry &entry, QgsDatabaseQueryHistoryProvider *provider )
       : DatabaseQueryHistoryNode( entry, provider )
     {
@@ -158,29 +152,25 @@ class DatabaseQueryRootNode : public DatabaseQueryHistoryNode
 
     bool doubleClicked( const QgsHistoryWidgetContext & ) override
     {
-      mProvider->emitOpenSqlDialog( mEntry.entry.value( QStringLiteral( "connection" ) ).toString(),
-                                    mEntry.entry.value( QStringLiteral( "provider" ) ).toString(),
-                                    mEntry.entry.value( QStringLiteral( "query" ) ).toString() );
+      mProvider->emitOpenSqlDialog( mEntry.entry.value( QStringLiteral( "connection" ) ).toString(), mEntry.entry.value( QStringLiteral( "provider" ) ).toString(), mEntry.entry.value( QStringLiteral( "query" ) ).toString() );
       return true;
     }
 
     void populateContextMenu( QMenu *menu, const QgsHistoryWidgetContext & ) override
     {
       QAction *executeAction = new QAction(
-        QObject::tr( "Execute SQL Command…" ), menu );
-      QObject::connect( executeAction, &QAction::triggered, menu, [ = ]
-      {
-        mProvider->emitOpenSqlDialog( mEntry.entry.value( QStringLiteral( "connection" ) ).toString(),
-                                      mEntry.entry.value( QStringLiteral( "provider" ) ).toString(),
-                                      mEntry.entry.value( QStringLiteral( "query" ) ).toString() );
+        QObject::tr( "Execute SQL Command…" ), menu
+      );
+      QObject::connect( executeAction, &QAction::triggered, menu, [=] {
+        mProvider->emitOpenSqlDialog( mEntry.entry.value( QStringLiteral( "connection" ) ).toString(), mEntry.entry.value( QStringLiteral( "provider" ) ).toString(), mEntry.entry.value( QStringLiteral( "query" ) ).toString() );
       } );
       menu->addAction( executeAction );
 
       QAction *copyAction = new QAction(
-        QObject::tr( "Copy SQL Command" ), menu );
+        QObject::tr( "Copy SQL Command" ), menu
+      );
       copyAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "mActionEditCopy.svg" ) ) );
-      QObject::connect( copyAction, &QAction::triggered, menu, [ = ]
-      {
+      QObject::connect( copyAction, &QAction::triggered, menu, [=] {
         QMimeData *m = new QMimeData();
         m->setText( mEntry.entry.value( QStringLiteral( "query" ) ).toString() );
         QApplication::clipboard()->setMimeData( m );
@@ -189,13 +179,11 @@ class DatabaseQueryRootNode : public DatabaseQueryHistoryNode
     }
 
   private:
-
     QString mProviderKey;
     mutable QIcon mProviderIcon;
     DatabaseQueryValueNode *mConnectionNode = nullptr;
     DatabaseQueryValueNode *mRowsNode = nullptr;
     DatabaseQueryValueNode *mTimeNode = nullptr;
-
 };
 
 ///@endcond
@@ -217,7 +205,7 @@ QgsHistoryEntryNode *QgsDatabaseQueryHistoryProvider::createNodeForEntry( const 
 
 void QgsDatabaseQueryHistoryProvider::updateNodeForEntry( QgsHistoryEntryNode *node, const QgsHistoryEntry &entry, const QgsHistoryWidgetContext & )
 {
-  if ( DatabaseQueryRootNode *dbNode = dynamic_cast< DatabaseQueryRootNode * >( node ) )
+  if ( DatabaseQueryRootNode *dbNode = dynamic_cast<DatabaseQueryRootNode *>( node ) )
   {
     dbNode->setEntry( entry );
   }

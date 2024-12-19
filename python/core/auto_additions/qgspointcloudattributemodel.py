@@ -67,9 +67,9 @@ try:
     QgsPointCloudAttributeModel.attributeToolTip = staticmethod(QgsPointCloudAttributeModel.attributeToolTip)
     QgsPointCloudAttributeModel.iconForAttributeType = staticmethod(QgsPointCloudAttributeModel.iconForAttributeType)
     QgsPointCloudAttributeModel.__group__ = ['pointcloud']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsPointCloudAttributeProxyModel.__group__ = ['pointcloud']
-except NameError:
+except (NameError, AttributeError):
     pass

@@ -22,7 +22,7 @@
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QGeometryRenderer>
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
@@ -44,8 +44,8 @@ typedef Qt3DCore::QGeometry Qt3DQGeometry;
 namespace QgsRayCastingUtils
 {
 
-// copied from qt3d/src/render/raycasting/qray3d_p.h + qray3d.cpp
-// by KDAB, licensed under the terms of LGPL
+  // copied from qt3d/src/render/raycasting/qray3d_p.h + qray3d.cpp
+  // by KDAB, licensed under the terms of LGPL
 
 
   Ray3D::Ray3D()
@@ -143,8 +143,7 @@ namespace QgsRayCastingUtils
   {
     Q_ASSERT( !m_direction.isNull() );
 
-    return QVector3D::dotProduct( point - m_origin, m_direction ) /
-           m_direction.lengthSquared();
+    return QVector3D::dotProduct( point - m_origin, m_direction ) / m_direction.lengthSquared();
   }
 
   QVector3D Ray3D::project( QVector3D vector ) const
@@ -171,7 +170,7 @@ namespace QgsRayCastingUtils
     return dbg;
   }
 
-}
+} // namespace QgsRayCastingUtils
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -179,33 +178,49 @@ namespace QgsRayCastingUtils
 
 struct box
 {
-  box( const QgsAABB &b )
-  {
-    min[0] = b.xMin; min[1] = b.yMin; min[2] = b.zMin;
-    max[0] = b.xMax; max[1] = b.yMax; max[2] = b.zMax;
-  }
-  double min[3];
-  double max[3];
+    box( const QgsAABB &b )
+    {
+      min[0] = b.xMin;
+      min[1] = b.yMin;
+      min[2] = b.zMin;
+      max[0] = b.xMax;
+      max[1] = b.yMax;
+      max[2] = b.zMax;
+    }
+    double min[3];
+    double max[3];
 };
 
 struct ray
 {
-  ray( double xO, double yO, double zO, double xD, double yD, double zD )
-  {
-    origin[0] = xO; origin[1] = yO; origin[2] = zO;
-    dir[0] = xD; dir[1] = yD; dir[2] = zD;
-    dir_inv[0] = 1 / dir[0]; dir_inv[1] = 1 / dir[1]; dir_inv[2] = 1 / dir[2];
-  }
-  ray( const QgsRayCastingUtils::Ray3D &r )
-  {
-    // ignoring length...
-    origin[0] = r.origin().x(); origin[1] = r.origin().y(); origin[2] = r.origin().z();
-    dir[0] = r.direction().x(); dir[1] = r.direction().y(); dir[2] = r.direction().z();
-    dir_inv[0] = 1 / dir[0]; dir_inv[1] = 1 / dir[1]; dir_inv[2] = 1 / dir[2];
-  }
-  double origin[3];
-  double dir[3];
-  double dir_inv[3];
+    ray( double xO, double yO, double zO, double xD, double yD, double zD )
+    {
+      origin[0] = xO;
+      origin[1] = yO;
+      origin[2] = zO;
+      dir[0] = xD;
+      dir[1] = yD;
+      dir[2] = zD;
+      dir_inv[0] = 1 / dir[0];
+      dir_inv[1] = 1 / dir[1];
+      dir_inv[2] = 1 / dir[2];
+    }
+    ray( const QgsRayCastingUtils::Ray3D &r )
+    {
+      // ignoring length...
+      origin[0] = r.origin().x();
+      origin[1] = r.origin().y();
+      origin[2] = r.origin().z();
+      dir[0] = r.direction().x();
+      dir[1] = r.direction().y();
+      dir[2] = r.direction().z();
+      dir_inv[0] = 1 / dir[0];
+      dir_inv[1] = 1 / dir[1];
+      dir_inv[2] = 1 / dir[2];
+    }
+    double origin[3];
+    double dir[3];
+    double dir_inv[3];
 };
 
 // https://tavianator.com/fast-branchless-raybounding-box-intersections/
@@ -240,21 +255,19 @@ namespace QgsRayCastingUtils
     box b( aabb );
 
     // intersection() does not like yMin==yMax (excludes borders)
-    if ( b.min[0] == b.max[0] ) b.max[0] += 0.1;
-    if ( b.min[1] == b.max[1] ) b.max[1] += 0.1;
-    if ( b.min[2] == b.max[2] ) b.max[2] += 0.1;
+    if ( b.min[0] == b.max[0] )
+      b.max[0] += 0.1;
+    if ( b.min[1] == b.max[1] )
+      b.max[1] += 0.1;
+    if ( b.min[2] == b.max[2] )
+      b.max[2] += 0.1;
 
     return intersection( b, ray( r ) );
   }
 
-// copied from intersectsSegmentTriangle() from qt3d/src/render/backend/triangleboundingvolume.cpp
-// by KDAB, licensed under the terms of LGPL
-  bool rayTriangleIntersection( const Ray3D &ray,
-                                QVector3D a,
-                                QVector3D b,
-                                QVector3D c,
-                                QVector3D &uvw,
-                                float &t )
+  // copied from intersectsSegmentTriangle() from qt3d/src/render/backend/triangleboundingvolume.cpp
+  // by KDAB, licensed under the terms of LGPL
+  bool rayTriangleIntersection( const Ray3D &ray, QVector3D a, QVector3D b, QVector3D c, QVector3D &uvw, float &t )
   {
     // Note: a, b, c in clockwise order
     // RealTime Collision Detection page 192
@@ -295,11 +308,7 @@ namespace QgsRayCastingUtils
     return true;
   }
 
-  bool rayMeshIntersection( Qt3DRender::QGeometryRenderer *geometryRenderer,
-                            const QgsRayCastingUtils::Ray3D &r,
-                            const QMatrix4x4 &worldTransform,
-                            QVector3D &intPt,
-                            int &triangleIndex )
+  bool rayMeshIntersection( Qt3DRender::QGeometryRenderer *geometryRenderer, const QgsRayCastingUtils::Ray3D &r, const QMatrix4x4 &worldTransform, QVector3D &intPt, int &triangleIndex )
   {
     if ( geometryRenderer->primitiveType() != Qt3DRender::QGeometryRenderer::Triangles )
     {
@@ -336,7 +345,7 @@ namespace QgsRayCastingUtils
 
     if ( positionAttr->vertexBaseType() != Qt3DQAttribute::Float || positionAttr->vertexSize() != 3 )
     {
-      QgsDebugError( QString( "Unsupported position attribute: base type %1, vertex size %2" ). arg( positionAttr->vertexBaseType() ).arg( positionAttr->vertexSize() ) );
+      QgsDebugError( QString( "Unsupported position attribute: base type %1, vertex size %2" ).arg( positionAttr->vertexBaseType() ).arg( positionAttr->vertexSize() ) );
       return false;
     }
 
@@ -440,8 +449,7 @@ namespace QgsRayCastingUtils
       // We're testing both triangle orientations here and ignoring the culling mode.
       // We should probably respect the culling mode used for the entity and perform a
       // single test using the properly oriented triangle.
-      if ( QgsRayCastingUtils::rayTriangleIntersection( r, tA, tB, tC, uvw, t ) ||
-           QgsRayCastingUtils::rayTriangleIntersection( r, tA, tC, tB, uvw, t ) )
+      if ( QgsRayCastingUtils::rayTriangleIntersection( r, tA, tB, tC, uvw, t ) || QgsRayCastingUtils::rayTriangleIntersection( r, tA, tC, tB, uvw, t ) )
       {
         intersectionPt = r.point( t * r.distance() );
         const float distance = r.projectedDistance( intersectionPt );
@@ -464,7 +472,7 @@ namespace QgsRayCastingUtils
     else
       return false;
   }
-}
+} // namespace QgsRayCastingUtils
 
 
 /// @endcond

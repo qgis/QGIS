@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsgpsdetector.h"
+#include "moc_qgsgpsdetector.cpp"
 #include "qgsgpsconnection.h"
 #include "qgsnmeaconnection.h"
 #include "qgsgpsdconnection.h"

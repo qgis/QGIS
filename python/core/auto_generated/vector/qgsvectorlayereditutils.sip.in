@@ -61,7 +61,7 @@ Deletes a vertex from a feature.
 :param vertex: index of vertex to delete
 %End
 
- Qgis::GeometryOperationResult addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 ) /Deprecated/;
+ Qgis::GeometryOperationResult addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 ) /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
 %Docstring
 Adds a ring to polygon/multipolygon features
 
@@ -103,7 +103,7 @@ Adds a ring to polygon/multipolygon features
 .. versionadded:: 3.28
 %End
 
-    Qgis::GeometryOperationResult addRing( QgsCurve *ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 ) /PyName=addCurvedRing/;
+    Qgis::GeometryOperationResult addRing( QgsCurve *ring /Transfer/, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = 0 ) /PyName=addCurvedRing/;
 %Docstring
 Adds a ring to polygon/multipolygon features
 
@@ -119,7 +119,7 @@ Adds a ring to polygon/multipolygon features
    available in python bindings as addCurvedRing
 %End
 
-  Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &ring, QgsFeatureId featureId ) /Deprecated/;
+  Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &ring, QgsFeatureId featureId ) /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
 %Docstring
 Adds a new part polygon to a multipart feature
 
@@ -151,7 +151,7 @@ Adds a new part polygon to a multipart feature
    available in python bindings as addPartV2
 %End
 
-    Qgis::GeometryOperationResult addPart( QgsCurve *ring, QgsFeatureId featureId ) /PyName=addCurvedPart/;
+    Qgis::GeometryOperationResult addPart( QgsCurve *ring /Transfer/, QgsFeatureId featureId ) /PyName=addCurvedPart/;
 %Docstring
 Adds a new part polygon to a multipart feature
 
@@ -178,7 +178,7 @@ Translates feature by dx, dy
 :return: 0 in case of success
 %End
 
-  Qgis::GeometryOperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) /Deprecated/;
+  Qgis::GeometryOperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
 %Docstring
 Splits parts cut by the given line
 
@@ -216,7 +216,7 @@ Splits parts cut by the given line
          - :py:class:`QgsGeometry`.SplitCannotSplitPoint
 %End
 
-  Qgis::GeometryOperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) /Deprecated/;
+  Qgis::GeometryOperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false ) /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
 %Docstring
 Splits features cut by the given line
 

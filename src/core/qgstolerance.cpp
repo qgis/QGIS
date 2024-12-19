@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgstolerance.h"
+#include "moc_qgstolerance.cpp"
 #include "qgsmapsettings.h"
 #include "qgssettingsregistrycore.h"
 #include "qgssettingsentryimpl.h"

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsabout.h"
+#include "moc_qgsabout.cpp"
 #include "qgsapplication.h"
 #include "qgsauthmethodregistry.h"
 #include "qgsproviderregistry.h"
@@ -45,7 +46,7 @@ QgsAbout::QgsAbout( QWidget *parent )
   connect( btnQgisUser, &QPushButton::clicked, this, &QgsAbout::btnQgisUser_clicked );
   connect( btnQgisHome, &QPushButton::clicked, this, &QgsAbout::btnQgisHome_clicked );
   connect( btnCopyToClipboard, &QPushButton::clicked, this, &QgsAbout::btnCopyToClipboard_clicked );
-  if constexpr( QSysInfo::WordSize != 64 )
+  if constexpr ( QSysInfo::WordSize != 64 )
   {
     // 64 bit is the current standard. Only specify word size if it is not 64.
     initOptionsBase( true, tr( "%1 - %2 Bit" ).arg( windowTitle() ).arg( QSysInfo::WordSize ) );
@@ -90,7 +91,7 @@ void QgsAbout::init()
   if ( file.open( QIODevice::ReadOnly ) )
   {
     QTextStream stream( &file );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     // Always use UTF-8
     stream.setCodec( "UTF-8" );
 #endif
@@ -122,7 +123,7 @@ void QgsAbout::init()
   if ( file2.open( QIODevice::ReadOnly ) )
   {
     QTextStream stream( &file2 );
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     // Always use UTF-8
     stream.setCodec( "UTF-8" );
 #endif
@@ -150,8 +151,8 @@ void QgsAbout::init()
   {
     const QString donorsHTML = tr( "<p>For a list of individuals and institutions who have contributed "
                                    "money to fund QGIS development and other project costs see "
-                                   "<a href=\"https://qgis.org/en/site/about/sustaining_members.html#list-of-donors\">"
-                                   "https://qgis.org/en/site/about/sustaining_members.html#list-of-donors</a></p>" );
+                                   "<a href=\"https://qgis.org/funding/donate/\">"
+                                   "https://qgis.org/funding/donate/</a></p>" );
 #if 0
     QString website;
     QTextStream donorsStream( &donorsFile );
@@ -194,7 +195,7 @@ void QgsAbout::init()
     QString translatorHTML;
     QTextStream translatorStream( &translatorFile );
     // Always use UTF-8
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     translatorStream.setCodec( "UTF-8" );
 #endif
     const QString myStyle = QgsApplication::reportStyleSheet();

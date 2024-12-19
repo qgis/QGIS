@@ -44,14 +44,12 @@ typedef QgsDataItem *dataItem_t( QString, QgsDataItem * ) SIP_SKIP;
 */
 class CORE_EXPORT QgsDataItem : public QObject
 {
-#ifdef SIP_RUN
-#include "qgslayeritem.h"
-#include "qgsdirectoryitem.h"
-#include "qgsfavoritesitem.h"
-#include "qgszipitem.h"
-#include "qgsdatacollectionitem.h"
-#include "qgsprojectitem.h"
-#endif
+    //SIP_TYPEHEADER_INCLUDE( "qgslayeritem.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsdirectoryitem.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsfavoritesitem.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgszipitem.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsdatacollectionitem.h" );
+    //SIP_TYPEHEADER_INCLUDE( "qgsprojectitem.h" );
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
@@ -304,7 +302,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual void setCapabilities( Qgis::BrowserItemCapabilities capabilities ) SIP_PYNAME( setCapabilitiesV2 ) { mCapabilities = capabilities; }
 
     /**
-     * \deprecated QGIS 3.40. Use setCapabilitiesV2 instead.
+     * \deprecated QGIS 3.40. Use setCapabilitiesV2() instead.
      */
     Q_DECL_DEPRECATED void setCapabilities( int capabilities ) SIP_DEPRECATED;
 

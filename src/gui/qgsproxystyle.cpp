@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsproxystyle.h"
+#include "moc_qgsproxystyle.cpp"
 #include "qgsimageoperation.h"
 #include "qgis.h"
 #include <QStyleFactory>
@@ -29,7 +30,7 @@ QgsProxyStyle::QgsProxyStyle( QWidget *parent )
   const QString appStyle = QApplication::style()->objectName();
   if ( appStyle == QLatin1String( "QgsAppStyle" ) )
   {
-    setBaseStyle( static_cast< QgsAppStyle * >( QApplication::style() )->clone() );
+    setBaseStyle( static_cast<QgsAppStyle *>( QApplication::style() )->clone() );
   }
   else if ( !appStyle.isEmpty() )
   {
@@ -90,7 +91,7 @@ QPixmap QgsAppStyle::generatedIconPixmap( QIcon::Mode iconMode, const QPixmap &p
 void QgsAppStyle::polish( QWidget *widget )
 {
   QProxyStyle::polish( widget );
-#if defined(Q_OS_UNIX) && !defined(Q_OS_ANDROID)
+#if defined( Q_OS_UNIX ) && !defined( Q_OS_ANDROID )
   if ( mBaseStyle.contains( QLatin1String( "fusion" ), Qt::CaseInsensitive )
        || mBaseStyle.contains( QLatin1String( "adwaita" ), Qt::CaseInsensitive ) )
   {

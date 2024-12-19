@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgssearchwidgettoolbutton.h"
+#include "moc_qgssearchwidgettoolbutton.cpp"
 #include "qgsapplication.h"
 #include <QMenu>
 
@@ -182,7 +183,7 @@ void QgsSearchWidgetToolButton::aboutToShowMenu()
 
 void QgsSearchWidgetToolButton::actionSelected()
 {
-  const QgsSearchWidgetWrapper::FilterFlag flag = static_cast< QgsSearchWidgetWrapper::FilterFlag >( qobject_cast< QAction * >( sender() )->data().toInt() );
+  const QgsSearchWidgetWrapper::FilterFlag flag = static_cast<QgsSearchWidgetWrapper::FilterFlag>( qobject_cast<QAction *>( sender() )->data().toInt() );
   toggleFlag( flag );
 }
 

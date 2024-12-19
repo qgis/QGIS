@@ -51,7 +51,7 @@ Constructor for QgsFieldDomain, with the specified ``name``, ``description`` and
 
  QgsFieldDomain( const QString &name,
                                       const QString &description,
-                                      QVariant::Type fieldType ) /Deprecated/;
+                                      QVariant::Type fieldType ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
 Constructor for QgsFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
 
@@ -119,7 +119,7 @@ Sets the associated field ``type``.
 .. seealso:: :py:func:`fieldType`
 %End
 
- void setFieldType( QVariant::Type type ) /Deprecated/;
+ void setFieldType( QVariant::Type type ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
 Sets the associated field ``type``.
 
@@ -240,7 +240,7 @@ appear only once, but it is the responsibility of the user to check this.
  QgsCodedFieldDomain( const QString &name,
                                            const QString &description,
                                            QVariant::Type fieldType,
-                                           const QList<QgsCodedValue> &values ) /Deprecated/;
+                                           const QList<QgsCodedValue> &values ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
 Constructor for QgsCodedFieldDomain, with the associated ``name``, ``description`` and ``fieldType``.
 
@@ -317,7 +317,7 @@ Set an invalid QVariant for ``minimum`` or ``maximum`` respectively if no minimu
                                            const QVariant &minimum,
                                            bool minimumIsInclusive,
                                            const QVariant &maximum,
-                                           bool maximumIsInclusive ) /Deprecated/;
+                                           bool maximumIsInclusive ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
 Constructor for QgsRangeFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
 
@@ -460,7 +460,7 @@ The ``glob`` argument specifies the content validation glob, e.g. ``*[a-z][0-1]?
  QgsGlobFieldDomain( const QString &name,
                                           const QString &description,
                                           QVariant::Type fieldType,
-                                          const QString &glob ) /Deprecated/;
+                                          const QString &glob ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
 Constructor for QgsGlobFieldDomain, with the specified ``name``, ``description`` and ``fieldType``.
 

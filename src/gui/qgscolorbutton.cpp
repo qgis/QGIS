@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscolorbutton.h"
+#include "moc_qgscolorbutton.cpp"
 #include "qgscolordialog.h"
 #include "qgsapplication.h"
 #include "qgssymbollayerutils.h"
@@ -67,8 +68,7 @@ QgsColorButton::QgsColorButton( QWidget *parent, const QString &cdt, QgsColorSch
   mMinimumSize.setHeight( std::max( static_cast<int>( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.1 ), mMinimumSize.height() ) );
 
   // If project colors change, we need to redraw the button, as it may be set to follow a project color
-  connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, [ = ]
-  {
+  connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, [=] {
     setButtonBackground();
   } );
 }
@@ -121,7 +121,7 @@ void QgsColorButton::showColorDialog()
   if ( useNative )
   {
     // why would anyone want this? who knows.... maybe the limited nature of native dialogs helps ease the transition for MapInfo users?
-    newColor = QColorDialog::getColor( color(), this, mColorDialogTitle, mAllowOpacity ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption )0 );
+    newColor = QColorDialog::getColor( color(), this, mColorDialogTitle, mAllowOpacity ? QColorDialog::ShowAlphaChannel : ( QColorDialog::ColorDialogOption ) 0 );
   }
   else
   {
@@ -387,8 +387,7 @@ void QgsColorButton::wheelEvent( QWheelEvent *event )
 {
   if ( mAllowOpacity && isEnabled() && !isNull() )
   {
-    const double increment = ( ( event->modifiers() & Qt::ControlModifier ) ? 0.01 : 0.1 ) *
-                             ( event->angleDelta().y() > 0 ? 1 : -1 );
+    const double increment = ( ( event->modifiers() & Qt::ControlModifier ) ? 0.01 : 0.1 ) * ( event->angleDelta().y() > 0 ? 1 : -1 );
     const double alpha = std::min( std::max( 0.0, mColor.alphaF() + increment ), 1.0 );
     mColor.setAlphaF( alpha );
 
@@ -520,18 +519,16 @@ void QgsColorButton::prepareMenu()
       QgsColorWidgetAction *alphaAction = new QgsColorWidgetAction( alphaRamp, mMenu, mMenu );
       alphaAction->setDismissOnColorSelection( false );
       connect( alphaAction, &QgsColorWidgetAction::colorChanged, this, &QgsColorButton::setColor );
-      connect( alphaAction, &QgsColorWidgetAction::colorChanged, colorWheel, [colorWheel]( const QColor & color ) { colorWheel->setColor( color, false ); }
-             );
-      connect( colorAction, &QgsColorWidgetAction::colorChanged, alphaRamp, [alphaRamp]( const QColor & color ) { alphaRamp->setColor( color, false ); }
-             );
+      connect( alphaAction, &QgsColorWidgetAction::colorChanged, colorWheel, [colorWheel]( const QColor &color ) { colorWheel->setColor( color, false ); } );
+      connect( colorAction, &QgsColorWidgetAction::colorChanged, alphaRamp, [alphaRamp]( const QColor &color ) { alphaRamp->setColor( color, false ); } );
       mMenu->addAction( alphaAction );
     }
 
     if ( mColorSchemeRegistry )
     {
       //get schemes with ShowInColorButtonMenu flag set
-      QList< QgsColorScheme * > schemeList = mColorSchemeRegistry->schemes( QgsColorScheme::ShowInColorButtonMenu );
-      QList< QgsColorScheme * >::iterator it = schemeList.begin();
+      QList<QgsColorScheme *> schemeList = mColorSchemeRegistry->schemes( QgsColorScheme::ShowInColorButtonMenu );
+      QList<QgsColorScheme *>::iterator it = schemeList.begin();
       for ( ; it != schemeList.end(); ++it )
       {
         QgsColorSwatchGridAction *colorAction = new QgsColorSwatchGridAction( *it, mMenu, mContext, this );
@@ -670,8 +667,7 @@ void QgsColorButton::setButtonBackground( const QColor &color )
       //calculate size of push button part of widget (ie, without the menu drop-down button part)
       QStyleOptionToolButton opt;
       initStyleOption( &opt );
-      const QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton,
-                               this );
+      const QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton, this );
       //make sure height of icon looks good under different platforms
 #ifdef Q_OS_WIN
       mIconSize = QSize( buttonSize.width() - 10, height() - 6 );
@@ -704,9 +700,7 @@ void QgsColorButton::setButtonBackground( const QColor &color )
 
   if ( backgroundColor.isValid() )
   {
-    const QRectF rect( 0, 0,
-                       currentIconSize.width(),
-                       currentIconSize.height() );
+    const QRectF rect( 0, 0, currentIconSize.width(), currentIconSize.height() );
     QPainter p;
     p.begin( &pixmap );
     p.setRenderHint( QPainter::Antialiasing );
@@ -717,11 +711,23 @@ void QgsColorButton::setButtonBackground( const QColor &color )
       const QBrush checkBrush = QBrush( transparentBackground() );
       p.setBrush( checkBrush );
       p.drawRoundedRect( rect, 3, 3 );
-    }
 
-    //draw semi-transparent color on top
-    p.setBrush( backgroundColor );
-    p.drawRoundedRect( rect, 3, 3 );
+      //draw semi-transparent color on top
+      p.setBrush( backgroundColor );
+      p.drawRoundedRect( rect, 3, 3 );
+
+      //draw fully opaque color on the left side
+      const QRectF clipRect( 0, 0, static_cast<qreal>( currentIconSize.width() ) / 2.0, currentIconSize.height() );
+      p.setClipRect( clipRect );
+      backgroundColor.setAlpha( 255 );
+      p.setBrush( backgroundColor );
+      p.drawRoundedRect( rect, 3, 3 );
+    }
+    else
+    {
+      p.setBrush( backgroundColor );
+      p.drawRoundedRect( rect, 3, 3 );
+    }
     p.end();
   }
 

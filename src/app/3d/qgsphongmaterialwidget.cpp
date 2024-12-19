@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsphongmaterialwidget.h"
+#include "moc_qgsphongmaterialwidget.cpp"
 
 #include "qgsphongmaterialsettings.h"
 #include "qgis.h"
@@ -33,8 +34,7 @@ QgsPhongMaterialWidget::QgsPhongMaterialWidget( QWidget *parent, bool hasOpacity
   connect( btnDiffuse, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
   connect( btnAmbient, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
   connect( btnSpecular, &QgsColorButton::colorChanged, this, &QgsPhongMaterialWidget::changed );
-  connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [ = ]
-  {
+  connect( spinShininess, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, [=] {
     updateWidgetState();
     emit changed();
   } );
@@ -109,7 +109,7 @@ void QgsPhongMaterialWidget::setTechnique( QgsMaterialSettingsRenderingTechnique
 
 void QgsPhongMaterialWidget::setSettings( const QgsAbstractMaterialSettings *settings, QgsVectorLayer *layer )
 {
-  const QgsPhongMaterialSettings *phongMaterial = dynamic_cast< const QgsPhongMaterialSettings * >( settings );
+  const QgsPhongMaterialSettings *phongMaterial = dynamic_cast<const QgsPhongMaterialSettings *>( settings );
   if ( !phongMaterial )
     return;
   btnDiffuse->setColor( phongMaterial->diffuse() );
@@ -126,16 +126,16 @@ void QgsPhongMaterialWidget::setSettings( const QgsAbstractMaterialSettings *set
 
   mPropertyCollection = settings->dataDefinedProperties();
 
-  mDiffuseDataDefinedButton->init( static_cast< int >( QgsAbstractMaterialSettings::Property::Diffuse ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
-  mAmbientDataDefinedButton->init( static_cast< int >( QgsAbstractMaterialSettings::Property::Ambient ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
-  mSpecularDataDefinedButton->init( static_cast< int >( QgsAbstractMaterialSettings::Property::Specular ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
+  mDiffuseDataDefinedButton->init( static_cast<int>( QgsAbstractMaterialSettings::Property::Diffuse ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
+  mAmbientDataDefinedButton->init( static_cast<int>( QgsAbstractMaterialSettings::Property::Ambient ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
+  mSpecularDataDefinedButton->init( static_cast<int>( QgsAbstractMaterialSettings::Property::Specular ), mPropertyCollection, settings->propertyDefinitions(), layer, true );
 
   updateWidgetState();
 }
 
 QgsAbstractMaterialSettings *QgsPhongMaterialWidget::settings()
 {
-  std::unique_ptr< QgsPhongMaterialSettings > m = std::make_unique< QgsPhongMaterialSettings >();
+  std::unique_ptr<QgsPhongMaterialSettings> m = std::make_unique<QgsPhongMaterialSettings>();
   m->setDiffuse( btnDiffuse->color() );
   m->setAmbient( btnAmbient->color() );
   m->setSpecular( btnSpecular->color() );

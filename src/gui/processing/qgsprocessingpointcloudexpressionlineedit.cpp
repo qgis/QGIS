@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsprocessingpointcloudexpressionlineedit.h"
+#include "moc_qgsprocessingpointcloudexpressionlineedit.cpp"
 #include "qgsgui.h"
 #include "qgsapplication.h"
 #include "qgsfilterlineedit.h"
@@ -49,7 +50,7 @@ QgsProcessingPointCloudExpressionLineEdit::QgsProcessingPointCloudExpressionLine
 
   setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
   setFocusProxy( mLineEdit );
-  connect( mLineEdit, &QLineEdit::textChanged, this, static_cast < void ( QgsProcessingPointCloudExpressionLineEdit::* )( const QString & ) > ( &QgsProcessingPointCloudExpressionLineEdit::expressionEdited ) );
+  connect( mLineEdit, &QLineEdit::textChanged, this, static_cast<void ( QgsProcessingPointCloudExpressionLineEdit::* )( const QString & )>( &QgsProcessingPointCloudExpressionLineEdit::expressionEdited ) );
 
   setExpression( expression() );
 }
@@ -299,9 +300,7 @@ void QgsProcessingPointCloudExpressionDialog::test()
 
   if ( !expression.isValid() && !mTxtSql->text().isEmpty() )
   {
-    QMessageBox::warning( this,
-                          tr( "Query Result" ),
-                          tr( "An error occurred while parsing the expression:\n%1" ).arg( expression.parserErrorString() ) );
+    QMessageBox::warning( this, tr( "Query Result" ), tr( "An error occurred while parsing the expression:\n%1" ).arg( expression.parserErrorString() ) );
   }
   else
   {
@@ -309,18 +308,13 @@ void QgsProcessingPointCloudExpressionDialog::test()
     int offset;
     for ( const auto &attribute : attributes )
     {
-      if ( mLayer && mLayer->dataProvider() &&
-           !mLayer->dataProvider()->attributes().find( attribute, offset ) )
+      if ( mLayer && mLayer->dataProvider() && !mLayer->dataProvider()->attributes().find( attribute, offset ) )
       {
-        QMessageBox::warning( this,
-                              tr( "Query Result" ),
-                              tr( "\"%1\" not recognized as an available attribute." ).arg( attribute ) );
+        QMessageBox::warning( this, tr( "Query Result" ), tr( "\"%1\" not recognized as an available attribute." ).arg( attribute ) );
         return;
       }
     }
-    QMessageBox::information( this,
-                              tr( "Query Result" ),
-                              tr( "The expression was successfully parsed." ) );
+    QMessageBox::information( this, tr( "Query Result" ), tr( "The expression was successfully parsed." ) );
   }
 }
 

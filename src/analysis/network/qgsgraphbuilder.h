@@ -35,7 +35,6 @@ class QgsGraph;
 class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface SIP_NODEFAULTCTORS
 {
   public:
-
     /**
      * Default constructor
      */
@@ -48,7 +47,7 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface SIP_NODE
      */
     void addVertex( int id, const QgsPointXY &pt ) override;
 
-    void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector< QVariant > &prop ) override;
+    void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector<QVariant> &prop ) override;
 
     /**
      * Returns the generated QgsGraph.
@@ -68,8 +67,7 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface SIP_NODE
     QgsGraph *takeGraph() SIP_FACTORY;
 
   private:
-
-    std::unique_ptr< QgsGraph > mGraph;
+    std::unique_ptr<QgsGraph> mGraph;
 
     QgsGraphBuilder( const QgsGraphBuilder & ) = delete;
     QgsGraphBuilder &operator=( const QgsGraphBuilder & ) = delete;

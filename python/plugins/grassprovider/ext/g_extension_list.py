@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Alister Hood'
-__date__ = 'May 2023'
-__copyright__ = '(C) 2023, Alister Hood'
+__author__ = "Alister Hood"
+__date__ = "May 2023"
+__copyright__ = "(C) 2023, Alister Hood"
 
 from qgis.core import QgsProcessingParameterBoolean
 
@@ -25,26 +25,26 @@ from qgis.core import QgsProcessingParameterBoolean
 def processInputs(alg, parameters, context, feedback):
     # get the option we want to run
     # we would need to update the if statements below if the order in the description file is changed
-    selectedOption = alg.parameterAsInt(parameters, 'list', context)
+    selectedOption = alg.parameterAsInt(parameters, "list", context)
     # Locally installed extensions
     if selectedOption == 0:
-        optionString = '-a'
+        optionString = "-a"
     # Extensions available in the official GRASS GIS Addons repository
     elif selectedOption == 1:
-        optionString = '-l'
+        optionString = "-l"
     # Extensions available in the official GRASS GIS Addons repository including module description
     else:
-        optionString = '-c'
-    param = QgsProcessingParameterBoolean(optionString, '', True)
+        optionString = "-c"
+    param = QgsProcessingParameterBoolean(optionString, "", True)
     alg.addParameter(param)
     # Don't forget to remove the old input parameter
-    alg.removeParameter('list')
+    alg.removeParameter("list")
 
 
 def convertToHtml(alg, fileName, outputs):
     # don't copy this for something that will have lots of data like r.stats
     # it will be very slow
-    with open(fileName, 'r') as f:
-        outputs['GRASS_ADDONS'] = f.read()
+    with open(fileName) as f:
+        outputs["GRASS_ADDONS"] = f.read()
     # this will read the file a second time, but calling it saves us duplicating the code here
     alg.convertToHtml(fileName)

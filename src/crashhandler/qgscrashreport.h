@@ -28,7 +28,6 @@
 class QgsCrashReport
 {
   public:
-
     /**
      * Include information to generate user friendly crash report for QGIS.
      */
@@ -37,12 +36,12 @@ class QgsCrashReport
   public:
     enum Flag
     {
-      Stack                = 1 << 0,
-      Plugins              = 1 << 1,
-      ProjectDetails       = 1 << 2,
-      SystemInfo           = 1 << 3,
-      QgisInfo             = 1 << 4,
-      All      = Stack | Plugins | ProjectDetails | SystemInfo | QgisInfo
+      Stack = 1 << 0,
+      Plugins = 1 << 1,
+      ProjectDetails = 1 << 2,
+      SystemInfo = 1 << 3,
+      QgisInfo = 1 << 4,
+      All = Stack | Plugins | ProjectDetails | SystemInfo | QgisInfo
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
@@ -105,7 +104,6 @@ class QgsCrashReport
     class PythonFault
     {
       public:
-
         LikelyPythonFaultCause cause = LikelyPythonFaultCause::NotPython;
         QString title;
         QString filePath;

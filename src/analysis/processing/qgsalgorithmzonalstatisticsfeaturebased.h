@@ -30,9 +30,7 @@
  */
 class QgsZonalStatisticsFeatureBasedAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsZonalStatisticsFeatureBasedAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -45,16 +43,15 @@ class QgsZonalStatisticsFeatureBasedAlgorithm : public QgsProcessingFeatureBased
     QgsZonalStatisticsFeatureBasedAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QString outputName() const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    std::unique_ptr< QgsRasterInterface > mRaster;
+    std::unique_ptr<QgsRasterInterface> mRaster;
     int mBand = 1;
     QString mPrefix;
     Qgis::ZonalStatistics mStats = Qgis::ZonalStatistic::All;

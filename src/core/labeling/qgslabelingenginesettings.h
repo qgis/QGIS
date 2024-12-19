@@ -243,7 +243,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
     void setPlacementVersion( Qgis::LabelPlacementEngineVersion version );
 
     /**
-     * Returns a list of labeling engine rules which must be satifisfied
+     * Returns a list of labeling engine rules which must be satisfied
      * while placing labels.
      *
      * \see addRule()
@@ -253,7 +253,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
     QList< QgsAbstractLabelingEngineRule * > rules();
 
     /**
-     * Returns a list of labeling engine rules which must be satifisfied
+     * Returns a list of labeling engine rules which must be satisfied
      * while placing labels.
      *
      * \see addRule()
@@ -263,7 +263,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
     QList< const QgsAbstractLabelingEngineRule * > rules() const SIP_SKIP;
 
     /**
-     * Adds a labeling engine \a rule which must be satifisfied
+     * Adds a labeling engine \a rule which must be satisfied
      * while placing labels.
      *
      * Ownership of the rule is transferred to the settings.
@@ -275,7 +275,7 @@ class CORE_EXPORT QgsLabelingEngineSettings
     void addRule( QgsAbstractLabelingEngineRule *rule SIP_TRANSFER );
 
     /**
-     * Sets the labeling engine \a rules which must be satifisfied
+     * Sets the labeling engine \a rules which must be satisfied
      * while placing labels.
      *
      * Ownership of the rules are transferred to the settings.

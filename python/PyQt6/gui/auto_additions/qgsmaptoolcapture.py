@@ -19,5 +19,5 @@ QgsMapToolCapture.Capability.__and__ = lambda flag1, flag2: _force_int(flag1) & 
 QgsMapToolCapture.Capability.__or__ = lambda flag1, flag2: QgsMapToolCapture.Capability(_force_int(flag1) | _force_int(flag2))
 try:
     QgsMapToolCapture.__group__ = ['maptools']
-except NameError:
+except (NameError, AttributeError):
     pass

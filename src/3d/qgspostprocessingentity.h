@@ -38,7 +38,7 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
     //! Constructor
     QgsPostprocessingEntity( QgsFrameGraph *frameGraph, Qt3DRender::QLayer *layer, QNode *parent = nullptr );
     //! Sets the parts of the scene where objects cast shadows
-    void setupShadowRenderingExtent( float minX, float maxX, float minZ, float maxZ );
+    void setupShadowRenderingExtent( float minX, float maxX, float minY, float maxY );
     //! Sets up a directional light that is used to render shadows
     void setupDirectionalLight( QVector3D position, QVector3D direction );
     //! Sets whether shadow rendering is enabled
@@ -59,7 +59,6 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
     void setAmbientOcclusionEnabled( bool enabled );
 
   private:
-    QgsFrameGraph *mFrameGraph = nullptr;
     Qt3DRender::QCamera *mMainCamera = nullptr;
 
     Qt3DRender::QParameter *mColorTextureParameter = nullptr;
@@ -80,8 +79,8 @@ class QgsPostprocessingEntity : public QgsRenderPassQuad
 
     Qt3DRender::QParameter *mShadowMinX = nullptr;
     Qt3DRender::QParameter *mShadowMaxX = nullptr;
-    Qt3DRender::QParameter *mShadowMinZ = nullptr;
-    Qt3DRender::QParameter *mShadowMaxZ = nullptr;
+    Qt3DRender::QParameter *mShadowMinY = nullptr;
+    Qt3DRender::QParameter *mShadowMaxY = nullptr;
 
     Qt3DRender::QParameter *mRenderShadowsParameter = nullptr;
     Qt3DRender::QParameter *mShadowBiasParameter = nullptr;

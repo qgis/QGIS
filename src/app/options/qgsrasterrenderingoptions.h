@@ -23,18 +23,15 @@ class QgsRasterRenderingOptionsWidget : public QgsOptionsPageWidget, private Ui:
     Q_OBJECT
 
   public:
-
     QgsRasterRenderingOptionsWidget( QWidget *parent );
     QString helpKey() const override;
     void apply() override;
-  private:
-    bool mBlockStoringChanges = false;
 
+  private:
     void initContrastEnhancement( QComboBox *cbox, const QString &name, const QString &defaultVal );
     void saveContrastEnhancement( QComboBox *cbox, const QString &name );
     void initMinMaxLimits( QComboBox *cbox, const QString &name, const QString &defaultVal );
     void saveMinMaxLimits( QComboBox *cbox, const QString &name );
-
 };
 
 
@@ -43,13 +40,11 @@ class QgsRasterRenderingOptionsFactory : public QgsOptionsWidgetFactory
     Q_OBJECT
 
   public:
-
     QgsRasterRenderingOptionsFactory();
 
     QIcon icon() const override;
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
     QStringList path() const override;
-
 };
 
 #endif // QGSRASTERRENDERINGOPTIONS_H

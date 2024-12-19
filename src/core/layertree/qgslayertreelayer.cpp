@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayertreelayer.h"
+#include "moc_qgslayertreelayer.cpp"
 
 #include "qgslayertreeutils.h"
 #include "qgsmaplayer.h"

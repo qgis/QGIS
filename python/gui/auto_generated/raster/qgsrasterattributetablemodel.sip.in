@@ -20,8 +20,7 @@ The :py:class:`QgsRasterAttributeTableModel` class manages a :py:class:`QgsRaste
 #include "qgsrasterattributetablemodel.h"
 %End
   public:
-
-    explicit QgsRasterAttributeTableModel( QgsRasterAttributeTable *rat, QObject *parent  /TransferThis/ = 0 );
+    explicit QgsRasterAttributeTableModel( QgsRasterAttributeTable *rat, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Creates a new QgsRasterAttributeTableModel from raster attribute table ``rat`` and optional ``parent``.
 %End
@@ -46,7 +45,7 @@ Returns ``True`` if the Raster Attribute Table has color information.
 Returns ``True`` if the Raster Attribute Table has ramp information.
 %End
 
-    QStringList headerNames( ) const;
+    QStringList headerNames() const;
 %Docstring
 Returns all the header names, including the "virtual" color header if the Raster Attribute Table has color or ramp.
 %End
@@ -61,7 +60,7 @@ Returns the tooltip for the given ``section``.
 Checks if the Raster Attribute Table is valid, optionally returns validation errors in ``errorMessage``.
 %End
 
-    bool isDirty( );
+    bool isDirty();
 %Docstring
 Returns ``True`` if the Raster Attribute Table was modified since it was last saved or read.
 %End
@@ -80,7 +79,7 @@ Inserts a field at the given position.
          - errorMessage: error message
 %End
 
- bool insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 ) /Deprecated/;
+ bool insertField( const int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
 %Docstring
 Inserts a field at the given position.
 
@@ -139,8 +138,6 @@ Removes the row at ``position``, optionally reporting any error in ``errorMessag
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
-
-
 
 };
 

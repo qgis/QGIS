@@ -15,6 +15,7 @@
 #include "qgsexception.h"
 #include "qgsvectordataprovider.h"
 #include "qgsfeaturelistmodel.h"
+#include "moc_qgsfeaturelistmodel.cpp"
 #include "qgsattributetablemodel.h"
 #include "qgsvectorlayereditbuffer.h"
 #include "qgsattributetablefiltermodel.h"
@@ -137,7 +138,7 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
     }
     else
     {
-      styles = QgsConditionalStyle::matchingConditionalStyles( layer->conditionalStyles()->rowStyles(), QVariant(),  mExpressionContext );
+      styles = QgsConditionalStyle::matchingConditionalStyles( layer->conditionalStyles()->rowStyles(), QVariant(), mExpressionContext );
       mRowStylesMap.insert( fid, styles );
     }
 
@@ -147,7 +148,7 @@ QVariant QgsFeatureListModel::data( const QModelIndex &index, int role ) const
     {
       const QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
       styles = layer->conditionalStyles()->fieldStyles( fieldName );
-      styles = QgsConditionalStyle::matchingConditionalStyles( styles, feat.attribute( fieldName ),  mExpressionContext );
+      styles = QgsConditionalStyle::matchingConditionalStyles( styles, feat.attribute( fieldName ), mExpressionContext );
     }
 
     styles.insert( 0, rowstyle );
@@ -290,7 +291,7 @@ void QgsFeatureListModel::setSortByDisplayExpression( bool sortByDisplayExpressi
   if ( mSortByDisplayExpression )
     setInjectNull( false );
 
-  setSortRole( static_cast< int >( QgsAttributeTableModel::CustomRole::Sort ) + 1 );
+  setSortRole( static_cast<int>( QgsAttributeTableModel::CustomRole::Sort ) + 1 );
   setDynamicSortFilter( mSortByDisplayExpression );
   sort( 0, order );
 }

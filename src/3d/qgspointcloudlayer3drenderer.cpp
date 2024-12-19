@@ -116,7 +116,7 @@ QgsAbstract3DRenderer *QgsPointCloudLayer3DRendererMetadata::createRenderer( QDo
 // ---------
 
 
-QgsPointCloudLayer3DRenderer::QgsPointCloudLayer3DRenderer( )
+QgsPointCloudLayer3DRenderer::QgsPointCloudLayer3DRenderer()
 {
 }
 
@@ -161,15 +161,11 @@ Qt3DCore::QEntity *QgsPointCloudLayer3DRenderer::createEntity( Qgs3DMapSettings 
   Qt3DCore::QEntity *entity = nullptr;
   if ( pcl->dataProvider()->index() )
   {
-    entity = new QgsPointCloudLayerChunkedEntity( map, pcl->dataProvider()->index(), coordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), static_cast< float >( maximumScreenError() ), showBoundingBoxes(),
-        static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zScale(),
-        static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zOffset(), mPointBudget );
+    entity = new QgsPointCloudLayerChunkedEntity( map, pcl->dataProvider()->index(), coordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), static_cast<float>( maximumScreenError() ), showBoundingBoxes(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zScale(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zOffset(), mPointBudget );
   }
   else if ( !pcl->dataProvider()->subIndexes().isEmpty() )
   {
-    entity = new QgsVirtualPointCloudEntity( map, pcl, coordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), static_cast< float >( maximumScreenError() ), showBoundingBoxes(),
-        static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zScale(),
-        static_cast< const QgsPointCloudLayerElevationProperties * >( pcl->elevationProperties() )->zOffset(), mPointBudget );
+    entity = new QgsVirtualPointCloudEntity( map, pcl, coordinateTransform, dynamic_cast<QgsPointCloud3DSymbol *>( mSymbol->clone() ), static_cast<float>( maximumScreenError() ), showBoundingBoxes(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zScale(), static_cast<const QgsPointCloudLayerElevationProperties *>( pcl->elevationProperties() )->zOffset(), mPointBudget );
   }
   return entity;
 }
@@ -257,7 +253,7 @@ void QgsPointCloudLayer3DRenderer::setPointRenderingBudget( int budget )
 
 bool QgsPointCloudLayer3DRenderer::convertFrom2DRenderer( QgsPointCloudRenderer *renderer )
 {
-  std::unique_ptr< QgsPointCloudLayer3DRenderer > renderer3D = Qgs3DUtils::convert2DPointCloudRendererTo3D( renderer );
+  std::unique_ptr<QgsPointCloudLayer3DRenderer> renderer3D = Qgs3DUtils::convert2DPointCloudRendererTo3D( renderer );
   if ( !renderer3D )
   {
     setSymbol( nullptr );
@@ -265,8 +261,8 @@ bool QgsPointCloudLayer3DRenderer::convertFrom2DRenderer( QgsPointCloudRenderer 
   }
 
   QgsPointCloud3DSymbol *newSymbol = const_cast<QgsPointCloud3DSymbol *>(
-                                       static_cast<QgsPointCloud3DSymbol *>( renderer3D->symbol()->clone() )
-                                     );
+    static_cast<QgsPointCloud3DSymbol *>( renderer3D->symbol()->clone() )
+  );
   // we need to retain some settings from the previous symbol, like point size
   const QgsPointCloud3DSymbol *oldSymbol = symbol();
   if ( oldSymbol )

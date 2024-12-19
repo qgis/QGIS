@@ -20,7 +20,6 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
 %End
   public:
 
-
     enum class CustomRole /BaseType=IntEnum/
     {
       Value
@@ -101,7 +100,6 @@ from the XML file with a matching name.
 
 
   protected:
-
     void updateUiFromRenderer();
 
     void populateCategories();

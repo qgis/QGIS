@@ -28,6 +28,7 @@
 #include "qgsmeshdataprovider.h"
 #include "qgsmeshdatasetgroupstore.h"
 #include "qgsmeshlayer.h"
+#include "moc_qgsmeshlayer.cpp"
 #include "qgsmeshlayerrenderer.h"
 #include "qgsmeshlayertemporalproperties.h"
 #include "qgsmeshlayerutils.h"
@@ -250,6 +251,30 @@ QString QgsMeshLayer::loadDefaultStyle( bool &resultFlag )
   }
 
   return QgsMapLayer::loadDefaultStyle( resultFlag );
+}
+
+bool QgsMeshLayer::removeDatasets( const QString &name )
+{
+  const int index = mDatasetGroupStore->indexFromGroupName( name );
+
+  if ( index == -1 )
+  {
+    return false;
+  }
+
+  const QgsMeshDatasetGroupMetadata groupMetadata =  datasetGroupMetadata( index );
+
+  mDatasetGroupStore->removeDatasetGroup( index );
+
+  if ( mExtraDatasetUri.contains( groupMetadata.uri() ) )
+  {
+    mExtraDatasetUri.removeOne( groupMetadata.uri() );
+  }
+
+  resetDatasetGroupTreeItem();
+
+  emit dataSourceChanged();
+  return true;
 }
 
 bool QgsMeshLayer::addDatasets( const QString &path, const QDateTime &defaultReferenceTime )
@@ -1663,6 +1688,93 @@ QgsMapLayerRenderer *QgsMeshLayer::createMapRenderer( QgsRenderContext &renderer
   return new QgsMeshLayerRenderer( this, rendererContext );
 }
 
+QgsMeshDatasetIndex QgsMeshLayer::activeScalarDatasetIndex( QgsRenderContext &rendererContext )
+{
+  if ( rendererContext.isTemporal() )
+    return activeScalarDatasetAtTime( rendererContext.temporalRange(), mRendererSettings.activeScalarDatasetGroup() );
+  else
+    return staticScalarDatasetIndex( mRendererSettings.activeScalarDatasetGroup() );
+}
+
+bool QgsMeshLayer::minimumMaximumActiveScalarDataset( const QgsRectangle &extent, const QgsMeshDatasetIndex &datasetIndex, double &min, double &max )
+{
+
+  if ( extent.isNull() || !this->extent().intersects( extent ) )
+    return false;
+
+  QgsTriangularMesh *tMesh = triangularMesh();
+
+  QVector<double> scalarDatasetValues;
+  const QgsMeshDatasetGroupMetadata metadata = datasetGroupMetadata( datasetIndex.group() );
+
+  if ( !metadata.isScalar() )
+  {
+    return false;
+  }
+
+  QgsMeshDatasetGroupMetadata::DataType scalarDataType = QgsMeshLayerUtils::datasetValuesType( metadata.dataType() );
+
+  if ( !datasetIndex.isValid() )
+  {
+    return false;
+  }
+
+  // populate scalar values
+  const int count = QgsMeshLayerUtils::datasetValuesCount( mNativeMesh.get(), scalarDataType );
+  const QgsMeshDataBlock vals = QgsMeshLayerUtils::datasetValues(
+                                  this,
+                                  datasetIndex,
+                                  0,
+                                  count );
+
+  if ( vals.isValid() )
+  {
+    // vals could be scalar or vectors, for contour rendering we want always magnitude
+    scalarDatasetValues = QgsMeshLayerUtils::calculateMagnitudes( vals );
+  }
+  else
+  {
+    scalarDatasetValues = QVector<double>( count, std::numeric_limits<double>::quiet_NaN() );
+  }
+
+  QList<int> intersectedFacesIndices = tMesh->faceIndexesForRectangle( extent );
+
+  if ( intersectedFacesIndices.isEmpty() )
+  {
+    return false;
+  }
+
+  min = std::numeric_limits<double>::max();
+  max = -std::numeric_limits<double>::max();
+
+  double value;
+
+  for ( int intersectedFaceIndex : intersectedFacesIndices )
+  {
+    QgsMeshFace face = tMesh->triangles().at( intersectedFaceIndex );
+
+    if ( metadata.dataType() == QgsMeshDatasetGroupMetadata::DataType::DataOnFaces || metadata.dataType() == QgsMeshDatasetGroupMetadata::DataType::DataOnVolumes )
+    {
+      value = scalarDatasetValues.at( tMesh->trianglesToNativeFaces().at( intersectedFaceIndex ) );
+      min = std::min( min, value );
+      max = std::max( max, value );
+    }
+    else if ( metadata.dataType() == QgsMeshDatasetGroupMetadata::DataType::DataOnVertices )
+    {
+      QgsMeshVertex vertex;
+
+      for ( int vertexIndex : face )
+      {
+        value = scalarDatasetValues.at( vertexIndex );
+        min = std::min( min, value );
+        max = std::max( max, value );
+      }
+    }
+  }
+
+  return true;
+}
+
 QgsAbstractProfileGenerator *QgsMeshLayer::createProfileGenerator( const QgsProfileRequest &request )
 {
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
@@ -2208,4 +2320,18 @@ void QgsMeshLayer::setLabeling( QgsAbstractMeshLayerLabeling *labeling )
   delete mLabeling;
   mLabeling = labeling;
   triggerRepaint();
+}
+
+bool QgsMeshLayer::datasetsPathUnique( const QString &path )
+{
+  if ( ! mDataProvider )
+  {
+    QgsDebugMsgLevel( QStringLiteral( "Unable to get mesh data provider" ), 2 );
+    return false;
+  }
+
+  if ( mDataProvider->dataSourceUri().contains( path ) )
+    return false;
+
+  return !mExtraDatasetUri.contains( path );
 }

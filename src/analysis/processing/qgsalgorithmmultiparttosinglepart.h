@@ -31,9 +31,7 @@
  */
 class QgsMultipartToSinglepartAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
-
   public:
-
     QgsMultipartToSinglepartAlgorithm() = default;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmMultiToSingle.svg" ) ); }
     QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmMultiToSingle.svg" ) ); }
@@ -49,16 +47,11 @@ class QgsMultipartToSinglepartAlgorithm : public QgsProcessingFeatureBasedAlgori
     QgsMultipartToSinglepartAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     QgsFeatureSink::SinkFlags sinkFlags() const override;
-    QgsFeatureList processFeature( const QgsFeature &feature,
-                                   QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
+    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMMULTIPARTTOSINGLEPART_H
-
-

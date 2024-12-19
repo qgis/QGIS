@@ -17,6 +17,7 @@
 #include <limits>
 
 #include "qgslayoutitemlegend.h"
+#include "moc_qgslayoutitemlegend.cpp"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutmodel.h"

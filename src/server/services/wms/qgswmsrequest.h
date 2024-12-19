@@ -36,7 +36,6 @@ namespace QgsWms
       Q_GADGET
 
     public:
-
       /**
        * Copy constructor
        */
@@ -63,6 +62,6 @@ namespace QgsWms
 
       QgsWmsParameters mWmsParams;
   };
-}
+} // namespace QgsWms
 
 #endif

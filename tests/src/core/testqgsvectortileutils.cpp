@@ -34,12 +34,11 @@ class TestQgsVectorTileUtils : public QObject
     TestQgsVectorTileUtils() = default;
 
   private:
-
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
 
     void test_scaleToZoomLevel();
     void test_urlsFromStyle();
@@ -73,7 +72,7 @@ void TestQgsVectorTileUtils::test_urlsFromStyle()
   QString style1Content = style1File.readAll();
   style1File.close();
   style1Content.replace( QString( "_TILE_SOURCE_TEST_PATH_" ), "file://" + dataDir + "/vector_tile/styles" );
-  QFile fixedStyleFilePath( QDir::tempPath() +  QStringLiteral( "/style1.json" ) );
+  QFile fixedStyleFilePath( QDir::tempPath() + QStringLiteral( "/style1.json" ) );
   if ( fixedStyleFilePath.open( QFile::WriteOnly | QFile::Truncate ) )
   {
     QTextStream out( &fixedStyleFilePath );

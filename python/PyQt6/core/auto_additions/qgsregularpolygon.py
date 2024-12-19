@@ -3,5 +3,5 @@ QgsRegularPolygon.InscribedCircle = QgsRegularPolygon.ConstructionOption.Inscrib
 QgsRegularPolygon.CircumscribedCircle = QgsRegularPolygon.ConstructionOption.CircumscribedCircle
 try:
     QgsRegularPolygon.__group__ = ['geometry']
-except NameError:
+except (NameError, AttributeError):
     pass

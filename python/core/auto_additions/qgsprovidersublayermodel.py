@@ -43,13 +43,13 @@ QgsProviderSublayerModel.Column.__doc__ = """Model columns
 # --
 try:
     QgsProviderSublayerModel.__group__ = ['providers']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsProviderSublayerModel.NonLayerItem.__group__ = ['providers']
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsProviderSublayerProxyModel.__group__ = ['providers']
-except NameError:
+except (NameError, AttributeError):
     pass

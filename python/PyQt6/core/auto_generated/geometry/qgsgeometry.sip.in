@@ -598,7 +598,7 @@ In case of error -1 will be returned.
 .. seealso:: :py:func:`hausdorffDistance`
 %End
 
-    double frechetDistance( const QgsGeometry &geom ) const throw( QgsNotSupportedException );
+    double frechetDistance( const QgsGeometry &geom ) const;
 %Docstring
 Returns the Fréchet distance between this geometry and ``geom``, restricted to discrete points for both geometries.
 
@@ -616,7 +616,7 @@ This method requires a QGIS build based on GEOS 3.7 or later.
 .. versionadded:: 3.20
 %End
 
-    double frechetDistanceDensify( const QgsGeometry &geom, double densifyFraction ) const throw( QgsNotSupportedException );
+    double frechetDistanceDensify( const QgsGeometry &geom, double densifyFraction ) const;
 %Docstring
 Returns the Fréchet distance between this geometry and ``geom``, restricted to discrete points for both geometries.
 
@@ -854,7 +854,7 @@ Adds a new ring to this geometry. This makes only sense for polygon and multipol
 :return: OperationResult a result code: success or reason of failure
 %End
 
- Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPointsXY,Deprecated/;
+ Qgis::GeometryOperationResult addPart( const QVector<QgsPointXY> &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPointsXY,Deprecated="Since 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis.WkbType geometry type instead of Qgis.GeometryType."/;
 %Docstring
 Adds a new part to a the geometry.
 
@@ -880,7 +880,7 @@ Adds a new part to a the geometry.
 .. versionadded:: 3.38
 %End
 
- Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPoints,Deprecated/;
+ Qgis::GeometryOperationResult addPart( const QgsPointSequence &points, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /PyName=addPoints,Deprecated="Since 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis.WkbType geometry type instead of Qgis.GeometryType."/;
 %Docstring
 Adds a new part to a the geometry.
 
@@ -906,7 +906,7 @@ Adds a new part to a the geometry.
 .. versionadded:: 3.38
 %End
 
- Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part /Transfer/, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /Deprecated/;
+ Qgis::GeometryOperationResult addPart( QgsAbstractGeometry *part /Transfer/, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown ) /Deprecated="Since 3.38. Will be removed in QGIS 4.0. Use addPartV2 which accepts Qgis.WkbType geometry type instead of Qgis.GeometryType."/;
 %Docstring
 Adds a new part to this geometry.
 
@@ -957,7 +957,7 @@ Translates this geometry by dx, dy, dz and dm.
 :return: OperationResult a result code: success or reason of failure
 %End
 
-    Qgis::GeometryOperationResult transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward, bool transformZ = false ) throw( QgsCsException );
+    Qgis::GeometryOperationResult transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward, bool transformZ = false );
 %Docstring
 Transforms this geometry as described by the coordinate transform ``ct``.
 
@@ -1669,7 +1669,7 @@ Optionally, the distance to the polygon boundary from the pole can be stored.
 .. seealso:: :py:func:`pointOnSurface`
 %End
 
-    QgsGeometry largestEmptyCircle( double tolerance, const QgsGeometry &boundary = QgsGeometry() ) const throw( QgsNotSupportedException );
+    QgsGeometry largestEmptyCircle( double tolerance, const QgsGeometry &boundary = QgsGeometry() ) const;
 %Docstring
 Constructs the Largest Empty Circle for a set of obstacle geometries, up to a
 specified tolerance.
@@ -1696,7 +1696,7 @@ This method requires QGIS builds based on GEOS 3.9 or later.
 .. versionadded:: 3.20
 %End
 
-    QgsGeometry minimumWidth() const throw( QgsNotSupportedException );
+    QgsGeometry minimumWidth() const;
 %Docstring
 Returns a linestring geometry which represents the minimum diameter of the geometry.
 
@@ -1712,7 +1712,7 @@ This method requires a QGIS build based on GEOS 3.6 or later.
 .. versionadded:: 3.20
 %End
 
-    double minimumClearance() const throw( QgsNotSupportedException );
+    double minimumClearance() const;
 %Docstring
 Computes the minimum clearance of a geometry.
 
@@ -1735,7 +1735,7 @@ This method requires a QGIS build based on GEOS 3.6 or later.
 .. versionadded:: 3.20
 %End
 
-    QgsGeometry minimumClearanceLine() const throw( QgsNotSupportedException );
+    QgsGeometry minimumClearanceLine() const;
 %Docstring
 Returns a LineString whose endpoints define the minimum clearance of a geometry.
 
@@ -1758,7 +1758,7 @@ If an error was encountered while creating the result, more information can be r
 by calling :py:func:`~QgsGeometry.lastError` on the returned geometry.
 %End
 
-    QgsGeometry concaveHull( double targetPercent, bool allowHoles = false ) const throw( QgsNotSupportedException );
+    QgsGeometry concaveHull( double targetPercent, bool allowHoles = false ) const;
 %Docstring
 Returns a possibly concave polygon that contains all the points in the geometry.
 
@@ -1800,7 +1800,7 @@ An empty geometry will be returned if the diagram could not be calculated.
 .. seealso:: :py:func:`constrainedDelaunayTriangulation`
 %End
 
-    QgsGeometry constrainedDelaunayTriangulation() const throw( QgsNotSupportedException );
+    QgsGeometry constrainedDelaunayTriangulation() const;
 %Docstring
 Returns a constrained Delaunay triangulation for the vertices of the geometry.
 
@@ -1815,7 +1815,7 @@ This method requires a QGIS build based on GEOS 3.11 or later.
 .. versionadded:: 3.36
 %End
 
-    Qgis::CoverageValidityResult validateCoverage( double gapWidth, QgsGeometry *invalidEdges /Out/ = 0 ) const throw( QgsNotSupportedException );
+    Qgis::CoverageValidityResult validateCoverage( double gapWidth, QgsGeometry *invalidEdges /Out/ = 0 ) const;
 %Docstring
 Analyze a coverage (represented as a collection of polygonal geometry with exactly matching edge
 geometry) to find places where the assumption of exactly matching edges is not met.
@@ -1837,7 +1837,7 @@ This method requires a QGIS build based on GEOS 3.12 or later.
 .. versionadded:: 3.36
 %End
 
-    QgsGeometry simplifyCoverageVW( double tolerance, bool preserveBoundary ) const throw( QgsNotSupportedException );
+    QgsGeometry simplifyCoverageVW( double tolerance, bool preserveBoundary ) const;
 %Docstring
 Operates on a coverage (represented as a list of polygonal geometry with exactly matching edge geometry) to apply
 a Visvalingam–Whyatt simplification to the edges, reducing complexity in proportion with the provided tolerance,
@@ -2469,7 +2469,7 @@ empty if none of the child geometries match the desired type.
 .. versionadded:: 3.2
 %End
 
- int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers ) /Deprecated/;
+ int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers ) /Deprecated="Since 3.34. "/;
 %Docstring
 Modifies geometry to avoid intersections with the layers specified in project properties
 
@@ -2499,7 +2499,7 @@ Modifies geometry to avoid intersections with the layers specified in project pr
 .. versionadded:: 3.34
 %End
 
-    QgsGeometry makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false ) const throw( QgsNotSupportedException );
+    QgsGeometry makeValid( Qgis::MakeValidMethod method = Qgis::MakeValidMethod::Linework, bool keepCollapsed = false ) const;
 %Docstring
 Attempts to make an invalid geometry valid without losing vertices.
 
@@ -2791,7 +2791,7 @@ geometry will be a polyline.
 :param polygon: source QPolygonF
 %End
 
- static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) /Deprecated/;
+ static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) /Deprecated="Since 3.40. Use QgsGeometry.fromQPolygonF() or QgsLineString.fromQPolygonF() instead."/;
 %Docstring
 Creates a :py:class:`QgsPolylineXY` from a QPolygonF.
 
@@ -2806,7 +2806,7 @@ Creates a :py:class:`QgsPolylineXY` from a QPolygonF.
    Use :py:func:`QgsGeometry.fromQPolygonF()` or :py:func:`QgsLineString.fromQPolygonF()` instead.
 %End
 
- static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon ) /Deprecated/;
+ static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon ) /Deprecated="Since 3.40. Use QgsGeometry.fromQPolygonF() or QgsLineString.fromQPolygonF() instead."/;
 %Docstring
 Creates a :py:class:`QgsPolygonXYfrom` a QPolygonF.
 
@@ -2957,7 +2957,7 @@ geometry will retain the same dimensionality as the input geometry.
 :param maxAngle: maximum angle at node (0-180) at which smoothing will be applied
 %End
 
-    static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry, double precision = 0.0 ) /Factory/;
+    static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry, double precision = 0.0, Qgis::GeosCreationFlags flags = Qgis::GeosCreationFlag::SkipEmptyInteriorRings ) /Factory/;
 %Docstring
 Creates and returns a new geometry engine representing the specified ``geometry`` using ``precision`` on a grid. The ``precision`` argument was added in 3.36.
 
@@ -2971,6 +2971,8 @@ performance critical code instead of directly using the equivalent QgsGeometry m
 Many methods available in the :py:class:`QgsGeometryEngine` class can benefit from pre-preparing geometries. For instance, whenever
 a large number of spatial relationships will be tested (such as calling :py:func:`~QgsGeometry.intersects`, :py:func:`~QgsGeometry.within`, etc) then the
 geometry should first be prepared by calling :py:func:`~QgsGeometry.prepareGeometry` before performing the tests.
+
+The ``flags`` argument was added in QGIS 3.40 to allow control over the resultant GEOS geometry.
 
 Example
 -------------------------------------

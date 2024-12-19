@@ -36,7 +36,7 @@ Constructor
 
     virtual bool setSettingFromWidget() const = 0;
 
-    virtual void setWidgetFromVariant( const QVariant &value ) const;
+    virtual bool setWidgetFromVariant( const QVariant &value ) const;
 
     virtual bool setWidgetValue( const U &value ) const = 0;
 %Docstring
@@ -358,7 +358,6 @@ Constructor of the wrapper for a given ``setting`` and its widget ``editor``
     virtual void enableAutomaticUpdatePrivate();
 
 };
-
 
 
 

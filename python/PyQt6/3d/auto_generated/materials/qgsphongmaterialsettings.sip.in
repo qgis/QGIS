@@ -26,7 +26,6 @@ with three color components: ambient, diffuse and specular.
 #include "qgsphongmaterialsettings.h"
 %End
   public:
-
     QgsPhongMaterialSettings();
 
     virtual QString type() const;
@@ -43,6 +42,8 @@ Returns a new instance of QgsPhongMaterialSettings.
 %End
 
     virtual QgsPhongMaterialSettings *clone() const /Factory/;
+
+    virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
 
 
     QColor ambient() const;

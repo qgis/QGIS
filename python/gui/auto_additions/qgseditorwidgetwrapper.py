@@ -5,5 +5,5 @@ try:
     QgsEditorWidgetWrapper.isInTable = staticmethod(QgsEditorWidgetWrapper.isInTable)
     QgsEditorWidgetWrapper.__signal_arguments__ = {'valueChanged': ['value: object'], 'valuesChanged': ['value: object', 'additionalFieldValues: List[object] = []'], 'constraintStatusChanged': ['constraint: str', 'desc: str', 'err: str', 'status: QgsEditorWidgetWrapper.ConstraintResult'], 'constraintResultVisibleChanged': ['visible: bool']}
     QgsEditorWidgetWrapper.__group__ = ['editorwidgets', 'core']
-except NameError:
+except (NameError, AttributeError):
     pass

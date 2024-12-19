@@ -24,6 +24,7 @@ set(QGIS_3D_SRCS
   qgsfeature3dhandler_p.cpp
   qgsfgutils.cpp
   qgsframegraph.cpp
+  qgsgeotransform.cpp
   qgsgltf3dutils.cpp
   qgsimagetexture.cpp
   qgslayoutitem3dmap.cpp
@@ -96,12 +97,19 @@ set(QGIS_3D_SRCS
   symbols/qgspointcloud3dsymbol.cpp
   symbols/qgspointcloud3dsymbol_p.cpp
 
+  terrain/qgs3dterrainregistry.cpp
+  terrain/qgsabstractterrainsettings.cpp
   terrain/qgsdemterraingenerator.cpp
+  terrain/qgsdemterrainsettings.cpp
   terrain/qgsdemterraintilegeometry_p.cpp
   terrain/qgsdemterraintileloader_p.cpp
   terrain/qgsflatterraingenerator.cpp
+  terrain/qgsflatterrainsettings.cpp
+  terrain/qgsmeshterrainsettings.cpp
   terrain/qgsonlineterraingenerator.cpp
+  terrain/qgsonlinedemterrainsettings.cpp
   terrain/qgsquantizedmeshterraingenerator.cpp
+  terrain/qgsquantizedmeshterrainsettings.cpp
   terrain/qgsterraindownloader.cpp
   terrain/qgsterrainentity.cpp
   terrain/qgsterraingenerator.cpp
@@ -138,6 +146,7 @@ set(QGIS_3D_HDRS
   qgscamerapose.h
   qgsfgutils.h
   qgsframegraph.h
+  qgsgeotransform.h
   qgsgltf3dutils.h
   qgslayoutitem3dmap.h
   qgsmeshlayer3drenderer.h
@@ -186,10 +195,17 @@ set(QGIS_3D_HDRS
   symbols/qgspolygon3dsymbol.h
   symbols/qgspointcloud3dsymbol.h
 
+  terrain/qgs3dterrainregistry.h
+  terrain/qgsabstractterrainsettings.h
   terrain/qgsdemterraingenerator.h
+  terrain/qgsdemterrainsettings.h
   terrain/qgsflatterraingenerator.h
+  terrain/qgsflatterrainsettings.h
+  terrain/qgsmeshterrainsettings.h
   terrain/qgsonlineterraingenerator.h
+  terrain/qgsonlinedemterrainsettings.h
   terrain/qgsquantizedmeshterraingenerator.h
+  terrain/qgsquantizedmeshterrainsettings.h
   terrain/qgsterraindownloader.h
   terrain/qgsterraingenerator.h
   terrain/qgsterraintileloader.h
@@ -236,6 +252,12 @@ set (QGIS_3D_RCCS  shaders.qrc  ../../resources/3d/textures/textures.qrc)
 
 
 add_library(qgis_3d SHARED ${QGIS_3D_SRCS} ${QGIS_3D_HDRS} ${QGIS_3D_RCCS} ${QGIS_3D_PRIVATE_HDRS})
+
+if (USE_PRECOMPILED_HEADERS)
+  target_precompile_headers(qgis_3d PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
+endif()
+
+set_target_properties(qgis_3d PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
 # require c++17
 target_compile_features(qgis_3d PRIVATE cxx_std_17)

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsoffscreen3dengine.h"
+#include "moc_qgsoffscreen3dengine.cpp"
 
 #include "qgsframegraph.h"
 
@@ -48,7 +49,7 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
   // Set up the engine and the aspects that we want to use.
   mAspectEngine = new Qt3DCore::QAspectEngine();
 
-#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
+#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
   mRenderAspect = new Qt3DRender::QRenderAspect( Qt3DRender::QRenderAspect::Threaded ); // Only threaded mode seems to work right now.
 #else
   mRenderAspect = new Qt3DRender::QRenderAspect();
@@ -109,7 +110,6 @@ QgsOffscreen3DEngine::QgsOffscreen3DEngine()
 
   // Set the root entity of the engine. This causes the engine to begin running.
   mAspectEngine->setRootEntity( Qt3DCore::QEntityPtr( mRoot ) );
-
 }
 
 QgsOffscreen3DEngine::~QgsOffscreen3DEngine()

@@ -33,7 +33,6 @@ The default relation widget in QGIS.
 #include "qgsrelationeditorwidget.h"
 %End
   public:
-
     enum Button /BaseType=IntEnum/
     {
       NoButton,
@@ -94,7 +93,7 @@ Defines the buttons which are shown
 Returns the buttons which are shown
 %End
 
- void duplicateFeature() /Deprecated/;
+ void duplicateFeature() /Deprecated="Since 3.18. Use duplicateSelectedFeatures() instead."/;
 %Docstring
 Duplicates a feature
 
@@ -167,7 +166,6 @@ Creates a new configuration widget for the relation editor widget
 #include "qgsrelationeditorwidget.h"
 %End
   public:
-
     explicit QgsRelationEditorConfigWidget( const QgsRelation &relation, QWidget *parent /TransferThis/ );
 %Docstring
 Create a new configuration widget

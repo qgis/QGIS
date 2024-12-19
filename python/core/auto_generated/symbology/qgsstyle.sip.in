@@ -857,7 +857,7 @@ This function will load an on-disk database and populate styles.
 .. seealso:: :py:func:`errorString`
 %End
 
- bool save( const QString &filename = QString() ) /Deprecated/;
+ bool save( const QString &filename = QString() ) /Deprecated="Since 3.40. This function has no effect."/;
 %Docstring
 Saves style into a file.
 

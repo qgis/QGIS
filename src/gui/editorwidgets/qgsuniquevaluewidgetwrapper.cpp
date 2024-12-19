@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsuniquevaluewidgetwrapper.h"
+#include "moc_qgsuniquevaluewidgetwrapper.cpp"
 
 #include "qgsvectorlayer.h"
 #include "qgsfilterlineedit.h"
@@ -66,7 +67,7 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget *editor )
 
   QStringList sValues;
 
-  const QSet< QVariant> values = layer()->uniqueValues( fieldIdx() );
+  const QSet<QVariant> values = layer()->uniqueValues( fieldIdx() );
 
   const auto constValues = values;
   for ( const QVariant &v : constValues )
@@ -95,8 +96,7 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget *editor )
     c->setCompletionMode( QCompleter::PopupCompletion );
     mLineEdit->setCompleter( c );
 
-    connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]( const QString & value )
-    {
+    connect( mLineEdit, &QLineEdit::textChanged, this, [=]( const QString &value ) {
       Q_NOWARN_DEPRECATED_PUSH
       emit valueChanged( value );
       Q_NOWARN_DEPRECATED_POP
@@ -106,8 +106,7 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget *editor )
 
   if ( mComboBox )
   {
-    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
-             this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::emitValueChanged ) );
+    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::emitValueChanged ) );
   }
 }
 

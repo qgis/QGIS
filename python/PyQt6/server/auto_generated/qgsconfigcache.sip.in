@@ -22,7 +22,6 @@ Cache for server configuration.
 #include "qgsconfigcache.h"
 %End
   public:
-
     static void initialize( QgsServerSettings *settings );
 %Docstring
 Initialize from settings.
@@ -100,7 +99,6 @@ Remove cache entry
 Remove all changed cache entries
 %End
 };
-
 
 
 

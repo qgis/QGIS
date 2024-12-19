@@ -26,6 +26,7 @@
 #include "qgslabelengineconfigdialog.h"
 #include "qgsproject.h"
 #include "qgsstackeddiagramproperties.h"
+#include "moc_qgsstackeddiagramproperties.cpp"
 #include "qgsvectorlayer.h"
 #include "qgshelp.h"
 
@@ -51,15 +52,10 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
   mStackedDiagramModeComboBox->addItem( tr( "Vertical" ), QgsDiagramSettings::Vertical );
 
   mStackedDiagramSpacingSpinBox->setClearValue( 0 );
-  mStackedDiagramSpacingUnitComboBox->setUnits( { Qgis::RenderUnit::Millimeters,
-      Qgis::RenderUnit::MetersInMapUnits,
-      Qgis::RenderUnit::MapUnits,
-      Qgis::RenderUnit::Pixels,
-      Qgis::RenderUnit::Points,
-      Qgis::RenderUnit::Inches } );
+  mStackedDiagramSpacingUnitComboBox->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
 
-  connect( mStackedDiagramModeComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsStackedDiagramProperties::widgetChanged );
-  connect( mStackedDiagramSpacingSpinBox, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, &QgsStackedDiagramProperties::widgetChanged );
+  connect( mStackedDiagramModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsStackedDiagramProperties::widgetChanged );
+  connect( mStackedDiagramSpacingSpinBox, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsStackedDiagramProperties::widgetChanged );
   connect( mStackedDiagramSpacingUnitComboBox, &QgsUnitSelectionWidget::changed, this, &QgsStackedDiagramProperties::widgetChanged );
 
   mModel = new QgsStackedDiagramPropertiesModel();
@@ -76,8 +72,8 @@ QgsStackedDiagramProperties::QgsStackedDiagramProperties( QgsVectorLayer *layer,
 void QgsStackedDiagramProperties::addSubDiagramRenderer()
 {
   // Create a single category renderer by default
-  std::unique_ptr< QgsDiagramRenderer > renderer;
-  std::unique_ptr< QgsSingleCategoryDiagramRenderer > dr = std::make_unique< QgsSingleCategoryDiagramRenderer >();
+  std::unique_ptr<QgsDiagramRenderer> renderer;
+  std::unique_ptr<QgsSingleCategoryDiagramRenderer> dr = std::make_unique<QgsSingleCategoryDiagramRenderer>();
   renderer = std::move( dr );
 
   QItemSelectionModel *sel = mSubDiagramsView->selectionModel();
@@ -185,8 +181,8 @@ void QgsStackedDiagramProperties::syncToLayer()
 
     if ( dr->rendererName() == QgsStackedDiagramRenderer::DIAGRAM_RENDERER_NAME_STACKED )
     {
-      const QgsStackedDiagramRenderer *stackedDiagramRenderer = static_cast< const QgsStackedDiagramRenderer * >( dr );
-      const QList< QgsDiagramRenderer * > renderers = stackedDiagramRenderer->renderers();
+      const QgsStackedDiagramRenderer *stackedDiagramRenderer = static_cast<const QgsStackedDiagramRenderer *>( dr );
+      const QList<QgsDiagramRenderer *> renderers = stackedDiagramRenderer->renderers();
       for ( const QgsDiagramRenderer *renderer : renderers )
       {
         appendSubDiagramRenderer( renderer->clone() );
@@ -205,7 +201,7 @@ void QgsStackedDiagramProperties::syncToLayer()
 
 void QgsStackedDiagramProperties::apply()
 {
-  std::unique_ptr< QgsDiagramSettings> ds = std::make_unique< QgsDiagramSettings >();
+  std::unique_ptr<QgsDiagramSettings> ds = std::make_unique<QgsDiagramSettings>();
   ds->stackedDiagramMode = static_cast<QgsDiagramSettings::StackedDiagramMode>( mStackedDiagramModeComboBox->currentData().toInt() );
   ds->setStackedDiagramSpacingUnit( mStackedDiagramSpacingUnitComboBox->unit() );
   ds->setStackedDiagramSpacing( mStackedDiagramSpacingSpinBox->value() );
@@ -215,10 +211,10 @@ void QgsStackedDiagramProperties::apply()
   dr->setDiagram( new QgsStackedDiagram() );
 
   // Get DiagramSettings from each subdiagram
-  const QList< QgsDiagramRenderer *> renderers = mModel->subRenderers();
+  const QList<QgsDiagramRenderer *> renderers = mModel->subRenderers();
   for ( const QgsDiagramRenderer *renderer : renderers )
   {
-    const QList< QgsDiagramSettings > ds1 = renderer->diagramSettings();
+    const QList<QgsDiagramSettings> ds1 = renderer->diagramSettings();
     if ( !ds1.isEmpty() )
     {
       ds->categoryAttributes += ds1.at( 0 ).categoryAttributes;
@@ -250,12 +246,12 @@ bool QgsStackedDiagramProperties::couldBeFirstSubDiagram( const QModelIndex &ind
 
   // Is there any enabled subdiagram before our index.row()?
   // If so, ours cannot be the first diagram.
-  const QList< QgsDiagramRenderer * > renderers = mModel->subRenderers();
+  const QList<QgsDiagramRenderer *> renderers = mModel->subRenderers();
 
   for ( int i = 0; i < index.row(); i++ )
   {
     const QgsDiagramRenderer *renderer = renderers.at( i );
-    const QList< QgsDiagramSettings > ds = renderer->diagramSettings();
+    const QList<QgsDiagramSettings> ds = renderer->diagramSettings();
     if ( !ds.isEmpty() && ds.at( 0 ).enabled )
     {
       // First enabled subdiagram found, and we know our row is after.
@@ -274,7 +270,7 @@ void QgsStackedDiagramProperties::subDiagramWidgetPanelAccepted( QgsPanelWidget 
 {
   QgsDiagramProperties *widget = qobject_cast<QgsDiagramProperties *>( panel );
 
-  std::unique_ptr< QgsDiagramRenderer > renderer = widget->createRenderer();
+  std::unique_ptr<QgsDiagramRenderer> renderer = widget->createRenderer();
 
   const QModelIndex index = mSubDiagramsView->selectionModel()->currentIndex();
   if ( widget->isAllowedToEditDiagramLayerSettings() )
@@ -295,7 +291,6 @@ void QgsStackedDiagramProperties::liveUpdateSubDiagramFromPanel()
 QgsStackedDiagramPropertiesDialog::QgsStackedDiagramPropertiesDialog( QgsVectorLayer *layer, QWidget *parent, QgsMapCanvas *mapCanvas )
   : QDialog( parent )
 {
-
 #ifdef Q_OS_MAC
   setWindowModality( Qt::WindowModal );
 #endif
@@ -517,12 +512,12 @@ bool QgsStackedDiagramPropertiesModel::setData( const QModelIndex &index, const 
 
       if ( dr->rendererName() == QgsSingleCategoryDiagramRenderer::DIAGRAM_RENDERER_NAME_SINGLE_CATEGORY )
       {
-        QgsSingleCategoryDiagramRenderer *dsr = static_cast< QgsSingleCategoryDiagramRenderer * >( dr );
+        QgsSingleCategoryDiagramRenderer *dsr = static_cast<QgsSingleCategoryDiagramRenderer *>( dr );
         dsr->setDiagramSettings( ds );
       }
       else
       {
-        QgsLinearlyInterpolatedDiagramRenderer *dlir = static_cast< QgsLinearlyInterpolatedDiagramRenderer * >( dr );
+        QgsLinearlyInterpolatedDiagramRenderer *dlir = static_cast<QgsLinearlyInterpolatedDiagramRenderer *>( dr );
         dlir->setDiagramSettings( ds );
       }
 
@@ -570,7 +565,7 @@ void QgsStackedDiagramPropertiesModel::updateSubDiagram( const QModelIndex &inde
   emit dataChanged( index, index );
 }
 
-QList< QgsDiagramRenderer *> QgsStackedDiagramPropertiesModel::subRenderers() const
+QList<QgsDiagramRenderer *> QgsStackedDiagramPropertiesModel::subRenderers() const
 {
   return mRenderers;
 }

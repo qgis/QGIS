@@ -31,9 +31,7 @@
  */
 class QgsRasterCalculatorAlgorithm : public QgsProcessingAlgorithm
 {
-
   public:
-
     QgsRasterCalculatorAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRasterCalculator.svg" ) ); }
@@ -48,20 +46,15 @@ class QgsRasterCalculatorAlgorithm : public QgsProcessingAlgorithm
     QgsRasterCalculatorAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
+    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
-    bool prepareAlgorithm( const QVariantMap &parameters,
-                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-
-    QList< QgsMapLayer * > mLayers;
+    QList<QgsMapLayer *> mLayers;
 };
 
 class QgsRasterCalculatorModelerAlgorithm : public QgsRasterCalculatorAlgorithm
 {
-
   public:
-
     QgsRasterCalculatorModelerAlgorithm() = default;
     Qgis::ProcessingAlgorithmFlags flags() const override;
     QString name() const override;
@@ -72,12 +65,9 @@ class QgsRasterCalculatorModelerAlgorithm : public QgsRasterCalculatorAlgorithm
     QgsRasterCalculatorModelerAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-
-    QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-
     /**
      * Generates Excel-like names from the number
      * A, B, C, …, Y, Z, AA, AB, AC, …, AZ, BA, BB, BC…

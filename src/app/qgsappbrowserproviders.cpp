@@ -16,6 +16,7 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsappbrowserproviders.h"
+#include "moc_qgsappbrowserproviders.cpp"
 #include "qgsbookmarkeditordialog.h"
 #include "qgsmapcanvas.h"
 #include "qgsmessagebar.h"
@@ -238,8 +239,7 @@ bool QgsQptDataItem::handleDoubleClick()
 QList<QAction *> QgsQptDataItem::actions( QWidget *parent )
 {
   QAction *newLayout = new QAction( tr( "New Layout from Template" ), parent );
-  connect( newLayout, &QAction::triggered, this, [ = ]
-  {
+  connect( newLayout, &QAction::triggered, this, [=] {
     QgisApp::instance()->openTemplate( path() );
   } );
   return QList<QAction *>() << newLayout;
@@ -283,13 +283,11 @@ bool QgsPyDataItem::handleDoubleClick()
 QList<QAction *> QgsPyDataItem::actions( QWidget *parent )
 {
   QAction *runScript = new QAction( tr( "&Run Script" ), parent );
-  connect( runScript, &QAction::triggered, this, [ = ]
-  {
+  connect( runScript, &QAction::triggered, this, [=] {
     QgisApp::instance()->runScript( path() );
   } );
   QAction *editScript = new QAction( tr( "Open in External &Editor" ), this );
-  connect( editScript, &QAction::triggered, this, [ = ]
-  {
+  connect( editScript, &QAction::triggered, this, [=] {
     QDesktopServices::openUrl( QUrl::fromLocalFile( path() ) );
   } );
   return QList<QAction *>() << runScript << editScript;
@@ -347,8 +345,6 @@ bool QgsPyDropHandler::handleFileDrop( const QString &file )
 }
 
 
-
-
 //
 // QgsStyleXmlDataItem
 //
@@ -388,14 +384,12 @@ QList<QAction *> QgsStyleXmlDataItem::actions( QWidget *parent )
 {
   QAction *browseAction = new QAction( tr( "&Open Style…" ), parent );
   const QString path = mPath;
-  connect( browseAction, &QAction::triggered, this, [path]
-  {
+  connect( browseAction, &QAction::triggered, this, [path] {
     browseStyle( path );
   } );
 
   QAction *importAction = new QAction( tr( "&Import Style…" ), parent );
-  connect( importAction, &QAction::triggered, this, [path]
-  {
+  connect( importAction, &QAction::triggered, this, [path] {
     QgsStyleExportImportDialog dlg( QgsStyle::defaultStyle(), QgisApp::instance(), QgsStyleExportImportDialog::Import );
     dlg.setImportFilePath( path );
     dlg.exec();
@@ -408,7 +402,7 @@ void QgsStyleXmlDataItem::browseStyle( const QString &xmlPath )
   QgsStyle s;
   s.createMemoryDatabase();
 
-  auto cursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::WaitCursor );
+  auto cursorOverride = std::make_unique<QgsTemporaryCursorOverride>( Qt::WaitCursor );
   if ( s.importXml( xmlPath ) )
   {
     s.setFileName( xmlPath );
@@ -489,27 +483,23 @@ QVector<QgsDataItem *> QgsProjectRootDataItem::createChildren()
   QVector<QgsDataItem *> childItems;
 
   QgsProject p( nullptr, Qgis::ProjectCapabilities() );
-  if ( !p.read( mPath, Qgis::ProjectReadFlag::DontResolveLayers
-                | Qgis::ProjectReadFlag::DontLoadLayouts
-                | Qgis::ProjectReadFlag::DontStoreOriginalStyles
-                | Qgis::ProjectReadFlag::DontLoad3DViews ) )
+  if ( !p.read( mPath, Qgis::ProjectReadFlag::DontResolveLayers | Qgis::ProjectReadFlag::DontLoadLayouts | Qgis::ProjectReadFlag::DontStoreOriginalStyles | Qgis::ProjectReadFlag::DontLoad3DViews ) )
   {
     childItems.append( new QgsErrorItem( nullptr, p.error(), mPath + "/error" ) );
     return childItems;
   }
 
   // recursively create groups and layer items for project's layer tree
-  std::function<void( QgsDataItem *parentItem, QgsLayerTreeGroup *group )> addNodes;
-  addNodes = [this, &addNodes, &childItems]( QgsDataItem * parentItem, QgsLayerTreeGroup * group )
-  {
-    const QList< QgsLayerTreeNode * > children = group->children();
+  std::function<void( QgsDataItem * parentItem, QgsLayerTreeGroup * group )> addNodes;
+  addNodes = [this, &addNodes, &childItems]( QgsDataItem *parentItem, QgsLayerTreeGroup *group ) {
+    const QList<QgsLayerTreeNode *> children = group->children();
     for ( QgsLayerTreeNode *child : children )
     {
       switch ( child->nodeType() )
       {
         case QgsLayerTreeNode::NodeLayer:
         {
-          if ( QgsLayerTreeLayer *layerNode = qobject_cast< QgsLayerTreeLayer * >( child ) )
+          if ( QgsLayerTreeLayer *layerNode = qobject_cast<QgsLayerTreeLayer *>( child ) )
           {
             QgsMapLayer *layer = layerNode->layer();
 #if 0 // TODO
@@ -525,11 +515,7 @@ QVector<QgsDataItem *> QgsProjectRootDataItem::createChildren()
             }
 #endif
 
-            QgsLayerItem *layerItem = new QgsLayerItem( nullptr, layerNode->name(),
-                layer ? layer->source() : QString(),
-                layer ? layer->source() : QString(),
-                layer ? QgsLayerItem::typeFromMapLayer( layer ) : Qgis::BrowserLayerType::NoType,
-                layer ? layer->providerType() : QString() );
+            QgsLayerItem *layerItem = new QgsLayerItem( nullptr, layerNode->name(), layer ? layer->source() : QString(), layer ? layer->source() : QString(), layer ? QgsLayerItem::typeFromMapLayer( layer ) : Qgis::BrowserLayerType::NoType, layer ? layer->providerType() : QString() );
             layerItem->setState( Qgis::BrowserItemState::Populated ); // children are not expected
             layerItem->setToolTip( layer ? layer->source() : QString() );
             if ( parentItem == this )
@@ -542,7 +528,7 @@ QVector<QgsDataItem *> QgsProjectRootDataItem::createChildren()
 
         case QgsLayerTreeNode::NodeGroup:
         {
-          if ( QgsLayerTreeGroup *groupNode = qobject_cast< QgsLayerTreeGroup * >( child ) )
+          if ( QgsLayerTreeGroup *groupNode = qobject_cast<QgsLayerTreeGroup *>( child ) )
           {
             QgsProjectLayerTreeGroupItem *groupItem = new QgsProjectLayerTreeGroupItem( nullptr, groupNode->name() );
             addNodes( groupItem, groupNode );
@@ -648,8 +634,7 @@ QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QStri
   mManager = manager;
   mIconName = QStringLiteral( "/mIconFolder.svg" );
 
-  connect( mManager, &QgsBookmarkManager::bookmarkAdded, this, [ = ]( const QString & id )
-  {
+  connect( mManager, &QgsBookmarkManager::bookmarkAdded, this, [=]( const QString &id ) {
     const QgsBookmark newDetails = mManager->bookmarkById( id );
     if ( newDetails.group().isEmpty() )
       addChildItem( new QgsBookmarkItem( this, newDetails.name(), newDetails, mManager ), true );
@@ -667,15 +652,14 @@ QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QStri
       }
     }
   } );
-  connect( mManager, &QgsBookmarkManager::bookmarkChanged, this, [ = ]( const QString & id )
-  {
+  connect( mManager, &QgsBookmarkManager::bookmarkChanged, this, [=]( const QString &id ) {
     const QgsBookmark newDetails = mManager->bookmarkById( id );
 
     // have to do a deep dive to find the old item...!
     const QVector<QgsDataItem *> c = children();
     for ( QgsDataItem *i : c )
     {
-      if ( QgsBookmarkItem *bookmarkItem = qobject_cast< QgsBookmarkItem * >( i ) )
+      if ( QgsBookmarkItem *bookmarkItem = qobject_cast<QgsBookmarkItem *>( i ) )
       {
         if ( bookmarkItem->bookmark().id() == id )
         {
@@ -705,7 +689,7 @@ QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QStri
           break;
         }
       }
-      else if ( QgsBookmarkGroupItem *group = qobject_cast< QgsBookmarkGroupItem * >( i ) )
+      else if ( QgsBookmarkGroupItem *group = qobject_cast<QgsBookmarkGroupItem *>( i ) )
       {
         if ( QgsBookmarkItem *bookmarkItem = group->childItemById( id ) )
         {
@@ -746,8 +730,7 @@ QgsBookmarkManagerItem::QgsBookmarkManagerItem( QgsDataItem *parent, const QStri
       }
     }
   } );
-  connect( mManager, &QgsBookmarkManager::bookmarkAboutToBeRemoved, this, [ = ]( const QString & id )
-  {
+  connect( mManager, &QgsBookmarkManager::bookmarkAboutToBeRemoved, this, [=]( const QString &id ) {
     const QgsBookmark b = mManager->bookmarkById( id );
     if ( !b.group().isEmpty() )
     {
@@ -795,7 +778,7 @@ QgsBookmarkGroupItem *QgsBookmarkManagerItem::groupItem( const QString &group )
   const QVector<QgsDataItem *> c = children();
   for ( QgsDataItem *i : c )
   {
-    if ( QgsBookmarkGroupItem *groupItem = qobject_cast< QgsBookmarkGroupItem * >( i ) )
+    if ( QgsBookmarkGroupItem *groupItem = qobject_cast<QgsBookmarkGroupItem *>( i ) )
     {
       if ( groupItem->group() == group )
       {
@@ -811,7 +794,7 @@ QgsBookmarkItem *QgsBookmarkManagerItem::childItemById( const QString &id )
   const QVector<QgsDataItem *> c = children();
   for ( QgsDataItem *i : c )
   {
-    if ( QgsBookmarkItem *bookmarkItem = qobject_cast< QgsBookmarkItem * >( i ) )
+    if ( QgsBookmarkItem *bookmarkItem = qobject_cast<QgsBookmarkItem *>( i ) )
     {
       if ( bookmarkItem->bookmark().id() == id )
       {
@@ -840,7 +823,7 @@ QgsBookmarkGroupItem::QgsBookmarkGroupItem( QgsDataItem *parent, const QString &
 QVector<QgsDataItem *> QgsBookmarkGroupItem::createChildren()
 {
   QVector<QgsDataItem *> children;
-  const QList< QgsBookmark > bookmarks = mManager->bookmarksByGroup( mName );
+  const QList<QgsBookmark> bookmarks = mManager->bookmarksByGroup( mName );
   children.reserve( bookmarks.size() );
   for ( const QgsBookmark &bookmark : bookmarks )
   {
@@ -859,7 +842,7 @@ QgsBookmarkItem *QgsBookmarkGroupItem::childItemById( const QString &id )
   const QVector<QgsDataItem *> c = children();
   for ( QgsDataItem *i : c )
   {
-    if ( QgsBookmarkItem *bookmarkItem = qobject_cast< QgsBookmarkItem * >( i ) )
+    if ( QgsBookmarkItem *bookmarkItem = qobject_cast<QgsBookmarkItem *>( i ) )
     {
       if ( bookmarkItem->bookmark().id() == id )
       {
@@ -914,7 +897,7 @@ bool QgsBookmarkDropHandler::handleCustomUriCanvasDrop( const QgsMimeDataUtils::
 
   try
   {
-    if ( ! canvas->setReferencedExtent( b.extent() ) )
+    if ( !canvas->setReferencedExtent( b.extent() ) )
     {
       QgisApp::instance()->messageBar()->pushWarning( tr( "Zoom to Bookmark" ), tr( "Bookmark extent is empty" ) );
     }
@@ -938,10 +921,10 @@ QString QgsBookmarksItemGuiProvider::name()
 
 bool QgsBookmarksItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiContext )
 {
-  if ( qobject_cast< QgsBookmarkManagerItem * >( item ) )
+  if ( qobject_cast<QgsBookmarkManagerItem *>( item ) )
     return true;
 
-  if ( qobject_cast< QgsBookmarkGroupItem * >( item ) )
+  if ( qobject_cast<QgsBookmarkGroupItem *>( item ) )
     return true;
 
   return false;
@@ -949,8 +932,8 @@ bool QgsBookmarksItemGuiProvider::acceptDrop( QgsDataItem *item, QgsDataItemGuiC
 
 bool QgsBookmarksItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiContext, const QMimeData *data, Qt::DropAction )
 {
-  QgsBookmarkManagerItem *managerItem = qobject_cast< QgsBookmarkManagerItem * >( item );
-  QgsBookmarkGroupItem *groupItem = qobject_cast< QgsBookmarkGroupItem * >( item );
+  QgsBookmarkManagerItem *managerItem = qobject_cast<QgsBookmarkManagerItem *>( item );
+  QgsBookmarkGroupItem *groupItem = qobject_cast<QgsBookmarkGroupItem *>( item );
   if ( managerItem || groupItem )
   {
     QgsBookmarkManager *target = managerItem ? managerItem->manager() : groupItem->manager();
@@ -984,63 +967,55 @@ bool QgsBookmarksItemGuiProvider::handleDrop( QgsDataItem *item, QgsDataItemGuiC
 
 void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context )
 {
-  if ( qobject_cast< QgsBookmarksItem * >( item ) )
+  if ( qobject_cast<QgsBookmarksItem *>( item ) )
   {
     QAction *addBookmark = new QAction( tr( "New Spatial Bookmark…" ), menu );
-    connect( addBookmark, &QAction::triggered, this, [ = ]
-    {
+    connect( addBookmark, &QAction::triggered, this, [=] {
       QgisApp::instance()->newBookmark();
     } );
     menu->addAction( addBookmark );
     QAction *showBookmarksPanel = new QAction( tr( "Show Spatial Bookmarks Manager" ), menu );
-    connect( showBookmarksPanel, &QAction::triggered, this, [ = ]
-    {
+    connect( showBookmarksPanel, &QAction::triggered, this, [=] {
       QgisApp::instance()->showBookmarkManager( true );
     } );
     menu->addAction( showBookmarksPanel );
     menu->addSeparator();
     QAction *importBookmarks = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingImport.svg" ) ), tr( "Import Spatial Bookmarks…" ), menu );
-    connect( importBookmarks, &QAction::triggered, this, [ = ]
-    {
+    connect( importBookmarks, &QAction::triggered, this, [=] {
       importBookmarksToManager( QgsApplication::bookmarkManager(), context.messageBar() );
     } );
     menu->addAction( importBookmarks );
     QAction *exportBookmarks = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingExport.svg" ) ), tr( "Export Spatial Bookmarks…" ), menu );
-    connect( exportBookmarks, &QAction::triggered, this, [ = ]
-    {
-      exportBookmarksFromManagers( QList< const QgsBookmarkManager * >() << QgsApplication::bookmarkManager() << QgsProject::instance()->bookmarkManager(), context.messageBar() );
+    connect( exportBookmarks, &QAction::triggered, this, [=] {
+      exportBookmarksFromManagers( QList<const QgsBookmarkManager *>() << QgsApplication::bookmarkManager() << QgsProject::instance()->bookmarkManager(), context.messageBar() );
     } );
     menu->addAction( exportBookmarks );
   }
-  else if ( QgsBookmarkManagerItem *managerItem = qobject_cast< QgsBookmarkManagerItem * >( item ) )
+  else if ( QgsBookmarkManagerItem *managerItem = qobject_cast<QgsBookmarkManagerItem *>( item ) )
   {
     QAction *addBookmark = new QAction( tr( "New Spatial Bookmark…" ), menu );
     const bool inProject = managerItem->manager() != QgsApplication::bookmarkManager();
-    connect( addBookmark, &QAction::triggered, this, [ = ]
-    {
+    connect( addBookmark, &QAction::triggered, this, [=] {
       QgisApp::instance()->newBookmark( inProject );
     } );
     menu->addAction( addBookmark );
     menu->addSeparator();
     QAction *importBookmarks = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingImport.svg" ) ), tr( "Import Spatial Bookmarks…" ), menu );
-    connect( importBookmarks, &QAction::triggered, this, [ = ]
-    {
+    connect( importBookmarks, &QAction::triggered, this, [=] {
       importBookmarksToManager( managerItem->manager(), context.messageBar() );
     } );
     menu->addAction( importBookmarks );
 
     QAction *exportBookmarks = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingExport.svg" ) ), tr( "Export Spatial Bookmarks…" ), menu );
-    connect( exportBookmarks, &QAction::triggered, this, [ = ]
-    {
-      exportBookmarksFromManagers( QList< const QgsBookmarkManager * >() << managerItem->manager(), context.messageBar() );
+    connect( exportBookmarks, &QAction::triggered, this, [=] {
+      exportBookmarksFromManagers( QList<const QgsBookmarkManager *>() << managerItem->manager(), context.messageBar() );
     } );
     menu->addAction( exportBookmarks );
   }
-  else if ( QgsBookmarkItem *bookmarkItem = qobject_cast< QgsBookmarkItem * >( item ) )
+  else if ( QgsBookmarkItem *bookmarkItem = qobject_cast<QgsBookmarkItem *>( item ) )
   {
     QAction *actionZoom = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ), tr( "Zoom to Bookmark" ), menu );
-    connect( actionZoom, &QAction::triggered, this, [bookmarkItem, context]
-    {
+    connect( actionZoom, &QAction::triggered, this, [bookmarkItem, context] {
       try
       {
         if ( !QgisApp::instance()->mapCanvas()->setReferencedExtent( bookmarkItem->bookmark().extent() ) )
@@ -1062,8 +1037,7 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     menu->addSeparator();
 
     QAction *actionEdit = new QAction( tr( "Edit Spatial Bookmark…" ), menu );
-    connect( actionEdit, &QAction::triggered, this, [bookmarkItem]
-    {
+    connect( actionEdit, &QAction::triggered, this, [bookmarkItem] {
       QgsBookmarkEditorDialog *dlg = new QgsBookmarkEditorDialog( bookmarkItem->bookmark(), bookmarkItem->manager() == QgsProject::instance()->bookmarkManager(), QgisApp::instance(), QgisApp::instance()->mapCanvas() );
       dlg->setAttribute( Qt::WA_DeleteOnClose );
       dlg->show();
@@ -1073,7 +1047,7 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     QStringList ids;
     for ( QgsDataItem *i : selectedItems )
     {
-      if ( QgsBookmarkItem *b = qobject_cast< QgsBookmarkItem * >( i ) )
+      if ( QgsBookmarkItem *b = qobject_cast<QgsBookmarkItem *>( i ) )
       {
         if ( b->manager() == bookmarkItem->manager() )
           ids << b->bookmark().id();
@@ -1081,22 +1055,17 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     }
 
     QAction *actionDelete = new QAction( selectedItems.count() == 1 ? tr( "Delete Spatial Bookmark" ) : tr( "Delete Spatial Bookmarks" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [bookmarkItem, ids]
-    {
+    connect( actionDelete, &QAction::triggered, this, [bookmarkItem, ids] {
       if ( ids.count() == 1 )
       {
-        if ( QMessageBox::question( nullptr, QObject::tr( "Delete Spatial Bookmark" ),
-                                    QObject::tr( "Are you sure you want to delete the %1 bookmark?" ).arg( bookmarkItem->name() ),
-                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+        if ( QMessageBox::question( nullptr, QObject::tr( "Delete Spatial Bookmark" ), QObject::tr( "Are you sure you want to delete the %1 bookmark?" ).arg( bookmarkItem->name() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
           return;
 
         bookmarkItem->manager()->removeBookmark( bookmarkItem->bookmark().id() );
       }
       else
       {
-        if ( QMessageBox::question( nullptr, QObject::tr( "Delete Spatial Bookmarks" ),
-                                    QObject::tr( "Are you sure you want to delete the %n selected bookmark(s)?", nullptr, ids.count() ),
-                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+        if ( QMessageBox::question( nullptr, QObject::tr( "Delete Spatial Bookmarks" ), QObject::tr( "Are you sure you want to delete the %n selected bookmark(s)?", nullptr, ids.count() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
           return;
 
         for ( const QString &id : ids )
@@ -1105,13 +1074,13 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     } );
     menu->addAction( actionDelete );
   }
-  else if ( QgsBookmarkGroupItem *groupItem = qobject_cast< QgsBookmarkGroupItem * >( item ) )
+  else if ( QgsBookmarkGroupItem *groupItem = qobject_cast<QgsBookmarkGroupItem *>( item ) )
   {
     QStringList groups;
     QgsBookmarkManager *manager = groupItem->manager();
     for ( QgsDataItem *i : selectedItems )
     {
-      if ( QgsBookmarkGroupItem *g = qobject_cast< QgsBookmarkGroupItem * >( i ) )
+      if ( QgsBookmarkGroupItem *g = qobject_cast<QgsBookmarkGroupItem *>( i ) )
       {
         if ( g->manager() == manager )
           groups << g->group();
@@ -1120,17 +1089,15 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
 
     // Export bookmarks
     QAction *exportBookmarks = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingExport.svg" ) ), tr( "Export Spatial Bookmarks…" ), menu );
-    connect( exportBookmarks, &QAction::triggered, this, [ = ]
-    {
-      exportBookmarksFromManagers( QList< const QgsBookmarkManager * >() << groupItem->manager(), context.messageBar(), groupItem->group() );
+    connect( exportBookmarks, &QAction::triggered, this, [=] {
+      exportBookmarksFromManagers( QList<const QgsBookmarkManager *>() << groupItem->manager(), context.messageBar(), groupItem->group() );
     } );
     menu->addAction( exportBookmarks );
 
     // Add spatial bookmark
     QAction *addBookmarkToGroup = new QAction( tr( "New Spatial Bookmark…" ), menu );
     const bool inProject = manager != QgsApplication::bookmarkManager();
-    connect( addBookmarkToGroup, &QAction::triggered, this, [ = ]
-    {
+    connect( addBookmarkToGroup, &QAction::triggered, this, [=] {
       QgisApp::instance()->newBookmark( inProject, groupItem->group() );
     } );
     menu->addAction( addBookmarkToGroup );
@@ -1139,8 +1106,7 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
     // Rename bookmark group
     QAction *renameBookmarkGroup = new QAction( tr( "Rename Bookmark Group…" ), menu );
     const QString groupName = groupItem->group();
-    connect( renameBookmarkGroup, &QAction::triggered, this, [groupName, manager]
-    {
+    connect( renameBookmarkGroup, &QAction::triggered, this, [groupName, manager] {
       QStringList existingGroupNames = manager->groups();
       existingGroupNames.removeOne( groupName );
       QgsNewNameDialog dlg(
@@ -1160,13 +1126,10 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
 
     // Delete bookmark group
     QAction *actionDelete = new QAction( selectedItems.count() == 1 ? tr( "Delete Bookmark Group" ) : tr( "Delete Bookmark Groups" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [selectedItems, groups, manager]
-    {
+    connect( actionDelete, &QAction::triggered, this, [selectedItems, groups, manager] {
       if ( groups.count() == 1 )
       {
-        if ( QMessageBox::question( nullptr, QObject::tr( "Delete Bookmark Group" ),
-                                    QObject::tr( "Are you sure you want to delete the %1 bookmark group? This will delete all bookmarks in this group." ).arg( groups.at( 0 ) ),
-                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+        if ( QMessageBox::question( nullptr, QObject::tr( "Delete Bookmark Group" ), QObject::tr( "Are you sure you want to delete the %1 bookmark group? This will delete all bookmarks in this group." ).arg( groups.at( 0 ) ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
           return;
 
         const QList<QgsBookmark> matching = manager->bookmarksByGroup( groups.at( 0 ) );
@@ -1177,9 +1140,7 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
       }
       else
       {
-        if ( QMessageBox::question( nullptr, QObject::tr( "Delete Bookmark Groups" ),
-                                    QObject::tr( "Are you sure you want to delete the %n selected bookmark group(s)? This will delete all bookmarks in these groups.", nullptr, groups.count() ),
-                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+        if ( QMessageBox::question( nullptr, QObject::tr( "Delete Bookmark Groups" ), QObject::tr( "Are you sure you want to delete the %n selected bookmark group(s)? This will delete all bookmarks in these groups.", nullptr, groups.count() ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
           return;
 
         for ( const QString &g : groups )
@@ -1198,7 +1159,7 @@ void QgsBookmarksItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu 
 
 bool QgsBookmarksItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataItemGuiContext context )
 {
-  if ( QgsBookmarkItem *bookmarkItem = qobject_cast< QgsBookmarkItem * >( item ) )
+  if ( QgsBookmarkItem *bookmarkItem = qobject_cast<QgsBookmarkItem *>( item ) )
   {
     try
     {
@@ -1223,7 +1184,7 @@ bool QgsBookmarksItemGuiProvider::handleDoubleClick( QgsDataItem *item, QgsDataI
 
 bool QgsBookmarksItemGuiProvider::rename( QgsDataItem *item, const QString &name, QgsDataItemGuiContext context )
 {
-  if ( QgsBookmarkItem *bookmarkItem = qobject_cast< QgsBookmarkItem * >( item ) )
+  if ( QgsBookmarkItem *bookmarkItem = qobject_cast<QgsBookmarkItem *>( item ) )
   {
     QgsBookmark bookmark = bookmarkItem->bookmark();
     bookmark.setName( name );
@@ -1234,7 +1195,7 @@ bool QgsBookmarksItemGuiProvider::rename( QgsDataItem *item, const QString &name
     }
     return true;
   }
-  else if ( QgsBookmarkGroupItem *groupItem = qobject_cast< QgsBookmarkGroupItem * >( item ) )
+  else if ( QgsBookmarkGroupItem *groupItem = qobject_cast<QgsBookmarkGroupItem *>( item ) )
   {
     groupItem->manager()->renameGroup( groupItem->group(), name );
     return true;
@@ -1247,8 +1208,7 @@ void QgsBookmarksItemGuiProvider::exportBookmarksFromManagers( const QList<const
   QgsSettings settings;
 
   const QString lastUsedDir = settings.value( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getSaveFileName( QgisApp::instance(), tr( "Export Bookmarks" ), lastUsedDir,
-                     tr( "XML files (*.xml *.XML)" ) );
+  QString fileName = QFileDialog::getSaveFileName( QgisApp::instance(), tr( "Export Bookmarks" ), lastUsedDir, tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -1263,8 +1223,7 @@ void QgsBookmarksItemGuiProvider::exportBookmarksFromManagers( const QList<const
   }
   else
   {
-    messageBar->pushSuccess( tr( "Export Bookmarks" ), tr( "Successfully exported bookmarks to <a href=\"%1\">%2</a>" )
-                             .arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
+    messageBar->pushSuccess( tr( "Export Bookmarks" ), tr( "Successfully exported bookmarks to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileName ).toString(), QDir::toNativeSeparators( fileName ) ) );
   }
 
   settings.setValue( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QFileInfo( fileName ).path() );
@@ -1275,8 +1234,7 @@ void QgsBookmarksItemGuiProvider::importBookmarksToManager( QgsBookmarkManager *
   QgsSettings settings;
 
   const QString lastUsedDir = settings.value( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
-  const QString fileName = QFileDialog::getOpenFileName( QgisApp::instance(), tr( "Import Bookmarks" ), lastUsedDir,
-                           tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( QgisApp::instance(), tr( "Import Bookmarks" ), lastUsedDir, tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -1341,8 +1299,7 @@ bool QgsHtmlDataItem::handleDoubleClick()
 QList<QAction *> QgsHtmlDataItem::actions( QWidget *parent )
 {
   QAction *openAction = new QAction( tr( "&Open File…" ), parent );
-  connect( openAction, &QAction::triggered, this, [ = ]
-  {
+  connect( openAction, &QAction::triggered, this, [=] {
     QDesktopServices::openUrl( QUrl::fromLocalFile( path() ) );
   } );
   return QList<QAction *>() << openAction;

@@ -19,6 +19,7 @@
 #include "qgssettings.h"
 
 #include "qgsprojectionselectiondialog.h"
+#include "moc_qgsprojectionselectiondialog.cpp"
 #include "qgshelp.h"
 #include <QDialogButtonBox>
 #include <QApplication>
@@ -29,8 +30,7 @@
 //
 // QgsCrsSelectionWidget
 //
-QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent,
-    QgsCoordinateReferenceSystemProxyModel::Filters filters )
+QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent, QgsCoordinateReferenceSystemProxyModel::Filters filters )
   : QgsPanelWidget( parent )
 {
   setupUi( this );
@@ -43,19 +43,18 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent,
   mNotSetText = tr( "No CRS (or unknown/non-Earth projection)" );
   mLabelNoCrs->setText( tr( "Use this option to treat all coordinates as Cartesian coordinates in an unknown reference system." ) );
 
-  mComboCrsType->addItem( tr( "Predefined CRS" ), static_cast< int >( CrsType::Predefined ) );
-  mComboCrsType->addItem( tr( "Custom CRS" ), static_cast< int >( CrsType::Custom ) );
+  mComboCrsType->addItem( tr( "Predefined CRS" ), static_cast<int>( CrsType::Predefined ) );
+  mComboCrsType->addItem( tr( "Custom CRS" ), static_cast<int>( CrsType::Custom ) );
 
   mStackedWidget->setCurrentWidget( mPageDatabase );
-  mComboCrsType->setCurrentIndex( mComboCrsType->findData( static_cast< int >( CrsType::Predefined ) ) );
+  mComboCrsType->setCurrentIndex( mComboCrsType->findData( static_cast<int>( CrsType::Predefined ) ) );
 
-  connect( mComboCrsType, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
-  {
+  connect( mComboCrsType, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
     if ( !mComboCrsType->currentData().isValid() )
       mStackedWidget->setCurrentWidget( mPageNoCrs );
     else
     {
-      switch ( static_cast< CrsType >( mComboCrsType->currentData().toInt() ) )
+      switch ( static_cast<CrsType>( mComboCrsType->currentData().toInt() ) )
       {
         case QgsCrsSelectionWidget::CrsType::Predefined:
           mStackedWidget->setCurrentWidget( mPageDatabase );
@@ -73,13 +72,11 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent,
     }
   } );
 
-  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::projectionDoubleClicked, this, [ = ]
-  {
+  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::projectionDoubleClicked, this, [=] {
     emit crsDoubleClicked( projectionSelector->crs() );
   } );
 
-  connect( mCrsDefinitionWidget, &QgsCrsDefinitionWidget::crsChanged, this, [ = ]()
-  {
+  connect( mCrsDefinitionWidget, &QgsCrsDefinitionWidget::crsChanged, this, [=]() {
     if ( !mBlockSignals )
     {
       emit crsChanged();
@@ -87,8 +84,7 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent,
     }
   } );
 
-  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::crsSelected, this, [ = ]()
-  {
+  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::crsSelected, this, [=]() {
     if ( !mBlockSignals )
     {
       mDeferredInvalidCrsSet = false;
@@ -97,8 +93,7 @@ QgsCrsSelectionWidget::QgsCrsSelectionWidget( QWidget *parent,
     }
   } );
 
-  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::hasValidSelectionChanged, this, [ = ]()
-  {
+  connect( projectionSelector, &QgsProjectionSelectionTreeWidget::hasValidSelectionChanged, this, [=]() {
     if ( !mBlockSignals )
     {
       emit crsChanged();
@@ -118,8 +113,7 @@ QgsCrsSelectionWidget::~QgsCrsSelectionWidget()
 
 void QgsCrsSelectionWidget::setMessage( const QString &message )
 {
-  textEdit->setHtml( QStringLiteral( "<head><style>%1</style></head><body>%2</body>" ).arg( QgsApplication::reportStyleSheet(),
-                     message ) );
+  textEdit->setHtml( QStringLiteral( "<head><style>%1</style></head><body>%2</body>" ).arg( QgsApplication::reportStyleSheet(), message ) );
   textEdit->show();
 }
 
@@ -179,7 +173,7 @@ bool QgsCrsSelectionWidget::hasValidSelection() const
     return false;
   else
   {
-    switch ( static_cast< CrsType >( mComboCrsType->currentData().toInt() ) )
+    switch ( static_cast<CrsType>( mComboCrsType->currentData().toInt() ) )
     {
       case QgsCrsSelectionWidget::CrsType::Predefined:
         return projectionSelector->hasValidSelection();
@@ -206,7 +200,7 @@ QgsCoordinateReferenceSystem QgsCrsSelectionWidget::crs() const
     return QgsCoordinateReferenceSystem();
   else
   {
-    switch ( static_cast< CrsType >( mComboCrsType->currentData().toInt() ) )
+    switch ( static_cast<CrsType>( mComboCrsType->currentData().toInt() ) )
     {
       case QgsCrsSelectionWidget::CrsType::Predefined:
         return projectionSelector->crs();
@@ -233,12 +227,12 @@ void QgsCrsSelectionWidget::setCrs( const QgsCoordinateReferenceSystem &crs )
     mCrsDefinitionWidget->setCrs( crs );
     if ( crs.isValid() && crs.authid().isEmpty() )
     {
-      mComboCrsType->setCurrentIndex( mComboCrsType->findData( static_cast< int>( CrsType::Custom ) ) );
+      mComboCrsType->setCurrentIndex( mComboCrsType->findData( static_cast<int>( CrsType::Custom ) ) );
       mStackedWidget->setCurrentWidget( mPageCustom );
     }
     else
     {
-      mComboCrsType->setCurrentIndex( mComboCrsType->findData( static_cast< int>( CrsType::Predefined ) ) );
+      mComboCrsType->setCurrentIndex( mComboCrsType->findData( static_cast<int>( CrsType::Predefined ) ) );
       mStackedWidget->setCurrentWidget( mPageDatabase );
     }
   }
@@ -254,13 +248,11 @@ void QgsCrsSelectionWidget::setOgcWmsCrsFilter( const QSet<QString> &crsFilter )
 }
 
 
-
 //
 // QgsProjectionSelectionDialog
 //
 
-QgsProjectionSelectionDialog::QgsProjectionSelectionDialog( QWidget *parent,
-    Qt::WindowFlags fl, QgsCoordinateReferenceSystemProxyModel::Filters filters )
+QgsProjectionSelectionDialog::QgsProjectionSelectionDialog( QWidget *parent, Qt::WindowFlags fl, QgsCoordinateReferenceSystemProxyModel::Filters filters )
   : QDialog( parent, fl )
 {
   QVBoxLayout *vlayout = new QVBoxLayout();
@@ -290,10 +282,8 @@ void QgsProjectionSelectionDialog::setMessage( const QString &message )
 
 void QgsProjectionSelectionDialog::showNoCrsForLayerMessage()
 {
-  setMessage( tr( "This layer appears to have no projection specification." )
-              + ' '
-              + tr( "By default, this layer will now have its projection set to that of the project, "
-                    "but you may override this by selecting a different projection below." ) );
+  setMessage( tr( "This layer appears to have no projection specification." ) + ' ' + tr( "By default, this layer will now have its projection set to that of the project, "
+                                                                                          "but you may override this by selecting a different projection below." ) );
 }
 
 void QgsProjectionSelectionDialog::setShowNoProjection( bool show )
@@ -316,8 +306,7 @@ void QgsProjectionSelectionDialog::setRequireValidSelection()
   mRequireValidSelection = true;
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( hasValidSelection() );
 
-  connect( mCrsWidget, &QgsCrsSelectionWidget::hasValidSelectionChanged, this, [ = ]( bool isValid )
-  {
+  connect( mCrsWidget, &QgsCrsSelectionWidget::hasValidSelectionChanged, this, [=]( bool isValid ) {
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( isValid );
   } );
 }

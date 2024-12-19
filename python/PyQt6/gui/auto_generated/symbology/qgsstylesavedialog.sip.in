@@ -10,7 +10,7 @@
 
 
 
-class QgsStyleSaveDialog: QDialog
+class QgsStyleSaveDialog : QDialog
 {
 %Docstring(signature="appended")
 a dialog for setting properties of a newly saved style.
@@ -20,7 +20,6 @@ a dialog for setting properties of a newly saved style.
 #include "qgsstylesavedialog.h"
 %End
   public:
-
     QgsStyleSaveDialog( QWidget *parent /TransferThis/ = 0, QgsStyle::StyleEntity type = QgsStyle::SymbolEntity );
 %Docstring
 Constructor for :py:class:`QgsSymbolSaveDialog`

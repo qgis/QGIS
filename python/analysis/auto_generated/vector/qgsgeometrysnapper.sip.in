@@ -23,7 +23,6 @@ match the reference layer features within a specified snap tolerance.
 #include "qgsgeometrysnapper.h"
 %End
   public:
-
     enum SnapMode
     {
       PreferNodes,
@@ -89,7 +88,6 @@ the snapped geometries back to the source layer.
 #include "qgsgeometrysnapper.h"
 %End
   public:
-
     QgsInternalGeometrySnapper( double snapTolerance, QgsGeometrySnapper::SnapMode mode = QgsGeometrySnapper::PreferNodes );
 %Docstring
 Constructor for QgsInternalGeometrySnapper. The ``snapTolerance`` and ``mode`` parameters dictate

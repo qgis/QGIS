@@ -635,7 +635,7 @@ If ``capitalize`` is ``True`` then the string will be converted to a camel case 
     virtual QgsProcessingAlgorithm *createInstance() const /Factory/;
 
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) throw( QgsProcessingException );
+    virtual QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
 
 };

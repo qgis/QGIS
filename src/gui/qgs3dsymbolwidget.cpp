@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgs3dsymbolwidget.h"
+#include "moc_qgs3dsymbolwidget.cpp"
 #include "qgsapplication.h"
 #include "qgs3dsymbolregistry.h"
 #include "qgsabstract3dsymbol.h"
@@ -45,8 +46,7 @@ Qgs3DSymbolDialog::Qgs3DSymbolDialog( const QgsAbstract3DSymbol *symbol, QWidget
   mButtonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, Qt::Horizontal );
   connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this,  [ = ]
-  {
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [=] {
     QgsHelp::openHelp( QStringLiteral( "style_library/3d_symbols.html" ) );
   } );
   vLayout->addStretch();

@@ -19,6 +19,8 @@
 #include "qgsconnectionpool.h"
 #include "qgsogrprovidermetadata.h"
 #include "qgsogrproviderutils.h"
+
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
 #include "qgis_sip.h"
 #include <cpl_string.h>

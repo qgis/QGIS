@@ -6,8 +6,8 @@
 O1TimedReply::O1TimedReply(QNetworkReply *parent, int pTimeout): QTimer(parent) {
     setSingleShot(true);
     setInterval(pTimeout);
-    connect(this, SIGNAL(timeout()), this, SLOT(onTimeout()));
-    connect(parent, SIGNAL(finished()), this, SLOT(onFinished()));
+    connect(this, &QTimer::timeout, this, &O1TimedReply::onTimeout);
+    connect(parent, &QNetworkReply::finished, this, &O1TimedReply::onFinished);
 }
 
 void O1TimedReply::onFinished() {

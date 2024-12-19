@@ -28,10 +28,9 @@
  * \brief Stores layer ids of bad layers
  * \since QGIS 3.6
  */
-class SERVER_EXPORT QgsStoreBadLayerInfo: public QgsProjectBadLayerHandler
+class SERVER_EXPORT QgsStoreBadLayerInfo : public QgsProjectBadLayerHandler
 {
   public:
-
     /**
      * Default constructor
      */

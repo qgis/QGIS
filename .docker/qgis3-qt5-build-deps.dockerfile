@@ -114,22 +114,24 @@ RUN  apt-get update \
 # Node.js and Yarn for server landingpage webapp
 RUN mkdir -p /etc/apt/keyrings
 RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
-RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_18.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_22.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
 RUN apt-get update
 RUN apt-get install -y nodejs
 RUN corepack enable
 
 # Oracle : client side
-RUN curl https://download.oracle.com/otn_software/linux/instantclient/199000/instantclient-basic-linux.x64-19.9.0.0.0dbru.zip > instantclient-basic-linux.x64-19.9.0.0.0dbru.zip
-RUN curl https://download.oracle.com/otn_software/linux/instantclient/199000/instantclient-sdk-linux.x64-19.9.0.0.0dbru.zip > instantclient-sdk-linux.x64-19.9.0.0.0dbru.zip
-RUN curl https://download.oracle.com/otn_software/linux/instantclient/199000/instantclient-sqlplus-linux.x64-19.9.0.0.0dbru.zip > instantclient-sqlplus-linux.x64-19.9.0.0.0dbru.zip
+RUN curl https://download.oracle.com/otn_software/linux/instantclient/2116000/instantclient-basic-linux.x64-21.16.0.0.0dbru.zip > instantclient-basic-linux.x64-21.16.0.0.0dbru.zip
+RUN curl https://download.oracle.com/otn_software/linux/instantclient/2116000/instantclient-sdk-linux.x64-21.16.0.0.0dbru.zip > instantclient-sdk-linux.x64-21.16.0.0.0dbru.zip
+RUN curl https://download.oracle.com/otn_software/linux/instantclient/2116000/instantclient-sqlplus-linux.x64-21.16.0.0.0dbru.zip > instantclient-sqlplus-linux.x64-21.16.0.0.0dbru.zip
 
-RUN unzip instantclient-basic-linux.x64-19.9.0.0.0dbru.zip
-RUN unzip instantclient-sdk-linux.x64-19.9.0.0.0dbru.zip
-RUN unzip instantclient-sqlplus-linux.x64-19.9.0.0.0dbru.zip
+RUN unzip -n instantclient-basic-linux.x64-21.16.0.0.0dbru.zip
+RUN unzip -n instantclient-sdk-linux.x64-21.16.0.0.0dbru.zip
+RUN unzip -n instantclient-sqlplus-linux.x64-21.16.0.0.0dbru.zip
 
-ENV PATH="/instantclient_19_9:${PATH}"
-ENV LD_LIBRARY_PATH="/instantclient_19_9:${LD_LIBRARY_PATH}"
+ENV PATH="/instantclient_21_16:${PATH}"
+ENV LD_LIBRARY_PATH="/instantclient_21_16:${LD_LIBRARY_PATH}"
+# workaround noble libaio SONAME issue -- see https://bugs.launchpad.net/ubuntu/+source/libaio/+bug/2067501
+RUN if [ -e /usr/lib/x86_64-linux-gnu/libaio.so.1t64 ] ; then ln -sf /usr/lib/x86_64-linux-gnu/libaio.so.1t64 /usr/lib/x86_64-linux-gnu/libaio.so.1 ; fi
 
 # Avoid sqlcmd termination due to locale -- see https://github.com/Microsoft/mssql-docker/issues/163
 RUN echo "nb_NO.UTF-8 UTF-8" > /etc/locale.gen

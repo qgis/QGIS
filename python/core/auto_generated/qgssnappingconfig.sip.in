@@ -47,7 +47,7 @@ Convenient method to returns the translated name of the enum type
 .. versionadded:: 3.26
 %End
 
- static QString snappingTypeFlagToString( Qgis::SnappingType type ) /Deprecated/;
+ static QString snappingTypeFlagToString( Qgis::SnappingType type ) /Deprecated="Since 3.26. Use snappingTypeToString() instead."/;
 %Docstring
 Convenient method to return the translated name of the enum type
 :py:class:`Qgis`.SnappingTypes.
@@ -56,7 +56,7 @@ Convenient method to return the translated name of the enum type
 
 .. deprecated:: 3.26
 
-   Use :py:class:`Qgis`.snappingTypeToString instead.
+   Use :py:func:`~QgsSnappingConfig.snappingTypeToString` instead.
 %End
 
 
@@ -68,14 +68,14 @@ Convenient method to return an icon corresponding to the enum type
 .. versionadded:: 3.20
 %End
 
- static QIcon snappingTypeFlagToIcon( Qgis::SnappingType type ) /Deprecated/;
+ static QIcon snappingTypeFlagToIcon( Qgis::SnappingType type ) /Deprecated="Since 3.26. Use snappingTypeToIcon() instead."/;
 %Docstring
 Convenient method to return an icon corresponding to the enum type
 :py:class:`Qgis`.SnappingTypes.
 
 .. deprecated:: 3.26
 
-   Use :py:class:`Qgis`.snappingTypeToString instead.
+   Use :py:func:`~QgsSnappingConfig.snappingTypeToIcon` instead.
 .. versionadded:: 3.20
 %End
 
@@ -90,7 +90,7 @@ This is a container of advanced configuration (per layer) of the snapping of the
 %End
       public:
 
- IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, Qgis::MapToolUnit units ) /Deprecated/;
+ IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, Qgis::MapToolUnit units ) /Deprecated="Since 3.12. Use the method with Qgis.SnappingTypes instead."/;
 %Docstring
 IndividualLayerSettings
 
@@ -145,22 +145,22 @@ Returns the flags type (vertices | segments | area | centroid | middle)
 .. versionadded:: 3.12
 %End
 
- QgsSnappingConfig::SnappingType type() const /Deprecated/;
+ QgsSnappingConfig::SnappingType type() const /Deprecated="Since 3.12. Use typeFlag() instead."/;
 %Docstring
 Returns the flags type (vertices | segments | area | centroid | middle)
 
 .. deprecated:: 3.12
 
-   Use typeFlag instead.
+   Use :py:func:`~IndividualLayerSettings.typeFlag` instead.
 %End
 
- void setType( SnappingType type ) /Deprecated/;
+ void setType( SnappingType type ) /Deprecated="Since 3.12. Use setTypeFlag() instead."/;
 %Docstring
 define the type of snapping
 
 .. deprecated:: 3.12
 
-   Use setTypeFlag instead.
+   Use :py:func:`~IndividualLayerSettings.setTypeFlag` instead.
 %End
 
         void setTypeFlag( Qgis::SnappingTypes type );
@@ -263,13 +263,13 @@ Returns the flags type (vertices | segments | area | centroid | middle)
 .. versionadded:: 3.12
 %End
 
- QgsSnappingConfig::SnappingType type() const /Deprecated/;
+ QgsSnappingConfig::SnappingType type() const /Deprecated="Since 3.12. Use typeFlag() instead."/;
 %Docstring
 Returns the flags type (vertices | segments | area | centroid | middle)
 
 .. deprecated:: 3.12
 
-   Use typeFlag instead.
+   Use :py:func:`~QgsSnappingConfig.typeFlag` instead.
 %End
 
  void setType( QgsSnappingConfig::SnappingType type );
@@ -278,7 +278,7 @@ define the type of snapping
 
 .. deprecated:: 3.12
 
-   Use setTypeFlag instead.
+   Use :py:func:`~QgsSnappingConfig.setTypeFlag` instead.
 %End
 
     void setTypeFlag( Qgis::SnappingTypes type );

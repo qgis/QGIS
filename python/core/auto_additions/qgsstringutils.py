@@ -1,7 +1,7 @@
 # The following has been generated automatically from src/core/qgsstringutils.h
 try:
     QgsStringReplacement.fromProperties = staticmethod(QgsStringReplacement.fromProperties)
-except NameError:
+except (NameError, AttributeError):
     pass
 try:
     QgsStringUtils.capitalize = staticmethod(QgsStringUtils.capitalize)
@@ -18,5 +18,6 @@ try:
     QgsStringUtils.htmlToMarkdown = staticmethod(QgsStringUtils.htmlToMarkdown)
     QgsStringUtils.qRegExpEscape = staticmethod(QgsStringUtils.qRegExpEscape)
     QgsStringUtils.truncateMiddleOfString = staticmethod(QgsStringUtils.truncateMiddleOfString)
-except NameError:
+    QgsStringUtils.containsByWord = staticmethod(QgsStringUtils.containsByWord)
+except (NameError, AttributeError):
     pass

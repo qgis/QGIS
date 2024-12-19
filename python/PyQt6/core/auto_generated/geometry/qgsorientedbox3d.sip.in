@@ -110,7 +110,7 @@ Returns an array of all corners as 3D vectors.
 Returns size of sides of the box.
 %End
 
-    QgsBox3D reprojectedExtent( const QgsCoordinateTransform &ct ) const throw( QgsCsException ) /HoldGIL/;
+    QgsBox3D reprojectedExtent( const QgsCoordinateTransform &ct ) const  /HoldGIL/;
 %Docstring
 Reprojects corners of this box using the given coordinate ``transform``
 and returns axis-aligned box containing reprojected corners.

@@ -19,6 +19,7 @@
  ***************************************************************************/
 
 #include "qgsrunprocess.h"
+#include "moc_qgsrunprocess.cpp"
 
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"

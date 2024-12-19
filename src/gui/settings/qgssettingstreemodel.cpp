@@ -17,6 +17,7 @@
 #include <QFont>
 
 #include "qgssettingstreemodel.h"
+#include "moc_qgssettingstreemodel.cpp"
 #include "qgssettingsentry.h"
 #include "qgssettingstreenode.h"
 #include "qgssettingseditorwidgetwrapper.h"
@@ -168,7 +169,6 @@ void QgsSettingsTreeModelNodeData::fillChildren()
 ///@endcond
 
 
-
 QgsSettingsTreeModel::QgsSettingsTreeModel( QgsSettingsTreeNode *rootNode, QObject *parent )
   : QAbstractItemModel( parent )
 {
@@ -216,8 +216,7 @@ QModelIndex QgsSettingsTreeModel::node2index( QgsSettingsTreeModelNodeData *node
 
 QModelIndex QgsSettingsTreeModel::index( int row, int column, const QModelIndex &parent ) const
 {
-  if ( column < 0 || column >= columnCount( parent ) ||
-       row < 0 || row >= rowCount( parent ) )
+  if ( column < 0 || column >= columnCount( parent ) || row < 0 || row >= rowCount( parent ) )
     return QModelIndex();
 
   QgsSettingsTreeModelNodeData *n = index2node( parent );
@@ -288,8 +287,7 @@ QVariant QgsSettingsTreeModel::data( const QModelIndex &index, int role ) const
       return mNotSetColor;
     }
 
-    if ( node->isEdited() &&
-         ( node->setting()->settingsType() != Qgis::SettingsType::Color || index.column() != static_cast<int>( Column::Value ) ) )
+    if ( node->isEdited() && ( node->setting()->settingsType() != Qgis::SettingsType::Color || index.column() != static_cast<int>( Column::Value ) ) )
     {
       return mEditedColorFore;
     }
@@ -298,8 +296,7 @@ QVariant QgsSettingsTreeModel::data( const QModelIndex &index, int role ) const
   if ( role == Qt::BackgroundRole && node->type() == QgsSettingsTreeModelNodeData::Type::Setting )
   {
     // background for edited settings (except colors)
-    if ( node->isEdited() &&
-         ( node->setting()->settingsType() != Qgis::SettingsType::Color || index.column() != static_cast<int>( Column::Value ) ) )
+    if ( node->isEdited() && ( node->setting()->settingsType() != Qgis::SettingsType::Color || index.column() != static_cast<int>( Column::Value ) ) )
     {
       return mEditedColorBack;
     }
@@ -320,8 +317,7 @@ QVariant QgsSettingsTreeModel::data( const QModelIndex &index, int role ) const
     {
       if ( role == Qt::CheckStateRole )
       {
-        if ( node->type() == QgsSettingsTreeModelNodeData::Type::Setting &&
-             node->setting()->settingsType() == Qgis::SettingsType::Bool )
+        if ( node->type() == QgsSettingsTreeModelNodeData::Type::Setting && node->setting()->settingsType() == Qgis::SettingsType::Bool )
         {
           // special handling of bool setting to show combobox
           return node->value().toBool() ? Qt::Checked : Qt::Unchecked;
@@ -329,8 +325,7 @@ QVariant QgsSettingsTreeModel::data( const QModelIndex &index, int role ) const
       }
       if ( role == Qt::DisplayRole || role == Qt::EditRole )
       {
-        if ( node->type() == QgsSettingsTreeModelNodeData::Type::Setting &&
-             node->setting()->settingsType() == Qgis::SettingsType::Bool )
+        if ( node->type() == QgsSettingsTreeModelNodeData::Type::Setting && node->setting()->settingsType() == Qgis::SettingsType::Bool )
         {
           // special handling of bool setting to show combobox
           return QString();
@@ -486,7 +481,10 @@ void QgsSettingsTreeItemDelegate::setEditorData( QWidget *editor, const QModelIn
 {
   QgsSettingsEditorWidgetWrapper *eww = QgsSettingsEditorWidgetWrapper::fromWidget( editor );
   if ( eww )
-    eww->setWidgetFromVariant( index.model()->data( index, Qt::DisplayRole ) );
+  {
+    const QVariant value = index.model()->data( index, Qt::DisplayRole );
+    eww->setWidgetFromVariant( value );
+  }
 }
 
 void QgsSettingsTreeItemDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
@@ -497,9 +495,6 @@ void QgsSettingsTreeItemDelegate::setModelData( QWidget *editor, QAbstractItemMo
 }
 
 ///@endcond
-
-
-
 
 
 QgsSettingsTreeProxyModel::QgsSettingsTreeProxyModel( QgsSettingsTreeNode *rootNode, QObject *parent )
@@ -562,4 +557,3 @@ bool QgsSettingsTreeProxyModel::nodeShown( QgsSettingsTreeModelNodeData *node ) 
     return false;
   }
 }
-

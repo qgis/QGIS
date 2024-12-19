@@ -5,9 +5,10 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-__author__ = 'Nyall Dawson'
-__date__ = '12/02/2017'
-__copyright__ = 'Copyright 2017, The QGIS Project'
+
+__author__ = "Nyall Dawson"
+__date__ = "12/02/2017"
+__copyright__ = "Copyright 2017, The QGIS Project"
 
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsFeedback
@@ -49,5 +50,5 @@ class TestQgsFeedback(unittest.TestCase):
         self.assertEqual(processed_spy[0][0], 25)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

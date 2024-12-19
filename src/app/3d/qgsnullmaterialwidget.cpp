@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsnullmaterialwidget.h"
+#include "moc_qgsnullmaterialwidget.cpp"
 
 #include "qgsnullmaterialsettings.h"
 #include "qgis.h"

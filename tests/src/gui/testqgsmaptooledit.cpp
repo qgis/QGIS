@@ -30,10 +30,10 @@ class TestQgsMapToolEdit : public QObject
     TestQgsMapToolEdit() = default;
 
   private slots:
-    void initTestCase(); // will be called before the first testfunction is executed.
+    void initTestCase();    // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init(); // will be called before each testfunction is executed.
-    void cleanup(); // will be called after every testfunction.
+    void init();            // will be called before each testfunction is executed.
+    void cleanup();         // will be called after every testfunction.
 
     void checkDefaultZValue();
     void checkDefaultMValue();
@@ -41,7 +41,6 @@ class TestQgsMapToolEdit : public QObject
 
   private:
     QgsMapCanvas *mCanvas = nullptr;
-
 };
 
 void TestQgsMapToolEdit::initTestCase()
@@ -101,13 +100,13 @@ void TestQgsMapToolEdit::checkLayers()
   QVERIFY( vl1->isValid() );
   QgsProject::instance()->addMapLayer( vl1 );
 
-  std::unique_ptr< QgsVectorLayer > vl2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "Point?crs=epsg:3946&field=halig:string&field=valig:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
+  std::unique_ptr<QgsVectorLayer> vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "Point?crs=epsg:3946&field=halig:string&field=valig:string" ), QStringLiteral( "vl2" ), QStringLiteral( "memory" ) );
   QVERIFY( vl2->isValid() );
 
-  std::unique_ptr< QgsMapCanvas > canvas = std::make_unique< QgsMapCanvas >();
+  std::unique_ptr<QgsMapCanvas> canvas = std::make_unique<QgsMapCanvas>();
   canvas->setLayers( { vl1, vl2.get() } );
 
-  std::unique_ptr< QgsMapToolEdit > tool = std::make_unique< QgsMapToolEdit >( canvas.get() );
+  std::unique_ptr<QgsMapToolEdit> tool = std::make_unique<QgsMapToolEdit>( canvas.get() );
 
   // retrieving layer by id should work for both layers from the project AND for freestanding layers
   QCOMPARE( tool->layer( vl1->id() ), vl1 );

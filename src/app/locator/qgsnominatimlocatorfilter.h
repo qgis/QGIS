@@ -27,11 +27,9 @@ class APP_EXPORT QgsNominatimLocatorFilter : public QgsGeocoderLocatorFilter
     Q_OBJECT
 
   public:
-
     QgsNominatimLocatorFilter( QgsGeocoderInterface *geocoder, QgsMapCanvas *canvas );
 
     void triggerResult( const QgsLocatorResult &result ) override;
-
 };
 
 #endif // QGSNOMINATIMLOCATORFILTERS_H

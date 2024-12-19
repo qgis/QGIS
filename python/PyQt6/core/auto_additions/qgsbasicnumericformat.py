@@ -3,5 +3,5 @@ QgsBasicNumericFormat.DecimalPlaces = QgsBasicNumericFormat.RoundingType.Decimal
 QgsBasicNumericFormat.SignificantFigures = QgsBasicNumericFormat.RoundingType.SignificantFigures
 try:
     QgsBasicNumericFormat.__group__ = ['numericformats']
-except NameError:
+except (NameError, AttributeError):
     pass

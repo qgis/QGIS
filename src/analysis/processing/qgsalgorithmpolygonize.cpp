@@ -52,12 +52,9 @@ QString QgsPolygonizeAlgorithm::groupId() const
 
 void QgsPolygonizeAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),
-                QObject::tr( "Input layer" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "KEEP_FIELDS" ),
-                QObject::tr( "Keep table structure of line layer" ), false, true ) );
-  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ),
-                QObject::tr( "Polygons" ), Qgis::ProcessingSourceType::VectorPolygon ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "KEEP_FIELDS" ), QObject::tr( "Keep table structure of line layer" ), false ) );
+  addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Polygons" ), Qgis::ProcessingSourceType::VectorPolygon ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "NUM_POLYGONS" ), QObject::tr( "Number of polygons" ) ) );
 }
 
@@ -68,7 +65,7 @@ QgsPolygonizeAlgorithm *QgsPolygonizeAlgorithm::createInstance() const
 
 QVariantMap QgsPolygonizeAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr< QgsProcessingFeatureSource > source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr<QgsProcessingFeatureSource> source( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !source )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
@@ -77,7 +74,7 @@ QVariantMap QgsPolygonizeAlgorithm::processAlgorithm( const QVariantMap &paramet
     fields = source->fields();
 
   QString dest;
-  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, source->sourceCrs() ) );
+  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, fields, Qgis::WkbType::Polygon, source->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
@@ -109,7 +106,7 @@ QVariantMap QgsPolygonizeAlgorithm::processAlgorithm( const QVariantMap &paramet
   feedback->setProgress( 45 );
 
   feedback->pushInfo( QObject::tr( "Polygonizing…" ) );
-  const QgsGeometry polygons = QgsGeometry::polygonize( QVector< QgsGeometry >() << lines );
+  const QgsGeometry polygons = QgsGeometry::polygonize( QVector<QgsGeometry>() << lines );
   if ( polygons.isEmpty() )
     feedback->reportError( QObject::tr( "No polygons were created." ) );
 
@@ -117,7 +114,7 @@ QVariantMap QgsPolygonizeAlgorithm::processAlgorithm( const QVariantMap &paramet
 
   if ( !polygons.isEmpty() )
   {
-    const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( polygons.constGet() );
+    const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( polygons.constGet() );
     step = collection->numGeometries() > 0 ? 50.0 / collection->numGeometries() : 1;
     for ( int part = 0; part < collection->numGeometries(); ++part )
     {
@@ -132,6 +129,8 @@ QVariantMap QgsPolygonizeAlgorithm::processAlgorithm( const QVariantMap &paramet
       polygonCount += 1;
     }
   }
+
+  sink->finalize();
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );

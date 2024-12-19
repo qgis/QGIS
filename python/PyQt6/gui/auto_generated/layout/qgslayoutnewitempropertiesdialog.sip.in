@@ -22,7 +22,6 @@ enter their sizes and positions.
 #include "qgslayoutnewitempropertiesdialog.h"
 %End
   public:
-
     QgsLayoutItemPropertiesDialog( QWidget *parent = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
 Constructor for :py:class:`QgsLayoutNewItemPropertiesDialog`.

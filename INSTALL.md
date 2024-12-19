@@ -1,12 +1,10 @@
 Building QGIS from source - step by step
 
-<!-- Table of contents generated with https://freelance-tech-writer.github.io/table-of-contents-generator/index.html -->
+<!-- TOC start (generated with https://bitdowntoc.derlin.ch/) -->
 
-# Table of Contents
-* [Table of Contents](#table-of-contents)
-* [1. Introduction](#1-introduction)
-* [2. Overview](#2-overview)
-* [3. Building on GNU/Linux](#3-building-on-gnulinux)
+- [1. Introduction](#1-introduction)
+- [2. Overview](#2-overview)
+- [3. Building on GNU/Linux](#3-building-on-gnulinux)
    * [3.1. Building QGIS with Qt 5.x](#31-building-qgis-with-qt-5x)
    * [3.2. Prepare apt](#32-prepare-apt)
    * [3.3. Install build dependencies](#33-install-build-dependencies)
@@ -14,45 +12,54 @@ Building QGIS from source - step by step
    * [3.5. Prepare your development environment](#35-prepare-your-development-environment)
    * [3.6. Check out the QGIS Source Code](#36-check-out-the-qgis-source-code)
    * [3.7. Starting the compile](#37-starting-the-compile)
-       * [3.7.1 Available compilation flags](#371-available-compilation-flags)
+      + [3.7.1 Available compilation flags](#371-available-compilation-flags)
    * [3.8. Compiling with 3D](#38-compiling-with-3d)
-       * [3.8.1. Compiling with 3D on old Debian based distributions](#381-compiling-with-3d-on-old-debian-based-distributions)
+      + [3.8.1. Compiling with 3D on old Debian based distributions](#381-compiling-with-3d-on-old-debian-based-distributions)
    * [3.9. Building different branches](#39-building-different-branches)
    * [3.10. Building Debian packages](#310-building-debian-packages)
-       * [3.10.1. Building packages with oracle support](#3101-building-packages-with-oracle-support)
+      + [3.10.1. Building packages with Oracle support](#3101-building-packages-with-oracle-support)
    * [3.11. On Fedora Linux](#311-on-fedora-linux)
-       * [3.11.1. Install build dependencies](#3111-install-build-dependencies)
-       * [3.11.2. Suggested system tweaks](#3112-suggested-system-tweaks)
-       * [3.11.3. Additional tools for QGIS development](#3113-additional-tools-for-qgis-development)
-* [4. Building on Windows](#4-building-on-windows)
+      + [3.11.1. Install build dependencies](#3111-install-build-dependencies)
+      + [3.11.2. Suggested system tweaks](#3112-suggested-system-tweaks)
+      + [3.11.3. Additional tools for QGIS development](#3113-additional-tools-for-qgis-development)
+      + [3.11.4. QT6 experimental builds with Fedora Rawhide](#3114-qt6-experimental-builds-with-fedora-rawhide)
+- [4. Building on Windows](#4-building-on-windows)
    * [4.1. Building with Microsoft Visual Studio](#41-building-with-microsoft-visual-studio)
-       * [4.1.1. Visual Studio 2019 Community Edition](#411-visual-studio-2019-community-edition)
-       * [4.1.2. Other tools and dependencies](#412-other-tools-and-dependencies)
-       * [4.1.3. Clone the QGIS Source Code](#413-clone-the-qgis-source-code)
-       * [4.1.4. OSGeo4W](#414-OSGeo4W)
+      + [4.1.1. Visual Studio 2022 Community Edition](#411-visual-studio-2022-community-edition)
+      + [4.1.2. Other tools and dependencies](#412-other-tools-and-dependencies)
+      + [4.1.3. Clone the QGIS Source Code](#413-clone-the-qgis-source-code)
+      + [4.1.4. OSGeo4W](#414-osgeo4w)
    * [4.2. Building on Linux with mingw64](#42-building-on-linux-with-mingw64)
-       * [4.2.1. Building with Docker](#421-building-with-docker)
-           * [4.2.1.1. Initial setup](#4211-initial-setup)
-           * [4.2.1.2. Building the dependencies](#4212-building-the-dependencies)
-           * [4.2.1.3. Cross-Building QGIS](#4213-cross-building-qgis)
-       * [4.2.2. Testing QGIS](#422-testing-qgis)
-   * [4.3 Building for Qt 6 with VCPKG in Microsoft Visual Studio](#41-building-with-qt6)
-* [5. Building on MacOS X](#5-building-on-macos-x)
-   * [5.1. Install Developer Tools](#51-install-developer-tools)
-   * [5.2. Install CMake and other build tools](#52-install-cmake-and-other-build-tools)
-   * [5.3. Install Qt5 and QGIS-Deps](#53-install-qt5-and-qgis-deps)
-   * [5.4. QGIS source](#54-qgis-source)
-   * [5.5. Configure the build](#55-configure-the-build)
-   * [5.6. Building](#56-building)
-* [6. Setting up the WCS test server on GNU/Linux](#6-setting-up-the-wcs-test-server-on-gnulinux)
+      + [4.2.1. Building with Docker](#421-building-with-docker)
+         - [4.2.1.1. Initial setup](#4211-initial-setup)
+         - [4.2.1.2. Building the dependencies](#4212-building-the-dependencies)
+         - [4.2.1.3. Cross-Building QGIS](#4213-cross-building-qgis)
+      + [4.2.2. Testing QGIS](#422-testing-qgis)
+   * [4.3 Building on Windows with vcpkg](#43-building-on-windows-with-vcpkg)
+      + [4.3.1 Install Build Tools](#431-install-build-tools)
+      + [4.3.2 Build QGIS](#432-build-qgis)
+         - [4.3.2.1 Build with an SDK](#4321-build-with-an-sdk)
+         - [4.3.2.1 Build all the dependencies locally](#4321-build-all-the-dependencies-locally)
+- [5. Building on MacOS X](#5-building-on-macos-x)
+   * [5.1. Building with Mac Packager](#51-building-with-mac-packager)
+     + [5.1.1. Install Developer Tools](#511-install-developer-tools)
+     + [5.1.2. Install CMake and other build tools](#512-install-cmake-and-other-build-tools)
+     + [5.1.3. Install Qt5 and QGIS-Deps](#513-install-qt5-and-qgis-deps)
+     + [5.1.4. QGIS source](#514-qgis-source)
+     + [5.1.5. Configure the build](#515-configure-the-build)
+     + [5.1.6. Building](#516-building)
+   * [5.2. Building with vcpkg](#52-building-with-vcpkg)
+- [6. Setting up the WCS test server on GNU/Linux](#6-setting-up-the-wcs-test-server-on-gnulinux)
    * [6.1. Preparation](#61-preparation)
    * [6.2. Setup mapserver](#62-setup-mapserver)
    * [6.3. Create a home page](#63-create-a-home-page)
    * [6.4. Now deploy it](#64-now-deploy-it)
    * [6.5. Debugging](#65-debugging)
-* [7. Setting up a Jenkins Build Server](#7-setting-up-a-jenkins-build-server)
-* [8. Debug output and running tests](#8-debug-output-and-running-tests)
-* [9. Authors and Acknowledgments](#9-authors-and-acknowledgments)
+- [7. Setting up a Jenkins Build Server](#7-setting-up-a-jenkins-build-server)
+- [8. Debug output and running tests](#8-debug-output-and-running-tests)
+- [9. Authors and Acknowledgments](#9-authors-and-acknowledgments)
+
+<!-- TOC end -->
 
 # 1. Introduction
 
@@ -181,7 +188,7 @@ sudo apt-get update
 
 (extracted from the control.in file in `debian/`)
 
-See [debian-ubuntu](https://qgis.org/en/site/forusers/alldownloads.html#debian-ubuntu) for
+See [debian-ubuntu](https://qgis.org/resources/installation-guide/#debianubuntu) for
 currently supported distributions (plain xenial's GDAL for instance is too old
 and we build with GDAL2 from ubuntugis).
 
@@ -771,12 +778,14 @@ Open a _Developer PowerShell for VS 2022_
 # and have changed the working directory into it
 
 # Configure
-cmake -S . \
-      -B build \
-      -DSDK_PATH="path/to/vcpkg-export-[date]" \
-      -DBUILD_WITH_QT6=ON \
-      -DWITH_QTWEBKIT=OFF \
-      -DVCPKG_TARGET_TRIPLET=x64-windows-release
+cmake -S . `
+      -B build `
+      -DSDK_PATH="path/to/vcpkg-export-[date]" `
+      -DBUILD_WITH_QT6=ON `
+      -DWITH_QTWEBKIT=OFF `
+      -DVCPKG_TARGET_TRIPLET=x64-windows-release `
+      -DFLEX_EXECUTABLE="path/to/flex-executable" `
+      -DBISON_EXECUTABLE="path/to/bison-executable"
 ```
 
 This will provide you with a configured project. You can either build it directly
@@ -801,12 +810,12 @@ This will require some time, cpu and disk space.
 # and have changed the working directory into it
 
 # Configure
-cmake -S . \
-      -B build \
-      -D WITH_VCPKG \
-      -D BUILD_WITH_QT6=ON \
-      -D WITH_QTWEBKIT=OFF \
-      -D VCPKG_TARGET_TRIPLET=x64-windows-release \
+cmake -S . `
+      -B build `
+      -D WITH_VCPKG=ON `
+      -D BUILD_WITH_QT6=ON `
+      -D WITH_QTWEBKIT=OFF `
+      -D VCPKG_TARGET_TRIPLET=x64-windows-release `
       -D VCPKG_HOST_TRIPLET=x64-windows-release
 ```
 
@@ -823,11 +832,16 @@ dependency into the folder `vcpkg/ports`. Whenever the build is reconfigured, it
 
 If you want to test QGIS, easiest option is to download and install all-in-one self-containing bundle directly from
 
-https://qgis.org/downloads/macos
+https://download.qgis.org/downloads/macos/
 
-On the other hand, if you want to build or develop QGIS on your own, you need a set of dependencies and tools.
-These instructions will use the same set of dependencies that are used for all-in-one QGIS bundle,
-but you can build QGIS with Homebrew, MacPorts or Conda dependencies too.
+If you want to build or develop QGIS on your own, you need a set of dependencies and tools.
+You can use
+
+- the same set of dependencies that are used for all-in-one QGIS bundle
+- vcpkg based dependencies for building with Qt6
+- with Homebrew, MacPorts or Conda dependencies (not covered in this guide)
+
+## 5.1. Building with Mac Packager
 
 https://github.com/qgis/QGIS-Mac-Packager
 
@@ -849,7 +863,7 @@ To find out how many CPUs you have available, run the following in Terminal:
 /usr/sbin/sysctl -n hw.ncpu
 ```
 
-## 5.1. Install Developer Tools
+### 5.1.1. Install Developer Tools
 
 Developer tools are not a part of a standard OS X installation.
 As minimum you require command line tools
@@ -860,7 +874,7 @@ sudo xcode-select --install
 
 but installation of Xcode from the App Store is recommended too.
 
-## 5.2. Install CMake and other build tools
+### 5.1.2. Install CMake and other build tools
 
 For example install Homebrew
 
@@ -877,14 +891,14 @@ brew install git cmake ninja pkg-config wget bash-completion curl gnu-sed coreut
 if you have these tools installed from MacPorts or Conda, it is the same, but we will need to be able to
 run `cmake` and others from Terminal in the following steps
 
-## 5.3. Install Qt5 and QGIS-Deps
+### 5.1.3. Install Qt5 and QGIS-Deps
 
 To build QGIS, we need Qt5 and FOSS dependencies on hand. The Qt5 version ideally should match the version that was
 used to build dependency package.
 
 Download the latest QGIS-Deps install script, qt package and QGIS-Deps packages from
 
-https://qgis.org/downloads/macos/deps
+https://download.qgis.org/downloads/macos/deps
 
 You should have one bash script and two tar archive in your download folder.
 Run the install script to install Qt and QGIS-Deps to `/opt/` area. You need
@@ -900,7 +914,7 @@ Note that the QGIS-Deps package is not yet signed, so you may need to add Termin
 to System Preferences -> Security & Privacy -> Privacy -> Developer Tools or manually accept usage
 of the libraries when asked by system.
 
-## 5.4. QGIS source
+### 5.1.4. QGIS source
 
 Unzip the QGIS source to a working folder of your choice.
 If you are reading this from the source, you've already done this.
@@ -918,7 +932,7 @@ select Download .tar.gz. Double-click the tarball to unzip it.
 git clone git://github.com/qgis/QGIS.git
 ```
 
-## 5.5. Configure the build
+### 5.1.5. Configure the build
 
 CMake supports out of source build so we will create a 'build' dir for the
 build process. OS X uses `${HOME}/Applications` as a standard user app folder (it
@@ -957,7 +971,7 @@ cd build
 ccmake ../QGIS
 ```
 
-## 5.6. Building
+### 5.1.6. Building
 
 Now we can start the build process (remember the parallel compilation note at
 the beginning, this is a good place to use it, if you can):
@@ -984,6 +998,67 @@ For running the installed QGIS, you need to keep the dependencies in `/opt/` fol
 If you want to create bundle that runs without these dependencies, please read the documentation in project
 
 https://github.com/qgis/QGIS-Mac-Packager
+
+## 5.2. Building with vcpkg
+
+With [vcpkg](https://github.com/microsoft/vcpkg/) you can develop QGIS using
+Qt6.
+
+Install and initialize vcpkg
+
+```sh
+. <(curl https://aka.ms/vcpkg-init.sh -L)
+```
+
+Install build tools using [homebrew](https://brew.sh/)
+
+```sh
+brew install git cmake flex bison automake autoconf libtool nasm ninja
+```
+
+Get the QGIS source code
+
+```sh
+git clone git@github.com:qgis/QGIS.git
+```
+
+Prepare the env for homebrew tools
+
+```sh
+export PATH=$(brew --prefix bison)/bin:$(brew --prefix flex)/bin:$(brew --prefix libtool)/bin:$PATH
+```
+
+Select the target architecture (arm64 is for M series processors).
+We will assume that you build for the same architecture that you build on.
+If that is not the case (e.g. you build for x64 on a arm64 machine), adjust
+the `HOST_TRIPLET` in the next step.
+
+```sh
+TRIPLET=arm64-osx-dynamic-release
+# TRIPLET=x64-osx-dynamic-release
+```
+
+Configure
+
+```sh
+cmake -S . \
+      -G Ninja \
+      -B build \
+      -D WITH_VCPKG=ON \
+      -D BUILD_WITH_QT6=ON \
+      -D WITH_QTWEBKIT=OFF \
+      -D WITH_BINDINGS=ON \
+      -D QGIS_MACAPP_FRAMEWORK=OFF \
+      -D VCPKG_TARGET_TRIPLET="$TRIPLET" \
+      -D VCPKG_HOST_TRIPLET="$TRIPLET" \
+      -D CREATE_MACOSX_BUNDLE=OFF
+```
+
+Build (switch the target to `Release` if you do not want to debug)
+
+```sh
+cmake --build build --target RelWithDebInfo
+```
 
 # 6. Setting up the WCS test server on GNU/Linux
 

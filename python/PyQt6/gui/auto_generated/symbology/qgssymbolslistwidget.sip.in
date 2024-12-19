@@ -18,7 +18,6 @@ class QgsSymbolsListWidget : QWidget
 #include "qgssymbolslistwidget.h"
 %End
   public:
-
     QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent /TransferThis/, QgsVectorLayer *layer = 0 );
 %Docstring
 Constructor for QgsSymbolsListWidget.
@@ -75,9 +74,6 @@ Emitted when the symbol is modified in the widget.
 %End
 
 };
-
-
-
 
 /************************************************************************
  * This file has been generated automatically from                      *

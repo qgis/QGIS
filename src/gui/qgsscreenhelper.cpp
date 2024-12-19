@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsscreenhelper.h"
+#include "moc_qgsscreenhelper.cpp"
 #include "qgis.h"
 #include <QWidget>
 #include <QEvent>
@@ -60,8 +61,7 @@ bool QgsScreenHelper::eventFilter( QObject *watched, QEvent *event )
       // keep device pixel ratio up to date on screen or resolution change
       if ( QWindow *handle = windowHandle() )
       {
-        connect( handle, &QWindow::screenChanged, this, [ = ]( QScreen * )
-        {
+        connect( handle, &QWindow::screenChanged, this, [=]( QScreen * ) {
           disconnect( mScreenDpiChangedConnection );
           disconnect( mAvailableGeometryChangedConnection );
 

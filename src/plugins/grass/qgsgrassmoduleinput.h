@@ -82,13 +82,18 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     void watch( const QString &path );
     QString mLocationPath;
     // mapset watched dirs
-    QStringList watchedDirs() { QStringList l; l << QStringLiteral( "cellhd" ) << QStringLiteral( "vector" ) << QStringLiteral( "tgis" ); return l; }
+    QStringList watchedDirs()
+    {
+      QStringList l;
+      l << QStringLiteral( "cellhd" ) << QStringLiteral( "vector" ) << QStringLiteral( "tgis" );
+      return l;
+    }
     // names of
     QStringList locationDirNames();
     QFileSystemWatcher *mWatcher = nullptr;
 
     QgsGrassModuleInputModel( const QgsGrassModuleInputModel & ) = delete;
-    QgsGrassModuleInputModel &operator = ( const QgsGrassModuleInputModel & ) = delete;
+    QgsGrassModuleInputModel &operator=( const QgsGrassModuleInputModel & ) = delete;
 };
 
 // Filter maps by type
@@ -133,7 +138,11 @@ class QgsGrassModuleInputCompleterProxy : public QAbstractProxyModel
   public:
     explicit QgsGrassModuleInputCompleterProxy( QObject *parent = nullptr );
 
-    int columnCount( const QModelIndex &parent = QModelIndex() ) const override { Q_UNUSED( parent ) return 1; }
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override
+    {
+      Q_UNUSED( parent )
+      return 1;
+    }
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
     QModelIndex parent( const QModelIndex &index ) const override;
@@ -233,16 +242,12 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     Q_OBJECT
 
   public:
-
     /**
      * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
-    QgsGrassModuleInput( QgsGrassModule *module,
-                         QgsGrassModuleStandardOptions *options, QString key,
-                         QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-                         bool direct, QWidget *parent = nullptr );
+    QgsGrassModuleInput( QgsGrassModule *module, QgsGrassModuleStandardOptions *options, QString key, QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode, bool direct, QWidget *parent = nullptr );
 
     //! Returns list of options which will be passed to module
     QStringList options() override;
@@ -308,9 +313,6 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     //! Name of vector layer option associated with this input
     QString mVectorLayerOption;
 
-    //! Model used in combo
-    QgsGrassModuleInputModel *mModel = nullptr;
-
     //! Model containing currently selected maps
     QStandardItemModel *mSelectedModel = nullptr;
 
@@ -351,7 +353,7 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     bool mUsesRegion;
 
     QgsGrassModuleInput( const QgsGrassModuleInput & ) = delete;
-    QgsGrassModuleInput &operator = ( const QgsGrassModuleInput & ) = delete;
+    QgsGrassModuleInput &operator=( const QgsGrassModuleInput & ) = delete;
 };
 
 

@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 
-
 #ifndef QGSMSSQLDATAITEMS_H
 #define QGSMSSQLDATAITEMS_H
 
@@ -139,9 +138,7 @@ class QgsMssqlLayerItem : public QgsLayerItem
   private:
     QgsMssqlLayerProperty mLayerProperty;
     bool mDisableInvalidGeometryHandling = false;
-
 };
-
 
 
 //! Provider for GDAL root data item

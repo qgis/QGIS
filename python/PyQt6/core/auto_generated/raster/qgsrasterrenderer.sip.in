@@ -221,6 +221,8 @@ should be canceled.
 .. versionadded:: 3.10
 %End
 
+
+
   protected:
 
     void _writeXml( QDomDocument &doc, QDomElement &rasterRendererElem ) const;
@@ -241,6 +243,7 @@ during an actual rendering operation.
 
 .. versionadded:: 3.10
 %End
+
 
   private:
     QgsRasterRenderer( const QgsRasterRenderer & );

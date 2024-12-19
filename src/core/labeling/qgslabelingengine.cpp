@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgslabelingengine.h"
+#include "moc_qgslabelingengine.cpp"
 
 #include "qgslogger.h"
 
@@ -32,6 +33,7 @@
 #include "qgsfillsymbol.h"
 #include "qgsruntimeprofiler.h"
 #include "qgslabelingenginerule.h"
+#include "qgstextlabelfeature.h"
 
 #include <QUuid>
 
@@ -438,7 +440,7 @@ void QgsLabelingEngine::solve( QgsRenderContext &context )
       {
         pal::LabelPosition *lp = mProblem->featureCandidate( i, j );
 
-        QgsPalLabeling::drawLabelCandidateRect( lp, painter, &xform );
+        drawLabelCandidateRect( lp, context, &xform );
       }
     }
   }
@@ -515,41 +517,90 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
     lf->provider()->drawLabelBackground( context, label );
   }
 
-  // draw the labels
-  for ( pal::LabelPosition *label : std::as_const( mLabels ) )
+  if ( engineSettings().testFlag( Qgis::LabelingFlag::DrawLabelRectOnly ) )
   {
-    if ( context.renderingStopped() )
-      break;
+    // features are pre-rotated but not scaled/translated,
+    // so we only disable rotation here. Ideally, they'd be
+    // also pre-scaled/translated, as suggested here:
+    // https://github.com/qgis/QGIS/issues/20071
+    QgsMapToPixel xform = context.mapToPixel();
+    xform.setMapRotation( 0, 0, 0 );
 
-    QgsLabelFeature *lf = label->getFeaturePart()->feature();
-    if ( !lf )
+    std::function<void( pal::LabelPosition * )> drawLabelRect;
+    drawLabelRect = [&xform, painter, &drawLabelRect]( pal::LabelPosition * label )
     {
-      continue;
+      QPointF outPt = xform.transform( label->getX(), label->getY() ).toQPointF();
+
+      QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
+      QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
+      painter->save();
+      painter->setRenderHint( QPainter::Antialiasing, false );
+      painter->translate( QPointF( outPt.x(), outPt.y() ) );
+      painter->rotate( -label->getAlpha() * 180 / M_PI );
+
+      if ( label->conflictsWithObstacle() )
+      {
+        painter->setBrush( QColor( 255, 0, 0, 100 ) );
+        painter->setPen( QColor( 255, 0, 0, 150 ) );
+      }
+      else
+      {
+        painter->setBrush( QColor( 0, 255, 0, 100 ) );
+        painter->setPen( QColor( 0, 255, 0, 150 ) );
+      }
+
+      painter->drawRect( rect );
+      painter->restore();
+
+      if ( pal::LabelPosition *nextPart = label->nextPart() )
+        drawLabelRect( nextPart );
+    };
+
+    for ( pal::LabelPosition *label : std::as_const( mLabels ) )
+    {
+      drawLabelRect( label );
     }
 
-    if ( !layerId.isEmpty() && lf->provider()->layerId() != layerId )
-      continue;
-
-    context.expressionContext().setFeature( lf->feature() );
-    context.expressionContext().setFields( lf->feature().fields() );
-
-    QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, lf->provider()->layerReferenceScale() );
-    if ( lf->symbol() )
+    if ( settings.testFlag( Qgis::LabelingFlag::DrawUnplacedLabels ) )
     {
-      symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
+      for ( pal::LabelPosition *label : std::as_const( mUnlabeled ) )
+      {
+        drawLabelRect( label );
+      }
     }
-    lf->provider()->drawLabel( context, label );
-    // finished with symbol -- we can't keep it around after this, it may be deleted
-    lf->setSymbol( nullptr );
   }
-
-  // draw unplaced labels. These are always rendered on top
-  if ( settings.testFlag( Qgis::LabelingFlag::DrawUnplacedLabels ) || settings.testFlag( Qgis::LabelingFlag::CollectUnplacedLabels ) )
+  else
   {
-    for ( pal::LabelPosition *label : std::as_const( mUnlabeled ) )
+    if ( engineSettings().testFlag( Qgis::LabelingFlag::DrawLabelMetrics ) )
+    {
+      // features are pre-rotated but not scaled/translated,
+      // so we only disable rotation here. Ideally, they'd be
+      // also pre-scaled/translated, as suggested here:
+      // https://github.com/qgis/QGIS/issues/20071
+      QgsMapToPixel xform = context.mapToPixel();
+      xform.setMapRotation( 0, 0, 0 );
+
+      std::function<void( pal::LabelPosition * )> drawLabelMetricsRecursive;
+      drawLabelMetricsRecursive = [&xform, &context, &drawLabelMetricsRecursive]( pal::LabelPosition * label )
+      {
+        QPointF outPt = xform.transform( label->getX(), label->getY() ).toQPointF();
+        QgsLabelingEngine::drawLabelMetrics( label, xform, context, outPt );
+        if ( pal::LabelPosition *nextPart = label->nextPart() )
+          drawLabelMetricsRecursive( nextPart );
+      };
+
+      for ( pal::LabelPosition *label : std::as_const( mLabels ) )
+      {
+        drawLabelMetricsRecursive( label );
+      }
+    }
+
+    // draw the labels
+    for ( pal::LabelPosition *label : std::as_const( mLabels ) )
     {
       if ( context.renderingStopped() )
         break;
+
       QgsLabelFeature *lf = label->getFeaturePart()->feature();
       if ( !lf )
       {
@@ -567,9 +618,39 @@ void QgsLabelingEngine::drawLabels( QgsRenderContext &context, const QString &la
       {
         symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
       }
-      lf->provider()->drawUnplacedLabel( context, label );
+      lf->provider()->drawLabel( context, label );
       // finished with symbol -- we can't keep it around after this, it may be deleted
       lf->setSymbol( nullptr );
+    }
+
+    // draw unplaced labels. These are always rendered on top
+    if ( settings.testFlag( Qgis::LabelingFlag::DrawUnplacedLabels ) || settings.testFlag( Qgis::LabelingFlag::CollectUnplacedLabels ) )
+    {
+      for ( pal::LabelPosition *label : std::as_const( mUnlabeled ) )
+      {
+        if ( context.renderingStopped() )
+          break;
+        QgsLabelFeature *lf = label->getFeaturePart()->feature();
+        if ( !lf )
+        {
+          continue;
+        }
+
+        if ( !layerId.isEmpty() && lf->provider()->layerId() != layerId )
+          continue;
+
+        context.expressionContext().setFeature( lf->feature() );
+        context.expressionContext().setFields( lf->feature().fields() );
+
+        QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, lf->provider()->layerReferenceScale() );
+        if ( lf->symbol() )
+        {
+          symbolScope = QgsExpressionContextUtils::updateSymbolScope( lf->symbol(), symbolScope );
+        }
+        lf->provider()->drawUnplacedLabel( context, label );
+        // finished with symbol -- we can't keep it around after this, it may be deleted
+        lf->setSymbol( nullptr );
+      }
     }
   }
 
@@ -601,6 +682,141 @@ void QgsLabelingEngine::cleanup()
 QgsLabelingResults *QgsLabelingEngine::takeResults()
 {
   return mResults.release();
+}
+
+void QgsLabelingEngine::drawLabelCandidateRect( pal::LabelPosition *lp, QgsRenderContext &context, const QgsMapToPixel *xform, QList<QgsLabelCandidate> *candidates )
+{
+  QPainter *painter = context.painter();
+  if ( !painter )
+    return;
+
+  QgsPointXY outPt = xform->transform( lp->getX(), lp->getY() );
+
+  painter->save();
+
+  QgsPointXY outPt2 = xform->transform( lp->getX() + lp->getWidth(), lp->getY() + lp->getHeight() );
+  QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
+  painter->translate( QPointF( outPt.x(), outPt.y() ) );
+  painter->rotate( -lp->getAlpha() * 180 / M_PI );
+
+  if ( lp->conflictsWithObstacle() )
+  {
+    painter->setPen( QColor( 255, 0, 0, 64 ) );
+  }
+  else
+  {
+    painter->setPen( QColor( 0, 0, 0, 64 ) );
+  }
+  painter->drawRect( rect );
+  painter->restore();
+
+  // save the rect
+  rect.moveTo( outPt.x(), outPt.y() );
+  if ( candidates )
+    candidates->append( QgsLabelCandidate( rect, lp->cost() * 1000 ) );
+
+  // show all parts of the multipart label
+  if ( lp->nextPart() )
+    drawLabelCandidateRect( lp->nextPart(), context, xform, candidates );
+}
+
+void QgsLabelingEngine::drawLabelMetrics( pal::LabelPosition *label, const QgsMapToPixel &xform, QgsRenderContext &context, const QPointF &renderPoint )
+{
+  QPainter *painter = context.painter();
+  if ( !painter )
+    return;
+
+  QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
+  QRectF rect( 0, 0, outPt2.x() - renderPoint.x(), outPt2.y() - renderPoint.y() );
+  painter->save();
+  painter->setRenderHint( QPainter::Antialiasing, false );
+  painter->translate( QPointF( renderPoint.x(), renderPoint.y() ) );
+  painter->rotate( -label->getAlpha() * 180 / M_PI );
+
+  painter->setBrush( Qt::NoBrush );
+  painter->setPen( QColor( 255, 0, 0, 220 ) );
+
+  painter->drawRect( rect );
+
+  painter->setPen( QColor( 0, 0, 0, 60 ) );
+  const QgsMargins &margins = label->getFeaturePart()->feature()->visualMargin();
+  if ( margins.top() > 0 )
+  {
+    const double topMargin = margins.top() / context.mapToPixel().mapUnitsPerPixel();
+    painter->drawLine( QPointF( rect.left(), rect.top() - topMargin ), QPointF( rect.right(), rect.top() - topMargin ) );
+  }
+  if ( margins.bottom() > 0 )
+  {
+    const double bottomMargin = margins.top() / context.mapToPixel().mapUnitsPerPixel();
+    painter->drawLine( QPointF( rect.left(), rect.bottom() + bottomMargin ), QPointF( rect.right(), rect.bottom() + bottomMargin ) );
+  }
+
+  const QRectF outerBounds = label->getFeaturePart()->feature()->outerBounds();
+  if ( !outerBounds.isNull() )
+  {
+    const QRectF mapOuterBounds = QRectF( label->getX() + outerBounds.left(),
+                                          label->getY() + outerBounds.top(),
+                                          outerBounds.width(), outerBounds.height() );
+
+    QgsPointXY outerBoundsPt1 = xform.transform( mapOuterBounds.left(), mapOuterBounds.top() );
+    QgsPointXY outerBoundsPt2 = xform.transform( mapOuterBounds.right(), mapOuterBounds.bottom() );
+
+    const QRectF outerBoundsPixel( outerBoundsPt1.x() - renderPoint.x(),
+                                   outerBoundsPt1.y() - renderPoint.y(),
+                                   outerBoundsPt2.x() - outerBoundsPt1.x(),
+                                   outerBoundsPt2.y() - outerBoundsPt1.y() );
+
+    QPen pen( QColor( 255, 0, 255, 140 ) );
+    pen.setCosmetic( true );
+    pen.setWidth( 1 );
+    painter->setPen( pen );
+    painter->drawRect( outerBoundsPixel );
+  }
+
+  if ( QgsTextLabelFeature *textFeature = dynamic_cast< QgsTextLabelFeature * >( label->getFeaturePart()->feature() ) )
+  {
+    const QgsTextDocumentMetrics &metrics = textFeature->documentMetrics();
+    const QgsTextDocument &document = textFeature->document();
+    const int blockCount = document.size();
+
+    double prevBlockBaseline = rect.bottom() - rect.top();
+    const double verticalAlignOffset = -metrics.blockVerticalMargin( document.size() - 1 );
+
+    // draw block baselines
+    for ( int blockIndex = 0; blockIndex < blockCount; ++blockIndex )
+    {
+      const double blockBaseLine = metrics.baselineOffset( blockIndex, Qgis::TextLayoutMode::Labeling );
+
+      const QgsTextBlock &block = document.at( blockIndex );
+      const int fragmentCount = block.size();
+      double left = metrics.blockLeftMargin( blockIndex );
+      for ( int fragmentIndex = 0; fragmentIndex < fragmentCount; ++fragmentIndex )
+      {
+        const double fragmentVerticalOffset = metrics.fragmentVerticalOffset( blockIndex, fragmentIndex, Qgis::TextLayoutMode::Labeling );
+        const double right = left + metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, Qgis::TextLayoutMode::Labeling );
+
+        if ( fragmentIndex > 0 )
+        {
+          QPen pen( QColor( 0, 0, 255, 220 ) );
+          pen.setStyle( Qt::PenStyle::DashLine );
+
+          painter->setPen( pen );
+
+          painter->drawLine( QPointF( rect.left() + left, rect.top() + blockBaseLine + fragmentVerticalOffset + verticalAlignOffset ),
+                             QPointF( rect.left() + left, rect.top() + prevBlockBaseline + verticalAlignOffset ) );
+
+        }
+
+        painter->setPen( QColor( 0, 0, 255, 220 ) );
+        painter->drawLine( QPointF( rect.left() + left, rect.top()  + blockBaseLine + fragmentVerticalOffset + verticalAlignOffset ),
+                           QPointF( rect.left() + right, rect.top() + blockBaseLine + fragmentVerticalOffset + verticalAlignOffset ) );
+        left = right;
+      }
+      prevBlockBaseline = blockBaseLine;
+    }
+  }
+
+  painter->restore();
 }
 
 

@@ -24,12 +24,12 @@ class QgsSpinBoxLineEdit;
 
 
 #ifdef SIP_RUN
-% ModuleHeaderCode
+//%ModuleHeaderCode
 // fix to allow compilation with sip 4.7 that for some reason
 // doesn't add this include to the file where the code from
 // ConvertToSubClassCode goes.
 #include <qgsspinbox.h>
-% End
+//%End
 #endif
 
 
@@ -41,7 +41,6 @@ class QgsSpinBoxLineEdit;
  */
 class GUI_EXPORT QgsSpinBox : public QSpinBox
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsSpinBox *>( sipCpp ) )
@@ -57,13 +56,12 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     Q_PROPERTY( bool expressionsEnabled READ expressionsEnabled WRITE setExpressionsEnabled )
 
   public:
-
     //! Behavior when widget is cleared.
     enum ClearValueMode
     {
       MinimumValue, //!< Reset value to minimum()
       MaximumValue, //!< Reset value to maximum()
-      CustomValue, //!< Reset value to custom value (see setClearValue() )
+      CustomValue,  //!< Reset value to custom value (see setClearValue() )
     };
 
     /**
@@ -84,7 +82,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
      * Returns whether the widget is showing a clear button.
      * \see setShowClearButton()
      */
-    bool showClearButton() const {return mShowClearButton;}
+    bool showClearButton() const { return mShowClearButton; }
 
     /**
      * Sets if the widget will allow entry of simple expressions, which are
@@ -98,7 +96,7 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
      * evaluated and then discarded.
      * \returns TRUE if spin box allows expression entry
      */
-    bool expressionsEnabled() const {return mExpressionsEnabled;}
+    bool expressionsEnabled() const { return mExpressionsEnabled; }
 
     //! Sets the current value to the value defined by the clear value.
     void clear() override;
@@ -141,6 +139,29 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     QValidator::State validate( QString &input, int &pos ) const override;
     void stepBy( int steps ) override;
 
+    /**
+     * Returns the timeout (in milliseconds) threshold for the editingTimeout() signal to be emitted
+     * after an edit.
+     *
+     * \see setEditingTimeoutInterval()
+     *
+     * \since QGIS 3.42
+     */
+    int editingTimeoutInterval() const;
+
+  public slots:
+
+    /**
+     * Sets the \a timeout (in milliseconds) threshold for the editingTimeout() signal to be emitted
+     * after an edit.
+     *
+     * \see editingTimeoutInterval()
+     * \see editingTimeout()
+     *
+     * \since QGIS 3.42
+     */
+    void setEditingTimeoutInterval( int timeout );
+
   signals:
 
     /**
@@ -155,8 +176,22 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
      */
     void textEdited( const QString &text );
 
-  protected:
+    /**
+     * Emitted when either:
+     *
+     * 1. 2 seconds has elapsed since the last value change in the widget (eg last key press or scroll wheel event)
+     * 2. or, immediately after the widget has lost focus after its value was changed.
+     *
+     * This signal can be used to respond semi-instantly to changes in the spin box, without responding too quickly
+     * while the user in the middle of setting the value.
+     *
+     * \see editingTimeoutInterval()
+     *
+     * \since QGIS 3.42
+     */
+    void editingTimeout( int value );
 
+  protected:
     void changeEvent( QEvent *event ) override;
     void paintEvent( QPaintEvent *event ) override;
     void wheelEvent( QWheelEvent *event ) override;
@@ -164,9 +199,11 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
     // QAbstractSpinBoxPrivate may trigger a second
     // undesired event from the auto-repeat mouse timer
     void timerEvent( QTimerEvent *event ) override;
+    void focusOutEvent( QFocusEvent *event ) override;
 
   private slots:
     void changed( int value );
+    void onLastEditTimeout();
 
   private:
     int frameWidth() const;
@@ -180,10 +217,13 @@ class GUI_EXPORT QgsSpinBox : public QSpinBox
 
     bool mExpressionsEnabled = true;
 
+    QTimer *mLastEditTimer = nullptr;
+    bool mHasEmittedEditTimeout = false;
+    int mLastEditTimeoutValue = 0;
+
     QString stripped( const QString &originalText ) const;
 
     friend class TestQgsRangeWidgetWrapper;
-
 };
 
 #endif // QGSSPINBOX_H

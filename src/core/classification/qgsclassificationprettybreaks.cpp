@@ -48,10 +48,10 @@ QList<double> QgsClassificationPrettyBreaks::calculateBreaks( double &minimum, d
   return breaks;
 }
 
-QgsClassificationMethod *QgsClassificationPrettyBreaks::clone() const
+std::unique_ptr<QgsClassificationMethod> QgsClassificationPrettyBreaks::clone() const
 {
-  QgsClassificationPrettyBreaks *c = new QgsClassificationPrettyBreaks();
-  copyBase( c );
+  std::unique_ptr< QgsClassificationPrettyBreaks > c = std::make_unique< QgsClassificationPrettyBreaks >();
+  copyBase( c.get() );
   return c;
 }
 

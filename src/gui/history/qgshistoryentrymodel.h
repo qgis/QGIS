@@ -44,7 +44,6 @@ class GUI_EXPORT QgsHistoryEntryModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-
     /**
      * Constructor for QgsHistoryEntryModel, with the specified \a parent object.
      *
@@ -55,11 +54,7 @@ class GUI_EXPORT QgsHistoryEntryModel : public QAbstractItemModel
      * If no \a registry is specified then the singleton QgsHistoryProviderRegistry from QgsGui::historyProviderRegistry()
      * will be used.
      */
-    QgsHistoryEntryModel( const QString &providerId = QString(),
-                          Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile,
-                          QgsHistoryProviderRegistry *registry = nullptr,
-                          const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(),
-                          QObject *parent SIP_TRANSFERTHIS = nullptr );
+    QgsHistoryEntryModel( const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile, QgsHistoryProviderRegistry *registry = nullptr, const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(), QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     ~QgsHistoryEntryModel() override;
     // Implementation of virtual functions from QAbstractItemModel
@@ -83,23 +78,19 @@ class GUI_EXPORT QgsHistoryEntryModel : public QAbstractItemModel
     void historyCleared( Qgis::HistoryProviderBackend backend, const QString &providerId );
 
   private:
-
     //! Returns index for a given node
     QModelIndex node2index( QgsHistoryEntryNode *node ) const;
     QModelIndex indexOfParentNode( QgsHistoryEntryNode *parentNode ) const;
 
     QgsHistoryWidgetContext mContext;
 
-    std::unique_ptr< QgsHistoryEntryRootNode > mRootNode;
+    std::unique_ptr<QgsHistoryEntryRootNode> mRootNode;
     QgsHistoryProviderRegistry *mRegistry = nullptr;
     QString mProviderId;
     Qgis::HistoryProviderBackends mBackends;
-    QHash< long long, QgsHistoryEntryNode * > mIdToNodeHash;
+    QHash<long long, QgsHistoryEntryNode *> mIdToNodeHash;
 
     friend class QgsHistoryEntryRootNode;
 };
 
 #endif // QGSHISTORYENTRYMODEL_H
-
-
-

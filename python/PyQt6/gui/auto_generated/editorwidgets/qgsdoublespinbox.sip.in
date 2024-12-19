@@ -36,7 +36,6 @@ This value can then be handled by a special value text.
       sipType = NULL;
 %End
   public:
-
     enum ClearValueMode /BaseType=IntEnum/
     {
       MinimumValue,
@@ -115,6 +114,16 @@ Returns the value used when :py:func:`~QgsDoubleSpinBox.clear` is called.
 .. seealso:: :py:func:`setClearValue`
 %End
 
+    bool isCleared() const;
+%Docstring
+
+:return: ``True`` if the value is equal to the clear value.
+
+.. seealso:: :py:func:`clearValue`
+
+.. versionadded:: 3.42
+%End
+
     void setLineEditAlignment( Qt::Alignment alignment );
 %Docstring
 Set alignment in the embedded line edit widget
@@ -138,6 +147,30 @@ is equal to :py:func:`~QgsDoubleSpinBox.minimum`. Typical use is to indicate tha
     virtual void stepBy( int steps );
 
 
+    int editingTimeoutInterval() const;
+%Docstring
+Returns the timeout (in milliseconds) threshold for the :py:func:`~QgsDoubleSpinBox.editingTimeout` signal to be emitted
+after an edit.
+
+.. seealso:: :py:func:`setEditingTimeoutInterval`
+
+.. versionadded:: 3.42
+%End
+
+  public slots:
+
+    void setEditingTimeoutInterval( int timeout );
+%Docstring
+Sets the ``timeout`` (in milliseconds) threshold for the :py:func:`~QgsDoubleSpinBox.editingTimeout` signal to be emitted
+after an edit.
+
+.. seealso:: :py:func:`editingTimeoutInterval`
+
+.. seealso:: :py:func:`editingTimeout`
+
+.. versionadded:: 3.42
+%End
+
   signals:
 
     void returnPressed();
@@ -154,10 +187,27 @@ Emitted when the the value has been manually edited via line edit.
 .. versionadded:: 3.40
 %End
 
+    void editingTimeout( double value );
+%Docstring
+Emitted when either:
+
+1. 2 seconds has elapsed since the last value change in the widget (eg last key press or scroll wheel event)
+2. or, immediately after the widget has lost focus after its value was changed.
+
+This signal can be used to respond semi-instantly to changes in the spin box, without responding too quickly
+while the user in the middle of setting the value.
+
+.. seealso:: :py:func:`editingTimeoutInterval`
+
+.. versionadded:: 3.42
+%End
+
   protected:
     virtual void changeEvent( QEvent *event );
 
     virtual void wheelEvent( QWheelEvent *event );
+
+    virtual void focusOutEvent( QFocusEvent *event );
 
     virtual void timerEvent( QTimerEvent *event );
 

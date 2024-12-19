@@ -15,6 +15,7 @@
  ***************************************************************************/
 
 #include "qgsautheditorwidgets.h"
+#include "moc_qgsautheditorwidgets.cpp"
 #include "qgsauthconfigurationstoragedb.h"
 #include "ui_qgsauthmethodplugins.h"
 
@@ -105,7 +106,6 @@ void QgsAuthMethodPlugins::populateTable()
 }
 
 
-
 QgsAuthEditorWidgets::QgsAuthEditorWidgets( QWidget *parent )
   : QWidget( parent )
 
@@ -145,10 +145,9 @@ void QgsAuthEditorWidgets::btnAuthPlugins_clicked()
 
 void QgsAuthEditorWidgets::setupUtilitiesMenu()
 {
-  connect( QgsApplication::authManager(), &QgsAuthManager::messageLog,
-           this, &QgsAuthEditorWidgets::authMessageLog );
+  connect( QgsApplication::authManager(), &QgsAuthManager::messageLog, this, &QgsAuthEditorWidgets::authMessageLog );
 
-  const bool isReadOnly { ! QgsApplication::authManager()->defaultDbStorage() || QgsApplication::authManager()->defaultDbStorage()->isReadOnly() };
+  const bool isReadOnly { !QgsApplication::authManager()->defaultDbStorage() || QgsApplication::authManager()->defaultDbStorage()->isReadOnly() };
 
   // set up utility actions menu
   mActionImportAuthenticationConfigs = new QAction( tr( "Import Authentication Configurations from File…" ), this );
@@ -163,14 +162,11 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
   mActionClearAccessCacheNow = new QAction( tr( "Clear Network Authentication Access Cache" ), this );
   mActionAutoClearAccessCache = new QAction( tr( "Automatically Clear Network Authentication Access Cache on SSL Errors" ), this );
   mActionAutoClearAccessCache->setCheckable( true );
-  mActionAutoClearAccessCache->setChecked( QgsSettings().value( QStringLiteral( "clear_auth_cache_on_errors" ), true, QgsSettings::Section::Auth ).toBool( ) );
+  mActionAutoClearAccessCache->setChecked( QgsSettings().value( QStringLiteral( "clear_auth_cache_on_errors" ), true, QgsSettings::Section::Auth ).toBool() );
 
-  mActionPasswordHelperSync = new QAction( tr( "Store/update the Master Password in your %1" )
-      .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ), this );
-  mActionPasswordHelperDelete = new QAction( tr( "Clear the Master Password from your %1…" )
-      .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ), this );
-  mActionPasswordHelperEnable = new QAction( tr( "Integrate Master Password with your %1" )
-      .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ), this );
+  mActionPasswordHelperSync = new QAction( tr( "Store/update the Master Password in your %1" ).arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ), this );
+  mActionPasswordHelperDelete = new QAction( tr( "Clear the Master Password from your %1…" ).arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ), this );
+  mActionPasswordHelperEnable = new QAction( tr( "Integrate Master Password with your %1" ).arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ), this );
   mActionPasswordHelperLoggingEnable = new QAction( tr( "Enable Password Helper Debug Log" ), this );
 
   mActionPasswordHelperEnable->setCheckable( true );
@@ -179,7 +175,7 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
   mActionPasswordHelperLoggingEnable->setCheckable( true );
   mActionPasswordHelperLoggingEnable->setChecked( QgsApplication::authManager()->passwordHelperLoggingEnabled() );
 
-  if ( ! isReadOnly )
+  if ( !isReadOnly )
   {
     connect( mActionImportAuthenticationConfigs, &QAction::triggered, this, &QgsAuthEditorWidgets::importAuthenticationConfigs );
     connect( mActionResetMasterPassword, &QAction::triggered, this, &QgsAuthEditorWidgets::resetMasterPassword );
@@ -204,14 +200,12 @@ void QgsAuthEditorWidgets::setupUtilitiesMenu()
   connect( mActionPasswordHelperEnable, &QAction::triggered, this, &QgsAuthEditorWidgets::passwordHelperEnableTriggered );
   connect( mActionPasswordHelperLoggingEnable, &QAction::triggered, this, &QgsAuthEditorWidgets::passwordHelperLoggingEnableTriggered );
 
-  connect( mActionClearAccessCacheNow, &QAction::triggered, this, [ = ]
-  {
+  connect( mActionClearAccessCacheNow, &QAction::triggered, this, [=] {
     QgsNetworkAccessManager::instance()->clearAccessCache();
     messageBar()->clearWidgets();
     messageBar()->pushSuccess( tr( "Auth cache cleared" ), tr( "Network authentication cache has been cleared" ) );
   } );
-  connect( mActionAutoClearAccessCache, &QAction::triggered, this, [ ]( bool checked )
-  {
+  connect( mActionAutoClearAccessCache, &QAction::triggered, this, []( bool checked ) {
     QgsSettings().setValue( QStringLiteral( "clear_auth_cache_on_errors" ), checked, QgsSettings::Section::Auth );
   } );
 
@@ -313,4 +307,3 @@ QgsMessageBar *QgsAuthEditorWidgets::messageBar()
 {
   return mMsgBar;
 }
-

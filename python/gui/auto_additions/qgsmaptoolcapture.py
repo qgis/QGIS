@@ -1,5 +1,5 @@
 # The following has been generated automatically from src/gui/maptools/qgsmaptoolcapture.h
 try:
     QgsMapToolCapture.__group__ = ['maptools']
-except NameError:
+except (NameError, AttributeError):
     pass

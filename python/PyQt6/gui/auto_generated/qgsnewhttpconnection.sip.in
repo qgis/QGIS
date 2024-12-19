@@ -41,12 +41,9 @@ information for an HTTP Server for WMS, etc.
     typedef QFlags<QgsNewHttpConnection::Flag> Flags;
 
 
-    QgsNewHttpConnection( QWidget *parent /TransferThis/ = 0,
-                          QgsNewHttpConnection::ConnectionTypes types = ConnectionWms,
+    QgsNewHttpConnection( QWidget *parent /TransferThis/ = 0, QgsNewHttpConnection::ConnectionTypes types = ConnectionWms,
                           const QString &settingsKey = "WMS", // TODO QGIS 4 remove arg rename
-                          const QString &connectionName = QString(),
-                          QgsNewHttpConnection::Flags flags = QgsNewHttpConnection::Flags(),
-                          Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+                          const QString &connectionName = QString(), QgsNewHttpConnection::Flags flags = QgsNewHttpConnection::Flags(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor for QgsNewHttpConnection.
 
@@ -73,7 +70,6 @@ Returns the current connection url.
 
 
   protected:
-
     enum WfsVersionIndex /BaseType=IntEnum/
     {
       WFS_VERSION_MAX,

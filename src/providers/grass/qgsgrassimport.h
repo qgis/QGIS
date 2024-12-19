@@ -116,8 +116,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterImport : public QgsGrassImport
     Q_OBJECT
   public:
     // takes pipe ownership
-    QgsGrassRasterImport( QgsRasterPipe *pipe, const QgsGrassObject &grassObject,
-                          const QgsRectangle &extent, int xSize, int ySize );
+    QgsGrassRasterImport( QgsRasterPipe *pipe, const QgsGrassObject &grassObject, const QgsRectangle &extent, int xSize, int ySize );
     ~QgsGrassRasterImport() override;
     bool import() override;
     QString srcDescription() const override;
@@ -158,7 +157,6 @@ class GRASS_LIB_EXPORT QgsGrassCopy : public QgsGrassImport
 
   private:
     QgsGrassObject mSrcObject;
-
 };
 
 // Creates link to GDAL data source with r.external
@@ -173,7 +171,6 @@ class GRASS_LIB_EXPORT QgsGrassExternal : public QgsGrassImport
 
   private:
     QString mSource;
-
 };
 
 #endif // QGSGRASSIMPORT_H

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscreateannotationitemmaptool.h"
+#include "moc_qgscreateannotationitemmaptool.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsannotationlayer.h"
 #include "qgsannotationitem.h"
@@ -21,9 +22,8 @@
 QgsCreateAnnotationItemMapToolHandler::QgsCreateAnnotationItemMapToolHandler( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, QObject *parent )
   : QObject( parent )
   , mMapCanvas( canvas )
-  , mCadDockWidget( cadDockWidget )
 {
-
+  Q_UNUSED( cadDockWidget )
 }
 
 QgsAnnotationItem *QgsCreateAnnotationItemMapToolHandler::takeCreatedItem()
@@ -35,7 +35,7 @@ QgsCreateAnnotationItemMapToolHandler::~QgsCreateAnnotationItemMapToolHandler() 
 
 QgsAnnotationLayer *QgsCreateAnnotationItemMapToolHandler::targetLayer()
 {
-  if ( QgsAnnotationLayer *res = qobject_cast< QgsAnnotationLayer * >( mMapCanvas->currentLayer() ) )
+  if ( QgsAnnotationLayer *res = qobject_cast<QgsAnnotationLayer *>( mMapCanvas->currentLayer() ) )
     return res;
   else
     return QgsProject::instance()->mainAnnotationLayer();

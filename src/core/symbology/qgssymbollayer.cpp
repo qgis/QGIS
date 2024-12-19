@@ -231,6 +231,21 @@ void QgsSymbolLayer::setPaintEffect( QgsPaintEffect *effect )
   mPaintEffect.reset( effect );
 }
 
+QgsSymbolLayer::QgsSymbolLayer( const QgsSymbolLayer &other )
+  : mType( other.mType )
+  , mEnabled( other.mEnabled )
+  , mUserFlags( other.mUserFlags )
+  , mLocked( other.mLocked )
+  , mColor( other.mColor )
+  , mRenderingPass( other.mRenderingPass )
+  , mId( other.mId )
+  , mDataDefinedProperties( other.mDataDefinedProperties )
+  , mPaintEffect( other.mPaintEffect ? other.mPaintEffect->clone() : nullptr )
+  , mFields( other.mFields )
+  , mClipPath( other.mClipPath )
+{
+}
+
 QgsSymbolLayer::QgsSymbolLayer( Qgis::SymbolType type, bool locked )
   : mType( type )
   , mLocked( locked )
@@ -532,6 +547,23 @@ void QgsLineSymbolLayer::setRingFilter( const RenderRingFilter filter )
 QgsFillSymbolLayer::QgsFillSymbolLayer( bool locked )
   : QgsSymbolLayer( Qgis::SymbolType::Fill, locked )
 {
+}
+
+QgsMarkerSymbolLayer::QgsMarkerSymbolLayer( const QgsMarkerSymbolLayer &other )
+  : QgsSymbolLayer( other )
+  , mAngle( other.mAngle )
+  , mLineAngle( other.mLineAngle )
+  , mSize( other.mSize )
+  , mSizeUnit( other.mSizeUnit )
+  , mSizeMapUnitScale( other.mSizeMapUnitScale )
+  , mOffset( other.mOffset )
+  , mOffsetUnit( other.mOffsetUnit )
+  , mOffsetMapUnitScale( other.mOffsetMapUnitScale )
+  , mScaleMethod( other.mScaleMethod )
+  , mHorizontalAnchorPoint( other.mHorizontalAnchorPoint )
+  , mVerticalAnchorPoint( other.mVerticalAnchorPoint )
+{
+
 }
 
 void QgsMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )

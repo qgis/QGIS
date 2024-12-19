@@ -24,15 +24,13 @@
 class DummyColorScheme : public QgsColorScheme
 {
   public:
-
     DummyColorScheme() = default;
 
     QString schemeName() const override { return QStringLiteral( "Dummy scheme" ); }
 
-    QgsNamedColorList fetchColors( const QString &context = QString(),
-                                   const QColor &baseColor = QColor() ) override
+    QgsNamedColorList fetchColors( const QString &context = QString(), const QColor &baseColor = QColor() ) override
     {
-      QList< QPair< QColor, QString> > colors;
+      QList<QPair<QColor, QString>> colors;
       if ( context == QLatin1String( "testscheme" ) )
       {
         colors << qMakePair( QColor( 255, 255, 0 ), QStringLiteral( "schemetest" ) );
@@ -52,7 +50,6 @@ class DummyColorScheme : public QgsColorScheme
     {
       return new DummyColorScheme();
     }
-
 };
 
 class TestQgsColorScheme : public QObject
@@ -60,19 +57,18 @@ class TestQgsColorScheme : public QObject
     Q_OBJECT
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init();// will be called before each testfunction is executed.
-    void cleanup();// will be called after every testfunction.
-    void createScheme(); // test creation of a scheme
-    void getName(); //get scheme name
-    void colorsNoBase(); //fetch colors with no base color
-    void colorsWithBase(); //fetch colors using a base color
+    void initTestCase();     // will be called before the first testfunction is executed.
+    void cleanupTestCase();  // will be called after the last testfunction was executed.
+    void init();             // will be called before each testfunction is executed.
+    void cleanup();          // will be called after every testfunction.
+    void createScheme();     // test creation of a scheme
+    void getName();          //get scheme name
+    void colorsNoBase();     //fetch colors with no base color
+    void colorsWithBase();   //fetch colors using a base color
     void colorsWithScheme(); //fetch colors using a scheme
-    void clone(); //test cloning color scheme
+    void clone();            //test cloning color scheme
 
   private:
-
 };
 
 void TestQgsColorScheme::initTestCase()
@@ -87,12 +83,10 @@ void TestQgsColorScheme::cleanupTestCase()
 
 void TestQgsColorScheme::init()
 {
-
 }
 
 void TestQgsColorScheme::cleanup()
 {
-
 }
 
 void TestQgsColorScheme::createScheme()
@@ -104,7 +98,7 @@ void TestQgsColorScheme::createScheme()
 void TestQgsColorScheme::getName()
 {
   const std::shared_ptr<DummyColorScheme> dummyScheme( new DummyColorScheme() );
-  QCOMPARE( dummyScheme->schemeName(),  QString( "Dummy scheme" ) );
+  QCOMPARE( dummyScheme->schemeName(), QString( "Dummy scheme" ) );
 }
 
 void TestQgsColorScheme::colorsNoBase()

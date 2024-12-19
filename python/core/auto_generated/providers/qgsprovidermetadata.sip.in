@@ -49,7 +49,7 @@ Constructs default metadata without any capabilities
  QgsMeshDriverMetadata( const QString &name,
         const QString &description,
         const MeshDriverCapabilities &capabilities,
-        const QString &writeDatasetOnFileSuffix ) /Deprecated/;
+        const QString &writeDatasetOnFileSuffix ) /Deprecated="Since 3.22. "/;
 %Docstring
 Constructs driver metadata with selected capabilities
 
@@ -250,7 +250,7 @@ Returns a list of the map layer types supported by the provider.
     }
 %End
 
- QString library() const /Deprecated/;
+ QString library() const /Deprecated="Since 3.10. Providers may not need to be loaded from a library (empty string returned)."/;
 %Docstring
 This returns the library file name
 

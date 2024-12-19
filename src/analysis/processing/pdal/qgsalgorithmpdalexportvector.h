@@ -30,9 +30,7 @@
  */
 class QgsPdalExportVectorAlgorithm : public QgsPdalAlgorithmBase
 {
-
   public:
-
     QgsPdalExportVectorAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -43,8 +41,7 @@ class QgsPdalExportVectorAlgorithm : public QgsPdalAlgorithmBase
     QString shortHelpString() const override;
     QgsPdalExportVectorAlgorithm *createInstance() const override SIP_FACTORY;
 
-    QStringList createArgumentLists( const QVariantMap &parameters,
-                                     QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QStringList createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
     friend class TestQgsProcessingPdalAlgs;
 };

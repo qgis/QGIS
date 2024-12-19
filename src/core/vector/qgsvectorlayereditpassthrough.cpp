@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsvectorlayereditpassthrough.h"
+#include "moc_qgsvectorlayereditpassthrough.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayerundopassthroughcommand.h"

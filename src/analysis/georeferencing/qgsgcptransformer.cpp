@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsgcptransformer.h"
+#include "moc_qgsgcptransformer.cpp"
 
 #include <gdal.h>
 #include <gdal_alg.h>
@@ -37,7 +38,7 @@ bool QgsGcpTransformerInterface::transform( double &x, double &y, bool inverseTr
   int success = 0;
 
   // Call GDAL transform function
-  ( *t )( GDALTransformerArgs(), inverseTransform ? 1 : 0, 1,  &x, &y, &z, &success );
+  ( *t )( GDALTransformerArgs(), inverseTransform ? 1 : 0, 1, &x, &y, &z, &success );
   if ( !success )
     return false;
 
@@ -92,7 +93,7 @@ QgsGcpTransformerInterface *QgsGcpTransformerInterface::create( QgsGcpTransforme
 
 QgsGcpTransformerInterface *QgsGcpTransformerInterface::createFromParameters( QgsGcpTransformerInterface::TransformMethod method, const QVector<QgsPointXY> &sourceCoordinates, const QVector<QgsPointXY> &destinationCoordinates )
 {
-  std::unique_ptr< QgsGcpTransformerInterface > transformer( create( method ) );
+  std::unique_ptr<QgsGcpTransformerInterface> transformer( create( method ) );
   if ( !transformer )
     return nullptr;
 
@@ -117,7 +118,7 @@ bool QgsLinearGeorefTransform::getOriginScale( QgsPointXY &origin, double &scale
 
 QgsGcpTransformerInterface *QgsLinearGeorefTransform::clone() const
 {
-  std::unique_ptr< QgsLinearGeorefTransform > res = std::make_unique< QgsLinearGeorefTransform >();
+  std::unique_ptr<QgsLinearGeorefTransform> res = std::make_unique<QgsLinearGeorefTransform>();
   res->mParameters = mParameters;
   return res.release();
 }
@@ -144,7 +145,7 @@ GDALTransformerFunc QgsLinearGeorefTransform::GDALTransformer() const
 
 void *QgsLinearGeorefTransform::GDALTransformerArgs() const
 {
-  return ( void * )&mParameters;
+  return ( void * ) &mParameters;
 }
 
 QgsGcpTransformerInterface::TransformMethod QgsLinearGeorefTransform::method() const
@@ -152,8 +153,7 @@ QgsGcpTransformerInterface::TransformMethod QgsLinearGeorefTransform::method() c
   return TransformMethod::Linear;
 }
 
-int QgsLinearGeorefTransform::linearTransform( void *pTransformerArg, int bDstToSrc, int nPointCount,
-    double *x, double *y, double *z, int *panSuccess )
+int QgsLinearGeorefTransform::linearTransform( void *pTransformerArg, int bDstToSrc, int nPointCount, double *x, double *y, double *z, int *panSuccess )
 {
   Q_UNUSED( z )
   LinearParameters *t = static_cast<LinearParameters *>( pTransformerArg );
@@ -172,8 +172,7 @@ int QgsLinearGeorefTransform::linearTransform( void *pTransformerArg, int bDstTo
   else
   {
     // Guard against division by zero
-    if ( std::fabs( t->scaleX ) < std::numeric_limits<double>::epsilon() ||
-         std::fabs( t->scaleY ) < std::numeric_limits<double>::epsilon() )
+    if ( std::fabs( t->scaleX ) < std::numeric_limits<double>::epsilon() || std::fabs( t->scaleY ) < std::numeric_limits<double>::epsilon() )
     {
       for ( int i = 0; i < nPointCount; ++i )
       {
@@ -217,7 +216,7 @@ GDALTransformerFunc QgsHelmertGeorefTransform::GDALTransformer() const
 
 void *QgsHelmertGeorefTransform::GDALTransformerArgs() const
 {
-  return ( void * )&mHelmertParameters;
+  return ( void * ) &mHelmertParameters;
 }
 
 QgsGcpTransformerInterface::TransformMethod QgsHelmertGeorefTransform::method() const
@@ -235,16 +234,15 @@ bool QgsHelmertGeorefTransform::getOriginScaleRotation( QgsPointXY &origin, doub
 
 QgsGcpTransformerInterface *QgsHelmertGeorefTransform::clone() const
 {
-  std::unique_ptr< QgsHelmertGeorefTransform > res = std::make_unique< QgsHelmertGeorefTransform >();
+  std::unique_ptr<QgsHelmertGeorefTransform> res = std::make_unique<QgsHelmertGeorefTransform>();
   res->mHelmertParameters = mHelmertParameters;
   return res.release();
 }
 
-int QgsHelmertGeorefTransform::helmertTransform( void *pTransformerArg, int bDstToSrc, int nPointCount,
-    double *x, double *y, double *z, int *panSuccess )
+int QgsHelmertGeorefTransform::helmertTransform( void *pTransformerArg, int bDstToSrc, int nPointCount, double *x, double *y, double *z, int *panSuccess )
 {
   Q_UNUSED( z )
-  const HelmertParameters *t = static_cast< const HelmertParameters *>( pTransformerArg );
+  const HelmertParameters *t = static_cast<const HelmertParameters *>( pTransformerArg );
   if ( !t )
     return false;
 
@@ -331,7 +329,7 @@ QgsGDALGeorefTransform::~QgsGDALGeorefTransform()
 
 QgsGcpTransformerInterface *QgsGDALGeorefTransform::clone() const
 {
-  std::unique_ptr< QgsGDALGeorefTransform > res = std::make_unique< QgsGDALGeorefTransform >( mIsTPSTransform, mPolynomialOrder );
+  std::unique_ptr<QgsGDALGeorefTransform> res = std::make_unique<QgsGDALGeorefTransform>( mIsTPSTransform, mPolynomialOrder );
   res->updateParametersFromGcps( mSourceCoords, mDestCoordinates, mInvertYAxis );
   return res.release();
 }
@@ -354,7 +352,7 @@ bool QgsGDALGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY>
     snprintf( GCPList[i].pszId, 19, "gcp%i", i );
     GCPList[i].pszInfo = nullptr;
     GCPList[i].dfGCPPixel = sourceCoordinates[i].x();
-    GCPList[i].dfGCPLine  = ( mInvertYAxis ? -1 : 1 ) * sourceCoordinates[i].y();
+    GCPList[i].dfGCPLine = ( mInvertYAxis ? -1 : 1 ) * sourceCoordinates[i].y();
     GCPList[i].dfGCPX = destinationCoordinates[i].x();
     GCPList[i].dfGCPY = destinationCoordinates[i].y();
     GCPList[i].dfGCPZ = 0;
@@ -368,9 +366,9 @@ bool QgsGDALGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY>
 
   for ( int i = 0; i < n; i++ )
   {
-    delete [] GCPList[i].pszId;
+    delete[] GCPList[i].pszId;
   }
-  delete [] GCPList;
+  delete[] GCPList;
 
   return nullptr != mGDALTransformerArgs;
 }
@@ -438,7 +436,7 @@ QgsProjectiveGeorefTransform::QgsProjectiveGeorefTransform()
 
 QgsGcpTransformerInterface *QgsProjectiveGeorefTransform::clone() const
 {
-  std::unique_ptr< QgsProjectiveGeorefTransform > res = std::make_unique< QgsProjectiveGeorefTransform >();
+  std::unique_ptr<QgsProjectiveGeorefTransform> res = std::make_unique<QgsProjectiveGeorefTransform>();
   res->mParameters = mParameters;
   return res.release();
 }
@@ -511,7 +509,7 @@ GDALTransformerFunc QgsProjectiveGeorefTransform::GDALTransformer() const
 
 void *QgsProjectiveGeorefTransform::GDALTransformerArgs() const
 {
-  return ( void * )&mParameters;
+  return ( void * ) &mParameters;
 }
 
 QgsGcpTransformerInterface::TransformMethod QgsProjectiveGeorefTransform::method() const
@@ -519,8 +517,7 @@ QgsGcpTransformerInterface::TransformMethod QgsProjectiveGeorefTransform::method
   return TransformMethod::Projective;
 }
 
-int QgsProjectiveGeorefTransform::projectiveTransform( void *pTransformerArg, int bDstToSrc, int nPointCount,
-    double *x, double *y, double *z, int *panSuccess )
+int QgsProjectiveGeorefTransform::projectiveTransform( void *pTransformerArg, int bDstToSrc, int nPointCount, double *x, double *y, double *z, int *panSuccess )
 {
   Q_UNUSED( z )
   ProjectiveParameters *t = static_cast<ProjectiveParameters *>( pTransformerArg );

@@ -5,5 +5,5 @@ try:
     QgsLayoutItemHtml.create = staticmethod(QgsLayoutItemHtml.create)
     QgsLayoutItemHtml.createFromLabel = staticmethod(QgsLayoutItemHtml.createFromLabel)
     QgsLayoutItemHtml.__group__ = ['layout']
-except NameError:
+except (NameError, AttributeError):
     pass

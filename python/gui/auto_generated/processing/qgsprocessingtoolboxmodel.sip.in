@@ -46,7 +46,6 @@ Abstract base class for nodes contained within a :py:class:`QgsProcessingToolbox
 %End
   public:
 
-
     enum class NodeType
     {
       Provider,
@@ -116,11 +115,9 @@ Processing toolbox model node corresponding to the recent algorithms group
 #include "qgsprocessingtoolboxmodel.h"
 %End
   public:
-
     QgsProcessingToolboxModelRecentNode();
 
     virtual NodeType nodeType() const;
-
 };
 
 class QgsProcessingToolboxModelFavoriteNode : QgsProcessingToolboxModelNode
@@ -139,11 +136,9 @@ Processing toolbox model node corresponding to the favorite algorithms group
 #include "qgsprocessingtoolboxmodel.h"
 %End
   public:
-
     QgsProcessingToolboxModelFavoriteNode();
 
     virtual NodeType nodeType() const;
-
 };
 
 class QgsProcessingToolboxModelProviderNode : QgsProcessingToolboxModelNode
@@ -162,7 +157,6 @@ Processing toolbox model node corresponding to a Processing provider.
 #include "qgsprocessingtoolboxmodel.h"
 %End
   public:
-
     QgsProcessingToolboxModelProviderNode( QgsProcessingProvider *provider );
 %Docstring
 Constructor for QgsProcessingToolboxModelProviderNode, linked to the
@@ -199,7 +193,6 @@ Processing toolbox model node corresponding to a group of algorithms.
 #include "qgsprocessingtoolboxmodel.h"
 %End
   public:
-
     QgsProcessingToolboxModelGroupNode( const QString &id, const QString &name );
 %Docstring
 Constructor for QgsProcessingToolboxModelGroupNode.
@@ -239,7 +232,6 @@ Processing toolbox model node corresponding to an algorithm.
 #include "qgsprocessingtoolboxmodel.h"
 %End
   public:
-
     QgsProcessingToolboxModelAlgorithmNode( const QgsProcessingAlgorithm *algorithm );
 %Docstring
 Constructor for QgsProcessingToolboxModelAlgorithmNode, associated
@@ -272,8 +264,7 @@ of this model.
 %End
   public:
 
-
-      enum class CustomRole
+    enum class CustomRole
     {
       NodeType,
       AlgorithmFlags,
@@ -284,9 +275,7 @@ of this model.
       ProviderFlags,
     };
 
-    QgsProcessingToolboxModel( QObject *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0,
-                               QgsProcessingRecentAlgorithmLog *recentLog = 0,
-                               QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0 );
+    QgsProcessingToolboxModel( QObject *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0, QgsProcessingRecentAlgorithmLog *recentLog = 0, QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0 );
 %Docstring
 Constructor for QgsProcessingToolboxModel, with the given ``parent`` object.
 
@@ -395,7 +384,7 @@ Emitted whenever favorite algorithms are added to the model.
 };
 
 
-class QgsProcessingToolboxProxyModel: QSortFilterProxyModel
+class QgsProcessingToolboxProxyModel : QSortFilterProxyModel
 {
 %Docstring(signature="appended")
 A sort/filter proxy model for providers and algorithms shown within the Processing toolbox,
@@ -410,7 +399,6 @@ the results.
 %End
   public:
 
-
     enum class Filter
     {
       Toolbox,
@@ -421,10 +409,7 @@ the results.
     typedef QFlags<QgsProcessingToolboxProxyModel::Filter> Filters;
 
 
-    explicit QgsProcessingToolboxProxyModel( QObject *parent /TransferThis/ = 0,
-        QgsProcessingRegistry *registry = 0,
-        QgsProcessingRecentAlgorithmLog *recentLog = 0,
-        QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0 );
+    explicit QgsProcessingToolboxProxyModel( QObject *parent /TransferThis/ = 0, QgsProcessingRegistry *registry = 0, QgsProcessingRecentAlgorithmLog *recentLog = 0, QgsProcessingFavoriteAlgorithmManager *favoriteManager = 0 );
 %Docstring
 Constructor for QgsProcessingToolboxProxyModel, with the given ``parent`` object.
 

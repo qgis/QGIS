@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 #include "qgsattributetablefiltermodel.h"
+#include "moc_qgsattributetablefiltermodel.cpp"
 #include "qgsattributetablemodel.h"
 #include "qgsfeatureiterator.h"
 #include "qgsvectorlayer.h"
@@ -42,7 +43,7 @@ QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsMapCanvas *canvas
 {
   setSourceModel( sourceModel );
   setDynamicSortFilter( true );
-  setSortRole( static_cast< int >( QgsAttributeTableModel::CustomRole::Sort ) );
+  setSortRole( static_cast<int>( QgsAttributeTableModel::CustomRole::Sort ) );
   connect( layer(), &QgsVectorLayer::selectionChanged, this, &QgsAttributeTableFilterModel::selectionChanged );
 
   mReloadVisibleTimer.setSingleShot( true );
@@ -74,8 +75,7 @@ bool QgsAttributeTableFilterModel::lessThan( const QModelIndex &left, const QMod
     return false;
   }
 
-  return qgsVariantLessThan( left.data( static_cast< int >( QgsAttributeTableModel::CustomRole::Sort ) ),
-                             right.data( static_cast< int >( QgsAttributeTableModel::CustomRole::Sort ) ) );
+  return qgsVariantLessThan( left.data( static_cast<int>( QgsAttributeTableModel::CustomRole::Sort ) ), right.data( static_cast<int>( QgsAttributeTableModel::CustomRole::Sort ) ) );
 }
 
 void QgsAttributeTableFilterModel::sort( int column, Qt::SortOrder order )
@@ -99,15 +99,15 @@ QVariant QgsAttributeTableFilterModel::data( const QModelIndex &index, int role 
 {
   if ( mapColumnToSource( index.column() ) == -1 ) // actions
   {
-    if ( role == static_cast< int >( CustomRole::Type ) )
+    if ( role == static_cast<int>( CustomRole::Type ) )
       return ColumnTypeActionButton;
-    else if ( role == static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) )
+    else if ( role == static_cast<int>( QgsAttributeTableModel::CustomRole::FeatureId ) )
     {
       const QModelIndex fieldIndex = QSortFilterProxyModel::mapToSource( QSortFilterProxyModel::index( index.row(), 0, index.parent() ) );
-      return sourceModel()->data( fieldIndex, static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) );
+      return sourceModel()->data( fieldIndex, static_cast<int>( QgsAttributeTableModel::CustomRole::FeatureId ) );
     }
   }
-  else if ( role == static_cast< int >( CustomRole::Type ) )
+  else if ( role == static_cast<int>( CustomRole::Type ) )
     return ColumnTypeField;
 
   return QSortFilterProxyModel::data( index, role );
@@ -305,7 +305,6 @@ void QgsAttributeTableFilterModel::setSourceModel( QgsAttributeTableModel *sourc
   // The following connections are needed in order to keep the filter model in sync, see: regression #15974
   connect( mTableModel, &QAbstractItemModel::columnsAboutToBeInserted, this, &QgsAttributeTableFilterModel::onColumnsChanged );
   connect( mTableModel, &QAbstractItemModel::columnsAboutToBeRemoved, this, &QgsAttributeTableFilterModel::onColumnsChanged );
-
 }
 
 bool QgsAttributeTableFilterModel::selectedOnTop()
@@ -316,8 +315,7 @@ bool QgsAttributeTableFilterModel::selectedOnTop()
 void QgsAttributeTableFilterModel::setFilteredFeatures( const QgsFeatureIds &ids )
 {
   mFilteredFeatures = ids;
-  if ( mFilterMode != ShowFilteredList &&
-       mFilterMode != ShowInvalid )
+  if ( mFilterMode != ShowFilteredList && mFilterMode != ShowInvalid )
   {
     setFilterMode( ShowFilteredList );
   }
@@ -442,7 +440,7 @@ bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModel
 
     default:
       Q_ASSERT( false ); // In debug mode complain
-      return true; // In release mode accept row
+      return true;       // In release mode accept row
   }
   // returns are handled in their respective case statement above
 }
@@ -533,7 +531,7 @@ void QgsAttributeTableFilterModel::filterFeatures()
     // check if there were errors during evaluating
     if ( mFilterExpression.hasEvalError() && error.isEmpty() )
     {
-      error = mFilterExpression.evalErrorString( );
+      error = mFilterExpression.evalErrorString();
     }
   }
 
@@ -545,11 +543,10 @@ void QgsAttributeTableFilterModel::filterFeatures()
 
   emit featuresFiltered();
 
-  if ( ! error.isEmpty() )
+  if ( !error.isEmpty() )
   {
     emit filterError( error );
   }
-
 }
 
 
@@ -605,7 +602,7 @@ void QgsAttributeTableFilterModel::generateListOfVisibleFeatures()
     return;
   }
 
-  std::unique_ptr< QgsFeatureRenderer > renderer( layer()->renderer()->clone() );
+  std::unique_ptr<QgsFeatureRenderer> renderer( layer()->renderer()->clone() );
 
   const QgsMapSettings &ms = mCanvas->mapSettings();
   if ( !layer()->isInScaleRange( ms.scale() ) )

@@ -199,9 +199,7 @@ void TestQgsServerWmsParameters::prefixed_layers()
   query.addQueryItem( "LAYERS", "a,b" );
 
   QgsWms::QgsWmsParameters parameters1( query );
-  QCOMPARE( parameters1.allLayersNickname(), QStringList()
-            << QStringLiteral( "a" )
-            << QStringLiteral( "b" ) );
+  QCOMPARE( parameters1.allLayersNickname(), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) );
 
   query.addQueryItem( "map0:LAYERS", "b,c" );
   query.addQueryItem( "map1:LAYERS", "c,d" );
@@ -215,12 +213,7 @@ void TestQgsServerWmsParameters::prefixed_layers()
   QCOMPARE( params.at( 2 ).mNickname, QStringLiteral( "c" ) );
   QCOMPARE( params.at( 3 ).mNickname, QStringLiteral( "d" ) );
 
-  QCOMPARE( parameters.allLayersNickname(), QStringList()
-            << QStringLiteral( "a" )
-            << QStringLiteral( "b" )
-            << QStringLiteral( "c" )
-            << QStringLiteral( "d" ) );
-
+  QCOMPARE( parameters.allLayersNickname(), QStringList() << QStringLiteral( "a" ) << QStringLiteral( "b" ) << QStringLiteral( "c" ) << QStringLiteral( "d" ) );
 }
 
 QGSTEST_MAIN( TestQgsServerWmsParameters )

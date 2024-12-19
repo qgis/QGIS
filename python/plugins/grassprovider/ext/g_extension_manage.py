@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = 'Alister Hood'
-__date__ = 'May 2023'
-__copyright__ = '(C) 2023, Alister Hood'
+__author__ = "Alister Hood"
+__date__ = "May 2023"
+__copyright__ = "(C) 2023, Alister Hood"
 
 
 def processInputs(alg, parameters, context, feedback):

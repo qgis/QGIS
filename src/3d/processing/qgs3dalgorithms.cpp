@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgs3dalgorithms.h"
+#include "moc_qgs3dalgorithms.cpp"
 #include "qgsalgorithmtessellate.h"
 #include "qgsapplication.h"
 
@@ -62,6 +63,3 @@ void Qgs3DAlgorithms::loadAlgorithms()
 
 
 ///@endcond
-
-
-

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscreateannotationitemmaptool_impl.h"
+#include "moc_qgscreateannotationitemmaptool_impl.cpp"
 #include "qgsmapmouseevent.h"
 #include "qgsannotationpointtextitem.h"
 #include "qgsannotationmarkeritem.h"
@@ -108,7 +109,7 @@ void QgsCreatePointTextItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *event
 
   const QgsPointXY layerPoint = toLayerCoordinates( mHandler->targetLayer(), event->mapPoint() );
 
-  std::unique_ptr< QgsAnnotationPointTextItem > createdItem = std::make_unique< QgsAnnotationPointTextItem >( tr( "Text" ), layerPoint );
+  std::unique_ptr<QgsAnnotationPointTextItem> createdItem = std::make_unique<QgsAnnotationPointTextItem>( tr( "Text" ), layerPoint );
   createdItem->setAlignment( Qt::AlignLeft );
   QgsTextFormat format = QgsStyle::defaultTextFormatForProject( QgsProject::instance(), QgsStyle::TextFormatContext::Labeling );
   // default to HTML formatting
@@ -131,7 +132,6 @@ QgsMapTool *QgsCreatePointTextItemMapTool::mapTool()
 }
 
 
-
 //
 // QgsCreateMarkerMapTool
 //
@@ -148,11 +148,11 @@ void QgsCreateMarkerItemMapTool::cadCanvasReleaseEvent( QgsMapMouseEvent *event 
     return;
 
   const QgsPointXY layerPoint = toLayerCoordinates( mHandler->targetLayer(), event->mapPoint() );
-  std::unique_ptr< QgsAnnotationMarkerItem > createdItem = std::make_unique< QgsAnnotationMarkerItem >( QgsPoint( layerPoint ) );
+  std::unique_ptr<QgsAnnotationMarkerItem> createdItem = std::make_unique<QgsAnnotationMarkerItem>( QgsPoint( layerPoint ) );
 
-  std::unique_ptr< QgsMarkerSymbol > markerSymbol = QgsApplication::recentStyleHandler()->recentSymbol< QgsMarkerSymbol >( QStringLiteral( "marker_annotation_item" ) );
+  std::unique_ptr<QgsMarkerSymbol> markerSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsMarkerSymbol>( QStringLiteral( "marker_annotation_item" ) );
   if ( !markerSymbol )
-    markerSymbol.reset( qgis::down_cast< QgsMarkerSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
+    markerSymbol.reset( qgis::down_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
   createdItem->setSymbol( markerSymbol.release() );
 
   // set reference scale to match canvas scale, but don't enable it by default for marker items
@@ -181,14 +181,14 @@ void QgsCreateLineItemMapTool::lineCaptured( const QgsCurve *line )
     return;
 
   // do it!
-  std::unique_ptr< QgsAbstractGeometry > geometry( line->simplifiedTypeRef()->clone() );
-  if ( qgsgeometry_cast< QgsCurve * >( geometry.get() ) )
+  std::unique_ptr<QgsAbstractGeometry> geometry( line->simplifiedTypeRef()->clone() );
+  if ( qgsgeometry_cast<QgsCurve *>( geometry.get() ) )
   {
-    std::unique_ptr< QgsAnnotationLineItem > createdItem = std::make_unique< QgsAnnotationLineItem >( qgsgeometry_cast< QgsCurve * >( geometry.release() ) );
+    std::unique_ptr<QgsAnnotationLineItem> createdItem = std::make_unique<QgsAnnotationLineItem>( qgsgeometry_cast<QgsCurve *>( geometry.release() ) );
 
-    std::unique_ptr< QgsLineSymbol > lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol< QgsLineSymbol >( QStringLiteral( "line_annotation_item" ) );
+    std::unique_ptr<QgsLineSymbol> lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsLineSymbol>( QStringLiteral( "line_annotation_item" ) );
     if ( !lineSymbol )
-      lineSymbol.reset( qgis::down_cast< QgsLineSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) ) );
+      lineSymbol.reset( qgis::down_cast<QgsLineSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) ) );
     createdItem->setSymbol( lineSymbol.release() );
 
     // set reference scale to match canvas scale, but don't enable it by default for marker items
@@ -213,16 +213,16 @@ void QgsCreatePolygonItemMapTool::polygonCaptured( const QgsCurvePolygon *polygo
   if ( polygon->isEmpty() )
     return;
 
-  std::unique_ptr< QgsAbstractGeometry > geometry( polygon->exteriorRing()->simplifiedTypeRef()->clone() );
-  if ( qgsgeometry_cast< QgsCurve * >( geometry.get() ) )
+  std::unique_ptr<QgsAbstractGeometry> geometry( polygon->exteriorRing()->simplifiedTypeRef()->clone() );
+  if ( qgsgeometry_cast<QgsCurve *>( geometry.get() ) )
   {
-    std::unique_ptr< QgsCurvePolygon > newPolygon = std::make_unique< QgsCurvePolygon >();
-    newPolygon->setExteriorRing( qgsgeometry_cast< QgsCurve * >( geometry.release() ) );
-    std::unique_ptr< QgsAnnotationPolygonItem > createdItem = std::make_unique< QgsAnnotationPolygonItem >( newPolygon.release() );
+    std::unique_ptr<QgsCurvePolygon> newPolygon = std::make_unique<QgsCurvePolygon>();
+    newPolygon->setExteriorRing( qgsgeometry_cast<QgsCurve *>( geometry.release() ) );
+    std::unique_ptr<QgsAnnotationPolygonItem> createdItem = std::make_unique<QgsAnnotationPolygonItem>( newPolygon.release() );
 
-    std::unique_ptr< QgsFillSymbol > fillSymbol = QgsApplication::recentStyleHandler()->recentSymbol< QgsFillSymbol >( QStringLiteral( "polygon_annotation_item" ) );
+    std::unique_ptr<QgsFillSymbol> fillSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsFillSymbol>( QStringLiteral( "polygon_annotation_item" ) );
     if ( !fillSymbol )
-      fillSymbol.reset( qgis::down_cast< QgsFillSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) ) );
+      fillSymbol.reset( qgis::down_cast<QgsFillSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Polygon ) ) );
     createdItem->setSymbol( fillSymbol.release() );
 
     // set reference scale to match canvas scale, but don't enable it by default for marker items
@@ -322,7 +322,7 @@ void QgsCreatePictureItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *event )
 
     cadDockWidget()->clearPoints();
 
-    std::unique_ptr< QgsAnnotationPictureItem > createdItem = std::make_unique< QgsAnnotationPictureItem >( format, imagePath, QgsRectangle( point1, point2 ) );
+    std::unique_ptr<QgsAnnotationPictureItem> createdItem = std::make_unique<QgsAnnotationPictureItem>( format, imagePath, QgsRectangle( point1, point2 ) );
     if ( size.isValid() )
     {
       const double pixelsToMm = mCanvas->mapSettings().outputDpi() / 25.4;
@@ -380,7 +380,6 @@ QgsMapTool *QgsCreatePictureItemMapTool::mapTool()
 }
 
 
-
 //
 // QgsCreateRectangleTextItemMapTool
 //
@@ -430,7 +429,7 @@ void QgsCreateRectangleTextItemMapTool::cadCanvasPressEvent( QgsMapMouseEvent *e
 
     cadDockWidget()->clearPoints();
 
-    std::unique_ptr< QgsAnnotationRectangleTextItem > createdItem = std::make_unique< QgsAnnotationRectangleTextItem >( tr( "Text" ), QgsRectangle( point1, point2 ) );
+    std::unique_ptr<QgsAnnotationRectangleTextItem> createdItem = std::make_unique<QgsAnnotationRectangleTextItem>( tr( "Text" ), QgsRectangle( point1, point2 ) );
 
     QgsTextFormat format = QgsStyle::defaultTextFormatForProject( QgsProject::instance(), QgsStyle::TextFormatContext::Labeling );
     // default to HTML formatting
@@ -499,14 +498,14 @@ void QgsCreateLineTextItemMapTool::lineCaptured( const QgsCurve *line )
     return;
 
   // do it!
-  std::unique_ptr< QgsAbstractGeometry > geometry( line->simplifiedTypeRef()->clone() );
-  if ( qgsgeometry_cast< QgsCurve * >( geometry.get() ) )
+  std::unique_ptr<QgsAbstractGeometry> geometry( line->simplifiedTypeRef()->clone() );
+  if ( qgsgeometry_cast<QgsCurve *>( geometry.get() ) )
   {
-    std::unique_ptr< QgsAnnotationLineTextItem > createdItem = std::make_unique< QgsAnnotationLineTextItem >( tr( "Text" ), qgsgeometry_cast< QgsCurve * >( geometry.release() ) );
+    std::unique_ptr<QgsAnnotationLineTextItem> createdItem = std::make_unique<QgsAnnotationLineTextItem>( tr( "Text" ), qgsgeometry_cast<QgsCurve *>( geometry.release() ) );
 
-    std::unique_ptr< QgsLineSymbol > lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol< QgsLineSymbol >( QStringLiteral( "line_annotation_item" ) );
+    std::unique_ptr<QgsLineSymbol> lineSymbol = QgsApplication::recentStyleHandler()->recentSymbol<QgsLineSymbol>( QStringLiteral( "line_annotation_item" ) );
     if ( !lineSymbol )
-      lineSymbol.reset( qgis::down_cast< QgsLineSymbol * >( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) ) );
+      lineSymbol.reset( qgis::down_cast<QgsLineSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Line ) ) );
 
     QgsTextFormat format = QgsStyle::defaultTextFormatForProject( QgsProject::instance(), QgsStyle::TextFormatContext::Labeling );
     // default to HTML formatting

@@ -77,6 +77,9 @@ include_directories (SYSTEM
 add_library(provider_hana MODULE ${HANA_SRCS} ${HANA_HDRS})
 add_library(provider_hana_a STATIC ${HANA_SRCS} ${HANA_HDRS})
 
+set_target_properties(provider_hana PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+set_target_properties(provider_hana_a PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
+
 # require c++17
 target_compile_features(provider_hana PRIVATE cxx_std_17)
 target_compile_features(provider_hana_a PRIVATE cxx_std_17)

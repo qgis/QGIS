@@ -1,9 +1,6 @@
 name: Run sipify
 
 on:
-  # disabled for security reasons as any PR would benefit from the token
-  #issue_comment:
-  #  types: [created]
   workflow_dispatch:
   push:
     branches:
@@ -12,7 +9,6 @@ on:
 
 jobs:
   sipify:
-    if: github.event_name != 'issue_comment' || ( contains(github.event.comment.html_url, '/pull/') && github.event.comment.body == '/sipify' )
     runs-on: [ubuntu-latest]
     steps:
 
@@ -29,10 +25,6 @@ jobs:
         id: comment-branch
 
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ steps.comment-branch.outputs.head_ref || github.ref_name }}
-          repository: ${{ steps.comment-branch.outputs.head_owner || 'qgis' }}/${{ steps.comment-branch.outputs.head_repo || 'QGIS' }}
-          token: ${{ secrets.GH_TOKEN_BOT }}
 
       - name: run sipify
         run: ./scripts/sipify_all.sh -m

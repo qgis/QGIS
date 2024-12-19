@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsproject.h"
+#include "moc_qgsproject.cpp"
 
 #include "qgsdatasourceuri.h"
 #include "qgslabelingenginesettings.h"
@@ -1722,7 +1723,8 @@ bool QgsProject::_getMapLayers( const QDomDocument &doc, QList<QDomNode> &broken
   QVector<QDomNode> parallelLoading;
   QMap<QString, QgsDataProvider *> loadedProviders;
 
-  if ( QgsSettingsRegistryCore::settingsLayerParallelLoading->value() )
+  if ( !( flags & Qgis::ProjectReadFlag::DontResolveLayers ) &&
+       QgsSettingsRegistryCore::settingsLayerParallelLoading->value() )
   {
     profile.switchTask( tr( "Load providers in parallel" ) );
     for ( const QDomNode &node : sortedLayerNodes )
@@ -2822,8 +2824,13 @@ void QgsProject::setAvoidIntersectionsLayers( const QList<QgsVectorLayer *> &lay
 
   QStringList list;
   list.reserve( layers.size() );
+
   for ( QgsVectorLayer *layer : layers )
-    list << layer->id();
+  {
+    if ( layer->geometryType() == Qgis::GeometryType::Polygon )
+      list << layer->id();
+  }
+
   writeEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/AvoidIntersectionsList" ), list );
   emit avoidIntersectionsLayersChanged();
 }
@@ -2987,6 +2994,15 @@ void QgsProject::onMapLayersRemoved( const QList<QgsMapLayer *> &layers )
 
   if ( !mBlockSnappingUpdates && mSnappingConfig.removeLayers( layers ) )
     emit snappingConfigChanged( mSnappingConfig );
+
+  for ( QgsMapLayer *layer : layers )
+  {
+    QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+    if ( ! vlayer )
+      continue;
+
+    mEditBufferGroup.removeLayer( vlayer );
+  }
 }
 
 void QgsProject::cleanTransactionGroups( bool force )

@@ -42,9 +42,7 @@ class GUI_EXPORT QgsProcessingRasterOptionsWidgetWrapper : public QgsAbstractPro
     Q_OBJECT
 
   public:
-
-    QgsProcessingRasterOptionsWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
-        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+    QgsProcessingRasterOptionsWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
 
     // QgsProcessingParameterWidgetFactoryInterface
     QString parameterType() const override;
@@ -54,7 +52,6 @@ class GUI_EXPORT QgsProcessingRasterOptionsWidgetWrapper : public QgsAbstractPro
     QWidget *createWidget() override SIP_FACTORY;
 
   protected:
-
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
@@ -62,7 +59,6 @@ class GUI_EXPORT QgsProcessingRasterOptionsWidgetWrapper : public QgsAbstractPro
     QStringList compatibleOutputTypes() const override;
 
   private:
-
     QLineEdit *mLineEdit = nullptr;
     QgsRasterFormatSaveOptionsWidget *mOptionsWidget = nullptr;
 

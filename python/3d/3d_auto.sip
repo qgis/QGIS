@@ -25,7 +25,15 @@
 %Include auto_generated/materials/qgsphongtexturedmaterialsettings.sip
 %Include auto_generated/materials/qgssimplelinematerialsettings.sip
 %Include auto_generated/symbols/qgsline3dsymbol.sip
+%Include auto_generated/symbols/qgsmesh3dsymbol.sip
 %Include auto_generated/symbols/qgspoint3dsymbol.sip
 %Include auto_generated/symbols/qgspolygon3dsymbol.sip
 %Include auto_generated/symbols/qgspointcloud3dsymbol.sip
+%Include auto_generated/terrain/qgs3dterrainregistry.sip
+%Include auto_generated/terrain/qgsabstractterrainsettings.sip
+%Include auto_generated/terrain/qgsdemterrainsettings.sip
+%Include auto_generated/terrain/qgsflatterrainsettings.sip
+%Include auto_generated/terrain/qgsmeshterrainsettings.sip
+%Include auto_generated/terrain/qgsonlinedemterrainsettings.sip
+%Include auto_generated/terrain/qgsquantizedmeshterrainsettings.sip
 %Include auto_generated/qgs3dmapexportsettings.sip

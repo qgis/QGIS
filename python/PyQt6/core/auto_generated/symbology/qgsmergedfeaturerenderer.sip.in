@@ -47,7 +47,7 @@ Creates a renderer out of an XML, for loading
     virtual Qgis::FeatureRendererFlags flags() const;
 
 
-    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
 %Docstring
 Renders a given feature.

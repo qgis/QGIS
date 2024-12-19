@@ -41,6 +41,7 @@ class QgsAbstractLayoutIterator;
 class QgsFeedback;
 class QgsLabelingResults;
 class QgsSettingsEntryBool;
+class QgsSettingsEntryInteger;
 
 /**
  * \ingroup core
@@ -60,6 +61,9 @@ class CORE_EXPORT QgsLayoutExporter
 
     //! Settings entry - Whether to automatically open svgs after exporting them \since QGIS 3.34
     static const QgsSettingsEntryBool *settingOpenAfterExportingSvg SIP_SKIP;
+
+    //! Settings entry - Image quality for lossy formats \since QGIS 3.42
+    static const QgsSettingsEntryInteger *settingImageQuality SIP_SKIP;
 
     //! Contains details of a page being exported by the class
     struct PageExportDetails
@@ -230,6 +234,14 @@ class CORE_EXPORT QgsLayoutExporter
        * \since QGIS 3.10
        */
       QVector<qreal> predefinedMapScales;
+
+
+      /**
+       * Image quality, typically used for JPEG compression (whose quality ranges from 1 to 100)
+       * if quality is set to -1, the default quality will be used.
+       * \since QGIS 3.42
+       */
+      int quality = -1;
 
     };
 
@@ -719,7 +731,7 @@ class CORE_EXPORT QgsLayoutExporter
     /**
      * Saves an image to a file, possibly using format specific options (e.g. LZW compression for tiff)
     */
-    static bool saveImage( const QImage &image, const QString &imageFilename, const QString &imageFormat, QgsProject *projectForMetadata );
+    static bool saveImage( const QImage &image, const QString &imageFilename, const QString &imageFormat, QgsProject *projectForMetadata, int quality = -1 );
 
     /**
      * Computes a GDAL style geotransform for georeferencing a layout.

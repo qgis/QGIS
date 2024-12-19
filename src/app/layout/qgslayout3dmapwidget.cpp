@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayout3dmapwidget.h"
+#include "moc_qgslayout3dmapwidget.cpp"
 
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
@@ -25,21 +26,20 @@
 float _normalizedAngle( float x )
 {
   x = std::fmod( x, 360 );
-  if ( x < 0 ) x += 360;
+  if ( x < 0 )
+    x += 360;
   return x;
 }
-void _prepare3DViewsMenu( QMenu *menu, QgsLayout3DMapWidget *w, const std::function< void( Qgs3DMapCanvasWidget * ) > &slot )
+void _prepare3DViewsMenu( QMenu *menu, QgsLayout3DMapWidget *w, const std::function<void( Qgs3DMapCanvasWidget * )> &slot )
 {
-  QObject::connect( menu, &QMenu::aboutToShow, w, [menu, slot]
-  {
+  QObject::connect( menu, &QMenu::aboutToShow, w, [menu, slot] {
     const QList<Qgs3DMapCanvasWidget *> lst = QgisApp::instance()->get3DMapViews();
     menu->clear();
     for ( Qgs3DMapCanvasWidget *widget : lst )
     {
       QAction *a = new QAction( widget->canvasName(), menu );
       menu->addAction( a );
-      QObject::connect( a, &QAction::triggered, a, [slot, widget]
-      {
+      QObject::connect( a, &QAction::triggered, a, [slot, widget] {
         slot( widget );
       } );
     }
@@ -67,14 +67,13 @@ QgsLayout3DMapWidget::QgsLayout3DMapWidget( QgsLayoutItem3DMap *map3D )
 
   mMenu3DCanvases = new QMenu( this );
   mCopySettingsButton->setMenu( mMenu3DCanvases );
-  _prepare3DViewsMenu( mMenu3DCanvases, this, [ = ]( Qgs3DMapCanvasWidget * widget )
-  {
+  _prepare3DViewsMenu( mMenu3DCanvases, this, [=]( Qgs3DMapCanvasWidget *widget ) {
     copy3DMapSettings( widget );
   } );
 
   mMenu3DCanvasesPose = new QMenu( this );
   mPoseFromViewButton->setMenu( mMenu3DCanvasesPose );
-  _prepare3DViewsMenu( mMenu3DCanvasesPose, this, [ = ]( Qgs3DMapCanvasWidget * widget ) { copyCameraPose( widget ); } );
+  _prepare3DViewsMenu( mMenu3DCanvasesPose, this, [=]( Qgs3DMapCanvasWidget *widget ) { copyCameraPose( widget ); } );
 
   QList<QgsDoubleSpinBox *> lst;
   lst << mCenterXSpinBox << mCenterYSpinBox << mCenterZSpinBox << mDistanceToCenterSpinBox << mPitchAngleSpinBox << mHeadingAngleSpinBox;
@@ -142,7 +141,7 @@ void QgsLayout3DMapWidget::updateCameraPose()
 
 bool QgsLayout3DMapWidget::setNewItem( QgsLayoutItem *item )
 {
-  QgsLayoutItem3DMap *newItem = qobject_cast< QgsLayoutItem3DMap * >( item );
+  QgsLayoutItem3DMap *newItem = qobject_cast<QgsLayoutItem3DMap *>( item );
   if ( !newItem )
     return false;
 

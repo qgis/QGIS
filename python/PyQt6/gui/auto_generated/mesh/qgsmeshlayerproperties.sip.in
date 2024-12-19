@@ -23,7 +23,6 @@ Contains information, source and style tabs
 #include "qgsmeshlayerproperties.h"
 %End
   public:
-
     QgsMeshLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = 0, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor
@@ -34,7 +33,7 @@ Constructor
 :param fl: Window flags
 %End
 
- void saveDefaultStyle() /Deprecated/;
+ void saveDefaultStyle() /Deprecated="Since 3.40. Use saveStyleAsDefault() instead."/;
 %Docstring
 Saves the default style when appropriate button is pressed
 
@@ -43,7 +42,7 @@ Saves the default style when appropriate button is pressed
    Use :py:func:`~QgsMeshLayerProperties.saveStyleAsDefault` instead.
 %End
 
- void loadStyle() /Deprecated/;
+ void loadStyle() /Deprecated="Since 3.40. Use loadStyleFromFile() instead."/;
 %Docstring
 Loads a saved style when appropriate button is pressed
 
@@ -52,7 +51,7 @@ Loads a saved style when appropriate button is pressed
    Use :py:func:`~QgsMeshLayerProperties.loadStyleFromFile` instead.
 %End
 
- void saveStyleAs() /Deprecated/;
+ void saveStyleAs() /Deprecated="Since 3.40. Use saveStyleToFile() instead."/;
 %Docstring
 Saves a style when appriate button is pressed
 

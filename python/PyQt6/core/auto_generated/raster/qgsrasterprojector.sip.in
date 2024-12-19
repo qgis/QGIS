@@ -49,7 +49,7 @@ PROJ transformations for optimised bulk reprojection of points.
 
 
  void setCrs( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS,
-                                   int srcDatumTransform = -1, int destDatumTransform = -1 ) /Deprecated/;
+                                   int srcDatumTransform = -1, int destDatumTransform = -1 ) /Deprecated="Since 3.8. Use transformContext version instead."/;
 %Docstring
 Sets the source and destination CRS
 

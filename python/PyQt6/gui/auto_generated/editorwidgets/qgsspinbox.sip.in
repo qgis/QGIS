@@ -36,7 +36,6 @@ This value can then be handled by a special value text.
       sipType = NULL;
 %End
   public:
-
     enum ClearValueMode /BaseType=IntEnum/
     {
       MinimumValue,
@@ -136,6 +135,30 @@ is equal to :py:func:`~QgsSpinBox.minimum`. Typical use is to indicate that this
     virtual void stepBy( int steps );
 
 
+    int editingTimeoutInterval() const;
+%Docstring
+Returns the timeout (in milliseconds) threshold for the :py:func:`~QgsSpinBox.editingTimeout` signal to be emitted
+after an edit.
+
+.. seealso:: :py:func:`setEditingTimeoutInterval`
+
+.. versionadded:: 3.42
+%End
+
+  public slots:
+
+    void setEditingTimeoutInterval( int timeout );
+%Docstring
+Sets the ``timeout`` (in milliseconds) threshold for the :py:func:`~QgsSpinBox.editingTimeout` signal to be emitted
+after an edit.
+
+.. seealso:: :py:func:`editingTimeoutInterval`
+
+.. seealso:: :py:func:`editingTimeout`
+
+.. versionadded:: 3.42
+%End
+
   signals:
 
     void returnPressed();
@@ -152,8 +175,22 @@ Emitted when the the value has been manually edited via line edit.
 .. versionadded:: 3.40
 %End
 
-  protected:
+    void editingTimeout( int value );
+%Docstring
+Emitted when either:
 
+1. 2 seconds has elapsed since the last value change in the widget (eg last key press or scroll wheel event)
+2. or, immediately after the widget has lost focus after its value was changed.
+
+This signal can be used to respond semi-instantly to changes in the spin box, without responding too quickly
+while the user in the middle of setting the value.
+
+.. seealso:: :py:func:`editingTimeoutInterval`
+
+.. versionadded:: 3.42
+%End
+
+  protected:
     virtual void changeEvent( QEvent *event );
 
     virtual void paintEvent( QPaintEvent *event );
@@ -161,6 +198,8 @@ Emitted when the the value has been manually edited via line edit.
     virtual void wheelEvent( QWheelEvent *event );
 
     virtual void timerEvent( QTimerEvent *event );
+
+    virtual void focusOutEvent( QFocusEvent *event );
 
 
 };

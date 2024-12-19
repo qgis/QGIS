@@ -19,7 +19,6 @@ class QgsAttributeForm : QWidget
 #include "qgsattributeform.h"
 %End
   public:
-
     enum Mode
     {
       SingleEditMode,
@@ -37,10 +36,7 @@ class QgsAttributeForm : QWidget
       FilterOr,
     };
 
-    explicit QgsAttributeForm( QgsVectorLayer *vl,
-                               const QgsFeature &feature = QgsFeature(),
-                               const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
-                               QWidget *parent /TransferThis/ = 0 );
+    explicit QgsAttributeForm( QgsVectorLayer *vl, const QgsFeature &feature = QgsFeature(), const QgsAttributeEditorContext &context = QgsAttributeEditorContext(), QWidget *parent /TransferThis/ = 0 );
     ~QgsAttributeForm();
 
     const QgsFeature &feature();
@@ -185,7 +181,7 @@ Returns ``True`` if any of the form widgets need feature geometry
 
   signals:
 
- void attributeChanged( const QString &attribute, const QVariant &value ) /Deprecated/;
+ void attributeChanged( const QString &attribute, const QVariant &value ) /Deprecated="Since 3.0. "/;
 %Docstring
 Notifies about changes of attributes, this signal is not emitted when the value is set
 back to the original one.

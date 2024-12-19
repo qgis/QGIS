@@ -151,22 +151,22 @@ This will take ownership of the method
     };
 
 
- Mode mode() const /Deprecated/;
+ Mode mode() const /Deprecated="Since 3.10. Use classficationMethod() instead."/;
 %Docstring
 
 .. deprecated:: 3.10
 
-   Use classficationMethod instead.
+   Use :py:func:`~QgsGraduatedSymbolRenderer.classficationMethod` instead.
 %End
- void setMode( Mode mode ) /Deprecated/;
+ void setMode( Mode mode ) /Deprecated="Since 3.10. Use classficationMethod() instead."/;
 %Docstring
 
 .. deprecated:: 3.10
 
-   Use classficationMethod instead.
+   Use :py:func:`~QgsGraduatedSymbolRenderer.classficationMethod` instead.
 %End
 
- bool useSymmetricMode() const /Deprecated/;
+ bool useSymmetricMode() const /Deprecated="Since 3.10. Use classficationMethod() instead."/;
 %Docstring
 Returns if we want to classify symmetric around a given value
 
@@ -174,10 +174,10 @@ Returns if we want to classify symmetric around a given value
 
 .. deprecated:: 3.10
 
-   Use classficationMethod instead.
+   Use :py:func:`~QgsGraduatedSymbolRenderer.classficationMethod` instead.
 %End
 
-  void setUseSymmetricMode( bool useSymmetricMode ) /Deprecated/;
+  void setUseSymmetricMode( bool useSymmetricMode ) /Deprecated="Since 3.10. Use classficationMethod() instead."/;
 %Docstring
 Set if we want to classify symmetric around a given value
 
@@ -185,10 +185,10 @@ Set if we want to classify symmetric around a given value
 
 .. deprecated:: 3.10
 
-   Use classficationMethod instead.
+   Use :py:func:`~QgsGraduatedSymbolRenderer.classficationMethod` instead.
 %End
 
- double symmetryPoint() const /Deprecated/;
+ double symmetryPoint() const /Deprecated="Since 3.10. Use classficationMethod() instead."/;
 %Docstring
 Returns the pivot value for symmetric classification
 
@@ -196,10 +196,10 @@ Returns the pivot value for symmetric classification
 
 .. deprecated:: 3.10
 
-   Use classficationMethod instead.
+   Use :py:func:`~QgsGraduatedSymbolRenderer.classficationMethod` instead.
 %End
 
- void setSymmetryPoint( double symmetryPoint ) /Deprecated/;
+ void setSymmetryPoint( double symmetryPoint ) /Deprecated="Since 3.10. Use classficationMethod() instead."/;
 %Docstring
 Set the pivot point
 
@@ -207,11 +207,11 @@ Set the pivot point
 
 .. deprecated:: 3.10
 
-   Use classficationMethod instead.
+   Use :py:func:`~QgsGraduatedSymbolRenderer.classficationMethod` instead.
 %End
 
 
- bool astride() const /Deprecated/;
+ bool astride() const /Deprecated="Since 3.10. Use classficationMethod() instead."/;
 %Docstring
 Returns if we want to have a central class astride the pivot value
 
@@ -219,10 +219,10 @@ Returns if we want to have a central class astride the pivot value
 
 .. deprecated:: 3.10
 
-   Use classficationMethod instead.
+   Use :py:func:`~QgsGraduatedSymbolRenderer.classficationMethod` instead.
 %End
 
- void setAstride( bool astride ) /Deprecated/;
+ void setAstride( bool astride ) /Deprecated="Since 3.10. Use classficationMethod() instead."/;
 %Docstring
 Set if we want a central class astride the pivot value
 
@@ -230,10 +230,10 @@ Set if we want a central class astride the pivot value
 
 .. deprecated:: 3.10
 
-   Use classficationMethod instead.
+   Use :py:func:`~QgsGraduatedSymbolRenderer.classficationMethod` instead.
 %End
 
- static void makeBreaksSymmetric( QList<double> &breaks /In,Out/, double symmetryPoint, bool astride ) /Deprecated/;
+ static void makeBreaksSymmetric( QList<double> &breaks /In,Out/, double symmetryPoint, bool astride ) /Deprecated="Since 3.10. Use QgsClassificationMethod.makeBreaksSymmetric instead."/;
 %Docstring
 Remove the breaks that are above the existing opposite sign classes to keep colors symmetrically balanced around symmetryPoint
 Does not put a break on the symmetryPoint. This is done before.
@@ -249,7 +249,7 @@ Does not put a break on the symmetryPoint. This is done before.
    Use :py:class:`QgsClassificationMethod`.makeBreaksSymmetric instead.
 %End
 
- static QList<double> calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride ) /Deprecated/;
+ static QList<double> calcEqualIntervalBreaks( double minimum, double maximum, int classes, bool useSymmetricMode, double symmetryPoint, bool astride ) /Deprecated="Since 3.10. Use QgsClassificationEqualInterval class instead."/;
 %Docstring
 Compute the equal interval classification
 
@@ -265,7 +265,7 @@ Compute the equal interval classification
    Use :py:class:`QgsClassificationEqualInterval` class instead.
 %End
 
- void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode = false, double symmetryPoint = 0.0, bool astride = false ) /Deprecated/;
+ void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode = false, double symmetryPoint = 0.0, bool astride = false ) /Deprecated="Since 3.10. "/;
 %Docstring
 Recalculate classes for a layer
 
@@ -290,7 +290,7 @@ Recalculate classes for a layer
 %End
 
 
- QgsRendererRangeLabelFormat labelFormat() const /Deprecated/;
+ QgsRendererRangeLabelFormat labelFormat() const /Deprecated="Since 3.10. Use classificationMethod() and QgsClassificationMethod.setLabelFormat instead."/;
 %Docstring
 Returns the label format used to generate default classification labels
 
@@ -299,7 +299,7 @@ Returns the label format used to generate default classification labels
    Use :py:func:`~QgsGraduatedSymbolRenderer.classificationMethod` and :py:class:`QgsClassificationMethod`.setLabelFormat instead.
 %End
 
- void setLabelFormat( const QgsRendererRangeLabelFormat &labelFormat, bool updateRanges = false ) /Deprecated/;
+ void setLabelFormat( const QgsRendererRangeLabelFormat &labelFormat, bool updateRanges = false ) /Deprecated="Since 3.10. Use classificationMethod() and QgsClassificationMethod.setLabelFormat instead."/;
 %Docstring
 Set the label format used to generate default classification labels
 
@@ -330,7 +330,7 @@ Reset the label decimal places to a numberbased on the minimum class interval
         bool useSymmetricMode = false,
         double symmetryPoint = 0.0,
         const QStringList &listForCboPrettyBreaks = QStringList(),
-        bool astride = false ) /Deprecated/;
+        bool astride = false ) /Deprecated="Since 3.10. "/;
 %Docstring
 Creates a new graduated renderer.
 

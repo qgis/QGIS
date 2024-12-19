@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsnewauxiliaryfielddialog.h"
+#include "moc_qgsnewauxiliaryfielddialog.cpp"
 #include "qgsauxiliarystorage.h"
 #include "qgsgui.h"
 #include "qgsapplication.h"
@@ -51,7 +52,7 @@ void QgsNewAuxiliaryFieldDialog::accept()
 
   if ( !mNameOnly )
   {
-    def.setDataType( static_cast< QgsPropertyDefinition::DataType >( mType->currentData().toInt() ) );
+    def.setDataType( static_cast<QgsPropertyDefinition::DataType>( mType->currentData().toInt() ) );
 
     def.setOrigin( "user" );
     def.setName( "custom" );

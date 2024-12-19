@@ -24,6 +24,7 @@
 #include "qgsmultipolygon.h"
 #include "qgsogcutils.h"
 #include "qgswfsfeatureiterator.h"
+#include "moc_qgswfsfeatureiterator.cpp"
 #include "qgswfsshareddata.h"
 #include "qgswfsutils.h"
 #include "qgslogger.h"
@@ -46,8 +47,8 @@ void QgsWFSFeatureHitsAsyncRequest::launch( const QUrl &url )
 {
   sendGET( url,
            QString(), // content-type
-           false, /* synchronous */
-           true, /* forceRefresh */
+           false,     /* synchronous */
+           true,      /* forceRefresh */
            false /* cache */ );
 }
 
@@ -60,8 +61,7 @@ void QgsWFSFeatureHitsAsyncRequest::hitsReplyFinished()
     QString errorMsg;
     if ( gmlParser.processData( data, true, errorMsg ) )
     {
-      mNumberMatched = ( gmlParser.numberMatched() >= 0 ) ? gmlParser.numberMatched() :
-                       gmlParser.numberReturned();
+      mNumberMatched = ( gmlParser.numberMatched() >= 0 ) ? gmlParser.numberMatched() : gmlParser.numberReturned();
     }
     else
     {
@@ -78,12 +78,8 @@ QString QgsWFSFeatureHitsAsyncRequest::errorMessageWithReason( const QString &re
 
 // -------------------------
 
-QgsWFSFeatureDownloaderImpl::QgsWFSFeatureDownloaderImpl( QgsWFSSharedData *shared, QgsFeatureDownloader *downloader, bool requestMadeFromMainThread ):
-  QgsWfsRequest( shared->mURI ),
-  QgsFeatureDownloaderImpl( shared, downloader ),
-  mShared( shared ),
-  mPageSize( shared->mPageSize ),
-  mFeatureHitsAsyncRequest( shared->mURI )
+QgsWFSFeatureDownloaderImpl::QgsWFSFeatureDownloaderImpl( QgsWFSSharedData *shared, QgsFeatureDownloader *downloader, bool requestMadeFromMainThread )
+  : QgsWfsRequest( shared->mURI ), QgsFeatureDownloaderImpl( shared, downloader ), mShared( shared ), mPageSize( shared->mPageSize ), mFeatureHitsAsyncRequest( shared->mURI )
 {
   QGS_FEATURE_DOWNLOADER_IMPL_CONNECT_SIGNALS( requestMadeFromMainThread );
 }
@@ -109,7 +105,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
 {
   QUrl getFeatureUrl( mShared->mURI.requestUrl( QStringLiteral( "GetFeature" ) ) );
   QUrlQuery query( getFeatureUrl );
-  query.addQueryItem( QStringLiteral( "VERSION" ),  mShared->mWFSVersion );
+  query.addQueryItem( QStringLiteral( "VERSION" ), mShared->mWFSVersion );
 
   QString typenames;
   QString namespaces;
@@ -138,11 +134,11 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
   }
   if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
   {
-    query.addQueryItem( QStringLiteral( "TYPENAMES" ),  typenames );
+    query.addQueryItem( QStringLiteral( "TYPENAMES" ), typenames );
   }
   else
   {
-    query.addQueryItem( QStringLiteral( "TYPENAME" ),  typenames );
+    query.addQueryItem( QStringLiteral( "TYPENAME" ), typenames );
   }
 
   if ( forHits )
@@ -210,8 +206,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
     double miny = rect.yMinimum();
     double maxx = rect.xMaximum();
     double maxy = rect.yMaximum();
-    QString filterBbox( QStringLiteral( "intersects_bbox($geometry, geomFromWKT('LINESTRING(%1 %2,%3 %4)'))" ).
-                        arg( minx ).arg( miny ).arg( maxx ).arg( maxy ) );
+    QString filterBbox( QStringLiteral( "intersects_bbox($geometry, geomFromWKT('LINESTRING(%1 %2,%3 %4)'))" ).arg( minx ).arg( miny ).arg( maxx ).arg( maxy ) );
     QgsExpression bboxExp( filterBbox );
     QDomDocument bboxDoc;
 
@@ -226,12 +221,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
       }
     }
 
-    QDomElement bboxElem = QgsOgcUtils::expressionToOgcFilter( bboxExp, bboxDoc,
-                           gmlVersion, filterVersion,
-                           mShared->mLayerPropertiesList.size() == 1 ? mShared->mLayerPropertiesList[0].mNamespacePrefix : QString(),
-                           mShared->mLayerPropertiesList.size() == 1 ? mShared->mLayerPropertiesList[0].mNamespaceURI : QString(),
-                           geometryAttribute, mShared->srsName(),
-                           honourAxisOrientation, mShared->mURI.invertAxisOrientation(), nullptr, fieldNameToXPathMap, mShared->mNamespacePrefixToURIMap );
+    QDomElement bboxElem = QgsOgcUtils::expressionToOgcFilter( bboxExp, bboxDoc, gmlVersion, filterVersion, mShared->mLayerPropertiesList.size() == 1 ? mShared->mLayerPropertiesList[0].mNamespacePrefix : QString(), mShared->mLayerPropertiesList.size() == 1 ? mShared->mLayerPropertiesList[0].mNamespaceURI : QString(), geometryAttribute, mShared->srsName(), honourAxisOrientation, mShared->mURI.invertAxisOrientation(), nullptr, fieldNameToXPathMap, mShared->mNamespacePrefixToURIMap );
     bboxDoc.appendChild( bboxElem );
 
     filters.push_back( bboxDoc.toString() );
@@ -248,8 +238,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
   else if ( !rect.isNull() )
   {
     bool invertAxis = false;
-    if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) &&
-         !mShared->mURI.ignoreAxisOrientation() )
+    if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) && !mShared->mURI.ignoreAxisOrientation() )
     {
       // This is a bit nasty, but if the server reports OGC::CRS84
       // mSourceCrs will report hasAxisInverted() == false, but srsName()
@@ -268,10 +257,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
       invertAxis = !invertAxis;
     }
     QString bbox( QString( ( invertAxis ) ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-                  .arg( qgsDoubleToString( rect.xMinimum() ),
-                        qgsDoubleToString( rect.yMinimum() ),
-                        qgsDoubleToString( rect.xMaximum() ),
-                        qgsDoubleToString( rect.yMaximum() ) ) );
+                    .arg( qgsDoubleToString( rect.xMinimum() ), qgsDoubleToString( rect.yMinimum() ), qgsDoubleToString( rect.xMaximum() ), qgsDoubleToString( rect.yMaximum() ) ) );
     // Some servers like Geomedia need the srsname to be explicitly appended
     // otherwise they are confused and do not interpret it properly
     if ( !mShared->mWFSVersion.startsWith( QLatin1String( "1.0" ) ) )
@@ -280,7 +266,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
       // it. See #15464
       bbox += "," + mShared->srsName();
     }
-    query.addQueryItem( QStringLiteral( "BBOX" ),  bbox );
+    query.addQueryItem( QStringLiteral( "BBOX" ), bbox );
   }
   else if ( !mShared->mWFSFilter.isEmpty() )
   {
@@ -320,8 +306,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
     {
       if ( mShared->mCaps.outputFormats.contains( format ) )
       {
-        query.addQueryItem( QStringLiteral( "OUTPUTFORMAT" ),
-                            format );
+        query.addQueryItem( QStringLiteral( "OUTPUTFORMAT" ), format );
         break;
       }
     }
@@ -335,7 +320,7 @@ QUrl QgsWFSFeatureDownloaderImpl::buildURL( qint64 startIndex, long long maxFeat
   }
 
   getFeatureUrl.setQuery( query );
-  QgsDebugMsgLevel( QStringLiteral( "WFS GetFeature URL: %1" ).arg( getFeatureUrl.toDisplayString( ) ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "WFS GetFeature URL: %1" ).arg( getFeatureUrl.toDisplayString() ), 2 );
   return getFeatureUrl;
 }
 
@@ -443,8 +428,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
         maxFeaturesThisRequest = mShared->mPageSize;
       }
     }
-    QUrl url( buildURL( mTotalDownloadedFeatureCount,
-                        maxFeaturesThisRequest, false ) );
+    QUrl url( buildURL( mTotalDownloadedFeatureCount, maxFeaturesThisRequest, false ) );
 
     // Small hack for testing purposes
     if ( retryIter > 0 && url.toString().contains( QLatin1String( "fake_qgis_http_endpoint" ) ) )
@@ -456,8 +440,8 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
 
     sendGET( url,
              QString(), // content-type
-             false, /* synchronous */
-             true, /* forceRefresh */
+             false,     /* synchronous */
+             true,      /* forceRefresh */
              false /* cache */ );
 
     long long featureCountForThisResponse = 0;
@@ -516,8 +500,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
         // Some GeoServer instances in WFS 2.0 with paging throw an exception
         // e.g. http://ows.region-bretagne.fr/geoserver/wfs?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=rb:etudes&STARTINDEX=0&COUNT=1
         // Disabling paging helps in those cases
-        if ( mPageSize > 0 && mTotalDownloadedFeatureCount == 0 &&
-             parser->exceptionText().contains( QLatin1String( "Cannot do natural order without a primary key" ) ) )
+        if ( mPageSize > 0 && mTotalDownloadedFeatureCount == 0 && parser->exceptionText().contains( QLatin1String( "Cannot do natural order without a primary key" ) ) )
         {
           QgsDebugError( QStringLiteral( "Got exception %1. Re-trying with paging disabled" ).arg( parser->exceptionText() ) );
           mPageSize = 0;
@@ -580,8 +563,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
         }
       }
 
-      QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> featurePtrList =
-        parser->getAndStealReadyFeatures();
+      QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> featurePtrList = parser->getAndStealReadyFeatures();
 
       mTotalDownloadedFeatureCount += featurePtrList.size();
 
@@ -594,16 +576,10 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
       {
         // Heuristics to try to detect MapServer WFS 1.1 that honours EPSG axis order, but returns
         // EPSG:XXXX srsName and not EPSG urns
-        if ( pagingIter == 1 && featureCountForThisResponse == 0 &&
-             mShared->mWFSVersion.startsWith( QLatin1String( "1.1" ) ) &&
-             parser->srsName().startsWith( QLatin1String( "EPSG:" ) ) &&
-             !parser->layerExtent().isNull() &&
-             !mShared->mURI.ignoreAxisOrientation() &&
-             !mShared->mURI.invertAxisOrientation() )
+        if ( pagingIter == 1 && featureCountForThisResponse == 0 && mShared->mWFSVersion.startsWith( QLatin1String( "1.1" ) ) && parser->srsName().startsWith( QLatin1String( "EPSG:" ) ) && !parser->layerExtent().isNull() && !mShared->mURI.ignoreAxisOrientation() && !mShared->mURI.invertAxisOrientation() )
         {
           QgsCoordinateReferenceSystem crs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( parser->srsName() );
-          if ( crs.isValid() && crs.hasAxisInverted() &&
-               !mShared->mCapabilityExtent.contains( parser->layerExtent() ) )
+          if ( crs.isValid() && crs.hasAxisInverted() && !mShared->mCapabilityExtent.contains( parser->layerExtent() ) )
           {
             QgsRectangle invertedRectangle( parser->layerExtent() );
             invertedRectangle.invert();
@@ -651,49 +627,46 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
 
           // If receiving a geometry collection, but expecting a multipoint/...,
           // then try to convert it
-          if ( f.hasGeometry() &&
-               f.geometry().wkbType() == Qgis::WkbType::GeometryCollection &&
-               ( mShared->mWKBType == Qgis::WkbType::MultiPoint ||
-                 mShared->mWKBType == Qgis::WkbType::MultiLineString ||
-                 mShared->mWKBType == Qgis::WkbType::MultiPolygon ) )
+          if ( f.hasGeometry() && f.geometry().wkbType() == Qgis::WkbType::GeometryCollection && ( mShared->mWKBType == Qgis::WkbType::MultiPoint || mShared->mWKBType == Qgis::WkbType::MultiLineString || mShared->mWKBType == Qgis::WkbType::MultiPolygon ) )
           {
             Qgis::WkbType singleType = QgsWkbTypes::singleType( mShared->mWKBType );
-            auto g = f.geometry().constGet();
-            auto gc = qgsgeometry_cast<QgsGeometryCollection *>( g );
-            bool allExpectedType = true;
-            for ( int i = 0; i < gc->numGeometries(); ++i )
+            const QgsAbstractGeometry *g = f.geometry().constGet();
+            if ( const QgsGeometryCollection *gc = qgsgeometry_cast<const QgsGeometryCollection *>( g ) )
             {
-              if ( gc->geometryN( i )->wkbType() != singleType )
-              {
-                allExpectedType = false;
-                break;
-              }
-            }
-            if ( allExpectedType )
-            {
-              QgsGeometryCollection *newGC;
-              if ( mShared->mWKBType == Qgis::WkbType::MultiPoint )
-              {
-                newGC =  new QgsMultiPoint();
-              }
-              else if ( mShared->mWKBType == Qgis::WkbType::MultiLineString )
-              {
-                newGC = new QgsMultiLineString();
-              }
-              else
-              {
-                newGC = new QgsMultiPolygon();
-              }
-              newGC->reserve( gc->numGeometries() );
+              bool allExpectedType = true;
               for ( int i = 0; i < gc->numGeometries(); ++i )
               {
-                newGC->addGeometry( gc->geometryN( i )->clone() );
+                if ( gc->geometryN( i )->wkbType() != singleType )
+                {
+                  allExpectedType = false;
+                  break;
+                }
               }
-              f.setGeometry( QgsGeometry( newGC ) );
+              if ( allExpectedType )
+              {
+                std::unique_ptr< QgsGeometryCollection > newGC;
+                if ( mShared->mWKBType == Qgis::WkbType::MultiPoint )
+                {
+                  newGC = std::make_unique< QgsMultiPoint >();
+                }
+                else if ( mShared->mWKBType == Qgis::WkbType::MultiLineString )
+                {
+                  newGC = std::make_unique< QgsMultiLineString >();
+                }
+                else
+                {
+                  newGC = std::make_unique< QgsMultiPolygon >();
+                }
+                newGC->reserve( gc->numGeometries() );
+                for ( int i = 0; i < gc->numGeometries(); ++i )
+                {
+                  newGC->addGeometry( gc->geometryN( i )->clone() );
+                }
+                f.setGeometry( std::move( newGC ) );
+              }
             }
           }
-          else if ( f.hasGeometry() && !mShared->mWFSGeometryTypeFilter.isEmpty() &&
-                    QgsWkbTypes::flatType( f.geometry().wkbType() ) != mShared->mWKBType )
+          else if ( f.hasGeometry() && !mShared->mWFSGeometryTypeFilter.isEmpty() && QgsWkbTypes::flatType( f.geometry().wkbType() ) != mShared->mWKBType )
           {
             QgsGeometry g = f.geometry();
             g.convertToCurvedMultiType();
@@ -720,7 +693,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
             featureList.clear();
           }
 
-          featureCountForThisResponse ++;
+          featureCountForThisResponse++;
         }
       }
 
@@ -762,7 +735,7 @@ void QgsWFSFeatureDownloaderImpl::run( bool serializeFeatures, long long maxFeat
     // Detect if we are at the last page
     if ( ( mShared->mPageSize > 0 && featureCountForThisResponse < mShared->mPageSize ) || featureCountForThisResponse == 0 )
       break;
-    ++ pagingIter;
+    ++pagingIter;
     if ( disablePaging )
     {
       mShared->mPageSize = mPageSize = 0;

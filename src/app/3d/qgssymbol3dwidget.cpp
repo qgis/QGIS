@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgssymbol3dwidget.h"
+#include "moc_qgssymbol3dwidget.cpp"
 #include "qgsabstractmaterialsettings.h"
 #include "qgsstyleitemslistwidget.h"
 #include "qgsstylesavedialog.h"
@@ -54,9 +55,9 @@ QgsSymbol3DWidget::QgsSymbol3DWidget( QgsVectorLayer *layer, QWidget *parent )
 
 std::unique_ptr<QgsAbstract3DSymbol> QgsSymbol3DWidget::symbol()
 {
-  if ( Qgs3DSymbolWidget *w = qobject_cast< Qgs3DSymbolWidget * >( widgetStack->currentWidget() ) )
+  if ( Qgs3DSymbolWidget *w = qobject_cast<Qgs3DSymbolWidget *>( widgetStack->currentWidget() ) )
   {
-    return std::unique_ptr< QgsAbstract3DSymbol >( w->symbol() );
+    return std::unique_ptr<QgsAbstract3DSymbol>( w->symbol() );
   }
   return nullptr;
 }
@@ -66,7 +67,7 @@ void QgsSymbol3DWidget::setSymbol( const QgsAbstract3DSymbol *symbol, QgsVectorL
   mLayer = vlayer;
   mStyleWidget->setLayerType( mLayer->geometryType() );
 
-  if ( Qgs3DSymbolWidget *w = qobject_cast< Qgs3DSymbolWidget * >( widgetStack->currentWidget() ) )
+  if ( Qgs3DSymbolWidget *w = qobject_cast<Qgs3DSymbolWidget *>( widgetStack->currentWidget() ) )
   {
     if ( w->symbolType() == symbol->type() )
     {
@@ -91,7 +92,7 @@ void QgsSymbol3DWidget::setSymbolFromStyle( const QString &name, QgsStyle::Style
     style = QgsStyle::defaultStyle();
 
   // get new instance of symbol from style
-  const std::unique_ptr< QgsAbstract3DSymbol > s( style->symbol3D( name ) );
+  const std::unique_ptr<QgsAbstract3DSymbol> s( style->symbol3D( name ) );
   if ( !s )
     return;
 
@@ -110,15 +111,12 @@ void QgsSymbol3DWidget::saveSymbol()
 
   QgsStyle *destinationStyle = saveDlg.destinationStyle();
 
-  std::unique_ptr< QgsAbstract3DSymbol > newSymbol( symbol() );
+  std::unique_ptr<QgsAbstract3DSymbol> newSymbol( symbol() );
 
   // check if there is no symbol with same name
   if ( destinationStyle->symbol3DNames().contains( saveDlg.name() ) )
   {
-    const int res = QMessageBox::warning( this, tr( "Save 3D Symbol" ),
-                                          tr( "A 3D symbol with the name '%1' already exists. Overwrite?" )
-                                          .arg( saveDlg.name() ),
-                                          QMessageBox::Yes | QMessageBox::No );
+    const int res = QMessageBox::warning( this, tr( "Save 3D Symbol" ), tr( "A 3D symbol with the name '%1' already exists. Overwrite?" ).arg( saveDlg.name() ), QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
     {
       return;
@@ -141,7 +139,7 @@ void QgsSymbol3DWidget::updateSymbolWidget( const QgsAbstract3DSymbol *newSymbol
   if ( widgetStack->currentWidget() != widgetUnsupported )
   {
     // stop updating from the original widget
-    if ( Qgs3DSymbolWidget *w = qobject_cast< Qgs3DSymbolWidget * >( widgetStack->currentWidget() ) )
+    if ( Qgs3DSymbolWidget *w = qobject_cast<Qgs3DSymbolWidget *>( widgetStack->currentWidget() ) )
       disconnect( w, &Qgs3DSymbolWidget::changed, this, &QgsSymbol3DWidget::widgetChanged );
     widgetStack->removeWidget( widgetStack->currentWidget() );
   }

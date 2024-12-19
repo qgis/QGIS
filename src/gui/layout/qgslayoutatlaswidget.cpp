@@ -18,6 +18,7 @@
 #include <QImageWriter>
 
 #include "qgslayoutatlaswidget.h"
+#include "moc_qgslayoutatlaswidget.cpp"
 #include "qgsprintlayout.h"
 #include "qgslayoutatlas.h"
 #include "qgsexpressionbuilderdialog.h"
@@ -48,8 +49,8 @@ QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *lay
   connect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, mAtlasSortExpressionWidget, &QgsFieldExpressionWidget::setLayer );
   connect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, mPageNameWidget, &QgsFieldExpressionWidget::setLayer );
   connect( mAtlasCoverageLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsLayoutAtlasWidget::changeCoverageLayer );
-  connect( mAtlasSortExpressionWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString &, bool ) > ( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsLayoutAtlasWidget::changesSortFeatureExpression );
-  connect( mPageNameWidget, static_cast < void ( QgsFieldExpressionWidget::* )( const QString &, bool ) > ( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsLayoutAtlasWidget::pageNameExpressionChanged );
+  connect( mAtlasSortExpressionWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString &, bool )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsLayoutAtlasWidget::changesSortFeatureExpression );
+  connect( mPageNameWidget, static_cast<void ( QgsFieldExpressionWidget::* )( const QString &, bool )>( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsLayoutAtlasWidget::pageNameExpressionChanged );
 
   // Sort direction
   mAtlasSortFeatureDirectionButton->setEnabled( false );
@@ -65,7 +66,7 @@ QgsLayoutAtlasWidget::QgsLayoutAtlasWidget( QWidget *parent, QgsPrintLayout *lay
   {
     mAtlasFileFormat->addItem( QString( formats.at( i ) ) );
   }
-  connect( mAtlasFileFormat, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int ) { changeFileFormat(); } );
+  connect( mAtlasFileFormat, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) { changeFileFormat(); } );
 
   updateGuiElements();
 }
@@ -137,10 +138,7 @@ void QgsLayoutAtlasWidget::mAtlasFilenamePatternEdit_editingFinished()
   if ( !mAtlas->setFilenameExpression( mAtlasFilenamePatternEdit->text(), error ) )
   {
     //expression could not be set
-    mMessageBar->pushWarning( tr( "Atlas" ),
-                              tr( "Could not set filename expression to '%1'.\nParser error:\n%2" )
-                              .arg( mAtlasFilenamePatternEdit->text(),
-                                    error ) );
+    mMessageBar->pushWarning( tr( "Atlas" ), tr( "Could not set filename expression to '%1'.\nParser error:\n%2" ).arg( mAtlasFilenamePatternEdit->text(), error ) );
   }
   mLayout->undoStack()->endCommand();
   mBlockUpdates = false;
@@ -170,9 +168,7 @@ void QgsLayoutAtlasWidget::mAtlasFilenameExpressionButton_clicked()
       if ( !mAtlas->setFilenameExpression( expression, error ) )
       {
         //expression could not be set
-        mMessageBar->pushWarning( tr( "Atlas" ), tr( "Could not set filename expression to '%1'.\nParser error:\n%2" )
-                                  .arg( expression,
-                                        error ) );
+        mMessageBar->pushWarning( tr( "Atlas" ), tr( "Could not set filename expression to '%1'.\nParser error:\n%2" ).arg( expression, error ) );
       }
       mBlockUpdates = false;
       mLayout->undoStack()->endCommand();
@@ -253,8 +249,7 @@ void QgsLayoutAtlasWidget::updateAtlasFeatures()
   const bool updated = mAtlas->updateFeatures();
   if ( !updated )
   {
-    mMessageBar->pushInfo( tr( "Atlas" ),
-                           tr( "No matching atlas features found!" ) );
+    mMessageBar->pushInfo( tr( "Atlas" ), tr( "No matching atlas features found!" ) );
 
     //Perhaps atlas preview should be disabled now? If so, it may get annoying if user is editing
     //the filter expression and it keeps disabling itself.
@@ -314,9 +309,7 @@ void QgsLayoutAtlasWidget::mAtlasFeatureFilterEdit_editingFinished()
   if ( !mAtlas->setFilterExpression( mAtlasFeatureFilterEdit->text(), error ) )
   {
     //expression could not be set
-    mMessageBar->pushWarning( tr( "Atlas" ), tr( "Could not set filter expression to '%1'.\nParser error:\n%2" )
-                              .arg( mAtlasFeatureFilterEdit->text(),
-                                    error ) );
+    mMessageBar->pushWarning( tr( "Atlas" ), tr( "Could not set filter expression to '%1'.\nParser error:\n%2" ).arg( mAtlasFeatureFilterEdit->text(), error ) );
   }
   mBlockUpdates = false;
   mLayout->undoStack()->endCommand();
@@ -351,11 +344,7 @@ void QgsLayoutAtlasWidget::mAtlasFeatureFilterButton_clicked()
       if ( !mAtlas->setFilterExpression( mAtlasFeatureFilterEdit->text(), error ) )
       {
         //expression could not be set
-        mMessageBar->pushWarning( tr( "Atlas" ),
-                                  tr( "Could not set filter expression to '%1'.\nParser error:\n%2" )
-                                  .arg( mAtlasFeatureFilterEdit->text(),
-                                        error )
-                                );
+        mMessageBar->pushWarning( tr( "Atlas" ), tr( "Could not set filter expression to '%1'.\nParser error:\n%2" ).arg( mAtlasFeatureFilterEdit->text(), error ) );
       }
       mBlockUpdates = false;
       mLayout->undoStack()->endCommand();

@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgsmaptooledit.h"
+#include "moc_qgsmaptooledit.cpp"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
 #include "qgsgeometryrubberband.h"
@@ -31,7 +32,7 @@ QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas *canvas )
   if ( mCanvas->project() )
   {
     connect( mCanvas->project(), &QgsProject::layersAdded, this, &QgsMapToolEdit::connectLayers );
-    connectLayers( mCanvas->project()->mapLayers().values() );  // Connect existing layers
+    connectLayers( mCanvas->project()->mapLayers().values() ); // Connect existing layers
   }
 }
 

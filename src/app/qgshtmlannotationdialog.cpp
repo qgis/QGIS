@@ -13,6 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgshtmlannotationdialog.h"
+#include "moc_qgshtmlannotationdialog.cpp"
 #include "qgshtmlannotation.h"
 #include "qgsannotationwidget.h"
 #include "qgsmapcanvasannotationitem.h"
@@ -47,7 +48,7 @@ QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *it
 
   if ( item && item->annotation() )
   {
-    QgsHtmlAnnotation *annotation = static_cast< QgsHtmlAnnotation * >( item->annotation() );
+    QgsHtmlAnnotation *annotation = static_cast<QgsHtmlAnnotation *>( item->annotation() );
     const QString file = annotation->sourceFile();
     if ( !file.isEmpty() )
     {
@@ -87,7 +88,7 @@ void QgsHtmlAnnotationDialog::applySettingsToItem()
 
   if ( mItem && mItem->annotation() )
   {
-    QgsHtmlAnnotation *annotation = static_cast< QgsHtmlAnnotation * >( mItem->annotation() );
+    QgsHtmlAnnotation *annotation = static_cast<QgsHtmlAnnotation *>( mItem->annotation() );
     if ( mFileRadioButton->isChecked() )
     {
       annotation->setSourceFile( mFileLineEdit->text() );

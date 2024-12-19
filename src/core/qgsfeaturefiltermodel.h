@@ -51,7 +51,7 @@ class CORE_EXPORT QgsFeatureFilterModel : public QgsFeaturePickerModelBase
      * The identifier field should be a unique field that can be used to identify individual features.
      * It is normally set to the primary key of the layer.
      * If there are several identifier fields defined, the behavior is not guaranteed
-     * \deprecated QGIS 3.10. Use identifierFields instead.
+     * \deprecated QGIS 3.10. Use identifierFields() instead.
      */
     Q_DECL_DEPRECATED QString identifierField() const;
 

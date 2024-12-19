@@ -391,6 +391,20 @@ Qt::BrushStyle QgsSymbolLayerUtils::decodeSldBrushStyle( const QString &str )
   return Qt::NoBrush;
 }
 
+bool QgsSymbolLayerUtils::hasSldSymbolizer( const QDomElement &element )
+{
+  const QDomNodeList children = element.childNodes();
+  for ( int i = 0; i < children.size(); ++i )
+  {
+    const QDomElement childElement = children.at( i ).toElement();
+    if ( childElement.tagName() == QLatin1String( "se:LineSymbolizer" )
+         || childElement.tagName() == QLatin1String( "se:PointSymbolizer" )
+         || childElement.tagName() == QLatin1String( "se:PolygonSymbolizer" ) )
+      return true;
+  }
+  return false;
+}
+
 Qgis::SymbolCoordinateReference QgsSymbolLayerUtils::decodeCoordinateReference( const QString &string, bool *ok )
 {
   const QString compareString = string.trimmed();
@@ -1320,6 +1334,8 @@ QgsSymbol *QgsSymbolLayerUtils::loadSymbol( const QDomElement &element, const Qg
     symbol->setMapUnitScale( mapUnitScale );
   }
   symbol->setOpacity( element.attribute( QStringLiteral( "alpha" ), QStringLiteral( "1.0" ) ).toDouble() );
+  symbol->setExtentBuffer( element.attribute( QStringLiteral( "extent_buffer" ), QStringLiteral( "0.0" ) ).toDouble() );
+  symbol->setExtentBufferSizeUnit( QgsUnitTypes::decodeRenderUnit( element.attribute( QStringLiteral( "extent_buffer_unit" ), QStringLiteral( "MapUnit" ) ) ) );
   symbol->setClipFeaturesToExtent( element.attribute( QStringLiteral( "clip_to_extent" ), QStringLiteral( "1" ) ).toInt() );
   symbol->setForceRHR( element.attribute( QStringLiteral( "force_rhr" ), QStringLiteral( "0" ) ).toInt() );
   Qgis::SymbolFlags flags;
@@ -1438,6 +1454,11 @@ QDomElement QgsSymbolLayerUtils::saveSymbol( const QString &name, const QgsSymbo
   symEl.setAttribute( QStringLiteral( "name" ), name );
   symEl.setAttribute( QStringLiteral( "alpha" ), QString::number( symbol->opacity() ) );
   symEl.setAttribute( QStringLiteral( "clip_to_extent" ), symbol->clipFeaturesToExtent() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+  if ( !qgsDoubleNear( symbol->extentBuffer(), 0 ) )
+  {
+    symEl.setAttribute( QStringLiteral( "extent_buffer" ), QString::number( symbol->extentBuffer() ) );
+    symEl.setAttribute( QStringLiteral( "extent_buffer_unit" ), QgsUnitTypes::encodeUnit( symbol->extentBufferSizeUnit() ) );
+  }
   symEl.setAttribute( QStringLiteral( "force_rhr" ), symbol->forceRHR() ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   if ( symbol->flags() & Qgis::SymbolFlag::RendererShouldUseSymbolLevels )
     symEl.setAttribute( QStringLiteral( "renderer_should_use_levels" ), QStringLiteral( "1" ) );

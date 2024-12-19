@@ -15,11 +15,17 @@
 ***************************************************************************
 """
 
-__author__ = 'Victor Olaya'
-__date__ = 'January 2013'
-__copyright__ = '(C) 2013, Victor Olaya'
+__author__ = "Victor Olaya"
+__date__ = "January 2013"
+__copyright__ = "(C) 2013, Victor Olaya"
 
-from qgis.PyQt.QtWidgets import QComboBox, QPlainTextEdit, QSizePolicy, QVBoxLayout, QWidget
+from qgis.PyQt.QtWidgets import (
+    QComboBox,
+    QPlainTextEdit,
+    QSizePolicy,
+    QVBoxLayout,
+    QWidget,
+)
 
 
 class MultilineTextPanel(QWidget):
@@ -32,11 +38,12 @@ class MultilineTextPanel(QWidget):
         self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
         self.combo = QComboBox()
-        self.combo.addItem(self.tr('[Use text below]'))
+        self.combo.addItem(self.tr("[Use text below]"))
         for option in options:
             self.combo.addItem(option[0], option[1])
-        self.combo.setSizePolicy(QSizePolicy.Policy.Expanding,
-                                 QSizePolicy.Policy.Expanding)
+        self.combo.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
         self.verticalLayout.addWidget(self.combo)
         self.textBox = QPlainTextEdit()
         self.verticalLayout.addWidget(self.textBox)

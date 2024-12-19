@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssvgcache.h"
+#include "moc_qgssvgcache.cpp"
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"

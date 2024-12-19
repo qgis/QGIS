@@ -26,6 +26,7 @@
 #include "qgscolorbrewercolorrampdialog.h"
 #include "qgscptcitycolorrampdialog.h"
 #include "qgspresetcolorrampdialog.h"
+#include "moc_qgscolorrampbutton.cpp"
 
 #include <QAction>
 #include <QInputDialog>
@@ -62,10 +63,10 @@ QSize QgsColorRampButton::sizeHint() const
 {
   //make sure height of button looks good under different platforms
 #ifdef Q_OS_WIN
-  return QSize( 120, static_cast<int>( std::max( Qgis::UI_SCALE_FACTOR * fontMetrics().height( ), 22.0 ) ) );
+  return QSize( 120, static_cast<int>( std::max( Qgis::UI_SCALE_FACTOR * fontMetrics().height(), 22.0 ) ) );
 #else
   // Adjust height for HiDPI screens
-  return QSize( 120, static_cast<int>( std::max( Qgis::UI_SCALE_FACTOR * fontMetrics().height( ) * 1.4, 28.0 ) ) );
+  return QSize( 120, static_cast<int>( std::max( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 1.4, 28.0 ) ) );
 #endif
 }
 
@@ -74,7 +75,7 @@ void QgsColorRampButton::showColorRampDialog()
   QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( this );
   const bool panelMode = panel && panel->dockMode();
 
-  std::unique_ptr< QgsColorRamp > currentRamp( colorRamp() );
+  std::unique_ptr<QgsColorRamp> currentRamp( colorRamp() );
   if ( !currentRamp )
     return;
 
@@ -273,7 +274,7 @@ void QgsColorRampButton::prepareMenu()
   const int iconSize = QgsGuiUtils::scaleIconSize( 16 );
   for ( QStringList::iterator it = rampNames.begin(); it != rampNames.end(); ++it )
   {
-    std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( *it ) );
+    std::unique_ptr<QgsColorRamp> ramp( mStyle->colorRamp( *it ) );
 
     if ( !mShowGradientOnly || ( ramp->type() == QgsGradientColorRamp::typeString() || ramp->type() == QgsCptCityColorRamp::typeString() ) )
     {
@@ -293,7 +294,7 @@ void QgsColorRampButton::prepareMenu()
   rampNames.sort();
   for ( QStringList::iterator it = rampNames.begin(); it != rampNames.end(); ++it )
   {
-    std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( *it ) );
+    std::unique_ptr<QgsColorRamp> ramp( mStyle->colorRamp( *it ) );
 
     if ( !mShowGradientOnly || ( ramp->type() == QgsGradientColorRamp::typeString() || ramp->type() == QgsCptCityColorRamp::typeString() ) )
     {
@@ -335,25 +336,23 @@ void QgsColorRampButton::loadColorRamp()
 
 void QgsColorRampButton::createColorRamp()
 {
-
   bool ok = true;
 
-  QList< QPair< QString, QString > > rampTypes = QgsColorRamp::rampTypes();
+  QList<QPair<QString, QString>> rampTypes = QgsColorRamp::rampTypes();
   QStringList rampTypeNames;
   rampTypeNames.reserve( rampTypes.size() );
   if ( mShowGradientOnly )
   {
-    rampTypes.erase( std::remove_if( rampTypes.begin(), rampTypes.end(), []( const QPair< QString, QString > &type )
-    {
-      return type.first != QgsGradientColorRamp::typeString() && type.first != QgsCptCityColorRamp::typeString();
-    } ), rampTypes.end() );
+    rampTypes.erase( std::remove_if( rampTypes.begin(), rampTypes.end(), []( const QPair<QString, QString> &type ) {
+                       return type.first != QgsGradientColorRamp::typeString() && type.first != QgsCptCityColorRamp::typeString();
+                     } ),
+                     rampTypes.end() );
   }
 
-  for ( const QPair< QString, QString > &type : rampTypes )
+  for ( const QPair<QString, QString> &type : rampTypes )
     rampTypeNames << type.second;
 
-  const QString selectedRampTypeName = QInputDialog::getItem( this, tr( "Color ramp type" ),
-                                       tr( "Please select color ramp type:" ), rampTypeNames, 0, false, &ok );
+  const QString selectedRampTypeName = QInputDialog::getItem( this, tr( "Color ramp type" ), tr( "Please select color ramp type:" ), rampTypeNames, 0, false, &ok );
 
   if ( !ok || selectedRampTypeName.isEmpty() )
     return;
@@ -406,10 +405,7 @@ void QgsColorRampButton::saveColorRamp()
   // check if there is no symbol with same name
   if ( destinationStyle->symbolNames().contains( saveDlg.name() ) )
   {
-    const int res = QMessageBox::warning( this, tr( "Save Color Ramp" ),
-                                          tr( "Color ramp with name '%1' already exists. Overwrite?" )
-                                          .arg( saveDlg.name() ),
-                                          QMessageBox::Yes | QMessageBox::No );
+    const int res = QMessageBox::warning( this, tr( "Save Color Ramp" ), tr( "Color ramp with name '%1' already exists. Overwrite?" ).arg( saveDlg.name() ), QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
     {
       return;
@@ -487,7 +483,7 @@ void QgsColorRampButton::setColorRampFromName( const QString &name )
 {
   if ( !name.isEmpty() )
   {
-    const std::unique_ptr< QgsColorRamp > ramp( mStyle->colorRamp( name ) );
+    const std::unique_ptr<QgsColorRamp> ramp( mStyle->colorRamp( name ) );
     if ( ramp )
     {
       setColorRamp( ramp.get() );
@@ -499,7 +495,7 @@ void QgsColorRampButton::setRandomColorRamp()
 {
   if ( !isRandomColorRamp() )
   {
-    const std::unique_ptr< QgsRandomColorRamp > newRamp( new QgsRandomColorRamp() );
+    const std::unique_ptr<QgsRandomColorRamp> newRamp( new QgsRandomColorRamp() );
     setColorRamp( newRamp.get() );
   }
 }
@@ -521,8 +517,7 @@ void QgsColorRampButton::setButtonBackground( QgsColorRamp *colorramp )
       //calculate size of push button part of widget (ie, without the menu drop-down button part)
       QStyleOptionToolButton opt;
       initStyleOption( &opt );
-      const QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton,
-                               this );
+      const QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton, this );
       //make sure height of icon looks good under different platforms
 #ifdef Q_OS_WIN
       mIconSize = QSize( buttonSize.width() - 10, height() - 6 );
@@ -555,7 +550,7 @@ void QgsColorRampButton::setButtonBackground( QgsColorRamp *colorramp )
     pm.fill( Qt::transparent );
 
     QPainter painter;
-    const QPen pen  = ( palette().buttonText().color() );
+    const QPen pen = ( palette().buttonText().color() );
 
     painter.begin( &pm );
     painter.setPen( pen );
@@ -636,21 +631,21 @@ bool QgsColorRampButton::isNull() const
 
 void QgsColorRampButton::rampWidgetUpdated()
 {
-  QgsLimitedRandomColorRampWidget *limitedRampWidget = qobject_cast< QgsLimitedRandomColorRampWidget * >( sender() );
+  QgsLimitedRandomColorRampWidget *limitedRampWidget = qobject_cast<QgsLimitedRandomColorRampWidget *>( sender() );
   if ( limitedRampWidget )
   {
     setColorRamp( limitedRampWidget->ramp().clone() );
     emit colorRampChanged();
     return;
   }
-  QgsColorBrewerColorRampWidget *colorBrewerRampWidget = qobject_cast< QgsColorBrewerColorRampWidget * >( sender() );
+  QgsColorBrewerColorRampWidget *colorBrewerRampWidget = qobject_cast<QgsColorBrewerColorRampWidget *>( sender() );
   if ( colorBrewerRampWidget )
   {
     setColorRamp( colorBrewerRampWidget->ramp().clone() );
     emit colorRampChanged();
     return;
   }
-  QgsPresetColorRampWidget *presetRampWidget = qobject_cast< QgsPresetColorRampWidget * >( sender() );
+  QgsPresetColorRampWidget *presetRampWidget = qobject_cast<QgsPresetColorRampWidget *>( sender() );
   if ( presetRampWidget )
   {
     setColorRamp( presetRampWidget->ramp().clone() );

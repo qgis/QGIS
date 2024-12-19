@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgslayeritem.h"
+#include "moc_qgslayeritem.cpp"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsiconutils.h"

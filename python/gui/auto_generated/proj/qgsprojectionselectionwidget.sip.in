@@ -21,7 +21,6 @@ A widget for selecting a projection.
 #include "qgsprojectionselectionwidget.h"
 %End
   public:
-
     enum CrsOption
     {
       Invalid,
@@ -33,9 +32,7 @@ A widget for selecting a projection.
       CrsNotSet,
     };
 
-
-    explicit QgsProjectionSelectionWidget( QWidget *parent /TransferThis/ = 0,
-                                           QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
+      explicit QgsProjectionSelectionWidget( QWidget *parent /TransferThis/ = 0, QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 %Docstring
 Constructor for QgsProjectionSelectionWidget, with the specified ``parent`` widget.
 
@@ -144,7 +141,7 @@ Returns the title for the CRS selector dialog window.
 .. versionadded:: 3.24
 %End
 
-    void setFilter( const QList< QgsCoordinateReferenceSystem > &crses );
+    void setFilter( const QList<QgsCoordinateReferenceSystem> &crses );
 %Docstring
 Sets a filtered list of CRSes to show in the widget.
 
@@ -204,7 +201,6 @@ Opens the dialog for selecting a new CRS
 %End
 
   protected:
-
     virtual void dragEnterEvent( QDragEnterEvent *event );
 
     virtual void dragLeaveEvent( QDragLeaveEvent *event );

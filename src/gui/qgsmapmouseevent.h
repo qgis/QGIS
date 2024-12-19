@@ -34,7 +34,6 @@ class QgsMapToolAdvancedDigitizing;
  */
 class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
 {
-
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsMapMouseEvent *>( sipCpp ) )
@@ -45,7 +44,6 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
 #endif
 
   public:
-
     /**
      * Creates a new QgsMapMouseEvent. Should only be required to be called from the QgsMapCanvas.
      *
@@ -64,8 +62,7 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
      * \param buttons   Further buttons that are pressed
      * \param modifiers Keyboard modifiers
      */
-    QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QEvent::Type type, QPoint pos, Qt::MouseButton button = Qt::NoButton,
-                      Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
+    QgsMapMouseEvent( QgsMapCanvas *mapCanvas, QEvent::Type type, QPoint pos, Qt::MouseButton button = Qt::NoButton, Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 
     /**
      * \brief snapPoint will snap the points using the map canvas snapping utils configuration
@@ -135,7 +132,6 @@ class GUI_EXPORT QgsMapMouseEvent : public QMouseEvent
     void snapToGrid( double precision, const QgsCoordinateReferenceSystem &crs );
 
   private:
-
     QPoint mapToPixelCoordinates( const QgsPointXY &point );
 
     //! Whether snapPoint() was already called
