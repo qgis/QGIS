@@ -257,11 +257,12 @@ void TestQgsVectorTileLayer::testMbtilesProviderMetadata()
   QCOMPARE( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) ), {Qgis::LayerType::VectorTile} );
 
   // query sublayers
+  QString localMbtilesPath = QStringLiteral( "%1%2" ).arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( QStringLiteral("/vector_tile/mbtiles_vt.mbtiles") ) );
   QList< QgsProviderSublayerDetails > sublayers = vectorTileMetadata->querySublayers( QStringLiteral( "%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
   QCOMPARE( sublayers.size(), 1 );
   QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "mbtilesvectortiles" ) );
   QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "mbtiles_vt" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1" ).arg( localMbtilesPath ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
   QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
   QVERIFY( !QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers ) );
@@ -270,7 +271,7 @@ void TestQgsVectorTileLayer::testMbtilesProviderMetadata()
   QCOMPARE( sublayers.size(), 1 );
   QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "mbtilesvectortiles" ) );
   QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "mbtiles_vt" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1" ).arg( localMbtilesPath ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
   QVERIFY( !sublayers.at( 0 ).skippedContainerScan() );
 
@@ -279,7 +280,7 @@ void TestQgsVectorTileLayer::testMbtilesProviderMetadata()
   QCOMPARE( sublayers.size(), 1 );
   QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "mbtilesvectortiles" ) );
   QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "mbtiles_vt" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1" ).arg( localMbtilesPath ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
   QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
   QVERIFY( QgsProviderUtils::sublayerDetailsAreIncomplete( sublayers ) );
@@ -288,17 +289,19 @@ void TestQgsVectorTileLayer::testMbtilesProviderMetadata()
   QCOMPARE( sublayers.size(), 1 );
   QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "mbtilesvectortiles" ) );
   QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "mbtiles_vt" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1" ).arg( localMbtilesPath ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
   QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
 
   // fast scan mode means that any mbtile file will be reported, including those with only raster tiles
   // (we are skipping a potentially expensive db open and format check)
+  QString localIsleOfManPath = QStringLiteral( "%1%2" ).arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( QStringLiteral("/isle_of_man.mbtiles") ) );
+
   sublayers = vectorTileMetadata->querySublayers( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ), Qgis::SublayerQueryFlag::FastScan );
   QCOMPARE( sublayers.size(), 1 );
   QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "mbtilesvectortiles" ) );
   QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "isle_of_man" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=mbtiles&url=%1" ).arg( localIsleOfManPath ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
   QVERIFY( sublayers.at( 0 ).skippedContainerScan() );
 
@@ -329,8 +332,9 @@ void TestQgsVectorTileLayer::test_relativePathsMbTiles()
   QgsReadWriteContext contextRel;
   contextRel.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
   const QgsReadWriteContext contextAbs;
+  QString localMbtilesPath = QStringLiteral( "%1%2" ).arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( QStringLiteral("/vector_tile/mbtiles_vt.mbtiles") ) );
 
-  const QString srcMbtiles = QStringLiteral( "type=mbtiles&url=%1/vector_tile/mbtiles_vt.mbtiles" ).arg( TEST_DATA_DIR );
+  const QString srcMbtiles = QStringLiteral( "type=mbtiles&url=%1" ).arg( localMbtilesPath );
 
   std::unique_ptr< QgsVectorTileLayer > layer = std::make_unique< QgsVectorTileLayer >( srcMbtiles );
   QVERIFY( layer->isValid() );
@@ -378,7 +382,7 @@ void TestQgsVectorTileLayer::test_relativePathsXyz()
   contextRel.setPathResolver( QgsPathResolver( "/home/qgis/project.qgs" ) );
   const QgsReadWriteContext contextAbs;
 
-  const QString srcXyzLocal = "type=xyz&url=file:///home/qgis/%7Bz%7D/%7Bx%7D/%7By%7D.pbf";
+  const QString srcXyzLocal = "type=xyz&url=file%3A%2F%2F%2Fhome%2Fqgis%2F%257Bz%257D%2F%257Bx%257D%2F%257By%257D.pbf";
   const QString srcXyzRemote = "type=xyz&url=http://www.example.com/%7Bz%7D/%7Bx%7D/%7By%7D.pbf";
 
   std::unique_ptr< QgsVectorTileLayer > layer = std::make_unique< QgsVectorTileLayer >( srcXyzLocal );
@@ -386,7 +390,7 @@ void TestQgsVectorTileLayer::test_relativePathsXyz()
 
   // encode source: converting absolute paths to relative
   const QString srcXyzLocalRel = layer->encodedSource( srcXyzLocal, contextRel );
-  QCOMPARE( srcXyzLocalRel, QStringLiteral( "type=xyz&url=file:./%7Bz%7D/%7Bx%7D/%7By%7D.pbf" ) );
+  QCOMPARE( srcXyzLocalRel, QStringLiteral( "type=xyz&url=file%3A.%2F%257Bz%257D%2F%257Bx%257D%2F%257By%257D.pbf" ) );
   QCOMPARE( layer->encodedSource( srcXyzRemote, contextRel ), srcXyzRemote );
 
   // encode source: keeping absolute paths
@@ -444,22 +448,24 @@ void TestQgsVectorTileLayer::testVtpkProviderMetadata()
   QVERIFY( vectorTileMetadata->querySublayers( QStringLiteral( "type=vtpk&url=%1/points.shp" ).arg( TEST_DATA_DIR ) ).isEmpty() );
 
   // vtpk uris
+  QString localVtpkPath = QStringLiteral( "%1%2" ).arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( QStringLiteral("/testvtpk.vtpk") ) );
+
   QCOMPARE( vectorTileMetadata->priorityForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/testvtpk.vtpk" ) ), 100 );
   QCOMPARE( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/testvtpk.vtpk" ) ), {Qgis::LayerType::VectorTile} );
   QList< QgsProviderSublayerDetails > sublayers = vectorTileMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/testvtpk.vtpk" ) );
   QCOMPARE( sublayers.size(), 1 );
   QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "vtpkvectortiles" ) );
   QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "testvtpk" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=vtpk&url=%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=vtpk&url=%1" ).arg( localVtpkPath ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
 
-  QCOMPARE( vectorTileMetadata->priorityForUri( QStringLiteral( "type=vtpk&url=%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR ) ), 100 );
-  QCOMPARE( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( "type=vtpk&url=%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR ) ), {Qgis::LayerType::VectorTile} );
-  sublayers = vectorTileMetadata->querySublayers( QStringLiteral( "type=vtpk&url=%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( vectorTileMetadata->priorityForUri( QStringLiteral( "type=vtpk&url=%1" ).arg( localVtpkPath ) ), 100 );
+  QCOMPARE( vectorTileMetadata->validLayerTypesForUri( QStringLiteral( "type=vtpk&url=%1" ).arg( localVtpkPath ) ), {Qgis::LayerType::VectorTile} );
+  sublayers = vectorTileMetadata->querySublayers( QStringLiteral( "type=vtpk&url=%1" ).arg( localVtpkPath ) );
   QCOMPARE( sublayers.size(), 1 );
   QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "vtpkvectortiles" ) );
   QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "testvtpk" ) );
-  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=vtpk&url=%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR ) );
+  QCOMPARE( sublayers.at( 0 ).uri(), QStringLiteral( "type=vtpk&url=%1" ).arg( localVtpkPath ) );
   QCOMPARE( sublayers.at( 0 ).type(), Qgis::LayerType::VectorTile );
 
   // test that vtpk provider is the preferred provider for vtpk files
@@ -486,7 +492,9 @@ void TestQgsVectorTileLayer::test_relativePathsVtpk()
   contextRel.setPathResolver( QgsPathResolver( QStringLiteral( TEST_DATA_DIR ) + QStringLiteral( "/project.qgs" ) ) );
   const QgsReadWriteContext contextAbs;
 
-  const QString srcVtpk = QStringLiteral( "type=vtpk&url=%1/testvtpk.vtpk" ).arg( TEST_DATA_DIR );
+  QString localVtpkPath = QStringLiteral( "%1%2" ).arg( QUrl::toPercentEncoding( TEST_DATA_DIR ), QUrl::toPercentEncoding( QStringLiteral("/testvtpk.vtpk") ) );
+
+  const QString srcVtpk = QStringLiteral( "type=vtpk&url=%1" ).arg( localVtpkPath );
 
   std::unique_ptr< QgsVectorTileLayer > layer = std::make_unique< QgsVectorTileLayer >( srcVtpk );
   QVERIFY( layer->isValid() );
@@ -494,7 +502,7 @@ void TestQgsVectorTileLayer::test_relativePathsVtpk()
 
   // encode source: converting absolute paths to relative
   const QString srcVtpkRel = layer->encodedSource( srcVtpk, contextRel );
-  QCOMPARE( srcVtpkRel, QStringLiteral( "type=vtpk&url=./testvtpk.vtpk" ) );
+  QCOMPARE( srcVtpkRel, QStringLiteral( "type=vtpk&url=.%2Ftestvtpk.vtpk" ) );
 
   // encode source: keeping absolute paths
   QCOMPARE( layer->encodedSource( srcVtpk, contextAbs ), srcVtpk );
