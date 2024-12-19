@@ -46,7 +46,7 @@ The type is expected to be one of
 - QVariant.Time
 %End
 
- static QString defaultFormat( QVariant::Type type ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
+ static QString defaultFormat( QVariant::Type type ) /Deprecated/;
 %Docstring
 Gets the default format in function of the type.
 The type is expected to be one of
@@ -72,7 +72,7 @@ The type is expected to be one of
 .. versionadded:: 3.30
 %End
 
- static QString defaultDisplayFormat( QVariant::Type type ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
+ static QString defaultDisplayFormat( QVariant::Type type ) /Deprecated/;
 %Docstring
 Gets the default display format in function of the type.
 The type is expected to be one of

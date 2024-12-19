@@ -30,7 +30,9 @@
  */
 class QgsSetLayerEncodingAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
+
     QgsSetLayerEncodingAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -43,8 +45,10 @@ class QgsSetLayerEncodingAlgorithm : public QgsProcessingAlgorithm
     QgsSetLayerEncodingAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
+
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     QString mOutputId;

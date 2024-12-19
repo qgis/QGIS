@@ -134,23 +134,26 @@ class CORE_EXPORT QgsRasterBlockFeedback : public QgsFeedback
  */
 class CORE_EXPORT QgsRasterInterface
 {
+#ifdef SIP_RUN
 // QgsRasterInterface subclasses
-    //SIP_TYPEHEADER_INCLUDE( "qgsbrightnesscontrastfilter.h" );
-    //SIP_TYPEHEADER_INCLUDE( "qgshuesaturationfilter.h" );
-    //SIP_TYPEHEADER_INCLUDE( "qgsrasterdataprovider.h" );
-    //SIP_TYPEHEADER_INCLUDE( "qgsrasternuller.h" );
-    //SIP_TYPEHEADER_INCLUDE( "qgsrasterprojector.h" );
-    //SIP_TYPEHEADER_INCLUDE( "qgsrasterrenderer.h" );
-    //SIP_TYPEHEADER_INCLUDE( "qgsrasterresamplefilter.h" );
+#include <qgsbrightnesscontrastfilter.h>
+#include <qgshuesaturationfilter.h>
+#include <qgsrasterdataprovider.h>
+#include <qgsrasternuller.h>
+#include <qgsrasterprojector.h>
+#include <qgsrasterrenderer.h>
+#include <qgsrasterresamplefilter.h>
+
 // QgsRasterRenderer subclasses
-    //SIP_TYPEHEADER_INCLUDE( "qgshillshaderenderer.h" );
-    //SIP_TYPEHEADER_INCLUDE( "qgsmultibandcolorrenderer.h" );
-    //SIP_TYPEHEADER_INCLUDE( "qgspalettedrasterrenderer.h" );
-    //SIP_TYPEHEADER_INCLUDE( "qgssinglebandcolordatarenderer.h" );
-    //SIP_TYPEHEADER_INCLUDE( "qgssinglebandgrayrenderer.h" );
-    //SIP_TYPEHEADER_INCLUDE( "qgssinglebandpseudocolorrenderer.h" );
-    //SIP_TYPEHEADER_INCLUDE( "qgsrastersinglecolorrenderer.h" );
-    //SIP_TYPEHEADER_INCLUDE( "qgsrastercontourrenderer.h" );
+#include <qgshillshaderenderer.h>
+#include <qgsmultibandcolorrenderer.h>
+#include <qgspalettedrasterrenderer.h>
+#include <qgssinglebandcolordatarenderer.h>
+#include <qgssinglebandgrayrenderer.h>
+#include <qgssinglebandpseudocolorrenderer.h>
+#include <qgsrastersinglecolorrenderer.h>
+#include <qgsrastercontourrenderer.h>
+#endif
 
 
 #ifdef SIP_RUN

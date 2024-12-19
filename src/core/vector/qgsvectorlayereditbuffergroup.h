@@ -52,14 +52,7 @@ class CORE_EXPORT QgsVectorLayerEditBufferGroup : public QObject
     void addLayer( QgsVectorLayer *layer );
 
     /**
-     * Remove a layer from this edit buffer group.
-     *
-     * \since QGIS 3.42
-     */
-    void removeLayer( QgsVectorLayer *layer );
-
-    /**
-     * Remove all layers from this edit buffer group.
+     * Remove all layers from this edit buffer group
      */
     void clear();
 

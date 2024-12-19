@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsbookmarklocatorfilter.h"
-#include "moc_qgsbookmarklocatorfilter.cpp"
 #include "qgisapp.h"
 #include "qgsfeedback.h"
 #include "qgsapplication.h"

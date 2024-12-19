@@ -32,6 +32,7 @@ class QgsElevationProfilePdfExportDialog : public QDialog, private Ui::QgsElevat
 {
     Q_OBJECT
   public:
+
     QgsElevationProfilePdfExportDialog( QWidget *parent = nullptr );
 
     /**
@@ -53,6 +54,7 @@ class QgsElevationProfilePdfExportDialog : public QDialog, private Ui::QgsElevat
     void setToCustomSize();
 
   private:
+
     QgsElevationProfileExportSettingsWidget *mProfileSettingsWidget = nullptr;
     QgsLayoutMeasurementConverter mConverter;
     bool mSettingPresetSize = false;

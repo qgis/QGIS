@@ -18,6 +18,7 @@ Base class for plugins allowing to pick automatically a widget type for editing 
 #include "qgseditorwidgetautoconf.h"
 %End
   public:
+
     virtual ~QgsEditorWidgetAutoConfPlugin();
 
     virtual QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score /Out/ ) const = 0;
@@ -34,6 +35,7 @@ Typical scores are:
 :return: - and integer value rating how good is the setup provided by this plugin.
          - score: Where the score is returned (default to 0)
 %End
+
 };
 
 

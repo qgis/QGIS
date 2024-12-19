@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsmediawidget.h"
-#include "moc_qgsmediawidget.cpp"
 #include "qgsapplication.h"
 
 #include <QLabel>
@@ -72,11 +71,13 @@ QgsMediaWidget::QgsMediaWidget( QWidget *parent )
   mMediaPlayer.setVideoOutput( mVideoWidget );
 
   connect( &mMediaPlayer, &QMediaPlayer::mediaStatusChanged, this, &QgsMediaWidget::mediaStatusChanged );
-  connect( &mMediaPlayer, &QMediaPlayer::positionChanged, this, [=]() {
+  connect( &mMediaPlayer, &QMediaPlayer::positionChanged, this, [ = ]()
+  {
     mPositionSlider->setValue( static_cast<int>( mMediaPlayer.position() / 1000 ) );
   } );
 
-  connect( mPlayButton, &QAbstractButton::clicked, this, [=]() {
+  connect( mPlayButton, &QAbstractButton::clicked, this, [ = ]()
+  {
 #if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
     if ( mMediaPlayer.playbackState() == QMediaPlayer::PlayingState )
 #else
@@ -90,7 +91,8 @@ QgsMediaWidget::QgsMediaWidget( QWidget *parent )
       mMediaPlayer.play();
     }
   } );
-  connect( mPositionSlider, &QAbstractSlider::sliderReleased, this, [=]() {
+  connect( mPositionSlider, &QAbstractSlider::sliderReleased, this, [ = ]()
+  {
     mMediaPlayer.setPosition( static_cast<qint64>( mPositionSlider->value() ) * 1000 );
   } );
 }
@@ -167,7 +169,9 @@ void QgsMediaWidget::mediaStatusChanged( QMediaPlayer::MediaStatus status )
       seconds -= hours * 3600;
       const int minutes = std::floor( seconds / 60 );
       seconds -= minutes * 60;
-      mDurationLabel->setText( QStringLiteral( "%1:%2:%3" ).arg( QString::number( hours ), 2, '0' ).arg( QString::number( minutes ), 2, '0' ).arg( QString::number( seconds ), 2, '0' ) );
+      mDurationLabel->setText( QStringLiteral( "%1:%2:%3" ).arg( QString::number( hours ), 2, '0' )
+                               .arg( QString::number( minutes ), 2, '0' )
+                               .arg( QString::number( seconds ), 2, '0' ) );
       break;
     }
 
@@ -196,10 +200,10 @@ void QgsMediaWidget::mediaStatusChanged( QMediaPlayer::MediaStatus status )
 #if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
     case QMediaPlayer::UnknownMediaStatus:
 #endif
-    {
-      setControlsEnabled( false );
-      mDurationLabel->setText( QStringLiteral( "-" ) );
-      break;
-    }
+      {
+        setControlsEnabled( false );
+        mDurationLabel->setText( QStringLiteral( "-" ) );
+        break;
+      }
   }
 }

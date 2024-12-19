@@ -67,10 +67,12 @@ qint64 QgsServerResponse::write( const char *data )
 
 void QgsServerResponse::finish()
 {
+
 }
 
 void QgsServerResponse::flush()
 {
+
 }
 
 qint64 QgsServerResponse::write( const std::string data )

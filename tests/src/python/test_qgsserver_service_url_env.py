@@ -1,15 +1,14 @@
 """
 QGIS Unit tests for QgsServer with service URL defined in the environment variables
 """
-
-__author__ = "Stéphane Brunner"
-__date__ = "12/01/2021"
-__copyright__ = "Copyright 2021, The QGIS Project"
+__author__ = 'Stéphane Brunner'
+__date__ = '12/01/2021'
+__copyright__ = 'Copyright 2021, The QGIS Project'
 
 import os
 
 # Deterministic XML
-os.environ["QT_HASH_SEED"] = "1"
+os.environ['QT_HASH_SEED'] = '1'
 
 from qgis.core import QgsFontUtils
 from qgis.server import QgsServer
@@ -25,13 +24,13 @@ class TestQgsServerServiceUrlEnv(QgisTestCase):
     def setUp(self):
         """Create the server instance"""
         self.fontFamily = QgsFontUtils.standardTestFontFamily()
-        QgsFontUtils.loadStandardTestFonts(["All"])
+        QgsFontUtils.loadStandardTestFonts(['All'])
 
-        self.testdata_path = unitTestDataPath("qgis_server") + "/"
+        self.testdata_path = unitTestDataPath('qgis_server') + '/'
         project = os.path.join(self.testdata_path, "test_project_without_urls.qgs")
 
-        del os.environ["QUERY_STRING"]
-        os.environ["QGIS_PROJECT_FILE"] = project
+        del os.environ['QUERY_STRING']
+        os.environ['QGIS_PROJECT_FILE'] = project
         # Disable landing page API to test standard legacy XML responses in case of errors
         os.environ["QGIS_SERVER_DISABLED_APIS"] = "Landing Page"
 
@@ -52,30 +51,20 @@ class TestQgsServerServiceUrlEnv(QgisTestCase):
         # Service URL in environment
         for env_name, env_value, service in (
             ("QGIS_SERVER_SERVICE_URL", "http://test1", "WMS"),
-            ("QGIS_SERVER_WMS_SERVICE_URL", "http://test2", "WMS")(
-                "QGIS_SERVER_SERVICE_URL", "http://test3", "WFS", "href="
-            ),
-            ("QGIS_SERVER_WFS_SERVICE_URL", "http://test4", "WFS", "href=")(
-                "QGIS_SERVER_SERVICE_URL", "http://test5", "WCS"
-            ),
-            ("QGIS_SERVER_WCS_SERVICE_URL", "http://test6", "WCS")(
-                "QGIS_SERVER_SERVICE_URL", "http://test7", "WMTS"
-            ),
-            ("QGIS_SERVER_WMTS_SERVICE_URL", "http://test8", "WMTS"),
+            ("QGIS_SERVER_WMS_SERVICE_URL", "http://test2", "WMS")
+            ("QGIS_SERVER_SERVICE_URL", "http://test3", "WFS", "href="),
+            ("QGIS_SERVER_WFS_SERVICE_URL", "http://test4", "WFS", "href=")
+            ("QGIS_SERVER_SERVICE_URL", "http://test5", "WCS"),
+            ("QGIS_SERVER_WCS_SERVICE_URL", "http://test6", "WCS")
+            ("QGIS_SERVER_SERVICE_URL", "http://test7", "WMTS"),
+            ("QGIS_SERVER_WMTS_SERVICE_URL", "http://test8", "WMTS")
         ):
             try:
                 os.environ[env_name] = env_value
-                qs = "?" + "&".join(
-                    [
-                        "%s=%s" % i
-                        for i in list(
-                            {
-                                "SERVICE": service,
-                                "REQUEST": "GetCapabilities",
-                            }.items()
-                        )
-                    ]
-                )
+                qs = "?" + "&".join(["%s=%s" % i for i in list({
+                    "SERVICE": service,
+                    "REQUEST": "GetCapabilities",
+                }.items())])
 
                 r, _ = self._result(self._execute_request(qs))
 
@@ -89,5 +78,5 @@ class TestQgsServerServiceUrlEnv(QgisTestCase):
                 del os.environ[env_name]
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

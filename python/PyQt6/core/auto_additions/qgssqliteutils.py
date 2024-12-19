@@ -4,5 +4,5 @@ try:
     QgsSqliteUtils.quotedIdentifier = staticmethod(QgsSqliteUtils.quotedIdentifier)
     QgsSqliteUtils.quotedValue = staticmethod(QgsSqliteUtils.quotedValue)
     QgsSqliteUtils.systemTables = staticmethod(QgsSqliteUtils.systemTables)
-except (NameError, AttributeError):
+except NameError:
     pass

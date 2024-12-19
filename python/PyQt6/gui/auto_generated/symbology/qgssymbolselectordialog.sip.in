@@ -17,7 +17,7 @@
 
 
 
-class QgsSymbolSelectorWidget : QgsPanelWidget
+class QgsSymbolSelectorWidget: QgsPanelWidget
 {
 %Docstring(signature="appended")
 Symbol selector widget that can be used to select and build a symbol
@@ -27,6 +27,7 @@ Symbol selector widget that can be used to select and build a symbol
 #include "qgssymbolselectordialog.h"
 %End
   public:
+
 
     QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
@@ -155,6 +156,7 @@ A dialog that can be used to select and build a symbol.
 #include "qgssymbolselectordialog.h"
 %End
   public:
+
     QgsSymbolSelectorDialog( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0, bool embedded = false );
 %Docstring
 Constructor for QgsSymbolSelectorDialog.
@@ -237,6 +239,7 @@ Alters tree and sets proper widget when Layer Type is changed
 %End
 
   protected:
+
     virtual void keyPressEvent( QKeyEvent *e );
 
 

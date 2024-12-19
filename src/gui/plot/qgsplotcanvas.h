@@ -38,10 +38,10 @@ class QMenu;
 
 
 #ifdef SIP_RUN
-//%ModuleHeaderCode
+% ModuleHeaderCode
 #include "qgsplotcanvas.h"
 #include "qgselevationprofilecanvas.h"
-//%End
+% End
 #endif
 
 /**
@@ -52,6 +52,7 @@ class QMenu;
  */
 class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
 {
+
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsElevationProfileCanvas *>( sipCpp ) != nullptr )
@@ -66,6 +67,7 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPlotCanvas, with the specified \a parent widget.
      */
@@ -189,6 +191,7 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
     void willBeDeleted();
 
   protected:
+
     bool event( QEvent *e ) override;
     void keyPressEvent( QKeyEvent *e ) override;
     void keyReleaseEvent( QKeyEvent *e ) override;
@@ -208,17 +211,19 @@ class GUI_EXPORT QgsPlotCanvas : public QGraphicsView
     virtual void wheelZoom( QWheelEvent *event );
 
   private:
+
     //! graphics scene manages plot items
     QGraphicsScene *mScene = nullptr;
 
     //! pointer to current plot tool
-    QPointer<QgsPlotTool> mTool;
+    QPointer< QgsPlotTool > mTool;
 
     QgsPlotToolTemporaryKeyPan *mSpacePanTool = nullptr;
     QgsPlotToolTemporaryMousePan *mMidMouseButtonPanTool = nullptr;
     QgsPlotToolTemporaryKeyZoom *mSpaceZoomTool = nullptr;
 
     void showContextMenu( QgsPlotMouseEvent *event );
+
 };
 
 #endif // QGSPLOTCANVAS_H

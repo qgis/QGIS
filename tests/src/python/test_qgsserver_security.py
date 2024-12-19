@@ -8,17 +8,16 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
 """
-
-__author__ = "Paul Blottiere"
-__date__ = "31/01/2017"
-__copyright__ = "Copyright 2017, The QGIS Project"
+__author__ = 'Paul Blottiere'
+__date__ = '31/01/2017'
+__copyright__ = 'Copyright 2017, The QGIS Project'
 
 import os
 
 from qgis.utils import spatialite_connect
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
-os.environ["QT_HASH_SEED"] = "1"
+os.environ['QT_HASH_SEED'] = '1'
 
 import time
 import urllib.parse
@@ -38,11 +37,12 @@ class TestQgsServerSecurity(QgsServerTestBase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.testdatapath = unitTestDataPath("qgis_server_security") + "/"
-        cls.db = os.path.join(cls.testdatapath, "db.sqlite")
-        cls.db_clone = os.path.join(tempfile.gettempdir(), "db_clone.sqlite")
-        cls.project = os.path.join(cls.testdatapath, "project.qgs")
-        cls.project_clone = os.path.join(tempfile.gettempdir(), "project.qgs")
+        cls.testdatapath = unitTestDataPath('qgis_server_security') + '/'
+        cls.db = os.path.join(cls.testdatapath, 'db.sqlite')
+        cls.db_clone = os.path.join(tempfile.gettempdir(), 'db_clone.sqlite')
+        cls.project = os.path.join(cls.testdatapath, 'project.qgs')
+        cls.project_clone = os.path.join(tempfile.gettempdir(), 'project.qgs')
+        cls.app = QgsApplication([], False)
 
     @classmethod
     def tearDownClass(cls):
@@ -92,7 +92,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
         conn = spatialite_connect(self.db_clone)
         cur = conn.cursor()
         sql = "select sqlite_version()"
-        sqlite_version = ""
+        sqlite_version = ''
         for row in cur.execute(sql):
             sqlite_version = row[0]
         conn.close()
@@ -109,8 +109,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
         # third step, check the time of response for a valid version
         # maximum: several seconds
         injection_sql = ") and (select case sqlite_version() when '{}' then substr(upper(hex(randomblob(99999999))),0,1) end)--".format(
-            sqlite_version
-        )
+            sqlite_version)
 
         query = f"{filter_sql} {injection_sql}"
         start = time.time()
@@ -120,9 +119,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
         # compare duration. On my computer when safety check is deactivated:
         # duration_invalid_version: 0.012360334396362305
         # duration_valid_version: 2.8810460567474365
-        self.assertAlmostEqual(
-            duration_valid_version, duration_invalid_version, delta=0.5
-        )
+        self.assertAlmostEqual(duration_valid_version, duration_invalid_version, delta=0.5)
 
     def test_wms_getfeatureinfo_filter_stacked(self):
         """
@@ -152,12 +149,12 @@ class TestQgsServerSecurity(QgsServerTestBase):
         """
 
         filter_sql = "point:\"name\" = 'fake'"
-        injection_sql = ') union select 1,1,name,1,1 from sqlite_master where type = "table" order by name--'
+        injection_sql = ") union select 1,1,name,1,1 from sqlite_master where type = \"table\" order by name--"
 
         query = f"{filter_sql} {injection_sql}"
         d, h = self.handle_request_wms_getfeatureinfo(query)
 
-        self.assertNotIn(b"SpatialIndex", d)
+        self.assertNotIn(b'SpatialIndex', d)
 
     def test_wms_getfeatureinfo_filter_union_1(self):
         """
@@ -174,7 +171,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
         query = f"{filter_sql} {injection_sql}"
         d, h = self.handle_request_wms_getfeatureinfo(query)
 
-        self.assertNotIn(b"private_value", d)
+        self.assertNotIn(b'private_value', d)
 
     def test_wms_getfeatureinfo_filter_unicode(self):
         """
@@ -279,25 +276,22 @@ class TestQgsServerSecurity(QgsServerTestBase):
 
         # ogc:Literal / ogc:PropertyIsEqualTo
         literal = "4')); drop table point --"
-        filter_xml = '<ogc:Filter%20xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsEqualTo><ogc:PropertyName>pkuid</ogc:PropertyName><ogc:Literal>{}</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Filter>'.format(
-            literal
-        )
+        filter_xml = "<ogc:Filter%20xmlns:ogc=\"http://www.opengis.net/ogc\"><ogc:PropertyIsEqualTo><ogc:PropertyName>pkuid</ogc:PropertyName><ogc:Literal>{}</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Filter>".format(
+            literal)
         self.handle_request_wfs_getfeature_filter(filter_xml)
         self.assertTrue(self.is_point_table_still_exist())
 
         # ogc:Literal / ogc:PropertyIsLike
         literal = "4')); drop table point --"
-        filter_xml = '<ogc:Filter%20xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsLike><ogc:PropertyName>pkuid</ogc:PropertyName><ogc:Literal>{}</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>'.format(
-            literal
-        )
+        filter_xml = "<ogc:Filter%20xmlns:ogc=\"http://www.opengis.net/ogc\"><ogc:PropertyIsLike><ogc:PropertyName>pkuid</ogc:PropertyName><ogc:Literal>{}</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>".format(
+            literal)
         self.handle_request_wfs_getfeature_filter(filter_xml)
         self.assertTrue(self.is_point_table_still_exist())
 
         # ogc:PropertyName / ogc:PropertyIsLike
         propname = "name = 'a')); drop table point --"
-        filter_xml = '<ogc:Filter%20xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsLike><ogc:PropertyName>{}</ogc:PropertyName><ogc:Literal>4</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>'.format(
-            propname
-        )
+        filter_xml = "<ogc:Filter%20xmlns:ogc=\"http://www.opengis.net/ogc\"><ogc:PropertyIsLike><ogc:PropertyName>{}</ogc:PropertyName><ogc:Literal>4</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>".format(
+            propname)
         self.handle_request_wfs_getfeature_filter(filter_xml)
         self.assertTrue(self.is_point_table_still_exist())
 
@@ -316,25 +310,22 @@ class TestQgsServerSecurity(QgsServerTestBase):
 
         # ogc:Literal / ogc:PropertyIsEqualTo
         literal = "4')); drop table point --"
-        filter_xml = '<ogc:Filter%20xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsEqualTo><ogc:PropertyName>pkuid</ogc:PropertyName><ogc:Literal>{}</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Filter>'.format(
-            literal
-        )
+        filter_xml = "<ogc:Filter%20xmlns:ogc=\"http://www.opengis.net/ogc\"><ogc:PropertyIsEqualTo><ogc:PropertyName>pkuid</ogc:PropertyName><ogc:Literal>{}</ogc:Literal></ogc:PropertyIsEqualTo></ogc:Filter>".format(
+            literal)
         self.handle_request_wms_getmap(filter=filter_xml)
         self.assertTrue(self.is_point_table_still_exist())
 
         # ogc:Literal / ogc:PropertyIsLike
         literal = "4')); drop table point --"
-        filter_xml = '<ogc:Filter%20xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsLike><ogc:PropertyName>pkuid</ogc:PropertyName><ogc:Literal>{}</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>'.format(
-            literal
-        )
+        filter_xml = "<ogc:Filter%20xmlns:ogc=\"http://www.opengis.net/ogc\"><ogc:PropertyIsLike><ogc:PropertyName>pkuid</ogc:PropertyName><ogc:Literal>{}</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>".format(
+            literal)
         self.handle_request_wms_getmap(filter=filter_xml)
         self.assertTrue(self.is_point_table_still_exist())
 
         # ogc:PropertyName / ogc:PropertyIsLike
         propname = "name = 'a')); drop table point --"
-        filter_xml = '<ogc:Filter%20xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsLike><ogc:PropertyName>{}</ogc:PropertyName><ogc:Literal>4</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>'.format(
-            propname
-        )
+        filter_xml = "<ogc:Filter%20xmlns:ogc=\"http://www.opengis.net/ogc\"><ogc:PropertyIsLike><ogc:PropertyName>{}</ogc:PropertyName><ogc:Literal>4</ogc:Literal></ogc:PropertyIsLike></ogc:Filter>".format(
+            propname)
         self.handle_request_wms_getmap(filter=filter_xml)
         self.assertTrue(self.is_point_table_still_exist())
 
@@ -351,9 +342,8 @@ class TestQgsServerSecurity(QgsServerTestBase):
         """
 
         literal = "4')); drop table point --"
-        sld = '<?xml version="1.0" encoding="UTF-8"?><StyledLayerDescriptor xmlns="http://www.opengis.net/sld" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ogc="http://www.opengis.net/ogc" xsi:schemaLocation="http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd" version="1.1.0" xmlns:se="http://www.opengis.net/se" xmlns:xlink="http://www.w3.org/1999/xlink"> <NamedLayer> <se:Name>point</se:Name> <UserStyle> <se:Name>point</se:Name> <se:FeatureTypeStyle> <se:Rule> <se:Name>Single symbol</se:Name> <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"> <ogc:PropertyIsEqualTo> <ogc:PropertyName>pkuid</ogc:PropertyName> <ogc:Literal>{}</ogc:Literal> </ogc:PropertyIsEqualTo> </ogc:Filter> <se:PointSymbolizer> <se:Graphic> <se:Mark> <se:WellKnownName>circle</se:WellKnownName> <se:Fill><se:SvgParameter name="fill">5e86a1</se:SvgParameter></se:Fill><se:Stroke><se:SvgParameter name="stroke">000000</se:SvgParameter></se:Stroke></se:Mark><se:Size>7</se:Size></se:Graphic></se:PointSymbolizer></se:Rule></se:FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>'.format(
-            literal
-        )
+        sld = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><StyledLayerDescriptor xmlns=\"http://www.opengis.net/sld\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:ogc=\"http://www.opengis.net/ogc\" xsi:schemaLocation=\"http://www.opengis.net/sld http://schemas.opengis.net/sld/1.1.0/StyledLayerDescriptor.xsd\" version=\"1.1.0\" xmlns:se=\"http://www.opengis.net/se\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"> <NamedLayer> <se:Name>point</se:Name> <UserStyle> <se:Name>point</se:Name> <se:FeatureTypeStyle> <se:Rule> <se:Name>Single symbol</se:Name> <ogc:Filter xmlns:ogc=\"http://www.opengis.net/ogc\"> <ogc:PropertyIsEqualTo> <ogc:PropertyName>pkuid</ogc:PropertyName> <ogc:Literal>{}</ogc:Literal> </ogc:PropertyIsEqualTo> </ogc:Filter> <se:PointSymbolizer> <se:Graphic> <se:Mark> <se:WellKnownName>circle</se:WellKnownName> <se:Fill><se:SvgParameter name=\"fill\">5e86a1</se:SvgParameter></se:Fill><se:Stroke><se:SvgParameter name=\"stroke\">000000</se:SvgParameter></se:Stroke></se:Mark><se:Size>7</se:Size></se:Graphic></se:PointSymbolizer></se:Rule></se:FeatureTypeStyle></UserStyle></NamedLayer></StyledLayerDescriptor>".format(
+            literal)
         self.handle_request_wms_getmap(sld=sld)
         self.assertTrue(self.is_point_table_still_exist())
 
@@ -362,51 +352,39 @@ class TestQgsServerSecurity(QgsServerTestBase):
         Return True if a ServiceExceptionReport is raised, False otherwise
         """
 
-        if b"<ServiceExceptionReport" in d:
+        if b'<ServiceExceptionReport' in d:
             return True
         else:
             return False
 
     def handle_request_wfs_getfeature_filter(self, filter_xml):
-        qs = "?" + "&".join(
-            [
-                "%s=%s" % i
-                for i in {
-                    "MAP": urllib.parse.quote(self.project_clone),
-                    "SERVICE": "WFS",
-                    "VERSION": "1.1.1",
-                    "REQUEST": "GetFeature",
-                    "TYPENAME": "point",
-                    "STYLES": "",
-                    "CRS": "EPSG:32613",
-                    "FILTER": filter_xml,
-                }.items()
-            ]
-        )
+        qs = "?" + "&".join(["%s=%s" % i for i in {
+            "MAP": urllib.parse.quote(self.project_clone),
+            "SERVICE": "WFS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetFeature",
+            "TYPENAME": "point",
+            "STYLES": "",
+            "CRS": "EPSG:32613",
+            "FILTER": filter_xml}.items()])
 
         return self._execute_request(qs)
 
     def handle_request_wms_getfeatureinfo(self, filter_sql):
-        qs = "?" + "&".join(
-            [
-                "%s=%s" % i
-                for i in {
-                    "MAP": urllib.parse.quote(self.project_clone),
-                    "SERVICE": "WMS",
-                    "VERSION": "1.1.1",
-                    "REQUEST": "GetFeatureInfo",
-                    "QUERY_LAYERS": "point",
-                    "LAYERS": "point",
-                    "STYLES": "",
-                    "FORMAT": "image/png",
-                    "HEIGHT": "500",
-                    "WIDTH": "500",
-                    "BBOX": "606171,4822867,612834,4827375",
-                    "CRS": "EPSG:32613",
-                    "FILTER": filter_sql,
-                }.items()
-            ]
-        )
+        qs = "?" + "&".join(["%s=%s" % i for i in {
+            "MAP": urllib.parse.quote(self.project_clone),
+            "SERVICE": "WMS",
+            "VERSION": "1.1.1",
+            "REQUEST": "GetFeatureInfo",
+            "QUERY_LAYERS": "point",
+            "LAYERS": "point",
+            "STYLES": "",
+            "FORMAT": "image/png",
+            "HEIGHT": "500",
+            "WIDTH": "500",
+            "BBOX": "606171,4822867,612834,4827375",
+            "CRS": "EPSG:32613",
+            "FILTER": filter_sql}.items()])
 
         return self._result(self._execute_request(qs))
 
@@ -423,7 +401,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
             "HEIGHT": "500",
             "WIDTH": "500",
             "BBOX": "606171,4822867,612834,4827375",
-            "CRS": "EPSG:32613",
+            "CRS": "EPSG:32613"
         }
         if sld is not None:
             params["SLD"] = sld
@@ -448,7 +426,7 @@ class TestQgsServerSecurity(QgsServerTestBase):
 
     def _result(self, data):
         headers = {}
-        for line in data[0].decode("UTF-8").split("\n"):
+        for line in data[0].decode('UTF-8').split("\n"):
             if line != "":
                 header = line.split(":")
                 self.assertEqual(len(header), 2, line)
@@ -457,5 +435,5 @@ class TestQgsServerSecurity(QgsServerTestBase):
         return data[1], headers
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

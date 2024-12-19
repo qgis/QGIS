@@ -8,5 +8,5 @@ QgsArrowSymbolLayer.ArrowRightHalf = QgsArrowSymbolLayer.ArrowType.ArrowRightHal
 try:
     QgsArrowSymbolLayer.create = staticmethod(QgsArrowSymbolLayer.create)
     QgsArrowSymbolLayer.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

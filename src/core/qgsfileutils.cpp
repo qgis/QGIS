@@ -30,7 +30,6 @@
 // For getrlimit()
 #include <sys/resource.h>
 #include <sys/time.h>
-#include <dirent.h>
 #endif
 
 #ifdef _MSC_VER
@@ -562,21 +561,10 @@ int QgsFileUtils::openedFileLimit()
 int QgsFileUtils::openedFileCount()
 {
 #ifdef Q_OS_LINUX
-  int fileCount = 0;
-
-  DIR *dirp = opendir( "/proc/self/fd" );
-  if ( !dirp )
-    return -1;
-
-  while ( struct dirent *entry = readdir( dirp ) )
-  {
-    if ( entry->d_type == DT_REG )
-    {
-      fileCount++;
-    }
-  }
-  closedir( dirp );
-  return fileCount;
+  int res = static_cast<int>( QDir( "/proc/self/fd" ).entryList().size() );
+  if ( res == 0 )
+    res = -1;
+  return res;
 #else
   return -1;
 #endif

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmemoryprovider.h"
-#include "moc_qgsmemoryprovider.cpp"
 #include "qgsmemoryfeatureiterator.h"
 
 #include "qgsfeature.h"
@@ -852,8 +851,5 @@ QList<Qgis::LayerType> QgsMemoryProviderMetadata::supportedLayerTypes() const
 {
   return { Qgis::LayerType::Vector };
 }
-
-#undef TEXT_PROVIDER_KEY
-#undef TEXT_PROVIDER_DESCRIPTION
 
 ///@endcond

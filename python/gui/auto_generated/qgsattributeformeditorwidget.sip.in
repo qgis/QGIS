@@ -22,7 +22,9 @@ controlling the multi edit results.
 #include "qgsattributeformeditorwidget.h"
 %End
   public:
-    explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget, const QString &widgetType, QgsAttributeForm *form /TransferThis/ );
+
+    explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget, const QString &widgetType,
+                                           QgsAttributeForm *form  /TransferThis/ );
 %Docstring
 Constructor for QgsAttributeFormEditorWidget.
 
@@ -99,7 +101,7 @@ Emitted when the widget's value changes
 
 .. deprecated:: 3.10
 
-   Use :py:func:`~QgsAttributeFormEditorWidget.valuesChanged` instead.
+   Use valuesChanged instead.
 %End
 
     void valuesChanged( const QVariant &value, const QVariantList &additionalFieldValues );

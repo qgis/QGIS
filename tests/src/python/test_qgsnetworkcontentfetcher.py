@@ -6,9 +6,9 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-__author__ = "Matthias Kuhn"
-__date__ = "4/28/2015"
-__copyright__ = "Copyright 2015, The QGIS Project"
+__author__ = 'Matthias Kuhn'
+__date__ = '4/28/2015'
+__copyright__ = 'Copyright 2015, The QGIS Project'
 
 import http.server
 import os
@@ -32,10 +32,10 @@ class TestQgsNetworkContentFetcher(QgisTestCase):
     def setUpClass(cls):
         super().setUpClass()
         # Bring up a simple HTTP server
-        os.chdir(unitTestDataPath() + "")
+        os.chdir(unitTestDataPath() + '')
         handler = http.server.SimpleHTTPRequestHandler
 
-        cls.httpd = socketserver.TCPServer(("localhost", 0), handler)
+        cls.httpd = socketserver.TCPServer(('localhost', 0), handler)
         cls.port = cls.httpd.server_address[1]
 
         cls.httpd_thread = threading.Thread(target=cls.httpd.serve_forever)
@@ -65,7 +65,7 @@ class TestQgsNetworkContentFetcher(QgisTestCase):
     def testFetchBadUrl(self):
         fetcher = QgsNetworkContentFetcher()
         self.loaded = False
-        fetcher.fetchContent(QUrl("http://x"))
+        fetcher.fetchContent(QUrl('http://x'))
         fetcher.finished.connect(self.contentLoaded)
         while not self.loaded:
             app.processEvents()
@@ -76,13 +76,7 @@ class TestQgsNetworkContentFetcher(QgisTestCase):
     def testFetchUrlContent(self):
         fetcher = QgsNetworkContentFetcher()
         self.loaded = False
-        fetcher.fetchContent(
-            QUrl(
-                "http://localhost:"
-                + str(TestQgsNetworkContentFetcher.port)
-                + "/qgis_local_server/index.html"
-            )
-        )
+        fetcher.fetchContent(QUrl('http://localhost:' + str(TestQgsNetworkContentFetcher.port) + '/qgis_local_server/index.html'))
         fetcher.finished.connect(self.contentLoaded)
         while not self.loaded:
             app.processEvents()
@@ -91,18 +85,12 @@ class TestQgsNetworkContentFetcher(QgisTestCase):
         assert r.error() == QNetworkReply.NetworkError.NoError, r.error()
 
         html = fetcher.contentAsString()
-        assert "QGIS" in html
+        assert 'QGIS' in html
 
     def testFetchRequestContent(self):
         fetcher = QgsNetworkContentFetcher()
         self.loaded = False
-        request = QNetworkRequest(
-            QUrl(
-                "http://localhost:"
-                + str(TestQgsNetworkContentFetcher.port)
-                + "/qgis_local_server/index.html"
-            )
-        )
+        request = QNetworkRequest(QUrl('http://localhost:' + str(TestQgsNetworkContentFetcher.port) + '/qgis_local_server/index.html'))
         fetcher.fetchContent(request)
         fetcher.finished.connect(self.contentLoaded)
         while not self.loaded:
@@ -112,20 +100,14 @@ class TestQgsNetworkContentFetcher(QgisTestCase):
         assert r.error() == QNetworkReply.NetworkError.NoError, r.error()
 
         html = fetcher.contentAsString()
-        assert "QGIS" in html
+        assert 'QGIS' in html
 
     def testDoubleFetch(self):
         fetcher = QgsNetworkContentFetcher()
         self.loaded = False
-        fetcher.fetchContent(QUrl("http://www.qgis.org/"))
+        fetcher.fetchContent(QUrl('http://www.qgis.org/'))
         # double fetch - this should happen before previous request finishes
-        fetcher.fetchContent(
-            QUrl(
-                "http://localhost:"
-                + str(TestQgsNetworkContentFetcher.port)
-                + "/qgis_local_server/index.html"
-            )
-        )
+        fetcher.fetchContent(QUrl('http://localhost:' + str(TestQgsNetworkContentFetcher.port) + '/qgis_local_server/index.html'))
         fetcher.finished.connect(self.contentLoaded)
         while not self.loaded:
             app.processEvents()
@@ -134,18 +116,12 @@ class TestQgsNetworkContentFetcher(QgisTestCase):
         assert r.error() == QNetworkReply.NetworkError.NoError, r.error()
 
         html = fetcher.contentAsString()
-        assert "QGIS" in html
+        assert 'QGIS' in html
 
     def testFetchEncodedContent(self):
         fetcher = QgsNetworkContentFetcher()
         self.loaded = False
-        fetcher.fetchContent(
-            QUrl(
-                "http://localhost:"
-                + str(TestQgsNetworkContentFetcher.port)
-                + "/encoded_html.html"
-            )
-        )
+        fetcher.fetchContent(QUrl('http://localhost:' + str(TestQgsNetworkContentFetcher.port) + '/encoded_html.html'))
         fetcher.finished.connect(self.contentLoaded)
         while not self.loaded:
             app.processEvents()

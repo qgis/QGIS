@@ -10,7 +10,7 @@
 
 
 
-class QgsSingleBandPseudoColorRendererWidget : QgsRasterRendererWidget
+class QgsSingleBandPseudoColorRendererWidget: QgsRasterRendererWidget
 {
 %Docstring(signature="appended")
 
@@ -22,6 +22,7 @@ a raster min max widget and a band selector.
 #include "qgssinglebandpseudocolorrendererwidget.h"
 %End
   public:
+
     QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 %Docstring
 Creates new raster renderer widget

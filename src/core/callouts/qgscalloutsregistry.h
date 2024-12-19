@@ -122,12 +122,12 @@ class CORE_EXPORT QgsCalloutMetadata : public QgsCalloutAbstractMetadata
     {}
 
     //! \note not available in Python bindings
-    QgsCalloutCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
+    QgsCalloutCreateFunc createFunction() const { return mCreateFunc; } SIP_SKIP
     //! \note not available in Python bindings
-    QgsCalloutWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
+    QgsCalloutWidgetFunc widgetFunction() const { return mWidgetFunc; } SIP_SKIP
 
     //! \note not available in Python bindings
-    void setWidgetFunction( QgsCalloutWidgetFunc f ) SIP_SKIP { mWidgetFunc = f; }
+    void setWidgetFunction( QgsCalloutWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
 
     QgsCallout *createCallout( const QVariantMap &properties, const QgsReadWriteContext &context ) override SIP_FACTORY;
     QgsCalloutWidget *createCalloutWidget( QgsMapLayer *vl ) override SIP_FACTORY;

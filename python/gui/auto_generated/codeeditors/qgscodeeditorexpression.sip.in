@@ -45,6 +45,7 @@ Field names will be added to the API.
 %End
 
   protected:
+
     virtual void initializeLexer();
 
 

@@ -4,5 +4,5 @@ try:
     QgsGroupLayer.LayerOptions.__doc__ = """Setting options for loading group layers.
 
 .. versionadded:: 3.16"""
-except (NameError, AttributeError):
+except NameError:
     pass

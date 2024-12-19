@@ -109,7 +109,7 @@ int main( int argc, char **argv )
   qint32 type;
   stdinStream >> type;
   checkStream( stdinStream );
-  qgis_type = ( Qgis::DataType ) type;
+  qgis_type = ( Qgis::DataType )type;
 
   RASTER_MAP_TYPE grass_type;
   switch ( qgis_type )
@@ -177,35 +177,35 @@ int main( int argc, char **argv )
     {
       if ( grass_type == CELL_TYPE )
       {
-        if ( ( CELL ) cell[col] == ( CELL ) noDataValue )
+        if ( ( CELL )cell[col] == ( CELL )noDataValue )
         {
-          Rast_set_c_null_value( ( CELL * ) ptr, 1 );
+          Rast_set_c_null_value( ( CELL * )ptr, 1 );
         }
         else
         {
-          Rast_set_c_value( ptr, ( CELL ) ( cell[col] ), grass_type );
+          Rast_set_c_value( ptr, ( CELL )( cell[col] ), grass_type );
         }
       }
       else if ( grass_type == FCELL_TYPE )
       {
-        if ( ( FCELL ) fcell[col] == ( FCELL ) noDataValue )
+        if ( ( FCELL )fcell[col] == ( FCELL )noDataValue )
         {
-          Rast_set_f_null_value( ( FCELL * ) ptr, 1 );
+          Rast_set_f_null_value( ( FCELL * )ptr, 1 );
         }
         else
         {
-          Rast_set_f_value( ptr, ( FCELL ) ( fcell[col] ), grass_type );
+          Rast_set_f_value( ptr, ( FCELL )( fcell[col] ), grass_type );
         }
       }
       else if ( grass_type == DCELL_TYPE )
       {
-        if ( ( DCELL ) dcell[col] == ( DCELL ) noDataValue )
+        if ( ( DCELL )dcell[col] == ( DCELL )noDataValue )
         {
-          Rast_set_d_null_value( ( DCELL * ) ptr, 1 );
+          Rast_set_d_null_value( ( DCELL * )ptr, 1 );
         }
         else
         {
-          Rast_set_d_value( ptr, ( DCELL ) dcell[col], grass_type );
+          Rast_set_d_value( ptr, ( DCELL )dcell[col], grass_type );
         }
       }
 
@@ -218,7 +218,7 @@ int main( int argc, char **argv )
     // we cannot in QgsGrassImport wait for this because it hangs. Setting _IONBF on stdin does not help
     // and there is no flush() on QProcess.
     // OTOH, smaller stdin buffer is probably blocking QgsGrassImport so that the import can be canceled immediately.
-    stdoutStream << ( bool ) true; // row written
+    stdoutStream << ( bool )true; // row written
     stdoutFile.flush();
 #endif
   }

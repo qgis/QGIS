@@ -28,6 +28,7 @@ An error from a :py:class:`QgsSingleGeometryCheck`.
 #include "qgssinglegeometrycheck.h"
 %End
   public:
+
     QgsSingleGeometryCheckError( const QgsSingleGeometryCheck *check, const QgsGeometry &geometry, const QgsGeometry &errorLocation, const QgsVertexId &vertexId = QgsVertexId() );
 %Docstring
 Creates a new single geometry check error.
@@ -96,6 +97,7 @@ The single error can be obtained via singleError.
 #include "qgssinglegeometrycheck.h"
 %End
   public:
+
     QgsGeometryCheckErrorSingle( QgsSingleGeometryCheckError *singleError, const QgsGeometryCheckerUtils::LayerFeature &layerFeature );
 %Docstring
 Creates a new error for a :py:class:`QgsSingleGeometryCheck`.
@@ -127,13 +129,18 @@ Subclasses need to implement the processGeometry method.
 #include "qgssinglegeometrycheck.h"
 %End
   public:
-    QgsSingleGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration );
+
+    QgsSingleGeometryCheck( const QgsGeometryCheckContext *context,
+                            const QVariantMap &configuration );
 %Docstring
 Creates a new single geometry check.
 %End
 
-    virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = 0, const QgsGeometryCheck::LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const ${SIP_FINAL};
-
+     virtual void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools,
+                        QList<QgsGeometryCheckError *> &errors,
+                        QStringList &messages,
+                        QgsFeedback *feedback = 0,
+                        const QgsGeometryCheck::LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const ${SIP_FINAL};
 
     virtual QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const = 0;
 %Docstring

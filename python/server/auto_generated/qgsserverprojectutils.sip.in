@@ -16,8 +16,9 @@
 %End
 
 
-  namespace QgsServerProjectUtils
+namespace QgsServerProjectUtils
 {
+
 
 
   bool owsServiceCapabilities( const QgsProject &project );

@@ -7,5 +7,5 @@ try:
     QgsTextRendererUtils.encodeTextOrientation = staticmethod(QgsTextRendererUtils.encodeTextOrientation)
     QgsTextRendererUtils.decodeTextOrientation = staticmethod(QgsTextRendererUtils.decodeTextOrientation)
     QgsTextRendererUtils.__group__ = ['textrenderer']
-except (NameError, AttributeError):
+except NameError:
     pass

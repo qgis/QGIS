@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgstrackedvectorlayertools.h"
-#include "moc_qgstrackedvectorlayertools.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayertoolscontext.h"
 

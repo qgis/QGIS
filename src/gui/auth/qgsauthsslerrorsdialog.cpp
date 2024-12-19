@@ -16,7 +16,6 @@
 
 #include "qgsauthcertificateinfo.h"
 #include "qgsauthsslerrorsdialog.h"
-#include "moc_qgsauthsslerrorsdialog.cpp"
 #include "qgsauthsslconfigwidget.h"
 
 #include <QDialogButtonBox>
@@ -34,7 +33,11 @@
 #include "qgsapplication.h"
 
 
-QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply, const QList<QSslError> &sslErrors, QWidget *parent, const QString &digest, const QString &hostport )
+QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply,
+    const QList<QSslError> &sslErrors,
+    QWidget *parent,
+    const QString &digest,
+    const QString &hostport )
   : QDialog( parent )
   , mSslConfiguration( reply->sslConfiguration() )
   , mSslErrors( sslErrors )
@@ -48,9 +51,9 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply, const QLis
   if ( mHostPort.isEmpty() )
   {
     mHostPort = QStringLiteral( "%1:%2" )
-                  .arg( reply->url().host() )
-                  .arg( reply->url().port() != -1 ? reply->url().port() : 443 )
-                  .trimmed();
+                .arg( reply->url().host() )
+                .arg( reply->url().port() != -1 ? reply->url().port() : 443 )
+                .trimmed();
   }
 
   setupUi( this );
@@ -72,13 +75,16 @@ QgsAuthSslErrorsDialog::QgsAuthSslErrorsDialog( QNetworkReply *reply, const QLis
   {
     saveButton()->setEnabled( false );
 
-    saveButton()->setText( QStringLiteral( "%1 && %2" ).arg( saveButton()->text(), ignoreButton()->text() ) );
+    saveButton()->setText( QStringLiteral( "%1 && %2" ).arg( saveButton()->text(),
+                           ignoreButton()->text() ) );
 
     grpbxSslConfig->setChecked( false );
     grpbxSslConfig->setCollapsed( true );
-    connect( grpbxSslConfig, &QGroupBox::toggled, this, &QgsAuthSslErrorsDialog::loadUnloadCertificate );
+    connect( grpbxSslConfig, &QGroupBox::toggled,
+             this, &QgsAuthSslErrorsDialog::loadUnloadCertificate );
 
-    connect( wdgtSslConfig, &QgsAuthSslConfigWidget::readyToSaveChanged, this, &QgsAuthSslErrorsDialog::widgetReadyToSaveChanged );
+    connect( wdgtSslConfig, &QgsAuthSslConfigWidget::readyToSaveChanged,
+             this, &QgsAuthSslErrorsDialog::widgetReadyToSaveChanged );
     wdgtSslConfig->setConfigCheckable( false );
     wdgtSslConfig->certificateGroupBox()->setFlat( true );
   }
@@ -131,7 +137,7 @@ void QgsAuthSslErrorsDialog::showCertificateChainInfo()
 
 void QgsAuthSslErrorsDialog::showCertificateChainCAsInfo()
 {
-  const QList<QSslCertificate> certificates = mSslConfiguration.caCertificates();
+  const QList< QSslCertificate > certificates = mSslConfiguration.caCertificates();
   for ( const auto &cert : certificates )
   {
     qDebug() << cert.subjectInfo( QSslCertificate::SubjectInfo::CommonName );
@@ -172,8 +178,7 @@ void QgsAuthSslErrorsDialog::buttonBox_clicked( QAbstractButton *button )
     case QDialogButtonBox::Ignore:
       QgsApplication::authManager()->updateIgnoredSslErrorsCache(
         QStringLiteral( "%1:%2" ).arg( mDigest, mHostPort ),
-        mSslErrors
-      );
+        mSslErrors );
       accept();
       break;
     case QDialogButtonBox::Save:
@@ -188,7 +193,10 @@ void QgsAuthSslErrorsDialog::buttonBox_clicked( QAbstractButton *button )
   }
   // Clear access cache if the user choose abort and the
   // setting allows it
-  if ( btnenum == QDialogButtonBox::Abort && QgsSettings().value( QStringLiteral( "clear_auth_cache_on_errors" ), true, QgsSettings::Section::Auth ).toBool() )
+  if ( btnenum == QDialogButtonBox::Abort &&
+       QgsSettings().value( QStringLiteral( "clear_auth_cache_on_errors" ),
+                            true,
+                            QgsSettings::Section::Auth ).toBool( ) )
   {
     QgsNetworkAccessManager::instance()->clearAccessCache();
   }
@@ -201,8 +209,9 @@ void QgsAuthSslErrorsDialog::populateErrorsList()
   const auto constMSslErrors = mSslErrors;
   for ( const QSslError &err : constMSslErrors )
   {
-    errs << QStringLiteral( "* %1: %2" )
-              .arg( QgsAuthCertUtils::sslErrorEnumString( err.error() ), err.errorString() );
+    errs <<  QStringLiteral( "* %1: %2" )
+         .arg( QgsAuthCertUtils::sslErrorEnumString( err.error() ),
+               err.errorString() );
   }
   teSslErrors->setPlainText( errs.join( QLatin1Char( '\n' ) ) );
 }

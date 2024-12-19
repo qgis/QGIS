@@ -13,7 +13,6 @@
 *******************************************************************/
 
 #include "qgsgrassutils.h"
-#include "moc_qgsgrassutils.cpp"
 #include "qgsgrassselect.h"
 #include "qgsgrass.h"
 
@@ -25,7 +24,8 @@
 #include <QRegularExpression>
 #include <QRegularExpressionValidator>
 
-QString QgsGrassUtils::vectorLayerName( QString map, QString layer, int nLayers )
+QString QgsGrassUtils::vectorLayerName( QString map, QString layer,
+                                        int nLayers )
 {
   QString name = map;
   if ( nLayers > 1 )
@@ -33,7 +33,8 @@ QString QgsGrassUtils::vectorLayerName( QString map, QString layer, int nLayers 
   return name;
 }
 
-void QgsGrassUtils::addVectorLayers( QgisInterface *iface, QString gisbase, QString location, QString mapset, QString map )
+void QgsGrassUtils::addVectorLayers( QgisInterface *iface,
+                                     QString gisbase, QString location, QString mapset, QString map )
 {
   QStringList layers;
   try
@@ -75,7 +76,7 @@ bool QgsGrassUtils::itemExists( QString element, QString item )
 
 QString QgsGrassUtils::htmlBrowserPath()
 {
-  return QgsApplication::libexecPath() + "grass/bin/qgis.g.browser" + QString::number( QgsGrass::versionMajor() );
+  return QgsApplication::libexecPath() + "grass/bin/qgis.g.browser"  + QString::number( QgsGrass::versionMajor() );
 }
 
 QgsGrassElementDialog::QgsGrassElementDialog( QWidget *parent )
@@ -83,7 +84,9 @@ QgsGrassElementDialog::QgsGrassElementDialog( QWidget *parent )
 {
 }
 
-QString QgsGrassElementDialog::getItem( QString element, QString title, QString label, QString text, QString source, bool *ok )
+QString QgsGrassElementDialog::getItem( QString element,
+                                        QString title, QString label,
+                                        QString text, QString source, bool *ok )
 {
   if ( ok )
     *ok = false;
@@ -143,6 +146,7 @@ QString QgsGrassElementDialog::getItem( QString element, QString title, QString 
 
 void QgsGrassElementDialog::textChanged()
 {
+
   QString text = mLineEdit->text().trimmed();
 
   mErrorLabel->setText( QStringLiteral( "   " ) );

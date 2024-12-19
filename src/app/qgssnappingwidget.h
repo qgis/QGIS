@@ -51,6 +51,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      * \param project The project with which this widget configuration will be synchronized
@@ -156,7 +157,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction *mEditAdvancedConfigAction = nullptr;
     QToolButton *mTypeButton = nullptr;
     QAction *mTypeAction = nullptr; // hide widget does not work on toolbar, action needed
-    QList<QAction *> mSnappingFlagActions;
+    QList< QAction * > mSnappingFlagActions;
     QgsDoubleSpinBox *mToleranceSpinBox = nullptr;
     QgsScaleWidget *mMinScaleWidget = nullptr;
     QgsScaleWidget *mMaxScaleWidget = nullptr;
@@ -174,13 +175,14 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction *mSelfSnappingAction = nullptr;
     QTreeView *mLayerTreeView = nullptr;
     QWidget *mAdvancedConfigWidget = nullptr;
+    QgsFloatingWidget *mAdvancedConfigContainer = nullptr;
 
     bool mRequireLayerTreeViewUpdate = false;
 
     void cleanGroup( QgsLayerTreeNode *node );
 };
 
-class SnapTypeMenu : public QMenu
+class SnapTypeMenu: public QMenu
 {
     Q_OBJECT
   public:

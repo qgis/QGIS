@@ -20,6 +20,7 @@ Widget for editing authentication configuration database
 #include "qgsauthconfigeditor.h"
 %End
   public:
+
     explicit QgsAuthConfigEditor( QWidget *parent /TransferThis/ = 0, bool showUtilities = true, bool relayMessages = true );
 %Docstring
 Widget for editing authentication configurations directly in database

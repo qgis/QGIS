@@ -38,11 +38,12 @@ class QgsPostgresListener : public QThread
     Q_OBJECT
 
   public:
+
     /**
      * create an instance if possible and starts the associated thread
      * /returns NULLPTR on error
      */
-    static std::unique_ptr<QgsPostgresListener> create( const QString &connString );
+    static std::unique_ptr< QgsPostgresListener > create( const QString &connString );
 
     ~QgsPostgresListener() override;
 
@@ -59,6 +60,7 @@ class QgsPostgresListener : public QThread
     QgsPostgresListener( const QString &connString );
 
     Q_DISABLE_COPY( QgsPostgresListener )
+
 };
 
 #endif // QGSPOSTGRESLISTENER_H

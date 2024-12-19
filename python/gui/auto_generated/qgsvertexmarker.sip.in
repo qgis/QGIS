@@ -30,6 +30,7 @@ A class for marking vertices of features using e.g. circles or 'x'.
       sipType = nullptr;
 %End
   public:
+
     enum IconType
     {
       ICON_NONE,

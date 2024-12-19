@@ -22,7 +22,9 @@ A generic widget allowing users to pick a Coordinate Reference System (or define
 #include "qgsprojectionselectiondialog.h"
 %End
   public:
-    QgsCrsSelectionWidget( QWidget *parent /TransferThis/ = 0, QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
+
+    QgsCrsSelectionWidget( QWidget *parent /TransferThis/ = 0,
+                           QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 %Docstring
 Constructor for QgsCrsSelectionWidget, with the specified ``parent`` widget.
 
@@ -138,6 +140,7 @@ Emitted when the widget has a valid selection or not.
 };
 
 
+
 class QgsProjectionSelectionDialog : QDialog
 {
 %Docstring(signature="appended")
@@ -163,7 +166,10 @@ the you probably want to look at :py:class:`QgsProjectionSelectionWidget` instea
 #include "qgsprojectionselectiondialog.h"
 %End
   public:
-    QgsProjectionSelectionDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
+
+    QgsProjectionSelectionDialog( QWidget *parent /TransferThis/ = 0,
+                                  Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
+                                  QgsCoordinateReferenceSystemProxyModel::Filters filters = QgsCoordinateReferenceSystemProxyModel::FilterHorizontal | QgsCoordinateReferenceSystemProxyModel::FilterCompound );
 %Docstring
 Constructor for QgsProjectionSelectionDialog.
 

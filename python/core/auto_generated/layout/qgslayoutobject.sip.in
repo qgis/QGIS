@@ -17,7 +17,7 @@ A base class for objects which belong to a layout.
 
 %TypeHeaderCode
 #include "qgslayoutobject.h"
-#include "qgslayoutitem.h"
+#include <qgslayoutitem.h>
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitempicture.h"

@@ -21,6 +21,7 @@ A widget showing a browser tree view along with toolbar and toggleable propertie
 #include "qgsbrowserwidget.h"
 %End
   public:
+
     explicit QgsBrowserWidget( QgsBrowserGuiModel *browserModel, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBrowserWidget

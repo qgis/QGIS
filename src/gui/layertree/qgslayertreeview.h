@@ -48,6 +48,7 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructs QgsLayerTreeProxyModel with source model \a treeModel and a \a parent
      */
@@ -85,15 +86,18 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
     void setHideValidLayers( bool hideValid );
 
   protected:
+
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
+
     bool nodeShown( QgsLayerTreeNode *node ) const;
 
     QgsLayerTreeModel *mLayerTreeModel = nullptr;
     QString mFilterText;
     bool mShowPrivateLayers = false;
     bool mHideValidLayers = false;
+
 };
 
 
@@ -114,6 +118,7 @@ class GUI_EXPORT QgsLayerTreeProxyModel : public QSortFilterProxyModel
  */
 class GUI_EXPORT QgsLayerTreeView : public QTreeView
 {
+
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->inherits( "QgsLayerTreeView" ) )
@@ -126,6 +131,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     Q_OBJECT
   public:
+
     //! Constructor for QgsLayerTreeView
     explicit QgsLayerTreeView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsLayerTreeView() override;
@@ -338,7 +344,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      */
     int layerMarkWidth() const { return mLayerMarkWidth; }
 
-    ///@cond PRIVATE
+///@cond PRIVATE
 
     /**
      * Returns a list of custom property keys which are considered as related to view operations
@@ -351,7 +357,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
      */
     static QStringList viewOnlyCustomProperties() SIP_SKIP;
 
-    ///@endcond
+///@endcond
 
     /**
      * Returns the show private layers status
@@ -467,7 +473,7 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
     //! Keeps track of current layer ID (to check when to emit signal about change of current layer)
     QString mCurrentLayerID;
     //! Storage of indicators used with the tree view
-    QHash<QgsLayerTreeNode *, QList<QgsLayerTreeViewIndicator *>> mIndicators;
+    QHash< QgsLayerTreeNode *, QList<QgsLayerTreeViewIndicator *> > mIndicators;
     //! Used by the item delegate for identification of which indicator has been clicked
     QPoint mLastReleaseMousePos;
 

@@ -76,7 +76,7 @@ QVariantMap QgsTransferAnnotationsFromMainAlgorithm::processAlgorithm( const QVa
   if ( !main )
     throw QgsProcessingException( QObject::tr( "Could not load main annotation layer for project." ) );
 
-  std::unique_ptr<QgsAnnotationLayer> newLayer( main->clone() );
+  std::unique_ptr< QgsAnnotationLayer > newLayer( main->clone() );
   newLayer->setName( parameterAsString( parameters, QStringLiteral( "LAYER_NAME" ), context ) );
   main->clear();
 

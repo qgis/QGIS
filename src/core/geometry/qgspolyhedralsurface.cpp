@@ -1013,7 +1013,7 @@ bool QgsPolyhedralSurface::isValid( QString &error, Qgis::GeometryValidityFlags 
   // GEOS does not handle PolyhedralSurface, check the polygons one by one
   for ( int i = 0; i < mPatches.size(); ++i )
   {
-    const QgsGeos geos( mPatches.at( i ), 0, Qgis::GeosCreationFlags() );
+    const QgsGeos geos( mPatches.at( i ) );
     const bool valid = geos.isValid( &error, flags & Qgis::GeometryValidityFlag::AllowSelfTouchingHoles, nullptr );
     if ( !valid )
     {

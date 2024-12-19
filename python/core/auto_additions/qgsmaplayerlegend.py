@@ -5,7 +5,7 @@ try:
     QgsMapLayerLegend.defaultRasterLegend = staticmethod(QgsMapLayerLegend.defaultRasterLegend)
     QgsMapLayerLegend.defaultMeshLegend = staticmethod(QgsMapLayerLegend.defaultMeshLegend)
     QgsMapLayerLegend.defaultPointCloudLegend = staticmethod(QgsMapLayerLegend.defaultPointCloudLegend)
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMapLayerLegendUtils.setLegendNodeOrder = staticmethod(QgsMapLayerLegendUtils.setLegendNodeOrder)
@@ -25,5 +25,5 @@ try:
     QgsMapLayerLegendUtils.setLegendNodeColumnBreak = staticmethod(QgsMapLayerLegendUtils.setLegendNodeColumnBreak)
     QgsMapLayerLegendUtils.legendNodeColumnBreak = staticmethod(QgsMapLayerLegendUtils.legendNodeColumnBreak)
     QgsMapLayerLegendUtils.applyLayerNodeProperties = staticmethod(QgsMapLayerLegendUtils.applyLayerNodeProperties)
-except (NameError, AttributeError):
+except NameError:
     pass

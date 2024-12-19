@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgslayertreefilterproxymodel.h"
-#include "moc_qgslayertreefilterproxymodel.cpp"
 
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"

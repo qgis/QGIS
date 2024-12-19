@@ -14,5 +14,5 @@ try:
     QgsLayerItem.iconVectorTile = staticmethod(QgsLayerItem.iconVectorTile)
     QgsLayerItem.iconPointCloud = staticmethod(QgsLayerItem.iconPointCloud)
     QgsLayerItem.__group__ = ['browser']
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmaterialsettingswidget.h"
-#include "moc_qgsmaterialsettingswidget.cpp"
 
 QgsMaterialSettingsWidget::QgsMaterialSettingsWidget( QWidget *parent )
   : QWidget( parent )
@@ -22,4 +21,5 @@ QgsMaterialSettingsWidget::QgsMaterialSettingsWidget( QWidget *parent )
 
 void QgsMaterialSettingsWidget::setTechnique( QgsMaterialSettingsRenderingTechnique )
 {
+
 }

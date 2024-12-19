@@ -20,6 +20,7 @@ A widget used represent options of a :py:class:`QgsMergedFeatureRenderer`
 #include "qgsmergedfeaturerendererwidget.h"
 %End
   public:
+
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
 Static creation method

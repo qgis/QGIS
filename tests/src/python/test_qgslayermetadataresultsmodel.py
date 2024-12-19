@@ -7,9 +7,9 @@
 
 """
 
-__author__ = "elpaso@itopen.it"
-__date__ = "2022-08-19"
-__copyright__ = "Copyright 2022, ItOpen"
+__author__ = 'elpaso@itopen.it'
+__date__ = '2022-08-19'
+__copyright__ = 'Copyright 2022, ItOpen'
 
 import os
 import unittest
@@ -43,7 +43,8 @@ NUM_LAYERS = 20
 
 
 class TestQgsLayerMetadataResultModels(TestCase):
-    """Base test for layer metadata provider models"""
+    """Base test for layer metadata provider models
+    """
 
     @classmethod
     def setUpClass(cls):
@@ -59,87 +60,56 @@ class TestQgsLayerMetadataResultModels(TestCase):
 
         self.temp_dir = QTemporaryDir()
         self.temp_path = self.temp_dir.path()
-        self.temp_gpkg = os.path.join(self.temp_path, "test.gpkg")
+        self.temp_gpkg = os.path.join(self.temp_path, 'test.gpkg')
 
-        ds = ogr.GetDriverByName("GPKG").CreateDataSource(self.temp_gpkg)
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(self.temp_gpkg)
 
-        md = QgsProviderRegistry.instance().providerMetadata("ogr")
+        md = QgsProviderRegistry.instance().providerMetadata('ogr')
         self.assertIsNotNone(md)
-        self.assertTrue(
-            bool(
-                md.providerCapabilities()
-                & QgsProviderMetadata.ProviderCapability.SaveLayerMetadata
-            )
-        )
+        self.assertTrue(bool(md.providerCapabilities() & QgsProviderMetadata.ProviderCapability.SaveLayerMetadata))
         self.conn = md.createConnection(self.temp_gpkg, {})
-        self.conn.store("test_conn")
+        self.conn.store('test_conn')
 
         for i in range(NUM_LAYERS):
-            lyr = ds.CreateLayer(
-                f"layer_{i}", geom_type=ogr.wkbPoint, options=["SPATIAL_INDEX=NO"]
-            )
-            lyr.CreateField(ogr.FieldDefn("text_field", ogr.OFTString))
+            lyr = ds.CreateLayer(f"layer_{i}", geom_type=ogr.wkbPoint, options=['SPATIAL_INDEX=NO'])
+            lyr.CreateField(ogr.FieldDefn('text_field', ogr.OFTString))
             f = ogr.Feature(lyr.GetLayerDefn())
-            f["text_field"] = "foo"
-            f.SetGeometry(ogr.CreateGeometryFromWkt(f"POINT({i} {i + 0.01})"))
+            f['text_field'] = 'foo'
+            f.SetGeometry(ogr.CreateGeometryFromWkt(f'POINT({i} {i + 0.01})'))
             lyr.CreateFeature(f)
             f = ogr.Feature(lyr.GetLayerDefn())
-            f["text_field"] = "bar"
-            f.SetGeometry(ogr.CreateGeometryFromWkt(f"POINT({i + 0.03} {i + 0.04})"))
+            f['text_field'] = 'bar'
+            f.SetGeometry(ogr.CreateGeometryFromWkt(f'POINT({i + 0.03} {i + 0.04})'))
             lyr.CreateFeature(f)
             f = None
 
         ds = None
 
         fields = QgsFields()
-        fields.append(QgsField("name", QVariant.String))
-        self.conn.createVectorTable(
-            "",
-            "aspatial",
-            fields,
-            QgsWkbTypes.Type.NoGeometry,
-            QgsCoordinateReferenceSystem(),
-            False,
-            {},
-        )
-        self.conn.createVectorTable(
-            "",
-            "linestring",
-            fields,
-            QgsWkbTypes.Type.LineString,
-            QgsCoordinateReferenceSystem(),
-            False,
-            {},
-        )
-        vl = QgsVectorLayer(self.conn.tableUri("", "linestring"))
+        fields.append(QgsField('name', QVariant.String))
+        self.conn.createVectorTable('', 'aspatial', fields, QgsWkbTypes.Type.NoGeometry, QgsCoordinateReferenceSystem(), False, {})
+        self.conn.createVectorTable('', 'linestring', fields, QgsWkbTypes.Type.LineString, QgsCoordinateReferenceSystem(), False, {})
+        vl = QgsVectorLayer(self.conn.tableUri('', 'linestring'))
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.startEditing())
         f = QgsFeature(vl.fields())
-        f.setAttribute("name", "one")
-        f.setGeometry(QgsGeometry.fromWkt("LINESTRING(0 0, 1 1, 2 2)"))
+        f.setAttribute('name', 'one')
+        f.setGeometry(QgsGeometry.fromWkt('LINESTRING(0 0, 1 1, 2 2)'))
         vl.addFeatures([f])
         self.assertTrue(vl.commitChanges())
-        self.conn.createVectorTable(
-            "",
-            "polygon",
-            fields,
-            QgsWkbTypes.Type.Polygon,
-            QgsCoordinateReferenceSystem(),
-            False,
-            {},
-        )
-        vl = QgsVectorLayer(self.conn.tableUri("", "polygon"))
+        self.conn.createVectorTable('', 'polygon', fields, QgsWkbTypes.Type.Polygon, QgsCoordinateReferenceSystem(), False, {})
+        vl = QgsVectorLayer(self.conn.tableUri('', 'polygon'))
         self.assertTrue(vl.isValid())
         self.assertTrue(vl.startEditing())
         f = QgsFeature(vl.fields())
-        f.setAttribute("name", "one")
-        f.setGeometry(QgsGeometry.fromWkt("POLYGON((0 0, 1 1, 0 2, 0 0))"))
+        f.setAttribute('name', 'one')
+        f.setGeometry(QgsGeometry.fromWkt('POLYGON((0 0, 1 1, 0 2, 0 0))'))
         vl.addFeatures([f])
         self.assertTrue(vl.commitChanges())
 
         for t in self.conn.tables():
-            layer_uri = self.conn.tableUri("", t.tableName())
-            vl = QgsVectorLayer(layer_uri, t.tableName(), "ogr")
+            layer_uri = self.conn.tableUri('', t.tableName())
+            vl = QgsVectorLayer(layer_uri, t.tableName(), 'ogr')
             self.assertTrue(vl.isValid())
             metadata = vl.metadata()
             ext = QgsLayerMetadata.Extent()
@@ -157,56 +127,36 @@ class TestQgsLayerMetadataResultModels(TestCase):
         model = QgsLayerMetadataResultsModel(search_context)
         proxy_model = QgsLayerMetadataResultsProxyModel()
         proxy_model.setSourceModel(model)
-        tester = QAbstractItemModelTester(
-            proxy_model, QAbstractItemModelTester.FailureReportingMode.Fatal
-        )
+        tester = QAbstractItemModelTester(proxy_model, QAbstractItemModelTester.FailureReportingMode.Fatal)
         model.reload()
-        proxy_model.setFilterString("_1")
+        proxy_model.setFilterString('_1')
         self.assertEqual(proxy_model.rowCount(), 11)
-        proxy_model.setFilterString("_11")
+        proxy_model.setFilterString('_11')
         self.assertEqual(proxy_model.rowCount(), 1)
-        metadata = proxy_model.data(
-            proxy_model.index(0, 0), QgsLayerMetadataResultsModel.Roles.Metadata
-        )
-        self.assertEqual(metadata.identifier(), "layer_11")
-        proxy_model.setFilterString("")
+        metadata = proxy_model.data(proxy_model.index(0, 0), QgsLayerMetadataResultsModel.Roles.Metadata)
+        self.assertEqual(metadata.identifier(), 'layer_11')
+        proxy_model.setFilterString('')
         self.assertEqual(proxy_model.rowCount(), len(self.conn.tables()))
         proxy_model.setFilterExtent(QgsRectangle(0, 0, 2, 2.001))
-        self.assertEqual(
-            {
-                proxy_model.data(proxy_model.index(i, 0))
-                for i in range(proxy_model.rowCount())
-            },
-            {"layer_0", "layer_1", "linestring", "polygon"},
-        )
+        self.assertEqual({proxy_model.data(proxy_model.index(i, 0)) for i in range(proxy_model.rowCount())}, {'layer_0', 'layer_1', 'linestring', 'polygon'})
 
         self.assertEqual(proxy_model.rowCount(), 4)
         model.reload()
 
         self.assertEqual(proxy_model.rowCount(), 4)
         proxy_model.setFilterExtent(QgsRectangle())
-        metadata = proxy_model.data(
-            proxy_model.index(0, 0), QgsLayerMetadataResultsModel.Roles.Metadata
-        )
-        self.assertEqual(metadata.identifier(), "layer_0")
+        metadata = proxy_model.data(proxy_model.index(0, 0), QgsLayerMetadataResultsModel.Roles.Metadata)
+        self.assertEqual(metadata.identifier(), 'layer_0')
         proxy_model.sort(0, Qt.SortOrder.DescendingOrder)
-        metadata = proxy_model.data(
-            proxy_model.index(0, 0), QgsLayerMetadataResultsModel.Roles.Metadata
-        )
-        self.assertEqual(metadata.identifier(), "polygon")
+        metadata = proxy_model.data(proxy_model.index(0, 0), QgsLayerMetadataResultsModel.Roles.Metadata)
+        self.assertEqual(metadata.identifier(), 'polygon')
 
         proxy_model.setFilterGeometryType(QgsWkbTypes.GeometryType.PolygonGeometry)
         proxy_model.setFilterGeometryTypeEnabled(True)
-        self.assertEqual(
-            {
-                proxy_model.data(proxy_model.index(i, 0))
-                for i in range(proxy_model.rowCount())
-            },
-            {"polygon"},
-        )
+        self.assertEqual({proxy_model.data(proxy_model.index(i, 0)) for i in range(proxy_model.rowCount())}, {'polygon'})
         proxy_model.setFilterGeometryTypeEnabled(False)
         self.assertEqual(proxy_model.rowCount(), len(self.conn.tables()))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

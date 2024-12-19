@@ -29,7 +29,7 @@ Returns a user-friendly translated string representing a QVariant ``type``.
 The optional ``subType`` can be used to specify the type of variant list or map values.
 %End
 
- static QString typeToDisplayString( QVariant::Type type, QVariant::Type subType = QVariant::Type::Invalid ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
+ static QString typeToDisplayString( QVariant::Type type, QVariant::Type subType = QVariant::Type::Invalid ) /Deprecated/;
 %Docstring
 Returns a user-friendly translated string representing a QVariant ``type``.
 

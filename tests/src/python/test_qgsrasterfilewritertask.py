@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "12/02/2017"
-__copyright__ = "Copyright 2017, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '12/02/2017'
+__copyright__ = 'Copyright 2017, The QGIS Project'
 
 import os
 
@@ -47,25 +46,17 @@ class TestQgsRasterFileWriterTask(QgisTestCase):
 
     def testSuccess(self):
         """test successfully writing a layer"""
-        path = os.path.join(unitTestDataPath(), "raster", "with_color_table.tif")
+        path = os.path.join(unitTestDataPath(), 'raster', 'with_color_table.tif')
         raster_layer = QgsRasterLayer(path, "test")
         self.assertTrue(raster_layer.isValid())
 
         pipe = QgsRasterPipe()
         self.assertTrue(pipe.set(raster_layer.dataProvider().clone()))
 
-        tmp = create_temp_filename("success.tif")
+        tmp = create_temp_filename('success.tif')
         writer = QgsRasterFileWriter(tmp)
 
-        task = QgsRasterFileWriterTask(
-            writer,
-            pipe,
-            100,
-            100,
-            raster_layer.extent(),
-            raster_layer.crs(),
-            QgsCoordinateTransformContext(),
-        )
+        task = QgsRasterFileWriterTask(writer, pipe, 100, 100, raster_layer.extent(), raster_layer.crs(), QgsCoordinateTransformContext())
 
         task.writeComplete.connect(self.onSuccess)
         task.errorOccurred.connect(self.onFail)
@@ -80,25 +71,17 @@ class TestQgsRasterFileWriterTask(QgisTestCase):
 
     def testLayerRemovalBeforeRun(self):
         """test behavior when layer is removed before task begins"""
-        path = os.path.join(unitTestDataPath(), "raster", "with_color_table.tif")
+        path = os.path.join(unitTestDataPath(), 'raster', 'with_color_table.tif')
         raster_layer = QgsRasterLayer(path, "test")
         self.assertTrue(raster_layer.isValid())
 
         pipe = QgsRasterPipe()
         self.assertTrue(pipe.set(raster_layer.dataProvider().clone()))
 
-        tmp = create_temp_filename("remove_layer.tif")
+        tmp = create_temp_filename('remove_layer.tif')
         writer = QgsRasterFileWriter(tmp)
 
-        task = QgsRasterFileWriterTask(
-            writer,
-            pipe,
-            100,
-            100,
-            raster_layer.extent(),
-            raster_layer.crs(),
-            QgsCoordinateTransformContext(),
-        )
+        task = QgsRasterFileWriterTask(writer, pipe, 100, 100, raster_layer.extent(), raster_layer.crs(), QgsCoordinateTransformContext())
 
         task.writeComplete.connect(self.onSuccess)
         task.errorOccurred.connect(self.onFail)
@@ -118,7 +101,7 @@ class TestQgsRasterFileWriterTask(QgisTestCase):
 
     def testFail(self):
         """test error writing a layer"""
-        path = os.path.join(unitTestDataPath(), "raster", "with_color_table.tif")
+        path = os.path.join(unitTestDataPath(), 'raster', 'with_color_table.tif')
         raster_layer = QgsRasterLayer(path, "test")
         self.assertTrue(raster_layer.isValid())
 
@@ -128,15 +111,7 @@ class TestQgsRasterFileWriterTask(QgisTestCase):
         tmp = create_temp_filename("/this/is/invalid/file.tif")
         writer = QgsRasterFileWriter(tmp)
 
-        task = QgsRasterFileWriterTask(
-            writer,
-            pipe,
-            100,
-            100,
-            raster_layer.extent(),
-            raster_layer.crs(),
-            QgsCoordinateTransformContext(),
-        )
+        task = QgsRasterFileWriterTask(writer, pipe, 100, 100, raster_layer.extent(), raster_layer.crs(), QgsCoordinateTransformContext())
 
         task.writeComplete.connect(self.onSuccess)
         task.errorOccurred.connect(self.onFail)
@@ -149,5 +124,5 @@ class TestQgsRasterFileWriterTask(QgisTestCase):
         self.assertTrue(self.fail)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

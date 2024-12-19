@@ -19,6 +19,7 @@ Wraps a label widget to display text
 #include "qgstextwidgetwrapper.h"
 %End
   public:
+
     QgsTextWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent );
 %Docstring
 Create a text widget wrapper

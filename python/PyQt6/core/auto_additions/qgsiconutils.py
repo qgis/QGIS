@@ -15,5 +15,5 @@ try:
     QgsIconUtils.iconTiledScene = staticmethod(QgsIconUtils.iconTiledScene)
     QgsIconUtils.iconForLayer = staticmethod(QgsIconUtils.iconForLayer)
     QgsIconUtils.iconForLayerType = staticmethod(QgsIconUtils.iconForLayerType)
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -5,13 +5,16 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+__author__ = '(C) 2022 by Nyall Dawson'
+__date__ = '12/07/2023'
+__copyright__ = 'Copyright 2023, The QGIS Project'
 
-__author__ = "(C) 2022 by Nyall Dawson"
-__date__ = "12/07/2023"
-__copyright__ = "Copyright 2023, The QGIS Project"
 
-
-from qgis.PyQt.QtCore import Qt, QModelIndex, QCoreApplication
+from qgis.PyQt.QtCore import (
+    Qt,
+    QModelIndex,
+    QCoreApplication
+)
 from qgis.core import (
     Qgis,
     QgsApplication,
@@ -21,7 +24,7 @@ from qgis.core import (
 from qgis.gui import (
     QgsRecentCoordinateReferenceSystemsModel,
     QgsRecentCoordinateReferenceSystemsProxyModel,
-    QgsCoordinateReferenceSystemProxyModel,
+    QgsCoordinateReferenceSystemProxyModel
 )
 
 import unittest
@@ -50,128 +53,83 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
         self.assertFalse(model.index(-1, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(0, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(1, 0, QModelIndex()).isValid())
-        self.assertIsNone(
-            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole)
-        )
+        self.assertIsNone(model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.crs(model.index(0, 0, QModelIndex())).isValid())
         self.assertFalse(model.crs(model.index(-1, 0, QModelIndex())).isValid())
         self.assertFalse(model.crs(model.index(1, 0, QModelIndex())).isValid())
 
         # push a crs
         registry = QgsApplication.coordinateReferenceSystemRegistry()
-        registry.pushRecent(QgsCoordinateReferenceSystem("EPSG:3111"))
+        registry.pushRecent(QgsCoordinateReferenceSystem('EPSG:3111'))
         self.assertEqual(model.rowCount(), 1)
         self.assertTrue(model.index(0, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(1, 0, QModelIndex()).isValid())
         self.assertEqual(
-            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
-            "EPSG:3111 - GDA94 / Vicgrid",
-        )
+            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'EPSG:3111 - GDA94 / Vicgrid')
+        self.assertIsNone(model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
         self.assertIsNone(
-            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole)
-        )
-        self.assertIsNone(
-            model.data(model.index(-1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole)
-        )
-        self.assertEqual(
-            model.crs(model.index(0, 0, QModelIndex())),
-            QgsCoordinateReferenceSystem("EPSG:3111"),
-        )
+            model.data(model.index(-1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(model.crs(model.index(0, 0, QModelIndex())),
+                         QgsCoordinateReferenceSystem('EPSG:3111'))
 
         # push another crs
-        registry.pushRecent(QgsCoordinateReferenceSystem("EPSG:4326"))
+        registry.pushRecent(QgsCoordinateReferenceSystem('EPSG:4326'))
         self.assertEqual(model.rowCount(), 2)
         self.assertTrue(model.index(0, 0, QModelIndex()).isValid())
         self.assertTrue(model.index(1, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(2, 0, QModelIndex()).isValid())
         self.assertEqual(
-            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
-            "EPSG:4326 - WGS 84",
-        )
+            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'EPSG:4326 - WGS 84')
         self.assertEqual(
-            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
-            "EPSG:3111 - GDA94 / Vicgrid",
-        )
-        self.assertIsNone(
-            model.data(model.index(2, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole)
-        )
-        self.assertEqual(
-            model.crs(model.index(0, 0, QModelIndex())),
-            QgsCoordinateReferenceSystem("EPSG:4326"),
-        )
-        self.assertEqual(
-            model.crs(model.index(1, 0, QModelIndex())),
-            QgsCoordinateReferenceSystem("EPSG:3111"),
-        )
+            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'EPSG:3111 - GDA94 / Vicgrid')
+        self.assertIsNone(model.data(model.index(2, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(model.crs(model.index(0, 0, QModelIndex())),
+                         QgsCoordinateReferenceSystem('EPSG:4326'))
+        self.assertEqual(model.crs(model.index(1, 0, QModelIndex())),
+                         QgsCoordinateReferenceSystem('EPSG:3111'))
 
         # push first crs back to top
-        registry.pushRecent(QgsCoordinateReferenceSystem("EPSG:3111"))
+        registry.pushRecent(QgsCoordinateReferenceSystem('EPSG:3111'))
         self.assertEqual(model.rowCount(), 2)
         self.assertTrue(model.index(0, 0, QModelIndex()).isValid())
         self.assertTrue(model.index(1, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(2, 0, QModelIndex()).isValid())
         self.assertEqual(
-            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
-            "EPSG:3111 - GDA94 / Vicgrid",
-        )
+            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'EPSG:3111 - GDA94 / Vicgrid')
         self.assertEqual(
-            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
-            "EPSG:4326 - WGS 84",
-        )
-        self.assertIsNone(
-            model.data(model.index(2, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole)
-        )
-        self.assertEqual(
-            model.crs(model.index(0, 0, QModelIndex())),
-            QgsCoordinateReferenceSystem("EPSG:3111"),
-        )
-        self.assertEqual(
-            model.crs(model.index(1, 0, QModelIndex())),
-            QgsCoordinateReferenceSystem("EPSG:4326"),
-        )
+            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'EPSG:4326 - WGS 84')
+        self.assertIsNone(model.data(model.index(2, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(model.crs(model.index(0, 0, QModelIndex())),
+                         QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(model.crs(model.index(1, 0, QModelIndex())),
+                         QgsCoordinateReferenceSystem('EPSG:4326'))
 
         # remove crs (not in recent list!)
-        registry.removeRecent(QgsCoordinateReferenceSystem("EPSG:3857"))
+        registry.removeRecent(QgsCoordinateReferenceSystem('EPSG:3857'))
         self.assertEqual(model.rowCount(), 2)
         self.assertTrue(model.index(0, 0, QModelIndex()).isValid())
         self.assertTrue(model.index(1, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(2, 0, QModelIndex()).isValid())
         self.assertEqual(
-            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
-            "EPSG:3111 - GDA94 / Vicgrid",
-        )
+            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'EPSG:3111 - GDA94 / Vicgrid')
         self.assertEqual(
-            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
-            "EPSG:4326 - WGS 84",
-        )
-        self.assertIsNone(
-            model.data(model.index(2, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole)
-        )
-        self.assertEqual(
-            model.crs(model.index(0, 0, QModelIndex())),
-            QgsCoordinateReferenceSystem("EPSG:3111"),
-        )
-        self.assertEqual(
-            model.crs(model.index(1, 0, QModelIndex())),
-            QgsCoordinateReferenceSystem("EPSG:4326"),
-        )
+            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'EPSG:4326 - WGS 84')
+        self.assertIsNone(model.data(model.index(2, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(model.crs(model.index(0, 0, QModelIndex())),
+                         QgsCoordinateReferenceSystem('EPSG:3111'))
+        self.assertEqual(model.crs(model.index(1, 0, QModelIndex())),
+                         QgsCoordinateReferenceSystem('EPSG:4326'))
 
         # remove crs (in recent list!)
-        registry.removeRecent(QgsCoordinateReferenceSystem("EPSG:3111"))
+        registry.removeRecent(QgsCoordinateReferenceSystem('EPSG:3111'))
         self.assertEqual(model.rowCount(), 1)
         self.assertTrue(model.index(0, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(1, 0, QModelIndex()).isValid())
         self.assertEqual(
-            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
-            "EPSG:4326 - WGS 84",
-        )
-        self.assertIsNone(
-            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole)
-        )
-        self.assertEqual(
-            model.crs(model.index(0, 0, QModelIndex())),
-            QgsCoordinateReferenceSystem("EPSG:4326"),
-        )
+            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole), 'EPSG:4326 - WGS 84')
+        self.assertIsNone(model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(model.crs(model.index(0, 0, QModelIndex())),
+                         QgsCoordinateReferenceSystem('EPSG:4326'))
 
         # clear list
         registry.clearRecent()
@@ -179,19 +137,23 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
 
         # model limit of 30 items should consider crs types
         for _id in range(32510, 32550):
-            registry.pushRecent(QgsCoordinateReferenceSystem(f"EPSG:{_id}"))
+            registry.pushRecent(
+                QgsCoordinateReferenceSystem(f"EPSG:{_id}")
+            )
 
         self.assertEqual(model.rowCount(), 30)
         for row in range(30):
             self.assertEqual(
                 model.crs(model.index(row, 0, QModelIndex())).authid(),
-                f"EPSG:{32549 - row}",
+                f"EPSG:{32549 - row}"
             )
 
         # these are vertical CRS, so their addition should NOT cause
         # the existing items to drop
         for _id in range(115851, 115867):
-            registry.pushRecent(QgsCoordinateReferenceSystem(f"ESRI:{_id}"))
+            registry.pushRecent(
+                QgsCoordinateReferenceSystem(f"ESRI:{_id}")
+            )
         self.assertEqual(model.rowCount(), 46)
 
     def test_proxy(self):
@@ -205,57 +167,45 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
         self.assertFalse(model.index(0, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(1, 0, QModelIndex()).isValid())
         self.assertIsNone(
-            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole)
-        )
+            model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
         self.assertFalse(model.crs(model.index(0, 0, QModelIndex())).isValid())
-        self.assertFalse(model.crs(model.index(-1, 0, QModelIndex())).isValid())
+        self.assertFalse(
+            model.crs(model.index(-1, 0, QModelIndex())).isValid())
         self.assertFalse(model.crs(model.index(1, 0, QModelIndex())).isValid())
 
         # push a crs
-        registry.pushRecent(QgsCoordinateReferenceSystem("EPSG:3111"))
+        registry.pushRecent(QgsCoordinateReferenceSystem('EPSG:3111'))
         self.assertEqual(model.rowCount(), 1)
         self.assertTrue(model.index(0, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(1, 0, QModelIndex()).isValid())
         self.assertEqual(
             model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
-            "EPSG:3111 - GDA94 / Vicgrid",
-        )
+            'EPSG:3111 - GDA94 / Vicgrid')
         self.assertIsNone(
-            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole)
-        )
+            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
         self.assertIsNone(
-            model.data(model.index(-1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole)
-        )
-        self.assertEqual(
-            model.crs(model.index(0, 0, QModelIndex())),
-            QgsCoordinateReferenceSystem("EPSG:3111"),
-        )
+            model.data(model.index(-1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(model.crs(model.index(0, 0, QModelIndex())),
+                         QgsCoordinateReferenceSystem('EPSG:3111'))
 
         # push a vertical crs
-        registry.pushRecent(QgsCoordinateReferenceSystem("ESRI:115851"))
+        registry.pushRecent(QgsCoordinateReferenceSystem('ESRI:115851'))
         self.assertEqual(model.rowCount(), 2)
         self.assertTrue(model.index(0, 0, QModelIndex()).isValid())
         self.assertTrue(model.index(1, 0, QModelIndex()).isValid())
         self.assertFalse(model.index(2, 0, QModelIndex()).isValid())
         self.assertEqual(
             model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
-            "ESRI:115851 - SIRGAS-CON_DGF00P01",
-        )
+            'ESRI:115851 - SIRGAS-CON_DGF00P01')
         self.assertEqual(
             model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
-            "EPSG:3111 - GDA94 / Vicgrid",
-        )
+            'EPSG:3111 - GDA94 / Vicgrid')
         self.assertIsNone(
-            model.data(model.index(2, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole)
-        )
-        self.assertEqual(
-            model.crs(model.index(0, 0, QModelIndex())),
-            QgsCoordinateReferenceSystem("ESRI:115851"),
-        )
-        self.assertEqual(
-            model.crs(model.index(1, 0, QModelIndex())),
-            QgsCoordinateReferenceSystem("EPSG:3111"),
-        )
+            model.data(model.index(2, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(model.crs(model.index(0, 0, QModelIndex())),
+                         QgsCoordinateReferenceSystem('ESRI:115851'))
+        self.assertEqual(model.crs(model.index(1, 0, QModelIndex())),
+                         QgsCoordinateReferenceSystem('EPSG:3111'))
 
         # add filter
         model.setFilters(QgsCoordinateReferenceSystemProxyModel.Filter.FilterHorizontal)
@@ -264,15 +214,11 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
         self.assertFalse(model.index(1, 0, QModelIndex()).isValid())
         self.assertEqual(
             model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
-            "EPSG:3111 - GDA94 / Vicgrid",
-        )
+            'EPSG:3111 - GDA94 / Vicgrid')
         self.assertIsNone(
-            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole)
-        )
-        self.assertEqual(
-            model.crs(model.index(0, 0, QModelIndex())),
-            QgsCoordinateReferenceSystem("EPSG:3111"),
-        )
+            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(model.crs(model.index(0, 0, QModelIndex())),
+                         QgsCoordinateReferenceSystem('EPSG:3111'))
 
         model.setFilters(QgsCoordinateReferenceSystemProxyModel.Filter.FilterVertical)
         self.assertEqual(model.rowCount(), 1)
@@ -280,16 +226,12 @@ class TestQgsRecentCoordinateReferenceSystemsModel(QgisTestCase):
         self.assertFalse(model.index(1, 0, QModelIndex()).isValid())
         self.assertEqual(
             model.data(model.index(0, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole),
-            "ESRI:115851 - SIRGAS-CON_DGF00P01",
-        )
+            'ESRI:115851 - SIRGAS-CON_DGF00P01')
         self.assertIsNone(
-            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole)
-        )
-        self.assertEqual(
-            model.crs(model.index(0, 0, QModelIndex())),
-            QgsCoordinateReferenceSystem("ESRI:115851"),
-        )
+            model.data(model.index(1, 0, QModelIndex()), Qt.ItemDataRole.DisplayRole))
+        self.assertEqual(model.crs(model.index(0, 0, QModelIndex())),
+                         QgsCoordinateReferenceSystem('ESRI:115851'))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

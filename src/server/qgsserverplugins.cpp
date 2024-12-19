@@ -39,7 +39,7 @@ QStringList &QgsServerPlugins::serverPlugins()
 bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
 {
   QString pythonlibName( QStringLiteral( "qgispython" ) );
-#if defined( Q_OS_UNIX )
+#if defined(Q_OS_UNIX)
   pythonlibName.prepend( QgsApplication::libraryPath() );
 #endif
 #ifdef __MINGW32__
@@ -62,7 +62,7 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
   }
 
   QgsMessageLog::logMessage( QStringLiteral( "Python support library loaded successfully." ), __FILE__, Qgis::MessageLevel::Info );
-  typedef QgsPythonUtils *( *inst )();
+  typedef QgsPythonUtils*( *inst )();
   inst pythonlib_inst = ( inst ) cast_to_fptr( pythonlib.resolve( "instance" ) );
   if ( !pythonlib_inst )
   {
@@ -119,3 +119,5 @@ bool QgsServerPlugins::initPlugins( QgsServerInterface *interface )
   }
   return sPythonUtils && sPythonUtils->isEnabled() && atLeastOneEnabled;
 }
+
+

@@ -24,7 +24,9 @@ email                : marco.hugentobler at sourcepole dot com
 
 namespace QgsWms
 {
-  void writeAsPdf( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response )
+  void writeAsPdf( QgsServerInterface *serverIface, const QgsProject *project,
+                   const QgsWmsRequest &request,
+                   QgsServerResponse &response )
   {
     QgsWmsRenderContext context( project, serverIface );
     context.setFlag( QgsWmsRenderContext::UpdateExtent );

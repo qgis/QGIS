@@ -9,7 +9,7 @@
 
 
 
-class QgsBufferServerResponse : QgsServerResponse
+class QgsBufferServerResponse: QgsServerResponse
 {
 %Docstring(signature="appended")
 Class defining buffered response
@@ -19,6 +19,7 @@ Class defining buffered response
 #include "qgsbufferserverresponse.h"
 %End
   public:
+
     QgsBufferServerResponse();
 
     virtual void setHeader( const QString &key, const QString &value );
@@ -66,7 +67,7 @@ Set the http status code
 Returns the http status code
 %End
 
-    virtual void sendError( int code, const QString &message );
+    virtual void sendError( int code,  const QString &message );
 
 %Docstring
 Send error

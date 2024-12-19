@@ -37,11 +37,12 @@ class QDialogButtonBox;
  *
  * \since QGIS 3.18
  */
-class GUI_EXPORT QgsColorRampLegendNodeWidget : public QgsPanelWidget, private Ui::QgsColorRampLegendNodeWidgetBase
+class GUI_EXPORT QgsColorRampLegendNodeWidget: public QgsPanelWidget, private Ui::QgsColorRampLegendNodeWidgetBase
 {
     Q_OBJECT
 
   public:
+
     /**
      * Capabilities to expose in the widget.
      *
@@ -49,11 +50,11 @@ class GUI_EXPORT QgsColorRampLegendNodeWidget : public QgsPanelWidget, private U
      */
     enum class Capability : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      Prefix = 1 << 0,                                                                    //!< Allow editing legend prefix
-      Suffix = 1 << 1,                                                                    //!< Allow editing legend suffix
-      NumberFormat = 1 << 2,                                                              //!< Allow editing number format
-      DefaultMinimum = 1 << 3,                                                            //!< Allow resetting minimum label to default
-      DefaultMaximum = 1 << 4,                                                            //!< Allow resetting maximum label to default
+      Prefix = 1 << 0, //!< Allow editing legend prefix
+      Suffix = 1 << 1, //!< Allow editing legend suffix
+      NumberFormat = 1 << 2, //!< Allow editing number format
+      DefaultMinimum = 1 << 3, //!< Allow resetting minimum label to default
+      DefaultMaximum = 1 << 4, //!< Allow resetting maximum label to default
       AllCapabilities = Prefix | Suffix | NumberFormat | DefaultMinimum | DefaultMaximum, //!< All capabilities
     };
     Q_ENUM( Capability )
@@ -103,8 +104,10 @@ class GUI_EXPORT QgsColorRampLegendNodeWidget : public QgsPanelWidget, private U
     void onOrientationChanged();
 
   private:
+
     bool mBlockSignals = false;
     QgsColorRampLegendNodeSettings mSettings;
+
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsColorRampLegendNodeWidget::Capabilities )
 
@@ -118,6 +121,7 @@ class GUI_EXPORT QgsColorRampLegendNodeDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsColorRampLegendNodeDialog, initially showing the specified \a settings.
      *
@@ -145,9 +149,12 @@ class GUI_EXPORT QgsColorRampLegendNodeDialog : public QDialog
     void setUseContinuousRampCheckBoxVisibility( bool visible );
 
   private:
+
     QgsColorRampLegendNodeWidget *mWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
+
 };
 
 
 #endif //QGSCOLORRAMPLEGENDNODEWIDGET_H
+

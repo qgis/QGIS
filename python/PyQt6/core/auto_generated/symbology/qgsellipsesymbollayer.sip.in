@@ -86,7 +86,7 @@ Creates the symbol layer
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
 
 
- void setSymbolName( const QString &name ) /Deprecated="Since 3.20. "/;
+ void setSymbolName( const QString &name ) /Deprecated/;
 %Docstring
 Sets the rendered ellipse marker shape using a symbol ``name``.
 
@@ -97,7 +97,7 @@ Sets the rendered ellipse marker shape using a symbol ``name``.
 .. deprecated:: 3.20
 %End
 
- QString symbolName() const /Deprecated="Since 3.20. "/;
+ QString symbolName() const /Deprecated/;
 %Docstring
 Returns the shape name for the rendered ellipse marker symbol.
 

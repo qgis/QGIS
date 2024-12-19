@@ -32,6 +32,7 @@ class GUI_EXPORT QgsProxyStyle : public QProxyStyle
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProxyStyle. Ownership is transferred to the \a parent widget.
      *
@@ -52,6 +53,7 @@ class GUI_EXPORT QgsAppStyle : public QProxyStyle
     Q_OBJECT
 
   public:
+
     explicit QgsAppStyle( const QString &base );
     QPixmap generatedIconPixmap( QIcon::Mode iconMode, const QPixmap &pixmap, const QStyleOption *opt ) const override;
     void polish( QWidget *widget ) override;
@@ -66,6 +68,7 @@ class GUI_EXPORT QgsAppStyle : public QProxyStyle
     QProxyStyle *clone() SIP_FACTORY;
 
   private:
+
     QString mBaseStyle;
 };
 

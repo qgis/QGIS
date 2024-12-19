@@ -2,5 +2,5 @@
 try:
     QgsLineSymbol.createSimple = staticmethod(QgsLineSymbol.createSimple)
     QgsLineSymbol.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

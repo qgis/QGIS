@@ -22,7 +22,7 @@
 
 #include "qgsproviderguimetadata.h"
 
-class QgsPostgresProviderGuiMetadata : public QgsProviderGuiMetadata
+class QgsPostgresProviderGuiMetadata: public QgsProviderGuiMetadata
 {
   public:
     QgsPostgresProviderGuiMetadata();
@@ -33,7 +33,9 @@ class QgsPostgresProviderGuiMetadata : public QgsProviderGuiMetadata
     QList<const QgsMapLayerConfigWidgetFactory *> mapLayerConfigWidgetFactories() override;
 
   private:
-    std::unique_ptr<QgsMapLayerConfigWidgetFactory> mRasterTemporalWidgetFactory;
+
+    std::unique_ptr< QgsMapLayerConfigWidgetFactory > mRasterTemporalWidgetFactory;
+
 };
 
 #endif // QGSPOSTGRESPROVIDERGUI_H

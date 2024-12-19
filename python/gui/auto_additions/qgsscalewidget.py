@@ -4,5 +4,5 @@ try:
     QgsScaleWidget.toString = staticmethod(QgsScaleWidget.toString)
     QgsScaleWidget.toDouble = staticmethod(QgsScaleWidget.toDouble)
     QgsScaleWidget.__signal_arguments__ = {'scaleChanged': ['scale: float']}
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -2,5 +2,5 @@
 try:
     QgsPostgresStringUtils.parseArray = staticmethod(QgsPostgresStringUtils.parseArray)
     QgsPostgresStringUtils.buildArray = staticmethod(QgsPostgresStringUtils.buildArray)
-except (NameError, AttributeError):
+except NameError:
     pass

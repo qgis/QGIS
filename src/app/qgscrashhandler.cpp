@@ -40,18 +40,18 @@ LONG WINAPI QgsCrashHandler::handle( LPEXCEPTION_POINTERS exception )
   if ( !QgsApplication::isRunningFromBuildDir() )
   {
     symbolPath = QStringLiteral( "%1\\pdb;http://msdl.microsoft.com/download/symbols;http://download.osgeo.org/osgeo4w/%2/symstores/%3" )
-                   .arg( getenv( "QGIS_PREFIX_PATH" ) )
-                   .arg( QSysInfo::WordSize == 64 ? QStringLiteral( "x86_64" ) : QStringLiteral( "x86" ) )
-                   .arg( QFileInfo( getenv( "QGIS_PREFIX_PATH" ) ).baseName() );
+                 .arg( getenv( "QGIS_PREFIX_PATH" ) )
+                 .arg( QSysInfo::WordSize == 64 ? QStringLiteral( "x86_64" ) : QStringLiteral( "x86" ) )
+                 .arg( QFileInfo( getenv( "QGIS_PREFIX_PATH" ) ).baseName() );
   }
   else
   {
     symbolPath = QStringLiteral( "%1;%2;http://msdl.microsoft.com/download/symbols" )
-                   .arg( getenv( "QGIS_PDB_PATH" ) )
-                   .arg( QgsApplication::applicationDirPath() );
+                 .arg( getenv( "QGIS_PDB_PATH" ) )
+                 .arg( QgsApplication::applicationDirPath() );
   }
 
-  QString ptrStr = QString( "0x%1" ).arg( ( quintptr ) exception, QT_POINTER_SIZE * 2, 16, QChar( '0' ) );
+  QString ptrStr = QString( "0x%1" ).arg( ( quintptr )exception, QT_POINTER_SIZE * 2, 16, QChar( '0' ) );
 
   handleCrash( processID, threadID, symbolPath, ptrStr );
   return TRUE;
@@ -63,7 +63,9 @@ void QgsCrashHandler::handle( int )
 }
 #endif
 
-void QgsCrashHandler::handleCrash( int processID, int threadID, const QString &symbolPath, const QString &ptrStr )
+void QgsCrashHandler::handleCrash( int processID, int threadID,
+                                   const QString &symbolPath,
+                                   const QString &ptrStr )
 {
   QString fileName = QStandardPaths::standardLocations( QStandardPaths::TempLocation ).at( 0 ) + "/qgis-crash-info-" + QString::number( processID );
   QgsDebugMsgLevel( fileName, 2 );
@@ -83,8 +85,7 @@ void QgsCrashHandler::handleCrash( int processID, int threadID, const QString &s
   if ( QString( Qgis::devVersion() ) == QLatin1String( "exported" ) )
   {
     reportData.append( QStringLiteral( "QGIS code branch: Release %1.%2" )
-                         .arg( Qgis::versionInt() / 10000 )
-                         .arg( Qgis::versionInt() / 100 % 100 ) );
+                       .arg( Qgis::versionInt() / 10000 ).arg( Qgis::versionInt() / 100 % 100 ) );
   }
   else
   {

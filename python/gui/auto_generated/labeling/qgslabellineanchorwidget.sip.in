@@ -20,6 +20,7 @@ A widget for customising label line anchor settings.
 #include "qgslabellineanchorwidget.h"
 %End
   public:
+
     QgsLabelLineAnchorWidget( QWidget *parent /TransferThis/ = 0, QgsVectorLayer *vl = 0 );
 %Docstring
 Constructor for QgsLabelLineAnchorWidget.

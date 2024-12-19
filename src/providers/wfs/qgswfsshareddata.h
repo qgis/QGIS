@@ -44,7 +44,7 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     const QString &geometryAttribute() const { return mGeometryAttribute; }
 
     //! Return list of layer properties.
-    const QList<QgsOgcUtils::LayerProperties> &layerProperties() const { return mLayerPropertiesList; }
+    const QList< QgsOgcUtils::LayerProperties > &layerProperties() const { return mLayerPropertiesList; }
 
     std::unique_ptr<QgsFeatureDownloaderImpl> newFeatureDownloaderImpl( QgsFeatureDownloader *, bool requestFromMainThread ) override;
 
@@ -55,12 +55,7 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     const QgsWfsCapabilities::Capabilities &capabilities() const { return mCaps; }
 
     //! Set a new filter and return the previous one. Only used to temporarily disable filtering when trying to get layer geometry type.
-    QString setWFSFilter( const QString &newFilter )
-    {
-      QString oldFilter = mWFSFilter;
-      mWFSFilter = newFilter;
-      return oldFilter;
-    }
+    QString setWFSFilter( const QString &newFilter ) { QString oldFilter = mWFSFilter; mWFSFilter = newFilter; return oldFilter; }
 
     //! Returns the WFS filter computed by computeFilter()
     const QString &WFSFilter() const { return mWFSFilter; }
@@ -97,13 +92,13 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     QString mGeometryAttribute;
 
     //! Layer properties
-    QList<QgsOgcUtils::LayerProperties> mLayerPropertiesList;
+    QList< QgsOgcUtils::LayerProperties > mLayerPropertiesList;
 
     //! Map a field name to the pair (typename, fieldname) that describes its source field
-    QMap<QString, QPair<QString, QString>> mMapFieldNameToSrcLayerNameFieldName;
+    QMap< QString, QPair<QString, QString> > mMapFieldNameToSrcLayerNameFieldName;
 
     //! Map a field name to the pair (xpath, isNestedContent)
-    QMap<QString, QPair<QString, bool>> mFieldNameToXPathAndIsNestedContentMap;
+    QMap<QString, QPair<QString, bool> > mFieldNameToXPathAndIsNestedContentMap;
 
     //! Map a namespace prefix to its URI
     QMap<QString, QString> mNamespacePrefixToURIMap;
@@ -141,6 +136,7 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
     bool detectPotentialServerAxisOrderIssueFromSingleFeatureExtent() const override;
 
   private:
+
     //! WFS filter
     QString mWFSFilter;
 
@@ -154,7 +150,7 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
 
     void invalidateCacheBaseUnderLock() override;
 
-    bool supportsLimitedFeatureCountDownloads() const override { return !( mWFSVersion.startsWith( QLatin1String( "1.0" ) ) ); }
+    bool supportsLimitedFeatureCountDownloads() const override { return  !( mWFSVersion.startsWith( QLatin1String( "1.0" ) ) ); }
 
     QString layerName() const override { return mURI.typeName(); }
 
@@ -166,11 +162,12 @@ class QgsWFSSharedData : public QObject, public QgsBackgroundCachedSharedData
 
     long long getFeatureCountFromServer() const override;
 
-    void getVersionValues( QgsOgcUtils::GMLVersion &gmlVersion, QgsOgcUtils::FilterVersion &filterVersion, bool &honourAxisOrientation ) const;
+    void getVersionValues( QgsOgcUtils::GMLVersion &gmlVersion,  QgsOgcUtils::FilterVersion &filterVersion, bool &honourAxisOrientation ) const;
+
 };
 
 //! Utility class to issue a GetFeature resultType=hits request
-class QgsWFSFeatureHitsRequest : public QgsWfsRequest
+class QgsWFSFeatureHitsRequest: public QgsWfsRequest
 {
     Q_OBJECT
   public:
@@ -187,7 +184,7 @@ class QgsWFSFeatureHitsRequest : public QgsWfsRequest
  * Utility class to issue a GetFeature requets with maxfeatures/count=1
  * Used by QgsWFSSharedData::endOfDownload() when capabilities extent are likely wrong
 */
-class QgsWFSSingleFeatureRequest : public QgsWfsRequest
+class QgsWFSSingleFeatureRequest: public QgsWfsRequest
 {
     Q_OBJECT
   public:

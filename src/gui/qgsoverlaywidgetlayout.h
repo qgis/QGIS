@@ -32,6 +32,7 @@ class GUI_EXPORT QgsOverlayWidgetLayout : public QLayout
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsOverlayWidgetLayout, with the specified \a parent widget.
      */
@@ -83,12 +84,15 @@ class GUI_EXPORT QgsOverlayWidgetLayout : public QLayout
     int verticalSpacing() const { return mVerticalSpacing; }
 
   private:
-    QList<QLayoutItem *> mLeftItems;
-    QList<QLayoutItem *> mRightItems;
-    QList<QLayoutItem *> mTopItems;
-    QList<QLayoutItem *> mBottomItems;
+
+    QList< QLayoutItem *> mLeftItems;
+    QList< QLayoutItem *> mRightItems;
+    QList< QLayoutItem *> mTopItems;
+    QList< QLayoutItem *> mBottomItems;
     int mHorizontalSpacing = 0;
     int mVerticalSpacing = 0;
+
+
 };
 
 #endif // QGSOVERLAYWIDGETLAYOUT_H

@@ -39,9 +39,9 @@ class QgsDateTimeStatisticalSummary;
 //! Enumeration of supported statistics types
 enum DataType
 {
-  Numeric, //!< Numeric fields: int, double, etc
+  Numeric,  //!< Numeric fields: int, double, etc
   String,  //!< String fields
-  DateTime //!< Date and DateTime fields
+  DateTime  //!< Date and DateTime fields
 };
 
 /**
@@ -72,6 +72,7 @@ class QgsStatisticsValueGatherer : public QgsTask
     const QgsDateTimeStatisticalSummary *dateTimeStatsSummary();
 
   private:
+
     QgsFeatureIterator mFeatureIterator;
     long mFeatureCount = 0;
     QString mFieldExpression;
@@ -84,9 +85,9 @@ class QgsStatisticsValueGatherer : public QgsTask
     std::unique_ptr<QgsExpression> mExpression;
     QgsExpressionContext mContext;
 
-    std::unique_ptr<QgsStatisticalSummary> mStatsSummary;
-    std::unique_ptr<QgsStringStatisticalSummary> mStringStatsSummary;
-    std::unique_ptr<QgsDateTimeStatisticalSummary> mDateTimeStatsSummary;
+    std::unique_ptr< QgsStatisticalSummary > mStatsSummary;
+    std::unique_ptr< QgsStringStatisticalSummary > mStringStatsSummary;
+    std::unique_ptr< QgsDateTimeStatisticalSummary > mDateTimeStatsSummary;
 };
 
 /**
@@ -127,10 +128,11 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
     void gathererFinished();
 
   private:
+
     QgsVectorLayer *mLayer = nullptr;
 
-    QMap<int, QAction *> mStatsActions;
-    QMap<QString, QString> mLastExpression;
+    QMap< int, QAction * > mStatsActions;
+    QMap< QString, QString > mLastExpression;
     QAction *mSyncAction;
 
     void updateNumericStatistics();
@@ -150,7 +152,7 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
 
     QString mExpression;
 
-    QPointer<QgsStatisticsValueGatherer> mGatherer;
+    QPointer< QgsStatisticsValueGatherer > mGatherer;
 
     bool mPendingCalculate = false;
 };

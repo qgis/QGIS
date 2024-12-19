@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtoolzoom.h"
-#include "moc_qgslayoutviewtoolzoom.cpp"
 #include "qgslayoutviewmouseevent.h"
 #include "qgslayoutview.h"
 #include "qgslayoutviewrubberband.h"
@@ -113,7 +112,10 @@ void QgsLayoutViewToolZoom::keyPressEvent( QKeyEvent *event )
   //respond to changes in the alt key status and update cursor accordingly
   if ( !event->isAutoRepeat() )
   {
-    view()->viewport()->setCursor( ( event->modifiers() & Qt::AltModifier ) ? QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) : QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
+
+    view()->viewport()->setCursor( ( event->modifiers() & Qt::AltModifier ) ?
+                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) :
+                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
   }
   event->ignore();
 }
@@ -123,7 +125,10 @@ void QgsLayoutViewToolZoom::keyReleaseEvent( QKeyEvent *event )
   //respond to changes in the alt key status and update cursor accordingly
   if ( !event->isAutoRepeat() )
   {
-    view()->viewport()->setCursor( ( event->modifiers() & Qt::AltModifier ) ? QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) : QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
+
+    view()->viewport()->setCursor( ( event->modifiers() & Qt::AltModifier ) ?
+                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) :
+                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
   }
   event->ignore();
 }

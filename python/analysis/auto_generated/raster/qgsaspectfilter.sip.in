@@ -9,7 +9,7 @@
 
 
 
-class QgsAspectFilter : QgsDerivativeFilter
+class QgsAspectFilter: QgsDerivativeFilter
 {
 %Docstring(signature="appended")
 Calculates aspect values in a window of 3x3 cells based on first order derivatives in x- and y- directions.
@@ -23,8 +23,9 @@ Direction is clockwise starting from north.
   public:
     QgsAspectFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
 
-    virtual float processNineCellWindow( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 );
-
+     virtual float processNineCellWindow( float *x11, float *x21, float *x31,
+                                 float *x12, float *x22, float *x32,
+                                 float *x13, float *x23, float *x33 );
 
 
 };

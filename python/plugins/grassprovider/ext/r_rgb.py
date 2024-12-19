@@ -15,47 +15,45 @@
 ***************************************************************************
 """
 
-__author__ = "Médéric Ribreux"
-__date__ = "February 2016"
-__copyright__ = "(C) 2016, Médéric Ribreux"
+__author__ = 'Médéric Ribreux'
+__date__ = 'February 2016'
+__copyright__ = '(C) 2016, Médéric Ribreux'
 
 
 def processInputs(alg, parameters, context, feedback):
-    if "input" in alg.exportedLayers:
+    if 'input' in alg.exportedLayers:
         return
 
     # We need to import all the bands and color tables of the input raster
-    alg.loadRasterLayerFromParameter("input", parameters, context, False, None)
+    alg.loadRasterLayerFromParameter('input', parameters, context, False, None)
     alg.postInputs(context)
 
 
 def processCommand(alg, parameters, context, feedback):
     # if the input raster is multiband: export each component directly
-    rasterInput = alg.exportedLayers["input"]
-    raster = alg.parameterAsRasterLayer(parameters, "input", context)
-    for color in ["red", "green", "blue"]:
+    rasterInput = alg.exportedLayers['input']
+    raster = alg.parameterAsRasterLayer(parameters, 'input', context)
+    for color in ['red', 'green', 'blue']:
         alg.exportedLayers[color] = color + alg.uniqueSuffix
 
     # If the raster is not multiband, really do r.rgb
     if raster.bandCount() == 1:
-        alg.commands.append(
-            "  r.rgb input={} red={} green={} blue={} --overwrite".format(
-                rasterInput,
-                alg.exportedLayers["red"],
-                alg.exportedLayers["green"],
-                alg.exportedLayers["blue"],
-            )
-        )
+        alg.commands.append("  r.rgb input={} red={} green={} blue={} --overwrite".format(
+            rasterInput,
+            alg.exportedLayers['red'],
+            alg.exportedLayers['green'],
+            alg.exportedLayers['blue']
+        ))
 
 
 def processOutputs(alg, parameters, context, feedback):
-    raster = alg.parameterAsRasterLayer(parameters, "input", context)
+    raster = alg.parameterAsRasterLayer(parameters, 'input', context)
 
     # if the raster was monoband, export from r.rgb
-    for color in ["red", "green", "blue"]:
+    for color in ['red', 'green', 'blue']:
         fileName = alg.parameterAsOutputLayer(parameters, color, context)
         if raster.bandCount() == 1:
-            grassName = f"{color}{alg.uniqueSuffix}"
+            grassName = '{}{}'.format(color, alg.uniqueSuffix)
         else:
-            grassName = "{}.{}".format(alg.exportedLayers["input"], color)
+            grassName = '{}.{}'.format(alg.exportedLayers['input'], color)
         alg.exportRasterLayer(grassName, fileName, True)

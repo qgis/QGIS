@@ -2,5 +2,5 @@
 try:
     QgsLayoutSize.decodeSize = staticmethod(QgsLayoutSize.decodeSize)
     QgsLayoutSize.__group__ = ['layout']
-except (NameError, AttributeError):
+except NameError:
     pass

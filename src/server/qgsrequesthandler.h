@@ -38,6 +38,7 @@ class QgsServerResponse;
 class SERVER_EXPORT QgsRequestHandler
 {
   public:
+
     /**
      * Constructor
      *
@@ -154,8 +155,9 @@ class SERVER_EXPORT QgsRequestHandler
     QString mService;
     bool mExceptionRaised;
 
-    QgsServerRequest &mRequest;
-    QgsServerResponse &mResponse;
+    QgsServerRequest   &mRequest;
+    QgsServerResponse  &mResponse;
+
 };
 
 #endif

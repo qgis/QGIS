@@ -72,7 +72,7 @@ QString QgsTessellateAlgorithm::shortHelpString() const
 
 QList<int> QgsTessellateAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon );
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 QgsTessellateAlgorithm *QgsTessellateAlgorithm::createInstance() const
@@ -91,7 +91,7 @@ QgsFeatureList QgsTessellateAlgorithm::processFeature( const QgsFeature &feature
     {
       const QgsGeometry inputGeometry = f.geometry();
       bool tessellationComplete = false;
-#if ( GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR >= 11 ) || GEOS_VERSION_MAJOR > 3
+#if (GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR>=11) || GEOS_VERSION_MAJOR>3
       if ( !inputGeometry.constGet()->is3D() )
       {
         // on supported GEOS versions we prefer to use GEOS GEOSConstrainedDelaunayTriangulation
@@ -122,20 +122,19 @@ QgsFeatureList QgsTessellateAlgorithm::processFeature( const QgsFeature &feature
         // 3D case, or 2D case with unsupported GEOS version -- use less stable poly2tri backend
         const QgsRectangle bounds = f.geometry().boundingBox();
         QgsTessellator t( bounds, false );
-        t.setOutputZUp( true );
 
         if ( f.geometry().isMultipart() )
         {
-          const QgsMultiSurface *ms = qgsgeometry_cast<const QgsMultiSurface *>( f.geometry().constGet() );
+          const QgsMultiSurface *ms = qgsgeometry_cast< const QgsMultiSurface * >( f.geometry().constGet() );
           for ( int i = 0; i < ms->numGeometries(); ++i )
           {
-            const std::unique_ptr<QgsPolygon> p( qgsgeometry_cast<QgsPolygon *>( ms->geometryN( i )->segmentize() ) );
+            const std::unique_ptr< QgsPolygon > p( qgsgeometry_cast< QgsPolygon * >( ms->geometryN( i )->segmentize() ) );
             t.addPolygon( *p, 0 );
           }
         }
         else
         {
-          const std::unique_ptr<QgsPolygon> p( qgsgeometry_cast<QgsPolygon *>( f.geometry().constGet()->segmentize() ) );
+          const std::unique_ptr< QgsPolygon > p( qgsgeometry_cast< QgsPolygon * >( f.geometry().constGet()->segmentize() ) );
           t.addPolygon( *p, 0 );
         }
         QgsGeometry g( t.asMultiPolygon() );
@@ -166,3 +165,5 @@ QgsFeatureList QgsTessellateAlgorithm::processFeature( const QgsFeature &feature
 }
 
 ///@endcond
+
+

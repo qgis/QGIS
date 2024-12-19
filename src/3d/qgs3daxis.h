@@ -55,6 +55,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
 {
     Q_OBJECT
   public:
+
     /**
      * Default Qgs3DAxis constructor.
      *
@@ -64,7 +65,8 @@ class _3D_EXPORT Qgs3DAxis : public QObject
      * \param camera camera controller used to track camera movements
      * \param map 3D map settings
      */
-    Qgs3DAxis( Qgs3DMapCanvas *canvas, Qt3DCore::QEntity *parent3DScene, Qgs3DMapScene *mapScene, QgsCameraController *camera, Qgs3DMapSettings *map );
+    Qgs3DAxis( Qgs3DMapCanvas *canvas,  Qt3DCore::QEntity *parent3DScene,
+               Qgs3DMapScene *mapScene, QgsCameraController *camera, Qgs3DMapSettings *map );
     ~Qgs3DAxis() override;
 
     /**
@@ -81,11 +83,11 @@ class _3D_EXPORT Qgs3DAxis : public QObject
   public slots:
 
     //! Force update of the axis and the viewport when a setting has changed
-    void onAxisSettingsChanged();
+    void onAxisSettingsChanged( );
 
   private slots:
 
-    void onCameraUpdate();
+    void onCameraUpdate( );
     void onAxisViewportSizeUpdate( int val = 0 );
 
     // axis picking and menu
@@ -105,9 +107,10 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     void onCameraViewChangeBottom() { onCameraViewChange( 180.0f, 0.0f ); }
 
   private:
+
     void createAxisScene();
     void createAxis( Qt::Axis axis );
-    void createCube();
+    void createCube( );
     void setEnableCube( bool show );
     void setEnableAxis( bool show );
     void updateAxisLabelPosition();
@@ -120,7 +123,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     Qt3DExtras::QText2DEntity *addCubeText( const QString &text, float textHeight, float textWidth, const QFont &font, const QMatrix4x4 &rotation, const QVector3D &translation );
 
     // axis picking and menu
-    void init3DObjectPicking();
+    void init3DObjectPicking( );
     bool eventFilter( QObject *watched, QEvent *event ) override;
     void createKeyboardShortCut();
     void createMenu();
@@ -158,7 +161,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     QVector3D mPreviousVector;
     double mAxisScaleFactor = 1.0;
 
-    Qt3DRender::QCamera *mTwoDLabelCamera = nullptr;
+    Qt3DRender::QCamera *mTwoDLabelCamera  = nullptr;
     Qt3DCore::QEntity *mTwoDLabelSceneEntity = nullptr;
 
     // axis picking and menu
@@ -170,6 +173,7 @@ class _3D_EXPORT Qgs3DAxis : public QObject
     QCursor mPreviousCursor = Qt::ArrowCursor;
     Qt3DRender::QPickingSettings::PickMethod mDefaultPickingMethod;
     QMenu *mMenu = nullptr;
+
 };
 
 #endif // QGS3DAXIS_H

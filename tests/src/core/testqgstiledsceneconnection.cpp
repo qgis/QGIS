@@ -24,12 +24,13 @@ class TestQgsTiledSceneConnection : public QObject
     Q_OBJECT
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init() {}          // will be called before each testfunction is executed.
-    void cleanup() {}       // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
     void encodeDecode();
     void testConnections();
+
 };
 
 
@@ -90,7 +91,7 @@ void TestQgsTiledSceneConnection::testConnections()
   data.httpHeaders.insert( QStringLiteral( "my_header" ), QStringLiteral( "value" ) );
 
   QgsTiledSceneProviderConnection::addConnection( QStringLiteral( "my connection" ), data );
-  QCOMPARE( QgsTiledSceneProviderConnection::connectionList(), { QStringLiteral( "my connection" ) } );
+  QCOMPARE( QgsTiledSceneProviderConnection::connectionList(), {QStringLiteral( "my connection" )} );
 
   QCOMPARE( QgsTiledSceneProviderConnection::connection( QStringLiteral( "my connection" ) ).provider, QStringLiteral( "test_provider" ) );
   QCOMPARE( QgsTiledSceneProviderConnection::connection( QStringLiteral( "my connection" ) ).url, QStringLiteral( "http://testurl" ) );

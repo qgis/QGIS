@@ -66,7 +66,7 @@ QgsSetMValueAlgorithm *QgsSetMValueAlgorithm::createInstance() const
 
 bool QgsSetMValueAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
   if ( !layer )
     return false;
 
@@ -85,7 +85,7 @@ Qgis::WkbType QgsSetMValueAlgorithm::outputWkbType( Qgis::WkbType type ) const
 
 void QgsSetMValueAlgorithm::initParameters( const QVariantMap & )
 {
-  auto mValueParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "M_VALUE" ), QObject::tr( "M Value" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
+  auto mValueParam = std::make_unique < QgsProcessingParameterNumber >( QStringLiteral( "M_VALUE" ), QObject::tr( "M Value" ), Qgis::ProcessingNumberParameterType::Double, 0.0 );
   mValueParam->setIsDynamic( true );
   mValueParam->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "M_VALUE" ), QObject::tr( "M Value" ), QgsPropertyDefinition::Double ) );
   mValueParam->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -97,7 +97,7 @@ bool QgsSetMValueAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
   mMValue = parameterAsDouble( parameters, QStringLiteral( "M_VALUE" ), context );
   mDynamicMValue = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "M_VALUE" ) );
   if ( mDynamicMValue )
-    mMValueProperty = parameters.value( QStringLiteral( "M_VALUE" ) ).value<QgsProperty>();
+    mMValueProperty = parameters.value( QStringLiteral( "M_VALUE" ) ).value< QgsProperty >();
 
   return true;
 }
@@ -108,7 +108,7 @@ QgsFeatureList QgsSetMValueAlgorithm::processFeature( const QgsFeature &feature,
 
   if ( f.hasGeometry() )
   {
-    std::unique_ptr<QgsAbstractGeometry> newGeometry( f.geometry().constGet()->clone() );
+    std::unique_ptr< QgsAbstractGeometry > newGeometry( f.geometry().constGet()->clone() );
     // addMValue won't alter existing M values, so drop them first
     if ( QgsWkbTypes::hasM( newGeometry->wkbType() ) )
       newGeometry->dropMValue();

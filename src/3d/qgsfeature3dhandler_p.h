@@ -49,7 +49,7 @@ class QgsFeature3DHandler
      * Called before feature iteration starts to initialize, get required attributes.
      * \returns TRUE on success (on FALSE the handler failed to initialize and processFeature() / finalize() should not be called
      */
-    virtual bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin ) = 0;
+    virtual bool prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames ) = 0;
 
     /**
      * Called for every feature to extract information out of it into some

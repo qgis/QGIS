@@ -24,12 +24,13 @@ class TestQgsGdalCloudConnection : public QObject
     Q_OBJECT
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init() {}          // will be called before each testfunction is executed.
-    void cleanup() {}       // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
     void encodeDecode();
     void testConnections();
+
 };
 
 
@@ -57,7 +58,7 @@ void TestQgsGdalCloudConnection::encodeDecode()
   data.vsiHandler = QStringLiteral( "vsis3" );
   data.container = QStringLiteral( "my_container" );
   data.rootPath = QStringLiteral( "some/path" );
-  data.credentialOptions = QVariantMap { { "pw", QStringLiteral( "xxxx" ) }, { "key", QStringLiteral( "yyy" ) } };
+  data.credentialOptions = QVariantMap{ {"pw", QStringLiteral( "xxxx" )}, {"key", QStringLiteral( "yyy" )} };
 
   QCOMPARE( QgsGdalCloudProviderConnection::encodedUri( data ), QStringLiteral( "container=my_container&credentialOptions=key%3Dyyy%7Cpw%3Dxxxx&handler=vsis3&rootPath=some%2Fpath" ) );
 
@@ -81,10 +82,10 @@ void TestQgsGdalCloudConnection::testConnections()
   data.vsiHandler = QStringLiteral( "vsis3" );
   data.container = QStringLiteral( "my_container" );
   data.rootPath = QStringLiteral( "some/path" );
-  data.credentialOptions = QVariantMap { { "pw", QStringLiteral( "xxxx" ) }, { "key", QStringLiteral( "yyy" ) } };
+  data.credentialOptions = QVariantMap{ {"pw", QStringLiteral( "xxxx" )}, {"key", QStringLiteral( "yyy" )} };
 
   QgsGdalCloudProviderConnection::addConnection( QStringLiteral( "my connection" ), data );
-  QCOMPARE( QgsGdalCloudProviderConnection::connectionList(), { QStringLiteral( "my connection" ) } );
+  QCOMPARE( QgsGdalCloudProviderConnection::connectionList(), {QStringLiteral( "my connection" )} );
 
   QCOMPARE( QgsGdalCloudProviderConnection::connection( QStringLiteral( "my connection" ) ).vsiHandler, QStringLiteral( "vsis3" ) );
   QCOMPARE( QgsGdalCloudProviderConnection::connection( QStringLiteral( "my connection" ) ).container, QStringLiteral( "my_container" ) );
@@ -101,7 +102,7 @@ void TestQgsGdalCloudConnection::testConnections()
   data2.vsiHandler = QStringLiteral( "vsiaz" );
   data2.container = QStringLiteral( "some_container" );
   data2.rootPath = QStringLiteral( "path" );
-  data2.credentialOptions = QVariantMap { { "pw", QStringLiteral( "zzz" ) } };
+  data2.credentialOptions = QVariantMap{ {"pw", QStringLiteral( "zzz" )} };
 
   QgsGdalCloudProviderConnection conn2( QgsGdalCloudProviderConnection::encodedUri( data2 ), {} );
   QCOMPARE( conn2.uri(), QStringLiteral( "container=some_container&credentialOptions=pw%3Dzzz&handler=vsiaz&rootPath=path" ) );

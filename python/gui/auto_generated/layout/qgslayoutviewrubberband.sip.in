@@ -26,6 +26,7 @@ in various shapes, for use within :py:class:`QgsLayoutView` widgets.
       sipType = 0;
 %End
   public:
+
     QgsLayoutViewRubberBand( QgsLayoutView *view = 0 );
 %Docstring
 Constructor for QgsLayoutViewRubberBand.
@@ -118,6 +119,7 @@ a size using width and height, while circles may describe a size by radius).
 %End
 
   protected:
+
     QRectF updateRect( QPointF start, QPointF position, bool constrainSquare, bool fromCenter );
 %Docstring
 Calculates an updated bounding box rectangle from a original ``start`` position
@@ -139,6 +141,7 @@ class QgsLayoutViewRectangularRubberBand : QgsLayoutViewRubberBand
 #include "qgslayoutviewrubberband.h"
 %End
   public:
+
     QgsLayoutViewRectangularRubberBand( QgsLayoutView *view = 0 );
 %Docstring
 Constructor for QgsLayoutViewRectangularRubberBand.
@@ -167,6 +170,7 @@ class QgsLayoutViewEllipticalRubberBand : QgsLayoutViewRubberBand
 #include "qgslayoutviewrubberband.h"
 %End
   public:
+
     QgsLayoutViewEllipticalRubberBand( QgsLayoutView *view = 0 );
 %Docstring
 Constructor for QgsLayoutViewEllipticalRubberBand.
@@ -195,6 +199,7 @@ class QgsLayoutViewTriangleRubberBand : QgsLayoutViewRubberBand
 #include "qgslayoutviewrubberband.h"
 %End
   public:
+
     QgsLayoutViewTriangleRubberBand( QgsLayoutView *view = 0 );
 %Docstring
 Constructor for QgsLayoutViewTriangleRubberBand.

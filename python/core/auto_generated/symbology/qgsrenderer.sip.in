@@ -630,17 +630,6 @@ Currently clones
 .. versionadded:: 3.22
 %End
 
-    double maximumExtentBuffer( QgsRenderContext &context ) const;
-%Docstring
-Returns the maximum extent buffer found in this renderer's symbols.
-
-.. note::
-
-   Returns 0 if the renderer doesn't have any symbols.
-
-.. versionadded:: 3.42
-%End
-
   protected:
     QgsFeatureRenderer( const QString &type );
 

@@ -18,6 +18,7 @@ Class defining request with data
 #include "qgsbufferserverrequest.h"
 %End
   public:
+
     QgsBufferServerRequest( const QString &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers(), QByteArray *data = 0 );
 %Docstring
 Constructor

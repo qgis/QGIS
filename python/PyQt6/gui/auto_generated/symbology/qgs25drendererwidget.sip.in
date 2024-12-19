@@ -15,6 +15,7 @@ class Qgs25DRendererWidget : QgsRendererWidget, protected Ui::Qgs25DRendererWidg
 #include "qgs25drendererwidget.h"
 %End
   public:
+
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer /Transfer/ ) /Factory/;
 %Docstring
 Static creation method

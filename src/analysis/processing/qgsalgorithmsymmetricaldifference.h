@@ -41,6 +41,7 @@ class QgsSymmetricalDifferenceAlgorithm : public QgsProcessingAlgorithm
     QgsProcessingAlgorithm *createInstance() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
 };
 
 ///@endcond PRIVATE

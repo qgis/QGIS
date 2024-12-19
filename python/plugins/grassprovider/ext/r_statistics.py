@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Médéric Ribreux"
-__date__ = "September 2017"
-__copyright__ = "(C) 2017, Médéric Ribreux"
+__author__ = 'Médéric Ribreux'
+__date__ = 'September 2017'
+__copyright__ = '(C) 2017, Médéric Ribreux'
 
 from qgis.core import QgsProcessingParameterString
 from grassprovider.grass_utils import GrassUtils
@@ -25,16 +25,17 @@ from grassprovider.grass_utils import GrassUtils
 
 def processCommand(alg, parameters, context, feedback):
     # We had a new "output" parameter
-    out = f"output{alg.uniqueSuffix}"
-    p = QgsProcessingParameterString("~output", None, out, False, False)
+    out = 'output{}'.format(alg.uniqueSuffix)
+    p = QgsProcessingParameterString('~output', None, out, False, False)
     alg.addParameter(p)
 
     # We need to remove all outputs
     alg.processCommand(parameters, context, feedback, True)
 
     # Then we add a new command for treating results
-    calcExpression = f"correctedoutput{alg.uniqueSuffix}=@{out}"
-    command = f'r.mapcalc expression="{calcExpression}"'
+    calcExpression = 'correctedoutput{}=@{}'.format(
+        alg.uniqueSuffix, out)
+    command = 'r.mapcalc expression="{}"'.format(calcExpression)
     alg.commands.append(command)
 
 
@@ -43,7 +44,9 @@ def processOutputs(alg, parameters, context, feedback):
     metaOpt = alg.parameterAsString(parameters, alg.GRASS_RASTER_FORMAT_META, context)
 
     # Export the results from correctedoutput
-    grassName = f"correctedoutput{alg.uniqueSuffix}"
-    fileName = alg.parameterAsOutputLayer(parameters, "routput", context)
+    grassName = 'correctedoutput{}'.format(alg.uniqueSuffix)
+    fileName = alg.parameterAsOutputLayer(
+        parameters, 'routput', context)
     outFormat = GrassUtils.getRasterFormatFromFilename(fileName)
-    alg.exportRasterLayer(grassName, fileName, True, outFormat, createOpt, metaOpt)
+    alg.exportRasterLayer(grassName, fileName, True,
+                          outFormat, createOpt, metaOpt)

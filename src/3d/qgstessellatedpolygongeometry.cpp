@@ -14,13 +14,12 @@
  ***************************************************************************/
 
 #include "qgstessellatedpolygongeometry.h"
-#include "moc_qgstessellatedpolygongeometry.cpp"
 #include "qgsraycastingutils_p.h"
 #include "qgsmessagelog.h"
 
 #include <QMatrix4x4>
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 typedef Qt3DRender::QAttribute Qt3DQAttribute;
@@ -83,6 +82,42 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( bool _withNormals,
   }
 }
 
+void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygon *> &polygons, const QList<QgsFeatureId> &featureIds, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon )
+{
+  Q_ASSERT( polygons.count() == featureIds.count() );
+  mTriangleIndexStartingIndices.reserve( polygons.count() );
+  mTriangleIndexFids.reserve( polygons.count() );
+
+  QgsTessellator tessellator( origin.x(), origin.y(), mWithNormals, mInvertNormals, mAddBackFaces, false, mAddTextureCoords );
+  for ( int i = 0; i < polygons.count(); ++i )
+  {
+    Q_ASSERT( tessellator.dataVerticesCount() % 3 == 0 );
+    const uint startingTriangleIndex = static_cast<uint>( tessellator.dataVerticesCount() / 3 );
+    mTriangleIndexStartingIndices.append( startingTriangleIndex );
+    mTriangleIndexFids.append( featureIds[i] );
+
+    QgsPolygon *polygon = polygons.at( i );
+    const float extr = extrusionHeightPerPolygon.isEmpty() ? extrusionHeight : extrusionHeightPerPolygon.at( i );
+    tessellator.addPolygon( *polygon, extr );
+  }
+  if ( !tessellator.error().isEmpty() )
+  {
+    QgsMessageLog::logMessage( tessellator.error(), QObject::tr( "3D" ) );
+  }
+
+  qDeleteAll( polygons );
+
+  const QByteArray data( ( const char * )tessellator.data().constData(), tessellator.data().count() * sizeof( float ) );
+  const int nVerts = data.count() / tessellator.stride();
+
+  mVertexBuffer->setData( data );
+  mPositionAttribute->setCount( nVerts );
+  if ( mNormalAttribute )
+    mNormalAttribute->setCount( nVerts );
+  if ( mAddTextureCoords )
+    mTextureCoordsAttribute->setCount( nVerts );
+}
+
 void QgsTessellatedPolygonGeometry::setData( const QByteArray &vertexBufferData, int vertexCount, const QVector<QgsFeatureId> &triangleIndexFids, const QVector<uint> &triangleIndexStartingIndices )
 {
   mTriangleIndexStartingIndices = triangleIndexStartingIndices;
@@ -103,10 +138,10 @@ static int binary_search( uint v, const uint *data, int count )
   int idx1 = count - 1;
 
   if ( v < data[0] )
-    return -1; // not in the array
+    return -1;  // not in the array
 
   if ( v >= data[count - 1] )
-    return count - 1; // for larger values the last bin is returned
+    return count - 1;  // for larger values the last bin is returned
 
   while ( idx0 != idx1 )
   {
@@ -115,11 +150,11 @@ static int binary_search( uint v, const uint *data, int count )
     if ( pivot <= v )
     {
       if ( data[idxPivot + 1] > v )
-        return idxPivot; // we're done!
-      else               // continue searching values greater than the pivot
+        return idxPivot;   // we're done!
+      else  // continue searching values greater than the pivot
         idx0 = idxPivot;
     }
-    else // continue searching values lower than the pivot
+    else   // continue searching values lower than the pivot
       idx1 = idxPivot;
   }
   return idx0;

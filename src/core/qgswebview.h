@@ -93,11 +93,6 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
       setSource( url );
     }
 
-    QUrl url() const
-    {
-      return source();
-    }
-
     QWebPage *page() const
     {
       return mPage;

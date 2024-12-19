@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nathan.Woodrow"
-__date__ = "2015-08-11"
-__copyright__ = "Copyright 2015, The QGIS Project"
+__author__ = 'Nathan.Woodrow'
+__date__ = '2015-08-11'
+__copyright__ = 'Copyright 2015, The QGIS Project'
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QColor, QFont
@@ -46,23 +45,19 @@ class TestPyQgsConditionalStyle(QgisTestCase):
     def testDefaultStyle(self):
         style = QgsConditionalStyle()
         self.assertFalse(style.isValid())
-        style.setName("x")
+        style.setName('x')
         self.assertTrue(style.isValid())
         self.assertFalse(style.textColor().isValid())
         self.assertFalse(style.backgroundColor().isValid())
 
     def test_MatchesReturnsTrueForSimpleMatch(self):
         style = QgsConditionalStyle("@value > 10")
-        context = QgsExpressionContextUtils.createFeatureBasedContext(
-            QgsFeature(), QgsFields()
-        )
+        context = QgsExpressionContextUtils.createFeatureBasedContext(QgsFeature(), QgsFields())
         self.assertTrue(style.matches(20, context))
 
     def test_MatchesReturnsTrueForComplexMatch(self):
         style = QgsConditionalStyle("@value > 10 and @value = 20")
-        context = QgsExpressionContextUtils.createFeatureBasedContext(
-            QgsFeature(), QgsFields()
-        )
+        context = QgsExpressionContextUtils.createFeatureBasedContext(QgsFeature(), QgsFields())
         self.assertTrue(style.matches(20, context))
 
     def test_MatchesTrueForFields(self):
@@ -89,9 +84,7 @@ class TestPyQgsConditionalStyle(QgisTestCase):
         style = QgsConditionalStyle.compressStyles([])
         self.assertFalse(style.isValid())
         # invalid styles should not be compressed
-        style = QgsConditionalStyle.compressStyles(
-            [QgsConditionalStyle(), QgsConditionalStyle()]
-        )
+        style = QgsConditionalStyle.compressStyles([QgsConditionalStyle(), QgsConditionalStyle()])
         self.assertFalse(style.isValid())
 
         c = QgsConditionalStyle()
@@ -116,16 +109,16 @@ class TestPyQgsConditionalStyle(QgisTestCase):
         c2 = QgsConditionalStyle()
         self.assertEqual(c, c2)
         self.assertFalse(c != c2)
-        c.setName("n")
+        c.setName('n')
         self.assertNotEqual(c, c2)
         self.assertTrue(c != c2)
-        c2.setName("n")
+        c2.setName('n')
         self.assertEqual(c, c2)
         self.assertFalse(c != c2)
-        c.setRule("1=1")
+        c.setRule('1=1')
         self.assertNotEqual(c, c2)
         self.assertTrue(c != c2)
-        c2.setRule("1=1")
+        c2.setRule('1=1')
         self.assertEqual(c, c2)
         self.assertFalse(c != c2)
         f = QFont()
@@ -161,62 +154,36 @@ class TestPyQgsConditionalStyle(QgisTestCase):
     def testLayerStyles(self):
         styles = QgsConditionalLayerStyles()
         self.assertFalse(styles.rowStyles())
-        self.assertFalse(styles.fieldStyles("test"))
+        self.assertFalse(styles.fieldStyles('test'))
         spy = QSignalSpy(styles.changed)
 
-        styles.setRowStyles(
-            [QgsConditionalStyle("@value > 10"), QgsConditionalStyle("@value > 20")]
-        )
+        styles.setRowStyles([QgsConditionalStyle("@value > 10"), QgsConditionalStyle("@value > 20")])
         self.assertEqual(len(spy), 1)
-        self.assertEqual(
-            styles.rowStyles(),
-            [QgsConditionalStyle("@value > 10"), QgsConditionalStyle("@value > 20")],
-        )
+        self.assertEqual(styles.rowStyles(), [QgsConditionalStyle("@value > 10"), QgsConditionalStyle("@value > 20")])
         styles.setRowStyles(styles.rowStyles())
         self.assertEqual(len(spy), 1)
 
-        styles.setFieldStyles(
-            "test",
-            [QgsConditionalStyle("@value > 30"), QgsConditionalStyle("@value > 40")],
-        )
+        styles.setFieldStyles('test', [QgsConditionalStyle("@value > 30"), QgsConditionalStyle("@value > 40")])
         self.assertEqual(len(spy), 2)
-        self.assertEqual(
-            styles.fieldStyles("test"),
-            [QgsConditionalStyle("@value > 30"), QgsConditionalStyle("@value > 40")],
-        )
-        styles.setFieldStyles("test", styles.fieldStyles("test"))
+        self.assertEqual(styles.fieldStyles('test'), [QgsConditionalStyle("@value > 30"), QgsConditionalStyle("@value > 40")])
+        styles.setFieldStyles('test', styles.fieldStyles('test'))
         self.assertEqual(len(spy), 2)
-        self.assertFalse(styles.fieldStyles("test2"))
-        styles.setFieldStyles("test2", [QgsConditionalStyle("@value > 50")])
+        self.assertFalse(styles.fieldStyles('test2'))
+        styles.setFieldStyles('test2', [QgsConditionalStyle("@value > 50")])
         self.assertEqual(len(spy), 3)
-        self.assertEqual(
-            styles.fieldStyles("test"),
-            [QgsConditionalStyle("@value > 30"), QgsConditionalStyle("@value > 40")],
-        )
-        self.assertEqual(
-            styles.fieldStyles("test2"), [QgsConditionalStyle("@value > 50")]
-        )
+        self.assertEqual(styles.fieldStyles('test'), [QgsConditionalStyle("@value > 30"), QgsConditionalStyle("@value > 40")])
+        self.assertEqual(styles.fieldStyles('test2'), [QgsConditionalStyle("@value > 50")])
 
     def testRequiresGeometry(self):
 
         styles = QgsConditionalLayerStyles()
         styles.setRowStyles([QgsConditionalStyle("@value > 10")])
         self.assertFalse(styles.rulesNeedGeometry())
-        styles.setRowStyles(
-            [
-                QgsConditionalStyle("@value > 10"),
-                QgsConditionalStyle("$geometry IS NULL"),
-            ]
-        )
+        styles.setRowStyles([QgsConditionalStyle("@value > 10"), QgsConditionalStyle('$geometry IS NULL')])
         self.assertTrue(styles.rulesNeedGeometry())
-        styles.setRowStyles(
-            [
-                QgsConditionalStyle("$geometry IS NULL"),
-                QgsConditionalStyle("@value > 10"),
-            ]
-        )
+        styles.setRowStyles([QgsConditionalStyle('$geometry IS NULL'), QgsConditionalStyle("@value > 10")])
         self.assertTrue(styles.rulesNeedGeometry())
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "27/10/2018"
-__copyright__ = "Copyright 2018, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '27/10/2018'
+__copyright__ = 'Copyright 2018, The QGIS Project'
 
 
 from qgis.core import (
@@ -49,39 +48,39 @@ class TestQgsDataItemProviderRegistry(QgisTestCase):
         registry = QgsDataItemProviderRegistry()
         initial_providers = registry.providers()
         self.assertTrue(initial_providers)  # we expect a bunch of default providers
-        self.assertTrue([p.name() for p in initial_providers if p.name() == "files"])
+        self.assertTrue([p.name() for p in initial_providers if p.name() == 'files'])
 
         # add a new provider
-        p1 = TestProvider("p1")
+        p1 = TestProvider('p1')
         registry.addProvider(p1)
         self.assertIn(p1, registry.providers())
 
-        p2 = TestProvider("p2")
+        p2 = TestProvider('p2')
         registry.addProvider(p2)
         self.assertIn(p1, registry.providers())
         self.assertIn(p2, registry.providers())
 
         registry.removeProvider(None)
-        p3 = TestProvider("p3")
+        p3 = TestProvider('p3')
         # not in registry yet
         registry.removeProvider(p3)
 
         registry.removeProvider(p1)
-        self.assertNotIn("p1", [p.name() for p in registry.providers()])
+        self.assertNotIn('p1', [p.name() for p in registry.providers()])
         self.assertIn(p2, registry.providers())
 
         registry.removeProvider(p2)
-        self.assertNotIn("p2", [p.name() for p in registry.providers()])
+        self.assertNotIn('p2', [p.name() for p in registry.providers()])
         self.assertEqual(registry.providers(), initial_providers)
 
     def testProviderKey(self):
         """Tests finding provider by name and return dataProviderKey"""
 
         registry = QgsDataItemProviderRegistry()
-        self.assertIsNotNone(registry.provider("PostGIS"))
-        self.assertIsNone(registry.provider("paper_and_pencil"))
-        self.assertEqual(registry.provider("PostGIS").dataProviderKey(), "postgres")
+        self.assertIsNotNone(registry.provider('PostGIS'))
+        self.assertIsNone(registry.provider('paper_and_pencil'))
+        self.assertEqual(registry.provider('PostGIS').dataProviderKey(), 'postgres')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

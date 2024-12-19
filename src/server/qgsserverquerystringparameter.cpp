@@ -15,22 +15,31 @@
  ***************************************************************************/
 
 #include "qgsserverquerystringparameter.h"
-#include "moc_qgsserverquerystringparameter.cpp"
 #include "qgsserverrequest.h"
 #include "qgsserverexception.h"
 #include "nlohmann/json.hpp"
 
-QgsServerQueryStringParameter::QgsServerQueryStringParameter( const QString name, bool required, QgsServerQueryStringParameter::Type type, const QString &description, const QVariant &defaultValue )
-  : mName( name ), mRequired( required ), mType( type ), mDescription( description ), mDefaultValue( defaultValue )
+QgsServerQueryStringParameter::QgsServerQueryStringParameter( const QString name,
+    bool required,
+    QgsServerQueryStringParameter::Type type,
+    const QString &description,
+    const QVariant &defaultValue ):
+  mName( name ),
+  mRequired( required ),
+  mType( type ),
+  mDescription( description ),
+  mDefaultValue( defaultValue )
 {
 }
 
 QgsServerQueryStringParameter::~QgsServerQueryStringParameter()
 {
+
 }
 
 QVariant QgsServerQueryStringParameter::value( const QgsServerApiContext &context ) const
 {
+
   // 1: check required
   if ( mRequired && !QUrlQuery( context.request()->url() ).hasQueryItem( mName ) )
   {
@@ -50,8 +59,9 @@ QVariant QgsServerQueryStringParameter::value( const QgsServerApiContext &contex
 
   if ( value.isValid() )
   {
+
     // 3: check type
-    const QMetaType::Type targetType { static_cast<QMetaType::Type>( mType ) };
+    const QMetaType::Type targetType { static_cast< QMetaType::Type  >( mType )};
     // Handle csv list type
     if ( mType == Type::List )
     {
@@ -66,10 +76,10 @@ QVariant QgsServerQueryStringParameter::value( const QgsServerApiContext &contex
         switch ( mType )
         {
           case Type::String:
-            value = value.toString();
+            value = value.toString( );
             break;
           case Type::Boolean:
-            value = value.toBool();
+            value = value.toBool( );
             break;
           case Type::Double:
             value = value.toDouble( &ok );
@@ -83,16 +93,16 @@ QVariant QgsServerQueryStringParameter::value( const QgsServerApiContext &contex
         }
       }
 
-      if ( !ok )
+      if ( ! ok )
       {
-        throw QgsServerApiBadRequestException( QStringLiteral( "Argument '%1' could not be converted to %2" ).arg( mName, typeName( mType ) ) );
+        throw  QgsServerApiBadRequestException( QStringLiteral( "Argument '%1' could not be converted to %2" ).arg( mName, typeName( mType ) ) );
       }
     }
 
     // 4: check custom validation
-    if ( mCustomValidator && !mCustomValidator( context, value ) )
+    if ( mCustomValidator && ! mCustomValidator( context, value ) )
     {
-      throw QgsServerApiBadRequestException( QStringLiteral( "Argument '%1' is not valid. %2" ).arg( name(), description() ) );
+      throw  QgsServerApiBadRequestException( QStringLiteral( "Argument '%1' is not valid. %2" ).arg( name(), description() ) );
     }
   }
   return value;
@@ -116,14 +126,15 @@ json QgsServerQueryStringParameter::data() const
   {
     dataType = "number";
   }
-  return {
+  return
+  {
     { "name", nameString },
     { "description", description().toStdString() },
     { "required", mRequired },
-    { "in", "query" },
-    { "style", "form" },
+    { "in", "query"},
+    { "style", "form"},
     { "explode", false },
-    { "schema", { { "type", dataType } } },
+    { "schema", {{ "type", dataType }}},
     // This is unfortunately not in OAS: { "default", mDefaultValue.toString().toStdString() }
   };
 }

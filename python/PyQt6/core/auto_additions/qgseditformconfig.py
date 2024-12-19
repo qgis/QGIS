@@ -31,13 +31,13 @@ enum.
 # --
 try:
     QgsEditFormConfig.__group__ = ['editform']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsEditFormConfig.GroupData.__group__ = ['editform']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsEditFormConfig.TabData.__group__ = ['editform']
-except (NameError, AttributeError):
+except NameError:
     pass

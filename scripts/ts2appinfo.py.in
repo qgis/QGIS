@@ -33,12 +33,8 @@ valuesNeeded = ['name', 'summary', 'description']
 for c in r:
     if c.tag in valuesNeeded:
         if not c.attrib:
-            if c.tag == 'description':
-                p = c.find('p')
-                t = p.text
-            else:
-                l = list(c)
-                t = c.text if not l else "".join([et.tostring(x).decode("utf-8") for x in l])
+            l = list(c)
+            t = c.text if not l else "".join([et.tostring(x).decode("utf-8") for x in l])
             strings[t] = {}
         else:
             r.remove(c)
@@ -73,33 +69,37 @@ for qm in sorted(glob(sys.argv[1] + "/output/i18n/qgis_*.qm")):
             continue
         strings[s][lang] = translation
 
-valuesOffered = ['name', 'summary', 'description']
+valuesOffered = ['name', 'summary']
 for c in r:
     if c.tag in valuesOffered:
         if c.attrib:
             continue
 
-        if c.tag == 'description':
-            p = c.find('p')
-            s = p.text
+        l = list(c)
+        s = c.text if not l else "".join([et.tostring(x).decode("utf-8") for x in l])
 
-            for lang in strings[s]:
-                e = et.Element('p', attrib={"xml:lang": lang})
-                e.text = strings[s][lang]
-                e.tail = p.tail
-                c.append(e)
+        for lang in strings[s]:
+            e = et.Element(c.tag, attrib={"xml:lang": lang})
+            e.text = strings[s][lang]
+            e.tail = c.tail
+            r.append(e)
 
-            if sys.version_info[:2] >= (3, 9):
-                et.indent(c, level=1)
-        else:
-            l = list(c)
-            s = c.text if not l else "".join([et.tostring(x).decode("utf-8") for x in l])
+# we need to do description separately because it's the <p> that we translate
+descriptionElement = r.find('description')
+descriptionString = None
+for c in descriptionElement.iter('p'):
+    descriptionString = et.tostring(c).decode("utf-8")
 
-            for lang in strings[s]:
-                e = et.Element(c.tag, attrib={"xml:lang": lang})
-                e.text = strings[s][lang]
-                e.tail = c.tail
-                r.append(e)
+for lang in strings[descriptionString]:
+    translated = strings[descriptionString][lang]
+    try:
+        translatedElement = et.fromstring(translated)
+        translatedElement.attrib={"xml:lang": lang}
+        translatedElement.tail = "\n    "
+        descriptionElement.append(translatedElement)
+    except:
+        print("Skipping:", lang, translated)
+        continue
 
 d.write(sys.argv[1] + "/org.qgis.qgis.appdata.xml", encoding="UTF-8", xml_declaration=True)
 

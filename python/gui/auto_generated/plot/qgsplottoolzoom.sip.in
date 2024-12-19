@@ -23,6 +23,7 @@ Plot tool for zooming into and out of the plot.
 #include "qgsplottoolzoom.h"
 %End
   public:
+
     QgsPlotToolZoom( QgsPlotCanvas *canvas /TransferThis/ );
 %Docstring
 Constructor for QgsPlotToolZoom, with the associated ``canvas``.
@@ -49,7 +50,9 @@ Constructor for QgsPlotToolZoom, with the associated ``canvas``.
 
 
 
+
   protected:
+
 
 
 };

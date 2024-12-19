@@ -13,5 +13,5 @@ try:
     QgsFileWidget.splitFilePaths = staticmethod(QgsFileWidget.splitFilePaths)
     QgsFileWidget.isMultiFiles = staticmethod(QgsFileWidget.isMultiFiles)
     QgsFileWidget.__signal_arguments__ = {'fileChanged': ['path: str']}
-except (NameError, AttributeError):
+except NameError:
     pass

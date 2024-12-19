@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Alessandro Pasotti"
-__date__ = "2019-02"
-__copyright__ = "Copyright 2019, The QGIS Project"
+__author__ = 'Alessandro Pasotti'
+__date__ = '2019-02'
+__copyright__ = 'Copyright 2019, The QGIS Project'
 
 from processing.core.Processing import Processing
 from qgis.PyQt.QtCore import QCoreApplication
@@ -23,7 +22,7 @@ from qgis.core import (
     QgsSettings,
     QgsTask,
     QgsProcessingException,
-    QgsVectorLayer,
+    QgsVectorLayer
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -33,7 +32,7 @@ start_app()
 
 class ConsoleFeedBack(QgsProcessingFeedback):
 
-    _error = ""
+    _error = ''
 
     def reportError(self, error, fatalError=False):
         self._error = error
@@ -45,27 +44,27 @@ class CrashingProcessingAlgorithm(QgsProcessingAlgorithm):
     Wrong class in factory createInstance()
     """
 
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
 
     def tr(self, string):
-        return QCoreApplication.translate("Processing", string)
+        return QCoreApplication.translate('Processing', string)
 
     def createInstance(self):
         """Wrong!"""
         return ExampleProcessingAlgorithm()  # noqa
 
     def name(self):
-        return "mycrashingscript"
+        return 'mycrashingscript'
 
     def displayName(self):
-        return self.tr("My Crashing Script")
+        return self.tr('My Crashing Script')
 
     def group(self):
-        return self.tr("Example scripts")
+        return self.tr('Example scripts')
 
     def groupId(self):
-        return "examplescripts"
+        return 'examplescripts'
 
     def shortHelpString(self):
         return self.tr("Example algorithm short description")
@@ -74,73 +73,69 @@ class CrashingProcessingAlgorithm(QgsProcessingAlgorithm):
         pass
 
     def processAlgorithm(self, parameters, context, feedback):
-        return {self.OUTPUT: "an_id"}
+        return {self.OUTPUT: 'an_id'}
 
 
 class TestAlgorithm(QgsProcessingAlgorithm):
 
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
 
     def createInstance(self):
         return TestAlgorithm()
 
     def name(self):
-        return "test"
+        return 'test'
 
     def displayName(self):
-        return "test"
+        return 'test'
 
     def group(self):
-        return "test"
+        return 'test'
 
     def groupId(self):
-        return "test"
+        return 'test'
 
     def shortHelpString(self):
-        return "test"
+        return 'test'
 
     def initAlgorithm(self, config=None):
         pass
 
     def processAlgorithm(self, parameters, context, feedback):
-        context.temporaryLayerStore().addMapLayer(
-            QgsVectorLayer("Point?crs=epsg:3111", "v1", "memory")
-        )
-        return {self.OUTPUT: "an_id"}
+        context.temporaryLayerStore().addMapLayer(QgsVectorLayer("Point?crs=epsg:3111", "v1", "memory"))
+        return {self.OUTPUT: 'an_id'}
 
 
 class ExceptionAlgorithm(QgsProcessingAlgorithm):
 
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
 
     def createInstance(self):
         return ExceptionAlgorithm()
 
     def name(self):
-        return "test"
+        return 'test'
 
     def displayName(self):
-        return "test"
+        return 'test'
 
     def group(self):
-        return "test"
+        return 'test'
 
     def groupId(self):
-        return "test"
+        return 'test'
 
     def shortHelpString(self):
-        return "test"
+        return 'test'
 
     def initAlgorithm(self, config=None):
         pass
 
     def processAlgorithm(self, parameters, context, feedback):
-        context.temporaryLayerStore().addMapLayer(
-            QgsVectorLayer("Point?crs=epsg:3111", "v1", "memory")
-        )
-        raise QgsProcessingException("error")
+        context.temporaryLayerStore().addMapLayer(QgsVectorLayer("Point?crs=epsg:3111", "v1", "memory"))
+        raise QgsProcessingException('error')
 
 
 class TestQgsProcessingAlgRunner(QgisTestCase):
@@ -150,7 +145,8 @@ class TestQgsProcessingAlgRunner(QgisTestCase):
         """Run before all tests"""
         super().setUpClass()
         QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsProcessingInPlace.com")
+        QCoreApplication.setOrganizationDomain(
+            "QGIS_TestPyQgsProcessingInPlace.com")
         QCoreApplication.setApplicationName("QGIS_TestPyQgsProcessingInPlace")
         QgsSettings().clear()
         Processing.initialize()
@@ -161,118 +157,41 @@ class TestQgsProcessingAlgRunner(QgisTestCase):
         """
         Test task flags
         """
-        thread_safe_alg = QgsApplication.processingRegistry().algorithmById(
-            "native:buffer"
-        )
-        nonthread_safe_alg = QgsApplication.processingRegistry().algorithmById(
-            "native:setprojectvariable"
-        )
+        thread_safe_alg = QgsApplication.processingRegistry().algorithmById('native:buffer')
+        nonthread_safe_alg = QgsApplication.processingRegistry().algorithmById('native:setprojectvariable')
         context = QgsProcessingContext()
         context.setProject(QgsProject.instance())
         feedback = ConsoleFeedBack()
 
-        task = QgsProcessingAlgRunnerTask(
-            thread_safe_alg, {}, context=context, feedback=feedback
-        )
+        task = QgsProcessingAlgRunnerTask(thread_safe_alg, {}, context=context, feedback=feedback)
         self.assertEqual(task.flags(), QgsTask.Flag.CanCancel)
-        task = QgsProcessingAlgRunnerTask(
-            thread_safe_alg,
-            {},
-            context=context,
-            feedback=feedback,
-            flags=QgsTask.Flags(),
-        )
+        task = QgsProcessingAlgRunnerTask(thread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.Flags())
         self.assertEqual(task.flags(), QgsTask.Flags())
-        task = QgsProcessingAlgRunnerTask(
-            thread_safe_alg,
-            {},
-            context=context,
-            feedback=feedback,
-            flags=QgsTask.Flag.CanCancel,
-        )
+        task = QgsProcessingAlgRunnerTask(thread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.Flag.CanCancel)
         self.assertEqual(task.flags(), QgsTask.Flag.CanCancel)
-        task = QgsProcessingAlgRunnerTask(
-            thread_safe_alg,
-            {},
-            context=context,
-            feedback=feedback,
-            flags=QgsTask.Flag.CancelWithoutPrompt,
-        )
+        task = QgsProcessingAlgRunnerTask(thread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.Flag.CancelWithoutPrompt)
         self.assertEqual(task.flags(), QgsTask.Flag.CancelWithoutPrompt)
-        task = QgsProcessingAlgRunnerTask(
-            thread_safe_alg,
-            {},
-            context=context,
-            feedback=feedback,
-            flags=QgsTask.Flag.CancelWithoutPrompt | QgsTask.Flag.CanCancel,
-        )
-        self.assertEqual(
-            task.flags(), QgsTask.Flag.CancelWithoutPrompt | QgsTask.Flag.CanCancel
-        )
+        task = QgsProcessingAlgRunnerTask(thread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.Flag.CancelWithoutPrompt | QgsTask.Flag.CanCancel)
+        self.assertEqual(task.flags(), QgsTask.Flag.CancelWithoutPrompt | QgsTask.Flag.CanCancel)
 
         # alg which can't be canceled
-        task = QgsProcessingAlgRunnerTask(
-            nonthread_safe_alg, {}, context=context, feedback=feedback
-        )
+        task = QgsProcessingAlgRunnerTask(nonthread_safe_alg, {}, context=context, feedback=feedback)
         self.assertEqual(task.flags(), QgsTask.Flags())
         # we clear the CanCancel flag automatically, since the algorithm itself cannot be canceled
-        task = QgsProcessingAlgRunnerTask(
-            nonthread_safe_alg,
-            {},
-            context=context,
-            feedback=feedback,
-            flags=QgsTask.Flag.CanCancel,
-        )
+        task = QgsProcessingAlgRunnerTask(nonthread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.Flag.CanCancel)
         self.assertEqual(task.flags(), QgsTask.Flags())
 
         # hidden task
-        task = QgsProcessingAlgRunnerTask(
-            thread_safe_alg,
-            {},
-            context=context,
-            feedback=feedback,
-            flags=QgsTask.Flag.Hidden,
-        )
+        task = QgsProcessingAlgRunnerTask(thread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.Flag.Hidden)
         self.assertEqual(task.flags(), QgsTask.Flag.Hidden)
-        task = QgsProcessingAlgRunnerTask(
-            thread_safe_alg,
-            {},
-            context=context,
-            feedback=feedback,
-            flags=QgsTask.Flag.Hidden | QgsTask.Flag.CanCancel,
-        )
+        task = QgsProcessingAlgRunnerTask(thread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.Flag.Hidden | QgsTask.Flag.CanCancel)
         self.assertEqual(task.flags(), QgsTask.Flag.Hidden | QgsTask.Flag.CanCancel)
-        task = QgsProcessingAlgRunnerTask(
-            thread_safe_alg,
-            {},
-            context=context,
-            feedback=feedback,
-            flags=QgsTask.Flag.Hidden
-            | QgsTask.Flag.CanCancel
-            | QgsTask.Flag.CancelWithoutPrompt,
-        )
-        self.assertEqual(
-            task.flags(),
-            QgsTask.Flag.Hidden
-            | QgsTask.Flag.CanCancel
-            | QgsTask.Flag.CancelWithoutPrompt,
-        )
+        task = QgsProcessingAlgRunnerTask(thread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.Flag.Hidden | QgsTask.Flag.CanCancel | QgsTask.Flag.CancelWithoutPrompt)
+        self.assertEqual(task.flags(), QgsTask.Flag.Hidden | QgsTask.Flag.CanCancel | QgsTask.Flag.CancelWithoutPrompt)
 
-        task = QgsProcessingAlgRunnerTask(
-            nonthread_safe_alg,
-            {},
-            context=context,
-            feedback=feedback,
-            flags=QgsTask.Flag.Hidden,
-        )
+        task = QgsProcessingAlgRunnerTask(nonthread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.Flag.Hidden)
         self.assertEqual(task.flags(), QgsTask.Flag.Hidden)
-        task = QgsProcessingAlgRunnerTask(
-            nonthread_safe_alg,
-            {},
-            context=context,
-            feedback=feedback,
-            flags=QgsTask.Flag.Hidden | QgsTask.Flag.CanCancel,
-        )
+        task = QgsProcessingAlgRunnerTask(nonthread_safe_alg, {}, context=context, feedback=feedback, flags=QgsTask.Flag.Hidden | QgsTask.Flag.CanCancel)
         self.assertEqual(task.flags(), QgsTask.Flag.Hidden)
 
     def test_bad_script_dont_crash(self):  # spellok
@@ -282,13 +201,9 @@ class TestQgsProcessingAlgRunner(QgisTestCase):
         context.setProject(QgsProject.instance())
         feedback = ConsoleFeedBack()
 
-        task = QgsProcessingAlgRunnerTask(
-            CrashingProcessingAlgorithm(), {}, context=context, feedback=feedback
-        )
+        task = QgsProcessingAlgRunnerTask(CrashingProcessingAlgorithm(), {}, context=context, feedback=feedback)
         self.assertTrue(task.isCanceled())
-        self.assertIn(
-            "name 'ExampleProcessingAlgorithm' is not defined", feedback._error
-        )
+        self.assertIn('name \'ExampleProcessingAlgorithm\' is not defined', feedback._error)
 
     def test_good(self):
         """
@@ -299,9 +214,7 @@ class TestQgsProcessingAlgRunner(QgisTestCase):
         context.setProject(QgsProject.instance())
         feedback = ConsoleFeedBack()
 
-        task = QgsProcessingAlgRunnerTask(
-            TestAlgorithm(), {}, context=context, feedback=feedback
-        )
+        task = QgsProcessingAlgRunnerTask(TestAlgorithm(), {}, context=context, feedback=feedback)
         self.assertFalse(task.isCanceled())
         TestQgsProcessingAlgRunner.finished = False
         TestQgsProcessingAlgRunner.success = None
@@ -327,9 +240,7 @@ class TestQgsProcessingAlgRunner(QgisTestCase):
         context.setProject(QgsProject.instance())
         feedback = ConsoleFeedBack()
 
-        task = QgsProcessingAlgRunnerTask(
-            ExceptionAlgorithm(), {}, context=context, feedback=feedback
-        )
+        task = QgsProcessingAlgRunnerTask(ExceptionAlgorithm(), {}, context=context, feedback=feedback)
         self.assertFalse(task.isCanceled())
         TestQgsProcessingAlgRunner.finished = False
         TestQgsProcessingAlgRunner.success = None
@@ -349,5 +260,5 @@ class TestQgsProcessingAlgRunner(QgisTestCase):
         self.assertEqual(context.temporaryLayerStore().count(), 1)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

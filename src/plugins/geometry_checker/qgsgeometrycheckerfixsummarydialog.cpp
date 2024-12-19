@@ -16,7 +16,6 @@
 
 #include "qgsgeometrycheckcontext.h"
 #include "qgsgeometrycheckerfixsummarydialog.h"
-#include "moc_qgsgeometrycheckerfixsummarydialog.cpp"
 #include "qgsgeometrychecker.h"
 #include "qgsgeometrycheck.h"
 #include "qgsfeaturepool.h"
@@ -25,7 +24,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsgeometrycheckerror.h"
 
-QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( const Statistics &stats, QgsGeometryChecker *checker, QWidget *parent )
+QgsGeometryCheckerFixSummaryDialog::QgsGeometryCheckerFixSummaryDialog( const Statistics &stats,
+    QgsGeometryChecker *checker,
+    QWidget *parent )
   : QDialog( parent )
   , mChecker( checker )
 {
@@ -115,7 +116,7 @@ void QgsGeometryCheckerFixSummaryDialog::onTableSelectionChanged( const QItemSel
   QItemSelectionModel *selModel = qobject_cast<QItemSelectionModel *>( QObject::sender() );
   const QAbstractItemModel *model = selModel->model();
 
-  for ( QTableWidget *table : { ui.tableWidgetFixedErrors, ui.tableWidgetNewErrors, ui.tableWidgetNotFixed, ui.tableWidgetObsoleteErrors } )
+  for ( QTableWidget *table : {ui.tableWidgetFixedErrors, ui.tableWidgetNewErrors, ui.tableWidgetNotFixed, ui.tableWidgetObsoleteErrors} )
   {
     if ( table->selectionModel() != selModel )
     {

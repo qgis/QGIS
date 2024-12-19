@@ -18,7 +18,6 @@
 #include "qgsexpressioncontextutils.h"
 #include "qgsexpressionutils.h"
 #include "qgslayouttable.h"
-#include "moc_qgslayouttable.cpp"
 #include "qgslayoututils.h"
 #include "qgslayouttablecolumn.h"
 #include "qgscolorutils.h"

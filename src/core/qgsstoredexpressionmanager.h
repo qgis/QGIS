@@ -66,11 +66,11 @@ class CORE_EXPORT QgsStoredExpression
      *  \param expression     expression text
      *  \param tag            category of the expression use case - default FilterExpression
      */
-    QgsStoredExpression( const QString &name, const QString &expression, Category tag = Category::FilterExpression )
-      : id( QUuid::createUuid().toString() )
-      , name( name )
-      , expression( expression )
-      , tag( tag )
+    QgsStoredExpression( QString name, QString expression, Category tag = Category::FilterExpression )
+      : id( QUuid::createUuid().toString() ),
+        name( name ),
+        expression( expression ),
+        tag( tag )
     {}
 #endif
 

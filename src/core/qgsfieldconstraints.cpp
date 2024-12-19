@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfieldconstraints.h"
-#include "moc_qgsfieldconstraints.cpp"
 
 QgsFieldConstraints::QgsFieldConstraints() = default;
 

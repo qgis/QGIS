@@ -5,9 +5,9 @@ try:
     QgsDirectoryItem.monitoringForPath = staticmethod(QgsDirectoryItem.monitoringForPath)
     QgsDirectoryItem.pathShouldByMonitoredByDefault = staticmethod(QgsDirectoryItem.pathShouldByMonitoredByDefault)
     QgsDirectoryItem.__group__ = ['browser']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsDirectoryParamWidget.__group__ = ['browser']
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -5,7 +5,6 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
 __author__ = "Matthias Kuhn"
 __date__ = "8.11.2017"
 __copyright__ = "Copyright 2017, The QGIS Project"
@@ -117,7 +116,9 @@ class TestQgsHighlight(QgisTestCase):
         symbol.setOpacity(0.3)
         layer.setRenderer(QgsSingleSymbolRenderer(symbol))
         self.assertTrue(layer.isValid())
-        self.assertTrue(self.run_test_for_layer(layer, "polygons", use_feature=False))
+        self.assertTrue(
+            self.run_test_for_layer(layer, "polygons", use_feature=False)
+        )
         self.assertTrue(
             self.run_test_for_layer(
                 layer,

@@ -18,13 +18,13 @@
 
 #include "qgsscaleutils.h"
 
-class TestQgsScaleUtils : public QObject
+class TestQgsScaleUtils: public QObject
 {
     Q_OBJECT
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
     void testMaximumScaleComparisons_data();
     void testMaximumScaleComparisons();
     void testMinimumScaleComparisons_data();
@@ -94,3 +94,7 @@ void TestQgsScaleUtils::testMinimumScaleComparisons()
 
 QGSTEST_MAIN( TestQgsScaleUtils )
 #include "testqgsscaleutils.moc"
+
+
+
+

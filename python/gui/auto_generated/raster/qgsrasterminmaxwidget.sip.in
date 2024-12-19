@@ -11,13 +11,14 @@
 
 
 
-class QgsRasterMinMaxWidget : QWidget
+class QgsRasterMinMaxWidget: QWidget
 {
 
 %TypeHeaderCode
 #include "qgsrasterminmaxwidget.h"
 %End
   public:
+
     QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRasterMinMaxWidget

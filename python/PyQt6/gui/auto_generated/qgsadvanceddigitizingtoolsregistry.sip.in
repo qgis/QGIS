@@ -22,6 +22,7 @@ Stores metadata about one advanced digitizing tool class.
 #include "qgsadvanceddigitizingtoolsregistry.h"
 %End
   public:
+
     QgsAdvancedDigitizingToolAbstractMetadata( const QString &name, const QString &visibleName, const QIcon &icon = QIcon() );
 %Docstring
 Constructor for QgsAdvancedDigitizingToolAbstractMetadata with the specified tool ``name``.
@@ -72,6 +73,7 @@ Registry of available advanced digitizing tools.
 #include "qgsadvanceddigitizingtoolsregistry.h"
 %End
   public:
+
     QgsAdvancedDigitizingToolsRegistry();
     ~QgsAdvancedDigitizingToolsRegistry();
 

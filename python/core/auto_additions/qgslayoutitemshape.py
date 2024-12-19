@@ -2,5 +2,5 @@
 try:
     QgsLayoutItemShape.create = staticmethod(QgsLayoutItemShape.create)
     QgsLayoutItemShape.__group__ = ['layout']
-except (NameError, AttributeError):
+except NameError:
     pass

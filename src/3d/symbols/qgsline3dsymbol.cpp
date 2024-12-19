@@ -23,15 +23,16 @@
 #include "qgsvectorlayerelevationproperties.h"
 
 QgsLine3DSymbol::QgsLine3DSymbol()
-  : mMaterialSettings( std::make_unique<QgsPhongMaterialSettings>() )
+  : mMaterialSettings( std::make_unique< QgsPhongMaterialSettings >() )
 {
+
 }
 
 QgsLine3DSymbol::~QgsLine3DSymbol() = default;
 
 QgsAbstract3DSymbol *QgsLine3DSymbol::clone() const
 {
-  std::unique_ptr<QgsLine3DSymbol> result = std::make_unique<QgsLine3DSymbol>();
+  std::unique_ptr< QgsLine3DSymbol > result = std::make_unique< QgsLine3DSymbol >();
   result->mAltClamping = mAltClamping;
   result->mAltBinding = mAltBinding;
   result->mWidth = mWidth;
@@ -99,17 +100,17 @@ void QgsLine3DSymbol::setMaterialSettings( QgsAbstractMaterialSettings *material
 
 QList<Qgis::GeometryType> QgsLine3DSymbol::compatibleGeometryTypes() const
 {
-  return QList<Qgis::GeometryType>() << Qgis::GeometryType::Line;
+  return QList< Qgis::GeometryType >() << Qgis::GeometryType::Line;
 }
 
 void QgsLine3DSymbol::setDefaultPropertiesFromLayer( const QgsVectorLayer *layer )
 {
-  const QgsVectorLayerElevationProperties *props = qgis::down_cast<const QgsVectorLayerElevationProperties *>( const_cast<QgsVectorLayer *>( layer )->elevationProperties() );
+  const QgsVectorLayerElevationProperties *props = qgis::down_cast< const QgsVectorLayerElevationProperties * >( const_cast< QgsVectorLayer *>( layer )->elevationProperties() );
 
   mAltClamping = props->clamping();
   mAltBinding = props->binding();
-  mExtrusionHeight = props->extrusionEnabled() ? static_cast<float>( props->extrusionHeight() ) : 0.0f;
-  mOffset = static_cast<float>( props->zOffset() );
+  mExtrusionHeight = props->extrusionEnabled() ? static_cast< float>( props->extrusionHeight() ) : 0.0f;
+  mOffset = static_cast< float >( props->zOffset() );
 }
 
 QgsAbstract3DSymbol *QgsLine3DSymbol::create()

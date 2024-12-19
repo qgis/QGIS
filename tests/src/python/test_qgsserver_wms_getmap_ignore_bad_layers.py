@@ -9,15 +9,14 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
 """
-
-__author__ = "Alessandro Pasotti"
-__date__ = "13/04/2020"
-__copyright__ = "Copyright 2020, The QGIS Project"
+__author__ = 'Alessandro Pasotti'
+__date__ = '13/04/2020'
+__copyright__ = 'Copyright 2020, The QGIS Project'
 
 import os
 
 # Needed on Qt 5 so that the serialization of XML is consistent among all executions
-os.environ["QT_HASH_SEED"] = "1"
+os.environ['QT_HASH_SEED'] = '1'
 
 import urllib.error
 import urllib.parse
@@ -29,8 +28,8 @@ from qgis.testing import unittest
 from test_qgsserver import QgsServerTestBase
 
 # Strip path and content length because path may vary
-RE_STRIP_UNCHECKABLE = rb'MAP=[^"]+|Content-Length: \d+'
-RE_ATTRIBUTES = rb"[^>\s]+=[^>\s]+"
+RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'
+RE_ATTRIBUTES = br'[^>\s]+=[^>\s]+'
 
 
 class TestQgsServerWMSGetMapIgnoreBadLayers(QgsServerTestBase):
@@ -40,47 +39,34 @@ class TestQgsServerWMSGetMapIgnoreBadLayers(QgsServerTestBase):
 
     @classmethod
     def setUpClass(cls):
-        os.environ["QGIS_SERVER_IGNORE_BAD_LAYERS"] = "true"
+        os.environ['QGIS_SERVER_IGNORE_BAD_LAYERS'] = 'true'
         super().setUpClass()
 
     def test_wms_getmap_datasource_error_ignore(self):
         """Must NOT throw a server exception if datasource if not available and QGIS_SERVER_IGNORE_BAD_LAYERS is set"""
 
-        qs = "?" + "&".join(
-            [
-                "%s=%s" % i
-                for i in list(
-                    {
-                        "MAP": urllib.parse.quote(
-                            os.path.join(
-                                self.testdata_path,
-                                "test_project_wms_invalid_layers.qgs",
-                            )
-                        ),
-                        "SERVICE": "WMS",
-                        "VERSION": "1.3.0",
-                        "REQUEST": "GetMap",
-                        "BBOX": "613402.5658687877003,5809005.018114360981,619594.408781287726,5813869.006602735259",
-                        "CRS": "EPSG:25832",
-                        "WIDTH": "429",
-                        "HEIGHT": "337",
-                        "LAYERS": "areas and symbols,osm",
-                        "STYLES": ",",
-                        "FORMAT": "image/png",
-                        "DPI": "200",
-                        "MAP_RESOLUTION": "200",
-                        "FORMAT_OPTIONS": "dpi:200",
-                    }.items()
-                )
-            ]
-        )
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(os.path.join(self.testdata_path,
+                                                   'test_project_wms_invalid_layers.qgs')),
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetMap",
+            "BBOX": "613402.5658687877003,5809005.018114360981,619594.408781287726,5813869.006602735259",
+            "CRS": "EPSG:25832",
+            "WIDTH": "429",
+            "HEIGHT": "337",
+            "LAYERS": "areas and symbols,osm",
+            "STYLES": ",",
+            "FORMAT": "image/png",
+            "DPI": "200",
+            "MAP_RESOLUTION": "200",
+            "FORMAT_OPTIONS": "dpi:200"
+        }.items())])
 
         r, h = self._result(self._execute_request(qs))
 
-        self.assertFalse(
-            "ServerException" in str(r), "Unexpected ServerException " + str(r)
-        )
+        self.assertFalse('ServerException' in str(r), 'Unexpected ServerException ' + str(r))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

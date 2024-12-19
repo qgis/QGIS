@@ -33,7 +33,10 @@ constructor.
 #include "qgscodeeditorwidget.h"
 %End
   public:
-    QgsCodeEditorWidget( QgsCodeEditor *editor /Transfer/, QgsMessageBar *messageBar = 0, QWidget *parent /TransferThis/ = 0 );
+
+    QgsCodeEditorWidget( QgsCodeEditor *editor /Transfer/,
+                         QgsMessageBar *messageBar = 0,
+                         QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCodeEditorWidget, wrapping the specified ``editor`` widget.
 

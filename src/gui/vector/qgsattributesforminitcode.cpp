@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsattributesforminitcode.h"
-#include "moc_qgsattributesforminitcode.cpp"
 #include "ui_qgsattributesforminitcode.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
@@ -46,6 +45,7 @@ void QgsAttributesFormInitCode::setCodeSource( Qgis::AttributeFormPythonInitCode
 {
   mInitCodeSourceComboBox->setCurrentIndex( mInitCodeSourceComboBox->findData( QVariant::fromValue( initCodeSource ) ) );
   mInitCodeSourceComboBox_currentIndexChanged( mInitCodeSourceComboBox->currentIndex() );
+
 }
 void QgsAttributesFormInitCode::setInitFunction( const QString &initFunction )
 {
@@ -62,7 +62,7 @@ void QgsAttributesFormInitCode::setInitCode( const QString &initCode )
 
 Qgis::AttributeFormPythonInitCodeSource QgsAttributesFormInitCode::codeSource() const
 {
-  return mInitCodeSourceComboBox->currentData().value<Qgis::AttributeFormPythonInitCodeSource>();
+  return mInitCodeSourceComboBox->currentData().value< Qgis::AttributeFormPythonInitCodeSource >();
 }
 
 QString QgsAttributesFormInitCode::initFunction() const
@@ -80,7 +80,7 @@ QString QgsAttributesFormInitCode::initCode() const
 
 void QgsAttributesFormInitCode::mInitCodeSourceComboBox_currentIndexChanged( int )
 {
-  Qgis::AttributeFormPythonInitCodeSource codeSource = mInitCodeSourceComboBox->currentData().value<Qgis::AttributeFormPythonInitCodeSource>();
+  Qgis::AttributeFormPythonInitCodeSource codeSource = mInitCodeSourceComboBox->currentData().value< Qgis::AttributeFormPythonInitCodeSource >();
   mInitFunctionContainer->setVisible( codeSource != Qgis::AttributeFormPythonInitCodeSource::NoSource );
   mInitFilePathLabel->setVisible( codeSource == Qgis::AttributeFormPythonInitCodeSource::File );
   mInitFileWidget->setVisible( codeSource == Qgis::AttributeFormPythonInitCodeSource::File );

@@ -42,6 +42,7 @@ class GUI_EXPORT QgsScrollArea : public QScrollArea
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsScrollArea.
      */
@@ -84,6 +85,7 @@ class GUI_EXPORT QgsScrollArea : public QScrollArea
     QTimer mTimer;
     ScrollAreaFilter *mFilter = nullptr;
     bool mVerticalOnly = false;
+
 };
 
 #ifndef SIP_RUN
@@ -99,7 +101,9 @@ class ScrollAreaFilter : public QObject
 {
     Q_OBJECT
   public:
-    ScrollAreaFilter( QgsScrollArea *parent = nullptr, QWidget *viewPort = nullptr );
+
+    ScrollAreaFilter( QgsScrollArea *parent = nullptr,
+                      QWidget *viewPort = nullptr );
 
   protected:
     bool eventFilter( QObject *obj, QEvent *event ) override;
@@ -112,6 +116,7 @@ class ScrollAreaFilter : public QObject
 
     void addChild( QObject *child );
     void removeChild( QObject *child );
+
 };
 
 ///@endcond PRIVATE

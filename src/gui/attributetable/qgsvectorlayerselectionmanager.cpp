@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerselectionmanager.h"
-#include "moc_qgsvectorlayerselectionmanager.cpp"
 
 #include "qgsvectorlayer.h"
 

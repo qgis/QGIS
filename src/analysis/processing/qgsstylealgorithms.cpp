@@ -28,7 +28,8 @@ void QgsCombineStylesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "INPUT" ), QObject::tr( "Input databases" ), Qgis::ProcessingSourceType::File ) );
 
-  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output style database" ), QObject::tr( "Style files (*.xml)" ) ) );
+  addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Output style database" ),
+                QObject::tr( "Style files (*.xml)" ) ) );
 
   const QStringList options = QStringList()
                               << QObject::tr( "Symbols" )
@@ -87,8 +88,8 @@ QVariantMap QgsCombineStylesAlgorithm::processAlgorithm( const QVariantMap &para
 {
   const QStringList inputs = parameterAsFileList( parameters, QStringLiteral( "INPUT" ), context );
 
-  QList<QgsStyle::StyleEntity> objects;
-  const QList<int> selectedObjects = parameterAsEnums( parameters, QStringLiteral( "OBJECTS" ), context );
+  QList< QgsStyle::StyleEntity > objects;
+  const QList< int > selectedObjects = parameterAsEnums( parameters, QStringLiteral( "OBJECTS" ), context );
   if ( selectedObjects.contains( 0 ) )
     objects << QgsStyle::SymbolEntity;
   if ( selectedObjects.contains( 1 ) )
@@ -102,14 +103,15 @@ QVariantMap QgsCombineStylesAlgorithm::processAlgorithm( const QVariantMap &para
   style.createMemoryDatabase();
 
   int i = 0;
-  QMap<QgsStyle::StyleEntity, QSet<QString>> usedNames;
-  auto makeUniqueName = [&usedNames]( const QString &sourceName, QgsStyle::StyleEntity type ) -> QString {
+  QMap< QgsStyle::StyleEntity, QSet< QString> > usedNames;
+  auto makeUniqueName = [&usedNames]( const QString & sourceName, QgsStyle::StyleEntity type )->QString
+  {
     QString candidate = sourceName;
     int i = 1;
     bool exists = true;
     while ( exists )
     {
-      exists = usedNames[type].contains( candidate );
+      exists = usedNames[ type ].contains( candidate );
       if ( !exists )
         break;
 
@@ -117,7 +119,7 @@ QVariantMap QgsCombineStylesAlgorithm::processAlgorithm( const QVariantMap &para
       candidate = sourceName + QStringLiteral( " (%1)" ).arg( i );
     }
 
-    usedNames[type].insert( candidate );
+    usedNames[ type ].insert( candidate );
     return candidate;
   };
 
@@ -125,7 +127,7 @@ QVariantMap QgsCombineStylesAlgorithm::processAlgorithm( const QVariantMap &para
   {
     if ( feedback )
     {
-      feedback->setProgress( 100 * i / static_cast<double>( inputs.count() ) );
+      feedback->setProgress( 100 * i / static_cast< double >( inputs.count() ) );
       feedback->pushInfo( QObject::tr( "Importing %1" ).arg( source ) );
     }
 
@@ -203,3 +205,7 @@ QVariantMap QgsCombineStylesAlgorithm::processAlgorithm( const QVariantMap &para
 }
 
 ///@endcond
+
+
+
+

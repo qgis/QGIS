@@ -49,6 +49,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsExpressionLineEdit.
      * \param parent parent widget
@@ -148,6 +149,7 @@ class GUI_EXPORT QgsExpressionLineEdit : public QWidget
     void setExpression( const QString &expression );
 
   protected:
+
     void changeEvent( QEvent *event ) override;
 
   private slots:

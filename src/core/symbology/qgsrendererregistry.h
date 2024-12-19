@@ -184,14 +184,14 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
     { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : nullptr; }
 
     //! \note not available in Python bindings
-    QgsRendererCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
+    QgsRendererCreateFunc createFunction() const { return mCreateFunc; } SIP_SKIP
     //! \note not available in Python bindings
-    QgsRendererWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
+    QgsRendererWidgetFunc widgetFunction() const { return mWidgetFunc; } SIP_SKIP
     //! \note not available in Python bindings
-    QgsRendererCreateFromSldFunc createFromSldFunction() const SIP_SKIP { return mCreateFromSldFunc; }
+    QgsRendererCreateFromSldFunc createFromSldFunction() const { return mCreateFromSldFunc; } SIP_SKIP
 
     //! \note not available in Python bindings
-    void setWidgetFunction( QgsRendererWidgetFunc f ) SIP_SKIP { mWidgetFunc = f; }
+    void setWidgetFunction( QgsRendererWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
 
     QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const override { return mLayerTypes; }
 

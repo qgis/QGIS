@@ -45,6 +45,7 @@ class QgsGpxSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsGp
 
   private:
     QString mGpxPath;
+
 };
 
 #endif // QGSGPXSOURCESELECT_H

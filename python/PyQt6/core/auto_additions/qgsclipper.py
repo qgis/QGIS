@@ -11,5 +11,5 @@ try:
     QgsClipper.trimPolygon = staticmethod(QgsClipper.trimPolygon)
     QgsClipper.clippedLine = staticmethod(QgsClipper.clippedLine)
     QgsClipper.clipLineSegment = staticmethod(QgsClipper.clipLineSegment)
-except (NameError, AttributeError):
+except NameError:
     pass

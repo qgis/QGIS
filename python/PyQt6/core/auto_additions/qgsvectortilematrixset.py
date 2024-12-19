@@ -2,5 +2,5 @@
 try:
     QgsVectorTileMatrixSet.fromWebMercator = staticmethod(QgsVectorTileMatrixSet.fromWebMercator)
     QgsVectorTileMatrixSet.__group__ = ['vectortile']
-except (NameError, AttributeError):
+except NameError:
     pass

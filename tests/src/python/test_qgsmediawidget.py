@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Mathieu Pellerin"
-__date__ = "25/01/2023"
-__copyright__ = "Copyright 2023, The QGIS Project"
+__author__ = 'Mathieu Pellerin'
+__date__ = '25/01/2023'
+__copyright__ = 'Copyright 2023, The QGIS Project'
 
 
 from qgis.gui import QgsMediaWidget
@@ -26,9 +25,9 @@ class TestQgsMediaWidget(QgisTestCase):
         """
 
         mw = QgsMediaWidget()
-        self.assertEqual(mw.mediaPath(), "")
-        mw.setMediaPath("/home/my.mp3")
-        self.assertEqual(mw.mediaPath(), "/home/my.mp3")
+        self.assertEqual(mw.mediaPath(), '')
+        mw.setMediaPath('/home/my.mp3')
+        self.assertEqual(mw.mediaPath(), '/home/my.mp3')
 
     def testMode(self):
         """
@@ -50,5 +49,5 @@ class TestQgsMediaWidget(QgisTestCase):
         self.assertEqual(mw.videoHeight(), 222)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

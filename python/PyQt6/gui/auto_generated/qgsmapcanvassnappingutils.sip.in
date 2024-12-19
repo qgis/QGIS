@@ -21,6 +21,7 @@ Snapping utils instance that is connected to a canvas and updates the configurat
 #include "qgsmapcanvassnappingutils.h"
 %End
   public:
+
     QgsMapCanvasSnappingUtils( QgsMapCanvas *canvas, QObject *parent = 0 );
 %Docstring
 Construct map canvas snapping utils object

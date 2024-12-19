@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "16/01/2017"
-__copyright__ = "Copyright 2017, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '16/01/2017'
+__copyright__ = 'Copyright 2017, The QGIS Project'
 
 from qgis.PyQt.QtCore import QDateTime, QSize
 from qgis.PyQt.QtGui import QImage, QPainter, QPainterPath
@@ -29,7 +28,7 @@ from qgis.core import (
     QgsRenderedFeatureHandlerInterface,
     QgsUnitTypes,
     QgsVectorSimplifyMethod,
-    QgsVectorLayer,
+    QgsVectorLayer
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -54,16 +53,9 @@ class TestQgsRenderContext(QgisTestCase):
         c = QgsRenderContext()
 
         c.setTextRenderFormat(QgsRenderContext.TextRenderFormat.TextFormatAlwaysText)
-        self.assertEqual(
-            c.textRenderFormat(), QgsRenderContext.TextRenderFormat.TextFormatAlwaysText
-        )
-        c.setTextRenderFormat(
-            QgsRenderContext.TextRenderFormat.TextFormatAlwaysOutlines
-        )
-        self.assertEqual(
-            c.textRenderFormat(),
-            QgsRenderContext.TextRenderFormat.TextFormatAlwaysOutlines,
-        )
+        self.assertEqual(c.textRenderFormat(), QgsRenderContext.TextRenderFormat.TextFormatAlwaysText)
+        c.setTextRenderFormat(QgsRenderContext.TextRenderFormat.TextFormatAlwaysOutlines)
+        self.assertEqual(c.textRenderFormat(), QgsRenderContext.TextRenderFormat.TextFormatAlwaysOutlines)
 
         c.setMapExtent(QgsRectangle(1, 2, 3, 4))
         self.assertEqual(c.mapExtent(), QgsRectangle(1, 2, 3, 4))
@@ -116,10 +108,7 @@ class TestQgsRenderContext(QgisTestCase):
         c1.setCurrentFrame(6)
 
         c2 = QgsRenderContext(c1)
-        self.assertEqual(
-            c2.textRenderFormat(),
-            QgsRenderContext.TextRenderFormat.TextFormatAlwaysText,
-        )
+        self.assertEqual(c2.textRenderFormat(), QgsRenderContext.TextRenderFormat.TextFormatAlwaysText)
         self.assertEqual(c2.mapExtent(), QgsRectangle(1, 2, 3, 4))
         self.assertEqual(c2.zRange(), QgsDoubleRange(1, 10))
         self.assertEqual(c2.symbologyReferenceScale(), 1000)
@@ -130,33 +119,20 @@ class TestQgsRenderContext(QgisTestCase):
         self.assertEqual(c2.frameRate(), 30)
         self.assertEqual(c2.currentFrame(), 6)
 
-        c1.setTextRenderFormat(
-            QgsRenderContext.TextRenderFormat.TextFormatAlwaysOutlines
-        )
+        c1.setTextRenderFormat(QgsRenderContext.TextRenderFormat.TextFormatAlwaysOutlines)
         c2 = QgsRenderContext(c1)
-        self.assertEqual(
-            c2.textRenderFormat(),
-            QgsRenderContext.TextRenderFormat.TextFormatAlwaysOutlines,
-        )
+        self.assertEqual(c2.textRenderFormat(), QgsRenderContext.TextRenderFormat.TextFormatAlwaysOutlines)
 
         c1.setIsTemporal(True)
-        c1.setTemporalRange(
-            QgsDateTimeRange(
-                QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)
-            )
-        )
+        c1.setTemporalRange(QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)))
         c2 = QgsRenderContext(c1)
 
         self.assertEqual(c2.isTemporal(), True)
-        self.assertEqual(
-            c2.temporalRange(),
-            QgsDateTimeRange(
-                QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)
-            ),
-        )
+        self.assertEqual(c2.temporalRange(),
+                         QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)))
 
     def testFromQPainter(self):
-        """test QgsRenderContext.fromQPainter"""
+        """ test QgsRenderContext.fromQPainter """
 
         # no painter
         c = QgsRenderContext.fromQPainter(None)
@@ -169,9 +145,7 @@ class TestQgsRenderContext(QgisTestCase):
         c = QgsRenderContext.fromQPainter(p)
         self.assertEqual(c.painter(), p)
         self.assertEqual(c.testFlag(QgsRenderContext.Flag.Antialiasing), False)
-        self.assertEqual(
-            c.testFlag(QgsRenderContext.Flag.LosslessImageRendering), False
-        )
+        self.assertEqual(c.testFlag(QgsRenderContext.Flag.LosslessImageRendering), False)
         self.assertAlmostEqual(c.scaleFactor(), 88 / 25.4, 3)
 
         # should have an invalid mapToPixel by default
@@ -192,12 +166,8 @@ class TestQgsRenderContext(QgisTestCase):
         c = QgsRenderContext.fromQPainter(p)
         self.assertEqual(c.painter(), p)
         self.assertEqual(c.testFlag(QgsRenderContext.Flag.Antialiasing), True)
-        self.assertEqual(
-            c.testFlag(QgsRenderContext.Flag.LosslessImageRendering), supports_lossless
-        )
-        self.assertAlmostEqual(
-            c.scaleFactor(), dots_per_m / 1000, 3
-        )  # scaleFactor should be pixels/mm
+        self.assertEqual(c.testFlag(QgsRenderContext.Flag.LosslessImageRendering), supports_lossless)
+        self.assertAlmostEqual(c.scaleFactor(), dots_per_m / 1000, 3)  # scaleFactor should be pixels/mm
 
     def testFromMapSettings(self):
         """
@@ -205,7 +175,7 @@ class TestQgsRenderContext(QgisTestCase):
         """
         ms = QgsMapSettings()
         ms.setOutputSize(QSize(1000, 1000))
-        ms.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:3111"))
+        ms.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3111'))
         ms.setExtent(QgsRectangle(10000, 20000, 30000, 40000))
         ms.setFlag(QgsMapSettings.Flag.Antialiasing, True)
         ms.setFlag(QgsMapSettings.Flag.LosslessImageRendering, True)
@@ -217,17 +187,14 @@ class TestQgsRenderContext(QgisTestCase):
         ms.setFrameRate(30)
         ms.setCurrentFrame(6)
 
-        layer1 = QgsVectorLayer("Point?crs=EPSG:3857", "", "memory")
-        layer2 = QgsVectorLayer("Point?crs=EPSG:3857", "", "memory")
-        layer3 = QgsVectorLayer("Point?crs=EPSG:3857", "", "memory")
+        layer1 = QgsVectorLayer('Point?crs=EPSG:3857', '', 'memory')
+        layer2 = QgsVectorLayer('Point?crs=EPSG:3857', '', 'memory')
+        layer3 = QgsVectorLayer('Point?crs=EPSG:3857', '', 'memory')
         ms.setLayers([layer1, layer2, layer3])
 
         ms.setTextRenderFormat(QgsRenderContext.TextRenderFormat.TextFormatAlwaysText)
         rc = QgsRenderContext.fromMapSettings(ms)
-        self.assertEqual(
-            rc.textRenderFormat(),
-            QgsRenderContext.TextRenderFormat.TextFormatAlwaysText,
-        )
+        self.assertEqual(rc.textRenderFormat(), QgsRenderContext.TextRenderFormat.TextFormatAlwaysText)
         self.assertTrue(rc.testFlag(QgsRenderContext.Flag.Antialiasing))
         self.assertTrue(rc.testFlag(QgsRenderContext.Flag.LosslessImageRendering))
         self.assertTrue(rc.testFlag(QgsRenderContext.Flag.Render3DMap))
@@ -239,23 +206,15 @@ class TestQgsRenderContext(QgisTestCase):
         self.assertEqual(rc.imageFormat(), QImage.Format.Format_Alpha8)
         self.assertEqual(rc.frameRate(), 30)
         self.assertEqual(rc.currentFrame(), 6)
-        self.assertEqual(
-            rc.customProperties()["visible_layer_ids"],
-            [layer1.id(), layer2.id(), layer3.id()],
-        )
+        self.assertEqual(rc.customProperties()['visible_layer_ids'], [layer1.id(), layer2.id(), layer3.id()])
 
         # should have an valid mapToPixel
         self.assertTrue(rc.mapToPixel().isValid())
 
-        ms.setTextRenderFormat(
-            QgsRenderContext.TextRenderFormat.TextFormatAlwaysOutlines
-        )
+        ms.setTextRenderFormat(QgsRenderContext.TextRenderFormat.TextFormatAlwaysOutlines)
         ms.setZRange(QgsDoubleRange())
         rc = QgsRenderContext.fromMapSettings(ms)
-        self.assertEqual(
-            rc.textRenderFormat(),
-            QgsRenderContext.TextRenderFormat.TextFormatAlwaysOutlines,
-        )
+        self.assertEqual(rc.textRenderFormat(), QgsRenderContext.TextRenderFormat.TextFormatAlwaysOutlines)
         self.assertTrue(ms.zRange().isInfinite())
 
         self.assertEqual(rc.mapExtent(), QgsRectangle(10000, 20000, 30000, 40000))
@@ -264,18 +223,10 @@ class TestQgsRenderContext(QgisTestCase):
         rc = QgsRenderContext.fromMapSettings(ms)
         self.assertEqual(rc.isTemporal(), True)
 
-        ms.setTemporalRange(
-            QgsDateTimeRange(
-                QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)
-            )
-        )
+        ms.setTemporalRange(QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)))
         rc = QgsRenderContext.fromMapSettings(ms)
-        self.assertEqual(
-            rc.temporalRange(),
-            QgsDateTimeRange(
-                QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)
-            ),
-        )
+        self.assertEqual(rc.temporalRange(),
+                         QgsDateTimeRange(QDateTime(2020, 1, 1, 0, 0), QDateTime(2010, 12, 31, 23, 59)))
 
         ms.setDpiTarget(111.1)
         rc = QgsRenderContext.fromMapSettings(ms)
@@ -286,41 +237,24 @@ class TestQgsRenderContext(QgisTestCase):
         Test vector simplification hints, ensure they are copied correctly from map settings
         """
         rc = QgsRenderContext()
-        self.assertEqual(
-            rc.vectorSimplifyMethod().simplifyHints(),
-            QgsVectorSimplifyMethod.SimplifyHint.NoSimplification,
-        )
+        self.assertEqual(rc.vectorSimplifyMethod().simplifyHints(), QgsVectorSimplifyMethod.SimplifyHint.NoSimplification)
 
         ms = QgsMapSettings()
 
         rc = QgsRenderContext.fromMapSettings(ms)
-        self.assertEqual(
-            rc.vectorSimplifyMethod().simplifyHints(),
-            QgsVectorSimplifyMethod.SimplifyHint.NoSimplification,
-        )
+        self.assertEqual(rc.vectorSimplifyMethod().simplifyHints(), QgsVectorSimplifyMethod.SimplifyHint.NoSimplification)
         rc2 = QgsRenderContext(rc)
-        self.assertEqual(
-            rc2.vectorSimplifyMethod().simplifyHints(),
-            QgsVectorSimplifyMethod.SimplifyHint.NoSimplification,
-        )
+        self.assertEqual(rc2.vectorSimplifyMethod().simplifyHints(), QgsVectorSimplifyMethod.SimplifyHint.NoSimplification)
 
         method = QgsVectorSimplifyMethod()
-        method.setSimplifyHints(
-            QgsVectorSimplifyMethod.SimplifyHint.GeometrySimplification
-        )
+        method.setSimplifyHints(QgsVectorSimplifyMethod.SimplifyHint.GeometrySimplification)
         ms.setSimplifyMethod(method)
 
         rc = QgsRenderContext.fromMapSettings(ms)
-        self.assertEqual(
-            rc.vectorSimplifyMethod().simplifyHints(),
-            QgsVectorSimplifyMethod.SimplifyHint.GeometrySimplification,
-        )
+        self.assertEqual(rc.vectorSimplifyMethod().simplifyHints(), QgsVectorSimplifyMethod.SimplifyHint.GeometrySimplification)
 
         rc2 = QgsRenderContext(rc)
-        self.assertEqual(
-            rc2.vectorSimplifyMethod().simplifyHints(),
-            QgsVectorSimplifyMethod.SimplifyHint.GeometrySimplification,
-        )
+        self.assertEqual(rc2.vectorSimplifyMethod().simplifyHints(), QgsVectorSimplifyMethod.SimplifyHint.GeometrySimplification)
 
     def test_mask_settings(self):
         """
@@ -362,16 +296,14 @@ class TestQgsRenderContext(QgisTestCase):
         self.assertTrue(rc2.hasRenderedFeatureHandlers())
 
     def testRenderMetersInMapUnits(self):
-        crs_wsg84 = QgsCoordinateReferenceSystem.fromOgcWmsCrs("EPSG:4326")
-        rt_extent = QgsRectangle(
-            13.37768985634235, 52.51625705830762, 13.37771931686235, 52.51628651882762
-        )
+        crs_wsg84 = QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4326')
+        rt_extent = QgsRectangle(13.37768985634235, 52.51625705830762, 13.37771931686235, 52.51628651882762)
         point_berlin_wsg84 = QgsPointXY(13.37770458660236, 52.51627178856762)
         length_wsg84_mapunits = 0.00001473026350140572
         meters_test = 2.40
         da_wsg84 = QgsDistanceArea()
         da_wsg84.setSourceCrs(crs_wsg84, QgsProject.instance().transformContext())
-        if da_wsg84.sourceCrs().isGeographic():
+        if (da_wsg84.sourceCrs().isGeographic()):
             da_wsg84.setEllipsoid(da_wsg84.sourceCrs().ellipsoidAcronym())
         meters_test_mapunits = meters_test * length_wsg84_mapunits
         ms = QgsMapSettings()
@@ -380,66 +312,27 @@ class TestQgsRenderContext(QgisTestCase):
         ms.setOutputSize(QSize(50, 50))
         r = QgsRenderContext.fromMapSettings(ms)
         r.setExtent(rt_extent)
-        self.assertEqual(
-            r.extent().center().toString(7), point_berlin_wsg84.toString(7)
-        )
+        self.assertEqual(r.extent().center().toString(7), point_berlin_wsg84.toString(7))
         c = QgsMapUnitScale()
         r.setDistanceArea(da_wsg84)
-        result_test_painterunits = r.convertToPainterUnits(
-            meters_test, QgsUnitTypes.RenderUnit.RenderMetersInMapUnits, c
-        )
+        result_test_painterunits = r.convertToPainterUnits(meters_test, QgsUnitTypes.RenderUnit.RenderMetersInMapUnits, c)
         self.assertAlmostEqual(result_test_painterunits, 60.0203759, 1)
-        result_test_painterunits = r.convertToPainterUnits(
-            -meters_test, QgsUnitTypes.RenderUnit.RenderMetersInMapUnits, c
-        )
+        result_test_painterunits = r.convertToPainterUnits(-meters_test, QgsUnitTypes.RenderUnit.RenderMetersInMapUnits, c)
         self.assertAlmostEqual(result_test_painterunits, -60.0203759, 1)
-        result_test_mapunits = r.convertToMapUnits(
-            meters_test, QgsUnitTypes.RenderUnit.RenderMetersInMapUnits, c
-        )
-        self.assertEqual(
-            QgsDistanceArea.formatDistance(
-                result_test_mapunits, 7, QgsUnitTypes.DistanceUnit.DistanceDegrees, True
-            ),
-            QgsDistanceArea.formatDistance(
-                meters_test_mapunits, 7, QgsUnitTypes.DistanceUnit.DistanceDegrees, True
-            ),
-        )
-        result_test_mapunits = r.convertToMapUnits(
-            -meters_test, QgsUnitTypes.RenderUnit.RenderMetersInMapUnits, c
-        )
-        self.assertEqual(
-            QgsDistanceArea.formatDistance(
-                result_test_mapunits, 7, QgsUnitTypes.DistanceUnit.DistanceDegrees, True
-            ),
-            QgsDistanceArea.formatDistance(
-                -meters_test_mapunits,
-                7,
-                QgsUnitTypes.DistanceUnit.DistanceDegrees,
-                True,
-            ),
-        )
-        result_test_meters = r.convertFromMapUnits(
-            meters_test_mapunits, QgsUnitTypes.RenderUnit.RenderMetersInMapUnits
-        )
-        self.assertEqual(
-            QgsDistanceArea.formatDistance(
-                result_test_meters, 1, QgsUnitTypes.DistanceUnit.DistanceMeters, True
-            ),
-            QgsDistanceArea.formatDistance(
-                meters_test, 1, QgsUnitTypes.DistanceUnit.DistanceMeters, True
-            ),
-        )
+        result_test_mapunits = r.convertToMapUnits(meters_test, QgsUnitTypes.RenderUnit.RenderMetersInMapUnits, c)
+        self.assertEqual(QgsDistanceArea.formatDistance(result_test_mapunits, 7, QgsUnitTypes.DistanceUnit.DistanceDegrees, True),
+                         QgsDistanceArea.formatDistance(meters_test_mapunits, 7, QgsUnitTypes.DistanceUnit.DistanceDegrees, True))
+        result_test_mapunits = r.convertToMapUnits(-meters_test, QgsUnitTypes.RenderUnit.RenderMetersInMapUnits, c)
+        self.assertEqual(QgsDistanceArea.formatDistance(result_test_mapunits, 7, QgsUnitTypes.DistanceUnit.DistanceDegrees, True),
+                         QgsDistanceArea.formatDistance(-meters_test_mapunits, 7, QgsUnitTypes.DistanceUnit.DistanceDegrees, True))
+        result_test_meters = r.convertFromMapUnits(meters_test_mapunits, QgsUnitTypes.RenderUnit.RenderMetersInMapUnits)
+        self.assertEqual(QgsDistanceArea.formatDistance(result_test_meters, 1, QgsUnitTypes.DistanceUnit.DistanceMeters, True),
+                         QgsDistanceArea.formatDistance(meters_test, 1, QgsUnitTypes.DistanceUnit.DistanceMeters, True))
 
         # attempting to convert to meters in map units when no extent is available should fallback to a very
         # approximate degrees -> meters conversion
         r.setExtent(QgsRectangle())
-        self.assertAlmostEqual(
-            r.convertToPainterUnits(
-                5555, QgsUnitTypes.RenderUnit.RenderMetersInMapUnits
-            ),
-            84692,
-            -10,
-        )
+        self.assertAlmostEqual(r.convertToPainterUnits(5555, QgsUnitTypes.RenderUnit.RenderMetersInMapUnits), 84692, -10)
 
     def testConvertSingleUnit(self):
         ms = QgsMapSettings()
@@ -601,25 +494,17 @@ class TestQgsRenderContext(QgisTestCase):
         # what else can we do?
         size = r.convertToPainterUnits(10, QgsUnitTypes.RenderUnit.RenderMapUnits, c)
         self.assertAlmostEqual(size, 41.66666, places=3)
-        size = r.convertToPainterUnits(
-            10, QgsUnitTypes.RenderUnit.RenderMetersInMapUnits, c
-        )
+        size = r.convertToPainterUnits(10, QgsUnitTypes.RenderUnit.RenderMetersInMapUnits, c)
         self.assertAlmostEqual(size, 41.66666, places=3)
 
         # sizes should be clamped to reasonable range -- we don't want to treat 2000m map unit sizes as 10 million pixels!
         size = r.convertToPainterUnits(2000, QgsUnitTypes.RenderUnit.RenderMapUnits, c)
         self.assertEqual(size, 100.0)
-        size = r.convertToPainterUnits(
-            2000, QgsUnitTypes.RenderUnit.RenderMetersInMapUnits, c
-        )
+        size = r.convertToPainterUnits(2000, QgsUnitTypes.RenderUnit.RenderMetersInMapUnits, c)
         self.assertEqual(size, 100.0)
-        size = r.convertToPainterUnits(
-            0.0002, QgsUnitTypes.RenderUnit.RenderMapUnits, c
-        )
+        size = r.convertToPainterUnits(0.0002, QgsUnitTypes.RenderUnit.RenderMapUnits, c)
         self.assertEqual(size, 10.0)
-        size = r.convertToPainterUnits(
-            0.0002, QgsUnitTypes.RenderUnit.RenderMetersInMapUnits, c
-        )
+        size = r.convertToPainterUnits(0.0002, QgsUnitTypes.RenderUnit.RenderMetersInMapUnits, c)
         self.assertEqual(size, 10.0)
 
         # normal units, should not be affected
@@ -658,50 +543,20 @@ class TestQgsRenderContext(QgisTestCase):
         self.assertAlmostEqual(size, 118.11023622047244, places=5)
 
         r.setFlag(Qgis.RenderContextFlag.RenderSymbolPreview, False)
-        size = r.convertToPainterUnits(
-            10,
-            QgsUnitTypes.RenderUnit.RenderMillimeters,
-            c,
-            Qgis.RenderSubcomponentProperty.BlurSize,
-        )
+        size = r.convertToPainterUnits(10, QgsUnitTypes.RenderUnit.RenderMillimeters, c, Qgis.RenderSubcomponentProperty.BlurSize)
         self.assertAlmostEqual(size, 118.11023622047244, places=5)
-        size = r.convertToPainterUnits(
-            10,
-            QgsUnitTypes.RenderUnit.RenderMillimeters,
-            c,
-            Qgis.RenderSubcomponentProperty.ShadowOffset,
-        )
+        size = r.convertToPainterUnits(10, QgsUnitTypes.RenderUnit.RenderMillimeters, c, Qgis.RenderSubcomponentProperty.ShadowOffset)
         self.assertAlmostEqual(size, 118.11023622047244, places=5)
-        size = r.convertToPainterUnits(
-            10,
-            QgsUnitTypes.RenderUnit.RenderMillimeters,
-            c,
-            Qgis.RenderSubcomponentProperty.GlowSpread,
-        )
+        size = r.convertToPainterUnits(10, QgsUnitTypes.RenderUnit.RenderMillimeters, c, Qgis.RenderSubcomponentProperty.GlowSpread)
         self.assertAlmostEqual(size, 118.11023622047244, places=5)
 
         # subcomponents which should be size limited in symbol previews
         r.setFlag(Qgis.RenderContextFlag.RenderSymbolPreview, True)
-        size = r.convertToPainterUnits(
-            10,
-            QgsUnitTypes.RenderUnit.RenderMillimeters,
-            c,
-            Qgis.RenderSubcomponentProperty.BlurSize,
-        )
+        size = r.convertToPainterUnits(10, QgsUnitTypes.RenderUnit.RenderMillimeters, c, Qgis.RenderSubcomponentProperty.BlurSize)
         self.assertAlmostEqual(size, 30.0, places=5)
-        size = r.convertToPainterUnits(
-            10,
-            QgsUnitTypes.RenderUnit.RenderMillimeters,
-            c,
-            Qgis.RenderSubcomponentProperty.ShadowOffset,
-        )
+        size = r.convertToPainterUnits(10, QgsUnitTypes.RenderUnit.RenderMillimeters, c, Qgis.RenderSubcomponentProperty.ShadowOffset)
         self.assertAlmostEqual(size, 100.0, places=5)
-        size = r.convertToPainterUnits(
-            10,
-            QgsUnitTypes.RenderUnit.RenderMillimeters,
-            c,
-            Qgis.RenderSubcomponentProperty.GlowSpread,
-        )
+        size = r.convertToPainterUnits(10, QgsUnitTypes.RenderUnit.RenderMillimeters, c, Qgis.RenderSubcomponentProperty.GlowSpread)
         self.assertAlmostEqual(size, 50.0, places=5)
 
     def testConvertToMapUnits(self):
@@ -718,33 +573,19 @@ class TestQgsRenderContext(QgisTestCase):
 
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderUnit.RenderMapUnits, c)
         self.assertEqual(size, 2.0)
-        self.assertEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderMapUnits), 2
-        )
+        self.assertEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderMapUnits), 2)
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderUnit.RenderMillimeters, c)
         self.assertAlmostEqual(size, 47.244094, places=5)
-        self.assertEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderMillimeters), 2
-        )
+        self.assertEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderMillimeters), 2)
         size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderUnit.RenderPoints, c)
         self.assertAlmostEqual(size, 47.2440833, places=5)
-        self.assertAlmostEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderPoints),
-            5.66929,
-            4,
-        )
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderPoints), 5.66929, 4)
         size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderUnit.RenderInches, c)
         self.assertAlmostEqual(size, 3401.574, places=5)
-        self.assertAlmostEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderInches),
-            5.66929,
-            4,
-        )
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderInches), 5.66929, 4)
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderUnit.RenderPixels, c)
         self.assertAlmostEqual(size, 4.0, places=5)
-        self.assertAlmostEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderPixels), 2, 4
-        )
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderPixels), 2, 4)
 
         # minimum size greater than the calculated size, so size should be limited to minSizeMM
         c.minSizeMM = 5
@@ -815,95 +656,53 @@ class TestQgsRenderContext(QgisTestCase):
 
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderUnit.RenderMapUnits, c)
         self.assertEqual(size, 2.0)
-        self.assertEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderMapUnits), 2
-        )
+        self.assertEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderMapUnits), 2)
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderUnit.RenderMillimeters, c)
         self.assertAlmostEqual(size, 47.244094, places=5)
-        self.assertEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderMillimeters), 2
-        )
+        self.assertEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderMillimeters), 2)
         size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderUnit.RenderPoints, c)
         self.assertAlmostEqual(size, 47.2440833, places=5)
-        self.assertAlmostEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderPoints),
-            5.66929,
-            4,
-        )
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderPoints), 5.66929, 4)
         size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderUnit.RenderInches, c)
         self.assertAlmostEqual(size, 3401.574, places=5)
-        self.assertAlmostEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderInches),
-            5.66929,
-            4,
-        )
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderInches), 5.66929, 4)
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderUnit.RenderPixels, c)
         self.assertAlmostEqual(size, 4.0, places=5)
-        self.assertAlmostEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderPixels), 2, 4
-        )
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderPixels), 2, 4)
 
         r.setRendererScale(2000)
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderUnit.RenderMapUnits, c)
         self.assertEqual(size, 2.0)
-        self.assertEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderMapUnits), 2
-        )
+        self.assertEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderMapUnits), 2)
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderUnit.RenderMillimeters, c)
         self.assertAlmostEqual(size, 47.244094 * 2, places=5)
-        self.assertEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderMillimeters), 2
-        )
+        self.assertEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderMillimeters), 2)
         size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderUnit.RenderPoints, c)
         self.assertAlmostEqual(size, 47.2440833 * 2, places=5)
-        self.assertAlmostEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderPoints),
-            5.66929,
-            4,
-        )
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderPoints), 5.66929, 4)
         size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderUnit.RenderInches, c)
         self.assertAlmostEqual(size, 3401.574 * 2, places=5)
-        self.assertAlmostEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderInches),
-            5.66929,
-            4,
-        )
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderInches), 5.66929, 4)
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderUnit.RenderPixels, c)
         self.assertAlmostEqual(size, 4.0 * 2, places=5)
-        self.assertAlmostEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderPixels), 2, 4
-        )
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderPixels), 2, 4)
 
         r.setRendererScale(500)
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderUnit.RenderMapUnits, c)
         self.assertEqual(size, 2.0)
-        self.assertEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderMapUnits), 2
-        )
+        self.assertEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderMapUnits), 2)
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderUnit.RenderMillimeters, c)
         self.assertAlmostEqual(size, 47.244094 / 2, places=5)
-        self.assertEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderMillimeters), 2
-        )
+        self.assertEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderMillimeters), 2)
         size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderUnit.RenderPoints, c)
         self.assertAlmostEqual(size, 47.2440833 / 2, places=5)
-        self.assertAlmostEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderPoints),
-            5.66929,
-            4,
-        )
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderPoints), 5.66929, 4)
         size = r.convertToMapUnits(5.66929, QgsUnitTypes.RenderUnit.RenderInches, c)
         self.assertAlmostEqual(size, 3401.574 / 2, places=5)
-        self.assertAlmostEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderInches),
-            5.66929,
-            4,
-        )
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderInches), 5.66929, 4)
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderUnit.RenderPixels, c)
         self.assertAlmostEqual(size, 4.0 / 2, places=5)
-        self.assertAlmostEqual(
-            r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderPixels), 2, 4
-        )
+        self.assertAlmostEqual(r.convertFromMapUnits(size, QgsUnitTypes.RenderUnit.RenderPixels), 2, 4)
 
     def testConvertFromPainterUnits(self):
         ms = QgsMapSettings()
@@ -1018,18 +817,18 @@ class TestQgsRenderContext(QgisTestCase):
 
     def testCustomRenderingFlags(self):
         rc = QgsRenderContext()
-        rc.setCustomRenderingFlag("myexport", True)
-        rc.setCustomRenderingFlag("omitgeometries", "points")
-        self.assertTrue(rc.customRenderingFlags()["myexport"])
-        self.assertEqual(rc.customRenderingFlags()["omitgeometries"], "points")
+        rc.setCustomRenderingFlag('myexport', True)
+        rc.setCustomRenderingFlag('omitgeometries', 'points')
+        self.assertTrue(rc.customRenderingFlags()['myexport'])
+        self.assertEqual(rc.customRenderingFlags()['omitgeometries'], 'points')
 
         # test that custom flags are correctly copied from settings
         settings = QgsMapSettings()
-        settings.setCustomRenderingFlag("myexport", True)
-        settings.setCustomRenderingFlag("omitgeometries", "points")
+        settings.setCustomRenderingFlag('myexport', True)
+        settings.setCustomRenderingFlag('omitgeometries', 'points')
         rc = QgsRenderContext.fromMapSettings(settings)
-        self.assertTrue(rc.customRenderingFlags()["myexport"])
-        self.assertEqual(rc.customRenderingFlags()["omitgeometries"], "points")
+        self.assertTrue(rc.customRenderingFlags()['myexport'])
+        self.assertEqual(rc.customRenderingFlags()['omitgeometries'], 'points')
 
     def testTemporalState(self):
         rc = QgsRenderContext()
@@ -1040,56 +839,35 @@ class TestQgsRenderContext(QgisTestCase):
         ms = QgsMapSettings()
         rc = QgsRenderContext.fromMapSettings(ms)
         self.assertFalse(rc.clippingRegions())
-        ms.addClippingRegion(
-            QgsMapClippingRegion(
-                QgsGeometry.fromWkt("Polygon(( 0 0, 1 0 , 1 1 , 0 1, 0 0 ))")
-            )
-        )
-        ms.addClippingRegion(
-            QgsMapClippingRegion(
-                QgsGeometry.fromWkt("Polygon(( 10 0, 11 0 , 11 1 , 10 1, 10 0 ))")
-            )
-        )
+        ms.addClippingRegion(QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon(( 0 0, 1 0 , 1 1 , 0 1, 0 0 ))')))
+        ms.addClippingRegion(QgsMapClippingRegion(QgsGeometry.fromWkt('Polygon(( 10 0, 11 0 , 11 1 , 10 1, 10 0 ))')))
         rc = QgsRenderContext.fromMapSettings(ms)
         self.assertEqual(len(rc.clippingRegions()), 2)
-        self.assertEqual(
-            rc.clippingRegions()[0].geometry().asWkt(),
-            "Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))",
-        )
-        self.assertEqual(
-            rc.clippingRegions()[1].geometry().asWkt(),
-            "Polygon ((10 0, 11 0, 11 1, 10 1, 10 0))",
-        )
+        self.assertEqual(rc.clippingRegions()[0].geometry().asWkt(), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
+        self.assertEqual(rc.clippingRegions()[1].geometry().asWkt(), 'Polygon ((10 0, 11 0, 11 1, 10 1, 10 0))')
 
     def testFeatureClipGeometry(self):
         rc = QgsRenderContext()
         self.assertTrue(rc.featureClipGeometry().isNull())
-        rc.setFeatureClipGeometry(
-            QgsGeometry.fromWkt("Polygon(( 0 0, 1 0 , 1 1 , 0 1, 0 0 ))")
-        )
-        self.assertEqual(
-            rc.featureClipGeometry().asWkt(), "Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))"
-        )
+        rc.setFeatureClipGeometry(QgsGeometry.fromWkt('Polygon(( 0 0, 1 0 , 1 1 , 0 1, 0 0 ))'))
+        self.assertEqual(rc.featureClipGeometry().asWkt(), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
         rc2 = QgsRenderContext(rc)
-        self.assertEqual(
-            rc2.featureClipGeometry().asWkt(), "Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))"
-        )
+        self.assertEqual(rc2.featureClipGeometry().asWkt(), 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
 
     def test_deprecated_mask_methods(self):
         rc = QgsRenderContext()
-        self.assertFalse(rc.symbolLayerClipPaths("x"))
+        self.assertFalse(rc.symbolLayerClipPaths('x'))
         path = QPainterPath()
         path.moveTo(1, 1)
         path.lineTo(1, 10)
         path.lineTo(10, 10)
         path.lineTo(10, 1)
         path.lineTo(1, 1)
-        rc.addSymbolLayerClipPath("x", path)
-        self.assertEqual(
-            [g.asWkt() for g in rc.symbolLayerClipGeometries("x")],
-            ["Polygon ((1 1, 1 10, 10 10, 10 1, 1 1))"],
-        )
-        self.assertEqual([p.elementCount() for p in rc.symbolLayerClipPaths("x")], [5])
+        rc.addSymbolLayerClipPath('x', path)
+        self.assertEqual([g.asWkt() for g in rc.symbolLayerClipGeometries('x')],
+                         ['Polygon ((1 1, 1 10, 10 10, 10 1, 1 1))'])
+        self.assertEqual([p.elementCount() for p in rc.symbolLayerClipPaths('x')],
+                         [5])
 
     def testSetPainterFlags(self):
         rc = QgsRenderContext()
@@ -1099,9 +877,7 @@ class TestQgsRenderContext(QgisTestCase):
         rc.setPainterFlagsUsingContext(p)
         self.assertFalse(p.testRenderHint(QPainter.RenderHint.Antialiasing))
         try:
-            self.assertFalse(
-                p.testRenderHint(QPainter.RenderHint.LosslessImageRendering)
-            )
+            self.assertFalse(p.testRenderHint(QPainter.RenderHint.LosslessImageRendering))
         except AttributeError:
             pass
 
@@ -1111,9 +887,7 @@ class TestQgsRenderContext(QgisTestCase):
         rc.setPainterFlagsUsingContext(p)
         self.assertTrue(p.testRenderHint(QPainter.RenderHint.Antialiasing))
         try:
-            self.assertTrue(
-                p.testRenderHint(QPainter.RenderHint.LosslessImageRendering)
-            )
+            self.assertTrue(p.testRenderHint(QPainter.RenderHint.LosslessImageRendering))
         except AttributeError:
             pass
 
@@ -1124,90 +898,56 @@ class TestQgsRenderContext(QgisTestCase):
         Test logic relating to symbol layer clip geometries.
         """
         rc = QgsRenderContext()
-        self.assertFalse(rc.symbolLayerHasClipGeometries("x"))
+        self.assertFalse(rc.symbolLayerHasClipGeometries('x'))
 
-        rc.addSymbolLayerClipGeometry(
-            "x", QgsGeometry.fromWkt("Polygon(( 0 0, 1 0 , 1 1 , 0 1, 0 0 ))")
-        )
-        self.assertTrue(rc.symbolLayerHasClipGeometries("x"))
-        self.assertFalse(rc.symbolLayerHasClipGeometries("y"))
+        rc.addSymbolLayerClipGeometry('x', QgsGeometry.fromWkt('Polygon(( 0 0, 1 0 , 1 1 , 0 1, 0 0 ))'))
+        self.assertTrue(rc.symbolLayerHasClipGeometries('x'))
+        self.assertFalse(rc.symbolLayerHasClipGeometries('y'))
 
-        self.assertEqual(
-            [g.asWkt() for g in rc.symbolLayerClipGeometries("x")],
-            ["Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))"],
-        )
-        self.assertFalse(rc.symbolLayerClipGeometries("y"))
-        rc.addSymbolLayerClipGeometry(
-            "x", QgsGeometry.fromWkt("Polygon(( 20 0, 21 0 , 21 1 , 20 1, 20 0 ))")
-        )
-        self.assertEqual(
-            [g.asWkt() for g in rc.symbolLayerClipGeometries("x")],
-            [
-                "Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))",
-                "Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))",
-            ],
-        )
-        self.assertFalse(rc.symbolLayerClipGeometries("y"))
-        rc.addSymbolLayerClipGeometry(
-            "y", QgsGeometry.fromWkt("Polygon(( 30 0, 31 0 , 31 1 , 30 1, 30 0 ))")
-        )
-        self.assertEqual(
-            [g.asWkt() for g in rc.symbolLayerClipGeometries("x")],
-            [
-                "Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))",
-                "Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))",
-            ],
-        )
-        self.assertEqual(
-            [g.asWkt() for g in rc.symbolLayerClipGeometries("y")],
-            ["Polygon ((30 0, 31 0, 31 1, 30 1, 30 0))"],
-        )
+        self.assertEqual([g.asWkt() for g in rc.symbolLayerClipGeometries('x')],
+                         ['Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))'])
+        self.assertFalse(rc.symbolLayerClipGeometries('y'))
+        rc.addSymbolLayerClipGeometry('x', QgsGeometry.fromWkt(
+            'Polygon(( 20 0, 21 0 , 21 1 , 20 1, 20 0 ))'))
+        self.assertEqual([g.asWkt() for g in rc.symbolLayerClipGeometries('x')],
+                         ['Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))',
+                          'Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))'])
+        self.assertFalse(rc.symbolLayerClipGeometries('y'))
+        rc.addSymbolLayerClipGeometry('y', QgsGeometry.fromWkt(
+            'Polygon(( 30 0, 31 0 , 31 1 , 30 1, 30 0 ))'))
+        self.assertEqual([g.asWkt() for g in rc.symbolLayerClipGeometries('x')],
+                         ['Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))',
+                          'Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))'])
+        self.assertEqual([g.asWkt() for g in rc.symbolLayerClipGeometries('y')],
+                         ['Polygon ((30 0, 31 0, 31 1, 30 1, 30 0))'])
 
         rc2 = QgsRenderContext(rc)
-        self.assertTrue(rc2.symbolLayerHasClipGeometries("x"))
-        self.assertTrue(rc2.symbolLayerHasClipGeometries("y"))
-        self.assertFalse(rc2.symbolLayerHasClipGeometries("z"))
+        self.assertTrue(rc2.symbolLayerHasClipGeometries('x'))
+        self.assertTrue(rc2.symbolLayerHasClipGeometries('y'))
+        self.assertFalse(rc2.symbolLayerHasClipGeometries('z'))
+        self.assertEqual([g.asWkt() for g in rc2.symbolLayerClipGeometries('x')],
+                         ['Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))',
+                          'Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))'])
         self.assertEqual(
-            [g.asWkt() for g in rc2.symbolLayerClipGeometries("x")],
-            [
-                "Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))",
-                "Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))",
-            ],
-        )
-        self.assertEqual(
-            [g.asWkt() for g in rc2.symbolLayerClipGeometries("y")],
-            ["Polygon ((30 0, 31 0, 31 1, 30 1, 30 0))"],
-        )
-        self.assertFalse(rc2.symbolLayerClipGeometries("z"))
+            [g.asWkt() for g in rc2.symbolLayerClipGeometries('y')],
+            ['Polygon ((30 0, 31 0, 31 1, 30 1, 30 0))'])
+        self.assertFalse(rc2.symbolLayerClipGeometries('z'))
 
         # adding multipart geometries to the render context should
         # split these to multiple separate geometries
         rc = QgsRenderContext()
-        rc.addSymbolLayerClipGeometry(
-            "x",
-            QgsGeometry.fromWkt(
-                "MultiPolygon((( 0 0, 1 0 , 1 1 , 0 1, 0 0 )),((20 0, 21 0, 21 1, 20 1, 20 0)))"
-            ),
-        )
-        self.assertEqual(
-            [g.asWkt() for g in rc.symbolLayerClipGeometries("x")],
-            [
-                "Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))",
-                "Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))",
-            ],
-        )
-        rc.addSymbolLayerClipGeometry(
-            "x", QgsGeometry.fromWkt("Polygon(( 30 0, 31 0 , 31 1 , 30 1, 30 0 ))")
-        )
-        self.assertEqual(
-            [g.asWkt() for g in rc.symbolLayerClipGeometries("x")],
-            [
-                "Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))",
-                "Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))",
-                "Polygon ((30 0, 31 0, 31 1, 30 1, 30 0))",
-            ],
-        )
+        rc.addSymbolLayerClipGeometry('x', QgsGeometry.fromWkt(
+            'MultiPolygon((( 0 0, 1 0 , 1 1 , 0 1, 0 0 )),((20 0, 21 0, 21 1, 20 1, 20 0)))'))
+        self.assertEqual([g.asWkt() for g in rc.symbolLayerClipGeometries('x')],
+                         ['Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))',
+                          'Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))'])
+        rc.addSymbolLayerClipGeometry('x', QgsGeometry.fromWkt(
+            'Polygon(( 30 0, 31 0 , 31 1 , 30 1, 30 0 ))'))
+        self.assertEqual([g.asWkt() for g in rc.symbolLayerClipGeometries('x')],
+                         ['Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))',
+                          'Polygon ((20 0, 21 0, 21 1, 20 1, 20 0))',
+                          'Polygon ((30 0, 31 0, 31 1, 30 1, 30 0))'])
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

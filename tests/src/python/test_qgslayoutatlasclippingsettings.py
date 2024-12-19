@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "(C) 2020 Nyall Dawson"
-__date__ = "03/07/2020"
-__copyright__ = "Copyright 2020, The QGIS Project"
+__author__ = '(C) 2020 Nyall Dawson'
+__date__ = '03/07/2020'
+__copyright__ = 'Copyright 2020, The QGIS Project'
 
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
@@ -47,17 +46,10 @@ class TestQgsLayoutItemMapAtlasClippingSettings(QgisTestCase):
         settings.setEnabled(True)
         self.assertEqual(len(spy), 1)
 
-        settings.setFeatureClippingType(
-            QgsMapClippingRegion.FeatureClippingType.NoClipping
-        )
-        self.assertEqual(
-            settings.featureClippingType(),
-            QgsMapClippingRegion.FeatureClippingType.NoClipping,
-        )
+        settings.setFeatureClippingType(QgsMapClippingRegion.FeatureClippingType.NoClipping)
+        self.assertEqual(settings.featureClippingType(), QgsMapClippingRegion.FeatureClippingType.NoClipping)
         self.assertEqual(len(spy), 2)
-        settings.setFeatureClippingType(
-            QgsMapClippingRegion.FeatureClippingType.NoClipping
-        )
+        settings.setFeatureClippingType(QgsMapClippingRegion.FeatureClippingType.NoClipping)
         self.assertEqual(len(spy), 2)
 
         self.assertFalse(settings.forceLabelsInsideFeature())
@@ -67,12 +59,10 @@ class TestQgsLayoutItemMapAtlasClippingSettings(QgisTestCase):
         settings.setForceLabelsInsideFeature(True)
         self.assertEqual(len(spy), 3)
 
-        l1 = QgsVectorLayer(
-            "Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory"
-        )
-        l2 = QgsVectorLayer(
-            "Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory"
-        )
+        l1 = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                            "addfeat", "memory")
+        l2 = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                            "addfeat", "memory")
         p.addMapLayers([l1, l2])
         self.assertFalse(settings.layersToClip())
         settings.setLayersToClip([l1, l2])
@@ -92,12 +82,10 @@ class TestQgsLayoutItemMapAtlasClippingSettings(QgisTestCase):
 
     def testSaveRestore(self):
         p = QgsProject()
-        l1 = QgsVectorLayer(
-            "Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory"
-        )
-        l2 = QgsVectorLayer(
-            "Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory"
-        )
+        l1 = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                            "addfeat", "memory")
+        l2 = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                            "addfeat", "memory")
         p.addMapLayers([l1, l2])
 
         l = QgsLayout(p)
@@ -105,9 +93,7 @@ class TestQgsLayoutItemMapAtlasClippingSettings(QgisTestCase):
 
         settings = map.atlasClippingSettings()
         settings.setEnabled(True)
-        settings.setFeatureClippingType(
-            QgsMapClippingRegion.FeatureClippingType.NoClipping
-        )
+        settings.setFeatureClippingType(QgsMapClippingRegion.FeatureClippingType.NoClipping)
         settings.setForceLabelsInsideFeature(True)
         settings.setRestrictToLayers(True)
         settings.setLayersToClip([l2])
@@ -122,19 +108,14 @@ class TestQgsLayoutItemMapAtlasClippingSettings(QgisTestCase):
         self.assertFalse(map2.atlasClippingSettings().enabled())
 
         # restore from xml
-        self.assertTrue(
-            map2.readXml(elem.firstChildElement(), doc, QgsReadWriteContext())
-        )
+        self.assertTrue(map2.readXml(elem.firstChildElement(), doc, QgsReadWriteContext()))
 
         self.assertTrue(map2.atlasClippingSettings().enabled())
-        self.assertEqual(
-            map2.atlasClippingSettings().featureClippingType(),
-            QgsMapClippingRegion.FeatureClippingType.NoClipping,
-        )
+        self.assertEqual(map2.atlasClippingSettings().featureClippingType(), QgsMapClippingRegion.FeatureClippingType.NoClipping)
         self.assertTrue(map2.atlasClippingSettings().forceLabelsInsideFeature())
         self.assertEqual(map2.atlasClippingSettings().layersToClip(), [l2])
         self.assertTrue(map2.atlasClippingSettings().restrictToLayers())
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

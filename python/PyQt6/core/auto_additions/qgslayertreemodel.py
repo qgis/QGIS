@@ -28,5 +28,5 @@ try:
     QgsLayerTreeModel.iconGroup = staticmethod(QgsLayerTreeModel.iconGroup)
     QgsLayerTreeModel.__signal_arguments__ = {'messageEmitted': ['message: str', 'level: Qgis.MessageLevel = Qgis.MessageLevel.Info', 'duration: int = 5']}
     QgsLayerTreeModel.__group__ = ['layertree']
-except (NameError, AttributeError):
+except NameError:
     pass

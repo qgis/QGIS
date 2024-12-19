@@ -31,6 +31,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget
 {
     Q_OBJECT
   public:
+
     /**
       * Constructor for QgsBrowserDockWidget
       * \param name name of the widget
@@ -228,6 +229,7 @@ class GUI_EXPORT QgsBrowserDockWidget : public QgsDockWidget
     void connectionsChanged();
 
   private:
+
     QgsBrowserWidget *mWidget = nullptr;
 };
 

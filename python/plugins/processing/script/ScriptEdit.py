@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Alexander Bruy"
-__date__ = "April 2013"
-__copyright__ = "(C) 2013, Alexander Bruy"
+__author__ = 'Alexander Bruy'
+__date__ = 'April 2013'
+__copyright__ = '(C) 2013, Alexander Bruy'
 
 
 from qgis.PyQt.QtCore import Qt
@@ -39,17 +39,17 @@ class ScriptEdit(QgsCodeEditorPython):
         (ctrl, shift) = (self.SCMOD_CTRL << 16, self.SCMOD_SHIFT << 16)
 
         # Disable some shortcuts
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("D") + ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("L") + ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("L") + ctrl + shift)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("T") + ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('D') + ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl
+                           + shift)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T') + ctrl)
 
         # self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Z") + ctrl)
         # self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Y") + ctrl)
 
         # Use Ctrl+Space for autocompletion
-        self.shortcutAutocomplete = QShortcut(
-            QKeySequence(Qt.Modifier.CTRL + Qt.Key.Key_Space), self
-        )
+        self.shortcutAutocomplete = QShortcut(QKeySequence(Qt.Modifier.CTRL
+                                                           + Qt.Key.Key_Space), self)
         self.shortcutAutocomplete.setContext(Qt.ShortcutContext.WidgetShortcut)
         self.shortcutAutocomplete.activated.connect(self.autoComplete)

@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsgpsdconnection.h"
-#include "moc_qgsgpsdconnection.cpp"
 #include "qgslogger.h"
 
 #include <QTcpSocket>

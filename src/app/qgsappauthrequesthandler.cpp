@@ -49,10 +49,9 @@ void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthent
   for ( ;; )
   {
     const bool ok = QgsCredentials::instance()->get(
-      QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
-      username, password,
-      QObject::tr( "Authentication required" )
-    );
+                      QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
+                      username, password,
+                      QObject::tr( "Authentication required" ) );
     if ( !ok )
       return;
 
@@ -70,8 +69,7 @@ void QgsAppAuthRequestHandler::handleAuthRequest( QNetworkReply *reply, QAuthent
       // credentials didn't change - stored ones probably wrong? clear password and retry
       QgsCredentials::instance()->put(
         QStringLiteral( "%1 at %2" ).arg( auth->realm(), reply->url().host() ),
-        username, QString()
-      );
+        username, QString() );
     }
   }
 

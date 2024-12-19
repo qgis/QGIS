@@ -29,29 +29,28 @@
 #include <qgsapplication.h>
 #include "qgsprovidermetadata.h"
 
-#define TINY_VALUE std::numeric_limits<double>::epsilon() * 20
+#define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
 
 /**
  * \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
  */
-class TestQgsWcsProvider : public QgsTest
+class TestQgsWcsProvider: public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsWcsProvider()
-      : QgsTest( QStringLiteral( "WCS provider tests" ) ) {}
+
+    TestQgsWcsProvider() : QgsTest( QStringLiteral( "WCS provider tests" ) ) {}
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init() {}          // will be called before each testfunction is executed.
-    void cleanup() {}       // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void providerUriUpdates();
     void read();
-
   private:
     bool read( const QString &identifier, const QString &wcsUri, const QString &filePath, QString &report );
     QString mTestDataDir;
@@ -80,7 +79,7 @@ void TestQgsWcsProvider::initTestCase()
   mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + "/raster";
   qDebug() << "mTestDataDir = " << mTestDataDir;
 
-  mUrl = QStringLiteral( TEST_SERVER_URL ) + "/wcs";
+  mUrl =  QStringLiteral( TEST_SERVER_URL ) + "/wcs";
 }
 
 //runs after all tests
@@ -121,7 +120,7 @@ void TestQgsWcsProvider::read()
     {
       // copy to temporary to avoid creation/changes/use of GDAL .aux.xml files
       const QString testFilePath = mTestDataDir + '/' + identifier + ".tif";
-      qDebug() << "copy " << testFilePath << " to " << tmpFilePath;
+      qDebug() << "copy " <<  testFilePath << " to " << tmpFilePath;
       if ( !QFile::copy( testFilePath, tmpFilePath ) )
       {
         mReport += QStringLiteral( "Cannot copy %1 to %2" ).arg( testFilePath, tmpFilePath );
@@ -166,7 +165,9 @@ void TestQgsWcsProvider::providerUriUpdates()
                                       "testParam=true" );
 
   QVariantMap parts = metadata->decodeUri( uriString );
-  QVariantMap expectedParts { { QString( "crs" ), QVariant( "EPSG:4326" ) }, { QString( "dpiMode" ), QVariant( "7" ) }, { QString( "testParam" ), QVariant( "true" ) }, { QString( "layers" ), QVariant( "testlayer" ) }, { QString( "styles" ), QString() }, { QString( "url" ), QVariant( "http://localhost:8380/mapserv" ) } };
+  QVariantMap expectedParts { { QString( "crs" ), QVariant( "EPSG:4326" ) },  { QString( "dpiMode" ), QVariant( "7" ) },
+    { QString( "testParam" ), QVariant( "true" ) },  { QString( "layers" ), QVariant( "testlayer" ) },
+    { QString( "styles" ), QString() },  { QString( "url" ), QVariant( "http://localhost:8380/mapserv" ) } };
   QCOMPARE( parts, expectedParts );
 
   parts["testParam"] = QVariant( "false" );
@@ -179,6 +180,7 @@ void TestQgsWcsProvider::providerUriUpdates()
                                         "testParam=false&"
                                         "url=http://localhost:8380/mapserv" );
   QCOMPARE( updatedUri, expectedUri );
+
 }
 
 

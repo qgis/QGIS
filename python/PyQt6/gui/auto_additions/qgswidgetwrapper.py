@@ -21,5 +21,5 @@ try:
     QgsWidgetWrapper.__attribute_docs__ = {'contextChanged': 'Signal when :py:class:`QgsAttributeEditorContext` mContext changed\n\n.. versionadded:: 3.4\n'}
     QgsWidgetWrapper.fromWidget = staticmethod(QgsWidgetWrapper.fromWidget)
     QgsWidgetWrapper.__group__ = ['editorwidgets', 'core']
-except (NameError, AttributeError):
+except NameError:
     pass

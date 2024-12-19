@@ -34,7 +34,9 @@
  */
 class QgsJoinByLocationAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
+
     QgsJoinByLocationAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -55,7 +57,7 @@ class QgsJoinByLocationAlgorithm : public QgsProcessingAlgorithm
     /**
      * Sorts a list of predicates so that faster ones are tested first
      */
-    static void sortPredicates( QList<int> &predicates );
+    static void sortPredicates( QList<int > &predicates );
 
     /**
      * Returns TRUE if \a feature satisfies any of the predicates.
@@ -68,6 +70,7 @@ class QgsJoinByLocationAlgorithm : public QgsProcessingAlgorithm
     bool processFeatureFromInputSource( QgsFeature &inputFeature, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
   private:
+
     void processAlgorithmByIteratingOverJoinedSource( QgsProcessingContext &context, QgsProcessingFeedback *feedback );
     void processAlgorithmByIteratingOverInputSource( QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
@@ -78,17 +81,20 @@ class QgsJoinByLocationAlgorithm : public QgsProcessingAlgorithm
       JoinToLargestOverlap = 2
     };
     long mJoinedCount = 0;
-    std::unique_ptr<QgsProcessingFeatureSource> mBaseSource;
-    std::unique_ptr<QgsProcessingFeatureSource> mJoinSource;
+    std::unique_ptr< QgsProcessingFeatureSource > mBaseSource;
+    std::unique_ptr< QgsProcessingFeatureSource > mJoinSource;
     QgsAttributeList mJoinedFieldIndices;
     bool mDiscardNonMatching = false;
-    std::unique_ptr<QgsFeatureSink> mJoinedFeatures;
+    std::unique_ptr< QgsFeatureSink > mJoinedFeatures;
     QgsFeatureIds mAddedIds;
-    std::unique_ptr<QgsFeatureSink> mUnjoinedFeatures;
+    std::unique_ptr< QgsFeatureSink > mUnjoinedFeatures;
     JoinMethod mJoinMethod = OneToMany;
     QList<int> mPredicates;
+
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMJOINBYLOCATION_H
+
+

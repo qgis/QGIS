@@ -27,6 +27,7 @@
 #include <QEventLoop>
 
 #include "qgspointcloudrequest.h"
+#include "qgsstatisticalsummary.h"
 #include "qgspointcloudstatistics.h"
 
 #define SIP_NO_FILE
@@ -34,7 +35,7 @@
 class QgsPointCloudIndex;
 class QgsPointCloudBlock;
 class QgsPointCloudAttribute;
-class QgsPointCloudNodeId;
+class IndexedPointCloudNode;
 class QgsFeedback;
 
 /**
@@ -65,7 +66,7 @@ class CORE_EXPORT QgsPointCloudStatsCalculator : public QObject
     std::unique_ptr<QgsPointCloudIndex> mIndex;
 
     QgsPointCloudStatistics mStats;
-    QSet<QgsPointCloudNodeId> mProcessedNodes;
+    QSet<IndexedPointCloudNode> mProcessedNodes;
 
     QgsPointCloudRequest mRequest;
 };

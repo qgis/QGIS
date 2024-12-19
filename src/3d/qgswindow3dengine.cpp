@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgswindow3dengine.h"
-#include "moc_qgswindow3dengine.cpp"
 
 #include <Qt3DExtras/QForwardRenderer>
 #include <Qt3DRender/QRenderSettings>

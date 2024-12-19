@@ -34,7 +34,7 @@
  * \ingroup UnitTests
  * Unit tests for QgsAuthManager
  */
-class TestQgsAuthManager : public QgsTest
+class TestQgsAuthManager: public QgsTest
 {
     Q_OBJECT
 
@@ -65,6 +65,7 @@ class TestQgsAuthManager : public QgsTest
     QString mPkiData;
     QString mTempDir;
     const char *mPass = nullptr;
+
 };
 
 
@@ -88,7 +89,8 @@ void TestQgsAuthManager::initTestCase()
   // init app and auth manager
   QgsApplication::init();
   QgsApplication::initQgis();
-  QVERIFY2( !QgsApplication::authManager()->isDisabled(), "Authentication system is DISABLED" );
+  QVERIFY2( !QgsApplication::authManager()->isDisabled(),
+            "Authentication system is DISABLED" );
 
   // verify QGIS_AUTH_DB_DIR_PATH (temp auth db path) worked
   Q_NOWARN_DEPRECATED_PUSH
@@ -99,8 +101,10 @@ void TestQgsAuthManager::initTestCase()
 
   // verify master pass can be set manually
   // (this also creates a fresh password hash in the new temp database)
-  QVERIFY2( QgsApplication::authManager()->setMasterPassword( mPass, true ), "Master password could not be set" );
-  QVERIFY2( QgsApplication::authManager()->masterPasswordIsSet(), "Auth master password not set from passed string" );
+  QVERIFY2( QgsApplication::authManager()->setMasterPassword( mPass, true ),
+            "Master password could not be set" );
+  QVERIFY2( QgsApplication::authManager()->masterPasswordIsSet(),
+            "Auth master password not set from passed string" );
 
   // create QGIS_AUTH_PASSWORD_FILE file
   const QString passfilepath = mTempDir + "/passfile";
@@ -119,10 +123,12 @@ void TestQgsAuthManager::initTestCase()
   // QTest::qSleep( 3000 );
   QgsApplication::init();
   QgsApplication::initQgis();
-  QVERIFY2( !QgsApplication::authManager()->isDisabled(), "Authentication system is DISABLED" );
+  QVERIFY2( !QgsApplication::authManager()->isDisabled(),
+            "Authentication system is DISABLED" );
 
   // verify QGIS_AUTH_PASSWORD_FILE worked, when compared against hash in db
-  QVERIFY2( QgsApplication::authManager()->masterPasswordIsSet(), "Auth master password not set from QGIS_AUTH_PASSWORD_FILE" );
+  QVERIFY2( QgsApplication::authManager()->masterPasswordIsSet(),
+            "Auth master password not set from QGIS_AUTH_PASSWORD_FILE" );
 
   // all tests should now have a valid qgis-auth.db and stored/set master password
 }
@@ -416,6 +422,7 @@ void TestQgsAuthManager::doSync()
 
 void TestQgsAuthManager::testPasswordHelper()
 {
+
   if ( QgsTest::isCIRun() )
   {
     {
@@ -432,15 +439,17 @@ void TestQgsAuthManager::testPasswordHelper()
   // It should be enabled by default
   QVERIFY( authm->passwordHelperEnabled() );
   authm->setPasswordHelperEnabled( false );
-  QVERIFY( !authm->passwordHelperEnabled() );
+  QVERIFY( ! authm->passwordHelperEnabled() );
   authm->setPasswordHelperEnabled( true );
   QVERIFY( authm->passwordHelperEnabled() );
 
   // Sync with wallet
   QVERIFY( authm->setMasterPassword( mPass, true ) );
   QVERIFY( authm->masterPasswordIsSet() );
-  QObject::connect( authm, &QgsAuthManager::passwordHelperSuccess, QApplication::instance(), &QCoreApplication::quit );
-  QObject::connect( authm, &QgsAuthManager::passwordHelperFailure, QApplication::instance(), &QCoreApplication::quit );
+  QObject::connect( authm, &QgsAuthManager::passwordHelperSuccess,
+                    QApplication::instance(), &QCoreApplication::quit );
+  QObject::connect( authm, &QgsAuthManager::passwordHelperFailure,
+                    QApplication::instance(), &QCoreApplication::quit );
   QMetaObject::invokeMethod( this, "doSync", Qt::QueuedConnection );
   qApp->exec();
   authm->clearMasterPassword();
@@ -450,8 +459,8 @@ void TestQgsAuthManager::testPasswordHelper()
   // Delete from wallet
   authm->clearMasterPassword();
   QVERIFY( authm->passwordHelperDelete() );
-  QVERIFY( !authm->setMasterPassword() );
-  QVERIFY( !authm->masterPasswordIsSet() );
+  QVERIFY( ! authm->setMasterPassword() );
+  QVERIFY( ! authm->masterPasswordIsSet() );
 
   // Re-sync
   QVERIFY( authm->setMasterPassword( mPass, true ) );
@@ -460,6 +469,7 @@ void TestQgsAuthManager::testPasswordHelper()
   authm->clearMasterPassword();
   QVERIFY( authm->setMasterPassword() );
   QVERIFY( authm->masterPasswordIsSet() );
+
 }
 
 QGSTEST_MAIN( TestQgsAuthManager )

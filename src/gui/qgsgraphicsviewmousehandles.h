@@ -25,7 +25,6 @@
 #include <QPointer>
 #include <memory>
 
-#include "qgis.h"
 #include "qgis_gui.h"
 
 class QGraphicsView;
@@ -43,10 +42,27 @@ class QInputEvent;
  *
  * \since QGIS 3.14
 */
-class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsRectItem
+class GUI_EXPORT QgsGraphicsViewMouseHandles: public QObject, public QGraphicsRectItem
 {
     Q_OBJECT
   public:
+
+    //! Describes the action (move or resize in different direction) to be done during mouse move
+    enum MouseAction
+    {
+      MoveItem,
+      ResizeUp,
+      ResizeDown,
+      ResizeLeft,
+      ResizeRight,
+      ResizeLeftUp,
+      ResizeRightUp,
+      ResizeLeftDown,
+      ResizeRightDown,
+      SelectItem,
+      NoAction
+    };
+
     enum ItemPositionMode
     {
       UpperLeft,
@@ -69,7 +85,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     QgsGraphicsViewMouseHandles( QGraphicsView *view );
 
     //! Finds out which mouse move action to choose depending on the scene cursor position
-    Qgis::MouseHandlesAction mouseActionForScenePos( QPointF sceneCoordPos );
+    QgsGraphicsViewMouseHandles::MouseAction mouseActionForScenePos( QPointF sceneCoordPos );
 
     //! Returns TRUE is user is currently dragging the handles
     bool isDragging() const { return mIsDragging; }
@@ -91,23 +107,17 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     void selectedItemRotationChanged();
 
   protected:
-    void paintInternal( QPainter *painter, bool showHandles, bool showStaticBoundingBoxes, bool showTemporaryBoundingBoxes, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr );
+
+    void paintInternal( QPainter *painter, bool showHandles, bool showStaticBoundingBoxes,
+                        bool showTemporaryBoundingBoxes, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr );
 
     //! Sets the mouse cursor for the QGraphicsView attached to the composition
     virtual void setViewportCursor( Qt::CursorShape cursor ) = 0;
 
     virtual QList<QGraphicsItem *> sceneItemsAtPoint( QPointF scenePoint ) = 0;
     virtual QList<QGraphicsItem *> selectedSceneItems( bool includeLockedItems = true ) const = 0;
-    virtual bool itemIsLocked( QGraphicsItem *item )
-    {
-      Q_UNUSED( item );
-      return false;
-    }
-    virtual bool itemIsGroupMember( QGraphicsItem *item )
-    {
-      Q_UNUSED( item );
-      return false;
-    }
+    virtual bool itemIsLocked( QGraphicsItem *item ) { Q_UNUSED( item ); return false; }
+    virtual bool itemIsGroupMember( QGraphicsItem *item ) { Q_UNUSED( item ); return false; }
     virtual QRectF itemRect( QGraphicsItem *item ) const = 0;
     virtual QRectF storedItemRect( QGraphicsItem *item ) const;
     virtual void moveItem( QGraphicsItem *item, double deltaX, double deltaY ) = 0;
@@ -134,7 +144,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     virtual QPointF snapPoint( QPointF originalPoint, SnapGuideMode mode, bool snapHorizontal = true, bool snapVertical = true );
 
     //! Collects all items from a list of \a items, exploring for any group members and adding them too
-    virtual void expandItemList( const QList<QGraphicsItem *> &items, QList<QGraphicsItem *> &collected ) const;
+    virtual void expandItemList( const QList< QGraphicsItem * > &items, QList< QGraphicsItem * > &collected ) const;
 
     void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) override;
     void hoverMoveEvent( QGraphicsSceneHoverEvent *event ) override;
@@ -161,7 +171,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     void setHandleSize( double size );
 
     //! Finds out which mouse move action to choose depending on the cursor position inside the widget
-    Qgis::MouseHandlesAction mouseActionForPosition( QPointF itemCoordPos );
+    MouseAction mouseActionForPosition( QPointF itemCoordPos );
 
     //! Calculates the distance of the mouse cursor from thed edge of the mouse handles
     QSizeF calcCursorEdgeOffset( QPointF cursorPos );
@@ -191,6 +201,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     static double relativePosition( double position, double beforeMin, double beforeMax, double afterMin, double afterMax );
 
   private:
+
     QGraphicsView *mView = nullptr;
 
     double mHandleSize = 10;
@@ -208,8 +219,7 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
     //! Start point of the last mouse move action (in scene coordinates)
     QPointF mMouseMoveStartPos;
 
-    Qgis::MouseHandlesAction mCurrentMouseMoveAction = Qgis::MouseHandlesAction::NoAction;
-    bool mDoubleClickInProgress = false;
+    MouseAction mCurrentMouseMoveAction = NoAction;
 
     //! True if user is currently dragging items
     bool mIsDragging = false;
@@ -236,6 +246,9 @@ class GUI_EXPORT QgsGraphicsViewMouseHandles : public QObject, public QGraphicsR
 
     //! Finds out the appropriate cursor for the current mouse position in the widget (e.g. move in the middle, resize at border)
     Qt::CursorShape cursorForPosition( QPointF itemCoordPos );
+
+
+
 };
 
 ///@endcond PRIVATE

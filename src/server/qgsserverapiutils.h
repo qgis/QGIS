@@ -52,7 +52,9 @@ using namespace nlohmann;
  */
 class SERVER_EXPORT QgsServerApiUtils
 {
+
   public:
+
     /**
      * Parses a comma separated \a bbox into a (possibly empty) QgsRectangle.
      *
@@ -64,7 +66,7 @@ class SERVER_EXPORT QgsServerApiUtils
      * Returns a list of temporal dimensions information for the given \a layer (either configured in wmsDimensions or the first date/datetime field)
      * \since QGIS 3.12
      */
-    static QList<QgsServerWmsDimensionProperties::WmsDimensionInfo> temporalDimensions( const QgsVectorLayer *layer );
+    static QList< QgsServerWmsDimensionProperties::WmsDimensionInfo > temporalDimensions( const QgsVectorLayer *layer );
 
     /**
      * Parses a date \a interval and returns a QgsDateRange
@@ -90,10 +92,10 @@ class SERVER_EXPORT QgsServerApiUtils
      */
     static QString fieldName( const QString &name, const QgsVectorLayer *layer ) SIP_THROW( QgsServerApiBadRequestException );
 
-    ///@cond PRIVATE
+///@cond PRIVATE
     // T is TemporalDateInterval|TemporalDateTimeInterval, T2 is QDate|QdateTime
     template<typename T, class T2> static T parseTemporalInterval( const QString &interval ) SIP_SKIP;
-    /// @endcond
+/// @endcond
 
 
     /**
@@ -175,7 +177,7 @@ class SERVER_EXPORT QgsServerApiUtils
      *
      * \note not available in Python bindings
      */
-    template<typename T>
+    template <typename T>
     static const QVector<T> publishedWfsLayers( const QgsServerApiContext &context )
     {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -189,7 +191,7 @@ class SERVER_EXPORT QgsServerApiUtils
         const auto constLayers { project->layers<T>() };
         for ( const auto &layer : constLayers )
         {
-          if ( !wfsLayerIds.contains( layer->id() ) )
+          if ( ! wfsLayerIds.contains( layer->id() ) )
           {
             continue;
           }
@@ -232,5 +234,6 @@ class SERVER_EXPORT QgsServerApiUtils
      * Appends MAP query string parameter from current \a requestUrl to the given \a path
      */
     static QString appendMapParameter( const QString &path, const QUrl &requestUrl );
+
 };
 #endif // QGSSERVERAPIUTILS_H

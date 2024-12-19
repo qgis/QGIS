@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgslayertreeregistrybridge.h"
-#include "moc_qgslayertreeregistrybridge.cpp"
 
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"

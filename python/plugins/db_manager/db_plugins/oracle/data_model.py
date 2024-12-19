@@ -23,13 +23,11 @@ The content of this file is based on
 
 from qgis.PyQt.QtCore import QElapsedTimer
 from qgis.core import QgsMessageLog
-from ..data_model import (
-    TableDataModel,
-    SqlResultModel,
-    SqlResultModelAsync,
-    SqlResultModelTask,
-    BaseTableModel,
-)
+from ..data_model import (TableDataModel,
+                          SqlResultModel,
+                          SqlResultModelAsync,
+                          SqlResultModelTask,
+                          BaseTableModel)
 from ..plugin import DbError
 from ..plugin import BaseError
 
@@ -48,38 +46,39 @@ class ORTableDataModel(TableDataModel):
 
     def _createCursor(self):
         fields_txt = ", ".join(self.fields)
-        table_txt = self.db.quoteId((self.table.schemaName(), self.table.name))
+        table_txt = self.db.quoteId(
+            (self.table.schemaName(), self.table.name))
 
         self.cursor = self.db._get_cursor()
-        sql = f"SELECT {fields_txt} FROM {table_txt}"
+        sql = "SELECT {} FROM {}".format(fields_txt, table_txt)
 
         self.db._execute(self.cursor, sql)
 
     def _sanitizeTableField(self, field):
         # get fields, ignore geometry columns
         if field.dataType.upper() == "SDO_GEOMETRY":
-            return (
-                "CASE WHEN {0} IS NULL THEN NULL ELSE 'GEOMETRY'"
-                "END AS {0}".format(self.db.quoteId(field.name))
-            )
+            return ("CASE WHEN {0} IS NULL THEN NULL ELSE 'GEOMETRY'"
+                    "END AS {0}".format(
+                        self.db.quoteId(field.name)))
         if field.dataType.upper() == "DATE":
-            return f"CAST({self.db.quoteId(field.name)} AS VARCHAR2(8))"
+            return "CAST({} AS VARCHAR2(8))".format(
+                self.db.quoteId(field.name))
         if "TIMESTAMP" in field.dataType.upper():
             return "TO_CHAR({}, 'YYYY-MM-DD HH:MI:SS.FF')".format(
-                self.db.quoteId(field.name)
-            )
+                self.db.quoteId(field.name))
         if field.dataType.upper() == "NUMBER":
             if not field.charMaxLen:
-                return f"CAST({self.db.quoteId(field.name)} AS VARCHAR2(135))"
+                return "CAST({} AS VARCHAR2(135))".format(
+                    self.db.quoteId(field.name))
             elif field.modifier:
-                nbChars = 2 + int(field.charMaxLen) + int(field.modifier)
+                nbChars = 2 + int(field.charMaxLen) + \
+                    int(field.modifier)
                 return "CAST({} AS VARCHAR2({}))".format(
-                    self.db.quoteId(field.name), str(nbChars)
-                )
+                    self.db.quoteId(field.name),
+                    str(nbChars))
 
         return "CAST({} As VARCHAR2({}))".format(
-            self.db.quoteId(field.name), field.charMaxLen
-        )
+            self.db.quoteId(field.name), field.charMaxLen)
 
     def _deleteCursor(self):
         self.db._close_cursor(self.cursor)
@@ -90,7 +89,8 @@ class ORTableDataModel(TableDataModel):
         self._deleteCursor()
 
     def getData(self, row, col):
-        if row < self.fetchedFrom or row >= self.fetchedFrom + self.fetchedCount:
+        if (row < self.fetchedFrom or
+                row >= self.fetchedFrom + self.fetchedCount):
             margin = self.fetchedCount / 2
             if row + margin >= self.rowCount():
                 start = int(self.rowCount() - margin)

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgslayerpropertieswidget.h"
-#include "moc_qgslayerpropertieswidget.cpp"
 
 #include <QFile>
 #include <QStandardItem>
@@ -118,6 +117,7 @@ QgsLayerPropertiesWidget::QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const
   , mSymbol( symbol )
   , mVectorLayer( vl )
 {
+
   setupUi( this );
   connect( mEnabledCheckBox, &QCheckBox::toggled, this, &QgsLayerPropertiesWidget::mEnabledCheckBox_toggled );
   // initialize the sub-widgets
@@ -166,7 +166,7 @@ void QgsLayerPropertiesWidget::setContext( const QgsSymbolWidgetContext &context
   if ( mSymbol )
     mContext.setSymbolType( mSymbol->type() );
 
-  QgsSymbolLayerWidget *w = dynamic_cast<QgsSymbolLayerWidget *>( stackedWidget->currentWidget() );
+  QgsSymbolLayerWidget *w = dynamic_cast< QgsSymbolLayerWidget * >( stackedWidget->currentWidget() );
   if ( w )
     w->setContext( mContext );
 }
@@ -212,7 +212,7 @@ void QgsLayerPropertiesWidget::updateSymbolLayerWidget( QgsSymbolLayer *layer )
   if ( stackedWidget->currentWidget() != pageDummy )
   {
     // stop updating from the original widget
-    if ( QgsSymbolLayerWidget *w = qobject_cast<QgsSymbolLayerWidget *>( stackedWidget->currentWidget() ) )
+    if ( QgsSymbolLayerWidget *w = qobject_cast< QgsSymbolLayerWidget * >( stackedWidget->currentWidget() ) )
       disconnect( w, &QgsSymbolLayerWidget::changed, this, &QgsLayerPropertiesWidget::emitSignalChanged );
     stackedWidget->removeWidget( stackedWidget->currentWidget() );
   }
@@ -289,14 +289,20 @@ QgsExpressionContext QgsLayerPropertiesWidget::createExpressionContext() const
   //TODO - show actual value
   expContext.setOriginalValueVariable( QVariant() );
 
-  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM << QgsExpressionContext::EXPR_GEOMETRY_RING_NUM << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE << QStringLiteral( "symbol_layer_count" ) << QStringLiteral( "symbol_layer_index" ) << QStringLiteral( "symbol_frame" ) );
+  expContext.setHighlightedVariables( QStringList() << QgsExpressionContext::EXPR_ORIGINAL_VALUE << QgsExpressionContext::EXPR_SYMBOL_COLOR
+                                      << QgsExpressionContext::EXPR_GEOMETRY_PART_COUNT << QgsExpressionContext::EXPR_GEOMETRY_PART_NUM
+                                      << QgsExpressionContext::EXPR_GEOMETRY_RING_NUM
+                                      << QgsExpressionContext::EXPR_GEOMETRY_POINT_COUNT << QgsExpressionContext::EXPR_GEOMETRY_POINT_NUM
+                                      << QgsExpressionContext::EXPR_CLUSTER_COLOR << QgsExpressionContext::EXPR_CLUSTER_SIZE
+                                      << QStringLiteral( "symbol_layer_count" ) << QStringLiteral( "symbol_layer_index" )
+                                      << QStringLiteral( "symbol_frame" ) );
 
   return expContext;
 }
 
 void QgsLayerPropertiesWidget::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key )
 {
-  button->init( static_cast<int>( key ), mLayer->dataDefinedProperties(), QgsSymbolLayer::propertyDefinitions(), mVectorLayer );
+  button->init( static_cast< int >( key ), mLayer->dataDefinedProperties(), QgsSymbolLayer::propertyDefinitions(), mVectorLayer );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLayerPropertiesWidget::updateProperty );
   button->registerExpressionContextGenerator( this );
 }
@@ -304,7 +310,7 @@ void QgsLayerPropertiesWidget::registerDataDefinedButton( QgsPropertyOverrideBut
 void QgsLayerPropertiesWidget::updateProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  const QgsSymbolLayer::Property key = static_cast<QgsSymbolLayer::Property>( button->propertyKey() );
+  const QgsSymbolLayer::Property key = static_cast<  QgsSymbolLayer::Property >( button->propertyKey() );
   mLayer->setDataDefinedProperty( key, button->toProperty() );
   emit changed();
 }
@@ -330,7 +336,7 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
 
   // if the old symbol layer was a "geometry generator" layer then
   // we instead get the properties from the generator
-  if ( QgsGeometryGeneratorSymbolLayer *generator = dynamic_cast<QgsGeometryGeneratorSymbolLayer *>( layer ) )
+  if ( QgsGeometryGeneratorSymbolLayer *generator = dynamic_cast< QgsGeometryGeneratorSymbolLayer * >( layer ) )
   {
     if ( generator->subSymbol() && generator->subSymbol()->symbolLayerCount() > 0 )
       properties = generator->subSymbol()->symbolLayer( 0 )->properties();
@@ -342,7 +348,7 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
 
   // if a symbol layer is changed to a "geometry generator" layer, then we move the old symbol layer into the
   // geometry generator's subsymbol.
-  if ( QgsGeometryGeneratorSymbolLayer *generator = dynamic_cast<QgsGeometryGeneratorSymbolLayer *>( newLayer ) )
+  if ( QgsGeometryGeneratorSymbolLayer *generator = dynamic_cast< QgsGeometryGeneratorSymbolLayer * >( newLayer ) )
   {
     if ( mSymbol )
     {
@@ -350,21 +356,21 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
       {
         case Qgis::SymbolType::Marker:
         {
-          std::unique_ptr<QgsMarkerSymbol> markerSymbol = std::make_unique<QgsMarkerSymbol>( QgsSymbolLayerList( { layer->clone() } ) );
+          std::unique_ptr< QgsMarkerSymbol > markerSymbol = std::make_unique< QgsMarkerSymbol >( QgsSymbolLayerList( {layer->clone() } ) );
           generator->setSymbolType( Qgis::SymbolType::Marker );
           generator->setSubSymbol( markerSymbol.release() );
           break;
         }
         case Qgis::SymbolType::Line:
         {
-          std::unique_ptr<QgsLineSymbol> lineSymbol = std::make_unique<QgsLineSymbol>( QgsSymbolLayerList( { layer->clone() } ) );
+          std::unique_ptr< QgsLineSymbol > lineSymbol = std::make_unique< QgsLineSymbol >( QgsSymbolLayerList( {layer->clone() } ) );
           generator->setSymbolType( Qgis::SymbolType::Line );
           generator->setSubSymbol( lineSymbol.release() );
           break;
         }
         case Qgis::SymbolType::Fill:
         {
-          std::unique_ptr<QgsFillSymbol> fillSymbol = std::make_unique<QgsFillSymbol>( QgsSymbolLayerList( { layer->clone() } ) );
+          std::unique_ptr< QgsFillSymbol > fillSymbol = std::make_unique< QgsFillSymbol >( QgsSymbolLayerList( {layer->clone() } ) );
           generator->setSymbolType( Qgis::SymbolType::Fill );
           generator->setSubSymbol( fillSymbol.release() );
           break;
@@ -385,7 +391,7 @@ void QgsLayerPropertiesWidget::layerTypeChanged()
 
   // special logic for when NEW symbol layers are created from GUI only...
   // TODO: find a nicer generic way to handle this!
-  if ( QgsFontMarkerSymbolLayer *fontMarker = dynamic_cast<QgsFontMarkerSymbolLayer *>( newLayer ) )
+  if ( QgsFontMarkerSymbolLayer *fontMarker = dynamic_cast< QgsFontMarkerSymbolLayer * >( newLayer ) )
   {
     const QString defaultFont = fontMarker->fontFamily();
     const QFontDatabase fontDb;

@@ -23,8 +23,8 @@
 #include <QVariant>
 #include <QSettings>
 
-QgsListWidgetFactory::QgsListWidgetFactory( const QString &name )
-  : QgsEditorWidgetFactory( name )
+QgsListWidgetFactory::QgsListWidgetFactory( const QString &name ):
+  QgsEditorWidgetFactory( name )
 {
 }
 
@@ -63,7 +63,7 @@ unsigned int QgsListWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fie
       }
       // Get attribute value and check if it is a valid JSON array
       const QVariant value( f.attribute( fieldIdx ) );
-      if ( !value.isNull() )
+      if ( ! value.isNull() )
       {
         switch ( value.type() )
         {

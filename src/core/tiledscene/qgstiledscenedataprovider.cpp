@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgstiledscenedataprovider.h"
-#include "moc_qgstiledscenedataprovider.cpp"
 #include "qgsthreadingutils.h"
 
 QgsTiledSceneDataProvider::QgsTiledSceneDataProvider(

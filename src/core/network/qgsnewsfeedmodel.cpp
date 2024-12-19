@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewsfeedmodel.h"
-#include "moc_qgsnewsfeedmodel.cpp"
 #include "qgsnetworkcontentfetcher.h"
 #include <QPainter>
 

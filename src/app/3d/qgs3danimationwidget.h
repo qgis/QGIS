@@ -64,8 +64,8 @@ class Qgs3DAnimationWidget : public QWidget, private Ui::Animation3DWidget
 
   private:
     std::unique_ptr<Qgs3DAnimationSettings> mAnimationSettings;
-    QgsCameraController *mCameraController = nullptr;
-    Qgs3DMapSettings *mMap = nullptr;
+    QgsCameraController *mCameraController;
+    Qgs3DMapSettings *mMap;
     QTimer *mAnimationTimer = nullptr;
 };
 

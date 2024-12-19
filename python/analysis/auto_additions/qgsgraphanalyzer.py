@@ -3,5 +3,5 @@ try:
     QgsGraphAnalyzer.dijkstra = staticmethod(QgsGraphAnalyzer.dijkstra)
     QgsGraphAnalyzer.shortestTree = staticmethod(QgsGraphAnalyzer.shortestTree)
     QgsGraphAnalyzer.__group__ = ['network']
-except (NameError, AttributeError):
+except NameError:
     pass

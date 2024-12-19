@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "8/03/2017"
-__copyright__ = "Copyright 2017, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '8/03/2017'
+__copyright__ = 'Copyright 2017, The QGIS Project'
 
 from qgis.core import (
     QgsProject,
@@ -35,13 +34,16 @@ class TestQgsLayerTreeMapCanvasBridge(QgisTestCase):
         QgisTestCase.__init__(self, methodName)
 
     def testLayerOrderUpdatedThroughBridge(self):
-        """test that project layer order is updated when layer tree changes"""
+        """ test that project layer order is updated when layer tree changes """
 
         prj = QgsProject.instance()
         prj.clear()
-        layer = QgsVectorLayer("Point?field=fldtxt:string", "layer1", "memory")
-        layer2 = QgsVectorLayer("Point?field=fldtxt:string", "layer2", "memory")
-        layer3 = QgsVectorLayer("Point?field=fldtxt:string", "layer3", "memory")
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        layer3 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer3", "memory")
 
         prj.addMapLayers([layer, layer2, layer3])
 
@@ -52,22 +54,14 @@ class TestQgsLayerTreeMapCanvasBridge(QgisTestCase):
         prj.layerTreeRoot().setHasCustomLayerOrder(True)
         prj.layerTreeRoot().setCustomLayerOrder([layer3, layer, layer2])
         app.processEvents()
-        self.assertEqual(
-            [l for l in prj.layerTreeRoot().customLayerOrder()], [layer3, layer, layer2]
-        )
-        self.assertEqual(
-            [l for l in prj.layerTreeRoot().layerOrder()], [layer3, layer, layer2]
-        )
+        self.assertEqual([l for l in prj.layerTreeRoot().customLayerOrder()], [layer3, layer, layer2])
+        self.assertEqual([l for l in prj.layerTreeRoot().layerOrder()], [layer3, layer, layer2])
 
         # no custom layer order
         prj.layerTreeRoot().setHasCustomLayerOrder(False)
         app.processEvents()
-        self.assertEqual(
-            [l for l in prj.layerTreeRoot().customLayerOrder()], [layer3, layer, layer2]
-        )
-        self.assertEqual(
-            [l for l in prj.layerTreeRoot().layerOrder()], [layer, layer2, layer3]
-        )
+        self.assertEqual([l for l in prj.layerTreeRoot().customLayerOrder()], [layer3, layer, layer2])
+        self.assertEqual([l for l in prj.layerTreeRoot().layerOrder()], [layer, layer2, layer3])
 
         # mess around with the layer tree order
         root = prj.layerTreeRoot()
@@ -78,26 +72,25 @@ class TestQgsLayerTreeMapCanvasBridge(QgisTestCase):
         parent.removeChildNode(layer_node)
         app.processEvents()
         # make sure project respects this
-        self.assertEqual(
-            [l for l in prj.layerTreeRoot().layerOrder()], [layer2, layer, layer3]
-        )
+        self.assertEqual([l for l in prj.layerTreeRoot().layerOrder()], [layer2, layer, layer3])
 
         # make sure project order includes ALL layers, not just visible ones
         layer_node = root.findLayer(layer)
         layer_node.setItemVisibilityChecked(False)
         app.processEvents()
-        self.assertEqual(
-            [l for l in prj.layerTreeRoot().layerOrder()], [layer2, layer, layer3]
-        )
+        self.assertEqual([l for l in prj.layerTreeRoot().layerOrder()], [layer2, layer, layer3])
 
     def testCustomLayerOrderUpdatedFromProject(self):
-        """test that setting project layer order is reflected in custom layer order panel"""
+        """ test that setting project layer order is reflected in custom layer order panel """
 
         prj = QgsProject.instance()
         prj.clear()
-        layer = QgsVectorLayer("Point?field=fldtxt:string", "layer1", "memory")
-        layer2 = QgsVectorLayer("Point?field=fldtxt:string", "layer2", "memory")
-        layer3 = QgsVectorLayer("Point?field=fldtxt:string", "layer3", "memory")
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        layer3 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer3", "memory")
         prj.addMapLayers([layer, layer2, layer3])
 
         canvas = QgsMapCanvas()
@@ -108,16 +101,12 @@ class TestQgsLayerTreeMapCanvasBridge(QgisTestCase):
         prj.layerTreeRoot().setHasCustomLayerOrder(True)
         prj.layerTreeRoot().setCustomLayerOrder([layer3, layer, layer2])
         app.processEvents()
-        self.assertEqual(
-            [l for l in prj.layerTreeRoot().customLayerOrder()], [layer3, layer, layer2]
-        )
+        self.assertEqual([l for l in prj.layerTreeRoot().customLayerOrder()], [layer3, layer, layer2])
 
         # no custom layer order
         prj.layerTreeRoot().setHasCustomLayerOrder(False)
         app.processEvents()
-        self.assertEqual(
-            [l for l in prj.layerTreeRoot().layerOrder()], [layer, layer2, layer3]
-        )
+        self.assertEqual([l for l in prj.layerTreeRoot().layerOrder()], [layer, layer2, layer3])
 
         # mess around with the project layer order
         prj.layerTreeRoot().setCustomLayerOrder([layer3, layer, layer2])
@@ -127,9 +116,7 @@ class TestQgsLayerTreeMapCanvasBridge(QgisTestCase):
         # try reordering through bridge
         prj.layerTreeRoot().setHasCustomLayerOrder(False)
         app.processEvents()
-        self.assertEqual(
-            [l for l in prj.layerTreeRoot().layerOrder()], [layer, layer2, layer3]
-        )
+        self.assertEqual([l for l in prj.layerTreeRoot().layerOrder()], [layer, layer2, layer3])
         root = prj.layerTreeRoot()
         layer_node = root.findLayer(layer2)
         cloned_node = layer_node.clone()
@@ -138,22 +125,22 @@ class TestQgsLayerTreeMapCanvasBridge(QgisTestCase):
         parent.removeChildNode(layer_node)
         app.processEvents()
         # make sure project respects this
-        self.assertEqual(
-            [l for l in prj.layerTreeRoot().layerOrder()], [layer2, layer, layer3]
-        )
+        self.assertEqual([l for l in prj.layerTreeRoot().layerOrder()], [layer2, layer, layer3])
         self.assertFalse(prj.layerTreeRoot().hasCustomLayerOrder())
 
     def testNonSpatialLayer(self):
-        """test that non spatial layers are not passed to canvas"""
+        """ test that non spatial layers are not passed to canvas """
 
         prj = QgsProject.instance()
         prj.clear()
-        layer = QgsVectorLayer("Point?field=fldtxt:string", "layer1", "memory")
-        layer2 = QgsVectorLayer("Point?field=fldtxt:string", "layer2", "memory")
-        layer3 = QgsVectorLayer("Point?field=fldtxt:string", "layer3", "memory")
-        non_spatial = QgsVectorLayer(
-            "None?field=fldtxt:string", "non_spatial", "memory"
-        )
+        layer = QgsVectorLayer("Point?field=fldtxt:string",
+                               "layer1", "memory")
+        layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer2", "memory")
+        layer3 = QgsVectorLayer("Point?field=fldtxt:string",
+                                "layer3", "memory")
+        non_spatial = QgsVectorLayer("None?field=fldtxt:string",
+                                     "non_spatial", "memory")
 
         prj.addMapLayers([layer, layer2, layer3, non_spatial])
 
@@ -177,5 +164,5 @@ class TestQgsLayerTreeMapCanvasBridge(QgisTestCase):
         self.assertEqual(canvas.mapSettings().layers(), [layer, layer2, layer3])
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

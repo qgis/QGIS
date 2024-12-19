@@ -15,14 +15,14 @@
 ***************************************************************************
 """
 
-__author__ = "Alexander Bruy"
-__date__ = "June 2021"
-__copyright__ = "(C) 2021, Alexander Bruy"
+__author__ = 'Alexander Bruy'
+__date__ = 'June 2021'
+__copyright__ = '(C) 2021, Alexander Bruy'
 
 
 from qgis.core import QgsApplication, QgsRuntimeProfiler
 
-with QgsRuntimeProfiler.profile("Import GRASS Provider"):
+with QgsRuntimeProfiler.profile('Import GRASS Provider'):
     from grassprovider.grass_provider import GrassProvider
 
 

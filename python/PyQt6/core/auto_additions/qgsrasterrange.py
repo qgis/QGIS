@@ -5,5 +5,5 @@ QgsRasterRange.IncludeMin = QgsRasterRange.BoundsType.IncludeMin
 QgsRasterRange.Exclusive = QgsRasterRange.BoundsType.Exclusive
 try:
     QgsRasterRange.__group__ = ['raster']
-except (NameError, AttributeError):
+except NameError:
     pass

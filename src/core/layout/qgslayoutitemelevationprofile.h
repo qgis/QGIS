@@ -234,6 +234,7 @@ class CORE_EXPORT QgsLayoutItemElevationProfile: public QgsLayoutItem
     double mPreviewScaleFactor = 0;
     std::unique_ptr< QPainter > mPainter;
     std::unique_ptr< QgsProfilePlotRenderer > mRenderJob;
+    bool mPainterCancelWait = false;
 
 
 };

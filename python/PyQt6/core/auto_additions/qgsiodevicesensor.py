@@ -2,19 +2,19 @@
 try:
     QgsTcpSocketSensor.create = staticmethod(QgsTcpSocketSensor.create)
     QgsTcpSocketSensor.__group__ = ['sensor']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsUdpSocketSensor.create = staticmethod(QgsUdpSocketSensor.create)
     QgsUdpSocketSensor.__group__ = ['sensor']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsSerialPortSensor.create = staticmethod(QgsSerialPortSensor.create)
     QgsSerialPortSensor.__group__ = ['sensor']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsIODeviceSensor.__group__ = ['sensor']
-except (NameError, AttributeError):
+except NameError:
     pass

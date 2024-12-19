@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsmeshtriangulation.h"
-#include "moc_qgsmeshtriangulation.cpp"
 #include "qgsdualedgetriangulation.h"
 #include "qgscurve.h"
 #include "qgscurvepolygon.h"
@@ -28,8 +27,7 @@
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 
-QgsMeshTriangulation::QgsMeshTriangulation()
-  : QObject()
+QgsMeshTriangulation::QgsMeshTriangulation(): QObject()
 {
   mTriangulation.reset( new QgsDualEdgeTriangulation() );
 }
@@ -168,18 +166,18 @@ void QgsMeshTriangulation::addBreakLinesFromFeature( const QgsFeature &feature, 
 
   if ( QgsWkbTypes::geometryType( geom.wkbType() ) == Qgis::GeometryType::Polygon )
   {
-    std::vector<const QgsCurvePolygon *> polygons;
+    std::vector< const QgsCurvePolygon * > polygons;
     if ( geom.isMultipart() )
     {
-      const QgsMultiSurface *ms = qgsgeometry_cast<const QgsMultiSurface *>( geom.constGet() );
+      const QgsMultiSurface *ms = qgsgeometry_cast< const QgsMultiSurface * >( geom.constGet() );
       for ( int i = 0; i < ms->numGeometries(); ++i )
       {
-        polygons.emplace_back( qgsgeometry_cast<const QgsCurvePolygon *>( ms->geometryN( i ) ) );
+        polygons.emplace_back( qgsgeometry_cast< const QgsCurvePolygon * >( ms->geometryN( i ) ) );
       }
     }
     else
     {
-      polygons.emplace_back( qgsgeometry_cast<const QgsCurvePolygon *>( geom.constGet() ) );
+      polygons.emplace_back( qgsgeometry_cast< const QgsCurvePolygon * >( geom.constGet() ) );
     }
 
     for ( const QgsCurvePolygon *polygon : polygons )
@@ -204,17 +202,17 @@ void QgsMeshTriangulation::addBreakLinesFromFeature( const QgsFeature &feature, 
   {
     if ( geom.isMultipart() )
     {
-      const QgsMultiCurve *mc = qgsgeometry_cast<const QgsMultiCurve *>( geom.constGet() );
+      const QgsMultiCurve *mc = qgsgeometry_cast< const QgsMultiCurve * >( geom.constGet() );
       for ( int i = 0; i < mc->numGeometries(); ++i )
       {
         if ( feedback && feedback->isCanceled() )
           break;
-        curves.emplace_back( qgsgeometry_cast<const QgsCurve *>( mc->geometryN( i ) ) );
+        curves.emplace_back( qgsgeometry_cast< const QgsCurve * >( mc->geometryN( i ) ) );
       }
     }
     else
     {
-      curves.emplace_back( qgsgeometry_cast<const QgsCurve *>( geom.constGet() ) );
+      curves.emplace_back( qgsgeometry_cast< const QgsCurve * >( geom.constGet() ) );
     }
   }
 
@@ -247,10 +245,10 @@ void QgsMeshTriangulation::addBreakLinesFromFeature( const QgsFeature &feature, 
   }
 }
 
-QgsMeshZValueDatasetGroup::QgsMeshZValueDatasetGroup( const QString &datasetGroupName, const QgsMesh &mesh )
-  : QgsMeshDatasetGroup( datasetGroupName, QgsMeshDatasetGroupMetadata::DataOnVertices )
+QgsMeshZValueDatasetGroup::QgsMeshZValueDatasetGroup( const QString &datasetGroupName, const QgsMesh &mesh ):
+  QgsMeshDatasetGroup( datasetGroupName, QgsMeshDatasetGroupMetadata::DataOnVertices )
 {
-  mDataset = std::make_unique<QgsMeshZValueDataset>( mesh );
+  mDataset = std::make_unique< QgsMeshZValueDataset >( mesh );
 }
 
 void QgsMeshZValueDatasetGroup::initialize()
@@ -266,7 +264,7 @@ QgsMeshDatasetMetadata QgsMeshZValueDatasetGroup::datasetMetadata( int datasetIn
   return mDataset->metadata();
 }
 
-int QgsMeshZValueDatasetGroup::datasetCount() const { return 1; }
+int QgsMeshZValueDatasetGroup::datasetCount() const {return 1;}
 
 QgsMeshDataset *QgsMeshZValueDatasetGroup::dataset( int index ) const
 {
@@ -283,8 +281,7 @@ QDomElement QgsMeshZValueDatasetGroup::writeXml( QDomDocument &doc, const QgsRea
   return QDomElement();
 }
 
-QgsMeshZValueDataset::QgsMeshZValueDataset( const QgsMesh &mesh )
-  : mMesh( mesh )
+QgsMeshZValueDataset::QgsMeshZValueDataset( const QgsMesh &mesh ): mMesh( mesh )
 {
   for ( const QgsMeshVertex &vertex : mesh.vertices )
   {
@@ -448,3 +445,4 @@ QgsTopologicalMesh::Changes QgsMeshEditingDelaunayTriangulation::apply( QgsMeshE
   else
     return QgsTopologicalMesh::Changes();
 }
+

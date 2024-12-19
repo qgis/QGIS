@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "09/11/2020"
-__copyright__ = "Copyright 2020, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '09/11/2020'
+__copyright__ = 'Copyright 2020, The QGIS Project'
 
 import os
 
@@ -98,7 +97,7 @@ class TestQgsProjectElevationProperties(QgisTestCase):
 
         # add raster layer to a project
         p = QgsProject()
-        rl = QgsRasterLayer(os.path.join(unitTestDataPath(), "float1-16.tif"), "rl")
+        rl = QgsRasterLayer(os.path.join(unitTestDataPath(), 'float1-16.tif'), 'rl')
         self.assertTrue(rl.isValid())
         p.addMapLayer(rl)
 
@@ -112,15 +111,10 @@ class TestQgsProjectElevationProperties(QgisTestCase):
         project2 = QgsProject()
         self.assertTrue(project2.read(tmp_project_file))
 
-        self.assertIsInstance(
-            project2.elevationProperties().terrainProvider(),
-            QgsRasterDemTerrainProvider,
-        )
+        self.assertIsInstance(project2.elevationProperties().terrainProvider(), QgsRasterDemTerrainProvider)
         # make sure layer is resolved
-        self.assertEqual(
-            project2.elevationProperties().terrainProvider().layer().id(), rl.id()
-        )
+        self.assertEqual(project2.elevationProperties().terrainProvider().layer().id(), rl.id())
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

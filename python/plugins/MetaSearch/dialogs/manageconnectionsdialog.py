@@ -29,17 +29,12 @@
 import xml.etree.ElementTree as etree
 
 from qgis.core import QgsSettings
-from qgis.PyQt.QtWidgets import (
-    QDialog,
-    QDialogButtonBox,
-    QFileDialog,
-    QListWidgetItem,
-    QMessageBox,
-)  # noqa
+from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QFileDialog, QListWidgetItem, QMessageBox  # noqa
 
-from MetaSearch.util import get_connections_from_file, get_ui_class, prettify_xml
+from MetaSearch.util import (get_connections_from_file, get_ui_class,
+                             prettify_xml)
 
-BASE_CLASS = get_ui_class("manageconnectionsdialog.ui")
+BASE_CLASS = get_ui_class('manageconnectionsdialog.ui')
 
 
 class ManageConnectionsDialog(QDialog, BASE_CLASS):
@@ -60,15 +55,11 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
         """manage interface"""
 
         if self.mode == 1:
-            self.label.setText(self.tr("Load from file"))
-            self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setText(
-                self.tr("Load")
-            )
+            self.label.setText(self.tr('Load from file'))
+            self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setText(self.tr('Load'))
         else:
-            self.label.setText(self.tr("Save to file"))
-            self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setText(
-                self.tr("Save")
-            )
+            self.label.setText(self.tr('Save to file'))
+            self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setText(self.tr('Save'))
             self.populate()
 
         self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(False)
@@ -76,25 +67,23 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
     def select_file(self):
         """select file ops"""
 
-        label = self.tr("eXtensible Markup Language (*.xml *.XML)")
+        label = self.tr('eXtensible Markup Language (*.xml *.XML)')
 
         if self.mode == 0:
-            slabel = self.tr("Save Connections")
-            self.filename, filter = QFileDialog.getSaveFileName(
-                self, slabel, ".", label
-            )
+            slabel = self.tr('Save Connections')
+            self.filename, filter = QFileDialog.getSaveFileName(self, slabel,
+                                                                '.', label)
         else:
-            slabel = self.tr("Load Connections")
+            slabel = self.tr('Load Connections')
             self.filename, selected_filter = QFileDialog.getOpenFileName(
-                self, slabel, ".", label
-            )
+                self, slabel, '.', label)
 
         if not self.filename:
             return
 
         # ensure the user never omitted the extension from the file name
-        if not self.filename.lower().endswith(".xml"):
-            self.filename = "%s.xml" % self.filename
+        if not self.filename.lower().endswith('.xml'):
+            self.filename = '%s.xml' % self.filename
 
         self.leFileName.setText(self.filename)
 
@@ -107,7 +96,7 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
         """populate connections list from settings"""
 
         if self.mode == 0:
-            self.settings.beginGroup("/MetaSearch/")
+            self.settings.beginGroup('/MetaSearch/')
             keys = self.settings.childGroups()
             for key in keys:
                 item = QListWidgetItem(self.listConnections)
@@ -122,46 +111,43 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
                 self.listConnections.clear()
                 return
 
-            for catalog in doc.findall("csw"):
+            for catalog in doc.findall('csw'):
                 item = QListWidgetItem(self.listConnections)
-                item.setText(catalog.attrib.get("name"))
+                item.setText(catalog.attrib.get('name'))
 
     def save(self, connections):
         """save connections ops"""
 
-        doc = etree.Element("qgsCSWConnections")
-        doc.attrib["version"] = "1.0"
+        doc = etree.Element('qgsCSWConnections')
+        doc.attrib['version'] = '1.0'
 
         for conn in connections:
-            url = self.settings.value("/MetaSearch/%s/url" % conn)
-            type_ = self.settings.value("/MetaSearch/%s/catalog-type" % conn)
+            url = self.settings.value('/MetaSearch/%s/url' % conn)
+            type_ = self.settings.value('/MetaSearch/%s/catalog-type' % conn)
             if url is not None:
-                connection = etree.SubElement(doc, "csw")
-                connection.attrib["name"] = conn
-                connection.attrib["type"] = type_ or "OGC CSW 2.0.2"
-                connection.attrib["url"] = url
+                connection = etree.SubElement(doc, 'csw')
+                connection.attrib['name'] = conn
+                connection.attrib['type'] = type_ or 'OGC CSW 2.0.2'
+                connection.attrib['url'] = url
 
         # write to disk
-        with open(self.filename, "w") as fileobj:
+        with open(self.filename, 'w') as fileobj:
             fileobj.write(prettify_xml(etree.tostring(doc)))
-        QMessageBox.information(
-            self,
-            self.tr("Save Connections"),
-            self.tr("Saved to {0}.").format(self.filename),
-        )
+        QMessageBox.information(self, self.tr('Save Connections'),
+                                self.tr('Saved to {0}.').format(self.filename))
         self.reject()
 
     def load(self, items):
         """load connections"""
 
-        self.settings.beginGroup("/MetaSearch/")
+        self.settings.beginGroup('/MetaSearch/')
         keys = self.settings.childGroups()
         self.settings.endGroup()
 
         exml = etree.parse(self.filename).getroot()
 
-        for catalog in exml.findall("csw"):
-            conn_name = catalog.attrib.get("name")
+        for catalog in exml.findall('csw'):
+            conn_name = catalog.attrib.get('name')
 
             # process only selected connections
             if conn_name not in items:
@@ -169,23 +155,19 @@ class ManageConnectionsDialog(QDialog, BASE_CLASS):
 
             # check for duplicates
             if conn_name in keys:
-                label = self.tr("File {0} exists. Overwrite?").format(conn_name)
-                res = QMessageBox.warning(
-                    self,
-                    self.tr("Loading Connections"),
-                    label,
-                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                )
+                label = self.tr('File {0} exists. Overwrite?').format(
+                    conn_name)
+                res = QMessageBox.warning(self, self.tr('Loading Connections'),
+                                          label,
+                                          QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
                 if res != QMessageBox.StandardButton.Yes:
                     continue
 
             # no dups detected or overwrite is allowed
-            url = "/MetaSearch/%s/url" % conn_name
-            type_ = "/MetaSearch/%s/catalog-type" % conn_name
-            self.settings.setValue(url, catalog.attrib.get("url"))
-            self.settings.setValue(
-                type_, catalog.attrib.get("catalog-type", "OGC CSW 2.0.2")
-            )
+            url = '/MetaSearch/%s/url' % conn_name
+            type_ = '/MetaSearch/%s/catalog-type' % conn_name
+            self.settings.setValue(url, catalog.attrib.get('url'))
+            self.settings.setValue(type_, catalog.attrib.get('catalog-type', 'OGC CSW 2.0.2'))
 
     def accept(self):
         """accept connections"""

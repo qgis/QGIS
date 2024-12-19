@@ -28,8 +28,8 @@
 namespace QgsWms
 {
 
-  typedef QList<QPair<QRgb, int>> QgsColorBox;        //Color / number of pixels
-  typedef QMultiMap<int, QgsColorBox> QgsColorBoxMap; // sum of pixels / color box
+  typedef QList< QPair<QRgb, int> > QgsColorBox; //Color / number of pixels
+  typedef QMultiMap< int, QgsColorBox > QgsColorBoxMap; // sum of pixels / color box
 
   namespace
   {
@@ -44,7 +44,7 @@ namespace QgsWms
       QHash<QRgb, int>::iterator colorIt;
       for ( int i = 0; i < height; ++i )
       {
-        currentScanLine = ( const QRgb * ) ( image.scanLine( i ) );
+        currentScanLine = ( const QRgb * )( image.scanLine( i ) );
         for ( int j = 0; j < width; ++j )
         {
           colorIt = colors.find( currentScanLine[j] );
@@ -81,7 +81,7 @@ namespace QgsWms
       int currentBlue = 0;
       int currentAlpha = 0;
 
-      for ( auto colorBoxIt = colorBox.constBegin(); colorBoxIt != colorBox.constEnd(); ++colorBoxIt )
+      for ( auto colorBoxIt = colorBox.constBegin() ; colorBoxIt != colorBox.constEnd(); ++colorBoxIt )
       {
         currentRed = qRed( colorBoxIt->first );
         if ( currentRed > rMax )
@@ -167,9 +167,9 @@ namespace QgsWms
         currentColor = colorBoxIt->first;
         currentPixel = colorBoxIt->second;
         weight = static_cast<double>( currentPixel ) / boxPixels;
-        avRed += ( qRed( currentColor ) * weight );
+        avRed   += ( qRed( currentColor ) * weight );
         avGreen += ( qGreen( currentColor ) * weight );
-        avBlue += ( qBlue( currentColor ) * weight );
+        avBlue  += ( qBlue( currentColor ) * weight );
         avAlpha += ( qAlpha( currentColor ) * weight );
       }
 
@@ -177,8 +177,10 @@ namespace QgsWms
     }
 
 
-    void splitColorBox( QgsColorBox &colorBox, QgsColorBoxMap &colorBoxMap, QMultiMap<int, QgsColorBox>::iterator colorBoxMapIt )
+    void splitColorBox( QgsColorBox &colorBox, QgsColorBoxMap &colorBoxMap,
+                        QMultiMap<int, QgsColorBox>::iterator colorBoxMapIt )
     {
+
       if ( colorBox.size() < 2 )
       {
         return; //need at least two colors for a split
@@ -271,7 +273,7 @@ namespace QgsWms
     //create first box
     QgsColorBox firstBox; //QList< QPair<QRgb, int> >
     int firstBoxPixelSum = 0;
-    for ( auto inputColorIt = inputColors.constBegin(); inputColorIt != inputColors.constEnd(); ++inputColorIt )
+    for ( auto  inputColorIt = inputColors.constBegin(); inputColorIt != inputColors.constEnd(); ++inputColorIt )
     {
       firstBox.push_back( qMakePair( inputColorIt.key(), inputColorIt.value() ) );
       firstBoxPixelSum += inputColorIt.value();
@@ -319,3 +321,5 @@ namespace QgsWms
   }
 
 } // namespace QgsWms
+
+

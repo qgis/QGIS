@@ -23,6 +23,7 @@ class APP_EXPORT QgsLayerMetadataLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT
   public:
+
     explicit QgsLayerMetadataLocatorFilter( QObject *parent = nullptr );
 
     // QgsLocatorFilter interface

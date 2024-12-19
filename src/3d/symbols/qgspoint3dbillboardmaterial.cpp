@@ -24,7 +24,6 @@
 #include <QUrl>
 
 #include "qgspoint3dbillboardmaterial.h"
-#include "moc_qgspoint3dbillboardmaterial.cpp"
 #include "qgsterraintextureimage_p.h"
 #include "qgssymbollayerutils.h"
 #include "qgsmarkersymbol.h"
@@ -117,7 +116,7 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromImage( QImage image, double si
 void QgsPoint3DBillboardMaterial::useDefaultSymbol( const Qgs3DRenderContext &context, bool selected )
 {
   // Default texture
-  const std::unique_ptr<QgsMarkerSymbol> defaultSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
+  const std::unique_ptr< QgsMarkerSymbol> defaultSymbol( static_cast<QgsMarkerSymbol *>( QgsSymbol::defaultSymbol( Qgis::GeometryType::Point ) ) );
   setTexture2DFromSymbol( defaultSymbol.get(), context, selected );
 }
 
@@ -128,7 +127,7 @@ void QgsPoint3DBillboardMaterial::setTexture2DFromSymbol( QgsMarkerSymbol *marke
   context2D.setScaleFactor( context.outputDpi() / 25.4 );
   context2D.setFlag( Qgis::RenderContextFlag::Antialiasing );
   context2D.setFlag( Qgis::RenderContextFlag::HighQualityImageTransforms );
-  const double pixelSize = context2D.convertToPainterUnits( markerSymbol->size( context2D ), markerSymbol->sizeUnit() );
+  const double pixelSize = context2D.convertToPainterUnits( markerSymbol->size( context2D ),  markerSymbol->sizeUnit() );
 
   // This number is an max estimation ratio between stroke width and symbol size.
   const double strokeRatio = 0.5;

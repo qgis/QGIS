@@ -19,7 +19,6 @@
 #include "qgsgui.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgssensorthingssourceselect.h"
-#include "moc_qgssensorthingssourceselect.cpp"
 #include "qgssensorthingsconnection.h"
 #include "qgssensorthingsconnectionwidget.h"
 #include "qgssensorthingsconnectiondialog.h"
@@ -59,7 +58,8 @@ QgsSensorThingsSourceSelect::QgsSensorThingsSourceSelect( QWidget *parent, Qt::W
   connect( mSourceWidget, &QgsProviderSourceWidget::validChanged, this, &QgsSensorThingsSourceSelect::validate );
   connect( mConnectionWidget, &QgsSensorThingsConnectionWidget::validChanged, this, &QgsSensorThingsSourceSelect::validate );
 
-  connect( mConnectionWidget, &QgsSensorThingsConnectionWidget::changed, this, [this] {
+  connect( mConnectionWidget, &QgsSensorThingsConnectionWidget::changed, this, [this]
+  {
     if ( mBlockChanges )
       return;
 
@@ -67,6 +67,7 @@ QgsSensorThingsSourceSelect::QgsSensorThingsSourceSelect( QWidget *parent, Qt::W
     cmbConnections->setCurrentIndex( cmbConnections->findData( QStringLiteral( "~~custom~~" ) ) );
     mSourceWidget->setSourceUri( mConnectionWidget->sourceUri() );
     mBlockChanges--;
+
   } );
 
   QgsGui::enableAutoGeometryRestore( this );
@@ -128,7 +129,7 @@ void QgsSensorThingsSourceSelect::btnEdit_clicked()
 void QgsSensorThingsSourceSelect::btnDelete_clicked()
 {
   const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                        .arg( cmbConnections->currentText() );
+                      .arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -146,7 +147,8 @@ void QgsSensorThingsSourceSelect::btnSave_clicked()
 
 void QgsSensorThingsSourceSelect::btnLoad_clicked()
 {
-  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
+                           tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;
@@ -165,17 +167,17 @@ void QgsSensorThingsSourceSelect::addButtonClicked()
   QString layerUri = mSourceWidget->updateUriFromGui( providerUri );
 
   QVariantMap uriParts = QgsProviderRegistry::instance()->decodeUri(
-    QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
-    layerUri
-  );
+                           QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
+                           layerUri
+                         );
 
   if ( !txtSubsetSQL->text().isEmpty() )
     uriParts.insert( QStringLiteral( "sql" ), txtSubsetSQL->text() );
 
   layerUri = QgsProviderRegistry::instance()->encodeUri(
-    QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
-    uriParts
-  );
+               QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY,
+               uriParts
+             );
 
   const Qgis::SensorThingsEntity type = QgsSensorThingsUtils::stringToEntity( uriParts.value( QStringLiteral( "entity" ) ).toString() );
 
@@ -184,7 +186,8 @@ void QgsSensorThingsSourceSelect::addButtonClicked()
   {
     const QString geometryType = uriParts.value( QStringLiteral( "geometryType" ) ).toString();
     QString geometryNamePart;
-    if ( geometryType.compare( QLatin1String( "point" ), Qt::CaseInsensitive ) == 0 || geometryType.compare( QLatin1String( "multipoint" ), Qt::CaseInsensitive ) == 0 )
+    if ( geometryType.compare( QLatin1String( "point" ), Qt::CaseInsensitive ) == 0 ||
+         geometryType.compare( QLatin1String( "multipoint" ), Qt::CaseInsensitive ) == 0 )
     {
       geometryNamePart = tr( "Points" );
     }
@@ -199,16 +202,20 @@ void QgsSensorThingsSourceSelect::addButtonClicked()
 
     if ( !geometryNamePart.isEmpty() )
     {
-      baseName = QStringLiteral( "%1 - %2 (%3)" ).arg( isCustom ? tr( "SensorThings" ) : cmbConnections->currentText(), QgsSensorThingsUtils::displayString( type, true ), geometryNamePart );
+      baseName = QStringLiteral( "%1 - %2 (%3)" ).arg( isCustom ? tr( "SensorThings" ) : cmbConnections->currentText(),
+                 QgsSensorThingsUtils::displayString( type, true ),
+                 geometryNamePart );
     }
     else
     {
-      baseName = QStringLiteral( "%1 - %2" ).arg( isCustom ? tr( "SensorThings" ) : cmbConnections->currentText(), QgsSensorThingsUtils::displayString( type, true ) );
+      baseName = QStringLiteral( "%1 - %2" ).arg( isCustom ? tr( "SensorThings" ) : cmbConnections->currentText(),
+                 QgsSensorThingsUtils::displayString( type, true ) );
     }
   }
   else
   {
-    baseName = QStringLiteral( "%1 - %2" ).arg( isCustom ? tr( "SensorThings" ) : cmbConnections->currentText(), QgsSensorThingsUtils::displayString( type, true ) );
+    baseName = QStringLiteral( "%1 - %2" ).arg( isCustom ? tr( "SensorThings" ) : cmbConnections->currentText(),
+               QgsSensorThingsUtils::displayString( type, true ) );
   }
 
   Q_NOWARN_DEPRECATED_PUSH
@@ -284,7 +291,7 @@ void QgsSensorThingsSourceSelect::buildFilter()
 {
   const QgsFields fields = QgsSensorThingsUtils::fieldsForEntityType( mSourceWidget->currentEntityType() );
   QgsSensorThingsSubsetEditor subsetEditor( nullptr, fields );
-  subsetEditor.setSubsetString( txtSubsetSQL->text() );
+  subsetEditor.setSubsetString( txtSubsetSQL->text( ) );
   if ( subsetEditor.exec() )
   {
     txtSubsetSQL->setText( subsetEditor.subsetString() );

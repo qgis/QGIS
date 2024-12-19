@@ -2,5 +2,5 @@
 try:
     QgsProcessingModelChildDependency.__attribute_docs__ = {'childId': 'Child algorithm ID', 'conditionalBranch': 'Conditional branch output name, if applicable.'}
     QgsProcessingModelChildDependency.__group__ = ['processing', 'models']
-except (NameError, AttributeError):
+except NameError:
     pass

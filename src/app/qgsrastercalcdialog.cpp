@@ -17,7 +17,6 @@
 
 #include "qgsgdalutils.h"
 #include "qgsrastercalcdialog.h"
-#include "moc_qgsrastercalcdialog.cpp"
 #include "qgsproject.h"
 #include "qgsrastercalcnode.h"
 #include "qgsrasterdataprovider.h"
@@ -31,8 +30,7 @@
 #include <QFileDialog>
 #include <QFontDatabase>
 
-QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *parent, Qt::WindowFlags f )
-  : QDialog( parent, f )
+QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
@@ -97,14 +95,15 @@ QgsRasterCalcDialog::QgsRasterCalcDialog( QgsRasterLayer *rasterLayer, QWidget *
   mOutputLayer->setStorageMode( QgsFileWidget::SaveFile );
   mOutputLayer->setDialogTitle( tr( "Enter Result File" ) );
   mOutputLayer->setDefaultRoot( settings.value( QStringLiteral( "/RasterCalculator/lastOutputDir" ), QDir::homePath() ).toString() );
-  connect( mOutputLayer, &QgsFileWidget::fileChanged, this, [=]() { setAcceptButtonState(); } );
+  connect( mOutputLayer, &QgsFileWidget::fileChanged, this, [ = ]() { setAcceptButtonState(); } );
 
   connect( mUseVirtualProviderCheckBox, &QCheckBox::clicked, this, &QgsRasterCalcDialog::setOutputToVirtual );
 
-  if ( !useVirtualProvider() )
+  if ( ! useVirtualProvider() )
   {
     setOutputToVirtual();
   }
+
 }
 
 QString QgsRasterCalcDialog::formulaString() const
@@ -403,8 +402,7 @@ void QgsRasterCalcDialog::mRasterBandsListWidget_itemDoubleClicked( QListWidgetI
 {
   mExpressionTextEdit->insertPlainText( quoteBandEntry( item->text() ) );
   //to enable the "ok" button if someone checks the virtual provider checkbox before adding a valid expression,
-  if ( expressionValid() && useVirtualProvider() )
-    setAcceptButtonState();
+  if ( expressionValid() && useVirtualProvider() ) setAcceptButtonState();
 }
 
 void QgsRasterCalcDialog::mPlusPushButton_clicked()

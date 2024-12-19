@@ -14,5 +14,5 @@ QgsGeographicCoordinateNumericFormat.AngleFormat.__doc__ = """Angle format optio
 QgsGeographicCoordinateNumericFormat.AngleFormat.baseClass = QgsGeographicCoordinateNumericFormat
 try:
     QgsGeographicCoordinateNumericFormat.__group__ = ['numericformats']
-except (NameError, AttributeError):
+except NameError:
     pass

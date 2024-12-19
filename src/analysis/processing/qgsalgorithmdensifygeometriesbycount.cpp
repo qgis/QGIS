@@ -65,17 +65,21 @@ QString QgsDensifyGeometriesByCountAlgorithm::shortDescription() const
 QgsDensifyGeometriesByCountAlgorithm *QgsDensifyGeometriesByCountAlgorithm::createInstance() const
 {
   return new QgsDensifyGeometriesByCountAlgorithm;
+
 }
 
 QList<int> QgsDensifyGeometriesByCountAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon );
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 void QgsDensifyGeometriesByCountAlgorithm::initParameters( const QVariantMap &configuration )
 {
   Q_UNUSED( configuration )
-  std::unique_ptr<QgsProcessingParameterNumber> verticesCnt = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "VERTICES" ), QObject::tr( "Number of vertices to add" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 1, 10000000 );
+  std::unique_ptr<QgsProcessingParameterNumber> verticesCnt = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "VERTICES" ),
+      QObject::tr( "Number of vertices to add" ),
+      Qgis::ProcessingNumberParameterType::Integer,
+      1, false, 1, 10000000 );
   verticesCnt->setIsDynamic( true );
   verticesCnt->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "VerticesCount" ), QObject::tr( "Vertices count" ), QgsPropertyDefinition::IntegerPositive ) );
   verticesCnt->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -94,7 +98,7 @@ bool QgsDensifyGeometriesByCountAlgorithm::prepareAlgorithm( const QVariantMap &
 
   mDynamicVerticesCnt = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "VERTICES" ) );
   if ( mDynamicVerticesCnt )
-    mVerticesCntProperty = parameters.value( QStringLiteral( "VERTICES" ) ).value<QgsProperty>();
+    mVerticesCntProperty = parameters.value( QStringLiteral( "VERTICES" ) ).value< QgsProperty >();
 
   return true;
 }
@@ -118,6 +122,7 @@ QgsFeatureList QgsDensifyGeometriesByCountAlgorithm::processFeature( const QgsFe
 
   return QgsFeatureList() << densifiedFeature;
 }
+
 
 
 ///@endcond PRIVATE

@@ -24,7 +24,7 @@
 
 #include "qgsproviderguimetadata.h"
 
-class QgsTiledSceneProviderGuiMetadata : public QgsProviderGuiMetadata
+class QgsTiledSceneProviderGuiMetadata: public QgsProviderGuiMetadata
 {
   public:
     QgsTiledSceneProviderGuiMetadata();

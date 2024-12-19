@@ -42,6 +42,7 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, public 
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsTableEditorFormattingWidget with the specified \a parent widget.
      */
@@ -201,9 +202,11 @@ class GUI_EXPORT QgsTableEditorFormattingWidget : public QgsPanelWidget, public 
     void cellPropertyChanged( const QgsProperty &property );
 
   private:
-    std::unique_ptr<QgsNumericFormat> mNumericFormat;
+
+    std::unique_ptr< QgsNumericFormat > mNumericFormat;
     int mBlockSignals = 0;
     QgsExpressionContextGenerator *mContextGenerator = nullptr;
+
 };
 
 #endif // QGSTABLEEDITORFORMATTINGWIDGET_H

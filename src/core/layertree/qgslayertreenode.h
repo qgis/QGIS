@@ -121,7 +121,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
     //! Gets list of children of the node. Children are owned by the parent
     QList<QgsLayerTreeNode *> children() { return mChildren; }
     //! Gets list of children of the node. Children are owned by the parent
-    QList<QgsLayerTreeNode *> children() const SIP_SKIP { return mChildren; }
+    QList<QgsLayerTreeNode *> children() const { return mChildren; } SIP_SKIP
 
     /**
      * Removes the children, disconnect all the forwarded and external signals and sets their parent to NULLPTR

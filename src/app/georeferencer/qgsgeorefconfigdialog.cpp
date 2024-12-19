@@ -17,7 +17,6 @@
 
 #include "qgssettings.h"
 #include "qgsgeorefconfigdialog.h"
-#include "moc_qgsgeorefconfigdialog.cpp"
 #include "qgis.h"
 #include "qgsgui.h"
 
@@ -138,4 +137,6 @@ void QgsGeorefConfigDialog::writeSettings()
 
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/WidthPDFMap" ), mPaperSizeComboBox->currentData().toSizeF().width() );
   s.setValue( QStringLiteral( "/Plugin-GeoReferencer/Config/HeightPDFMap" ), mPaperSizeComboBox->currentData().toSizeF().height() );
+
 }
+

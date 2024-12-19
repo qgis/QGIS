@@ -120,10 +120,6 @@ class CORE_EXPORT QgsVectorLayerProfileGenerator : public QgsAbstractProfileSurf
 
   private:
 
-    // We may need to split mProfileCurve into multiple parts, this will be
-    // called for each part.
-    bool generateProfileInner( const QgsProfileGenerationContext &context = QgsProfileGenerationContext() );
-
     bool generateProfileForPoints();
     bool generateProfileForLines();
     bool generateProfileForPolygons();

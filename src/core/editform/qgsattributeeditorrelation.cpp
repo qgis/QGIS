@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsattributeeditorrelation.h"
-#include "moc_qgsattributeeditorrelation.cpp"
 #include "qgsrelationmanager.h"
 #include "qgsxmlutils.h"
 

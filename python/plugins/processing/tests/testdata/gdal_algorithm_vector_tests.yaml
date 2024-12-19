@@ -291,7 +291,6 @@ tests:
       INPUT:
         name: points_lines.gpkg
         type: vector
-      ALL_LAYERS: true
     results:
       OUTPUT:
         name: expected/gdal/vector_info_2.json

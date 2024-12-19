@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecircle2points.h"
-#include "moc_qgsmaptoolshapecircle2points.cpp"
 #include "qgsgeometryrubberband.h"
 #include "qgsmapmouseevent.h"
 #include "qgsmaptoolcapture.h"
@@ -80,3 +79,4 @@ void QgsMapToolShapeCircle2Points::cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsM
   mCircle = QgsCircle::from2Points( mPoints.at( 0 ), mParentTool->mapPoint( *e ) );
   mTempRubberBand->setGeometry( mCircle.toCircularString( true ) );
 }
+

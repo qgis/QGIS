@@ -47,6 +47,7 @@ class APP_EXPORT QgsDecorationLayoutExtentDialog : public QDialog, private Ui::Q
 
     void updateGuiElements();
     void updateDecoFromGui();
+
 };
 
 #endif // QGSDECORATIONLAYOUTEXTENTDIALOG_H

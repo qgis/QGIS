@@ -331,15 +331,6 @@ class CORE_EXPORT QgsTopologicalMesh
     //! Checks the topology of the mesh \a mesh, if error occurs, this mesh can't be edited
     static QgsMeshEditingError checkTopology( const QgsMesh &mesh, int maxVerticesPerFace );
 
-    //! Returns vertex position in face
-    static inline int vertexPositionInFace( int vertexIndex, const QgsMeshFace &face )
-    {
-      return face.indexOf( vertexIndex );
-    }
-
-    //! Returns vertex position in face
-    static int vertexPositionInFace( const QgsMesh &mesh, int vertexIndex, int faceIndex );
-
   private:
 
     //! Creates topological faces from mesh faces

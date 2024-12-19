@@ -32,7 +32,7 @@ Interface for resampling rasters (e.g. to have a smoother appearance)
   public:
     virtual ~QgsRasterResampler();
 
- virtual void resample( const QImage &srcImage, QImage &dstImage ) = 0 /Deprecated="Since 3.10.1. Use the more efficient QgsRasterResamplerV2 interface instead."/;
+ virtual void resample( const QImage &srcImage, QImage &dstImage ) = 0 /Deprecated/;
 %Docstring
 Resamples a source image to a destination image.
 

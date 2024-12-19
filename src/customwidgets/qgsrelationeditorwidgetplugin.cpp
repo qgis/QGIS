@@ -16,7 +16,6 @@
 #include "qgiscustomwidgets.h"
 #include "qgsrelationeditorwidget.h"
 #include "qgsrelationeditorwidgetplugin.h"
-#include "moc_qgsrelationeditorwidgetplugin.cpp"
 
 
 QgsRelationEditorWidgetPlugin::QgsRelationEditorWidgetPlugin( QObject *parent )
@@ -97,5 +96,5 @@ QString QgsRelationEditorWidgetPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-    .arg( name() );
+         .arg( name() );
 }

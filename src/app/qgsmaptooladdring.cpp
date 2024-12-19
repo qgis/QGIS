@@ -15,7 +15,6 @@
 
 
 #include "qgsmaptooladdring.h"
-#include "moc_qgsmaptooladdring.cpp"
 #include "qgsgeometry.h"
 #include "qgslinestring.h"
 #include "qgsmapcanvas.h"

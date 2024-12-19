@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsprovidersublayertask.h"
-#include "moc_qgsprovidersublayertask.cpp"
 #include "qgsfeedback.h"
 #include "qgsprovidermetadata.h"
 #include "qgsproviderregistry.h"

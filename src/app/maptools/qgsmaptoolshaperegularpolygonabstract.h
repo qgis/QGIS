@@ -23,7 +23,7 @@
 
 class QSpinBox;
 
-class APP_EXPORT QgsMapToolShapeRegularPolygonAbstract : public QgsMapToolShapeAbstract
+class APP_EXPORT QgsMapToolShapeRegularPolygonAbstract: public QgsMapToolShapeAbstract
 {
     Q_OBJECT
 

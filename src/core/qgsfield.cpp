@@ -1,4 +1,3 @@
-#include "moc_qgsfield.cpp"
 /***************************************************************************
        qgsfield.cpp - Describes a field in a layer or table
         --------------------------------------

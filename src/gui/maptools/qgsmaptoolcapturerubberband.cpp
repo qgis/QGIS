@@ -20,8 +20,8 @@
 ///@cond PRIVATE
 
 
-QgsMapToolCaptureRubberBand::QgsMapToolCaptureRubberBand( QgsMapCanvas *mapCanvas, Qgis::GeometryType geomType )
-  : QgsGeometryRubberBand( mapCanvas, geomType )
+QgsMapToolCaptureRubberBand::QgsMapToolCaptureRubberBand( QgsMapCanvas *mapCanvas, Qgis::GeometryType geomType ):
+  QgsGeometryRubberBand( mapCanvas, geomType )
 {
   setVertexDrawingEnabled( false );
 }
@@ -34,16 +34,15 @@ QgsCurve *QgsMapToolCaptureRubberBand::curve()
   switch ( mStringType )
   {
     case Qgis::WkbType::LineString:
-      return new QgsLineString( mPoints );
+      return new QgsLineString( mPoints ) ;
       break;
     case Qgis::WkbType::CircularString:
       if ( mPoints.count() != 3 )
         return nullptr;
       return new QgsCircularString(
-        mPoints[0],
-        mPoints[1],
-        mPoints[2]
-      );
+               mPoints[0],
+               mPoints[1],
+               mPoints[2] ) ;
       break;
     default:
       return nullptr;
@@ -52,10 +51,11 @@ QgsCurve *QgsMapToolCaptureRubberBand::curve()
 
 bool QgsMapToolCaptureRubberBand::curveIsComplete() const
 {
-  return ( mStringType == Qgis::WkbType::LineString && mPoints.count() > 1 ) || ( mStringType == Qgis::WkbType::CircularString && mPoints.count() > 2 );
+  return ( mStringType == Qgis::WkbType::LineString && mPoints.count() > 1 ) ||
+         ( mStringType == Qgis::WkbType::CircularString && mPoints.count() > 2 );
 }
 
-void QgsMapToolCaptureRubberBand::reset( Qgis::GeometryType geomType, Qgis::WkbType stringType, const QgsPoint &firstPolygonPoint )
+void QgsMapToolCaptureRubberBand::reset( Qgis::GeometryType geomType, Qgis::WkbType stringType,  const QgsPoint &firstPolygonPoint )
 {
   if ( !( geomType == Qgis::GeometryType::Line || geomType == Qgis::GeometryType::Polygon ) )
     return;
@@ -86,7 +86,7 @@ void QgsMapToolCaptureRubberBand::addPoint( const QgsPoint &point, bool doUpdate
 void QgsMapToolCaptureRubberBand::movePoint( const QgsPoint &point )
 {
   if ( mPoints.count() > 0 )
-    mPoints.last() = point;
+    mPoints.last() = point ;
 
   updateCurve();
 }

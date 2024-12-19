@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgssensorthingsconnectionpropertiestask.h"
-#include "moc_qgssensorthingsconnectionpropertiestask.cpp"
 #include "qgsfeedback.h"
 #include "qgssensorthingsutils.h"
 
@@ -25,11 +24,12 @@ QgsSensorThingsConnectionPropertiesTask::QgsSensorThingsConnectionPropertiesTask
   , mUri( uri )
   , mEntity( entity )
 {
+
 }
 
 bool QgsSensorThingsConnectionPropertiesTask::run()
 {
-  mFeedback = std::make_unique<QgsFeedback>();
+  mFeedback = std::make_unique< QgsFeedback >();
   mGeometryTypes = QgsSensorThingsUtils::availableGeometryTypes( mUri, mEntity, mFeedback.get() );
   return !mFeedback->isCanceled();
 }

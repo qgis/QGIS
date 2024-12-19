@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "12/12/2021"
-__copyright__ = "Copyright 2021, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '12/12/2021'
+__copyright__ = 'Copyright 2021, The QGIS Project'
 
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsCoordinateReferenceSystem
@@ -32,7 +31,7 @@ class TestQgsCrsSelectionWidget(QgisTestCase):
 
         spy = QSignalSpy(w.crsChanged)
         spy_valid_selection = QSignalSpy(w.hasValidSelectionChanged)
-        c = QgsCoordinateReferenceSystem("EPSG:3111")
+        c = QgsCoordinateReferenceSystem('EPSG:3111')
 
         w.setCrs(c)
         self.assertEqual(w.crs(), c)
@@ -59,7 +58,7 @@ class TestQgsCrsSelectionWidget(QgisTestCase):
         self.assertEqual(len(spy_valid_selection), 4)
         self.assertTrue(w.hasValidSelection())
 
-        c2 = QgsCoordinateReferenceSystem("EPSG:3113")
+        c2 = QgsCoordinateReferenceSystem('EPSG:3113')
         w.setCrs(c2)
         self.assertEqual(w.crs(), c2)
         self.assertEqual(len(spy), 5)
@@ -73,7 +72,7 @@ class TestQgsCrsSelectionWidget(QgisTestCase):
         self.assertTrue(w.hasValidSelection())
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()
 
 start_app()

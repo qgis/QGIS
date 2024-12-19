@@ -8,19 +8,13 @@
 #include "o0export.h"
 #include "o0baseauth.h"
 
+class O2ReplyServer;
+
 /// Simple OAuth 1.0 authenticator.
 class O0_EXPORT O1: public O0BaseAuth {
     Q_OBJECT
 
 public:
-    /// HTTP User-Agent header
-    /// Set user agent to a value unique for your application (https://tools.ietf.org/html/rfc7231#section-5.5.3)
-    /// if you see the following error in the application log:
-    /// O1::onTokenRequestError: 201 "Error transferring requestTokenUrl() - server replied: Forbidden" "Bad bot"
-    Q_PROPERTY(QByteArray userAgent READ userAgent WRITE setUserAgent NOTIFY userAgentChanged)
-    QByteArray userAgent() const;
-    void setUserAgent(const QByteArray &value);
-
     /// Signature method
     Q_PROPERTY(QString signatureMethod READ signatureMethod WRITE setSignatureMethod NOTIFY signatureMethodChanged)
     QString signatureMethod();
@@ -32,14 +26,14 @@ public:
     void setRequestTokenUrl(const QUrl &value);
 
     /// Parameters to pass with request URL.
-    Q_PROPERTY(QList<O0RequestParameter> requestParameters READ requestParameters WRITE setRequestParameters NOTIFY requestParametersChanged)
+    Q_PROPERTY(QList<O0RequestParameter> requestParameters READ requestParameters WRITE setRequestParameters);
     QList<O0RequestParameter> requestParameters();
     void setRequestParameters(const QList<O0RequestParameter> &value);
 
     /// Callback URL.
     /// It should contain a `%1` place marker, to be replaced by `O0BaseAuth::localPort()`.
     /// Defaults to `O2_CALLBACK_URL`.
-    Q_PROPERTY(QString callbackUrl READ callbackUrl WRITE setCallbackUrl NOTIFY callbackUrlChanged)
+    Q_PROPERTY(QString callbackUrl READ callbackUrl WRITE setCallbackUrl)
     QString callbackUrl();
     void setCallbackUrl(const QString &value);
 
@@ -54,16 +48,13 @@ public:
     void setAccessTokenUrl(const QUrl &value);
 
     /// Constructor.
-    explicit O1(QObject *parent = nullptr, QNetworkAccessManager *manager = nullptr, O0AbstractStore *store = nullptr);
+    explicit O1(QObject *parent = 0, QNetworkAccessManager *manager = 0);
 
     /// Parse a URL-encoded response string.
     static QMap<QString, QString> parseResponse(const QByteArray &response);
 
     /// Build the value of the "Authorization:" header.
     static QByteArray buildAuthorizationHeader(const QList<O0RequestParameter> &oauthParams);
-
-    /// Add common configuration (headers) to @p req.
-    void decorateRequest(QNetworkRequest &req, const QList<O0RequestParameter> &oauthParams);
 
     /// Create unique bytes to prevent replay attacks.
     static QByteArray nonce();
@@ -89,25 +80,21 @@ public:
 
 public Q_SLOTS:
     /// Authenticate.
-    Q_INVOKABLE void link() override;
+    Q_INVOKABLE virtual void link();
 
     /// De-authenticate.
-    Q_INVOKABLE void unlink() override;
+    Q_INVOKABLE virtual void unlink();
 
 Q_SIGNALS:
     void requestTokenUrlChanged();
     void authorizeUrlChanged();
     void accessTokenUrlChanged();
     void signatureMethodChanged();
-    void userAgentChanged(const QByteArray& agent);
-    void requestParametersChanged();
-    void callbackUrlChanged(const QString& url);
 
-public Q_SLOTS:
+protected Q_SLOTS:
     /// Handle verification received from the reply server.
     virtual void onVerificationReceived(QMap<QString,QString> params);
 
-protected Q_SLOTS:
     /// Handle token request error.
     virtual void onTokenRequestError(QNetworkReply::NetworkError error);
 
@@ -124,7 +111,6 @@ protected:
     /// Exchange temporary token to authentication token
     void exchangeToken();
 
-    QByteArray userAgent_;
     QUrl requestUrl_;
     QList<O0RequestParameter> requestParameters_;
     QString callbackUrl_;
@@ -133,6 +119,7 @@ protected:
     QString verifier_;
     QString signatureMethod_;
     QNetworkAccessManager *manager_;
+    O2ReplyServer *replyServer_;
 };
 
 #endif // O1_H

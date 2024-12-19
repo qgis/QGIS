@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmeshselectbyexpressiondialog.h"
-#include "moc_qgsmeshselectbyexpressiondialog.cpp"
 
 #include <QAction>
 
@@ -23,8 +22,8 @@
 #include "qgshelp.h"
 #include "qgsgui.h"
 
-QgsMeshSelectByExpressionDialog::QgsMeshSelectByExpressionDialog( QWidget *parent )
-  : QDialog( parent )
+QgsMeshSelectByExpressionDialog::QgsMeshSelectByExpressionDialog( QWidget *parent ):
+  QDialog( parent )
 {
   setupUi( this );
 
@@ -32,7 +31,7 @@ QgsMeshSelectByExpressionDialog::QgsMeshSelectByExpressionDialog( QWidget *paren
 
   setWindowTitle( tr( "Select Mesh Elements by Expression" ) );
 
-  mActionSelect = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionSelect.svg" ) ), tr( "Select" ), this );
+  mActionSelect = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpressionSelect.svg" ) ),  tr( "Select" ), this );
   mActionAddToSelection = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectAdd.svg" ) ), tr( "Add to current selection" ), this );
   mActionRemoveFromSelection = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mIconSelectRemove.svg" ) ), tr( "Remove from current selection" ), this );
 
@@ -55,19 +54,22 @@ QgsMeshSelectByExpressionDialog::QgsMeshSelectByExpressionDialog( QWidget *paren
 
   onElementTypeChanged();
 
-  connect( mActionSelect, &QAction::triggered, this, [this] {
+  connect( mActionSelect, &QAction::triggered, this, [this]
+  {
     emit select( mExpressionBuilder->expressionText(), Qgis::SelectBehavior::SetSelection, currentElementType() );
   } );
-  connect( mActionAddToSelection, &QAction::triggered, this, [this] {
+  connect( mActionAddToSelection, &QAction::triggered, this, [this]
+  {
     emit select( mExpressionBuilder->expressionText(), Qgis::SelectBehavior::AddToSelection, currentElementType() );
   } );
-  connect( mActionRemoveFromSelection, &QAction::triggered, this, [this] {
+  connect( mActionRemoveFromSelection, &QAction::triggered, this, [this]
+  {
     emit select( mExpressionBuilder->expressionText(), Qgis::SelectBehavior::RemoveFromSelection, currentElementType() );
   } );
 
   connect( mActionSelect, &QAction::triggered, this, &QgsMeshSelectByExpressionDialog::saveRecent );
-  connect( mActionAddToSelection, &QAction::triggered, this, &QgsMeshSelectByExpressionDialog::saveRecent );
-  connect( mActionRemoveFromSelection, &QAction::triggered, this, &QgsMeshSelectByExpressionDialog::saveRecent );
+  connect( mActionAddToSelection, &QAction::triggered, this,  &QgsMeshSelectByExpressionDialog::saveRecent );
+  connect( mActionRemoveFromSelection, &QAction::triggered, this,  &QgsMeshSelectByExpressionDialog::saveRecent );
 
   connect( mButtonClose, &QPushButton::clicked, this, &QgsMeshSelectByExpressionDialog::close );
   connect( mButtonZoomToSelected, &QToolButton::clicked, this, &QgsMeshSelectByExpressionDialog::zoomToSelected );
@@ -96,11 +98,11 @@ void QgsMeshSelectByExpressionDialog::saveRecent() const
 
 void QgsMeshSelectByExpressionDialog::onElementTypeChanged() const
 {
-  QgsMesh::ElementType elementType = currentElementType();
+  QgsMesh::ElementType elementType = currentElementType() ;
   QgsSettings settings;
   settings.setValue( QStringLiteral( "/meshSelection/elementType" ), elementType );
 
-  QgsExpressionContext expressionContext( { QgsExpressionContextUtils::meshExpressionScope( elementType ) } );
+  QgsExpressionContext expressionContext( {QgsExpressionContextUtils::meshExpressionScope( elementType )} );
   mExpressionBuilder->init( expressionContext, QStringLiteral( "mesh_vertex_selection" ), QgsExpressionBuilderWidget::LoadAll );
 }
 

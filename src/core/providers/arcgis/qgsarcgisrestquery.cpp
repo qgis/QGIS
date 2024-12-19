@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsarcgisrestquery.h"
-#include "moc_qgsarcgisrestquery.cpp"
 #include "qgsarcgisrestutils.h"
 #include "qgsblockingnetworkrequest.h"
 #include "qgsnetworkaccessmanager.h"

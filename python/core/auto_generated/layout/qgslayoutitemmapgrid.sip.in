@@ -589,7 +589,7 @@ Returns the text format used when rendering grid annotations.
 .. versionadded:: 3.16
 %End
 
- void setAnnotationFont( const QFont &font ) /Deprecated="Since 3.40. Use setAnnotationTextFormat() instead."/;
+ void setAnnotationFont( const QFont &font ) /Deprecated/;
 %Docstring
 Sets the ``font`` used for drawing grid annotations.
 Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.setFont().
@@ -601,7 +601,7 @@ Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.setFont().
    Use :py:func:`~QgsLayoutItemMapGrid.setAnnotationTextFormat` instead.
 %End
 
- QFont annotationFont() const /Deprecated="Since 3.40. Use annotationTextFormat() instead."/;
+ QFont annotationFont() const /Deprecated/;
 %Docstring
 Returns the font used for drawing grid annotations.
 Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.font().
@@ -613,7 +613,7 @@ Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.font().
    Use :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat` instead.
 %End
 
- void setAnnotationFontColor( const QColor &color ) /Deprecated="Since 3.40. Use setAnnotationTextFormat() instead."/;
+ void setAnnotationFontColor( const QColor &color ) /Deprecated/;
 %Docstring
 Sets the font ``color`` used for drawing grid annotations.
 Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.setColor() and :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.setOpacity().
@@ -625,7 +625,7 @@ Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.setColor() an
    Use :py:func:`~QgsLayoutItemMapGrid.setAnnotationTextFormat` instead.
 %End
 
- QColor annotationFontColor() const /Deprecated="Since 3.40. Use annotationTextFormat() instead."/;
+ QColor annotationFontColor() const /Deprecated/;
 %Docstring
 Returns the font color used for drawing grid annotations.
 Shortcut for :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.color() and :py:func:`~QgsLayoutItemMapGrid.annotationTextFormat`.opacity().

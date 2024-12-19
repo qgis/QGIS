@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgslayoutitemgroupundocommand.h"
-#include "moc_qgslayoutitemgroupundocommand.cpp"
 #include "qgslayoutitemgroup.h"
 #include "qgslayout.h"
 #include "qgsproject.h"

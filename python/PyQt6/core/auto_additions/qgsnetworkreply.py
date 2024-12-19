@@ -3,5 +3,5 @@ try:
     QgsNetworkReplyContent.extractFilenameFromContentDispositionHeader = staticmethod(QgsNetworkReplyContent.extractFilenameFromContentDispositionHeader)
     QgsNetworkReplyContent.extractFileNameFromContentDispositionHeader = staticmethod(QgsNetworkReplyContent.extractFileNameFromContentDispositionHeader)
     QgsNetworkReplyContent.__group__ = ['network']
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -21,6 +21,7 @@ hue wheel, color swatches, and a color sampler.
 #include "qgscompoundcolorwidget.h"
 %End
   public:
+
     enum Layout /BaseType=IntEnum/
     {
       LayoutDefault,
@@ -136,6 +137,7 @@ Sets the color to show in an optional "previous color" section
 %End
 
   protected:
+
     virtual void hideEvent( QHideEvent *e );
 
 

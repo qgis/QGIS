@@ -17,6 +17,7 @@ class QgsAttributeDialog : QDialog, QgsMapLayerActionContextGenerator
 #include "qgsattributedialog.h"
 %End
   public:
+
     QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent /TransferThis/ = 0, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 %Docstring
 Create an attribute dialog for a given layer and feature

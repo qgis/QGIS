@@ -37,16 +37,9 @@ Constructor for :py:class:`QgsEditBufferGroup`
 Add a layer to this edit buffer group.
 %End
 
-    void removeLayer( QgsVectorLayer *layer );
-%Docstring
-Remove a layer from this edit buffer group.
-
-.. versionadded:: 3.42
-%End
-
     void clear();
 %Docstring
-Remove all layers from this edit buffer group.
+Remove all layers from this edit buffer group
 %End
 
     QSet<QgsVectorLayer *> layers() const;

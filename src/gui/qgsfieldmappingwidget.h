@@ -41,6 +41,7 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructs a QgsFieldMappingWidget from a set of \a sourceFields
      * and \a destinationFields, initial values for the expressions can be
@@ -48,7 +49,10 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
      * field name to the corresponding expression. A \a parent object
      * can also be specified.
      */
-    explicit QgsFieldMappingWidget( QWidget *parent = nullptr, const QgsFields &sourceFields = QgsFields(), const QgsFields &destinationFields = QgsFields(), const QMap<QString, QString> &expressions = QMap<QString, QString>() );
+    explicit QgsFieldMappingWidget( QWidget *parent = nullptr,
+                                    const QgsFields &sourceFields = QgsFields(),
+                                    const QgsFields &destinationFields = QgsFields(),
+                                    const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 
     //! Sets the destination fields editable state to \a editable
     void setDestinationEditable( bool editable );
@@ -68,14 +72,14 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
      *
      * \see setFieldPropertyMap()
      */
-    QMap<QString, QgsProperty> fieldPropertyMap() const;
+    QMap< QString, QgsProperty > fieldPropertyMap() const;
 
     /**
      * Sets a map of destination field name to QgsProperty definition for field value.
      *
      * \see fieldPropertyMap()
      */
-    void setFieldPropertyMap( const QMap<QString, QgsProperty> &map );
+    void setFieldPropertyMap( const QMap< QString, QgsProperty > &map );
 
     //! Returns the selection model
     QItemSelectionModel *selectionModel();
@@ -105,7 +109,8 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
      * \a expressions which is a map from the original field name to the
      * corresponding expression.
      */
-    void setDestinationFields( const QgsFields &destinationFields, const QMap<QString, QString> &expressions = QMap<QString, QString>() );
+    void setDestinationFields( const QgsFields &destinationFields,
+                               const QMap<QString, QString> &expressions = QMap<QString, QString>() );
 
     /**
      * Scroll the fields view to \a index
@@ -131,42 +136,45 @@ class GUI_EXPORT QgsFieldMappingWidget : public QgsPanelWidget
     void appendField( const QgsField &field, const QString &expression = QString() );
 
     //! Removes the currently selected field from the model
-    bool removeSelectedFields();
+    bool removeSelectedFields( );
 
     //! Moves up currently selected field
-    bool moveSelectedFieldsUp();
+    bool moveSelectedFieldsUp( );
 
     //! Moves down the currently selected field
-    bool moveSelectedFieldsDown();
+    bool moveSelectedFieldsDown( );
 
     /**
      * Invert the field selection state.
      *
      * \since QGIS 3.32
      */
-    void invertSelection();
+    void invertSelection( );
 
   private:
+
     QTableView *mTableView = nullptr;
     QAbstractTableModel *mModel = nullptr;
 
-    QPointer<QgsVectorLayer> mSourceLayer;
+    QPointer< QgsVectorLayer > mSourceLayer;
     void updateColumns();
     //! Returns selected row indexes in ascending order
-    std::list<int> selectedRows();
+    std::list<int> selectedRows( );
 
     friend class QgsAggregateMappingWidget;
+
 };
 
 /// @cond PRIVATE
 
 #ifndef SIP_RUN
 
-class QgsFieldMappingExpressionDelegate : public QStyledItemDelegate
+class QgsFieldMappingExpressionDelegate: public QStyledItemDelegate
 {
     Q_OBJECT
 
   public:
+
     QgsFieldMappingExpressionDelegate( QObject *parent = nullptr );
 
     // QAbstractItemDelegate interface
@@ -175,11 +183,12 @@ class QgsFieldMappingExpressionDelegate : public QStyledItemDelegate
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
 };
 
-class QgsFieldMappingTypeDelegate : public QStyledItemDelegate
+class QgsFieldMappingTypeDelegate: public QStyledItemDelegate
 {
     Q_OBJECT
 
   public:
+
     QgsFieldMappingTypeDelegate( QObject *parent = nullptr );
 
     // QAbstractItemDelegate interface

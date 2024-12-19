@@ -24,12 +24,12 @@ class QgsSpinBoxLineEdit;
 
 
 #ifdef SIP_RUN
-//%ModuleHeaderCode
+% ModuleHeaderCode
 // fix to allow compilation with sip that for some reason
 // doesn't add this include to the file where the code from
 // ConvertToSubClassCode goes.
 #include <qgsdoublespinbox.h>
-//%End
+% End
 #endif
 
 
@@ -41,6 +41,7 @@ class QgsSpinBoxLineEdit;
  */
 class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
 {
+
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsDoubleSpinBox *>( sipCpp ) )
@@ -56,12 +57,13 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     Q_PROPERTY( bool expressionsEnabled READ expressionsEnabled WRITE setExpressionsEnabled )
 
   public:
+
     //! Behavior when widget is cleared.
     enum ClearValueMode
     {
       MinimumValue, //!< Reset value to minimum()
       MaximumValue, //!< Reset value to maximum()
-      CustomValue,  //!< Reset value to custom value (see setClearValue() )
+      CustomValue, //!< Reset value to custom value (see setClearValue() )
     };
 
     /**
@@ -82,7 +84,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      * Returns whether the widget is showing a clear button.
      * \see setShowClearButton()
      */
-    bool showClearButton() const { return mShowClearButton; }
+    bool showClearButton() const {return mShowClearButton;}
 
     /**
      * Sets if the widget will allow entry of simple expressions, which are
@@ -96,7 +98,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      * evaluated and then discarded.
      * \returns TRUE if spin box allows expression entry
      */
-    bool expressionsEnabled() const { return mExpressionsEnabled; }
+    bool expressionsEnabled() const {return mExpressionsEnabled;}
 
     //! Sets the current value to the value defined by the clear value.
     void clear() override;
@@ -123,14 +125,6 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     double clearValue() const;
 
     /**
-     * \returns TRUE if the value is equal to the clear value.
-     * \see clearValue()
-     *
-     * \since QGIS 3.42
-     */
-    bool isCleared() const;
-
-    /**
      * Set alignment in the embedded line edit widget
      * \param alignment
      */
@@ -148,29 +142,6 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     void paintEvent( QPaintEvent *e ) override;
     void stepBy( int steps ) override;
 
-    /**
-     * Returns the timeout (in milliseconds) threshold for the editingTimeout() signal to be emitted
-     * after an edit.
-     *
-     * \see setEditingTimeoutInterval()
-     *
-     * \since QGIS 3.42
-     */
-    int editingTimeoutInterval() const;
-
-  public slots:
-
-    /**
-     * Sets the \a timeout (in milliseconds) threshold for the editingTimeout() signal to be emitted
-     * after an edit.
-     *
-     * \see editingTimeoutInterval()
-     * \see editingTimeout()
-     *
-     * \since QGIS 3.42
-     */
-    void setEditingTimeoutInterval( int timeout );
-
   signals:
 
     /**
@@ -185,25 +156,9 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      */
     void textEdited( const QString &text );
 
-    /**
-     * Emitted when either:
-     *
-     * 1. 2 seconds has elapsed since the last value change in the widget (eg last key press or scroll wheel event)
-     * 2. or, immediately after the widget has lost focus after its value was changed.
-     *
-     * This signal can be used to respond semi-instantly to changes in the spin box, without responding too quickly
-     * while the user in the middle of setting the value.
-     *
-     * \see editingTimeoutInterval()
-     *
-     * \since QGIS 3.42
-     */
-    void editingTimeout( double value );
-
   protected:
     void changeEvent( QEvent *event ) override;
     void wheelEvent( QWheelEvent *event ) override;
-    void focusOutEvent( QFocusEvent *event ) override;
     // This is required because private implementation of
     // QAbstractSpinBoxPrivate may trigger a second
     // undesired event from the auto-repeat mouse timer
@@ -211,7 +166,6 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
 
   private slots:
     void changed( double value );
-    void onLastEditTimeout();
 
   private:
     int frameWidth() const;
@@ -224,9 +178,6 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
     double mCustomClearValue = 0.0;
 
     bool mExpressionsEnabled = true;
-
-    QTimer *mLastEditTimer = nullptr;
-    double mLastEditTimeoutValue = std::numeric_limits<double>::quiet_NaN();
 
     QString stripped( const QString &originalText ) const;
 

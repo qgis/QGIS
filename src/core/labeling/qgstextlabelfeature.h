@@ -98,7 +98,7 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
      *
      * \since QGIS 3.20
      */
-    static QgsPrecalculatedTextMetrics calculateTextMetrics( const QgsMapToPixel *xform, const QgsRenderContext &context, const QgsTextFormat &format, const QFont &baseFont, const QFontMetricsF &fontMetrics, double letterSpacing,
+    static QgsPrecalculatedTextMetrics calculateTextMetrics( const QgsMapToPixel *xform, const QgsRenderContext &context, const QFont &baseFont, const QFontMetricsF &fontMetrics, double letterSpacing,
         double wordSpacing, const QString &text = QString(), QgsTextDocument *document = nullptr, QgsTextDocumentMetrics *metrics = nullptr );
 
     /**
@@ -106,7 +106,7 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
      * \see setDocument()
      * \since QGIS 3.14
      */
-    const QgsTextDocument &document() const { return mDocument; }
+    QgsTextDocument document() const;
 
     /**
      * Returns the document metrics for the label.
@@ -114,7 +114,7 @@ class CORE_EXPORT QgsTextLabelFeature : public QgsLabelFeature
      * \see document()
      * \since QGIS 3.28
      */
-    const QgsTextDocumentMetrics &documentMetrics() const { return mDocumentMetrics; }
+    QgsTextDocumentMetrics documentMetrics() const;
 
     /**
      * Sets the \a document and document \a metrics for the label.

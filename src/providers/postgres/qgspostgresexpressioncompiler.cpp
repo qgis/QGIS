@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgspostgresexpressioncompiler.h"
-#include "qgsexpressionutils.h"
 #include "qgssqlexpressioncompiler.h"
 #include "qgsexpressionnodeimpl.h"
 
@@ -47,16 +46,20 @@ QString QgsPostgresExpressionCompiler::quotedValue( const QVariant &value, bool 
 
     default:
 
-      QgsGeometry geom = QgsExpressionUtils::getGeometry( value, nullptr );
-      if ( geom.isNull() )
-        break;
-      return QString( "ST_GeomFromText('%1',%2)" ).arg( geom.asWkt() ).arg( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid );
+      if ( value.userType() == qMetaTypeId<QgsGeometry>() )
+      {
+        const QgsGeometry geom = value.value<QgsGeometry>();
+        return QString( "ST_GeomFromText('%1',%2)" ).arg( geom.asWkt() ).arg( mRequestedSrid.isEmpty() ? mDetectedSrid : mRequestedSrid );
+      }
+      break;
+
   }
 
   return QgsPostgresConn::quotedValue( value );
 }
 
-static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP {
+static const QMap<QString, QString> FUNCTION_NAMES_SQL_FUNCTIONS_MAP
+{
   { "sqrt", "sqrt" },
   { "radians", "radians" },
   { "degrees", "degrees" },

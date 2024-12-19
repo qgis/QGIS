@@ -25,9 +25,9 @@
 class QgsPlotCanvas;
 
 #ifdef SIP_RUN
-//%ModuleHeaderCode
+% ModuleHeaderCode
 #include "qgsplotcanvasitem.h"
-//%End
+% End
 #endif
 
 /**
@@ -37,6 +37,7 @@ class QgsPlotCanvas;
  */
 class GUI_EXPORT QgsPlotCanvasItem : public QGraphicsItem
 {
+
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( dynamic_cast<QgsPlotCanvasItem *>( sipCpp ) != nullptr )
@@ -47,6 +48,7 @@ class GUI_EXPORT QgsPlotCanvasItem : public QGraphicsItem
 #endif
 
   protected:
+
     /**
      * Constructor for QgsPlotCanvasItem for the specified \a canvas.
      */
@@ -59,11 +61,15 @@ class GUI_EXPORT QgsPlotCanvasItem : public QGraphicsItem
      */
     virtual void paint( QPainter *painter ) = 0;
 
-    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
+    void paint( QPainter *painter,
+                const QStyleOptionGraphicsItem *option,
+                QWidget *widget = nullptr ) override;
 
   protected:
+
     //! Associated canvas
     QgsPlotCanvas *mCanvas = nullptr;
+
 };
 
 

@@ -24,7 +24,7 @@ macro (PLUGIN_INSTALL plugin subdir )
     add_dependencies(zzz-${plugin}-stageinstall zzz-${plugin}-depend)
 
     add_custom_command(TARGET zzz-${plugin}-stageinstall
-      POST_BUILD COMMAND ${CMAKE_COMMAND} -P ${_cmake}
+      COMMAND ${CMAKE_COMMAND} -P ${_cmake}
     )
 
     add_custom_target(clean-staged-${plugin}

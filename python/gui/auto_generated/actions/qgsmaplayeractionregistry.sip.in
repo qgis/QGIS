@@ -24,6 +24,7 @@ This class tracks map layer actions.
 #include "qgsmaplayeractionregistry.h"
 %End
   public:
+
     QgsMapLayerActionRegistry( QObject *parent = 0 );
 %Docstring
 Constructor for QgsMapLayerActionRegistry.
@@ -59,6 +60,7 @@ Returns the default action for a layer
 %End
 
   protected:
+
 
   signals:
     void changed();

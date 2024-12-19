@@ -38,12 +38,11 @@ class TestQgsLayoutLabel : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLayoutLabel()
-      : QgsTest( QStringLiteral( "Layout Label Tests" ), QStringLiteral( "composer_label" ) ) {}
+    TestQgsLayoutLabel() : QgsTest( QStringLiteral( "Layout Label Tests" ), QStringLiteral( "composer_label" ) ) {}
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
 
     // test simple expression evaluation
     void evaluation();
@@ -73,8 +72,11 @@ void TestQgsLayoutLabel::initTestCase()
   QgsApplication::initQgis();
 
   //create maplayers from testdata and add to layer registry
-  const QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + '/' + "france_parts.shp" );
-  mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  const QFileInfo vectorFileInfo( QStringLiteral( TEST_DATA_DIR ) + '/' +  "france_parts.shp" );
+  mVectorLayer = new QgsVectorLayer( vectorFileInfo.filePath(),
+                                     vectorFileInfo.completeBaseName(),
+                                     QStringLiteral( "ogr" ) );
+
 }
 
 void TestQgsLayoutLabel::cleanupTestCase()
@@ -364,7 +366,7 @@ void TestQgsLayoutLabel::renderAsHtmlRelative()
   label->setMargin( 1 );
   l.addLayoutItem( label );
 
-  QgsProject::instance()->setFileName( QStringLiteral( TEST_DATA_DIR ) + QDir::separator() + "test.qgs" );
+  QgsProject::instance()->setFileName( QStringLiteral( TEST_DATA_DIR ) +  QDir::separator() + "test.qgs" );
   label->setText( QStringLiteral( "test <img src=\"small_sample_image.png\" />" ) );
 
   QgsTextFormat format;

@@ -5,5 +5,5 @@ try:
     QgsContrastEnhancement.contrastEnhancementAlgorithmString = staticmethod(QgsContrastEnhancement.contrastEnhancementAlgorithmString)
     QgsContrastEnhancement.contrastEnhancementAlgorithmFromString = staticmethod(QgsContrastEnhancement.contrastEnhancementAlgorithmFromString)
     QgsContrastEnhancement.__group__ = ['raster']
-except (NameError, AttributeError):
+except NameError:
     pass

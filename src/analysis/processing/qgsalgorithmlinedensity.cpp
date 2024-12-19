@@ -49,13 +49,13 @@ QString QgsLineDensityAlgorithm::groupId() const
 
 void QgsLineDensityAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input line layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input line layer" ), QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine ) ) );
   addParameter( new QgsProcessingParameterField( QStringLiteral( "WEIGHT" ), QObject::tr( "Weight field " ), QVariant(), QStringLiteral( "INPUT" ), Qgis::ProcessingFieldParameterDataType::Numeric, false, true ) );
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "RADIUS" ), QObject::tr( "Search radius" ), 10, QStringLiteral( "INPUT" ), false, 0 ) );
   addParameter( new QgsProcessingParameterDistance( QStringLiteral( "PIXEL_SIZE" ), QObject::tr( "Pixel size" ), 10, QStringLiteral( "INPUT" ), false ) );
 
-  std::unique_ptr<QgsProcessingParameterString> createOptsParam = std::make_unique<QgsProcessingParameterString>( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
-  createOptsParam->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) } } ) } } ) );
+  std::unique_ptr< QgsProcessingParameterString > createOptsParam = std::make_unique< QgsProcessingParameterString >( QStringLiteral( "CREATE_OPTIONS" ), QObject::tr( "Creation options" ), QVariant(), false, true );
+  createOptsParam->setMetadata( QVariantMap( {{QStringLiteral( "widget_wrapper" ), QVariantMap( {{QStringLiteral( "widget_type" ), QStringLiteral( "rasteroptions" ) }} ) }} ) );
   createOptsParam->setFlags( createOptsParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( createOptsParam.release() );
 
@@ -69,7 +69,7 @@ QString QgsLineDensityAlgorithm::shortHelpString() const
                       "First, the length of the segment of each line that is intersected by the circular neighborhood "
                       "is multiplied with the lines weight factor. In a second step, all length values are summed and "
                       "divided by the area of the circular neighborhood. This process is repeated for all raster cells."
-  );
+                    );
 }
 
 QgsLineDensityAlgorithm *QgsLineDensityAlgorithm::createInstance() const
@@ -91,7 +91,7 @@ bool QgsLineDensityAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
   mSearchRadius = parameterAsDouble( parameters, QStringLiteral( "RADIUS" ), context );
   if ( mSearchRadius < 0.5 * mPixelSize * std::sqrt( 2 ) )
     throw QgsProcessingException( QObject::tr( "Raster cells must be fully contained by the search circle. Therefore, "
-                                               "the search radius must not be smaller than half of the pixel diagonal." ) );
+                                  "the search radius must not be smaller than half of the pixel diagonal." ) );
 
   mExtent = mSource->sourceExtent();
   mCrs = mSource->sourceCrs();
@@ -151,7 +151,7 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
     writer.setCreateOptions( createOptions.split( '|' ) );
   }
 
-  std::unique_ptr<QgsRasterDataProvider> provider( writer.createOneBandRaster( Qgis::DataType::Float32, cols, rows, rasterExtent, mCrs ) );
+  std::unique_ptr<QgsRasterDataProvider > provider( writer.createOneBandRaster( Qgis::DataType::Float32, cols, rows, rasterExtent, mCrs ) );
   if ( !provider )
     throw QgsProcessingException( QObject::tr( "Could not create raster output: %1" ).arg( outputFile ) );
   if ( !provider->isValid() )
@@ -162,7 +162,7 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
   const qgssize totalCellcnt = static_cast<qgssize>( rows ) * cols;
   int cellcnt = 0;
 
-  std::unique_ptr<QgsRasterBlock> rasterDataLine = std::make_unique<QgsRasterBlock>( Qgis::DataType::Float32, cols, 1 );
+  std::unique_ptr< QgsRasterBlock > rasterDataLine = std::make_unique< QgsRasterBlock >( Qgis::DataType::Float32, cols, 1 );
 
   for ( int row = 0; row < rows; row++ )
   {
@@ -180,7 +180,7 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
 
       if ( !fids.isEmpty() )
       {
-        std::unique_ptr<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( mSearchGeometry.constGet() ) );
+        std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( mSearchGeometry.constGet() ) );
         engine->prepareGeometry();
 
         double absDensity = 0;
@@ -193,7 +193,7 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
             double analysisLineLength = 0;
             try
             {
-              analysisLineLength = mDa.measureLength( QgsGeometry( engine->intersection( mIndex.geometry( id ).constGet() ) ) );
+              analysisLineLength =  mDa.measureLength( QgsGeometry( engine->intersection( mIndex.geometry( id ).constGet() ) ) );
             }
             catch ( QgsCsException & )
             {
@@ -207,7 +207,7 @@ QVariantMap QgsLineDensityAlgorithm::processAlgorithm( const QVariantMap &parame
               weight = mFeatureWeights.value( id );
             }
 
-            absDensity += ( analysisLineLength * weight );
+            absDensity += ( analysisLineLength *  weight );
           }
         }
 

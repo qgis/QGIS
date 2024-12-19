@@ -30,6 +30,7 @@ The log contents are saved and restored via :py:class:`QgsSettings`.
 #include "qgsprocessingrecentalgorithmlog.h"
 %End
   public:
+
     QgsProcessingRecentAlgorithmLog( QObject *parent = 0 );
 %Docstring
 Constructor for QgsProcessingRecentAlgorithmLog, with the specified

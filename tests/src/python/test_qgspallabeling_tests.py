@@ -9,10 +9,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Larry Shaffer"
-__date__ = "07/16/2013"
-__copyright__ = "Copyright 2013, The QGIS Project"
+__author__ = 'Larry Shaffer'
+__date__ = '07/16/2013'
+__copyright__ = 'Copyright 2013, The QGIS Project'
 
 import os
 
@@ -58,8 +57,8 @@ class TestPointBase:
 
     def test_default_label(self):
         # Default label placement, with text size in points
-        self._Mismatches["TestCanvasPoint"] = 776
-        self._ColorTols["TestComposerPdfPoint"] = 2
+        self._Mismatches['TestCanvasPoint'] = 776
+        self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
 
     def test_text_size_map_unit(self):
@@ -71,13 +70,13 @@ class TestPointBase:
         font = QFont(self._TestFont)
         format.setFont(font)
         self.lyr.setFormat(format)
-        self._Mismatches["TestCanvasPoint"] = 776
-        self._ColorTols["TestComposerPdfPoint"] = 2
+        self._Mismatches['TestCanvasPoint'] = 776
+        self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
 
     def test_text_color(self):
-        self._Mismatches["TestCanvasPoint"] = 774
-        self._ColorTols["TestComposerPdfPoint"] = 2
+        self._Mismatches['TestCanvasPoint'] = 774
+        self._ColorTols['TestComposerPdfPoint'] = 2
         # Label color change
         format = self.lyr.format()
         format.setColor(Qt.GlobalColor.blue)
@@ -85,19 +84,19 @@ class TestPointBase:
         self.checkTest()
 
     def test_background_rect(self):
-        self._Mismatches["TestComposerImageVsCanvasPoint"] = 800
-        self._Mismatches["TestComposerImagePoint"] = 800
+        self._Mismatches['TestComposerImageVsCanvasPoint'] = 800
+        self._Mismatches['TestComposerImagePoint'] = 800
         format = self.lyr.format()
         format.background().setEnabled(True)
         self.lyr.setFormat(format)
-        self._Mismatches["TestCanvasPoint"] = 776
-        self._ColorTols["TestComposerPdfPoint"] = 1
+        self._Mismatches['TestCanvasPoint'] = 776
+        self._ColorTols['TestComposerPdfPoint'] = 1
         self.checkTest()
 
     def test_background_rect_w_offset(self):
         # Label rectangular background
-        self._Mismatches["TestComposerImageVsCanvasPoint"] = 800
-        self._Mismatches["TestComposerImagePoint"] = 800
+        self._Mismatches['TestComposerImageVsCanvasPoint'] = 800
+        self._Mismatches['TestComposerImagePoint'] = 800
         # verify fix for issues
         #   https://github.com/qgis/QGIS/issues/17705
         #   http://gis.stackexchange.com/questions/86900
@@ -114,8 +113,8 @@ class TestPointBase:
 
         self.lyr.setFormat(format)
 
-        self._Mismatches["TestCanvasPoint"] = 774
-        self._ColorTols["TestComposerPdfPoint"] = 2
+        self._Mismatches['TestCanvasPoint'] = 774
+        self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
 
     def test_background_svg(self):
@@ -128,16 +127,17 @@ class TestPointBase:
 
         format.background().setEnabled(True)
         format.background().setType(QgsTextBackgroundSettings.ShapeType.ShapeSVG)
-        svg = os.path.join(svgSymbolsPath(), "backgrounds", "background_square.svg")
+        svg = os.path.join(
+            svgSymbolsPath(), 'backgrounds', 'background_square.svg')
         format.background().setSvgFile(svg)
         format.background().setSizeUnit(QgsUnitTypes.RenderUnit.RenderMapUnits)
         format.background().setSizeType(QgsTextBackgroundSettings.SizeType.SizeBuffer)
         format.background().setSize(QSizeF(100.0, 0.0))
         self.lyr.setFormat(format)
 
-        self._Mismatches["TestComposerPdfVsComposerPoint"] = 580
-        self._Mismatches["TestCanvasPoint"] = 776
-        self._ColorTols["TestComposerPdfPoint"] = 2
+        self._Mismatches['TestComposerPdfVsComposerPoint'] = 580
+        self._Mismatches['TestCanvasPoint'] = 776
+        self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
 
     def test_background_svg_w_offset(self):
@@ -150,7 +150,8 @@ class TestPointBase:
 
         format.background().setEnabled(True)
         format.background().setType(QgsTextBackgroundSettings.ShapeType.ShapeSVG)
-        svg = os.path.join(svgSymbolsPath(), "backgrounds", "background_square.svg")
+        svg = os.path.join(
+            svgSymbolsPath(), 'backgrounds', 'background_square.svg')
         format.background().setSvgFile(svg)
         format.background().setSizeUnit(QgsUnitTypes.RenderUnit.RenderMapUnits)
         format.background().setSizeType(QgsTextBackgroundSettings.SizeType.SizeBuffer)
@@ -160,9 +161,9 @@ class TestPointBase:
 
         self.lyr.setFormat(format)
 
-        self._Mismatches["TestComposerPdfVsComposerPoint"] = 760
-        self._Mismatches["TestCanvasPoint"] = 776
-        self._ColorTols["TestComposerPdfPoint"] = 2
+        self._Mismatches['TestComposerPdfVsComposerPoint'] = 760
+        self._Mismatches['TestCanvasPoint'] = 776
+        self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
 
     def test_partials_labels_enabled(self):
@@ -174,12 +175,10 @@ class TestPointBase:
         self.lyr.setFormat(format)
         # Enable partials labels
         engine_settings = QgsLabelingEngineSettings()
-        engine_settings.setFlag(
-            QgsLabelingEngineSettings.Flag.UsePartialCandidates, True
-        )
+        engine_settings.setFlag(QgsLabelingEngineSettings.Flag.UsePartialCandidates, True)
         self._TestMapSettings.setLabelingEngineSettings(engine_settings)
-        self._Mismatches["TestCanvasPoint"] = 779
-        self._ColorTols["TestComposerPdfPoint"] = 2
+        self._Mismatches['TestCanvasPoint'] = 779
+        self._ColorTols['TestComposerPdfPoint'] = 2
         self.checkTest()
 
     def test_partials_labels_disabled(self):
@@ -191,9 +190,7 @@ class TestPointBase:
         self.lyr.setFormat(format)
         # Disable partials labels
         engine_settings = QgsLabelingEngineSettings()
-        engine_settings.setFlag(
-            QgsLabelingEngineSettings.Flag.UsePartialCandidates, False
-        )
+        engine_settings.setFlag(QgsLabelingEngineSettings.Flag.UsePartialCandidates, False)
         self._TestMapSettings.setLabelingEngineSettings(engine_settings)
         self.checkTest()
 
@@ -284,19 +281,13 @@ class TestLineBase:
     def test_line_placement_above_map_orientation(self):
         # Line placement, above, follow map orientation
         self.lyr.placement = QgsPalLayerSettings.Placement.Line
-        self.lyr.placementFlags = (
-            QgsPalLayerSettings.LinePlacementFlags.AboveLine
-            | QgsPalLayerSettings.LinePlacementFlags.MapOrientation
-        )
+        self.lyr.placementFlags = QgsPalLayerSettings.LinePlacementFlags.AboveLine | QgsPalLayerSettings.LinePlacementFlags.MapOrientation
         self.checkTest()
 
     def test_line_placement_below_map_orientation(self):
         # Line placement, below, follow map orientation
         self.lyr.placement = QgsPalLayerSettings.Placement.Line
-        self.lyr.placementFlags = (
-            QgsPalLayerSettings.LinePlacementFlags.BelowLine
-            | QgsPalLayerSettings.LinePlacementFlags.MapOrientation
-        )
+        self.lyr.placementFlags = QgsPalLayerSettings.LinePlacementFlags.BelowLine | QgsPalLayerSettings.LinePlacementFlags.MapOrientation
         self.checkTest()
 
     def test_curved_placement_online(self):
@@ -308,19 +299,13 @@ class TestLineBase:
     def test_curved_placement_above(self):
         # Curved placement, on line
         self.lyr.placement = QgsPalLayerSettings.Placement.Curved
-        self.lyr.placementFlags = (
-            QgsPalLayerSettings.LinePlacementFlags.AboveLine
-            | QgsPalLayerSettings.LinePlacementFlags.MapOrientation
-        )
+        self.lyr.placementFlags = QgsPalLayerSettings.LinePlacementFlags.AboveLine | QgsPalLayerSettings.LinePlacementFlags.MapOrientation
         self.checkTest()
 
     def test_curved_placement_below(self):
         # Curved placement, on line
         self.lyr.placement = QgsPalLayerSettings.Placement.Curved
-        self.lyr.placementFlags = (
-            QgsPalLayerSettings.LinePlacementFlags.BelowLine
-            | QgsPalLayerSettings.LinePlacementFlags.MapOrientation
-        )
+        self.lyr.placementFlags = QgsPalLayerSettings.LinePlacementFlags.BelowLine | QgsPalLayerSettings.LinePlacementFlags.MapOrientation
         self.checkTest()
 
     def test_curved_placement_online_html(self):
@@ -330,7 +315,7 @@ class TestLineBase:
         format = self.lyr.format()
         format.setAllowHtmlFormatting(True)
         self.lyr.setFormat(format)
-        self.lyr.fieldName = '\'<span style="color: red">aaa</span><s>aa</s><span style="text-decoration: overline">a</span>\''
+        self.lyr.fieldName = "'<span style=\"color: red\">aaa</span><s>aa</s><span style=\"text-decoration: overline\">a</span>'"
         self.lyr.isExpression = True
         self.checkTest()
 
@@ -341,9 +326,7 @@ class TestLineBase:
 
         QgsProject.instance().setCrs(QgsCoordinateReferenceSystem("EPSG:32613"))
         QgsProject.instance().setEllipsoid("WGS84")
-        QgsProject.instance().setDistanceUnits(
-            QgsUnitTypes.DistanceUnit.DistanceKilometers
-        )
+        QgsProject.instance().setDistanceUnits(QgsUnitTypes.DistanceUnit.DistanceKilometers)
 
         ctxt = QgsExpressionContext()
         ctxt.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
@@ -351,10 +334,7 @@ class TestLineBase:
         self._TestMapSettings.setExpressionContext(ctxt)
 
         self.lyr.placement = QgsPalLayerSettings.Placement.Curved
-        self.lyr.placementFlags = (
-            QgsPalLayerSettings.LinePlacementFlags.AboveLine
-            | QgsPalLayerSettings.LinePlacementFlags.MapOrientation
-        )
+        self.lyr.placementFlags = QgsPalLayerSettings.LinePlacementFlags.AboveLine | QgsPalLayerSettings.LinePlacementFlags.MapOrientation
         self.checkTest()
 
 
@@ -383,8 +363,11 @@ def suiteTests():
     # extended separately for finer control of PAL_SUITE (comment-out undesired)
     sp_vs_suite.extend(sp_suite)
 
-    return {"sp_suite": sp_suite, "sp_vs_suite": sp_vs_suite}
+    return {
+        'sp_suite': sp_suite,
+        'sp_vs_suite': sp_vs_suite
+    }
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     pass

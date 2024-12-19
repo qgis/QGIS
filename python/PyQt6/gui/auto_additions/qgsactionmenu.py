@@ -2,9 +2,9 @@
 try:
     QgsActionMenu.__attribute_docs__ = {'reinit': 'Emitted after actions have been reloaded.\n'}
     QgsActionMenu.__group__ = ['actions']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsActionMenu.ActionData.__group__ = ['actions']
-except (NameError, AttributeError):
+except NameError:
     pass

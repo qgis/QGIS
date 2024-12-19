@@ -5,5 +5,5 @@ try:
     QgsDataCollectionItem.openDirIcon = staticmethod(QgsDataCollectionItem.openDirIcon)
     QgsDataCollectionItem.homeDirIcon = staticmethod(QgsDataCollectionItem.homeDirIcon)
     QgsDataCollectionItem.__group__ = ['browser']
-except (NameError, AttributeError):
+except NameError:
     pass

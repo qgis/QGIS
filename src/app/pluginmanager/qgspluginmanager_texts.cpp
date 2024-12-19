@@ -27,6 +27,7 @@ on the 'Invalid' tab. Click on the plugin name to see more details, or to reinst
 " ) );
 
 
+
   mTabDescriptions.insert( QStringLiteral( "installed_plugins" ), tr( "<h3>Installed Plugins</h3>\
 \
 <p>\
@@ -44,6 +45,7 @@ You can change the sorting via the context menu (right click).\
 " ) );
 
 
+
   mTabDescriptions.insert( QStringLiteral( "upgradeable_plugins" ), tr( "<h3>Upgradable plugins</h3>\
 \
 <p>\
@@ -52,6 +54,7 @@ plugins are available in the repositories.\
 </p>\
 \
 " ) );
+
 
 
   mTabDescriptions.insert( QStringLiteral( "not_installed_plugins" ), tr( "<h3>Not installed plugins</h3>\
@@ -74,6 +77,7 @@ then click the 'Install plugin' button.\
 " ) );
 
 
+
   mTabDescriptions.insert( QStringLiteral( "new_plugins" ), tr( "<h3>New plugins</h3>\
 \
 <p>\
@@ -82,6 +86,7 @@ Here you see brand <b>new</b> plugins which can be installed.\
 \
 \
 " ) );
+
 
 
   mTabDescriptions.insert( QStringLiteral( "invalid_plugins" ), tr( "<h3>Invalid plugins</h3>\
@@ -105,4 +110,5 @@ You can install them yourself, depending on your operating system. After a corre
 install the plugin should work.\
 </p>\
 " ) );
+
 }

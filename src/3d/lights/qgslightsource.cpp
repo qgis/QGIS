@@ -24,18 +24,19 @@ QgsLightSource::~QgsLightSource() = default;
 
 void QgsLightSource::resolveReferences( const QgsProject & )
 {
+
 }
 
 QgsLightSource *QgsLightSource::createFromXml( const QDomElement &element, const QgsReadWriteContext &context )
 {
-  std::unique_ptr<QgsLightSource> res;
+  std::unique_ptr< QgsLightSource > res;
   if ( element.nodeName() == QLatin1String( "point-light" ) )
   {
-    res = std::make_unique<QgsPointLightSettings>();
+    res = std::make_unique< QgsPointLightSettings >();
   }
   else if ( element.nodeName() == QLatin1String( "directional-light" ) )
   {
-    res = std::make_unique<QgsDirectionalLightSettings>();
+    res = std::make_unique< QgsDirectionalLightSettings >();
   }
 
   if ( res )

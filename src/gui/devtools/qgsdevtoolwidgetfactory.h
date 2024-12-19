@@ -33,6 +33,7 @@ class QWidget;
 class GUI_EXPORT QgsDevToolWidgetFactory
 {
   public:
+
     /**
      * Constructor for a QgsDevToolWidgetFactory with the specified \a title and \a icon.
      */

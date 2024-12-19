@@ -24,12 +24,12 @@
 //! Stores information parsed from oracle project URI
 typedef struct
 {
-    bool valid;
+  bool valid;
 
-    QgsDataSourceUri connInfo; // using only the bits about connection info (server, port, username, password, service, ssl mode)
+  QgsDataSourceUri connInfo;  // using only the bits about connection info (server, port, username, password, service, ssl mode)
 
-    QString owner;
-    QString projectName;
+  QString owner;
+  QString projectName;
 
 } QgsOracleProjectUri;
 
@@ -38,6 +38,7 @@ typedef struct
 class QgsOracleProjectStorage : public QgsProjectStorage
 {
   public:
+
     QString type() override { return QStringLiteral( "oracle" ); }
 
     QStringList listProjects( const QString &uri ) override;

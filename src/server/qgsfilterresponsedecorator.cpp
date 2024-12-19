@@ -32,7 +32,7 @@ void QgsFilterResponseDecorator::start()
   QgsServerFiltersMap::const_iterator filtersIterator;
   for ( filtersIterator = mFilters.constBegin(); filtersIterator != mFilters.constEnd(); ++filtersIterator )
   {
-    if ( !filtersIterator.value()->onRequestReady() )
+    if ( ! filtersIterator.value()->onRequestReady() )
     {
       // stop propagation
       return;
@@ -47,7 +47,7 @@ void QgsFilterResponseDecorator::ready()
   QgsServerFiltersMap::const_iterator filtersIterator;
   for ( filtersIterator = mFilters.constBegin(); filtersIterator != mFilters.constEnd(); ++filtersIterator )
   {
-    if ( !filtersIterator.value()->onProjectReady() )
+    if ( ! filtersIterator.value()->onProjectReady() )
     {
       // stop propagation
       return;
@@ -62,7 +62,7 @@ void QgsFilterResponseDecorator::finish()
   QgsServerFiltersMap::const_iterator filtersIterator;
   for ( filtersIterator = mFilters.constBegin(); filtersIterator != mFilters.constEnd(); ++filtersIterator )
   {
-    if ( !filtersIterator.value()->onResponseComplete() )
+    if ( ! filtersIterator.value()->onResponseComplete() )
     {
       // stop propagation, 'finish' must be called on the wrapped
       // response
@@ -82,7 +82,7 @@ void QgsFilterResponseDecorator::flush()
 
   for ( filtersIterator = mFilters.constBegin(); filtersIterator != mFilters.constEnd(); ++filtersIterator )
   {
-    if ( !filtersIterator.value()->onSendResponse() )
+    if ( ! filtersIterator.value()->onSendResponse() )
     {
       // Stop propagation
       return;

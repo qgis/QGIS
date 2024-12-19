@@ -49,11 +49,10 @@ class TestQgsDiagram : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsDiagram()
-      : QgsTest( QStringLiteral( "Diagram Tests" ), QStringLiteral( "diagrams" ) ) {}
+    TestQgsDiagram() : QgsTest( QStringLiteral( "Diagram Tests" ), QStringLiteral( "diagrams" ) ) {}
 
   private:
-    bool mTestHasError = false;
+    bool mTestHasError =  false ;
     QgsMapSettings *mMapSettings = nullptr;
     QgsVectorLayer *mPointsLayer = nullptr;
     QString mTestDataDir;
@@ -82,7 +81,8 @@ class TestQgsDiagram : public QgsTest
       //
       const QString myPointsFileName = mTestDataDir + "points.shp";
       const QFileInfo myPointFileInfo( myPointsFileName );
-      mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+      mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
+                                         myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
       //we don't want to render the points themselves, just the diagrams
       QVariantMap symbolProps;
@@ -117,6 +117,7 @@ class TestQgsDiagram : public QgsTest
     // will be called after every testfunction.
     void cleanup()
     {
+
     }
 
     void testPieDiagram()
@@ -595,6 +596,7 @@ class TestQgsDiagram : public QgsTest
       ds.diagramOrientation = QgsDiagramSettings::Down;
       dr->setDiagramSettings( ds );
       QGSVERIFYRENDERMAPSETTINGSCHECK( "stacked_varying_down", "stacked_varying_down", *mMapSettings, 200, 15 );
+
     }
 
     void testStackedAxis()
@@ -1120,12 +1122,12 @@ class TestQgsDiagram : public QgsTest
     void testClipping()
     {
       const QString filename = QStringLiteral( TEST_DATA_DIR ) + "/lines.shp";
-      std::unique_ptr<QgsVectorLayer> vl2( new QgsVectorLayer( filename, QStringLiteral( "lines" ), QStringLiteral( "ogr" ) ) );
+      std::unique_ptr< QgsVectorLayer> vl2( new QgsVectorLayer( filename, QStringLiteral( "lines" ), QStringLiteral( "ogr" ) ) );
 
       QVariantMap props;
       props.insert( QStringLiteral( "outline_color" ), QStringLiteral( "#487bb6" ) );
       props.insert( QStringLiteral( "outline_width" ), QStringLiteral( "1" ) );
-      std::unique_ptr<QgsLineSymbol> symbol( QgsLineSymbol::createSimple( props ) );
+      std::unique_ptr< QgsLineSymbol > symbol( QgsLineSymbol::createSimple( props ) );
       vl2->setRenderer( new QgsSingleSymbolRenderer( symbol.release() ) );
 
       QgsDiagramSettings ds;
@@ -1166,11 +1168,12 @@ class TestQgsDiagram : public QgsTest
       mMapSettings->addClippingRegion( region2 );
 
       const bool res = QGSRENDERMAPSETTINGSCHECK( "diagram_clipping", "diagram_clipping", *mMapSettings, 200, 15 );
-      mMapSettings->setClippingRegions( QList<QgsMapClippingRegion>() );
+      mMapSettings->setClippingRegions( QList< QgsMapClippingRegion >() );
       mMapSettings->setLayers( QList<QgsMapLayer *>() << mPointsLayer );
 
       QVERIFY( res );
     }
+
 };
 
 

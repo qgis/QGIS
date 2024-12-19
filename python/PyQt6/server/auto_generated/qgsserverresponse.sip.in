@@ -19,6 +19,7 @@ class QgsServerResponse
 #include "qgsserverresponse.h"
 %End
   public:
+
     QgsServerResponse();
     virtual ~QgsServerResponse();
 
@@ -63,7 +64,7 @@ Set the http status code
 Returns the http status code
 %End
 
-    virtual void sendError( int code, const QString &message ) = 0;
+    virtual void sendError( int code,  const QString &message ) = 0;
 %Docstring
 Send error
 This method delegates error handling at the server level. This is different
@@ -104,12 +105,12 @@ Write server exception
 Returns the underlying QIODevice
 %End
 
-    virtual void finish()  /VirtualErrorHandler=server_exception_handler/;
+    virtual void finish() throw( QgsServerException ) /VirtualErrorHandler=server_exception_handler/;
 %Docstring
 Finish the response, ending the transaction. The default implementation does nothing.
 %End
 
-    virtual void flush()  /VirtualErrorHandler=server_exception_handler/;
+    virtual void flush() throw( QgsServerException ) /VirtualErrorHandler=server_exception_handler/;
 %Docstring
 Flushes the current output buffer to the network
 

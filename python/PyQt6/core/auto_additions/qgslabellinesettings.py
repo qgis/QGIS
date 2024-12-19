@@ -55,5 +55,5 @@ QgsLabelLineSettings.AnchorTextPoint.__doc__ = """Anchor point of label text.
 QgsLabelLineSettings.AnchorTextPoint.baseClass = QgsLabelLineSettings
 try:
     QgsLabelLineSettings.__group__ = ['labeling']
-except (NameError, AttributeError):
+except NameError:
     pass

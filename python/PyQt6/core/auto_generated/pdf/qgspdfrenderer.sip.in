@@ -41,21 +41,21 @@ Constructs a PDF renderer for the file at the specified ``path``.
 Returns the file path of the associated PDF file.
 %End
 
-    int pageCount() const;
+    int pageCount() const throw( QgsNotSupportedException );
 %Docstring
 Returns the number of pages in the PDF.
 
 :raises QgsNotSupportedException: on QGIS builds without PDF4Qt library support.
 %End
 
-    QRectF pageMediaBox( int pageNumber ) const;
+    QRectF pageMediaBox( int pageNumber ) const throw( QgsNotSupportedException );
 %Docstring
 Returns the media box for the specified page. Units are in PDF points.
 
 :raises QgsNotSupportedException: on QGIS builds without PDF4Qt library support.
 %End
 
-    bool render( QPainter *painter, const QRectF &painterRect, int pageIndex );
+    bool render( QPainter *painter, const QRectF &painterRect, int pageIndex ) throw( QgsNotSupportedException );
 %Docstring
 Renders the PDF from the specified ``path`` to a ``painter``.
 

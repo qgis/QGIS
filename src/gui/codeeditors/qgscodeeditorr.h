@@ -30,6 +30,7 @@ class GUI_EXPORT QgsQsciLexerR : public QsciLexer
 {
     Q_OBJECT
   public:
+
     enum Styles
     {
       Default = 0,
@@ -56,6 +57,8 @@ class GUI_EXPORT QgsQsciLexerR : public QsciLexer
     int lexerId() const override;
     QString description( int style ) const override;
     const char *keywords( int set ) const override;
+
+
 };
 ///@endcond
 #endif
@@ -71,12 +74,14 @@ class GUI_EXPORT QgsCodeEditorR : public QgsCodeEditor
     Q_OBJECT
 
   public:
+
     //! Constructor for QgsCodeEditorR
     QgsCodeEditorR( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsCodeEditor::Mode mode = QgsCodeEditor::Mode::ScriptEditor );
     Qgis::ScriptLanguage language() const override;
 
   protected:
     void initializeLexer() override;
+
 };
 
 #endif // QGSCODEEDITORR_H

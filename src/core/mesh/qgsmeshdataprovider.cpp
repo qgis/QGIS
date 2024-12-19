@@ -17,7 +17,6 @@
 
 #include "qgis.h"
 #include "qgsmeshdataprovider.h"
-#include "moc_qgsmeshdataprovider.cpp"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsthreadingutils.h"
 

@@ -109,7 +109,7 @@ astyleit() {
 
 for f in "$@"; do
 	case "$f" in
-                external/libdxfrw/*|external/untwine/*|external/qwt*|external/o2/*|external/odbccpp/*|external/qt-unix-signals/*|external/rtree/*|external/astyle/*|external/kdbush/*|external/PDF4QT/*|external/poly2tri/*|external/wintoast/*|external/qt3dextra-headers/*|external/lazperf/*|external/meshOptimizer/*|external/mapbox-vector-tile/*|external/pdal_wrench/*|external/tinygltf/*|python/ext-libs/*|ui_*.py|*.astyle|src/core/providers/gdal/gdal_minmax_element.hpp|src/core/providers/gdal/gdal_priv_templates.hpp|tests/testdata/*|editors/*)
+                external/libdxfrw/*|external/untwine/*|external/qwt*|external/o2/*|external/odbccpp/*|external/qt-unix-signals/*|external/rtree/*|external/astyle/*|external/kdbush/*|external/PDF4QT/*|external/poly2tri/*|external/wintoast/*|external/qt3dextra-headers/*|external/lazperf/*|external/meshOptimizer/*|external/mapbox-vector-tile/*|external/pdal_wrench/*|external/tinygltf/*|python/ext-libs/*|ui_*.py|*.astyle|tests/testdata/*|editors/*)
 			echo -ne "$f skipped $elcr"
 			continue
 			;;

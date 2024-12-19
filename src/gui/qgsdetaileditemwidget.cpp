@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsdetaileditemwidget.h"
-#include "moc_qgsdetaileditemwidget.cpp"
 QgsDetailedItemWidget::QgsDetailedItemWidget( QWidget *parent )
   : QWidget( parent )
 

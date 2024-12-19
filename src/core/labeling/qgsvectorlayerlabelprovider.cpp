@@ -387,21 +387,21 @@ void QgsVectorLayerLabelProvider::drawLabel( QgsRenderContext &context, pal::Lab
   if ( tmpLyr.multilineAlign == Qgis::LabelMultiLineAlignment::FollowPlacement )
   {
     //calculate font alignment based on label quadrant
-    switch ( label->quadrant() )
+    switch ( label->getQuadrant() )
     {
-      case Qgis::LabelQuadrantPosition::AboveLeft:
-      case Qgis::LabelQuadrantPosition::Left:
-      case Qgis::LabelQuadrantPosition::BelowLeft:
+      case LabelPosition::QuadrantAboveLeft:
+      case LabelPosition::QuadrantLeft:
+      case LabelPosition::QuadrantBelowLeft:
         tmpLyr.multilineAlign = Qgis::LabelMultiLineAlignment::Right;
         break;
-      case Qgis::LabelQuadrantPosition::Above:
-      case Qgis::LabelQuadrantPosition::Over:
-      case Qgis::LabelQuadrantPosition::Below:
+      case LabelPosition::QuadrantAbove:
+      case LabelPosition::QuadrantOver:
+      case LabelPosition::QuadrantBelow:
         tmpLyr.multilineAlign = Qgis::LabelMultiLineAlignment::Center;
         break;
-      case Qgis::LabelQuadrantPosition::AboveRight:
-      case Qgis::LabelQuadrantPosition::Right:
-      case Qgis::LabelQuadrantPosition::BelowRight:
+      case LabelPosition::QuadrantAboveRight:
+      case LabelPosition::QuadrantRight:
+      case LabelPosition::QuadrantBelowRight:
         tmpLyr.multilineAlign = Qgis::LabelMultiLineAlignment::Left;
         break;
     }
@@ -495,22 +495,7 @@ void QgsVectorLayerLabelProvider::drawUnplacedLabel( QgsRenderContext &context, 
 void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, QgsRenderContext &context, QgsPalLayerSettings &tmpLyr, Qgis::TextComponent drawType, double dpiRatio ) const
 {
   // NOTE: this is repeatedly called for multi-part labels
-  Qgis::TextComponents components;
-  switch ( drawType )
-  {
-    case Qgis::TextComponent::Text:
-      components = Qgis::TextComponent::Text | Qgis::TextComponent::Shadow;
-      break;
-
-    case Qgis::TextComponent::Buffer:
-      components = Qgis::TextComponent::Buffer | Qgis::TextComponent::Shadow;
-      break;
-
-    case Qgis::TextComponent::Background:
-    case Qgis::TextComponent::Shadow:
-      components = drawType;
-      break;
-  }
+  QPainter *painter = context.painter();
 
   // features are pre-rotated but not scaled/translated,
   // so we only disable rotation here. Ideally, they'd be
@@ -520,6 +505,136 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
   xform.setMapRotation( 0, 0, 0 );
 
   QPointF outPt = xform.transform( label->getX(), label->getY() ).toQPointF();
+
+  if ( mEngine->engineSettings().testFlag( Qgis::LabelingFlag::DrawLabelRectOnly ) )  // TODO: this should get directly to labeling engine
+  {
+    //debugging rect
+    if ( drawType != Qgis::TextComponent::Text )
+      return;
+
+    QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
+    QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
+    painter->save();
+    painter->setRenderHint( QPainter::Antialiasing, false );
+    painter->translate( QPointF( outPt.x(), outPt.y() ) );
+    painter->rotate( -label->getAlpha() * 180 / M_PI );
+
+    if ( label->conflictsWithObstacle() )
+    {
+      painter->setBrush( QColor( 255, 0, 0, 100 ) );
+      painter->setPen( QColor( 255, 0, 0, 150 ) );
+    }
+    else
+    {
+      painter->setBrush( QColor( 0, 255, 0, 100 ) );
+      painter->setPen( QColor( 0, 255, 0, 150 ) );
+    }
+
+    painter->drawRect( rect );
+    painter->restore();
+
+    if ( label->nextPart() )
+      drawLabelPrivate( label->nextPart(), context, tmpLyr, drawType, dpiRatio );
+
+    return;
+  }
+  if ( mEngine->engineSettings().testFlag( Qgis::LabelingFlag::DrawLabelMetrics ) )
+  {
+    if ( drawType != Qgis::TextComponent::Text )
+      return;
+
+    QgsPointXY outPt2 = xform.transform( label->getX() + label->getWidth(), label->getY() + label->getHeight() );
+    QRectF rect( 0, 0, outPt2.x() - outPt.x(), outPt2.y() - outPt.y() );
+    painter->save();
+    painter->setRenderHint( QPainter::Antialiasing, false );
+    painter->translate( QPointF( outPt.x(), outPt.y() ) );
+    painter->rotate( -label->getAlpha() * 180 / M_PI );
+
+    painter->setBrush( Qt::NoBrush );
+    painter->setPen( QColor( 255, 0, 0, 220 ) );
+
+    painter->drawRect( rect );
+
+
+    painter->setPen( QColor( 0, 0, 0, 60 ) );
+    const QgsMargins &margins = label->getFeaturePart()->feature()->visualMargin();
+    if ( margins.top() > 0 )
+    {
+      const double topMargin = margins.top() / context.mapToPixel().mapUnitsPerPixel();
+      painter->drawLine( QPointF( rect.left(), rect.top() - topMargin ), QPointF( rect.right(), rect.top() - topMargin ) );
+    }
+    if ( margins.bottom() > 0 )
+    {
+      const double bottomMargin = margins.top() / context.mapToPixel().mapUnitsPerPixel();
+      painter->drawLine( QPointF( rect.left(), rect.bottom() + bottomMargin ), QPointF( rect.right(), rect.bottom() + bottomMargin ) );
+    }
+
+    const QRectF outerBounds = label->getFeaturePart()->feature()->outerBounds();
+    if ( !outerBounds.isNull() )
+    {
+      const QRectF mapOuterBounds = QRectF( label->getX() + outerBounds.left(),
+                                            label->getY() + outerBounds.top(),
+                                            outerBounds.width(), outerBounds.height() );
+
+      QgsPointXY outerBoundsPt1 = xform.transform( mapOuterBounds.left(), mapOuterBounds.top() );
+      QgsPointXY outerBoundsPt2 = xform.transform( mapOuterBounds.right(), mapOuterBounds.bottom() );
+
+      const QRectF outerBoundsPixel( outerBoundsPt1.x() - outPt.x(),
+                                     outerBoundsPt1.y() - outPt.y(),
+                                     outerBoundsPt2.x() - outerBoundsPt1.x(),
+                                     outerBoundsPt2.y() - outerBoundsPt1.y() );
+
+      QPen pen( QColor( 255, 0, 255, 140 ) );
+      pen.setCosmetic( true );
+      pen.setWidth( 1 );
+      painter->setPen( pen );
+      painter->drawRect( outerBoundsPixel );
+    }
+
+    if ( QgsTextLabelFeature *textFeature = dynamic_cast< QgsTextLabelFeature * >( label->getFeaturePart()->feature() ) )
+    {
+      const QgsTextDocumentMetrics &metrics = textFeature->documentMetrics();
+      const QgsTextDocument &document = textFeature->document();
+      const int blockCount = document.size();
+
+      double prevBlockBaseline = rect.bottom() - rect.top();
+
+      // draw block baselines
+      for ( int blockIndex = 0; blockIndex < blockCount; ++blockIndex )
+      {
+        const double blockBaseLine = metrics.baselineOffset( blockIndex, Qgis::TextLayoutMode::Labeling );
+
+        const QgsTextBlock &block = document.at( blockIndex );
+        const int fragmentCount = block.size();
+        double left = 0;
+        for ( int fragmentIndex = 0; fragmentIndex < fragmentCount; ++fragmentIndex )
+        {
+          const double fragmentVerticalOffset = metrics.fragmentVerticalOffset( blockIndex, fragmentIndex, Qgis::TextLayoutMode::Labeling );
+          const double right = left + metrics.fragmentHorizontalAdvance( blockIndex, fragmentIndex, Qgis::TextLayoutMode::Labeling );
+
+          if ( fragmentIndex > 0 )
+          {
+            QPen pen( QColor( 0, 0, 255, 220 ) );
+            pen.setStyle( Qt::PenStyle::DashLine );
+
+            painter->setPen( pen );
+
+            painter->drawLine( QPointF( rect.left() + left, rect.top() + blockBaseLine + fragmentVerticalOffset ),
+                               QPointF( rect.left() + left, rect.top() + prevBlockBaseline ) );
+
+          }
+
+          painter->setPen( QColor( 0, 0, 255, 220 ) );
+          painter->drawLine( QPointF( rect.left() + left, rect.top()  + blockBaseLine + fragmentVerticalOffset ),
+                             QPointF( rect.left() + right, rect.top() + blockBaseLine + fragmentVerticalOffset ) );
+          left = right;
+        }
+        prevBlockBaseline = blockBaseLine;
+      }
+    }
+
+    painter->restore();
+  }
 
   QgsTextRenderer::Component component;
   component.dpiRatio = dpiRatio;
@@ -563,6 +678,7 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
   else if ( drawType == Qgis::TextComponent::Buffer
             || drawType == Qgis::TextComponent::Text )
   {
+
     // TODO: optimize access :)
     QgsTextLabelFeature *lf = static_cast<QgsTextLabelFeature *>( label->getFeaturePart()->feature() );
     QString txt = lf->text( label->getPartId() );
@@ -574,24 +690,14 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       context.setCurrentMaskId( maskId );
     }
 
-    const QgsTextDocument &precalculatedDocument = lf->document();
-    const QgsTextDocumentMetrics &precalculatedMetrics = lf->documentMetrics();
-    const QgsTextDocument *document = &precalculatedDocument;
-    const QgsTextDocumentMetrics *documentMetrics = &precalculatedMetrics;
-
-    // add the direction symbol if needed
-    // note that IF we do this, we can no longer use the original text document and metrics
-    // but have to re-calculate these with the newly added text!
-    std::optional< QgsTextDocument > newDocument;
-    std::optional< QgsTextDocumentMetrics > newDocumentMetrics;
+    //add the direction symbol if needed
     if ( !txt.isEmpty() && tmpLyr.placement == Qgis::LabelPlacement::Line &&
          tmpLyr.lineSettings().addDirectionSymbol() )
     {
-      newDocument.emplace( *document );
       bool prependSymb = false;
       QString symb = tmpLyr.lineSettings().rightDirectionSymbol();
 
-      if ( label->isReversedFromLineDirection() )
+      if ( label->getReversed() )
       {
         prependSymb = true;
         symb = tmpLyr.lineSettings().leftDirectionSymbol();
@@ -614,34 +720,27 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       switch ( tmpLyr.lineSettings().directionSymbolPlacement() )
       {
         case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolAbove:
-        {
-          newDocument->insert( 0, QgsTextBlock( QgsTextFragment( symb ) ) );
+          prependSymb = true;
+          symb = symb + QStringLiteral( "\n" );
           break;
-        }
 
         case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolBelow:
-          newDocument->append( QgsTextBlock( QgsTextFragment( symb ) ) );
+          prependSymb = false;
+          symb = QStringLiteral( "\n" ) + symb;
           break;
 
         case QgsLabelLineSettings::DirectionSymbolPlacement::SymbolLeftRight:
-        {
-          QgsTextBlock &block = newDocument.value()[ 0 ];
-          if ( prependSymb )
-          {
-            block.insert( 0, QgsTextFragment( symb ) );
-          }
-          else
-          {
-            block.append( QgsTextFragment( symb ) );
-          }
           break;
-        }
       }
 
-      QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, -1.0 );
-      newDocumentMetrics.emplace( QgsTextDocumentMetrics::calculateMetrics( newDocument.value(), tmpLyr.format(), context ) );
-      document = &newDocument.value();
-      documentMetrics = &newDocumentMetrics.value();
+      if ( prependSymb )
+      {
+        txt.prepend( symb );
+      }
+      else
+      {
+        txt.append( symb );
+      }
     }
 
     Qgis::TextHorizontalAlignment hAlign = Qgis::TextHorizontalAlignment::Left;
@@ -656,27 +755,18 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
     component.origin = outPt;
     component.rotation = label->getAlpha();
 
+    QgsTextDocument document;
+    QgsTextDocumentMetrics metrics;
+
     // If we are using non-curved, HTML formatted labels then we've already precalculated the text metrics.
     // Otherwise we'll need to calculate them now.
+    bool metricsRequired = false;
     switch ( tmpLyr.placement )
     {
       case Qgis::LabelPlacement::Curved:
       case Qgis::LabelPlacement::PerimeterCurved:
-      {
-        QgsTextDocument document;
-        const QgsTextCharacterFormat c = lf->characterFormat( label->getPartId() );
-        const QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar, tmpLyr.autoWrapLength, tmpLyr.useMaxLineLengthForAutoWrap );
-        for ( const QString &line : multiLineList )
-        {
-          document.append( QgsTextBlock::fromPlainText( line, c ) );
-        }
-
-        QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, -1.0 );
-        const QgsTextDocumentMetrics metrics = QgsTextDocumentMetrics::calculateMetrics( document, tmpLyr.format(), context );
-        QgsTextRenderer::drawTextInternal( components, context, tmpLyr.format(), component, document,
-                                           metrics, hAlign, Qgis::TextVerticalAlignment::Top, Qgis::TextLayoutMode::Labeling );
+        metricsRequired = true;
         break;
-      }
 
       case Qgis::LabelPlacement::AroundPoint:
       case Qgis::LabelPlacement::OverPoint:
@@ -685,16 +775,30 @@ void QgsVectorLayerLabelProvider::drawLabelPrivate( pal::LabelPosition *label, Q
       case Qgis::LabelPlacement::Free:
       case Qgis::LabelPlacement::OrderedPositionsAroundPoint:
       case Qgis::LabelPlacement::OutsidePolygons:
-      {
-        const double verticalAlignOffset = -documentMetrics->blockVerticalMargin( document->size() - 1 );
-
-        component.origin.ry() += verticalAlignOffset;
-
-        QgsTextRenderer::drawTextInternal( components, context, tmpLyr.format(), component, *document,
-                                           *documentMetrics, hAlign, Qgis::TextVerticalAlignment::Top, Qgis::TextLayoutMode::Labeling );
         break;
-      }
     }
+
+    if ( metricsRequired )
+    {
+      const QgsTextCharacterFormat c = lf->characterFormat( label->getPartId() );
+      const QStringList multiLineList = QgsPalLabeling::splitToLines( txt, tmpLyr.wrapChar, tmpLyr.autoWrapLength, tmpLyr.useMaxLineLengthForAutoWrap );
+      for ( const QString &line : multiLineList )
+      {
+        document.append( QgsTextBlock::fromPlainText( line, c ) );
+      }
+
+      QgsScopedRenderContextReferenceScaleOverride referenceScaleOverride( context, -1.0 );
+      metrics = QgsTextDocumentMetrics::calculateMetrics( document, tmpLyr.format(), context );
+    }
+    else
+    {
+      document = lf->document();
+      metrics = lf->documentMetrics();
+    }
+
+    QgsTextRenderer::drawTextInternal( drawType, context, tmpLyr.format(), component, document,
+                                       metrics, hAlign, Qgis::TextVerticalAlignment::Top, Qgis::TextLayoutMode::Labeling );
+
   }
   if ( label->nextPart() )
     drawLabelPrivate( label->nextPart(), context, tmpLyr, drawType, dpiRatio );

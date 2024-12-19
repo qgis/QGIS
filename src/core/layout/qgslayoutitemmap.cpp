@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgslayoutitemmap.h"
-#include "moc_qgslayoutitemmap.cpp"
 #include "qgslayout.h"
 #include "qgslayoutrendercontext.h"
 #include "qgslayoutreportcontext.h"

@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "28/3/2022"
-__copyright__ = "Copyright 2022, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '28/3/2022'
+__copyright__ = 'Copyright 2022, The QGIS Project'
 
 from qgis.PyQt.QtCore import QDir, QSizeF, Qt
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
@@ -25,7 +24,7 @@ from qgis.core import (
     QgsRenderContext,
     QgsSymbolLayer,
     QgsTextFormat,
-    Qgis,
+    Qgis
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -37,46 +36,32 @@ class TestQgsPlot(QgisTestCase):
 
     @classmethod
     def control_path_prefix(cls):
-        return "plot"
+        return 'plot'
 
     def testPlot(self):
         plot = Qgs2DPlot()
         plot.setSize(QSizeF(600, 500))
 
-        sym1 = QgsFillSymbol.createSimple({"color": "#fdbf6f", "outline_style": "no"})
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_style': 'no'})
         plot.setChartBackgroundSymbol(sym1)
 
         sym2 = QgsFillSymbol.createSimple(
-            {
-                "outline_color": "#0000ff",
-                "style": "no",
-                "outline_style": "solid",
-                "outline_width": 1,
-            }
-        )
+            {'outline_color': '#0000ff', 'style': 'no', 'outline_style': 'solid', 'outline_width': 1})
         plot.setChartBorderSymbol(sym2)
 
-        sym3 = QgsLineSymbol.createSimple(
-            {"outline_color": "#00ffff", "outline_width": 1}
-        )
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#00ffff', 'outline_width': 1})
         plot.xAxis().setGridMajorSymbol(sym3)
 
-        sym4 = QgsLineSymbol.createSimple(
-            {"outline_color": "#ff00ff", "outline_width": 0.5}
-        )
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff00ff', 'outline_width': 0.5})
         plot.xAxis().setGridMinorSymbol(sym4)
 
-        sym3 = QgsLineSymbol.createSimple(
-            {"outline_color": "#0066ff", "outline_width": 1}
-        )
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#0066ff', 'outline_width': 1})
         plot.yAxis().setGridMajorSymbol(sym3)
 
-        sym4 = QgsLineSymbol.createSimple(
-            {"outline_color": "#ff4433", "outline_width": 0.5}
-        )
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5})
         plot.yAxis().setGridMinorSymbol(sym4)
 
-        font = QgsFontUtils.getStandardTestFont("Bold", 16)
+        font = QgsFontUtils.getStandardTestFont('Bold', 16)
         x_axis_format = QgsTextFormat.fromQFont(font)
         x_axis_format.setColor(QColor(255, 0, 0))
         plot.xAxis().setTextFormat(x_axis_format)
@@ -86,7 +71,7 @@ class TestQgsPlot(QgisTestCase):
         x_axis_number_format.setShowTrailingZeros(True)
         plot.xAxis().setNumericFormat(x_axis_number_format)
 
-        font = QgsFontUtils.getStandardTestFont("Bold", 18)
+        font = QgsFontUtils.getStandardTestFont('Bold', 18)
         y_axis_format = QgsTextFormat.fromQFont(font)
         y_axis_format.setColor(QColor(0, 255, 0))
         plot.yAxis().setTextFormat(y_axis_format)
@@ -111,7 +96,7 @@ class TestQgsPlot(QgisTestCase):
         plot.render(rc)
         painter.end()
 
-        assert self.image_check("plot_2d_base", "plot_2d_base", im)
+        assert self.image_check('plot_2d_base', 'plot_2d_base', im)
 
         plot_rect = plot.interiorPlotArea(rc)
         self.assertAlmostEqual(plot_rect.left(), 64.8, 0)
@@ -123,40 +108,26 @@ class TestQgsPlot(QgisTestCase):
         plot = Qgs2DPlot()
         plot.setSize(QSizeF(600, 500))
 
-        sym1 = QgsFillSymbol.createSimple({"color": "#fdbf6f", "outline_style": "no"})
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_style': 'no'})
         plot.setChartBackgroundSymbol(sym1)
 
         sym2 = QgsFillSymbol.createSimple(
-            {
-                "outline_color": "#0000ff",
-                "style": "no",
-                "outline_style": "solid",
-                "outline_width": 1,
-            }
-        )
+            {'outline_color': '#0000ff', 'style': 'no', 'outline_style': 'solid', 'outline_width': 1})
         plot.setChartBorderSymbol(sym2)
 
-        sym3 = QgsLineSymbol.createSimple(
-            {"outline_color": "#00ffff", "outline_width": 1}
-        )
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#00ffff', 'outline_width': 1})
         plot.xAxis().setGridMajorSymbol(sym3)
 
-        sym4 = QgsLineSymbol.createSimple(
-            {"outline_color": "#ff00ff", "outline_width": 0.5}
-        )
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff00ff', 'outline_width': 0.5})
         plot.xAxis().setGridMinorSymbol(sym4)
 
-        sym3 = QgsLineSymbol.createSimple(
-            {"outline_color": "#0066ff", "outline_width": 1}
-        )
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#0066ff', 'outline_width': 1})
         plot.yAxis().setGridMajorSymbol(sym3)
 
-        sym4 = QgsLineSymbol.createSimple(
-            {"outline_color": "#ff4433", "outline_width": 0.5}
-        )
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5})
         plot.yAxis().setGridMinorSymbol(sym4)
 
-        font = QgsFontUtils.getStandardTestFont("Bold", 16)
+        font = QgsFontUtils.getStandardTestFont('Bold', 16)
         x_axis_format = QgsTextFormat.fromQFont(font)
         x_axis_format.setColor(QColor(255, 0, 0))
         plot.xAxis().setTextFormat(x_axis_format)
@@ -166,7 +137,7 @@ class TestQgsPlot(QgisTestCase):
         x_axis_number_format.setShowTrailingZeros(True)
         plot.xAxis().setNumericFormat(x_axis_number_format)
 
-        font = QgsFontUtils.getStandardTestFont("Bold", 18)
+        font = QgsFontUtils.getStandardTestFont('Bold', 18)
         y_axis_format = QgsTextFormat.fromQFont(font)
         y_axis_format.setColor(QColor(0, 255, 0))
         plot.yAxis().setTextFormat(y_axis_format)
@@ -181,9 +152,9 @@ class TestQgsPlot(QgisTestCase):
         plot.setYMinimum(2)
         plot.setYMaximum(12)
 
-        plot.xAxis().setLabelSuffix("x")
+        plot.xAxis().setLabelSuffix('x')
         plot.xAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.EveryLabel)
-        plot.yAxis().setLabelSuffix("y")
+        plot.yAxis().setLabelSuffix('y')
         plot.yAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.EveryLabel)
 
         im = QImage(600, 500, QImage.Format.Format_ARGB32)
@@ -196,9 +167,7 @@ class TestQgsPlot(QgisTestCase):
         plot.render(rc)
         painter.end()
 
-        assert self.image_check(
-            "plot_2d_base_suffix_all", "plot_2d_base_suffix_all", im
-        )
+        assert self.image_check('plot_2d_base_suffix_all', 'plot_2d_base_suffix_all', im)
 
         plot_rect = plot.interiorPlotArea(rc)
         self.assertAlmostEqual(plot_rect.left(), 80.46, 0)
@@ -210,40 +179,26 @@ class TestQgsPlot(QgisTestCase):
         plot = Qgs2DPlot()
         plot.setSize(QSizeF(600, 500))
 
-        sym1 = QgsFillSymbol.createSimple({"color": "#fdbf6f", "outline_style": "no"})
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_style': 'no'})
         plot.setChartBackgroundSymbol(sym1)
 
         sym2 = QgsFillSymbol.createSimple(
-            {
-                "outline_color": "#0000ff",
-                "style": "no",
-                "outline_style": "solid",
-                "outline_width": 1,
-            }
-        )
+            {'outline_color': '#0000ff', 'style': 'no', 'outline_style': 'solid', 'outline_width': 1})
         plot.setChartBorderSymbol(sym2)
 
-        sym3 = QgsLineSymbol.createSimple(
-            {"outline_color": "#00ffff", "outline_width": 1}
-        )
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#00ffff', 'outline_width': 1})
         plot.xAxis().setGridMajorSymbol(sym3)
 
-        sym4 = QgsLineSymbol.createSimple(
-            {"outline_color": "#ff00ff", "outline_width": 0.5}
-        )
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff00ff', 'outline_width': 0.5})
         plot.xAxis().setGridMinorSymbol(sym4)
 
-        sym3 = QgsLineSymbol.createSimple(
-            {"outline_color": "#0066ff", "outline_width": 1}
-        )
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#0066ff', 'outline_width': 1})
         plot.yAxis().setGridMajorSymbol(sym3)
 
-        sym4 = QgsLineSymbol.createSimple(
-            {"outline_color": "#ff4433", "outline_width": 0.5}
-        )
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5})
         plot.yAxis().setGridMinorSymbol(sym4)
 
-        font = QgsFontUtils.getStandardTestFont("Bold", 16)
+        font = QgsFontUtils.getStandardTestFont('Bold', 16)
         x_axis_format = QgsTextFormat.fromQFont(font)
         x_axis_format.setColor(QColor(255, 0, 0))
         plot.xAxis().setTextFormat(x_axis_format)
@@ -253,7 +208,7 @@ class TestQgsPlot(QgisTestCase):
         x_axis_number_format.setShowTrailingZeros(True)
         plot.xAxis().setNumericFormat(x_axis_number_format)
 
-        font = QgsFontUtils.getStandardTestFont("Bold", 18)
+        font = QgsFontUtils.getStandardTestFont('Bold', 18)
         y_axis_format = QgsTextFormat.fromQFont(font)
         y_axis_format.setColor(QColor(0, 255, 0))
         plot.yAxis().setTextFormat(y_axis_format)
@@ -268,9 +223,9 @@ class TestQgsPlot(QgisTestCase):
         plot.setYMinimum(2)
         plot.setYMaximum(12)
 
-        plot.xAxis().setLabelSuffix("x")
+        plot.xAxis().setLabelSuffix('x')
         plot.xAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.FirstLabel)
-        plot.yAxis().setLabelSuffix("y")
+        plot.yAxis().setLabelSuffix('y')
         plot.yAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.FirstLabel)
 
         im = QImage(600, 500, QImage.Format.Format_ARGB32)
@@ -283,9 +238,7 @@ class TestQgsPlot(QgisTestCase):
         plot.render(rc)
         painter.end()
 
-        assert self.image_check(
-            "plot_2d_base_suffix_first", "plot_2d_base_suffix_first", im
-        )
+        assert self.image_check('plot_2d_base_suffix_first', 'plot_2d_base_suffix_first', im)
 
         plot_rect = plot.interiorPlotArea(rc)
         self.assertAlmostEqual(plot_rect.left(), 64.82, 0)
@@ -297,40 +250,26 @@ class TestQgsPlot(QgisTestCase):
         plot = Qgs2DPlot()
         plot.setSize(QSizeF(600, 500))
 
-        sym1 = QgsFillSymbol.createSimple({"color": "#fdbf6f", "outline_style": "no"})
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_style': 'no'})
         plot.setChartBackgroundSymbol(sym1)
 
         sym2 = QgsFillSymbol.createSimple(
-            {
-                "outline_color": "#0000ff",
-                "style": "no",
-                "outline_style": "solid",
-                "outline_width": 1,
-            }
-        )
+            {'outline_color': '#0000ff', 'style': 'no', 'outline_style': 'solid', 'outline_width': 1})
         plot.setChartBorderSymbol(sym2)
 
-        sym3 = QgsLineSymbol.createSimple(
-            {"outline_color": "#00ffff", "outline_width": 1}
-        )
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#00ffff', 'outline_width': 1})
         plot.xAxis().setGridMajorSymbol(sym3)
 
-        sym4 = QgsLineSymbol.createSimple(
-            {"outline_color": "#ff00ff", "outline_width": 0.5}
-        )
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff00ff', 'outline_width': 0.5})
         plot.xAxis().setGridMinorSymbol(sym4)
 
-        sym3 = QgsLineSymbol.createSimple(
-            {"outline_color": "#0066ff", "outline_width": 1}
-        )
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#0066ff', 'outline_width': 1})
         plot.yAxis().setGridMajorSymbol(sym3)
 
-        sym4 = QgsLineSymbol.createSimple(
-            {"outline_color": "#ff4433", "outline_width": 0.5}
-        )
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5})
         plot.yAxis().setGridMinorSymbol(sym4)
 
-        font = QgsFontUtils.getStandardTestFont("Bold", 16)
+        font = QgsFontUtils.getStandardTestFont('Bold', 16)
         x_axis_format = QgsTextFormat.fromQFont(font)
         x_axis_format.setColor(QColor(255, 0, 0))
         plot.xAxis().setTextFormat(x_axis_format)
@@ -340,7 +279,7 @@ class TestQgsPlot(QgisTestCase):
         x_axis_number_format.setShowTrailingZeros(True)
         plot.xAxis().setNumericFormat(x_axis_number_format)
 
-        font = QgsFontUtils.getStandardTestFont("Bold", 18)
+        font = QgsFontUtils.getStandardTestFont('Bold', 18)
         y_axis_format = QgsTextFormat.fromQFont(font)
         y_axis_format.setColor(QColor(0, 255, 0))
         plot.yAxis().setTextFormat(y_axis_format)
@@ -355,9 +294,9 @@ class TestQgsPlot(QgisTestCase):
         plot.setYMinimum(2)
         plot.setYMaximum(12)
 
-        plot.xAxis().setLabelSuffix("x")
+        plot.xAxis().setLabelSuffix('x')
         plot.xAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.LastLabel)
-        plot.yAxis().setLabelSuffix("y")
+        plot.yAxis().setLabelSuffix('y')
         plot.yAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.LastLabel)
 
         im = QImage(600, 500, QImage.Format.Format_ARGB32)
@@ -370,9 +309,7 @@ class TestQgsPlot(QgisTestCase):
         plot.render(rc)
         painter.end()
 
-        assert self.image_check(
-            "plot_2d_base_suffix_last", "plot_2d_base_suffix_last", im
-        )
+        assert self.image_check('plot_2d_base_suffix_last', 'plot_2d_base_suffix_last', im)
 
         plot_rect = plot.interiorPlotArea(rc)
         self.assertAlmostEqual(plot_rect.left(), 80.46, 0)
@@ -384,40 +321,26 @@ class TestQgsPlot(QgisTestCase):
         plot = Qgs2DPlot()
         plot.setSize(QSizeF(600, 500))
 
-        sym1 = QgsFillSymbol.createSimple({"color": "#fdbf6f", "outline_style": "no"})
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_style': 'no'})
         plot.setChartBackgroundSymbol(sym1)
 
         sym2 = QgsFillSymbol.createSimple(
-            {
-                "outline_color": "#0000ff",
-                "style": "no",
-                "outline_style": "solid",
-                "outline_width": 1,
-            }
-        )
+            {'outline_color': '#0000ff', 'style': 'no', 'outline_style': 'solid', 'outline_width': 1})
         plot.setChartBorderSymbol(sym2)
 
-        sym3 = QgsLineSymbol.createSimple(
-            {"outline_color": "#00ffff", "outline_width": 1}
-        )
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#00ffff', 'outline_width': 1})
         plot.xAxis().setGridMajorSymbol(sym3)
 
-        sym4 = QgsLineSymbol.createSimple(
-            {"outline_color": "#ff00ff", "outline_width": 0.5}
-        )
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff00ff', 'outline_width': 0.5})
         plot.xAxis().setGridMinorSymbol(sym4)
 
-        sym3 = QgsLineSymbol.createSimple(
-            {"outline_color": "#0066ff", "outline_width": 1}
-        )
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#0066ff', 'outline_width': 1})
         plot.yAxis().setGridMajorSymbol(sym3)
 
-        sym4 = QgsLineSymbol.createSimple(
-            {"outline_color": "#ff4433", "outline_width": 0.5}
-        )
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5})
         plot.yAxis().setGridMinorSymbol(sym4)
 
-        font = QgsFontUtils.getStandardTestFont("Bold", 16)
+        font = QgsFontUtils.getStandardTestFont('Bold', 16)
         x_axis_format = QgsTextFormat.fromQFont(font)
         x_axis_format.setColor(QColor(255, 0, 0))
         plot.xAxis().setTextFormat(x_axis_format)
@@ -427,7 +350,7 @@ class TestQgsPlot(QgisTestCase):
         x_axis_number_format.setShowTrailingZeros(True)
         plot.xAxis().setNumericFormat(x_axis_number_format)
 
-        font = QgsFontUtils.getStandardTestFont("Bold", 18)
+        font = QgsFontUtils.getStandardTestFont('Bold', 18)
         y_axis_format = QgsTextFormat.fromQFont(font)
         y_axis_format.setColor(QColor(0, 255, 0))
         plot.yAxis().setTextFormat(y_axis_format)
@@ -442,14 +365,10 @@ class TestQgsPlot(QgisTestCase):
         plot.setYMinimum(2)
         plot.setYMaximum(12)
 
-        plot.xAxis().setLabelSuffix("x")
-        plot.xAxis().setLabelSuffixPlacement(
-            Qgis.PlotAxisSuffixPlacement.FirstAndLastLabels
-        )
-        plot.yAxis().setLabelSuffix("y")
-        plot.yAxis().setLabelSuffixPlacement(
-            Qgis.PlotAxisSuffixPlacement.FirstAndLastLabels
-        )
+        plot.xAxis().setLabelSuffix('x')
+        plot.xAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.FirstAndLastLabels)
+        plot.yAxis().setLabelSuffix('y')
+        plot.yAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.FirstAndLastLabels)
 
         im = QImage(600, 500, QImage.Format.Format_ARGB32)
         im.fill(Qt.GlobalColor.white)
@@ -461,11 +380,7 @@ class TestQgsPlot(QgisTestCase):
         plot.render(rc)
         painter.end()
 
-        assert self.image_check(
-            "plot_2d_base_suffix_first_and_last",
-            "plot_2d_base_suffix_first_and_last",
-            im,
-        )
+        assert self.image_check('plot_2d_base_suffix_first_and_last', 'plot_2d_base_suffix_first_and_last', im)
 
         plot_rect = plot.interiorPlotArea(rc)
         self.assertAlmostEqual(plot_rect.left(), 80.46, 0)
@@ -477,44 +392,30 @@ class TestQgsPlot(QgisTestCase):
         plot = Qgs2DPlot()
         plot.setSize(QSizeF(600, 500))
 
-        sym1 = QgsFillSymbol.createSimple({"color": "#fdbf6f", "outline_style": "no"})
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_style': 'no'})
         plot.setChartBackgroundSymbol(sym1)
 
         sym2 = QgsFillSymbol.createSimple(
-            {
-                "outline_color": "#0000ff",
-                "style": "no",
-                "outline_style": "solid",
-                "outline_width": 1,
-            }
-        )
+            {'outline_color': '#0000ff', 'style': 'no', 'outline_style': 'solid', 'outline_width': 1})
         plot.setChartBorderSymbol(sym2)
 
-        sym3 = QgsLineSymbol.createSimple(
-            {"outline_color": "#00ffff", "outline_width": 1}
-        )
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#00ffff', 'outline_width': 1})
         plot.xAxis().setGridMajorSymbol(sym3)
 
-        sym4 = QgsLineSymbol.createSimple(
-            {"outline_color": "#ff00ff", "outline_width": 0.5}
-        )
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff00ff', 'outline_width': 0.5})
         plot.xAxis().setGridMinorSymbol(sym4)
 
-        sym3 = QgsLineSymbol.createSimple(
-            {"outline_color": "#0066ff", "outline_width": 1}
-        )
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#0066ff', 'outline_width': 1})
         plot.yAxis().setGridMajorSymbol(sym3)
 
-        sym4 = QgsLineSymbol.createSimple(
-            {"outline_color": "#ff4433", "outline_width": 0.5}
-        )
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5})
         plot.yAxis().setGridMinorSymbol(sym4)
 
-        font = QgsFontUtils.getStandardTestFont("Bold", 16)
+        font = QgsFontUtils.getStandardTestFont('Bold', 16)
         x_axis_format = QgsTextFormat.fromQFont(font)
         plot.xAxis().setTextFormat(x_axis_format)
 
-        font = QgsFontUtils.getStandardTestFont("Bold", 18)
+        font = QgsFontUtils.getStandardTestFont('Bold', 18)
         y_axis_format = QgsTextFormat.fromQFont(font)
         plot.yAxis().setTextFormat(y_axis_format)
 
@@ -543,87 +444,43 @@ class TestQgsPlot(QgisTestCase):
         plot.render(rc)
         painter.end()
 
-        assert self.image_check("plot_2d_intervals", "plot_2d_intervals", im)
+        assert self.image_check('plot_2d_intervals', 'plot_2d_intervals', im)
 
     def testPlotDataDefinedProperties(self):
         plot = Qgs2DPlot()
         plot.setSize(QSizeF(600, 500))
 
-        sym1 = QgsFillSymbol.createSimple({"color": "#ffffff", "outline_style": "no"})
+        sym1 = QgsFillSymbol.createSimple({'color': '#ffffff', 'outline_style': 'no'})
         plot.setChartBackgroundSymbol(sym1)
 
         sym2 = QgsFillSymbol.createSimple(
-            {
-                "outline_color": "#000000",
-                "style": "no",
-                "outline_style": "solid",
-                "outline_width": 1,
-            }
-        )
+            {'outline_color': '#000000', 'style': 'no', 'outline_style': 'solid', 'outline_width': 1})
         plot.setChartBorderSymbol(sym2)
 
-        sym3 = QgsLineSymbol.createSimple(
-            {"outline_color": "#00ffff", "outline_width": 1, "capstyle": "flat"}
-        )
-        sym3[0].setDataDefinedProperty(
-            QgsSymbolLayer.Property.PropertyStrokeWidth,
-            QgsProperty.fromExpression(
-                "case when @plot_axis_value = 10 then 3 else 1 end"
-            ),
-        )
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#00ffff', 'outline_width': 1, 'capstyle': 'flat'})
+        sym3[0].setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeWidth, QgsProperty.fromExpression('case when @plot_axis_value = 10 then 3 else 1 end'))
         plot.xAxis().setGridMajorSymbol(sym3)
 
-        sym4 = QgsLineSymbol.createSimple(
-            {"outline_color": "#ff00ff", "outline_width": 0.5, "capstyle": "flat"}
-        )
-        sym4[0].setDataDefinedProperty(
-            QgsSymbolLayer.Property.PropertyStrokeWidth,
-            QgsProperty.fromExpression(
-                "case when @plot_axis_value = 6 then 3 else 0.5 end"
-            ),
-        )
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff00ff', 'outline_width': 0.5, 'capstyle': 'flat'})
+        sym4[0].setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeWidth, QgsProperty.fromExpression('case when @plot_axis_value = 6 then 3 else 0.5 end'))
         plot.xAxis().setGridMinorSymbol(sym4)
 
-        sym3 = QgsLineSymbol.createSimple(
-            {"outline_color": "#0066ff", "outline_width": 1, "capstyle": "flat"}
-        )
-        sym3[0].setDataDefinedProperty(
-            QgsSymbolLayer.Property.PropertyStrokeWidth,
-            QgsProperty.fromExpression(
-                "case when @plot_axis_value = 5 then 3 else 0.5 end"
-            ),
-        )
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#0066ff', 'outline_width': 1, 'capstyle': 'flat'})
+        sym3[0].setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeWidth, QgsProperty.fromExpression('case when @plot_axis_value = 5 then 3 else 0.5 end'))
         plot.yAxis().setGridMajorSymbol(sym3)
 
-        sym4 = QgsLineSymbol.createSimple(
-            {"outline_color": "#ff4433", "outline_width": 0.5, "capstyle": "flat"}
-        )
-        sym4[0].setDataDefinedProperty(
-            QgsSymbolLayer.Property.PropertyStrokeWidth,
-            QgsProperty.fromExpression(
-                "case when @plot_axis_value = 9 then 3 else 0.5 end"
-            ),
-        )
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5, 'capstyle': 'flat'})
+        sym4[0].setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeWidth, QgsProperty.fromExpression('case when @plot_axis_value = 9 then 3 else 0.5 end'))
         plot.yAxis().setGridMinorSymbol(sym4)
 
-        font = QgsFontUtils.getStandardTestFont("Bold", 16)
+        font = QgsFontUtils.getStandardTestFont('Bold', 16)
         x_axis_format = QgsTextFormat.fromQFont(font)
-        x_axis_format.dataDefinedProperties().setProperty(
-            QgsPalLayerSettings.Property.Color,
-            QgsProperty.fromExpression(
-                "case when @plot_axis_value %3 = 0 then '#ff0000' else '#000000' end"
-            ),
-        )
+        x_axis_format.dataDefinedProperties().setProperty(QgsPalLayerSettings.Property.Color, QgsProperty.fromExpression('case when @plot_axis_value %3 = 0 then \'#ff0000\' else \'#000000\' end'))
         plot.xAxis().setTextFormat(x_axis_format)
 
-        font = QgsFontUtils.getStandardTestFont("Bold", 18)
+        font = QgsFontUtils.getStandardTestFont('Bold', 18)
         y_axis_format = QgsTextFormat.fromQFont(font)
-        y_axis_format.dataDefinedProperties().setProperty(
-            QgsPalLayerSettings.Property.Color,
-            QgsProperty.fromExpression(
-                "case when @plot_axis_value %4 = 0 then '#0000ff' else '#000000' end"
-            ),
-        )
+        y_axis_format.dataDefinedProperties().setProperty(QgsPalLayerSettings.Property.Color, QgsProperty.fromExpression('case when @plot_axis_value %4 = 0 then \'#0000ff\' else \'#000000\' end'))
         plot.yAxis().setTextFormat(y_axis_format)
 
         plot.setXMinimum(3)
@@ -642,7 +499,7 @@ class TestQgsPlot(QgisTestCase):
         plot.render(rc)
         painter.end()
 
-        assert self.image_check("plot_2d_data_defined", "plot_2d_data_defined", im)
+        assert self.image_check('plot_2d_data_defined', 'plot_2d_data_defined', im)
 
         plot_rect = plot.interiorPlotArea(rc)
         self.assertAlmostEqual(plot_rect.left(), 44.71, 0)
@@ -654,11 +511,11 @@ class TestQgsPlot(QgisTestCase):
         plot = Qgs2DPlot()
         plot.setSize(QSizeF(600, 500))
 
-        font = QgsFontUtils.getStandardTestFont("Bold", 16)
+        font = QgsFontUtils.getStandardTestFont('Bold', 16)
         x_axis_format = QgsTextFormat.fromQFont(font)
         plot.xAxis().setTextFormat(x_axis_format)
 
-        font = QgsFontUtils.getStandardTestFont("Bold", 18)
+        font = QgsFontUtils.getStandardTestFont('Bold', 18)
         y_axis_format = QgsTextFormat.fromQFont(font)
         plot.yAxis().setTextFormat(y_axis_format)
 
@@ -735,40 +592,26 @@ class TestQgsPlot(QgisTestCase):
         plot = Qgs2DPlot()
         plot.setSize(QSizeF(600, 500))
 
-        sym1 = QgsFillSymbol.createSimple({"color": "#fdbf6f", "outline_style": "no"})
+        sym1 = QgsFillSymbol.createSimple({'color': '#fdbf6f', 'outline_style': 'no'})
         plot.setChartBackgroundSymbol(sym1)
 
         sym2 = QgsFillSymbol.createSimple(
-            {
-                "outline_color": "#0000ff",
-                "style": "no",
-                "outline_style": "solid",
-                "outline_width": 1,
-            }
-        )
+            {'outline_color': '#0000ff', 'style': 'no', 'outline_style': 'solid', 'outline_width': 1})
         plot.setChartBorderSymbol(sym2)
 
-        sym3 = QgsLineSymbol.createSimple(
-            {"outline_color": "#00ffff", "outline_width": 1}
-        )
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#00ffff', 'outline_width': 1})
         plot.xAxis().setGridMajorSymbol(sym3)
 
-        sym4 = QgsLineSymbol.createSimple(
-            {"outline_color": "#ff00ff", "outline_width": 0.5}
-        )
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff00ff', 'outline_width': 0.5})
         plot.xAxis().setGridMinorSymbol(sym4)
 
-        sym3 = QgsLineSymbol.createSimple(
-            {"outline_color": "#0066ff", "outline_width": 1}
-        )
+        sym3 = QgsLineSymbol.createSimple({'outline_color': '#0066ff', 'outline_width': 1})
         plot.yAxis().setGridMajorSymbol(sym3)
 
-        sym4 = QgsLineSymbol.createSimple(
-            {"outline_color": "#ff4433", "outline_width": 0.5}
-        )
+        sym4 = QgsLineSymbol.createSimple({'outline_color': '#ff4433', 'outline_width': 0.5})
         plot.yAxis().setGridMinorSymbol(sym4)
 
-        font = QgsFontUtils.getStandardTestFont("Bold", 16)
+        font = QgsFontUtils.getStandardTestFont('Bold', 16)
         x_axis_format = QgsTextFormat.fromQFont(font)
         x_axis_format.setColor(QColor(255, 0, 0))
         plot.xAxis().setTextFormat(x_axis_format)
@@ -778,7 +621,7 @@ class TestQgsPlot(QgisTestCase):
         x_axis_number_format.setShowTrailingZeros(True)
         plot.xAxis().setNumericFormat(x_axis_number_format)
 
-        font = QgsFontUtils.getStandardTestFont("Bold", 18)
+        font = QgsFontUtils.getStandardTestFont('Bold', 18)
         y_axis_format = QgsTextFormat.fromQFont(font)
         y_axis_format.setColor(QColor(0, 255, 0))
         plot.yAxis().setTextFormat(y_axis_format)
@@ -801,15 +644,15 @@ class TestQgsPlot(QgisTestCase):
         plot.xAxis().setLabelInterval(32)
         plot.yAxis().setLabelInterval(23)
 
-        plot.xAxis().setLabelSuffix("km")
-        plot.xAxis().setLabelSuffixPlacement(Qgis.PlotAxisSuffixPlacement.LastLabel)
-        plot.yAxis().setLabelSuffix("m")
+        plot.xAxis().setLabelSuffix('km')
+        plot.xAxis().setLabelSuffixPlacement(
+            Qgis.PlotAxisSuffixPlacement.LastLabel)
+        plot.yAxis().setLabelSuffix('m')
         plot.yAxis().setLabelSuffixPlacement(
-            Qgis.PlotAxisSuffixPlacement.FirstAndLastLabels
-        )
+            Qgis.PlotAxisSuffixPlacement.FirstAndLastLabels)
 
         doc = QDomDocument()
-        elem = doc.createElement("test")
+        elem = doc.createElement('test')
         plot.writeXml(elem, doc, QgsReadWriteContext())
 
         res = Qgs2DPlot()
@@ -831,27 +674,24 @@ class TestQgsPlot(QgisTestCase):
         self.assertEqual(res.xAxis().numericFormat().numberDecimalPlaces(), 1)
         self.assertTrue(res.yAxis().numericFormat().showPlusSign())
 
-        self.assertEqual(res.xAxis().textFormat().color().name(), "#ff0000")
-        self.assertEqual(res.yAxis().textFormat().color().name(), "#00ff00")
+        self.assertEqual(res.xAxis().textFormat().color().name(), '#ff0000')
+        self.assertEqual(res.yAxis().textFormat().color().name(), '#00ff00')
 
-        self.assertEqual(res.chartBackgroundSymbol().color().name(), "#fdbf6f")
-        self.assertEqual(res.chartBorderSymbol().color().name(), "#0000ff")
+        self.assertEqual(res.chartBackgroundSymbol().color().name(), '#fdbf6f')
+        self.assertEqual(res.chartBorderSymbol().color().name(), '#0000ff')
 
-        self.assertEqual(res.xAxis().gridMinorSymbol().color().name(), "#ff00ff")
-        self.assertEqual(res.xAxis().gridMajorSymbol().color().name(), "#00ffff")
-        self.assertEqual(res.yAxis().gridMinorSymbol().color().name(), "#ff4433")
-        self.assertEqual(res.yAxis().gridMajorSymbol().color().name(), "#0066ff")
+        self.assertEqual(res.xAxis().gridMinorSymbol().color().name(), '#ff00ff')
+        self.assertEqual(res.xAxis().gridMajorSymbol().color().name(), '#00ffff')
+        self.assertEqual(res.yAxis().gridMinorSymbol().color().name(), '#ff4433')
+        self.assertEqual(res.yAxis().gridMajorSymbol().color().name(), '#0066ff')
 
-        self.assertEqual(res.xAxis().labelSuffix(), "km")
-        self.assertEqual(
-            res.xAxis().labelSuffixPlacement(), Qgis.PlotAxisSuffixPlacement.LastLabel
-        )
-        self.assertEqual(res.yAxis().labelSuffix(), "m")
-        self.assertEqual(
-            res.yAxis().labelSuffixPlacement(),
-            Qgis.PlotAxisSuffixPlacement.FirstAndLastLabels,
-        )
+        self.assertEqual(res.xAxis().labelSuffix(), 'km')
+        self.assertEqual(res.xAxis().labelSuffixPlacement(),
+                         Qgis.PlotAxisSuffixPlacement.LastLabel)
+        self.assertEqual(res.yAxis().labelSuffix(), 'm')
+        self.assertEqual(res.yAxis().labelSuffixPlacement(),
+                         Qgis.PlotAxisSuffixPlacement.FirstAndLastLabels)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

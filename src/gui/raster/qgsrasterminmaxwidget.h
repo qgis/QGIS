@@ -34,10 +34,11 @@ class QgsRasterLayer;
  * \ingroup gui
  * \class QgsRasterMinMaxWidget
  */
-class GUI_EXPORT QgsRasterMinMaxWidget : public QWidget, private Ui::QgsRasterMinMaxWidgetBase
+class GUI_EXPORT QgsRasterMinMaxWidget: public QWidget, private Ui::QgsRasterMinMaxWidgetBase
 {
     Q_OBJECT
   public:
+
     //! Constructor for QgsRasterMinMaxWidget
     QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -110,21 +111,9 @@ class GUI_EXPORT QgsRasterMinMaxWidget : public QWidget, private Ui::QgsRasterMi
   private slots:
 
     void mUserDefinedRadioButton_toggled( bool );
-    void mMinMaxRadioButton_toggled( bool b )
-    {
-      if ( b )
-        emit widgetChanged();
-    }
-    void mStdDevRadioButton_toggled( bool b )
-    {
-      if ( b )
-        emit widgetChanged();
-    }
-    void mCumulativeCutRadioButton_toggled( bool b )
-    {
-      if ( b )
-        emit widgetChanged();
-    }
+    void mMinMaxRadioButton_toggled( bool b ) { if ( b ) emit widgetChanged(); }
+    void mStdDevRadioButton_toggled( bool b ) { if ( b ) emit widgetChanged(); }
+    void mCumulativeCutRadioButton_toggled( bool b ) { if ( b ) emit widgetChanged(); }
     void mStatisticsExtentCombo_currentIndexChanged( int ) { emit widgetChanged(); }
     void mCumulativeCutLowerDoubleSpinBox_valueChanged( double ) { emit widgetChanged(); }
     void mCumulativeCutUpperDoubleSpinBox_valueChanged( double ) { emit widgetChanged(); }

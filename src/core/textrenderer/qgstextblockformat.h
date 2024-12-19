@@ -19,11 +19,9 @@
 #include "qgis_sip.h"
 #include "qgis_core.h"
 #include "qgis.h"
-#include "qgsmargins.h"
 
 #include <QFont>
 #include <QColor>
-#include <QBrush>
 
 class QTextBlockFormat;
 class QgsRenderContext;
@@ -113,126 +111,6 @@ class CORE_EXPORT QgsTextBlockFormat
     void setHorizontalAlignment( Qgis::TextHorizontalAlignment alignment ) { mHorizontalAlign = alignment; }
 
     /**
-     * Returns the line height in points, or NaN if the line height is not set
-     * and should be auto calculated.
-     *
-     * \note A format should have either lineHeight() or lineHeightPercentage() set, not both.
-     *
-     * \see lineHeightPercentage()
-     * \see setLineHeight()
-     *
-     * \since QGIS 3.42
-     */
-    double lineHeight() const;
-
-    /**
-     * Sets the font line \a height, in points.
-     *
-     * Set \a height to NaN if the line height is not set
-     * and should be auto calculated.
-     *
-     * \note A format should have either lineHeight() or lineHeightPercentage() set, not both.
-     *
-     * \see lineHeight()
-     * \see setLineHeightPercentage()
-     *
-     * \since QGIS 3.42
-     */
-    void setLineHeight( double height );
-
-    /**
-     * Returns the line height percentage size (as fraction of font size from 0.0 to 1.0), or NaN if the line height percentage is not set.
-     *
-     * \note A format should have either lineHeight() or lineHeightPercentage() set, not both.
-     *
-     * \see lineHeight()
-     * \see setLineHeightPercentage()
-     *
-     * \since QGIS 3.42
-     */
-    double lineHeightPercentage() const;
-
-    /**
-     * Sets the line height percentage \a height (as fraction of font size from 0.0 to 1.0).
-     *
-     * Set \a height to NaN if the line height percentange is not set.
-     *
-     * \note A format should have either lineHeight() or lineHeightPercentage() set, not both.
-     *
-     * \see lineHeightPercentage()
-     * \see setLineHeight()
-     *
-     * \since QGIS 3.42
-     */
-    void setLineHeightPercentage( double height );
-
-    /**
-     * Returns the block margins, in points.
-     *
-     * \see setMargins()
-     * \since QGIS 3.42
-     */
-    QgsMargins margins() const { return mMargins; }
-
-    /**
-     * Sets the block margins, in points.
-     *
-     * \see margins()
-     * \since QGIS 3.42
-     */
-    void setMargins( const QgsMargins &margins ) { mMargins = margins; }
-
-    /**
-     * Returns TRUE if the block has a background set.
-     *
-     * \see backgroundBrush()
-     * \since QGIS 3.42
-     */
-    bool hasBackground() const;
-
-    /**
-     * Returns the brush used for rendering the background of the block.
-     *
-     * Alternatively, the format may have a backgroundBrush() set.
-     *
-     * \see hasBackground()
-     * \see setBackgroundBrush()
-     * \since QGIS 3.42
-     */
-    QBrush backgroundBrush() const;
-
-    /**
-     * Sets the \a brush used for rendering the background of the block.
-     *
-     * Alternatively, the format may have a backgroundBrush() set.
-     *
-     * \see backgroundBrush()
-     * \since QGIS 3.42
-     */
-    void setBackgroundBrush( const QBrush &brush );
-
-    /**
-     * Returns the path for the image to be used for rendering the background of the fragment.
-     *
-     * Alternatively, the format may have a backgroundBrush() set.
-     *
-     * \see hasBackground()
-     * \see setBackgroundImagePath()
-     * \since QGIS 3.42
-     */
-    QString backgroundImagePath() const;
-
-    /**
-     * Sets the \a path for the image to be used for rendering the background of the fragment.
-     *
-     * Alternatively, the format may have a backgroundBrush() set.
-     *
-     * \see backgroundImagePath()
-     * \since QGIS 3.42
-     */
-    void setBackgroundImagePath( const QString &path );
-
-    /**
      * Updates the specified \a font in place, applying block formatting options which
      * are applicable on a font level when rendered in the given \a context.
      *
@@ -245,16 +123,9 @@ class CORE_EXPORT QgsTextBlockFormat
 
   private:
 
-    QBrush mBackgroundBrush;
-    QString mBackgroundPath;
-
-    double mLineHeight = std::numeric_limits< double >::quiet_NaN();
-    double mLineHeightPercentage = std::numeric_limits< double >::quiet_NaN();
-
     bool mHasHorizontalAlignSet = false;
     Qgis::TextHorizontalAlignment mHorizontalAlign = Qgis::TextHorizontalAlignment::Left;
 
-    QgsMargins mMargins { std::numeric_limits< double >::quiet_NaN(), std::numeric_limits< double >::quiet_NaN(), std::numeric_limits< double >::quiet_NaN(), std::numeric_limits< double >::quiet_NaN() };
 };
 
 #endif // QGSTEXTBLOCKFORMAT_H

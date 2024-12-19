@@ -241,13 +241,6 @@ class QgsMeshDatasetGroupStore: public QObject
      */
     QString groupName( int groupIndex ) const;
 
-    /**
-     * Removes dataset group with global index \a groupIndex
-     *
-     * \since QGIS 3.42
-     */
-    void removeDatasetGroup( int groupIndex );
-
   signals:
     //! Emitted after dataset groups are added
     void datasetGroupsAdded( QList<int> indexes );
@@ -265,9 +258,6 @@ class QgsMeshDatasetGroupStore: public QObject
     std::unique_ptr<QgsMeshDatasetGroupTreeItem> mDatasetGroupTreeRootItem;
 
     void removePersistentProvider();
-
-    //! reindex dataset group stores variables from provider and extra datasets, to keep data in sync after removal of dataset group
-    void reindexDatasetGroups();
 
     DatasetGroup datasetGroup( int index ) const;
 

@@ -52,6 +52,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     Q_PROPERTY( ConstraintResult constraintResult READ constraintResult NOTIFY constraintStatusChanged )
 
   public:
+
     /**
      * Result of constraint checks.
      */
@@ -87,7 +88,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * Returns the list of additional fields which the editor handles
      * \since QGIS 3.10
      */
-    virtual QStringList additionalFields() const { return QStringList(); }
+    virtual QStringList additionalFields() const {return QStringList();}
 
     /**
      * Will be used to access the widget's values for potential additional fields handled by the widget
@@ -95,7 +96,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \see additionalFields
      * \since QGIS 3.10
      */
-    virtual QVariantList additionalFieldValues() const { return QVariantList(); }
+    virtual QVariantList additionalFieldValues() const {return QVariantList();}
 
     /**
      * Access the field index.
@@ -317,6 +318,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     virtual void parentFormValueChanged( const QString &attribute, const QVariant &value );
 
   protected:
+
     /**
      * This should update the widget with a visual cue if a constraint status
      * changed.
@@ -356,6 +358,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     bool setFormFeatureAttribute( const QString &attributeName, const QVariant &attributeValue );
 
   private:
+
     /**
     * Is called when the value of the widget needs to be changed. Updates the widget representation
     * to reflect the new value.
@@ -400,6 +403,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     bool mConstraintResultVisible = false;
 
     mutable QVariant mDefaultValue; // Cache default value, we don't want to retrieve different serial numbers if called repeatedly
+
 };
 
 // We'll use this class inside a QVariant in the widgets properties

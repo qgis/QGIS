@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsmaptoolchangelabelproperties.h"
-#include "moc_qgsmaptoolchangelabelproperties.cpp"
 #include "qgslabelpropertydialog.h"
 #include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
@@ -105,7 +104,15 @@ void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent *e )
       labeltext = mCurrentLabel.pos.labelText;
     }
 
-    QgsLabelPropertyDialog d( mCurrentLabel.pos.layerID, mCurrentLabel.pos.providerID, mCurrentLabel.pos.featureId, mCurrentLabel.pos.labelFont, labeltext, mCurrentLabel.pos.isPinned, mCurrentLabel.settings, mCanvas, nullptr );
+    QgsLabelPropertyDialog d( mCurrentLabel.pos.layerID,
+                              mCurrentLabel.pos.providerID,
+                              mCurrentLabel.pos.featureId,
+                              mCurrentLabel.pos.labelFont,
+                              labeltext,
+                              mCurrentLabel.pos.isPinned,
+                              mCurrentLabel.settings,
+                              mCanvas,
+                              nullptr );
     d.setMapCanvas( canvas() );
 
     connect( &d, &QgsLabelPropertyDialog::applied, this, &QgsMapToolChangeLabelProperties::dialogPropertiesApplied );
@@ -177,3 +184,4 @@ void QgsMapToolChangeLabelProperties::dialogPropertiesApplied()
 
   applyChanges( dlg->changedProperties() );
 }
+

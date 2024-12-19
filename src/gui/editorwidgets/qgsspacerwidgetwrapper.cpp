@@ -15,13 +15,13 @@
  ***************************************************************************/
 
 #include "qgsspacerwidgetwrapper.h"
-#include "moc_qgsspacerwidgetwrapper.cpp"
 #include "qframe.h"
 
 
 QgsSpacerWidgetWrapper::QgsSpacerWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )
 {
+
 }
 
 bool QgsSpacerWidgetWrapper::valid() const

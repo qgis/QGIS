@@ -34,6 +34,7 @@ class APP_EXPORT QgsAngleMagnetWidget : public QWidget
     Q_OBJECT
 
   public:
+
     explicit QgsAngleMagnetWidget( const QString &label = QString(), QWidget *parent = nullptr );
 
     void setAngle( double angle );
@@ -41,7 +42,7 @@ class APP_EXPORT QgsAngleMagnetWidget : public QWidget
     void setMagnet( int magnet );
     int magnet() const;
 
-    QgsDoubleSpinBox *editor() const { return mAngleSpinBox; }
+    QgsDoubleSpinBox *editor() const {return mAngleSpinBox;}
 
   signals:
     void angleChanged( double angle );
@@ -65,7 +66,7 @@ class APP_EXPORT QgsAngleMagnetWidget : public QWidget
 
 
 //! Map tool to rotate features
-class APP_EXPORT QgsMapToolRotateFeature : public QgsMapToolAdvancedDigitizing
+class APP_EXPORT QgsMapToolRotateFeature: public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
   public:
@@ -91,6 +92,7 @@ class APP_EXPORT QgsMapToolRotateFeature : public QgsMapToolAdvancedDigitizing
     void cancel();
 
   private:
+
     QgsGeometry rotateGeometry( QgsGeometry geom, QgsPointXY point, double angle );
     QgsPointXY rotatePoint( QgsPointXY point, double angle );
     void deleteRubberband();

@@ -14,7 +14,6 @@
 ***************************************************************************/
 
 #include "qgsmaplayerproxymodel.h"
-#include "moc_qgsmaplayerproxymodel.cpp"
 #include "qgsmaplayermodel.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"

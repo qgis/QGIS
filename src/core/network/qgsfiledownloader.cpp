@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsfiledownloader.h"
-#include "moc_qgsfiledownloader.cpp"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
 #include "qgsapplication.h"

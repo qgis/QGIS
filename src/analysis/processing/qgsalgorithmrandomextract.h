@@ -30,7 +30,9 @@
  */
 class QgsRandomExtractAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
+
     QgsRandomExtractAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -43,7 +45,10 @@ class QgsRandomExtractAlgorithm : public QgsProcessingAlgorithm
     QgsRandomExtractAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
 };
 
 ///@endcond PRIVATE

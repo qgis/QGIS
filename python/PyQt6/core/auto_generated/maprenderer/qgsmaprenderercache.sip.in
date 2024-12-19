@@ -42,7 +42,7 @@ Invalidates the cache contents, clearing all cached images.
 .. seealso:: :py:func:`clearCacheImage`
 %End
 
- bool init( const QgsRectangle &extent, double scale ) /Deprecated="Since 3.18. Will be removed in QGIS 4.0. Use the updateParameters() and clear()."/;
+ bool init( const QgsRectangle &extent, double scale ) /Deprecated/;
 %Docstring
 Initialize cache: sets extent and scale parameters and clears the cache if any
 parameters have changed since last initialization.

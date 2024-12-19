@@ -14,7 +14,6 @@
 ***************************************************************************/
 
 #include "qgsmaplayercombobox.h"
-#include "moc_qgsmaplayercombobox.cpp"
 #include "qgsmaplayermodel.h"
 #include "qgsmimedatautils.h"
 #include <QDragEnterEvent>
@@ -27,7 +26,7 @@ QgsMapLayerComboBox::QgsMapLayerComboBox( QWidget *parent )
   mProxyModel = new QgsMapLayerProxyModel( this );
   setModel( mProxyModel );
 
-  connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsMapLayerComboBox::indexChanged );
+  connect( this, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::activated ), this, &QgsMapLayerComboBox::indexChanged );
   connect( mProxyModel, &QAbstractItemModel::rowsInserted, this, &QgsMapLayerComboBox::rowsChanged );
   connect( mProxyModel, &QAbstractItemModel::rowsRemoved, this, &QgsMapLayerComboBox::rowsChanged );
 
@@ -41,7 +40,7 @@ void QgsMapLayerComboBox::setExcludedProviders( const QStringList &providers )
   mProxyModel->setExcludedProviders( providers );
 }
 
-void QgsMapLayerComboBox::setProject( QgsProject *project )
+void  QgsMapLayerComboBox::setProject( QgsProject *project )
 {
   mProxyModel->setProject( project );
 }
@@ -248,7 +247,7 @@ void QgsMapLayerComboBox::paintEvent( QPaintEvent *e )
   if ( mDragActive || mHighlight )
   {
     QPainter p( this );
-    const int width = 2; // width of highlight rectangle inside frame
+    const int width = 2;  // width of highlight rectangle inside frame
     p.setPen( QPen( palette().highlight(), width ) );
     const QRect r = rect().adjusted( width, width, -width, -width );
     p.drawRect( r );

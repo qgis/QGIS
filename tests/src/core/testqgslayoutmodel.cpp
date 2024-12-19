@@ -34,38 +34,38 @@ class TestQgsLayoutModel : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLayoutModel()
-      : QgsTest( QStringLiteral( "Layout model test" ) ) {}
+    TestQgsLayoutModel(): QgsTest( QStringLiteral( "Layout model test" ) ) {}
 
   private slots:
-    void initTestCase();               // will be called before the first testfunction is executed.
-    void cleanupTestCase();            // will be called after the last testfunction was executed.
-    void init();                       // will be called before each testfunction is executed.
-    void cleanup();                    // will be called after every testfunction.
-    void creation();                   //check that model has been created
-    void addItems();                   //add some items to the composition and test model
-    void zList();                      //check model z order list
-    void clear();                      //check clearing the model
-    void addLayoutItemDirectly();      //add an item directly to the model
-    void rebuildZList();               //test rebuilding the z list from the current composer stacking
-    void removeItem();                 //test removing an item from the model
-    void reorderUp();                  //test reordering an item up
-    void reorderDown();                //test reordering an item down
-    void reorderTop();                 //test reordering an item to top
-    void reorderBottom();              //test reordering an item to bottom
-    void moveItem();                   //test move an item in the item tree
-    void findItemAbove();              //test getting composer item above
-    void findItemBelow();              //test getting composer item below
-    void setItemRemoved();             //test setting an item as removed
-    void rebuildZListWithRemoved();    //test rebuilding z list with removed items
-    void reorderUpWithRemoved();       //test reordering up with removed items
-    void reorderDownWithRemoved();     //test reordering down with removed items
-    void reorderToTopWithRemoved();    //test reordering to top with removed items
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init();// will be called before each testfunction is executed.
+    void cleanup();// will be called after every testfunction.
+    void creation(); //check that model has been created
+    void addItems(); //add some items to the composition and test model
+    void zList(); //check model z order list
+    void clear(); //check clearing the model
+    void addLayoutItemDirectly(); //add an item directly to the model
+    void rebuildZList(); //test rebuilding the z list from the current composer stacking
+    void removeItem(); //test removing an item from the model
+    void reorderUp(); //test reordering an item up
+    void reorderDown(); //test reordering an item down
+    void reorderTop(); //test reordering an item to top
+    void reorderBottom(); //test reordering an item to bottom
+    void moveItem(); //test move an item in the item tree
+    void findItemAbove(); //test getting composer item above
+    void findItemBelow(); //test getting composer item below
+    void setItemRemoved(); //test setting an item as removed
+    void rebuildZListWithRemoved(); //test rebuilding z list with removed items
+    void reorderUpWithRemoved(); //test reordering up with removed items
+    void reorderDownWithRemoved(); //test reordering down with removed items
+    void reorderToTopWithRemoved(); //test reordering to top with removed items
     void reorderToBottomWithRemoved(); //test reordering to bottom with removed items
     void groupSelection();
 
     void proxy();
     void proxyCrash();
+
 };
 
 void TestQgsLayoutModel::initTestCase()
@@ -81,10 +81,12 @@ void TestQgsLayoutModel::cleanupTestCase()
 
 void TestQgsLayoutModel::init()
 {
+
 }
 
 void TestQgsLayoutModel::cleanup()
 {
+
 }
 
 void TestQgsLayoutModel::creation()
@@ -331,12 +333,12 @@ void TestQgsLayoutModel::reorderUp()
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
 
   //try reordering some bad items
-  QVERIFY( !layout.itemsModel()->reorderItemUp( nullptr ) );
+  QVERIFY( ! layout.itemsModel()->reorderItemUp( nullptr ) );
   QgsLayoutItemMap *label = new QgsLayoutItemMap( nullptr );
-  QVERIFY( !layout.itemsModel()->reorderItemUp( label ) );
+  QVERIFY( ! layout.itemsModel()->reorderItemUp( label ) );
 
   //trying to reorder up the topmost item should fail
-  QVERIFY( !layout.itemsModel()->reorderItemUp( item3 ) );
+  QVERIFY( ! layout.itemsModel()->reorderItemUp( item3 ) );
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
@@ -396,12 +398,12 @@ void TestQgsLayoutModel::reorderDown()
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
 
   //try reordering some bad items
-  QVERIFY( !layout.itemsModel()->reorderItemDown( nullptr ) );
+  QVERIFY( ! layout.itemsModel()->reorderItemDown( nullptr ) );
   QgsLayoutItemMap *label = new QgsLayoutItemMap( nullptr );
-  QVERIFY( !layout.itemsModel()->reorderItemDown( label ) );
+  QVERIFY( ! layout.itemsModel()->reorderItemDown( label ) );
 
   //trying to reorder down the bottommost item should fail
-  QVERIFY( !layout.itemsModel()->reorderItemDown( item1 ) );
+  QVERIFY( ! layout.itemsModel()->reorderItemDown( item1 ) );
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
@@ -461,12 +463,12 @@ void TestQgsLayoutModel::reorderTop()
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
 
   //try reordering some bad items
-  QVERIFY( !layout.itemsModel()->reorderItemToTop( nullptr ) );
+  QVERIFY( ! layout.itemsModel()->reorderItemToTop( nullptr ) );
   QgsLayoutItemMap *label = new QgsLayoutItemMap( nullptr );
-  QVERIFY( !layout.itemsModel()->reorderItemToTop( label ) );
+  QVERIFY( ! layout.itemsModel()->reorderItemToTop( label ) );
 
   //trying to reorder up the topmost item should fail
-  QVERIFY( !layout.itemsModel()->reorderItemToTop( item3 ) );
+  QVERIFY( ! layout.itemsModel()->reorderItemToTop( item3 ) );
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
@@ -527,12 +529,12 @@ void TestQgsLayoutModel::reorderBottom()
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
 
   //try reordering some bad items
-  QVERIFY( !layout.itemsModel()->reorderItemToBottom( nullptr ) );
+  QVERIFY( ! layout.itemsModel()->reorderItemToBottom( nullptr ) );
   QgsLayoutItemMap *label = new QgsLayoutItemMap( nullptr );
-  QVERIFY( !layout.itemsModel()->reorderItemToBottom( label ) );
+  QVERIFY( ! layout.itemsModel()->reorderItemToBottom( label ) );
 
   //trying to reorder down the bottommost item should fail
-  QVERIFY( !layout.itemsModel()->reorderItemToBottom( item1 ) );
+  QVERIFY( ! layout.itemsModel()->reorderItemToBottom( item1 ) );
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 0, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QString() );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
@@ -593,22 +595,22 @@ void TestQgsLayoutModel::moveItem()
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
 
   QgsLayoutModel *model = layout.itemsModel();
-  std::unique_ptr<QMimeData> mimedata( model->mimeData( QModelIndexList() << model->index( 2, 2 ) ) ); // get i2
-  model->dropMimeData( mimedata.get(), Qt::MoveAction, 1, 2, QModelIndex() );                          // move i2 at the top
+  std::unique_ptr< QMimeData > mimedata( model->mimeData( QModelIndexList() << model->index( 2, 2 ) ) ); // get i2
+  model->dropMimeData( mimedata.get(), Qt::MoveAction, 1, 2, QModelIndex() ); // move i2 at the top
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
 
   mimedata.reset( model->mimeData( QModelIndexList() << model->index( 1, 2 ) ) ); // get i2
-  model->dropMimeData( mimedata.get(), Qt::MoveAction, -1, -1, QModelIndex() );   // move i2 at the bottom
+  model->dropMimeData( mimedata.get(), Qt::MoveAction, -1, -1, QModelIndex() ); // move i2 at the bottom
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i1" ) );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 3, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
 
   mimedata.reset( model->mimeData( QModelIndexList() << model->index( 3, 2 ) ) ); // get i2
-  model->dropMimeData( mimedata.get(), Qt::MoveAction, 2, 2, QModelIndex() );     // move i2 between i3 and i1
+  model->dropMimeData( mimedata.get(), Qt::MoveAction, 2, 2, QModelIndex() ); // move i2 between i3 and i1
 
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 1, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i3" ) );
   QCOMPARE( layout.itemsModel()->data( layout.itemsModel()->index( 2, 2, QModelIndex() ), Qt::DisplayRole ).toString(), QStringLiteral( "i2" ) );
@@ -639,12 +641,12 @@ void TestQgsLayoutModel::findItemAbove()
   QCOMPARE( layout.itemsModel()->zOrderList().at( 2 ), item1 );
 
   //try getting item above some bad items
-  QVERIFY( !layout.itemsModel()->findItemAbove( nullptr ) );
+  QVERIFY( ! layout.itemsModel()->findItemAbove( nullptr ) );
   QgsLayoutItemMap *label = new QgsLayoutItemMap( nullptr );
-  QVERIFY( !layout.itemsModel()->findItemAbove( label ) );
+  QVERIFY( ! layout.itemsModel()->findItemAbove( label ) );
 
   //trying to get item above topmost item should fail
-  QVERIFY( !layout.itemsModel()->findItemAbove( item3 ) );
+  QVERIFY( ! layout.itemsModel()->findItemAbove( item3 ) );
 
   //try using a good item
   QCOMPARE( layout.itemsModel()->findItemAbove( item2 ), item3 );
@@ -677,12 +679,12 @@ void TestQgsLayoutModel::findItemBelow()
   QCOMPARE( layout.itemsModel()->zOrderList().at( 2 ), item1 );
 
   //try getting item below some bad items
-  QVERIFY( !layout.itemsModel()->findItemBelow( nullptr ) );
+  QVERIFY( ! layout.itemsModel()->findItemBelow( nullptr ) );
   QgsLayoutItemMap *label = new QgsLayoutItemMap( nullptr );
-  QVERIFY( !layout.itemsModel()->findItemBelow( label ) );
+  QVERIFY( ! layout.itemsModel()->findItemBelow( label ) );
 
   //trying to get item below bottom most item should fail
-  QVERIFY( !layout.itemsModel()->findItemBelow( item1 ) );
+  QVERIFY( ! layout.itemsModel()->findItemBelow( item1 ) );
 
   //try using a good item
   QCOMPARE( layout.itemsModel()->findItemBelow( item3 ), item2 );
@@ -991,21 +993,21 @@ void TestQgsLayoutModel::groupSelection()
   QCOMPARE( spy.count(), 1 );
   // but the actual selected item signal should be the originally selected item, so
   // that it can be tweaked in the properties dialog
-  QCOMPARE( spy.at( 0 ).at( 0 ).value<QObject *>(), item3 );
+  QCOMPARE( spy.at( 0 ).at( 0 ).value< QObject * >(), item3 );
 
   layout.itemsModel()->setSelected( layout.itemsModel()->indexForItem( item1 ) );
   QVERIFY( !item1->isSelected() );
   QVERIFY( !group->isSelected() );
   QVERIFY( group2->isSelected() );
   QCOMPARE( spy.count(), 2 );
-  QCOMPARE( spy.at( 1 ).at( 0 ).value<QObject *>(), item1 );
+  QCOMPARE( spy.at( 1 ).at( 0 ).value< QObject * >(), item1 );
 
   layout.itemsModel()->setSelected( layout.itemsModel()->indexForItem( item2 ) );
   QVERIFY( !item2->isSelected() );
   QVERIFY( !group->isSelected() );
   QVERIFY( group2->isSelected() );
   QCOMPARE( spy.count(), 3 );
-  QCOMPARE( spy.at( 2 ).at( 0 ).value<QObject *>(), item2 );
+  QCOMPARE( spy.at( 2 ).at( 0 ).value< QObject * >(), item2 );
 }
 
 void TestQgsLayoutModel::proxy()
@@ -1088,7 +1090,7 @@ void TestQgsLayoutModel::proxyCrash()
   layout->addLayoutItem( item3 );
 
   // reorder items - expect no crash!
-  ( void ) layout->itemsModel()->reorderItemUp( item1 );
+  ( void )layout->itemsModel()->reorderItemUp( item1 );
 }
 
 QGSTEST_MAIN( TestQgsLayoutModel )

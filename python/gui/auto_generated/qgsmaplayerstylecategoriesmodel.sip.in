@@ -21,6 +21,7 @@ Model for layer style categories
 #include "qgsmaplayerstylecategoriesmodel.h"
 %End
   public:
+
     enum class Role
     {
       NameRole,
@@ -77,10 +78,10 @@ constructor
 %End
 
   protected:
-    virtual void drawDisplay( QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QString &text ) const;
-
-    virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
-
+     virtual void drawDisplay( QPainter *painter, const QStyleOptionViewItem &option,
+                      const QRect &rect, const QString &text ) const;
+     virtual QSize sizeHint( const QStyleOptionViewItem &option,
+                    const QModelIndex &index ) const;
 };
 
 /************************************************************************

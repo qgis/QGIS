@@ -33,6 +33,7 @@ class QgsProfileMeasureResultsDialog : public QDialog
     Q_OBJECT
 
   public:
+
     QgsProfileMeasureResultsDialog();
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
@@ -48,11 +49,13 @@ class QgsProfileMeasureResultsDialog : public QDialog
     void clear();
 
   private:
+
     QLabel *mTotalLabel = nullptr;
     QLabel *mDistanceLabel = nullptr;
     QLabel *mElevationLabel = nullptr;
 
     QgsCoordinateReferenceSystem mCrs;
+
 };
 
 class QgsElevationProfileToolMeasure : public QgsPlotTool
@@ -89,6 +92,7 @@ class QgsElevationProfileToolMeasure : public QgsPlotTool
     QgsProfilePoint mStartPoint;
     QgsProfilePoint mEndPoint;
     bool mMeasureInProgress = false;
+
 };
 
 #endif // QGSELEVATIONPROFILETOOLMEASURE_H

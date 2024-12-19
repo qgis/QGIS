@@ -43,7 +43,7 @@ Contains detailed styling information relating to how a layout legend should be 
 
     QgsLegendStyle();
 
- QFont font() const /Deprecated="Since 3.40. Use textFormat() instead."/;
+ QFont font() const /Deprecated/;
 %Docstring
 Returns the font used for rendering this legend component.
 
@@ -54,7 +54,7 @@ Returns the font used for rendering this legend component.
    Use :py:func:`~QgsLegendStyle.textFormat` instead.
 %End
 
- void setFont( const QFont &font ) /Deprecated="Since 3.40. Use setTextFormat() instead."/;
+ void setFont( const QFont &font ) /Deprecated/;
 %Docstring
 Sets the ``font`` used for rendering this legend component.
 

@@ -64,7 +64,8 @@ class GUI_EXPORT QgsImageDropTextEdit : public QTextEdit
 
   private:
     QString mActiveAnchor;
-    std::unique_ptr<QgsTemporaryCursorOverride> mCursorOverride;
+    std::unique_ptr< QgsTemporaryCursorOverride > mCursorOverride;
+
 };
 ///@endcond
 

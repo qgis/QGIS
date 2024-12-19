@@ -15,9 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSDWGIMPORTER_H
-#define QGSDWGIMPORTER_H
-
 #include "drw_interface.h"
 
 #include <QCoreApplication>
@@ -229,5 +226,3 @@ class QgsDwgImporter : public DRW_Interface
     QTextCodec *mCodec = nullptr;
     QElapsedTimer mTime;
 };
-
-#endif // QGSDWGIMPORTER_H

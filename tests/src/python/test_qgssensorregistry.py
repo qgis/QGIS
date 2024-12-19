@@ -5,18 +5,12 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
+__author__ = 'Mathieu Pellerin'
+__date__ = '19/03/2023'
+__copyright__ = 'Copyright 2023, The QGIS Project'
 
-__author__ = "Mathieu Pellerin"
-__date__ = "19/03/2023"
-__copyright__ = "Copyright 2023, The QGIS Project"
 
-
-from qgis.core import (
-    QgsSensorRegistry,
-    QgsSensorAbstractMetadata,
-    QgsTcpSocketSensor,
-    QgsUdpSocketSensor,
-)
+from qgis.core import QgsSensorRegistry, QgsSensorAbstractMetadata, QgsTcpSocketSensor, QgsUdpSocketSensor
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -48,28 +42,22 @@ class TestQgsSensorRegistry(QgisTestCase):
 
         registry.addSensorType(TestTcpSensorMetadata())
         registry.addSensorType(TestUdpSensorMetadata())
-        self.assertEqual(
-            registry.sensorTypes(),
-            {
-                "test_tcp_sensor": "test tcp sensor",
-                "test_udp_sensor": "test udp sensor",
-            },
-        )
+        self.assertEqual(registry.sensorTypes(), {'test_tcp_sensor': 'test tcp sensor', 'test_udp_sensor': 'test udp sensor'})
 
-        sensor = registry.createSensor("test_tcp_sensor")
+        sensor = registry.createSensor('test_tcp_sensor')
         self.assertTrue(sensor)
-        self.assertEqual(sensor.type(), "tcp_socket")
+        self.assertEqual(sensor.type(), 'tcp_socket')
 
-        sensor = registry.createSensor("test_udp_sensor")
+        sensor = registry.createSensor('test_udp_sensor')
         self.assertTrue(sensor)
-        self.assertEqual(sensor.type(), "udp_socket")
+        self.assertEqual(sensor.type(), 'udp_socket')
 
-        sensor = registry.createSensor("invalid_sensor_type")
+        sensor = registry.createSensor('invalid_sensor_type')
         self.assertFalse(sensor)
 
-        registry.removeSensorType("test_tcp_sensor")
-        self.assertEqual(registry.sensorTypes(), {"test_udp_sensor": "test udp sensor"})
+        registry.removeSensorType('test_tcp_sensor')
+        self.assertEqual(registry.sensorTypes(), {'test_udp_sensor': 'test udp sensor'})
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

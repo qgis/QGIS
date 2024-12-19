@@ -92,5 +92,5 @@ QgsFieldModel.CustomRole.baseClass = QgsFieldModel
 try:
     QgsFieldModel.fieldToolTip = staticmethod(QgsFieldModel.fieldToolTip)
     QgsFieldModel.fieldToolTipExtended = staticmethod(QgsFieldModel.fieldToolTipExtended)
-except (NameError, AttributeError):
+except NameError:
     pass

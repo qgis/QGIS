@@ -13,9 +13,9 @@ QgsVectorWarperTask.Result.__doc__ = """Task results
 # --
 try:
     QgsVectorWarper.__group__ = ['georeferencing']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsVectorWarperTask.__group__ = ['georeferencing']
-except (NameError, AttributeError):
+except NameError:
     pass

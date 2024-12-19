@@ -20,7 +20,6 @@
 #include <QFileDialog>
 
 #include "qgsmaplayerstylemanagerwidget.h"
-#include "moc_qgsmaplayerstylemanagerwidget.cpp"
 #include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsmapcanvas.h"
@@ -62,7 +61,7 @@ QgsMapLayerStyleManagerWidget::QgsMapLayerStyleManagerWidget( QgsMapLayer *layer
   connect( loadDefaultAction, &QAction::triggered, this, &QgsMapLayerStyleManagerWidget::loadDefault );
 
   //broken connect - not sure what the purpose of this was?
-  //  connect( canvas, &QgsMapCanvas::mapCanvasRefreshed, this, SLOT( updateCurrent() ) );
+//  connect( canvas, &QgsMapCanvas::mapCanvasRefreshed, this, SLOT( updateCurrent() ) );
 
   connect( mStyleList, &QAbstractItemView::clicked, this, &QgsMapLayerStyleManagerWidget::styleClicked );
 
@@ -144,7 +143,9 @@ void QgsMapLayerStyleManagerWidget::styleRenamed( const QString &oldname, const 
 void QgsMapLayerStyleManagerWidget::addStyle()
 {
   bool ok;
-  const QString text = QInputDialog::getText( nullptr, tr( "New Style" ), tr( "Style name:" ), QLineEdit::Normal, QStringLiteral( "new style" ), &ok );
+  const QString text = QInputDialog::getText( nullptr, tr( "New Style" ),
+                       tr( "Style name:" ), QLineEdit::Normal,
+                       QStringLiteral( "new style" ), &ok );
   if ( !ok || text.isEmpty() )
     return;
 
@@ -182,8 +183,11 @@ void QgsMapLayerStyleManagerWidget::saveAsDefault()
 
   switch ( mLayer->type() )
   {
+
     case Qgis::LayerType::Vector:
-      QgsVectorLayerProperties( mMapCanvas, mMapLayerConfigWidgetContext.messageBar(), qobject_cast<QgsVectorLayer *>( mLayer ) ).saveDefaultStyle();
+      QgsVectorLayerProperties( mMapCanvas,
+                                mMapLayerConfigWidgetContext.messageBar(),
+                                qobject_cast<QgsVectorLayer *>( mLayer ) ).saveDefaultStyle();
       break;
 
     case Qgis::LayerType::Raster:
@@ -195,7 +199,9 @@ void QgsMapLayerStyleManagerWidget::saveAsDefault()
       break;
 
     case Qgis::LayerType::VectorTile:
-      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).saveStyleAsDefault();
+      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( mLayer ),
+                                    mMapCanvas,
+                                    mMapLayerConfigWidgetContext.messageBar() ).saveStyleAsDefault();
       break;
 
     // Not available for these
@@ -215,8 +221,11 @@ void QgsMapLayerStyleManagerWidget::loadDefault()
 
   switch ( mLayer->type() )
   {
+
     case Qgis::LayerType::Vector:
-      QgsVectorLayerProperties( mMapCanvas, mMapLayerConfigWidgetContext.messageBar(), qobject_cast<QgsVectorLayer *>( mLayer ) ).loadDefaultStyle();
+      QgsVectorLayerProperties( mMapCanvas,
+                                mMapLayerConfigWidgetContext.messageBar(),
+                                qobject_cast<QgsVectorLayer *>( mLayer ) ).loadDefaultStyle();
       break;
 
     case Qgis::LayerType::Raster:
@@ -228,7 +237,9 @@ void QgsMapLayerStyleManagerWidget::loadDefault()
       break;
 
     case Qgis::LayerType::VectorTile:
-      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).loadDefaultStyle();
+      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( mLayer ),
+                                    mMapCanvas,
+                                    mMapLayerConfigWidgetContext.messageBar() ).loadDefaultStyle();
       break;
 
     // Not available for these
@@ -248,8 +259,11 @@ void QgsMapLayerStyleManagerWidget::saveStyle()
 
   switch ( mLayer->type() )
   {
+
     case Qgis::LayerType::Vector:
-      QgsVectorLayerProperties( mMapCanvas, mMapLayerConfigWidgetContext.messageBar(), qobject_cast<QgsVectorLayer *>( mLayer ) ).saveStyleAs();
+      QgsVectorLayerProperties( mMapCanvas,
+                                mMapLayerConfigWidgetContext.messageBar(),
+                                qobject_cast<QgsVectorLayer *>( mLayer ) ).saveStyleAs();
       break;
 
     case Qgis::LayerType::Raster:
@@ -261,7 +275,9 @@ void QgsMapLayerStyleManagerWidget::saveStyle()
       break;
 
     case Qgis::LayerType::VectorTile:
-      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).saveStyleToFile();
+      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( mLayer ),
+                                    mMapCanvas,
+                                    mMapLayerConfigWidgetContext.messageBar() ).saveStyleToFile();
       break;
 
     // Not available for these
@@ -281,8 +297,11 @@ void QgsMapLayerStyleManagerWidget::loadStyle()
 
   switch ( mLayer->type() )
   {
+
     case Qgis::LayerType::Vector:
-      QgsVectorLayerProperties( mMapCanvas, mMapLayerConfigWidgetContext.messageBar(), qobject_cast<QgsVectorLayer *>( mLayer ) ).loadStyle();
+      QgsVectorLayerProperties( mMapCanvas,
+                                mMapLayerConfigWidgetContext.messageBar(),
+                                qobject_cast<QgsVectorLayer *>( mLayer ) ).loadStyle();
       break;
 
     case Qgis::LayerType::Raster:
@@ -294,7 +313,9 @@ void QgsMapLayerStyleManagerWidget::loadStyle()
       break;
 
     case Qgis::LayerType::VectorTile:
-      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( mLayer ), mMapCanvas, mMapLayerConfigWidgetContext.messageBar() ).loadStyle();
+      QgsVectorTileLayerProperties( qobject_cast<QgsVectorTileLayer *>( mLayer ),
+                                    mMapCanvas,
+                                    mMapLayerConfigWidgetContext.messageBar() ).loadStyle();
       break;
 
     // Not available for these

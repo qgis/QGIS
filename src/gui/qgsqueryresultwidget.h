@@ -37,12 +37,13 @@ class QgsCodeEditorWidget;
 /**
  * The QgsQueryResultItemDelegate class shows results truncated to 255 characters and using current locale
  */
-class GUI_EXPORT QgsQueryResultItemDelegate : public QStyledItemDelegate
+class GUI_EXPORT QgsQueryResultItemDelegate: public QStyledItemDelegate
 {
     Q_OBJECT
 
     // QStyledItemDelegate interface
   public:
+
     explicit QgsQueryResultItemDelegate( QObject *parent = nullptr );
 
     QString displayText( const QVariant &value, const QLocale &locale ) const override;
@@ -52,11 +53,12 @@ class GUI_EXPORT QgsQueryResultItemDelegate : public QStyledItemDelegate
  * The QgsConnectionsApiFetcher class fetches tokens (schema, table and field names) of a connection from a separate thread.
  * WARNING: this class is an implementation detail and it is not part of public API!
  */
-class GUI_EXPORT QgsConnectionsApiFetcher : public QObject
+class GUI_EXPORT QgsConnectionsApiFetcher: public QObject
 {
     Q_OBJECT
 
   public:
+
     //! Constructs a result fetcher from connection with the specified \a uri and \a providerKey.
     QgsConnectionsApiFetcher( const QString &uri, const QString &providerKey )
       : mUri( uri )
@@ -78,10 +80,12 @@ class GUI_EXPORT QgsConnectionsApiFetcher : public QObject
     void fetchingFinished();
 
   private:
+
     QString mUri;
     QString mProviderKey;
     QAtomicInt mStopFetching = 0;
-    std::unique_ptr<QgsFeedback> mFeedback;
+    std::unique_ptr< QgsFeedback > mFeedback;
+
 };
 
 #endif
@@ -103,17 +107,19 @@ class GUI_EXPORT QgsConnectionsApiFetcher : public QObject
  *
  * \since QGIS 3.22
  */
-class GUI_EXPORT QgsQueryResultWidget : public QWidget, private Ui::QgsQueryResultWidgetBase
+class GUI_EXPORT QgsQueryResultWidget: public QWidget, private Ui::QgsQueryResultWidgetBase
 {
     Q_OBJECT
 
   public:
+
+
     /**
      * \brief The QueryWidgetMode enum represents various modes for the widget appearance.
      */
     enum class QueryWidgetMode : int SIP_ENUM_BASETYPE( IntFlag )
     {
-      SqlQueryMode = 1 << 0,         //!< Defaults widget mode for SQL execution and SQL query layer creation.
+      SqlQueryMode = 1 << 0, //!< Defaults widget mode for SQL execution and SQL query layer creation.
       QueryLayerUpdateMode = 1 << 1, //!< SQL query layer update mode: the create SQL layer button is renamed to 'Update' and the SQL layer creation group box is expanded.
     };
     Q_ENUM( QueryWidgetMode )
@@ -211,6 +217,7 @@ class GUI_EXPORT QgsQueryResultWidget : public QWidget, private Ui::QgsQueryResu
     void copySelection();
 
   private:
+
     QgsCodeEditorWidget *mCodeEditorWidget = nullptr;
     QgsCodeEditorSQL *mSqlEditor = nullptr;
 
@@ -218,7 +225,7 @@ class GUI_EXPORT QgsQueryResultWidget : public QWidget, private Ui::QgsQueryResu
     std::unique_ptr<QgsQueryResultModel> mModel;
     std::unique_ptr<QgsFeedback> mFeedback;
 
-    QPointer<QgsConnectionsApiFetcher> mApiFetcher;
+    QPointer< QgsConnectionsApiFetcher > mApiFetcher;
 
     bool mWasCanceled = false;
     mutable QgsAbstractDatabaseProviderConnection::SqlVectorLayerOptions mSqlVectorLayerOptions;
@@ -257,6 +264,7 @@ class GUI_EXPORT QgsQueryResultWidget : public QWidget, private Ui::QgsQueryResu
 
 
     friend class TestQgsQueryResultWidget;
+
 };
 
 #endif // QGSQUERYRESULTWIDGET_H

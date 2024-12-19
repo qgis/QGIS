@@ -50,8 +50,7 @@ inline bool qgsConnectionPool_ConnectionIsValid( QgsHanaConnection *c )
 }
 
 class QgsHanaConnectionPoolGroup
-  : public QObject,
-    public QgsConnectionPoolGroup<QgsHanaConnection *>
+  : public QObject, public QgsConnectionPoolGroup<QgsHanaConnection *>
 {
     Q_OBJECT
 

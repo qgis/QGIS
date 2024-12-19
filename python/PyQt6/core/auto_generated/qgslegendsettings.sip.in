@@ -171,7 +171,7 @@ If ``False``, then then columns will be individually resized to their minimum po
 .. seealso:: :py:func:`equalColumnWidth`
 %End
 
- QColor fontColor() const /Deprecated="Since 3.40. Use QgsLegendStyle.textFormat() instead."/;
+ QColor fontColor() const /Deprecated/;
 %Docstring
 Returns the font color used for legend items.
 
@@ -182,7 +182,7 @@ Returns the font color used for legend items.
    Use :py:func:`QgsLegendStyle.textFormat()` instead.
 %End
 
- void setFontColor( const QColor &c ) /Deprecated="Since 3.40. Use QgsLegendStyle.textFormat() instead."/;
+ void setFontColor( const QColor &c ) /Deprecated/;
 %Docstring
 Sets the font color used for legend items.
 
@@ -193,7 +193,7 @@ Sets the font color used for legend items.
    Use :py:func:`QgsLegendStyle.textFormat()` instead.
 %End
 
- QColor layerFontColor() const /Deprecated="Since 3.40. Use QgsLegendStyle.textFormat() instead."/;
+ QColor layerFontColor() const /Deprecated/;
 %Docstring
 Returns layer font color, defaults to :py:func:`~QgsLegendSettings.fontColor`
 
@@ -206,7 +206,7 @@ Returns layer font color, defaults to :py:func:`~QgsLegendSettings.fontColor`
    Use :py:func:`QgsLegendStyle.textFormat()` instead.
 %End
 
- void setLayerFontColor( const QColor &fontColor ) /Deprecated="Since 3.40. Use QgsLegendStyle.textFormat() instead."/;
+ void setLayerFontColor( const QColor &fontColor ) /Deprecated/;
 %Docstring
 Sets layer font color to ``fontColor``
 Overrides :py:func:`~QgsLegendSettings.fontColor`
@@ -404,7 +404,7 @@ Returns whether to request legend graphics synchronously.
 .. versionadded:: 3.34
 %End
 
- double lineSpacing() const /Deprecated="Since 3.40. Use QgsLegendStyle.textFormat() from style() instead."/;
+ double lineSpacing() const /Deprecated/;
 %Docstring
 Returns the line spacing to use between lines of legend text.
 
@@ -426,7 +426,7 @@ Sets the line spacing to use between lines of legend text.
    Use :py:func:`QgsLegendStyle.setTextFormat()` from :py:func:`~QgsLegendSettings.style` instead.
 %End
 
- double mmPerMapUnit() const /Deprecated="Since 3.40. Use scale factor from render contexts instead."/;
+ double mmPerMapUnit() const /Deprecated/;
 %Docstring
 
 .. deprecated:: 3.40
@@ -434,7 +434,7 @@ Sets the line spacing to use between lines of legend text.
    Use scale factor from render contexts instead.
 %End
 
- void setMmPerMapUnit( double mmPerMapUnit ) /Deprecated="Since 3.40. Set scale factor on render contexts instead."/;
+ void setMmPerMapUnit( double mmPerMapUnit ) /Deprecated/;
 %Docstring
 
 .. deprecated:: 3.40
@@ -442,7 +442,7 @@ Sets the line spacing to use between lines of legend text.
    Set scale factor on render contexts instead.
 %End
 
- bool useAdvancedEffects() const /Deprecated="Since 3.40. Use flags from render contexts instead."/;
+ bool useAdvancedEffects() const /Deprecated/;
 %Docstring
 
 .. deprecated:: 3.40
@@ -450,7 +450,7 @@ Sets the line spacing to use between lines of legend text.
    Use flags from render contexts instead.
 %End
 
- void setUseAdvancedEffects( bool use ) /Deprecated="Since 3.40. Set flag on render contexts instead."/;
+ void setUseAdvancedEffects( bool use ) /Deprecated/;
 %Docstring
 
 .. deprecated:: 3.40
@@ -458,7 +458,7 @@ Sets the line spacing to use between lines of legend text.
    Set flag on render contexts instead.
 %End
 
- double mapScale() const /Deprecated="Since 3.40. Take this property from the render context instead."/;
+ double mapScale() const /Deprecated/;
 %Docstring
 Returns the legend map scale.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
@@ -470,7 +470,7 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
    Take this property from the render context instead.
 %End
 
- void setMapScale( double scale ) /Deprecated="Since 3.40. Set this property on the render context instead."/;
+ void setMapScale( double scale ) /Deprecated/;
 %Docstring
 Sets the legend map ``scale``.
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
@@ -482,7 +482,7 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
    Set this property on the render context instead.
 %End
 
- double mapUnitsPerPixel() const /Deprecated="Since 3.40. Take these properties on render contexts instead."/;
+ double mapUnitsPerPixel() const /Deprecated/;
 %Docstring
 Returns the factor of map units per pixel for symbols with size given in map units calculated by dpi and mmPerMapUnit
 
@@ -493,7 +493,7 @@ Returns the factor of map units per pixel for symbols with size given in map uni
    Take these properties on render contexts instead.
 %End
 
- void setMapUnitsPerPixel( double mapUnitsPerPixel ) /Deprecated="Since 3.40. Set these properties on render contexts instead."/;
+ void setMapUnitsPerPixel( double mapUnitsPerPixel ) /Deprecated/;
 %Docstring
 Sets the mmPerMapUnit calculated by ``mapUnitsPerPixel`` mostly taken from the map settings.
 
@@ -504,7 +504,7 @@ Sets the mmPerMapUnit calculated by ``mapUnitsPerPixel`` mostly taken from the m
    Set these properties on render contexts instead.
 %End
 
- int dpi() const /Deprecated="Since 3.40. Take dpi from render contexts instead."/;
+ int dpi() const /Deprecated/;
 %Docstring
 
 .. deprecated:: 3.40
@@ -512,7 +512,7 @@ Sets the mmPerMapUnit calculated by ``mapUnitsPerPixel`` mostly taken from the m
    Take dpi from render contexts instead.
 %End
 
- void setDpi( int dpi ) /Deprecated="Since 3.40. Set dpi on render contexts instead."/;
+ void setDpi( int dpi ) /Deprecated/;
 %Docstring
 
 .. deprecated:: 3.40

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsvectorlayer3drendererwidget.h"
-#include "moc_qgsvectorlayer3drendererwidget.cpp"
 
 #include "qgsrulebased3drenderer.h"
 #include "qgsrulebased3drendererwidget.h"
@@ -31,6 +30,7 @@
 #include <QComboBox>
 #include <QLabel>
 #include <QStackedWidget>
+
 
 
 QgsSingleSymbol3DRendererWidget::QgsSingleSymbol3DRendererWidget( QgsVectorLayer *layer, QWidget *parent )
@@ -73,7 +73,7 @@ void QgsSingleSymbol3DRendererWidget::setLayer( QgsVectorLayer *layer )
 
 std::unique_ptr<QgsAbstract3DSymbol> QgsSingleSymbol3DRendererWidget::symbol()
 {
-  return widgetSymbol->symbol(); // cloned or null
+  return widgetSymbol->symbol();  // cloned or null
 }
 
 // -------
@@ -100,14 +100,14 @@ QgsVectorLayer3DRendererWidget::QgsVectorLayer3DRendererWidget( QgsMapLayer *lay
   layout->addWidget( widgetBaseProperties );
 
   widgetNoRenderer = new QLabel;
-  widgetSingleSymbolRenderer = new QgsSingleSymbol3DRendererWidget( qobject_cast<QgsVectorLayer *>( layer ), this );
+  widgetSingleSymbolRenderer = new QgsSingleSymbol3DRendererWidget( qobject_cast< QgsVectorLayer *>( layer ), this );
   widgetRuleBasedRenderer = new QgsRuleBased3DRendererWidget( this );
 
   widgetRendererStack->addWidget( widgetNoRenderer );
   widgetRendererStack->addWidget( widgetSingleSymbolRenderer );
   widgetRendererStack->addWidget( widgetRuleBasedRenderer );
 
-  connect( cboRendererType, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsVectorLayer3DRendererWidget::onRendererTypeChanged );
+  connect( cboRendererType, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsVectorLayer3DRendererWidget::onRendererTypeChanged );
   connect( widgetSingleSymbolRenderer, &QgsSingleSymbol3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
   connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::widgetChanged, this, &QgsVectorLayer3DRendererWidget::widgetChanged );
   connect( widgetRuleBasedRenderer, &QgsRuleBased3DRendererWidget::showPanel, this, &QgsPanelWidget::openPanel );
@@ -170,7 +170,7 @@ void QgsVectorLayer3DRendererWidget::apply()
       break;
     case 1:
     {
-      std::unique_ptr<QgsAbstract3DSymbol> symbol = widgetSingleSymbolRenderer->symbol();
+      std::unique_ptr< QgsAbstract3DSymbol > symbol = widgetSingleSymbolRenderer->symbol();
       QgsVectorLayer3DRenderer *r = new QgsVectorLayer3DRenderer( symbol ? symbol.release() : nullptr );
       r->setLayer( qobject_cast<QgsVectorLayer *>( mLayer ) );
       widgetBaseProperties->apply( r );

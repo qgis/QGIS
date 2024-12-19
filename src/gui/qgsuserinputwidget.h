@@ -40,6 +40,7 @@ class GUI_EXPORT QgsUserInputWidget : public QgsFloatingWidget
 {
     Q_OBJECT
   public:
+
     //! Constructor for QgsUserInputWidget
     QgsUserInputWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 

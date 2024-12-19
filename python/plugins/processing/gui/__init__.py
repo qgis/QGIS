@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "August 2013"
-__copyright__ = "(C) 2013, Victor Olaya"
+__author__ = 'Victor Olaya'
+__date__ = 'August 2013'
+__copyright__ = '(C) 2013, Victor Olaya'
 
 from qgis.PyQt import uic
 import logging

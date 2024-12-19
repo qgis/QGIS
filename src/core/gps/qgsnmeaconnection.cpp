@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsnmeaconnection.h"
-#include "moc_qgsnmeaconnection.cpp"
 #include "qgslogger.h"
 
 #include <QIODevice>

@@ -30,7 +30,7 @@ class QgsTiledSceneRenderer;
 
 ///@cond PRIVATE
 
-class GUI_EXPORT QgsTiledSceneWireframeRendererWidget : public QgsTiledSceneRendererWidget, private Ui::QgsTiledSceneWireframeRendererWidgetBase
+class GUI_EXPORT QgsTiledSceneWireframeRendererWidget: public QgsTiledSceneRendererWidget, private Ui::QgsTiledSceneWireframeRendererWidgetBase
 {
     Q_OBJECT
 
@@ -48,6 +48,7 @@ class GUI_EXPORT QgsTiledSceneWireframeRendererWidget : public QgsTiledSceneRend
     void setFromRenderer( const QgsTiledSceneRenderer *r );
 
     bool mBlockChangedSignal = false;
+
 };
 
 ///@endcond

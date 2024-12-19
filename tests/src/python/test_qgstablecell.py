@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "(C) 2020 by Nyall Dawson"
-__date__ = "10/01/2020"
-__copyright__ = "Copyright 2020, The QGIS Project"
+__author__ = '(C) 2020 by Nyall Dawson'
+__date__ = '10/01/2020'
+__copyright__ = 'Copyright 2020, The QGIS Project'
 
 from qgis.PyQt.QtGui import QColor
 from qgis.core import (
@@ -29,8 +28,8 @@ TEST_DATA_DIR = unitTestDataPath()
 class TestQgsTableCell(QgisTestCase):
 
     def testCell(self):
-        c = QgsTableCell("test")
-        self.assertEqual(c.content(), "test")
+        c = QgsTableCell('test')
+        self.assertEqual(c.content(), 'test')
         c.setContent(5)
         self.assertEqual(c.content(), 5)
 
@@ -42,8 +41,8 @@ class TestQgsTableCell(QgisTestCase):
         c.setBackgroundColor(QColor(255, 0, 0))
         c.setForegroundColor(QColor(255, 0, 255))
         c.setNumericFormat(QgsBearingNumericFormat())
-        self.assertEqual(c.backgroundColor().name(), "#ff0000")
-        self.assertEqual(c.foregroundColor().name(), "#ff00ff")
+        self.assertEqual(c.backgroundColor().name(), '#ff0000')
+        self.assertEqual(c.foregroundColor().name(), '#ff00ff')
         self.assertIsInstance(c.numericFormat(), QgsBearingNumericFormat)
 
         format = QgsTextFormat()
@@ -53,14 +52,14 @@ class TestQgsTableCell(QgisTestCase):
         self.assertTrue(c.textFormat().isValid())
 
     def testProperties(self):
-        c = QgsTableCell("test")
+        c = QgsTableCell('test')
 
         props = c.properties(QgsReadWriteContext())
 
         c2 = QgsTableCell()
         c2.setProperties(props, QgsReadWriteContext())
 
-        self.assertEqual(c2.content(), "test")
+        self.assertEqual(c2.content(), 'test')
         self.assertFalse(c2.backgroundColor().isValid())
         self.assertFalse(c2.foregroundColor().isValid())
         self.assertFalse(c2.numericFormat())
@@ -79,14 +78,14 @@ class TestQgsTableCell(QgisTestCase):
         c3 = QgsTableCell()
         c3.setProperties(props, QgsReadWriteContext())
 
-        self.assertEqual(c3.content(), "test")
-        self.assertEqual(c3.backgroundColor().name(), "#ff0000")
-        self.assertEqual(c3.foregroundColor().name(), "#ff00ff")
+        self.assertEqual(c3.content(), 'test')
+        self.assertEqual(c3.backgroundColor().name(), '#ff0000')
+        self.assertEqual(c3.foregroundColor().name(), '#ff00ff')
         self.assertIsInstance(c3.numericFormat(), QgsBearingNumericFormat)
         self.assertTrue(c3.numericFormat().showPlusSign())
         self.assertEqual(c3.textFormat().size(), 16.8)
         self.assertTrue(c3.textFormat().isValid())
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

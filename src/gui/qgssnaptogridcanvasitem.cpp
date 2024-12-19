@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgssnaptogridcanvasitem.h"
-#include "moc_qgssnaptogridcanvasitem.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsrendercontext.h"
 
@@ -55,9 +54,9 @@ void QgsSnapToGridCanvasItem::paint( QPainter *painter )
     const double gridYMin = std::ceil( layerExtent.yMinimum() / mPrecision ) * mPrecision;
     const double gridYMax = std::ceil( layerExtent.yMaximum() / mPrecision ) * mPrecision;
 
-    for ( double x = gridXMin; x < gridXMax; x += mPrecision )
+    for ( double x = gridXMin ; x < gridXMax; x += mPrecision )
     {
-      for ( double y = gridYMin; y < gridYMax; y += mPrecision )
+      for ( double y = gridYMin ; y < gridYMax; y += mPrecision )
       {
         const QgsPointXY pt = mTransform.transform( x, y );
         const QPointF canvasPt = toCanvasCoordinates( pt );
@@ -72,6 +71,7 @@ void QgsSnapToGridCanvasItem::paint( QPainter *painter )
         }
         painter->drawLine( canvasPt.x() - gridMarkerLength, canvasPt.y(), canvasPt.x() + gridMarkerLength, canvasPt.y() );
         painter->drawLine( canvasPt.x(), canvasPt.y() - gridMarkerLength, canvasPt.x(), canvasPt.y() + gridMarkerLength );
+
       }
     }
   }
@@ -134,6 +134,7 @@ void QgsSnapToGridCanvasItem::updateMapCanvasCrs()
 }
 
 
+
 void QgsSnapToGridCanvasItem::updateZoomFactor()
 {
   if ( !isVisible() )
@@ -150,8 +151,10 @@ void QgsSnapToGridCanvasItem::updateZoomFactor()
     const QgsPointXY centerPoint = mMapCanvas->extent().center();
     const QPointF canvasCenter = toCanvasCoordinates( centerPoint );
 
-    const QgsPointXY pt1 = mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( static_cast<int>( canvasCenter.x() - threshold ), static_cast<int>( canvasCenter.y() - threshold ) );
-    const QgsPointXY pt2 = mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( static_cast<int>( canvasCenter.x() + threshold ), static_cast<int>( canvasCenter.y() + threshold ) );
+    const QgsPointXY pt1 = mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( static_cast<int>( canvasCenter.x() - threshold ),
+                           static_cast<int>( canvasCenter.y() - threshold ) );
+    const QgsPointXY pt2 = mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( static_cast<int>( canvasCenter.x() + threshold ),
+                           static_cast<int>( canvasCenter.y() + threshold ) );
 
     const QgsPointXY layerPt1 = mTransform.transform( pt1, Qgis::TransformDirection::Reverse );
     const QgsPointXY layerPt2 = mTransform.transform( pt2, Qgis::TransformDirection::Reverse );

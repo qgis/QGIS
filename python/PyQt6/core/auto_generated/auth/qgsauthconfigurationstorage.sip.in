@@ -80,7 +80,7 @@ Initializes the storage.
 
 .. note::
 
-   The default implementation does nothing and returns ``True``.
+     The default implementation does nothing and returns ``True``.
    This method is called by the authentication manager when the storage is added to the manager.
 %End
 
@@ -149,7 +149,7 @@ Returns ``True`` if the storage is read-only, ``False`` otherwise.
 .. seealso:: :py:func:`setReadOnly`
 %End
 
-    virtual QgsAuthMethodConfigsMap authMethodConfigs( const QStringList &allowedMethods = QStringList() ) const  = 0;
+    virtual QgsAuthMethodConfigsMap authMethodConfigs( const QStringList &allowedMethods = QStringList() ) const throw( QgsNotSupportedException ) = 0;
 %Docstring
 Returns a mapping of authentication configurations available from this storage.
 
@@ -158,7 +158,7 @@ Returns a mapping of authentication configurations available from this storage.
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual QgsAuthMethodConfigsMap authMethodConfigsWithPayload( ) const  = 0;
+    virtual QgsAuthMethodConfigsMap authMethodConfigsWithPayload( ) const throw( QgsNotSupportedException ) = 0;
 %Docstring
 Returns a mapping of authentication configurations available from this storage.
 The encrypted payload is added to the configuration as "encrypted_payload" key.
@@ -172,7 +172,7 @@ The encrypted payload is added to the configuration as "encrypted_payload" key.
    by one.
 %End
 
-    virtual QgsAuthMethodConfig loadMethodConfig( const QString &id, QString &payload /Out/, bool full = false ) const  = 0;
+    virtual QgsAuthMethodConfig loadMethodConfig( const QString &id, QString &payload /Out/, bool full = false ) const throw( QgsNotSupportedException ) = 0;
 %Docstring
 Load an authentication configuration from the database.
 
@@ -185,7 +185,7 @@ Load an authentication configuration from the database.
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool storeMethodConfig( const QgsAuthMethodConfig &config, const QString &payload )  = 0;
+    virtual bool storeMethodConfig( const QgsAuthMethodConfig &config, const QString &payload ) throw( QgsNotSupportedException ) = 0;
 %Docstring
 Store an authentication config in the database.
 
@@ -197,7 +197,7 @@ Store an authentication config in the database.
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool removeMethodConfig( const QString &id )  = 0;
+    virtual bool removeMethodConfig( const QString &id ) throw( QgsNotSupportedException ) = 0;
 %Docstring
 Removes the authentication configuration with the specified ``id``.
 
@@ -206,7 +206,7 @@ Removes the authentication configuration with the specified ``id``.
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool methodConfigExists( const QString &id ) const  = 0;
+    virtual bool methodConfigExists( const QString &id ) const throw( QgsNotSupportedException ) = 0;
 %Docstring
 Check if an authentication configuration exists in the storage.
 
@@ -217,7 +217,7 @@ Check if an authentication configuration exists in the storage.
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool storeAuthSetting( const QString &key, const QString &value )  = 0;
+    virtual bool storeAuthSetting( const QString &key, const QString &value ) throw( QgsNotSupportedException ) = 0;
 %Docstring
 Store an authentication setting in the storage.
 
@@ -229,7 +229,7 @@ Store an authentication setting in the storage.
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual QString loadAuthSetting( const QString &key ) const  = 0;
+    virtual QString loadAuthSetting( const QString &key ) const throw( QgsNotSupportedException ) = 0;
 %Docstring
 Load an authentication setting from the storage.
 
@@ -240,7 +240,7 @@ Load an authentication setting from the storage.
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool removeAuthSetting( const QString &key )  = 0;
+    virtual bool removeAuthSetting( const QString &key ) throw( QgsNotSupportedException ) = 0;
 %Docstring
 Remove an authentication setting from the storage.
 
@@ -251,7 +251,7 @@ Remove an authentication setting from the storage.
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool authSettingExists( const QString &key ) const  = 0;
+    virtual bool authSettingExists( const QString &key ) const throw( QgsNotSupportedException ) = 0;
 %Docstring
 Check if an authentication setting exists in the storage.
 
@@ -263,7 +263,7 @@ Check if an authentication setting exists in the storage.
 %End
 
 
-    virtual bool storeCertIdentity( const QSslCertificate &cert, const QString &keyPem )  = 0;
+    virtual bool storeCertIdentity( const QSslCertificate &cert, const QString &keyPem ) throw( QgsNotSupportedException ) = 0;
 %Docstring
 Store a certificate identity in the storage.
 
@@ -275,7 +275,7 @@ Store a certificate identity in the storage.
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool removeCertIdentity( const QSslCertificate &cert )  = 0;
+    virtual bool removeCertIdentity( const QSslCertificate &cert ) throw( QgsNotSupportedException ) = 0;
 %Docstring
 Remove a certificate identity from the storage.
 
@@ -286,7 +286,7 @@ Remove a certificate identity from the storage.
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual const QSslCertificate loadCertIdentity( const QString &id ) const  = 0;
+    virtual const QSslCertificate loadCertIdentity( const QString &id ) const throw( QgsNotSupportedException ) = 0;
 %Docstring
 certIdentity get a certificate identity by ``id`` (sha hash)
 
@@ -297,7 +297,7 @@ certIdentity get a certificate identity by ``id`` (sha hash)
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual const QPair<QSslCertificate, QString> loadCertIdentityBundle( const QString &id ) const  = 0;
+    virtual const QPair<QSslCertificate, QString> loadCertIdentityBundle( const QString &id ) const throw( QgsNotSupportedException ) = 0;
 %Docstring
 Returns a certificate identity bundle by ``id`` (sha hash).
 
@@ -308,7 +308,7 @@ Returns a certificate identity bundle by ``id`` (sha hash).
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual const QList<QSslCertificate> certIdentities() const  = 0;
+    virtual const QList<QSslCertificate> certIdentities() const throw( QgsNotSupportedException ) = 0;
 %Docstring
 certIdentities get certificate identities
 
@@ -317,7 +317,7 @@ certIdentities get certificate identities
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual QStringList certIdentityIds() const  = 0;
+    virtual QStringList certIdentityIds() const throw( QgsNotSupportedException ) = 0;
 %Docstring
 certIdentityIds get list of certificate identity ids from database
 
@@ -326,7 +326,7 @@ certIdentityIds get list of certificate identity ids from database
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool certIdentityExists( const QString &id ) const  = 0;
+    virtual bool certIdentityExists( const QString &id ) const throw( QgsNotSupportedException ) = 0;
 %Docstring
 Check if the certificate identity exists
 
@@ -337,7 +337,7 @@ Check if the certificate identity exists
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool removeCertIdentity( const QString &id )  = 0;
+    virtual bool removeCertIdentity( const QString &id ) throw( QgsNotSupportedException ) = 0;
 %Docstring
 Remove a certificate identity from the storage.
 
@@ -348,7 +348,7 @@ Remove a certificate identity from the storage.
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool storeSslCertCustomConfig( const QgsAuthConfigSslServer &config )  = 0;
+    virtual bool storeSslCertCustomConfig( const QgsAuthConfigSslServer &config ) throw( QgsNotSupportedException ) = 0;
 %Docstring
 Store an SSL certificate custom config
 
@@ -359,7 +359,7 @@ Store an SSL certificate custom config
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual const QgsAuthConfigSslServer loadSslCertCustomConfig( const QString &id, const QString &hostport ) const  = 0;
+    virtual const QgsAuthConfigSslServer loadSslCertCustomConfig( const QString &id, const QString &hostport ) const throw( QgsNotSupportedException ) = 0;
 %Docstring
 Loads an SSL certificate custom config by ``id`` (sha hash) and ``hostport`` (host:port)
 
@@ -371,7 +371,7 @@ Loads an SSL certificate custom config by ``id`` (sha hash) and ``hostport`` (ho
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual const QgsAuthConfigSslServer loadSslCertCustomConfigByHost( const QString &hostport ) const  = 0;
+    virtual const QgsAuthConfigSslServer loadSslCertCustomConfigByHost( const QString &hostport ) const throw( QgsNotSupportedException ) = 0;
 %Docstring
 Loads an SSL certificate custom config by ``hostport`` (host:port)
 
@@ -382,7 +382,7 @@ Loads an SSL certificate custom config by ``hostport`` (host:port)
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual const QList<QgsAuthConfigSslServer> sslCertCustomConfigs() const  = 0;
+    virtual const QList<QgsAuthConfigSslServer> sslCertCustomConfigs() const throw( QgsNotSupportedException ) = 0;
 %Docstring
 sslCertCustomConfigs get SSL certificate custom configs
 
@@ -391,7 +391,7 @@ sslCertCustomConfigs get SSL certificate custom configs
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual QStringList sslCertCustomConfigIds() const  = 0;
+    virtual QStringList sslCertCustomConfigIds() const throw( QgsNotSupportedException ) = 0;
 %Docstring
 Returns the list of SSL certificate custom config ids.
 
@@ -400,7 +400,7 @@ Returns the list of SSL certificate custom config ids.
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool sslCertCustomConfigExists( const QString &id, const QString &hostport )  = 0;
+    virtual bool sslCertCustomConfigExists( const QString &id, const QString &hostport ) throw( QgsNotSupportedException ) = 0;
 %Docstring
 Check if SSL certificate custom config exists
 
@@ -412,7 +412,7 @@ Check if SSL certificate custom config exists
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool removeSslCertCustomConfig( const QString &id, const QString &hostport )  = 0;
+    virtual bool removeSslCertCustomConfig( const QString &id, const QString &hostport ) throw( QgsNotSupportedException ) = 0;
 %Docstring
 Remove an SSL certificate custom config
 
@@ -424,7 +424,7 @@ Remove an SSL certificate custom config
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool storeCertAuthority( const QSslCertificate &cert )  = 0;
+    virtual bool storeCertAuthority( const QSslCertificate &cert ) throw( QgsNotSupportedException ) = 0;
 %Docstring
 Store a certificate authority
 
@@ -435,7 +435,7 @@ Store a certificate authority
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual QStringList certAuthorityIds() const  = 0;
+    virtual QStringList certAuthorityIds() const throw( QgsNotSupportedException ) = 0;
 %Docstring
 Returns the list of certificate authority IDs in the storage.
 
@@ -444,7 +444,7 @@ Returns the list of certificate authority IDs in the storage.
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual const QSslCertificate loadCertAuthority( const QString &id ) const  = 0;
+    virtual const QSslCertificate loadCertAuthority( const QString &id ) const throw( QgsNotSupportedException ) = 0;
 %Docstring
 certAuthority get a certificate authority by ``id`` (sha hash)
 
@@ -455,7 +455,7 @@ certAuthority get a certificate authority by ``id`` (sha hash)
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool certAuthorityExists( const QSslCertificate &cert ) const  = 0;
+    virtual bool certAuthorityExists( const QSslCertificate &cert ) const throw( QgsNotSupportedException ) = 0;
 %Docstring
 Check if a certificate authority exists
 
@@ -466,7 +466,7 @@ Check if a certificate authority exists
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool removeCertAuthority( const QSslCertificate &cert )  = 0;
+    virtual bool removeCertAuthority( const QSslCertificate &cert ) throw( QgsNotSupportedException ) = 0;
 %Docstring
 Remove a certificate authority
 
@@ -477,7 +477,7 @@ Remove a certificate authority
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual const QMap<QString, QgsAuthCertUtils::CertTrustPolicy> caCertsPolicy() const  = 0;
+    virtual const QMap<QString, QgsAuthCertUtils::CertTrustPolicy> caCertsPolicy() const throw( QgsNotSupportedException ) = 0;
 %Docstring
 Returns the map of CA certificates hashes in the storages and their trust policy.
 
@@ -486,7 +486,7 @@ Returns the map of CA certificates hashes in the storages and their trust policy
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual const  QList<QSslCertificate> caCerts() const  = 0;
+    virtual const  QList<QSslCertificate> caCerts() const throw( QgsNotSupportedException ) = 0;
 %Docstring
 Returns the list of CA certificates in the storage
 
@@ -495,7 +495,7 @@ Returns the list of CA certificates in the storage
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthCertUtils::CertTrustPolicy policy )  = 0;
+    virtual bool storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthCertUtils::CertTrustPolicy policy ) throw( QgsNotSupportedException ) = 0;
 %Docstring
 Store certificate trust policy
 
@@ -507,7 +507,7 @@ Store certificate trust policy
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual QgsAuthCertUtils::CertTrustPolicy loadCertTrustPolicy( const QSslCertificate &cert ) const  = 0;
+    virtual QgsAuthCertUtils::CertTrustPolicy loadCertTrustPolicy( const QSslCertificate &cert ) const throw( QgsNotSupportedException ) = 0;
 %Docstring
 Load certificate trust policy
 
@@ -518,7 +518,7 @@ Load certificate trust policy
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool removeCertTrustPolicy( const QSslCertificate &cert )  = 0;
+    virtual bool removeCertTrustPolicy( const QSslCertificate &cert ) throw( QgsNotSupportedException ) = 0;
 %Docstring
 Remove certificate trust policy
 
@@ -529,7 +529,7 @@ Remove certificate trust policy
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool certTrustPolicyExists( const QSslCertificate &cert ) const  = 0;
+    virtual bool certTrustPolicyExists( const QSslCertificate &cert ) const throw( QgsNotSupportedException ) = 0;
 %Docstring
 Check if certificate trust policy exists
 
@@ -541,7 +541,7 @@ Check if certificate trust policy exists
 %End
 
 
-    virtual const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords( ) const  = 0;
+    virtual const QList<QgsAuthConfigurationStorage::MasterPasswordConfig> masterPasswords( ) const throw( QgsNotSupportedException ) = 0;
 %Docstring
 Returns the list of (encrypted) master passwords stored in the database.
 
@@ -550,7 +550,7 @@ Returns the list of (encrypted) master passwords stored in the database.
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool storeMasterPassword( const QgsAuthConfigurationStorage::MasterPasswordConfig &config )  = 0;
+    virtual bool storeMasterPassword( const QgsAuthConfigurationStorage::MasterPasswordConfig &config ) throw( QgsNotSupportedException ) = 0;
 %Docstring
 Store a master password in the database.
 
@@ -561,7 +561,7 @@ Store a master password in the database.
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool clearMasterPasswords()  = 0;
+    virtual bool clearMasterPasswords() throw( QgsNotSupportedException ) = 0;
 %Docstring
 Remove all master passwords from the database.
 
@@ -570,7 +570,7 @@ Remove all master passwords from the database.
 :raises QgsNotSupportedException: if the operation is not supported by the storage.
 %End
 
-    virtual bool erase()  = 0;
+    virtual bool erase() throw( QgsNotSupportedException ) = 0;
 %Docstring
 Completely erase the storage removing all configurations/certs/settings etc.
 
@@ -579,7 +579,7 @@ Completely erase the storage removing all configurations/certs/settings etc.
 :raises QgsNotSupportedException: if the operation is not supported by the storage (e.g. the storage is read-only).
 %End
 
-    virtual bool clearMethodConfigs()  = 0;
+    virtual bool clearMethodConfigs() throw( QgsNotSupportedException ) = 0;
 %Docstring
 Remove all authentications configurations from the storage.
 

@@ -34,6 +34,7 @@ class GUI_EXPORT QgsMapLayerStyleCategoriesModel : public QAbstractListModel
     Q_OBJECT
 
   public:
+
     //! Custom model roles
     enum class Role : int
     {
@@ -84,8 +85,10 @@ class GUI_EXPORT QgsCategoryDisplayLabelDelegate : public QItemDelegate
     explicit QgsCategoryDisplayLabelDelegate( QObject *parent = nullptr );
 
   protected:
-    void drawDisplay( QPainter *painter, const QStyleOptionViewItem &option, const QRect &rect, const QString &text ) const override;
-    QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
+    void drawDisplay( QPainter *painter, const QStyleOptionViewItem &option,
+                      const QRect &rect, const QString &text ) const override;
+    QSize sizeHint( const QStyleOptionViewItem &option,
+                    const QModelIndex &index ) const override;
 };
 
 #endif // QGSMAPLAYERSTYLECATEGORIESMODEL_H

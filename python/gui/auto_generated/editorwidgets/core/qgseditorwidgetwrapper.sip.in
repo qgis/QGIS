@@ -31,6 +31,7 @@ for their corresponding values and emit valuesChanged signal.
 #include "qgseditorwidgetwrapper.h"
 %End
   public:
+
     enum ConstraintResult
     {
       ConstraintResultPass,
@@ -279,7 +280,7 @@ Is forwarded to the slot :py:func:`~QgsEditorWidgetWrapper.setValues`
 %End
 
 
-    virtual void setValue( const QVariant &value ) /Deprecated="Since 3.10. "/;
+    virtual void setValue( const QVariant &value ) /Deprecated/;
 %Docstring
 Is called when the value of the widget needs to be changed. Updates the widget representation
 to reflect the new value.
@@ -317,6 +318,7 @@ depend on the parent form scope.
 %End
 
   protected:
+
     virtual void updateConstraintWidgetStatus();
 %Docstring
 This should update the widget with a visual cue if a constraint status

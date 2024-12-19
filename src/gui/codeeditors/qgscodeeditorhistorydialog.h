@@ -39,6 +39,7 @@ class CodeHistoryModel : public QStringListModel
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
   private:
+
     QFont mFont;
 };
 
@@ -57,6 +58,7 @@ class GUI_EXPORT QgsCodeEditorHistoryDialog : public QDialog, private Ui::QgsCod
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsCodeEditorHistoryDialog.
      * \param editor associated code editor widget
@@ -73,8 +75,10 @@ class GUI_EXPORT QgsCodeEditorHistoryDialog : public QDialog, private Ui::QgsCod
     void deleteItem();
 
   private:
-    QPointer<QgsCodeEditor> mEditor;
+
+    QPointer< QgsCodeEditor > mEditor;
     CodeHistoryModel *mModel = nullptr;
+
 };
 
 #endif // QGSCODEEDITORHISTORYDIALOG_H

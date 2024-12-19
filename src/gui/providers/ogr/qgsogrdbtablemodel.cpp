@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsogrdbtablemodel.h"
-#include "moc_qgsogrdbtablemodel.cpp"
 ///@cond PRIVATE
 
 #include "qgsapplication.h"
@@ -60,7 +59,7 @@ void QgsOgrDbTableModel::addTableEntry( Qgis::BrowserLayerType layerType, const 
 {
   //is there already a root item ?
   QStandardItem *dbItem = nullptr;
-  const QList<QStandardItem *> dbItems = findItems( mPath, Qt::MatchExactly, 0 );
+  const QList < QStandardItem * >dbItems = findItems( mPath, Qt::MatchExactly, 0 );
 
   //there is already an item
   if ( !dbItems.isEmpty() )
@@ -74,7 +73,7 @@ void QgsOgrDbTableModel::addTableEntry( Qgis::BrowserLayerType layerType, const 
     invisibleRootItem()->setChild( invisibleRootItem()->rowCount(), dbItem );
   }
 
-  QList<QStandardItem *> childItemList;
+  QList < QStandardItem * >childItemList;
   QStandardItem *typeItem = new QStandardItem( QgsApplication::getThemeIcon( QgsLayerItem::iconName( layerType ) ), geometryType );
   typeItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
   QStandardItem *tableItem = new QStandardItem( tableName );

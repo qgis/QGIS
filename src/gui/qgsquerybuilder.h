@@ -46,6 +46,7 @@ class GUI_EXPORT QgsQueryBuilder : public QgsSubsetStringEditorInterface, privat
 {
     Q_OBJECT
   public:
+
     /**
      * This constructor is used when the query builder is called from the
      * vector layer properties dialog
@@ -53,7 +54,8 @@ class GUI_EXPORT QgsQueryBuilder : public QgsSubsetStringEditorInterface, privat
      * \param parent Parent widget
      * \param fl dialog flags
      */
-    QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                     Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     void showEvent( QShowEvent *event ) override;
 
@@ -167,6 +169,7 @@ class GUI_EXPORT QgsQueryBuilder : public QgsSubsetStringEditorInterface, privat
     void btnSampleValues_clicked();
 
   private:
+
     void showHelp();
 
     /**

@@ -32,14 +32,13 @@ class TestTask : public QgsTask
     Q_OBJECT
 
   public:
-    TestTask( const QString &desc = QString() )
-      : QgsTask( desc )
+
+    TestTask( const QString &desc = QString() ) : QgsTask( desc )
     {
       qDebug() << "created task " << desc;
     }
 
-    TestTask( const QString &desc, const QgsTask::Flags &flags )
-      : QgsTask( desc, flags )
+    TestTask( const QString &desc, const QgsTask::Flags &flags ) : QgsTask( desc, flags )
     {
       qDebug() << "created task " << desc;
     }
@@ -49,17 +48,19 @@ class TestTask : public QgsTask
       qDebug() << "deleting task " << description();
     }
 
-    void emitTaskStopped() {}
-    void emitTaskCompleted() {}
+    void emitTaskStopped() {  }
+    void emitTaskCompleted() { }
 
-    bool runCalled = false;
+    bool runCalled =  false ;
 
   protected:
+
     bool run() override
     {
       runCalled = true;
       return true;
     }
+
 };
 
 class ProgressReportingTask : public QgsTask
@@ -67,8 +68,8 @@ class ProgressReportingTask : public QgsTask
     Q_OBJECT
 
   public:
-    ProgressReportingTask( const QString &desc = QString(), QgsTask::Flags flags = AllFlags )
-      : QgsTask( desc, flags )
+
+    ProgressReportingTask( const QString &desc = QString(), QgsTask::Flags flags = AllFlags ) : QgsTask( desc, flags )
     {
       qDebug() << "created task " << desc;
     }
@@ -84,8 +85,8 @@ class ProgressReportingTask : public QgsTask
       mProgress.append( progress );
     }
 
-    bool finished = false;
-    bool terminated = false;
+    bool finished =  false ;
+    bool terminated =  false ;
 
   public slots:
 
@@ -102,6 +103,7 @@ class ProgressReportingTask : public QgsTask
     }
 
   protected:
+
     bool run() override
     {
       while ( true )
@@ -127,6 +129,7 @@ class ProgressReportingTask : public QgsTask
     QList<double> mProgress;
     QMutex mProgressMutex;
     QMutex mCompletedMutex;
+
 };
 
 class TestTerminationTask : public TestTask
@@ -134,8 +137,8 @@ class TestTerminationTask : public TestTask
     Q_OBJECT
 
   public:
-    TestTerminationTask( const QString &desc = QString() )
-      : TestTask( desc ) {}
+
+    TestTerminationTask( const QString &desc = QString() ) : TestTask( desc ) {}
 
     ~TestTerminationTask() override
     {
@@ -144,11 +147,11 @@ class TestTerminationTask : public TestTask
     }
 
   protected:
+
     bool run() override
     {
       while ( !isCanceled() )
-      {
-      }
+      {}
       return false;
     }
 };
@@ -158,8 +161,8 @@ class CancelableTask : public QgsTask
     Q_OBJECT
 
   public:
-    CancelableTask( const QString &desc = QString() )
-      : QgsTask( desc )
+
+    CancelableTask( const QString &desc = QString() ) : QgsTask( desc )
     {
       qDebug() << "created task " << desc;
     }
@@ -170,11 +173,11 @@ class CancelableTask : public QgsTask
     }
 
   protected:
+
     bool run() override
     {
       while ( !isCanceled() )
-      {
-      }
+      {}
       return true;
     }
 };
@@ -184,8 +187,8 @@ class HiddenTask : public ProgressReportingTask
     Q_OBJECT
 
   public:
-    HiddenTask( const QString &desc = QString() )
-      : ProgressReportingTask( desc, QgsTask::CanCancel | QgsTask::Hidden )
+
+    HiddenTask( const QString &desc = QString() ) : ProgressReportingTask( desc, QgsTask::CanCancel | QgsTask::Hidden )
     {
       qDebug() << "created task " << desc;
     }
@@ -194,6 +197,7 @@ class HiddenTask : public ProgressReportingTask
     {
       qDebug() << "deleting task " << description();
     }
+
 };
 
 
@@ -202,8 +206,8 @@ class SuccessTask : public QgsTask
     Q_OBJECT
 
   public:
-    SuccessTask( const QString &desc = QString() )
-      : QgsTask( desc )
+
+    SuccessTask( const QString &desc = QString() ) : QgsTask( desc )
     {
       qDebug() << "created task " << desc;
     }
@@ -214,6 +218,7 @@ class SuccessTask : public QgsTask
     }
 
   protected:
+
     bool run() override
     {
       return true;
@@ -225,8 +230,8 @@ class FailTask : public QgsTask
     Q_OBJECT
 
   public:
-    FailTask( const QString &desc = QString() )
-      : QgsTask( desc )
+
+    FailTask( const QString &desc = QString() ) : QgsTask( desc )
     {
       qDebug() << "created task " << desc;
     }
@@ -237,10 +242,12 @@ class FailTask : public QgsTask
     }
 
   protected:
+
     bool run() override
     {
       return false;
     }
+
 };
 
 class FinishTask : public QgsTask
@@ -248,6 +255,7 @@ class FinishTask : public QgsTask
     Q_OBJECT
 
   public:
+
     FinishTask( bool *result, const QString &desc )
       : QgsTask( desc )
       , desiredResult( false )
@@ -265,6 +273,7 @@ class FinishTask : public QgsTask
     bool *resultObtained = nullptr;
 
   protected:
+
     bool run() override
     {
       return desiredResult;
@@ -290,8 +299,8 @@ class WaitTask : public QgsTask
     Q_OBJECT
 
   public:
-    WaitTask( const QString &desc = QString() )
-      : QgsTask( desc )
+
+    WaitTask( const QString &desc = QString() ) : QgsTask( desc )
     {
       qDebug() << "created task " << desc;
     }
@@ -302,6 +311,7 @@ class WaitTask : public QgsTask
     }
 
   protected:
+
     bool run() override
     {
       QThread::sleep( 2 );
@@ -313,11 +323,12 @@ class TestQgsTaskManager : public QObject
 {
     Q_OBJECT
   public:
+
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init();// will be called before each testfunction is executed.
+    void cleanup();// will be called after every testfunction.
 
     void task();
     void taskResult();
@@ -367,16 +378,18 @@ void TestQgsTaskManager::cleanupTestCase()
 
 void TestQgsTaskManager::init()
 {
+
 }
 
 void TestQgsTaskManager::cleanup()
 {
+
 }
 
 
 void TestQgsTaskManager::task()
 {
-  std::unique_ptr<TestTask> task( new TestTask( QStringLiteral( "test_task_desc" ) ) );
+  std::unique_ptr< TestTask > task( new TestTask( QStringLiteral( "test_task_desc" ) ) );
   QCOMPARE( task->status(), QgsTask::Queued );
   QCOMPARE( task->description(), QStringLiteral( "test_task_desc" ) );
   QVERIFY( !task->isActive() );
@@ -390,11 +403,11 @@ void TestQgsTaskManager::task()
   QVERIFY( task->runCalled );
   QCOMPARE( startedSpy.count(), 1 );
   QCOMPARE( statusSpy.count(), 2 );
-  QCOMPARE( static_cast<QgsTask::TaskStatus>( statusSpy.at( 0 ).at( 0 ).toInt() ), QgsTask::Running );
-  QCOMPARE( static_cast<QgsTask::TaskStatus>( statusSpy.at( 1 ).at( 0 ).toInt() ), QgsTask::Complete );
+  QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy.at( 0 ).at( 0 ).toInt() ), QgsTask::Running );
+  QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy.at( 1 ).at( 0 ).toInt() ), QgsTask::Complete );
 
   //test that calling stopped sets correct state
-  std::unique_ptr<FailTask> failTask( new FailTask( QStringLiteral( "task_fail" ) ) );
+  std::unique_ptr< FailTask > failTask( new FailTask( QStringLiteral( "task_fail" ) ) );
   QSignalSpy stoppedSpy( failTask.get(), &QgsTask::taskTerminated );
   QSignalSpy statusSpy2( failTask.get(), &QgsTask::statusChanged );
   failTask->start();
@@ -402,7 +415,7 @@ void TestQgsTaskManager::task()
   QVERIFY( !failTask->isActive() );
   QCOMPARE( stoppedSpy.count(), 1 );
   QCOMPARE( statusSpy2.count(), 2 );
-  QCOMPARE( static_cast<QgsTask::TaskStatus>( statusSpy2.last().at( 0 ).toInt() ), QgsTask::Terminated );
+  QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy2.last().at( 0 ).toInt() ), QgsTask::Terminated );
 
   //test that calling completed sets correct state
   task.reset( new TestTask( QStringLiteral( "test_task_3" ) ) );
@@ -413,7 +426,7 @@ void TestQgsTaskManager::task()
   QVERIFY( !task->isActive() );
   QCOMPARE( completeSpy.count(), 1 );
   QCOMPARE( statusSpy3.count(), 2 );
-  QCOMPARE( static_cast<QgsTask::TaskStatus>( statusSpy3.last().at( 0 ).toInt() ), QgsTask::Complete );
+  QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy3.last().at( 0 ).toInt() ), QgsTask::Complete );
 
   // test that canceling tasks which have not begin immediately ends them
   task.reset( new TestTask( QStringLiteral( "test_task_4" ) ) );
@@ -435,14 +448,14 @@ void TestQgsTaskManager::task()
 
 void TestQgsTaskManager::taskResult()
 {
-  std::unique_ptr<QgsTask> task( new SuccessTask( QStringLiteral( "task_result_1" ) ) );
+  std::unique_ptr< QgsTask > task( new SuccessTask( QStringLiteral( "task_result_1" ) ) );
   QCOMPARE( task->status(), QgsTask::Queued );
   QSignalSpy statusSpy( task.get(), &QgsTask::statusChanged );
 
   task->start();
   QCOMPARE( statusSpy.count(), 2 );
-  QCOMPARE( static_cast<QgsTask::TaskStatus>( statusSpy.at( 0 ).at( 0 ).toInt() ), QgsTask::Running );
-  QCOMPARE( static_cast<QgsTask::TaskStatus>( statusSpy.at( 1 ).at( 0 ).toInt() ), QgsTask::Complete );
+  QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy.at( 0 ).at( 0 ).toInt() ), QgsTask::Running );
+  QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy.at( 1 ).at( 0 ).toInt() ), QgsTask::Complete );
   QCOMPARE( task->status(), QgsTask::Complete );
 
   task.reset( new FailTask( QStringLiteral( "task_result_2" ) ) );
@@ -451,8 +464,8 @@ void TestQgsTaskManager::taskResult()
 
   task->start();
   QCOMPARE( statusSpy2.count(), 2 );
-  QCOMPARE( static_cast<QgsTask::TaskStatus>( statusSpy2.at( 0 ).at( 0 ).toInt() ), QgsTask::Running );
-  QCOMPARE( static_cast<QgsTask::TaskStatus>( statusSpy2.at( 1 ).at( 0 ).toInt() ), QgsTask::Terminated );
+  QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy2.at( 0 ).at( 0 ).toInt() ), QgsTask::Running );
+  QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy2.at( 1 ).at( 0 ).toInt() ), QgsTask::Terminated );
   QCOMPARE( task->status(), QgsTask::Terminated );
 
   QApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
@@ -604,7 +617,7 @@ void TestQgsTaskManager::subTaskGrandChildren()
   // parent with grand children
   ProgressReportingTask *parent = new ProgressReportingTask( QStringLiteral( "sub_task_parent_task_2" ) );
   QPointer<ProgressReportingTask> subTask = new ProgressReportingTask( QStringLiteral( "sub_task_sub_task_2" ) );
-  QPointer<ProgressReportingTask> subsubTask( new ProgressReportingTask( QStringLiteral( "sub_task_subsub_task_2" ) ) );
+  QPointer< ProgressReportingTask> subsubTask( new ProgressReportingTask( QStringLiteral( "sub_task_subsub_task_2" ) ) );
   subTask->addSubTask( subsubTask );
   parent->addSubTask( subTask );
 
@@ -623,7 +636,7 @@ void TestQgsTaskManager::subTaskProgress()
   // test parent task progress
   ProgressReportingTask *parent = new ProgressReportingTask( QStringLiteral( "sub_task_parent_task_3" ) );
   QPointer<ProgressReportingTask> subTask = new ProgressReportingTask( QStringLiteral( "sub_task_sub_task_3" ) );
-  QPointer<ProgressReportingTask> subTask2( new ProgressReportingTask( QStringLiteral( "sub_task_sub_task_3a" ) ) );
+  QPointer< ProgressReportingTask > subTask2( new ProgressReportingTask( QStringLiteral( "sub_task_sub_task_3a" ) ) );
 
   parent->addSubTask( subTask );
   parent->addSubTask( subTask2 );
@@ -766,11 +779,11 @@ void TestQgsTaskManager::subTaskPartialComplete()
   flushEvents();
 
   //should still be running
-  QCOMPARE( ( int ) parent->status(), ( int ) QgsTask::Running );
+  QCOMPARE( ( int )parent->status(), ( int )QgsTask::Running );
   subTask->finish();
   flushEvents();
   QCOMPARE( parent->status(), QgsTask::Running );
-  QCOMPARE( ( int ) subTask->status(), ( int ) QgsTask::Running );
+  QCOMPARE( ( int )subTask->status(), ( int )QgsTask::Running );
 
   QSignalSpy parentFinished( parent, &QgsTask::taskCompleted );
   QSignalSpy subFinished( subTask, &QgsTask::taskCompleted );
@@ -787,6 +800,7 @@ void TestQgsTaskManager::subTaskPartialComplete()
   QVERIFY( parentFinished.count() > 0 );
   QVERIFY( subFinished.count() > 0 );
   QVERIFY( subsubFinished.count() > 0 );
+
 }
 
 void TestQgsTaskManager::subTaskPartialComplete2()
@@ -878,7 +892,8 @@ void TestQgsTaskManager::waitForFinished()
   QTimer *timer = new QTimer( nullptr );
   connect( timer, &QTimer::timeout, finishedTask, &ProgressReportingTask::finish, Qt::DirectConnection );
   timer->moveToThread( timerThread );
-  connect( timerThread, &QThread::started, timer, [=] {
+  connect( timerThread, &QThread::started, timer, [ = ]
+  {
     timer->start( 2000 );
   } );
   connect( timerThread, &QThread::finished, timer, &QTimer::deleteLater );
@@ -904,7 +919,8 @@ void TestQgsTaskManager::waitForFinished()
   timer = new QTimer( nullptr );
   connect( timer, &QTimer::timeout, failedTask, &ProgressReportingTask::terminate, Qt::DirectConnection );
   timer->moveToThread( timerThread );
-  connect( timerThread, &QThread::started, timer, [=] {
+  connect( timerThread, &QThread::started, timer, [ = ]
+  {
     timer->start( 500 );
   } );
   connect( timerThread, &QThread::finished, timer, &QTimer::deleteLater );
@@ -926,7 +942,8 @@ void TestQgsTaskManager::waitForFinished()
   timer = new QTimer( nullptr );
   connect( timer, &QTimer::timeout, timeoutTooShortTask, &ProgressReportingTask::finish, Qt::DirectConnection );
   timer->moveToThread( timerThread );
-  connect( timerThread, &QThread::started, timer, [=] {
+  connect( timerThread, &QThread::started, timer, [ = ]
+  {
     timer->start( 1000 );
   } );
   connect( timerThread, &QThread::finished, timer, &QTimer::deleteLater );
@@ -981,7 +998,8 @@ void TestQgsTaskManager::progressChanged()
   manager.addTask( task );
   manager.addTask( task2 );
 
-  while ( task->status() != QgsTask::Running || task2->status() != QgsTask::Running )
+  while ( task->status() != QgsTask::Running ||
+          task2->status() != QgsTask::Running )
   {
     QCoreApplication::processEvents();
   }
@@ -1111,7 +1129,7 @@ void TestQgsTaskManager::statusChanged()
 
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( spy.last().at( 0 ).toLongLong(), 2LL );
-  QCOMPARE( static_cast<QgsTask::TaskStatus>( spy.last().at( 1 ).toInt() ), QgsTask::Running );
+  QCOMPARE( static_cast< QgsTask::TaskStatus >( spy.last().at( 1 ).toInt() ), QgsTask::Running );
 
   task->terminate();
   while ( task->status() == QgsTask::Running || manager.countActiveTasks() > 1 )
@@ -1121,7 +1139,7 @@ void TestQgsTaskManager::statusChanged()
   flushEvents();
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( spy.last().at( 0 ).toLongLong(), 1LL );
-  QCOMPARE( static_cast<QgsTask::TaskStatus>( spy.last().at( 1 ).toInt() ), QgsTask::Terminated );
+  QCOMPARE( static_cast< QgsTask::TaskStatus >( spy.last().at( 1 ).toInt() ), QgsTask::Terminated );
 
   task2->finish();
   while ( task2->status() == QgsTask::Running || manager.countActiveTasks() > 0 )
@@ -1131,7 +1149,7 @@ void TestQgsTaskManager::statusChanged()
   flushEvents();
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( spy.last().at( 0 ).toLongLong(), 2LL );
-  QCOMPARE( static_cast<QgsTask::TaskStatus>( spy.last().at( 1 ).toInt() ), QgsTask::Complete );
+  QCOMPARE( static_cast< QgsTask::TaskStatus >( spy.last().at( 1 ).toInt() ), QgsTask::Complete );
 }
 
 void TestQgsTaskManager::allTasksFinished()
@@ -1222,7 +1240,7 @@ void TestQgsTaskManager::activeTasks()
     QCoreApplication::processEvents();
   }
   flushEvents();
-  QCOMPARE( qgis::listToSet( manager.activeTasks() ), qgis::listToSet( QList<QgsTask *>() << task ) );
+  QCOMPARE( qgis::listToSet( manager.activeTasks() ), qgis::listToSet( QList< QgsTask * >() << task ) );
   QCOMPARE( manager.countActiveTasks(), 1 );
   QCOMPARE( spy.count(), 1 );
   QCOMPARE( spy.last().at( 0 ).toInt(), 1 );
@@ -1232,7 +1250,7 @@ void TestQgsTaskManager::activeTasks()
     QCoreApplication::processEvents();
   }
   flushEvents();
-  QCOMPARE( qgis::listToSet( manager.activeTasks() ), qgis::listToSet( QList<QgsTask *>() << task << task2 ) );
+  QCOMPARE( qgis::listToSet( manager.activeTasks() ), qgis::listToSet( QList< QgsTask * >() << task << task2 ) );
   QCOMPARE( manager.countActiveTasks(), 2 );
   QCOMPARE( spy.count(), 2 );
   QCOMPARE( spy.last().at( 0 ).toInt(), 2 );
@@ -1242,7 +1260,7 @@ void TestQgsTaskManager::activeTasks()
     QCoreApplication::processEvents();
   }
   flushEvents();
-  QCOMPARE( qgis::listToSet( manager.activeTasks() ), qgis::listToSet( QList<QgsTask *>() << task2 ) );
+  QCOMPARE( qgis::listToSet( manager.activeTasks() ), qgis::listToSet( QList< QgsTask * >() << task2 ) );
   QCOMPARE( manager.countActiveTasks(), 1 );
   QCOMPARE( spy.count(), 3 );
   QCOMPARE( spy.last().at( 0 ).toInt(), 1 );
@@ -1296,9 +1314,9 @@ void TestQgsTaskManager::dependencies()
   long grandChildTaskId = manager.addTask( grandChildTask );
 
   // check dependency resolution
-  QCOMPARE( manager.dependencies( grandChildTaskId ), QSet<long>() );
-  QCOMPARE( manager.dependencies( childTaskId ), QSet<long>() << grandChildTaskId );
-  QCOMPARE( manager.dependencies( taskId ), QSet<long>() << childTaskId << grandChildTaskId );
+  QCOMPARE( manager.dependencies( grandChildTaskId ), QSet< long >() );
+  QCOMPARE( manager.dependencies( childTaskId ), QSet< long >() << grandChildTaskId );
+  QCOMPARE( manager.dependencies( taskId ), QSet< long >() << childTaskId << grandChildTaskId );
 
   QVERIFY( !manager.hasCircularDependencies( taskId ) );
   QVERIFY( !manager.hasCircularDependencies( childTaskId ) );
@@ -1401,27 +1419,27 @@ void TestQgsTaskManager::layerDependencies()
   QVERIFY( layer2->isValid() );
   QgsVectorLayer *layer3 = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "layer3" ), QStringLiteral( "memory" ) );
   QVERIFY( layer3->isValid() );
-  QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << layer1 << layer2 << layer3 );
+  QgsProject::instance()->addMapLayers( QList< QgsMapLayer * >() << layer1 << layer2 << layer3 );
 
   QgsTaskManager manager;
 
   //test that remove layers cancels all tasks which are dependent on them
   TestTask *task = new TestTask();
   task->hold();
-  task->setDependentLayers( QList<QgsMapLayer *>() << layer2 << layer3 );
-  QCOMPARE( task->dependentLayers(), QList<QgsMapLayer *>() << layer2 << layer3 );
+  task->setDependentLayers( QList< QgsMapLayer * >() << layer2 << layer3 );
+  QCOMPARE( task->dependentLayers(), QList< QgsMapLayer * >() << layer2 << layer3 );
   long taskId = manager.addTask( task );
-  QCOMPARE( manager.dependentLayers( taskId ), QList<QgsMapLayer *>() << layer2 << layer3 );
+  QCOMPARE( manager.dependentLayers( taskId ), QList< QgsMapLayer * >() << layer2 << layer3 );
   QVERIFY( manager.tasksDependentOnLayer( nullptr ).isEmpty() );
-  QCOMPARE( manager.tasksDependentOnLayer( layer2 ), QList<QgsTask *>() << task );
-  QCOMPARE( manager.tasksDependentOnLayer( layer3 ), QList<QgsTask *>() << task );
+  QCOMPARE( manager.tasksDependentOnLayer( layer2 ), QList< QgsTask * >() << task );
+  QCOMPARE( manager.tasksDependentOnLayer( layer3 ), QList< QgsTask * >() << task );
 
   QCOMPARE( task->status(), QgsTask::OnHold );
   //removing layer1 should have no effect
-  QgsProject::instance()->removeMapLayers( QList<QgsMapLayer *>() << layer1 );
+  QgsProject::instance()->removeMapLayers( QList< QgsMapLayer * >() << layer1 );
   QCOMPARE( task->status(), QgsTask::OnHold );
   //removing layer3 should cancel task
-  QgsProject::instance()->removeMapLayers( QList<QgsMapLayer *>() << layer3 );
+  QgsProject::instance()->removeMapLayers( QList< QgsMapLayer * >() << layer3 );
   while ( task->status() != QgsTask::Terminated )
   {
     QCoreApplication::processEvents();
@@ -1429,7 +1447,7 @@ void TestQgsTaskManager::layerDependencies()
   flushEvents();
   QCOMPARE( task->status(), QgsTask::Terminated );
 
-  QgsProject::instance()->removeMapLayers( QList<QgsMapLayer *>() << layer2 );
+  QgsProject::instance()->removeMapLayers( QList< QgsMapLayer * >() << layer2 );
 }
 
 void TestQgsTaskManager::managerWithSubTasks()
@@ -1519,7 +1537,7 @@ void TestQgsTaskManager::managerWithSubTasks()
   flushEvents();
   QCOMPARE( statusSpy.count(), 1 );
   QCOMPARE( statusSpy.last().at( 0 ).toLongLong(), 1LL );
-  QCOMPARE( static_cast<QgsTask::TaskStatus>( statusSpy.last().at( 1 ).toInt() ), QgsTask::Complete );
+  QCOMPARE( static_cast< QgsTask::TaskStatus >( statusSpy.last().at( 1 ).toInt() ), QgsTask::Complete );
 
   delete manager;
 }
@@ -1530,11 +1548,11 @@ void TestQgsTaskManager::managerWithSubTasks2()
 
   //test 1
   QgsTaskManager *manager2 = new QgsTaskManager();
-  QPointer<CancelableTask> parent( new CancelableTask() );
-  // parent->hold();
-  QPointer<CancelableTask> subTask( new CancelableTask() );
+  QPointer< CancelableTask > parent( new CancelableTask() );
+// parent->hold();
+  QPointer< CancelableTask > subTask( new CancelableTask() );
   //subTask->hold();
-  QPointer<CancelableTask> subTask2( new CancelableTask() );
+  QPointer< CancelableTask > subTask2( new CancelableTask() );
   //subTask2->hold();
 
   parent->addSubTask( subTask, QgsTaskList() << subTask2 );
@@ -1550,9 +1568,9 @@ void TestQgsTaskManager::managerWithSubTasks2()
   long subTaskId = manager2->taskId( subTask );
   long subTask2Id = manager2->taskId( subTask2 );
 
-  QCOMPARE( manager2->dependencies( parentId ), QSet<long>() );
-  QCOMPARE( manager2->dependencies( subTaskId ), QSet<long>() << subTask2Id );
-  QCOMPARE( manager2->dependencies( subTask2Id ), QSet<long>() );
+  QCOMPARE( manager2->dependencies( parentId ), QSet< long >() );
+  QCOMPARE( manager2->dependencies( subTaskId ), QSet< long >() << subTask2Id );
+  QCOMPARE( manager2->dependencies( subTask2Id ), QSet< long >() );
   delete manager2;
 }
 
@@ -1575,9 +1593,9 @@ void TestQgsTaskManager::managerWithSubTasks3()
   long subTaskId = manager3.taskId( subTask );
   long subTask2Id = manager3.taskId( subTask2 );
 
-  QCOMPARE( manager3.dependencies( parentId ), QSet<long>() << subTask2Id );
-  QCOMPARE( manager3.dependencies( subTaskId ), QSet<long>() << subTask2Id );
-  QCOMPARE( manager3.dependencies( subTask2Id ), QSet<long>() );
+  QCOMPARE( manager3.dependencies( parentId ), QSet< long >() << subTask2Id );
+  QCOMPARE( manager3.dependencies( subTaskId ), QSet< long >() << subTask2Id );
+  QCOMPARE( manager3.dependencies( subTask2Id ), QSet< long >() );
 }
 
 void TestQgsTaskManager::cancelBeforeStart()
@@ -1589,7 +1607,7 @@ void TestQgsTaskManager::cancelBeforeStart()
 
   // add too much tasks to the manager, so that some are queued and can't start immediately
   // then cancel them all!
-  QList<QgsTask *> tasks;
+  QList< QgsTask * > tasks;
 
   for ( int i = 0; i < 10; ++i )
   {
@@ -1622,7 +1640,7 @@ void TestQgsTaskManager::proxyTask()
   // finalize before task gets a chance to start
   QgsTaskManager manager;
   proxyTask->finalize( false );
-  QPointer<QgsTask> p( proxyTask );
+  QPointer< QgsTask > p( proxyTask );
 
   manager.addTask( proxyTask );
 
@@ -1640,7 +1658,7 @@ void TestQgsTaskManager::proxyTask2()
 
   // finalize before task gets a chance to start
   QgsTaskManager manager;
-  QPointer<QgsTask> p( proxyTask );
+  QPointer< QgsTask > p( proxyTask );
   manager.addTask( proxyTask );
 
   // should all be ok, no deadlock...
@@ -1661,7 +1679,7 @@ void TestQgsTaskManager::scopedProxyTask()
 {
   {
     // task finishes before it can start
-    QgsScopedProxyProgressTask task { QString() };
+    QgsScopedProxyProgressTask task{ QString() };
   }
 
   // should all be ok, no deadlock...
@@ -1774,7 +1792,7 @@ void TestQgsTaskManager::hiddenTask()
 void TestQgsTaskManager::testQgsTaskWithSerialSubTasks()
 {
   QgsTaskWithSerialSubTasks *taskWithSerialSubTasks = new QgsTaskWithSerialSubTasks();
-  QPointer<QgsTask> p( taskWithSerialSubTasks );
+  QPointer< QgsTask > p( taskWithSerialSubTasks );
 
   auto task = new TestTask();
   taskWithSerialSubTasks->addSubTask( task );

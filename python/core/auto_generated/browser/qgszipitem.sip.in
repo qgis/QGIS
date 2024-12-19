@@ -47,7 +47,7 @@ Constructor
 
     static QStringList sProviderNames;
 
- static QString vsiPrefix( const QString &uri ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
+ static QString vsiPrefix( const QString &uri ) /Deprecated/;
 %Docstring
 
 .. deprecated:: 3.40

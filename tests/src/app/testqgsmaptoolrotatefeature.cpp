@@ -33,15 +33,15 @@
  * \ingroup UnitTests
  * This is a unit test for the vertex tool
  */
-class TestQgsMapToolRotateFeature : public QObject
+class TestQgsMapToolRotateFeature: public QObject
 {
     Q_OBJECT
   public:
     TestQgsMapToolRotateFeature();
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void testRotateFeature();
     void testRotateFeatureManualAnchor();
@@ -240,6 +240,8 @@ void TestQgsMapToolRotateFeature::testRotateFeatureManualAnchorSnapping()
   cfg.setTolerance( tolerance );
   cfg.setUnits( units );
   mCanvas->snappingUtils()->setConfig( cfg );
+
+
 }
 
 void TestQgsMapToolRotateFeature::testAvoidIntersectionsAndTopoEdit()

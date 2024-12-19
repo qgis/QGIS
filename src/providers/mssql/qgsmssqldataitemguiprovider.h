@@ -25,9 +25,11 @@ class QgsMssqlDataItemGuiProvider : public QObject, public QgsDataItemGuiProvide
 {
     Q_OBJECT
   public:
+
     QString name() override { return QStringLiteral( "MSSQL" ); }
 
-    void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
     bool deleteLayer( QgsLayerItem *item, QgsDataItemGuiContext context ) override;
 

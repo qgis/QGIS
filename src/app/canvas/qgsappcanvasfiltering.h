@@ -31,6 +31,7 @@ class QgsCanvasElevationControllerBridge : public QObject
     Q_OBJECT
 
   public:
+
     QgsCanvasElevationControllerBridge( QgsElevationControllerWidget *controller, QgsMapCanvas *canvas );
 
   private slots:
@@ -43,7 +44,7 @@ class QgsCanvasElevationControllerBridge : public QObject
   private:
     QTimer *mUpdateCanvasTimer = nullptr;
     QgsElevationControllerWidget *mController = nullptr;
-    QPointer<QgsMapCanvas> mCanvas;
+    QPointer< QgsMapCanvas> mCanvas;
     QgsWeakMapLayerPointerList mCanvasLayers;
 };
 
@@ -52,14 +53,17 @@ class QgsAppCanvasFiltering : public QObject
     Q_OBJECT
 
   public:
+
     QgsAppCanvasFiltering( QObject *parent );
 
     void setupElevationControllerAction( QAction *action, QgsMapCanvas *canvas );
 
   private:
+
     void createElevationController( QAction *senderAction, QgsMapCanvas *canvas );
 
-    QHash<QgsMapCanvas *, QgsElevationControllerWidget *> mCanvasElevationControllerMap;
+    QHash< QgsMapCanvas *, QgsElevationControllerWidget * > mCanvasElevationControllerMap;
+
 };
 
 #endif // QGSAPPCANVASFILTERING_H

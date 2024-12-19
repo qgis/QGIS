@@ -28,19 +28,20 @@ implemented in the analysis library: :py:class:`QgsNetworkDistanceStrategy` and 
 #include "qgsnetworkstrategy.h"
 %End
 %ConvertToSubClassCode
-    if ( dynamic_cast<QgsNetworkDistanceStrategy *>( sipCpp ) != NULL )
+    if ( dynamic_cast< QgsNetworkDistanceStrategy * >( sipCpp ) != NULL )
       sipType = sipType_QgsNetworkDistanceStrategy;
-    else if ( dynamic_cast<QgsNetworkSpeedStrategy *>( sipCpp ) != NULL )
+    else if ( dynamic_cast< QgsNetworkSpeedStrategy * >( sipCpp ) != NULL )
       sipType = sipType_QgsNetworkSpeedStrategy;
     else
       sipType = NULL;
 %End
   public:
+
     QgsNetworkStrategy();
 
     virtual ~QgsNetworkStrategy();
 
-    virtual QSet<int> requiredAttributes() const;
+    virtual QSet< int > requiredAttributes() const;
 %Docstring
 Returns a list of the source layer attributes needed for cost calculation.
 This is method called by :py:class:`QgsGraphDirector`.

@@ -36,13 +36,13 @@
  * \ingroup UnitTests
  * This is a unit test for the WMS provider.
  */
-class TestQgsWmsProvider : public QgsTest
+class TestQgsWmsProvider: public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsWmsProvider()
-      : QgsTest( QStringLiteral( "WMS Provider Tests" ) ) {}
+
+    TestQgsWmsProvider() : QgsTest( QStringLiteral( "WMS Provider Tests" ) ) {}
 
   private slots:
 
@@ -101,6 +101,7 @@ class TestQgsWmsProvider : public QgsTest
 
   private:
     QgsWmsCapabilities *mCapabilities = nullptr;
+
 };
 
 
@@ -169,7 +170,7 @@ void TestQgsWmsProvider::queryItemsWithPlusSign()
   QgsWmsCapabilities cap;
   QFile file( QStringLiteral( TEST_DATA_DIR ) + "/provider/GetCapabilities.xml" );
   QVERIFY( file.open( QIODevice::ReadOnly | QIODevice::Text ) );
-  const QByteArray content = file.readAll().replace( "<Name>test</Name>", "<Name>plus+sign</Name>" );
+  const QByteArray content = file.readAll().replace( "<Name>test</Name>",  "<Name>plus+sign</Name>" );
   QVERIFY( cap.parseResponse( content, config ) );
   QgsWmsProvider provider( failingAddress, QgsDataProvider::ProviderOptions(), &cap );
   QUrl url( provider.createRequestUrlWMS( QgsRectangle( 0, 0, 90, 90 ), 100, 100 ) );
@@ -311,13 +312,13 @@ void TestQgsWmsProvider::testMbtilesProviderMetadata()
 
   // mbtile uris
   QCOMPARE( wmsMetadata->priorityForUri( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) ), 100 );
-  QCOMPARE( wmsMetadata->validLayerTypesForUri( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) ), { Qgis::LayerType::Raster } );
+  QCOMPARE( wmsMetadata->validLayerTypesForUri( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) ), {Qgis::LayerType::Raster} );
 
   QCOMPARE( wmsMetadata->priorityForUri( QStringLiteral( "type=mbtiles&url=%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) ), 100 );
-  QCOMPARE( wmsMetadata->validLayerTypesForUri( QStringLiteral( "type=mbtiles&url=%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) ), { Qgis::LayerType::Raster } );
+  QCOMPARE( wmsMetadata->validLayerTypesForUri( QStringLiteral( "type=mbtiles&url=%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) ), {Qgis::LayerType::Raster} );
 
   // query sublayers
-  QList<QgsProviderSublayerDetails> sublayers = wmsMetadata->querySublayers( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) );
+  QList< QgsProviderSublayerDetails > sublayers = wmsMetadata->querySublayers( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) );
   QCOMPARE( sublayers.size(), 1 );
   QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
   QCOMPARE( sublayers.at( 0 ).name(), QStringLiteral( "isle_of_man" ) );
@@ -384,14 +385,14 @@ void TestQgsWmsProvider::testMbtilesProviderMetadata()
 
   int candidateIndex = candidates.at( 0 ).metadata()->key() == QLatin1String( "wms" ) ? 0 : 1;
   QCOMPARE( candidates.at( candidateIndex ).metadata()->key(), QStringLiteral( "wms" ) );
-  QCOMPARE( candidates.at( candidateIndex ).layerTypes(), QList<Qgis::LayerType>() << Qgis::LayerType::Raster );
+  QCOMPARE( candidates.at( candidateIndex ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::Raster );
 
   candidates = QgsProviderRegistry::instance()->preferredProvidersForUri( QStringLiteral( "%1/isle_of_man.mbtiles" ).arg( TEST_DATA_DIR ) );
   // mbtiles vector tile provider also reports handling this url
   QCOMPARE( candidates.size(), 2 );
   candidateIndex = candidates.at( 0 ).metadata()->key() == QLatin1String( "wms" ) ? 0 : 1;
   QCOMPARE( candidates.at( candidateIndex ).metadata()->key(), QStringLiteral( "wms" ) );
-  QCOMPARE( candidates.at( candidateIndex ).layerTypes(), QList<Qgis::LayerType>() << Qgis::LayerType::Raster );
+  QCOMPARE( candidates.at( candidateIndex ).layerTypes(), QList< Qgis::LayerType >() << Qgis::LayerType::Raster );
 }
 
 void TestQgsWmsProvider::testDpiDependentData()
@@ -427,7 +428,9 @@ void TestQgsWmsProvider::providerUriUpdates()
                                       "url=http://localhost:8380/mapserv&"
                                       "testParam=true" );
   QVariantMap parts = metadata->decodeUri( uriString );
-  QVariantMap expectedParts { { QString( "crs" ), QVariant( "EPSG:4326" ) }, { QString( "dpiMode" ), QVariant( "7" ) }, { QString( "testParam" ), QVariant( "true" ) }, { QString( "layers" ), QVariant( "testlayer" ) }, { QString( "styles" ), QString() }, { QString( "url" ), QVariant( "http://localhost:8380/mapserv" ) } };
+  QVariantMap expectedParts { { QString( "crs" ), QVariant( "EPSG:4326" ) },  { QString( "dpiMode" ), QVariant( "7" ) },
+    { QString( "testParam" ), QVariant( "true" ) },  { QString( "layers" ), QVariant( "testlayer" ) },
+    { QString( "styles" ), QString() },  { QString( "url" ), QVariant( "http://localhost:8380/mapserv" ) } };
   QCOMPARE( parts, expectedParts );
 
   parts["testParam"] = QVariant( "false" );
@@ -440,13 +443,16 @@ void TestQgsWmsProvider::providerUriUpdates()
                                         "testParam=false&"
                                         "url=http://localhost:8380/mapserv" );
   QCOMPARE( updatedUri, expectedUri );
+
 }
 
 void TestQgsWmsProvider::providerUriLocalFile()
 {
   QString uriString = QStringLiteral( "url=file:///my/local/tiles.mbtiles&type=mbtiles" );
   QVariantMap parts = QgsProviderRegistry::instance()->decodeUri( QStringLiteral( "wms" ), uriString );
-  QVariantMap expectedParts { { QString( "type" ), QVariant( "mbtiles" ) }, { QString( "path" ), QVariant( "/my/local/tiles.mbtiles" ) }, { QString( "url" ), QVariant( "file:///my/local/tiles.mbtiles" ) } };
+  QVariantMap expectedParts { { QString( "type" ), QVariant( "mbtiles" ) },
+    { QString( "path" ), QVariant( "/my/local/tiles.mbtiles" ) },
+    { QString( "url" ), QVariant( "file:///my/local/tiles.mbtiles" ) } };
   QCOMPARE( parts, expectedParts );
 
   QString encodedUri = QgsProviderRegistry::instance()->encodeUri( QStringLiteral( "wms" ), parts );
@@ -456,7 +462,7 @@ void TestQgsWmsProvider::providerUriLocalFile()
   QVERIFY( wmsMetadata );
 
   // query sublayers
-  QList<QgsProviderSublayerDetails> sublayers;
+  QList< QgsProviderSublayerDetails > sublayers;
   sublayers = wmsMetadata->querySublayers( QStringLiteral( "type=xyz&url=file:///my/xyz/directory/%7Bz%7D/%7Bx%7D/%7By%7D.png&zmax=19&zmin=0" ) );
   QCOMPARE( sublayers.size(), 1 );
   QCOMPARE( sublayers.at( 0 ).providerKey(), QStringLiteral( "wms" ) );
@@ -566,8 +572,8 @@ void TestQgsWmsProvider::testResampling()
   QVERIFY( layer.dataProvider()->dataType( 1 ) == Qgis::DataType::Float32 );
 
   QVERIFY( layer.dataProvider()->enableProviderResampling( true ) );
-  QVERIFY( layer.dataProvider()->setZoomedInResamplingMethod( Qgis::RasterResamplingMethod::Cubic ) );
-  QVERIFY( layer.dataProvider()->setZoomedOutResamplingMethod( Qgis::RasterResamplingMethod::Cubic ) );
+  QVERIFY( layer.dataProvider()->setZoomedInResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Cubic ) );
+  QVERIFY( layer.dataProvider()->setZoomedOutResamplingMethod( QgsRasterDataProvider::ResamplingMethod::Cubic ) );
   layer.setResamplingStage( Qgis::RasterResamplingStage::Provider );
   std::unique_ptr<QgsHillshadeRenderer> hillshade = std::make_unique<QgsHillshadeRenderer>( layer.dataProvider(), 1, 315, 45 );
   hillshade->setZFactor( 0.0005 );
@@ -576,7 +582,10 @@ void TestQgsWmsProvider::testResampling()
   QgsMapSettings mapSettings;
   mapSettings.setLayers( QList<QgsMapLayer *>() << &layer );
   QgsRectangle layerExtent = layer.extent();
-  mapSettings.setExtent( QgsRectangle( layerExtent.xMinimum() + 1000, layerExtent.yMinimum() + 1000, layerExtent.xMinimum() + 1000 + layerExtent.width() / 3000000, layerExtent.yMinimum() + 1000 + layerExtent.height() / 3000000 ) );
+  mapSettings.setExtent( QgsRectangle( layerExtent.xMinimum() + 1000,
+                                       layerExtent.yMinimum() + 1000,
+                                       layerExtent.xMinimum() + 1000 + layerExtent.width() / 3000000,
+                                       layerExtent.yMinimum() + 1000 + layerExtent.height() / 3000000 ) );
   mapSettings.setOutputSize( QSize( 400, 400 ) );
   mapSettings.setOutputDpi( 96 );
   mapSettings.setDpiTarget( 48 );
@@ -637,6 +646,7 @@ void TestQgsWmsProvider::testMaxTileSize()
   const QSize maxTileSize5 = provider5.maximumTileSize();
   QCOMPARE( maxTileSize5.width(), 3000 );
   QCOMPARE( maxTileSize5.height(), 3000 );
+
 }
 
 QGSTEST_MAIN( TestQgsWmsProvider )

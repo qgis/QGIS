@@ -23,6 +23,7 @@
 class QgsBasicNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
+
     QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
     {
       return new QgsBasicNumericFormatWidget( format );
@@ -32,6 +33,7 @@ class QgsBasicNumericFormatConfigurationWidgetFactory : public QgsNumericFormatC
 class QgsBearingNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
+
     QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
     {
       return new QgsBearingNumericFormatWidget( format );
@@ -41,6 +43,7 @@ class QgsBearingNumericFormatConfigurationWidgetFactory : public QgsNumericForma
 class QgsGeographicCoordinateNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
+
     QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
     {
       return new QgsGeographicCoordinateNumericFormatWidget( format );
@@ -50,6 +53,7 @@ class QgsGeographicCoordinateNumericFormatConfigurationWidgetFactory : public Qg
 class QgsCurrencyNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
+
     QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
     {
       return new QgsCurrencyNumericFormatWidget( format );
@@ -59,6 +63,7 @@ class QgsCurrencyNumericFormatConfigurationWidgetFactory : public QgsNumericForm
 class QgsPercentageNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
+
     QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
     {
       return new QgsPercentageNumericFormatWidget( format );
@@ -68,6 +73,7 @@ class QgsPercentageNumericFormatConfigurationWidgetFactory : public QgsNumericFo
 class QgsScientificNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
+
     QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
     {
       return new QgsScientificNumericFormatWidget( format );
@@ -77,6 +83,7 @@ class QgsScientificNumericFormatConfigurationWidgetFactory : public QgsNumericFo
 class QgsFractionNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
+
     QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
     {
       return new QgsFractionNumericFormatWidget( format );
@@ -86,6 +93,7 @@ class QgsFractionNumericFormatConfigurationWidgetFactory : public QgsNumericForm
 class QgsExpressionBasedNumericFormatConfigurationWidgetFactory : public QgsNumericFormatConfigurationWidgetFactory
 {
   public:
+
     QgsNumericFormatWidget *create( const QgsNumericFormat *format ) const
     {
       return new QgsExpressionBasedNumericFormatWidget( format );

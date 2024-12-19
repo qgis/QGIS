@@ -27,9 +27,12 @@ QgsOapifCql2TextExpressionCompiler::QgsOapifCql2TextExpressionCompiler(
   bool supportsLikeBetweenIn,
   bool supportsCaseI,
   bool supportsBasicSpatialOperators,
-  bool invertAxisOrientation
-)
-  : mQueryables( queryables ), mSupportsLikeBetweenIn( supportsLikeBetweenIn ), mSupportsCaseI( supportsCaseI ), mSupportsBasicSpatialOperators( supportsBasicSpatialOperators ), mInvertAxisOrientation( invertAxisOrientation )
+  bool invertAxisOrientation ):
+  mQueryables( queryables ),
+  mSupportsLikeBetweenIn( supportsLikeBetweenIn ),
+  mSupportsCaseI( supportsCaseI ),
+  mSupportsBasicSpatialOperators( supportsBasicSpatialOperators ),
+  mInvertAxisOrientation( invertAxisOrientation )
 {
 }
 
@@ -222,7 +225,9 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
           return Fail;
         values.push_back( n->value().toInt() );
       }
-      result = QDateTime( QDate( values[0], values[1], values[2] ), QTime( values[3], values[4], values[5] ), Qt::UTC ).toString( Qt::ISODateWithMs ).prepend( "TIMESTAMP('" ).append( "')" );
+      result = QDateTime( QDate( values[0], values[1], values[2] ),
+                          QTime( values[3], values[4], values[5] ),
+                          Qt::UTC ).toString( Qt::ISODateWithMs ).prepend( "TIMESTAMP('" ).append( "')" );
       return Complete;
     }
   }
@@ -412,7 +417,8 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
       // Special case to handle "datetimefield OP 'YYYY-MM-DDTHH:MM:SS'"
       // or "datefield OP 'YYYY-MM-DD'"
       // that can be suggested by the query builder
-      if ( n->opLeft()->nodeType() == QgsExpressionNode::ntColumnRef && n->opRight()->nodeType() == QgsExpressionNode::ntLiteral )
+      if ( n->opLeft()->nodeType() == QgsExpressionNode::ntColumnRef &&
+           n->opRight()->nodeType() == QgsExpressionNode::ntLiteral )
       {
         const QgsExpressionNodeColumnRef *nLeft = static_cast<const QgsExpressionNodeColumnRef *>( n->opLeft() );
         const QgsExpressionNodeLiteral *nRight = static_cast<const QgsExpressionNodeLiteral *>( n->opRight() );
@@ -569,3 +575,4 @@ QgsOapifCql2TextExpressionCompiler::Result QgsOapifCql2TextExpressionCompiler::c
 
   return Fail;
 }
+

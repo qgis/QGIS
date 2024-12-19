@@ -2,5 +2,5 @@
 try:
     QgsLayoutMeasurement.decodeMeasurement = staticmethod(QgsLayoutMeasurement.decodeMeasurement)
     QgsLayoutMeasurement.__group__ = ['layout']
-except (NameError, AttributeError):
+except NameError:
     pass

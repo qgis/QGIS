@@ -29,6 +29,7 @@ When using the group box, make sure to call :py:func:`~setOriginalExtent`, :py:f
 %End
   public:
 
+
     enum ExtentState /BaseType=IntEnum/
     {
       OriginalExtent,

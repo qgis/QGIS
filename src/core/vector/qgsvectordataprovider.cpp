@@ -18,7 +18,6 @@
 #include <limits>
 
 #include "qgsvectordataprovider.h"
-#include "moc_qgsvectordataprovider.cpp"
 #include "qgscircularstring.h"
 #include "qgscompoundcurve.h"
 #include "qgsfeature.h"
@@ -450,13 +449,6 @@ QgsAttributeList QgsVectorDataProvider::pkAttributeIndexes() const
   QGIS_PROTECT_QOBJECT_THREAD_ACCESS
 
   return QgsAttributeList();
-}
-
-QString QgsVectorDataProvider::geometryColumnName() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  return QString();
 }
 
 QList<QgsVectorDataProvider::NativeType> QgsVectorDataProvider::nativeTypes() const

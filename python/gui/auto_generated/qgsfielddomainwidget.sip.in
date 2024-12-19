@@ -21,6 +21,7 @@ A widget for configuration of the properties of a :py:class:`QgsFieldDomain`.
 #include "qgsfielddomainwidget.h"
 %End
   public:
+
     QgsFieldDomainWidget( Qgis::FieldDomainType type, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFieldDomainWidget for the given domain ``type``, with the specified ``parent`` widget.
@@ -61,7 +62,8 @@ Emitted whenever the validity of the field domain configuration in the widget ch
 };
 
 
-class QgsFieldDomainDialog : QDialog
+
+class QgsFieldDomainDialog: QDialog
 {
 %Docstring(signature="appended")
 A dialog for configuration of the properties of a :py:class:`QgsFieldDomain`.
@@ -73,6 +75,7 @@ A dialog for configuration of the properties of a :py:class:`QgsFieldDomain`.
 #include "qgsfielddomainwidget.h"
 %End
   public:
+
     explicit QgsFieldDomainDialog( Qgis::FieldDomainType type, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
 Constructor for QgsFieldDomainDialog for the given domain ``type``, with the specified ``parent`` widget and window ``flags``.

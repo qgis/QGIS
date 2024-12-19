@@ -67,13 +67,16 @@ QgsMultiRingConstantBufferAlgorithm *QgsMultiRingConstantBufferAlgorithm::create
 
 void QgsMultiRingConstantBufferAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterNumber> rings = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "RINGS" ), QObject::tr( "Number of rings" ), Qgis::ProcessingNumberParameterType::Integer, 1, false, 0 );
+  std::unique_ptr< QgsProcessingParameterNumber> rings = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "RINGS" ),
+      QObject::tr( "Number of rings" ), Qgis::ProcessingNumberParameterType::Integer,
+      1, false, 0 );
   rings->setIsDynamic( true );
   rings->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "RINGS" ), QObject::tr( "Number of rings" ), QgsPropertyDefinition::IntegerPositive ) );
   rings->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( rings.release() );
 
-  std::unique_ptr<QgsProcessingParameterDistance> distance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance between rings" ), 1, QStringLiteral( "INPUT" ), false );
+  std::unique_ptr< QgsProcessingParameterDistance > distance = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "DISTANCE" ),
+      QObject::tr( "Distance between rings" ), 1, QStringLiteral( "INPUT" ), false );
   distance->setIsDynamic( true );
   distance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance between rings" ), QgsPropertyDefinition::DoublePositive ) );
   distance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -82,11 +85,11 @@ void QgsMultiRingConstantBufferAlgorithm::initParameters( const QVariantMap & )
 
 bool QgsMultiRingConstantBufferAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
   if ( !layer )
     return false;
 
-  if ( !QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
+  if ( ! QgsProcessingFeatureBasedAlgorithm::supportInPlaceEdit( layer ) )
     return false;
   // Polygons only
   return layer->wkbType() == Qgis::WkbType::Polygon || layer->wkbType() == Qgis::WkbType::MultiPolygon;
@@ -97,12 +100,12 @@ bool QgsMultiRingConstantBufferAlgorithm::prepareAlgorithm( const QVariantMap &p
   mRingsNumber = parameterAsInt( parameters, QStringLiteral( "RINGS" ), context );
   mDynamicRingsNumber = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "RINGS" ) );
   if ( mDynamicRingsNumber )
-    mRingsNumberProperty = parameters.value( QStringLiteral( "RINGS" ) ).value<QgsProperty>();
+    mRingsNumberProperty = parameters.value( QStringLiteral( "RINGS" ) ).value< QgsProperty >();
 
   mDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
   mDynamicDistance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
   if ( mDynamicDistance )
-    mDistanceProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value<QgsProperty>();
+    mDistanceProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >();
 
   return true;
 }

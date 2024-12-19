@@ -3,9 +3,9 @@ try:
     QgsVectorTileBasicRenderer.simpleStyle = staticmethod(QgsVectorTileBasicRenderer.simpleStyle)
     QgsVectorTileBasicRenderer.simpleStyleWithRandomColors = staticmethod(QgsVectorTileBasicRenderer.simpleStyleWithRandomColors)
     QgsVectorTileBasicRenderer.__group__ = ['vectortile']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsVectorTileBasicRendererStyle.__group__ = ['vectortile']
-except (NameError, AttributeError):
+except NameError:
     pass

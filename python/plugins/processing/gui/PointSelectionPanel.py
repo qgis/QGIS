@@ -15,14 +15,16 @@
 ***************************************************************************
 """
 
-__author__ = "Alexander Bruy"
-__date__ = "February 2016"
-__copyright__ = "(C) 2016, Alexander Bruy"
+__author__ = 'Alexander Bruy'
+__date__ = 'February 2016'
+__copyright__ = '(C) 2016, Alexander Bruy'
 
 import os
 import warnings
 
-from qgis.core import QgsProject, QgsReferencedPointXY, QgsPointXY
+from qgis.core import (QgsProject,
+                       QgsReferencedPointXY,
+                       QgsPointXY)
 from qgis.PyQt import uic
 
 from qgis.utils import iface
@@ -34,8 +36,7 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     WIDGET, BASE = uic.loadUiType(
-        os.path.join(pluginPath, "ui", "widgetBaseSelector.ui")
-    )
+        os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
 
 class PointSelectionPanel(BASE, WIDGET):
@@ -61,7 +62,7 @@ class PointSelectionPanel(BASE, WIDGET):
             self.tool = None
 
         if default:
-            tokens = str(default).split(",")
+            tokens = str(default).split(',')
             if len(tokens) == 2:
                 try:
                     float(tokens[0])
@@ -76,10 +77,10 @@ class PointSelectionPanel(BASE, WIDGET):
         self.dialog.showMinimized()
 
     def updatePoint(self, point, button):
-        s = f"{point.x()},{point.y()}"
+        s = f'{point.x()},{point.y()}'
         self.crs = QgsProject.instance().crs()
         if self.crs.isValid():
-            s += " [" + self.crs.authid() + "]"
+            s += ' [' + self.crs.authid() + ']'
         self.leText.setText(s)
 
     def pointPicked(self):
@@ -90,7 +91,7 @@ class PointSelectionPanel(BASE, WIDGET):
         self.dialog.activateWindow()
 
     def getValue(self):
-        if str(self.leText.text()).strip() != "":
+        if str(self.leText.text()).strip() != '':
             return str(self.leText.text())
         else:
             return None

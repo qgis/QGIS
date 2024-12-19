@@ -20,7 +20,7 @@
 #include "qgsspatialiteprovider.h"
 
 
-class QgsSpatiaLiteProviderGuiMetadata : public QgsProviderGuiMetadata
+class QgsSpatiaLiteProviderGuiMetadata: public QgsProviderGuiMetadata
 {
   public:
     QgsSpatiaLiteProviderGuiMetadata();
@@ -28,3 +28,4 @@ class QgsSpatiaLiteProviderGuiMetadata : public QgsProviderGuiMetadata
     QList<QgsSourceSelectProvider *> sourceSelectProviders() override;
     QList<QgsDataItemGuiProvider *> dataItemGuiProviders() override;
 };
+

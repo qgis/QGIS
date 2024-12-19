@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsprocessingrasteroptionswidgetwrapper.h"
-#include "moc_qgsprocessingrasteroptionswidgetwrapper.cpp"
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingoutputs.h"
@@ -49,7 +48,8 @@ QWidget *QgsProcessingRasterOptionsWidgetWrapper::createWidget()
     {
       mOptionsWidget = new QgsRasterFormatSaveOptionsWidget();
       mOptionsWidget->setToolTip( parameterDefinition()->toolTip() );
-      connect( mOptionsWidget, &QgsRasterFormatSaveOptionsWidget::optionsChanged, this, [=] {
+      connect( mOptionsWidget, &QgsRasterFormatSaveOptionsWidget::optionsChanged, this, [ = ]
+      {
         emit widgetValueHasChanged( this );
       } );
       return mOptionsWidget;
@@ -59,7 +59,8 @@ QWidget *QgsProcessingRasterOptionsWidgetWrapper::createWidget()
     {
       mLineEdit = new QLineEdit();
       mLineEdit->setToolTip( parameterDefinition()->toolTip() );
-      connect( mLineEdit, &QLineEdit::textChanged, this, [=] {
+      connect( mLineEdit, &QLineEdit::textChanged, this, [ = ]
+      {
         emit widgetValueHasChanged( this );
       } );
       return mLineEdit;
@@ -124,10 +125,10 @@ QStringList QgsProcessingRasterOptionsWidgetWrapper::compatibleParameterTypes() 
 QStringList QgsProcessingRasterOptionsWidgetWrapper::compatibleOutputTypes() const
 {
   return QStringList() << QgsProcessingOutputNumber::typeName()
-                       << QgsProcessingOutputVariant::typeName()
-                       << QgsProcessingOutputFile::typeName()
-                       << QgsProcessingOutputFolder::typeName()
-                       << QgsProcessingOutputString::typeName();
+         << QgsProcessingOutputVariant::typeName()
+         << QgsProcessingOutputFile::typeName()
+         << QgsProcessingOutputFolder::typeName()
+         << QgsProcessingOutputString::typeName();
 }
 
 /// @endcond

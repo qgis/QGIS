@@ -21,13 +21,15 @@ Contains properties of a ground control point (GCP).
 #include "qgsgcppoint.h"
 %End
   public:
+
     enum class PointType
     {
       Source,
       Destination,
     };
 
-    QgsGcpPoint( const QgsPointXY &sourcePoint, const QgsPointXY &destinationPoint, const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled = true );
+    QgsGcpPoint( const QgsPointXY &sourcePoint, const QgsPointXY &destinationPoint,
+                 const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled = true );
 %Docstring
 Constructor for QgsGcpPoint.
 

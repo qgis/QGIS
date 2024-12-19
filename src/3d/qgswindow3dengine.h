@@ -46,6 +46,7 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsWindow3DEngine with the specified \a parent Qgs3DMapCanvas.
      */
@@ -72,7 +73,6 @@ class _3D_EXPORT QgsWindow3DEngine : public QgsAbstract3DEngine
     QSurface *surface() const override;
 
     void setSize( QSize s ) override;
-
   private:
     //! 3D window with all the 3D magic inside
     Qgs3DMapCanvas *mMapCanvas3D = nullptr;

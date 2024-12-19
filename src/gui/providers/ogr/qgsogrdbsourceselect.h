@@ -35,11 +35,12 @@ class QgsOgrDbTableModel;
  * source selects.
  *
  */
-class QgsOgrDbSourceSelect : public QgsAbstractDbSourceSelect
+class QgsOgrDbSourceSelect: public QgsAbstractDbSourceSelect
 {
     Q_OBJECT
 
   public:
+
     /**
      * Construct a DB Source Select with \a theOgrDriverName specified (i.e. "GPKG", "SQLite" etc.)
      * and \a theName as string for describing the layers managed by the source select (e.g. : "GeoPackage" etc.)
@@ -58,10 +59,10 @@ class QgsOgrDbSourceSelect : public QgsAbstractDbSourceSelect
     void dbChanged();
 
     //! Returns the QSettings key name
-    const QString ogrDriverName() { return mOgrDriverName; }
+    const QString ogrDriverName( ) { return mOgrDriverName; }
 
     //! Returns the name of the managed layers, needs to be translatable
-    const QString name() { return mName; }
+    const QString name( ) { return mName; }
 
     //! Returns the extensions of the managed layers, needs to be translatable
     const QString extension() { return mExtension; }
@@ -106,6 +107,7 @@ class QgsOgrDbSourceSelect : public QgsAbstractDbSourceSelect
     QString mOgrDriverName;
     QString mName;
     QString mExtension;
+
 };
 
 ///@endcond

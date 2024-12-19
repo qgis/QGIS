@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsstatusbar.h"
-#include "moc_qgsstatusbar.cpp"
 #include <QLayout>
 #include <QLineEdit>
 #include <QPalette>
@@ -102,7 +101,7 @@ void QgsStatusBar::setParentStatusBar( QStatusBar *statusBar )
   mParentStatusBar = statusBar;
 
   if ( mParentStatusBar )
-    mShowMessageConnection = connect( mParentStatusBar, &QStatusBar::messageChanged, this, [this]( const QString &message ) { showMessage( message ); } );
+    mShowMessageConnection = connect( mParentStatusBar, &QStatusBar::messageChanged, this, [this]( const QString & message ) { showMessage( message ); } );
 }
 
 void QgsStatusBar::changeEvent( QEvent *event )

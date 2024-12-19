@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgscredentials.h"
-#include "moc_qgscredentials.cpp"
 #include "qgslogger.h"
 
 #include <QTextStream>

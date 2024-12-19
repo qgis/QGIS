@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsbrowserwidget.h"
-#include "moc_qgsbrowserwidget.cpp"
 
 #include <QAbstractTextDocumentLayout>
 #include <QHeaderView>
@@ -58,7 +57,7 @@ QgsBrowserWidget::QgsBrowserWidget( QgsBrowserGuiModel *browserModel, QWidget *p
   setupUi( this );
 
   layout()->setContentsMargins( 0, 0, 0, 0 );
-  qgis::down_cast<QVBoxLayout *>( layout() )->setSpacing( 0 );
+  qgis::down_cast< QVBoxLayout * >( layout() )->setSpacing( 0 );
 
   mBrowserView = new QgsDockBrowserTreeView( this );
   mLayoutBrowser->addWidget( mBrowserView );
@@ -117,11 +116,11 @@ QgsBrowserWidget::~QgsBrowserWidget() = default;
 void QgsBrowserWidget::showEvent( QShowEvent *e )
 {
   // delayed initialization of the model
-  if ( !mModel->initialized() )
+  if ( !mModel->initialized( ) )
   {
     mModel->initialize();
   }
-  if ( !mProxyModel )
+  if ( ! mProxyModel )
   {
     mProxyModel = new QgsBrowserProxyModel( this );
     mProxyModel->setBrowserModel( mModel );
@@ -137,10 +136,12 @@ void QgsBrowserWidget::showEvent( QShowEvent *e )
     mBrowserView->header()->setStretchLastSection( false );
 
     // selectionModel is created when model is set on tree
-    connect( mBrowserView->selectionModel(), &QItemSelectionModel::selectionChanged, this, &QgsBrowserWidget::selectionChanged );
+    connect( mBrowserView->selectionModel(), &QItemSelectionModel::selectionChanged,
+             this, &QgsBrowserWidget::selectionChanged );
 
     // Forward the model changed signals to the widget
-    connect( mModel, &QgsBrowserModel::connectionsChanged, this, &QgsBrowserWidget::connectionsChanged );
+    connect( mModel, &QgsBrowserModel::connectionsChanged,
+             this, &QgsBrowserWidget::connectionsChanged );
 
     // objectName used by settingsSection() is not yet set in constructor
     QgsSettings settings;
@@ -161,7 +162,7 @@ void QgsBrowserWidget::itemDoubleClicked( const QModelIndex &index )
 
   QgsDataItemGuiContext context = createContext();
 
-  const QList<QgsDataItemGuiProvider *> providers = QgsGui::dataItemGuiProviderRegistry()->providers();
+  const QList< QgsDataItemGuiProvider * > providers = QgsGui::dataItemGuiProviderRegistry()->providers();
   for ( QgsDataItemGuiProvider *provider : providers )
   {
     if ( provider->handleDoubleClick( item, context ) )
@@ -181,9 +182,10 @@ void QgsBrowserWidget::itemDoubleClicked( const QModelIndex &index )
 
 void QgsBrowserWidget::onOptionsChanged()
 {
-  std::function<void( const QModelIndex &index )> updateItem;
-  updateItem = [this, &updateItem]( const QModelIndex &index ) {
-    if ( QgsDirectoryItem *dirItem = qobject_cast<QgsDirectoryItem *>( mModel->dataItem( index ) ) )
+  std::function< void( const QModelIndex &index ) > updateItem;
+  updateItem = [this, &updateItem]( const QModelIndex & index )
+  {
+    if ( QgsDirectoryItem *dirItem = qobject_cast< QgsDirectoryItem * >( mModel->dataItem( index ) ) )
     {
       dirItem->reevaluateMonitoring();
     }
@@ -210,7 +212,7 @@ void QgsBrowserWidget::showContextMenu( QPoint pt )
     return;
 
   const QModelIndexList selection = mBrowserView->selectionModel()->selectedIndexes();
-  QList<QgsDataItem *> selectedItems;
+  QList< QgsDataItem * > selectedItems;
   selectedItems.reserve( selection.size() );
   for ( const QModelIndex &selectedIndex : selection )
   {
@@ -242,8 +244,9 @@ void QgsBrowserWidget::showContextMenu( QPoint pt )
 
   QgsDataItemGuiContext context = createContext();
 
-  QList<QgsDataItemGuiProvider *> providers = QgsGui::dataItemGuiProviderRegistry()->providers();
-  std::sort( providers.begin(), providers.end(), []( QgsDataItemGuiProvider *a, QgsDataItemGuiProvider *b ) {
+  QList< QgsDataItemGuiProvider * > providers = QgsGui::dataItemGuiProviderRegistry()->providers();
+  std::sort( providers.begin(), providers.end(), []( QgsDataItemGuiProvider * a, QgsDataItemGuiProvider * b )
+  {
     return a->precedenceWhenPopulatingMenus() < b->precedenceWhenPopulatingMenus();
   } );
   for ( QgsDataItemGuiProvider *provider : std::as_const( providers ) )
@@ -379,7 +382,7 @@ void QgsBrowserWidget::hideItem()
 {
   QModelIndex index = mProxyModel->mapToSource( mBrowserView->currentIndex() );
   QgsDataItem *item = mModel->dataItem( index );
-  if ( !item )
+  if ( ! item )
     return;
 
   if ( item->type() == Qgis::BrowserItemType::Directory )
@@ -392,7 +395,7 @@ void QgsBrowserWidget::showProperties()
 {
   QModelIndex index = mProxyModel->mapToSource( mBrowserView->currentIndex() );
   QgsDataItem *item = mModel->dataItem( index );
-  if ( !item )
+  if ( ! item )
     return;
 
   if ( item->type() == Qgis::BrowserItemType::Layer || item->type() == Qgis::BrowserItemType::Directory )
@@ -407,7 +410,7 @@ void QgsBrowserWidget::showProperties()
 void QgsBrowserWidget::showFilterWidget( bool visible )
 {
   mWidgetFilter->setVisible( visible );
-  if ( !visible )
+  if ( ! visible )
   {
     mLeFilter->setText( QString() );
     setFilter();
@@ -433,15 +436,15 @@ void QgsBrowserWidget::updateProjectHome()
 
 void QgsBrowserWidget::setFilterSyntax( QAction *action )
 {
-  if ( !action || !mProxyModel )
+  if ( !action || ! mProxyModel )
     return;
 
-  mProxyModel->setFilterSyntax( static_cast<QgsBrowserProxyModel::FilterSyntax>( action->data().toInt() ) );
+  mProxyModel->setFilterSyntax( static_cast< QgsBrowserProxyModel::FilterSyntax >( action->data().toInt() ) );
 }
 
 void QgsBrowserWidget::setCaseSensitive( bool caseSensitive )
 {
-  if ( !mProxyModel )
+  if ( ! mProxyModel )
     return;
   mProxyModel->setFilterCaseSensitivity( caseSensitive ? Qt::CaseSensitive : Qt::CaseInsensitive );
 }

@@ -19,15 +19,14 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
 """
-
-__author__ = "Alessandro Pasotti"
-__date__ = "25/05/2015"
-__copyright__ = "Copyright 2015, The QGIS Project"
+__author__ = 'Alessandro Pasotti'
+__date__ = '25/05/2015'
+__copyright__ = 'Copyright 2015, The QGIS Project'
 
 import os
 
 # Deterministic XML
-os.environ["QT_HASH_SEED"] = "1"
+os.environ['QT_HASH_SEED'] = '1'
 
 import base64
 import difflib
@@ -63,111 +62,62 @@ from utilities import unitTestDataPath
 start_app()
 
 # Strip path and content length because path may vary
-RE_STRIP_UNCHECKABLE = rb'MAP=[^"]+|Content-Length: \d+'
-RE_ELEMENT = rb"</*([^>\[\s]+)[ >]"
-RE_ELEMENT_CONTENT = rb"<[^>\[]+>(.+)</[^>\[\s]+>"
+RE_STRIP_UNCHECKABLE = br'MAP=[^"]+|Content-Length: \d+'
+RE_ELEMENT = br'</*([^>\[\s]+)[ >]'
+RE_ELEMENT_CONTENT = br'<[^>\[]+>(.+)</[^>\[\s]+>'
 RE_ATTRIBUTES = rb'((?:(?!\s|=).)*)\s*?=\s*?["\']?((?:(?<=")(?:(?<=\\)"|[^"])*|(?<=\')(?:(?<=\\)\'|[^\'])*)|(?:(?!"|\')(?:(?!\/>|>|\s).)+))'
 
 
 class QgsServerTestBase(QgisTestCase):
+
     """Base class for QGIS server tests"""
 
     # Set to True in child classes to re-generate reference files for this class
     regenerate_reference = False
 
-    def assertXMLEqual(self, response, expected, msg="", raw=False):
+    def assertXMLEqual(self, response, expected, msg='', raw=False):
         """Compare XML line by line and sorted attributes"""
         response_lines = response.splitlines()
         expected_lines = expected.splitlines()
         line_no = 1
 
         diffs = []
-        for diff in difflib.unified_diff(
-            [l.decode("utf8") for l in expected_lines],
-            [l.decode("utf8") for l in response_lines],
-        ):
+        for diff in difflib.unified_diff([l.decode('utf8') for l in expected_lines], [l.decode('utf8') for l in response_lines]):
             diffs.append(diff)
 
         self.assertEqual(
             len(expected_lines),
             len(response_lines),
-            "Expected and response have different number of lines!\n{}\n{}\nWe got :\n{}".format(
-                msg,
-                "\n".join(diffs),
-                "\n".join([i.decode("utf-8") for i in response_lines]),
-            ),
-        )
+            "Expected and response have different number of lines!\n{}\n{}\nWe got :\n{}".format(msg, '\n'.join(diffs), '\n'.join([i.decode("utf-8") for i in response_lines])))
         for expected_line in expected_lines:
             expected_line = expected_line.strip()
             response_line = response_lines[line_no - 1].strip()
-            response_line = response_line.replace(b"e+6", rb"e+06")
+            response_line = response_line.replace(b'e+6', br'e+06')
             # Compare tag
             if re.match(RE_ELEMENT, expected_line) and not raw:
                 expected_elements = re.findall(RE_ELEMENT, expected_line)
                 response_elements = re.findall(RE_ELEMENT, response_line)
-                self.assertEqual(
-                    expected_elements[0],
-                    response_elements[0],
-                    msg=msg
-                    + f"\nTag mismatch on line {line_no}: {expected_line} != {response_line}",
-                )
+                self.assertEqual(expected_elements[0],
+                                 response_elements[0], msg=msg + f"\nTag mismatch on line {line_no}: {expected_line} != {response_line}")
                 # Compare content
-                if (
-                    len(expected_elements) == 2
-                    and expected_elements[0] == expected_elements[1]
-                ):
-                    expected_element_content = re.findall(
-                        RE_ELEMENT_CONTENT, expected_line
-                    )
-                    response_element_content = re.findall(
-                        RE_ELEMENT_CONTENT, response_line
-                    )
-                    self.assertEqual(
-                        len(expected_element_content),
-                        len(response_element_content),
-                        msg=msg
-                        + f"\nContent mismatch on line {line_no}: {expected_line} != {response_line}",
-                    )
+                if len(expected_elements) == 2 and expected_elements[0] == expected_elements[1]:
+                    expected_element_content = re.findall(RE_ELEMENT_CONTENT, expected_line)
+                    response_element_content = re.findall(RE_ELEMENT_CONTENT, response_line)
+                    self.assertEqual(len(expected_element_content), len(response_element_content),
+                                     msg=msg + f"\nContent mismatch on line {line_no}: {expected_line} != {response_line}")
                     if len(expected_element_content):
-                        self.assertEqual(
-                            expected_element_content[0],
-                            response_element_content[0],
-                            msg=msg
-                            + f"\nContent mismatch on line {line_no}: {expected_line} != {response_line}",
-                        )
+                        self.assertEqual(expected_element_content[0],
+                                         response_element_content[0], msg=msg + f"\nContent mismatch on line {line_no}: {expected_line} != {response_line}")
             else:
-                self.assertEqual(
-                    expected_line,
-                    response_line,
-                    msg=msg
-                    + f"\nTag line mismatch {line_no}: {expected_line} != {response_line}\n{msg}",
-                )
+                self.assertEqual(expected_line, response_line, msg=msg + f"\nTag line mismatch {line_no}: {expected_line} != {response_line}\n{msg}")
             # print("---->%s\t%s == %s" % (line_no, expected_line, response_line))
             # Compare attributes
             if re.findall(RE_ATTRIBUTES, expected_line):  # has attrs
-                expected_attrs, expected_values = zip(
-                    *sorted(re.findall(RE_ATTRIBUTES, expected_line))
-                )
-                self.assertTrue(
-                    re.findall(RE_ATTRIBUTES, response_line),
-                    msg=msg
-                    + f"\nXML attributes differ at line {line_no}: {expected_line} != {response_line}",
-                )
-                response_attrs, response_values = zip(
-                    *sorted(re.findall(RE_ATTRIBUTES, response_line))
-                )
-                self.assertEqual(
-                    expected_attrs,
-                    response_attrs,
-                    msg=msg
-                    + f"\nXML attributes differ at line {line_no}: {expected_attrs} != {response_attrs}",
-                )
-                self.assertEqual(
-                    expected_values,
-                    response_values,
-                    msg=msg
-                    + f"\nXML attribute values differ at line {line_no}: {expected_values} != {response_values}",
-                )
+                expected_attrs, expected_values = zip(*sorted(re.findall(RE_ATTRIBUTES, expected_line)))
+                self.assertTrue(re.findall(RE_ATTRIBUTES, response_line), msg=msg + f"\nXML attributes differ at line {line_no}: {expected_line} != {response_line}")
+                response_attrs, response_values = zip(*sorted(re.findall(RE_ATTRIBUTES, response_line)))
+                self.assertEqual(expected_attrs, response_attrs, msg=msg + f"\nXML attributes differ at line {line_no}: {expected_attrs} != {response_attrs}")
+                self.assertEqual(expected_values, response_values, msg=msg + f"\nXML attribute values differ at line {line_no}: {expected_values} != {response_values}")
             line_no += 1
 
     @classmethod
@@ -175,45 +125,42 @@ class QgsServerTestBase(QgisTestCase):
         """Create the server instance"""
         super().setUpClass()
         self.fontFamily = QgsFontUtils.standardTestFontFamily()
-        QgsFontUtils.loadStandardTestFonts(["All"])
+        QgsFontUtils.loadStandardTestFonts(['All'])
 
         self.temporary_dir = tempfile.TemporaryDirectory()
         self.temporary_path = self.temporary_dir.name
 
         # Copy all testdata to the temporary directory
-        copytree(
-            unitTestDataPath("qgis_server"),
-            os.path.join(self.temporary_path, "qgis_server"),
-        )
-        copytree(
-            unitTestDataPath("qgis_server_accesscontrol"),
-            os.path.join(self.temporary_path, "qgis_server_accesscontrol"),
-        )
+        copytree(unitTestDataPath('qgis_server'), os.path.join(self.temporary_path, 'qgis_server'))
+        copytree(unitTestDataPath('qgis_server_accesscontrol'), os.path.join(self.temporary_path, 'qgis_server_accesscontrol'))
 
         for f in [
-            "empty_spatial_layer.dbf",
-            "empty_spatial_layer.prj",
-            "empty_spatial_layer.qpj",
-            "empty_spatial_layer.shp",
-            "empty_spatial_layer.shx",
-            "france_parts.dbf",
-            "france_parts.prj",
-            "france_parts.qpj",
-            "france_parts.shp",
-            "france_parts.shp.xml",
-            "france_parts.shx",
-            "landsat.tif",
-            "points.dbf",
-            "points.prj",
-            "points.shp",
-            "points.shx",
-            "requires_warped_vrt.tif",
+            'empty_spatial_layer.dbf',
+            'empty_spatial_layer.prj',
+            'empty_spatial_layer.qpj',
+            'empty_spatial_layer.shp',
+            'empty_spatial_layer.shx',
+            'france_parts.dbf',
+            'france_parts.prj',
+            'france_parts.qpj',
+            'france_parts.shp',
+            'france_parts.shp.xml',
+            'france_parts.shx',
+            'landsat.tif',
+            'points.dbf',
+            'points.prj',
+            'points.shp',
+            'points.shx',
+            'requires_warped_vrt.tif',
         ]:
-            os.symlink(unitTestDataPath(f), os.path.join(self.temporary_path, f))
+            os.symlink(
+                unitTestDataPath(f),
+                os.path.join(self.temporary_path, f)
+            )
 
-        self.testdata_path = os.path.join(self.temporary_path, "qgis_server") + "/"
+        self.testdata_path = os.path.join(self.temporary_path, 'qgis_server') + '/'
 
-        d = os.path.join(self.temporary_path, "qgis_server_accesscontrol")
+        d = os.path.join(self.temporary_path, 'qgis_server_accesscontrol')
 
         self.projectPath = os.path.join(d, "project.qgs")
         self.projectAnnotationPath = os.path.join(d, "project_with_annotations.qgs")
@@ -222,7 +169,7 @@ class QgsServerTestBase(QgisTestCase):
         self.projectGroupsPath = os.path.join(d, "project_groups.qgs")
 
         # Clean env just to be sure
-        env_vars = ["QUERY_STRING", "QGIS_PROJECT_FILE"]
+        env_vars = ['QUERY_STRING', 'QGIS_PROJECT_FILE']
         for ev in env_vars:
             try:
                 del os.environ[ev]
@@ -247,24 +194,17 @@ class QgsServerTestBase(QgisTestCase):
 
     def strip_version_xmlns(self, text):
         """Order of attributes is random, strip version and xmlns"""
-        return text.replace(b'version="1.3.0"', b"").replace(
-            b'xmlns="http://www.opengis.net/ogc"', b""
-        )
+        return text.replace(b'version="1.3.0"', b'').replace(b'xmlns="http://www.opengis.net/ogc"', b'')
 
     def assert_headers(self, header, body):
         stream = StringIO()
-        header_string = header.decode("utf-8")
+        header_string = header.decode('utf-8')
         stream.write(header_string)
         headers = email.message_from_string(header_string)
-        if "content-length" in headers:
-            content_length = int(headers["content-length"])
+        if 'content-length' in headers:
+            content_length = int(headers['content-length'])
             body_length = len(body)
-            self.assertEqual(
-                content_length,
-                body_length,
-                msg="Header reported content-length: %d Actual body length was: %d"
-                % (content_length, body_length),
-            )
+            self.assertEqual(content_length, body_length, msg="Header reported content-length: %d Actual body length was: %d" % (content_length, body_length))
 
     @classmethod
     def store_reference(self, reference_path, response):
@@ -275,13 +215,13 @@ class QgsServerTestBase(QgisTestCase):
             return
 
         # Store the output for debug or to regenerate the reference documents:
-        f = open(reference_path, "wb+")
+        f = open(reference_path, 'wb+')
         f.write(response)
         f.close()
 
     def _result(self, data):
         headers = {}
-        for line in data[0].decode("UTF-8").split("\n"):
+        for line in data[0].decode('UTF-8').split("\n"):
             if line != "":
                 header = line.split(":")
                 self.assertEqual(len(header), 2, line)
@@ -289,41 +229,30 @@ class QgsServerTestBase(QgisTestCase):
 
         return data[1], headers
 
-    def _img_diff(
-        self,
-        image: str,
-        control_image,
-        max_diff,
-        max_size_diff=QSize(),
-        outputFormat="PNG",
-    ) -> bool:
+    def _img_diff(self, image: str, control_image, max_diff, max_size_diff=QSize(), outputFormat='PNG') -> bool:
 
-        if outputFormat == "PNG":
-            extFile = "png"
-        elif outputFormat == "JPG":
-            extFile = "jpg"
-        elif outputFormat == "WEBP":
-            extFile = "webp"
+        if outputFormat == 'PNG':
+            extFile = 'png'
+        elif outputFormat == 'JPG':
+            extFile = 'jpg'
+        elif outputFormat == 'WEBP':
+            extFile = 'webp'
         else:
-            raise RuntimeError("Yeah, new format implemented")
+            raise RuntimeError('Yeah, new format implemented')
 
-        temp_image = os.path.join(
-            tempfile.gettempdir(), f"{control_image}_result.{extFile}"
-        )
+        temp_image = os.path.join(tempfile.gettempdir(), f"{control_image}_result.{extFile}")
 
         with open(temp_image, "wb") as f:
             f.write(image)
 
-        if outputFormat != "PNG":
+        if outputFormat != 'PNG':
             # TODO fix this, it's not actually testing anything..!
             return True
 
         rendered_image = QImage(temp_image)
-        if rendered_image.format() not in (
-            QImage.Format.Format_RGB32,
-            QImage.Format.Format_ARGB32,
-            QImage.Format.Format_ARGB32_Premultiplied,
-        ):
+        if rendered_image.format() not in (QImage.Format.Format_RGB32,
+                                           QImage.Format.Format_ARGB32,
+                                           QImage.Format.Format_ARGB32_Premultiplied):
             rendered_image = rendered_image.convertToFormat(QImage.Format.Format_ARGB32)
 
         return self.image_check(
@@ -333,63 +262,40 @@ class QgsServerTestBase(QgisTestCase):
             control_image,
             allowed_mismatch=max_diff,
             control_path_prefix="qgis_server",
-            size_tolerance=max_size_diff,
+            size_tolerance=max_size_diff
         )
 
-    def _img_diff_error(
-        self,
-        response,
-        headers,
-        test_name: str,
-        max_diff=100,
-        max_size_diff=QSize(),
-        outputFormat="PNG",
-    ):
+    def _img_diff_error(self, response, headers, test_name: str, max_diff=100, max_size_diff=QSize(), outputFormat='PNG'):
         """
         :param outputFormat: PNG, JPG or WEBP
         """
 
-        if outputFormat == "PNG":
-            extFile = "png"
-            contentType = "image/png"
-        elif outputFormat == "JPG":
-            extFile = "jpg"
-            contentType = "image/jpeg"
-        elif outputFormat == "WEBP":
-            extFile = "webp"
-            contentType = "image/webp"
+        if outputFormat == 'PNG':
+            extFile = 'png'
+            contentType = 'image/png'
+        elif outputFormat == 'JPG':
+            extFile = 'jpg'
+            contentType = 'image/jpeg'
+        elif outputFormat == 'WEBP':
+            extFile = 'webp'
+            contentType = 'image/webp'
         else:
-            raise RuntimeError("Yeah, new format implemented")
+            raise RuntimeError('Yeah, new format implemented')
 
         if self.regenerate_reference:
-            reference_path = (
-                unitTestDataPath("control_images")
-                + "/qgis_server/"
-                + test_name
-                + "/"
-                + test_name
-                + "."
-                + extFile
-            )
+            reference_path = unitTestDataPath(
+                'control_images') + '/qgis_server/' + test_name + '/' + test_name + '.' + extFile
             self.store_reference(reference_path, response)
 
         self.assertEqual(
-            headers.get("Content-Type"),
-            contentType,
-            f"Content type is wrong: {headers.get('Content-Type')} instead of {contentType}\n{response}",
-        )
+            headers.get("Content-Type"), contentType,
+            f"Content type is wrong: {headers.get('Content-Type')} instead of {contentType}\n{response}")
 
         self.assertTrue(
             self._img_diff(response, test_name, max_diff, max_size_diff, outputFormat)
         )
 
-    def _execute_request(
-        self,
-        qs,
-        requestMethod=QgsServerRequest.GetMethod,
-        data=None,
-        request_headers=None,
-    ):
+    def _execute_request(self, qs, requestMethod=QgsServerRequest.GetMethod, data=None, request_headers=None):
         request = QgsBufferServerRequest(qs, requestMethod, request_headers or {}, data)
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response)
@@ -400,9 +306,7 @@ class QgsServerTestBase(QgisTestCase):
             headers.append((f"{k}: {rh[k]}").encode())
         return b"\n".join(headers) + b"\n\n", bytes(response.body())
 
-    def _execute_request_project(
-        self, qs, project, requestMethod=QgsServerRequest.GetMethod, data=None
-    ):
+    def _execute_request_project(self, qs, project, requestMethod=QgsServerRequest.GetMethod, data=None):
         request = QgsBufferServerRequest(qs, requestMethod, {}, data)
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
@@ -413,20 +317,11 @@ class QgsServerTestBase(QgisTestCase):
             headers.append((f"{k}: {rh[k]}").encode())
         return b"\n".join(headers) + b"\n\n", bytes(response.body())
 
-    def _assert_status_code(
-        self,
-        status_code,
-        qs,
-        requestMethod=QgsServerRequest.GetMethod,
-        data=None,
-        project=None,
-    ):
+    def _assert_status_code(self, status_code, qs, requestMethod=QgsServerRequest.GetMethod, data=None, project=None):
         request = QgsBufferServerRequest(qs, requestMethod, {}, data)
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, project)
-        assert (
-            response.statusCode() == status_code
-        ), f"{response.statusCode()} != {status_code}"
+        assert response.statusCode() == status_code, f"{response.statusCode()} != {status_code}"
 
     def _assertRed(self, color: QColor):
         self.assertEqual(color.red(), 255)
@@ -461,11 +356,11 @@ class TestQgsServerTestBase(QgisTestCase):
 
         # test bad assertion
         expected = b'</WFSLayers>\n<Layer queryable="1">\n'
-        response = b"<Layer>\n"
+        response = b'<Layer>\n'
         self.assertRaises(AssertionError, engine.assertXMLEqual, response, expected)
 
         expected = b'</WFSLayers>\n<Layer queryable="1">\n'
-        response = b"</WFSLayers>\n<Layer>\n"
+        response = b'</WFSLayers>\n<Layer>\n'
         self.assertRaises(AssertionError, engine.assertXMLEqual, response, expected)
 
         expected = b'</WFSLayers>\n<Layer queryable="1">\n'
@@ -495,6 +390,7 @@ class TestQgsServerTestBase(QgisTestCase):
 
 
 class TestQgsServer(QgsServerTestBase):
+
     """Tests container"""
 
     # Set to True to re-generate reference files for this class
@@ -507,47 +403,30 @@ class TestQgsServer(QgsServerTestBase):
 
     def test_multiple_servers(self):
         """Segfaults?"""
-        servers = {}
         for i in range(10):
-            servers[f"s{i}"] = QgsServer()
-            servers[f"rq{i}"] = QgsBufferServerRequest("")
-            servers[f"re{i}"] = QgsBufferServerResponse()
-            servers[f"s{i}"].handleRequest(servers[f"rq{i}"], servers[f"re{i}"])
+            locals()[f"s{i}"] = QgsServer()
+            locals()[f"rq{i}"] = QgsBufferServerRequest("")
+            locals()[f"re{i}"] = QgsBufferServerResponse()
+            locals()[f"s{i}"].handleRequest(locals()[f"rq{i}"], locals()[f"re{i}"])
 
     def test_requestHandler(self):
         """Test request handler"""
-        headers = {"header-key-1": "header-value-1", "header-key-2": "header-value-2"}
-        request = QgsBufferServerRequest(
-            "http://somesite.com/somepath", QgsServerRequest.GetMethod, headers
-        )
+        headers = {'header-key-1': 'header-value-1', 'header-key-2': 'header-value-2'}
+        request = QgsBufferServerRequest('http://somesite.com/somepath', QgsServerRequest.GetMethod, headers)
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response)
-        self.assertEqual(
-            bytes(response.body()),
-            b'<?xml version="1.0" encoding="UTF-8"?>\n<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n',
-        )
-        self.assertEqual(
-            response.headers(),
-            {"Content-Length": "195", "Content-Type": "text/xml; charset=utf-8"},
-        )
+        self.assertEqual(bytes(response.body()), b'<?xml version="1.0" encoding="UTF-8"?>\n<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
+        self.assertEqual(response.headers(), {'Content-Length': '195', 'Content-Type': 'text/xml; charset=utf-8'})
         self.assertEqual(response.statusCode(), 500)
 
     def test_requestHandlerProject(self):
         """Test request handler with none project"""
-        headers = {"header-key-1": "header-value-1", "header-key-2": "header-value-2"}
-        request = QgsBufferServerRequest(
-            "http://somesite.com/somepath", QgsServerRequest.GetMethod, headers
-        )
+        headers = {'header-key-1': 'header-value-1', 'header-key-2': 'header-value-2'}
+        request = QgsBufferServerRequest('http://somesite.com/somepath', QgsServerRequest.GetMethod, headers)
         response = QgsBufferServerResponse()
         self.server.handleRequest(request, response, None)
-        self.assertEqual(
-            bytes(response.body()),
-            b'<?xml version="1.0" encoding="UTF-8"?>\n<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n',
-        )
-        self.assertEqual(
-            response.headers(),
-            {"Content-Length": "195", "Content-Type": "text/xml; charset=utf-8"},
-        )
+        self.assertEqual(bytes(response.body()), b'<?xml version="1.0" encoding="UTF-8"?>\n<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
+        self.assertEqual(response.headers(), {'Content-Length': '195', 'Content-Type': 'text/xml; charset=utf-8'})
         self.assertEqual(response.statusCode(), 500)
 
     def test_api(self):
@@ -556,29 +435,23 @@ class TestQgsServer(QgsServerTestBase):
         # Test as a whole
         header, body = self._execute_request("")
         response = self.strip_version_xmlns(header + body)
-        expected = self.strip_version_xmlns(
-            b'Content-Length: 195\nContent-Type: text/xml; charset=utf-8\n\n<?xml version="1.0" encoding="UTF-8"?>\n<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n'
-        )
+        expected = self.strip_version_xmlns(b'Content-Length: 195\nContent-Type: text/xml; charset=utf-8\n\n<?xml version="1.0" encoding="UTF-8"?>\n<ServerException>Project file error. For OWS services: please provide a SERVICE and a MAP parameter pointing to a valid QGIS project file</ServerException>\n')
         self.assertEqual(response, expected)
-        expected = b"Content-Length: 195\nContent-Type: text/xml; charset=utf-8\n\n"
+        expected = b'Content-Length: 195\nContent-Type: text/xml; charset=utf-8\n\n'
         self.assertEqual(header, expected)
 
         # Test response when project is specified but without service
         project = self.testdata_path + "test_project_wfs.qgs"
-        qs = f"?MAP={urllib.parse.quote(project)}"
+        qs = f'?MAP={urllib.parse.quote(project)}'
         header, body = self._execute_request(qs)
         response = self.strip_version_xmlns(header + body)
-        expected = self.strip_version_xmlns(
-            b'Content-Length: 365\nContent-Type: text/xml; charset=utf-8\n\n<?xml version="1.0" encoding="UTF-8"?>\n<ServiceExceptionReport  >\n <ServiceException code="Service configuration error">Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint</ServiceException>\n</ServiceExceptionReport>\n'
-        )
+        expected = self.strip_version_xmlns(b'Content-Length: 365\nContent-Type: text/xml; charset=utf-8\n\n<?xml version="1.0" encoding="UTF-8"?>\n<ServiceExceptionReport  >\n <ServiceException code="Service configuration error">Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint</ServiceException>\n</ServiceExceptionReport>\n')
         self.assertEqual(response, expected)
-        expected = b"Content-Length: 365\nContent-Type: text/xml; charset=utf-8\n\n"
+        expected = b'Content-Length: 365\nContent-Type: text/xml; charset=utf-8\n\n'
         self.assertEqual(header, expected)
 
         # Test body
-        expected = self.strip_version_xmlns(
-            b'<?xml version="1.0" encoding="UTF-8"?>\n<ServiceExceptionReport  >\n <ServiceException code="Service configuration error">Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint</ServiceException>\n</ServiceExceptionReport>\n'
-        )
+        expected = self.strip_version_xmlns(b'<?xml version="1.0" encoding="UTF-8"?>\n<ServiceExceptionReport  >\n <ServiceException code="Service configuration error">Service unknown or unsupported. Current supported services (case-sensitive): WMS WFS WCS WMTS SampleService, or use a WFS3 (OGC API Features) endpoint</ServiceException>\n</ServiceExceptionReport>\n')
         self.assertEqual(self.strip_version_xmlns(body), expected)
 
     # WCS tests
@@ -586,107 +459,77 @@ class TestQgsServer(QgsServerTestBase):
         project = self.projectPath
         assert os.path.exists(project), "Project file not found: " + project
 
-        query_string = f"?MAP={urllib.parse.quote(project)}&SERVICE=WCS&VERSION=1.0.0&REQUEST={request}"
+        query_string = f'?MAP={urllib.parse.quote(project)}&SERVICE=WCS&VERSION=1.0.0&REQUEST={request}'
         header, body = self._execute_request(query_string)
         self.assert_headers(header, body)
         response = header + body
-        reference_path = self.testdata_path + "wcs_" + request.lower() + ".txt"
-        f = open(reference_path, "rb")
+        reference_path = self.testdata_path + 'wcs_' + request.lower() + '.txt'
+        f = open(reference_path, 'rb')
         self.store_reference(reference_path, response)
         expected = f.read()
         f.close()
-        response = re.sub(RE_STRIP_UNCHECKABLE, b"", response)
-        expected = re.sub(RE_STRIP_UNCHECKABLE, b"", expected)
+        response = re.sub(RE_STRIP_UNCHECKABLE, b'', response)
+        expected = re.sub(RE_STRIP_UNCHECKABLE, b'', expected)
 
-        self.assertXMLEqual(
-            response,
-            expected,
-            msg=f"request {query_string} failed.\n Query: {request}\n Expected:\n{expected.decode('utf-8')}\n\n Response:\n{response.decode('utf-8')}",
-        )
+        self.assertXMLEqual(response, expected, msg=f"request {query_string} failed.\n Query: {request}\n Expected:\n{expected.decode('utf-8')}\n\n Response:\n{response.decode('utf-8')}")
 
     def test_project_wcs(self):
         """Test some WCS request"""
-        for request in ("GetCapabilities", "DescribeCoverage"):
+        for request in ('GetCapabilities', 'DescribeCoverage'):
             self.wcs_request_compare(request)
 
     def test_wcs_getcapabilities_url(self):
         # empty url in project
         project = os.path.join(self.testdata_path, "test_project_without_urls.qgs")
-        qs = "?" + "&".join(
-            [
-                "%s=%s" % i
-                for i in list(
-                    {
-                        "MAP": urllib.parse.quote(project),
-                        "SERVICE": "WCS",
-                        "VERSION": "1.0.0",
-                        "REQUEST": "GetCapabilities",
-                        "STYLES": "",
-                    }.items()
-                )
-            ]
-        )
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WCS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetCapabilities",
+            "STYLES": ""
+        }.items())])
 
         r, h = self._result(self._execute_request(qs))
 
         item_found = False
         for item in str(r).split("\\n"):
             if "OnlineResource" in item:
-                self.assertEqual('="?' in item, True)
+                self.assertEqual("=\"?" in item, True)
                 item_found = True
         self.assertTrue(item_found)
 
         # url well defined in project
         project = os.path.join(self.testdata_path, "test_project_with_urls.qgs")
-        qs = "?" + "&".join(
-            [
-                "%s=%s" % i
-                for i in list(
-                    {
-                        "MAP": urllib.parse.quote(project),
-                        "SERVICE": "WCS",
-                        "VERSION": "1.0.0",
-                        "REQUEST": "GetCapabilities",
-                        "STYLES": "",
-                    }.items()
-                )
-            ]
-        )
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": urllib.parse.quote(project),
+            "SERVICE": "WCS",
+            "VERSION": "1.0.0",
+            "REQUEST": "GetCapabilities",
+            "STYLES": ""
+        }.items())])
 
         r, h = self._result(self._execute_request(qs))
 
         item_found = False
         for item in str(r).split("\\n"):
             if "OnlineResource" in item:
-                self.assertEqual('"my_wcs_advertised_url' in item, True)
+                self.assertEqual("\"my_wcs_advertised_url" in item, True)
                 item_found = True
         self.assertTrue(item_found)
 
         # Service URL in header
-        for header_name, header_value in (
-            ("X-Qgis-Service-Url", "http://test1"),
-            ("X-Qgis-Wcs-Service-Url", "http://test2"),
-        ):
+        for header_name, header_value in (("X-Qgis-Service-Url", "http://test1"), ("X-Qgis-Wcs-Service-Url", "http://test2")):
             # empty url in project
             project = os.path.join(self.testdata_path, "test_project_without_urls.qgs")
-            qs = "?" + "&".join(
-                [
-                    "%s=%s" % i
-                    for i in list(
-                        {
-                            "MAP": urllib.parse.quote(project),
-                            "SERVICE": "WCS",
-                            "VERSION": "1.0.0",
-                            "REQUEST": "GetCapabilities",
-                            "STYLES": "",
-                        }.items()
-                    )
-                ]
-            )
+            qs = "?" + "&".join(["%s=%s" % i for i in list({
+                "MAP": urllib.parse.quote(project),
+                "SERVICE": "WCS",
+                "VERSION": "1.0.0",
+                "REQUEST": "GetCapabilities",
+                "STYLES": ""
+            }.items())])
 
-            r, h = self._result(
-                self._execute_request(qs, request_headers={header_name: header_value})
-            )
+            r, h = self._result(self._execute_request(qs, request_headers={header_name: header_value}))
 
             item_found = False
             for item in str(r).split("\\n"):
@@ -698,32 +541,19 @@ class TestQgsServer(QgsServerTestBase):
         # Other headers combinaison
         for headers, online_resource in (
             ({"Forwarded": "host=test3;proto=https"}, "https://test3"),
-            (
-                {"Forwarded": "host=test4;proto=https, host=test5;proto=https"},
-                "https://test4",
-            ),
-            (
-                {"X-Forwarded-Host": "test6", "X-Forwarded-Proto": "https"},
-                "https://test6",
-            ),
+            ({"Forwarded": "host=test4;proto=https, host=test5;proto=https"}, "https://test4"),
+            ({"X-Forwarded-Host": "test6", "X-Forwarded-Proto": "https"}, "https://test6"),
             ({"Host": "test7"}, "test7"),
         ):
             # empty url in project
             project = os.path.join(self.testdata_path, "test_project_without_urls.qgs")
-            qs = "?" + "&".join(
-                [
-                    "%s=%s" % i
-                    for i in list(
-                        {
-                            "MAP": urllib.parse.quote(project),
-                            "SERVICE": "WCS",
-                            "VERSION": "1.0.0",
-                            "REQUEST": "GetCapabilities",
-                            "STYLES": "",
-                        }.items()
-                    )
-                ]
-            )
+            qs = "?" + "&".join(["%s=%s" % i for i in list({
+                "MAP": urllib.parse.quote(project),
+                "SERVICE": "WCS",
+                "VERSION": "1.0.0",
+                "REQUEST": "GetCapabilities",
+                "STYLES": ""
+            }.items())])
 
             r, h = self._result(self._execute_request(qs, request_headers=headers))
 
@@ -758,7 +588,7 @@ class TestQgsServerParameter(QgisTestCase):
 
         # multiple qgis expressions
         filter0 = "to_datetime('2017-09-29 12:00:00')"
-        filter1 = 'Contours:"elev" <= 1200'
+        filter1 = "Contours:\"elev\" <= 1200"
         filter2 = "\"name\"='three'"
 
         param = QgsServerParameterDefinition()
@@ -847,5 +677,5 @@ class TestQgsServerParameter(QgisTestCase):
         self.assertEqual(param.toOgcFilterList()[7], "")
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

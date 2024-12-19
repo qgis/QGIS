@@ -31,7 +31,7 @@ class QgsMapLayerProxyModel;
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutLegendLayersDialog : public QDialog, private Ui::QgsLayoutLegendLayersDialogBase
+class GUI_EXPORT QgsLayoutLegendLayersDialog: public QDialog, private Ui::QgsLayoutLegendLayersDialogBase
 {
     Q_OBJECT
 
@@ -45,7 +45,7 @@ class GUI_EXPORT QgsLayoutLegendLayersDialog : public QDialog, private Ui::QgsLa
     void setVisibleLayers( const QList<QgsMapLayer *> &layers );
 
     //! Returns the list of selected layers
-    QList<QgsMapLayer *> selectedLayers() const;
+    QList< QgsMapLayer * > selectedLayers() const;
 
   private slots:
 
@@ -53,8 +53,9 @@ class GUI_EXPORT QgsLayoutLegendLayersDialog : public QDialog, private Ui::QgsLa
     void showHelp();
 
   private:
+
     QgsMapLayerProxyModel *mModel = nullptr;
-    QList<QgsMapLayer *> mVisibleLayers;
+    QList< QgsMapLayer * > mVisibleLayers;
 };
 
 #endif //QGSLAYOUTLEGENDLAYERSDIALOG_H

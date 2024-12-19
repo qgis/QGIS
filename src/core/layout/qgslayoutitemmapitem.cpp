@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgslayoutitemmapitem.h"
-#include "moc_qgslayoutitemmapitem.cpp"
 #include "qgslayoutitemmap.h"
 #include "qgslayout.h"
 #include <QUuid>

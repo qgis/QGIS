@@ -20,6 +20,7 @@ associated :py:class:`QgsColorScheme`.
 #include "qgscolorswatchgrid.h"
 %End
   public:
+
     QgsColorSwatchGrid( QgsColorScheme *scheme, const QString &context = QString(), QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a new color swatch grid.
@@ -100,6 +101,7 @@ Emitted when mouse hovers over widget
 %End
 
   protected:
+
     virtual void paintEvent( QPaintEvent *event );
 
     virtual void mouseMoveEvent( QMouseEvent *event );
@@ -119,7 +121,7 @@ Emitted when mouse hovers over widget
 
 
 
-class QgsColorSwatchGridAction : QWidgetAction
+class QgsColorSwatchGridAction: QWidgetAction
 {
 %Docstring(signature="appended")
 A color swatch grid which can be embedded into a menu.
@@ -131,6 +133,7 @@ A color swatch grid which can be embedded into a menu.
 #include "qgscolorswatchgrid.h"
 %End
   public:
+
     QgsColorSwatchGridAction( QgsColorScheme *scheme, QMenu *menu = 0, const QString &context = QString(), QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a new color swatch grid action.

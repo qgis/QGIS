@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgshistogramwidget.h"
-#include "moc_qgshistogramwidget.cpp"
 #include "qgsapplication.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
@@ -61,7 +60,7 @@ QgsHistogramWidget::QgsHistogramWidget( QWidget *parent, QgsVectorLayer *layer, 
   mMeanCheckBox->setChecked( settings.value( QStringLiteral( "HistogramWidget/showMean" ), false ).toBool() );
   mStdevCheckBox->setChecked( settings.value( QStringLiteral( "HistogramWidget/showStdev" ), false ).toBool() );
 
-  connect( mBinsSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsHistogramWidget::refresh );
+  connect( mBinsSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsHistogramWidget::refresh );
   connect( mMeanCheckBox, &QAbstractButton::toggled, this, &QgsHistogramWidget::refresh );
   connect( mStdevCheckBox, &QAbstractButton::toggled, this, &QgsHistogramWidget::refresh );
   connect( mLoadValuesButton, &QAbstractButton::clicked, this, &QgsHistogramWidget::refreshValues );
@@ -108,7 +107,7 @@ void QgsHistogramWidget::refreshValues()
   bool ok;
   mValues = QgsVectorLayerUtils::getDoubleValues( mVectorLayer, mSourceFieldExp, ok );
 
-  if ( !ok )
+  if ( ! ok )
   {
     QApplication::restoreOverrideCursor();
     return;
@@ -210,7 +209,9 @@ void QgsHistogramWidget::drawHistogram()
 
   //draw histogram
   QwtPlotHistogram *plotHistogram = nullptr;
-  plotHistogram = createPlotHistogram( !mRanges.isEmpty() ? mRanges.at( 0 ).label() : QString(), !mRanges.isEmpty() ? QBrush( mHistoColors.at( 0 ) ) : mBrush, !mRanges.isEmpty() ? Qt::NoPen : mPen );
+  plotHistogram = createPlotHistogram( !mRanges.isEmpty() ? mRanges.at( 0 ).label() : QString(),
+                                       !mRanges.isEmpty() ? QBrush( mHistoColors.at( 0 ) ) : mBrush,
+                                       !mRanges.isEmpty() ? Qt::NoPen : mPen );
   QVector<QwtIntervalSample> dataHisto;
 
   int bins = mBinsSpinBox->value();
@@ -237,7 +238,7 @@ void QgsHistogramWidget::drawHistogram()
     }
 
     double upperEdge = !mRanges.isEmpty() ? std::min( edges.at( bin + 1 ), mRanges.at( rangeIndex ).upperValue() )
-                                          : edges.at( bin + 1 );
+                       : edges.at( bin + 1 );
 
     dataHisto << QwtIntervalSample( binValue, edges.at( bin ), upperEdge );
 
@@ -320,3 +321,4 @@ QwtPlotHistogram *QgsHistogramWidget::createPlotHistogram( const QString &title,
   }
   return histogram;
 }
+

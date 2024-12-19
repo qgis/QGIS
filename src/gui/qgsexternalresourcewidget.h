@@ -34,14 +34,14 @@ class QgsExternalStorageFetchedContent;
 
 
 #ifdef SIP_RUN
-//%ModuleHeaderCode
+% ModuleHeaderCode
 // fix to allow compilation with sip that for some reason
 // doesn't add this include to the file where the code from
 // ConvertToSubClassCode goes.
 #include <qgsexternalresourcewidget.h>
 
 #include <qgsexternalstoragefilewidget.h>
-//%End
+% End
 #endif
 
 
@@ -52,6 +52,7 @@ class QgsExternalStorageFetchedContent;
  */
 class GUI_EXPORT QgsExternalResourceWidget : public QWidget
 {
+
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsExternalResourceWidget *>( sipCpp ) )

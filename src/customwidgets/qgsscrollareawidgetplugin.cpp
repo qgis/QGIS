@@ -16,7 +16,6 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsscrollareawidgetplugin.h"
-#include "moc_qgsscrollareawidgetplugin.cpp"
 #include "qgsscrollarea.h"
 
 
@@ -105,5 +104,5 @@ QString QgsScrollAreaWidgetPlugin::domXml() const
                   "  </widget>\n"
                   " </widget>\n"
                   "</ui>\n" )
-    .arg( name() );
+         .arg( name() );
 }

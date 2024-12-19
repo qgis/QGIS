@@ -47,7 +47,9 @@ class QgsServerInterface;
  */
 class SERVER_EXPORT QgsServiceRegistry
 {
+
   public:
+
     QgsServiceRegistry() = default;
     ~QgsServiceRegistry();
 
@@ -137,11 +139,12 @@ class SERVER_EXPORT QgsServiceRegistry
     void cleanUp();
 
   private:
+
     // XXX consider using QMap because of the few numbers of
     // elements to handle
-    typedef QHash<QString, std::shared_ptr<QgsService>> ServiceTable;
-    typedef QHash<QString, std::shared_ptr<QgsServerApi>> ApiTable;
-    typedef QHash<QString, QPair<QString, QString>> VersionTable;
+    typedef QHash<QString, std::shared_ptr<QgsService> > ServiceTable;
+    typedef QHash<QString, std::shared_ptr<QgsServerApi> > ApiTable;
+    typedef QHash<QString, QPair<QString, QString> > VersionTable;
 
     QgsServiceNativeLoader mNativeLoader;
 
@@ -149,6 +152,8 @@ class SERVER_EXPORT QgsServiceRegistry
     VersionTable mServiceVersions;
     ApiTable mApis;
     VersionTable mApiVersions;
+
 };
 
 #endif
+

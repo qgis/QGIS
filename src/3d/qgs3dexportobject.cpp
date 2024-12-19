@@ -18,9 +18,8 @@
 #include <QVector3D>
 #include <QDir>
 #include <QImage>
-#include <QMatrix4x4>
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 typedef Qt3DRender::QAttribute Qt3DQAttribute;
@@ -41,8 +40,7 @@ void insertIndexData( QVector<uint> &vertexIndex, const QVector<T> &faceIndex )
 {
   for ( int i = 0; i < faceIndex.size(); i += 3 )
   {
-    if ( i + 2 >= faceIndex.size() )
-      continue;
+    if ( i + 2 >= faceIndex.size() ) continue;
     // skip invalid triangles
     if ( faceIndex[i] == faceIndex[i + 1] || faceIndex[i + 1] == faceIndex[i + 2] || faceIndex[i] == faceIndex[i + 2] )
       continue;
@@ -51,13 +49,14 @@ void insertIndexData( QVector<uint> &vertexIndex, const QVector<T> &faceIndex )
   }
 }
 
-void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, const QMatrix4x4 &transform )
+void Qgs3DExportObject::setupPositionCoordinates( const QVector<float> &positionsBuffer, float scale, const QVector3D &translation )
 {
   for ( int i = 0; i < positionsBuffer.size(); i += 3 )
   {
-    const QVector3D position( positionsBuffer[i], positionsBuffer[i + 1], positionsBuffer[i + 2] );
-    const QVector3D positionFinal = transform.map( position );
-    mVertexPosition << positionFinal.x() << positionFinal.y() << positionFinal.z();
+    for ( int j = 0; j < 3; ++j )
+    {
+      mVertexPosition << positionsBuffer[i + j] * scale + translation[j];
+    }
   }
 }
 
@@ -69,29 +68,12 @@ void Qgs3DExportObject::setupFaces( const QVector<uint> &facesIndexes )
 void Qgs3DExportObject::setupLine( const QVector<uint> &lineIndexes )
 {
   Q_UNUSED( lineIndexes );
-  for ( int i = 0; i < mVertexPosition.size(); i += 3 )
-    mIndexes << i / 3 + 1;
+  for ( int i = 0; i < mVertexPosition.size(); i += 3 ) mIndexes << i / 3 + 1;
 }
 
-void Qgs3DExportObject::setupNormalCoordinates( const QVector<float> &normalsBuffer, const QMatrix4x4 &transform )
+void Qgs3DExportObject::setupNormalCoordinates( const QVector<float> &normalsBuffer )
 {
-  // Qt does not provide QMatrix3x3 * QVector3D multiplication so we use QMatrix4x4
-  QMatrix3x3 normal3x3 = transform.normalMatrix();
-  QMatrix4x4 normal4x4( normal3x3( 0, 0 ), normal3x3( 0, 1 ), normal3x3( 0, 2 ), 0, normal3x3( 1, 0 ), normal3x3( 1, 1 ), normal3x3( 1, 2 ), 0, normal3x3( 2, 0 ), normal3x3( 2, 1 ), normal3x3( 2, 2 ), 0, 0, 0, 0, 1 );
-
-  for ( int i = 0; i < normalsBuffer.size(); i += 3 )
-  {
-    const QVector3D normalVector( normalsBuffer[i], normalsBuffer[i + 1], normalsBuffer[i + 2] );
-    QVector3D v = normal4x4.mapVector( normalVector );
-    // round numbers very close to zero to avoid tiny numbers like 6e-8 in export
-    if ( qgsFloatNear( v.x(), 0 ) )
-      v.setX( 0 );
-    if ( qgsFloatNear( v.y(), 0 ) )
-      v.setY( 0 );
-    if ( qgsFloatNear( v.z(), 0 ) )
-      v.setZ( 0 );
-    mNormals << v.x() << v.y() << v.z();
-  }
+  mNormals << normalsBuffer;
 }
 
 void Qgs3DExportObject::setupTextureCoordinates( const QVector<float> &texturesBuffer )
@@ -110,8 +92,7 @@ void Qgs3DExportObject::setupMaterial( QgsAbstractMaterialSettings *material )
 
 void Qgs3DExportObject::objectBounds( float &minX, float &minY, float &minZ, float &maxX, float &maxY, float &maxZ )
 {
-  if ( mType != TriangularFaces )
-    return;
+  if ( mType != TriangularFaces ) return;
   for ( const unsigned int vertice : qAsConst( mIndexes ) )
   {
     const int heightIndex = static_cast<int>( vertice ) * 3 + 1;
@@ -171,7 +152,8 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
 
   // we use negative indexes as this is the way to use relative values to reference vertex positions
   // Positive values are absolute vertex position from the beginning of the file.
-  auto getVertexIndex = [&]( unsigned int i ) -> QString {
+  auto getVertexIndex = [&]( unsigned int i ) -> QString
+  {
     const int negativeIndex = static_cast<int>( i - verticesCount );
     if ( hasNormals && !hasTextures )
       return QStringLiteral( "%1//%2" ).arg( negativeIndex ).arg( negativeIndex );
@@ -214,8 +196,7 @@ void Qgs3DExportObject::saveTo( QTextStream &out, float scale, const QVector3D &
 QString Qgs3DExportObject::saveMaterial( QTextStream &mtlOut, const QString &folderPath )
 {
   QString materialName = mName + "_material";
-  if ( mMaterialParameters.size() == 0 && ( mTexturesUV.size() == 0 || mTextureImage.isNull() ) )
-    return QString();
+  if ( mMaterialParameters.size() == 0 && ( mTexturesUV.size() == 0 || mTextureImage.isNull() ) ) return QString();
   mtlOut << "newmtl " << materialName << "\n";
   if ( mTexturesUV.size() != 0 && !mTextureImage.isNull() )
   {

@@ -20,6 +20,7 @@ Determine making the graph from vector line layer
 #include "qgsvectorlayerdirector.h"
 %End
   public:
+
     enum Direction
     {
       DirectionForward,
@@ -27,7 +28,13 @@ Determine making the graph from vector line layer
       DirectionBoth,
     };
 
-    QgsVectorLayerDirector( QgsFeatureSource *source, int directionFieldId, const QString &directDirectionValue, const QString &reverseDirectionValue, const QString &bothDirectionValue, Direction defaultDirection );
+    QgsVectorLayerDirector( QgsFeatureSource *source,
+                            int directionFieldId,
+                            const QString &directDirectionValue,
+                            const QString &reverseDirectionValue,
+                            const QString &bothDirectionValue,
+                            Direction defaultDirection
+                          );
 %Docstring
 Default constructor
 
@@ -40,8 +47,10 @@ Default constructor
                          attribute value is not set or does not equal to the given values
 %End
 
-    virtual void makeGraph( QgsGraphBuilderInterface *builder, const QVector<QgsPointXY> &additionalPoints, QVector<QgsPointXY> &snappedPoints /Out/, QgsFeedback *feedback = 0 ) const;
-
+     virtual void makeGraph( QgsGraphBuilderInterface *builder,
+                    const QVector< QgsPointXY > &additionalPoints,
+                    QVector< QgsPointXY> &snappedPoints /Out/,
+                    QgsFeedback *feedback = 0 ) const;
 %Docstring
 MANDATORY DIRECTOR PROPERTY DECLARATION
 %End

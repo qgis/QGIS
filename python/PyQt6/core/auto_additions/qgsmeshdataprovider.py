@@ -6,7 +6,7 @@ try:
     QgsMeshDataProvider.__attribute_docs__ = {'datasetGroupsAdded': 'Emitted when some new dataset groups have been added\n'}
     QgsMeshDataProvider.__signal_arguments__ = {'datasetGroupsAdded': ['count: int']}
     QgsMeshDataProvider.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMesh.compareFaces = staticmethod(QgsMesh.compareFaces)
@@ -15,13 +15,13 @@ Mesh - vertices, edges and faces
 
 .. versionadded:: 3.6"""
     QgsMesh.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMeshDataSourceInterface.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMeshDatasetSourceInterface.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass

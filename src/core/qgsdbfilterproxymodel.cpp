@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsdbfilterproxymodel.h"
-#include "moc_qgsdbfilterproxymodel.cpp"
 
 QgsDatabaseFilterProxyModel::QgsDatabaseFilterProxyModel( QObject *parent ): QSortFilterProxyModel( parent )
 {

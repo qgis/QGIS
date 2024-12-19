@@ -326,7 +326,7 @@ bool QgsRasterAttributeTable::insertField( int position, const Field &field, QSt
   {
     mType = Qgis::RasterAttributeTableType::Thematic;
   }
-  else if ( field.usage == Qgis::RasterAttributeTableFieldUsage::Min || field.usage == Qgis::RasterAttributeTableFieldUsage::Max )
+  else if ( field.usage == Qgis::RasterAttributeTableFieldUsage::Max || field.usage == Qgis::RasterAttributeTableFieldUsage::Max )
   {
     mType = Qgis::RasterAttributeTableType::Athematic;
   }

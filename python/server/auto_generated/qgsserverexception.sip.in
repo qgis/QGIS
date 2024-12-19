@@ -60,7 +60,8 @@ not appropriate in some situations.
 #include "qgsserverexception.h"
 %End
   public:
-    QgsOgcServiceException( const QString &code, const QString &message, const QString &locator = QString(), int responseCode = 200, const QString &version = QStringLiteral( "1.3.0" ) );
+    QgsOgcServiceException( const QString &code, const QString &message, const QString &locator = QString(),
+                            int responseCode = 200, const QString &version = QStringLiteral( "1.3.0" ) );
 %Docstring
 Construction
 %End
@@ -70,7 +71,7 @@ Construction
 Returns the exception message
 %End
 
-    QString code() const;
+    QString code()    const;
 %Docstring
 Returns the exception code
 %End

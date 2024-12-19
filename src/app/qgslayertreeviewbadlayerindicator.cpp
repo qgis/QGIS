@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewbadlayerindicator.h"
-#include "moc_qgslayertreeviewbadlayerindicator.cpp"
 #include "qgslayertree.h"
 #include "qgslayertreeview.h"
 #include "qgslayertreeutils.h"
@@ -66,7 +65,7 @@ void QgsLayerTreeViewBadLayerIndicatorProvider::onIndicatorClicked( const QModel
   else
   {
     QStringList thisLayerErrors;
-    QList<Error> newErrors;
+    QList< Error > newErrors;
     for ( const Error &error : std::as_const( mErrors ) )
     {
       if ( error.layer != layer )

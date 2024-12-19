@@ -30,15 +30,15 @@
  * This is a unit test for the qgsGraduatedSymbolRenderer class.
  */
 
-class TestQgsGraduatedSymbolRenderer : public QObject
+class TestQgsGraduatedSymbolRenderer: public QObject
 {
     Q_OBJECT
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init();// will be called before each testfunction is executed.
+    void cleanup();// will be called after every testfunction.
     void rangesOverlap();
     void rangesHaveGaps();
     void classifySymmetric();
@@ -49,18 +49,22 @@ class TestQgsGraduatedSymbolRenderer : public QObject
 
 void TestQgsGraduatedSymbolRenderer::initTestCase()
 {
+
 }
 
 void TestQgsGraduatedSymbolRenderer::cleanupTestCase()
 {
+
 }
 
 void TestQgsGraduatedSymbolRenderer::init()
 {
+
 }
 
 void TestQgsGraduatedSymbolRenderer::cleanup()
 {
+
 }
 
 void TestQgsGraduatedSymbolRenderer::rangesOverlap()
@@ -149,9 +153,9 @@ void TestQgsGraduatedSymbolRenderer::classifySymmetric()
 {
   // minimum < symmetryPointForEqualInterval < maximum
   // going below 1E-6 will result in a fail because C++ think 2.6e-06 - 2e-06 = 0
-  QList<double> minimum = { 15.30, 20, 20, 1111, 0.26, 0.000026, -1.56E10 };
-  QList<double> symmetryPointForEqualInterval = { 122.6, 24.3, 26.3, 1563.3, 0.34, 0.000034, 0.56E10 };
-  QList<double> maximum = { 253.6, 30, 30, 2222, 0.55, 0.000055, 1.25E10 };
+  QList<double> minimum =                       {15.30, 20,   20,     1111, 0.26, 0.000026, -1.56E10};
+  QList<double> symmetryPointForEqualInterval = {122.6, 24.3, 26.3, 1563.3, 0.34, 0.000034, 0.56E10};
+  QList<double> maximum =                       {253.6, 30,   30,     2222, 0.55, 0.000055, 1.25E10};
 
   int newPosOfSymmetryPoint = 0;
   bool astride = false;
@@ -180,7 +184,7 @@ void TestQgsGraduatedSymbolRenderer::classifySymmetric()
         QCOMPARE( breaks.count() % 2, 0 );
         // because the minimum is not in the breaks
         const int newPosOfSymmetryPoint = breaks.count() / 2;
-        QCOMPARE( breaks[newPosOfSymmetryPoint - 1], symmetryPoint );
+        QCOMPARE( breaks[ newPosOfSymmetryPoint - 1 ], symmetryPoint );
 
         // with astride = true
         astride = true;
@@ -201,8 +205,8 @@ void TestQgsGraduatedSymbolRenderer::classifySymmetric()
       breaks = QgsClassificationMethod::rangesToBreaks( ranges );
       QCOMPARE( breaks.count() % 2, 0 );
       // because the minimum is not in the breaks
-      newPosOfSymmetryPoint = breaks.count() / 2;
-      QCOMPARE( breaks[newPosOfSymmetryPoint - 1], symmetryPointForEqualInterval[valTest] );
+      newPosOfSymmetryPoint = breaks.count() / 2 ;
+      QCOMPARE( breaks[ newPosOfSymmetryPoint - 1 ], symmetryPointForEqualInterval[valTest] );
 
       // with astride = true
       astride = true;

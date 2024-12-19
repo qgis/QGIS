@@ -8,10 +8,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Alessandro Pasotti"
-__date__ = "2018-03-18"
-__copyright__ = "Copyright 2018, The QGIS Project"
+__author__ = 'Alessandro Pasotti'
+__date__ = '2018-03-18'
+__copyright__ = 'Copyright 2018, The QGIS Project'
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
@@ -53,50 +52,27 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
         self._filter_rect = self.filterRectToSourceCrs(self._transform)
         if not self._filter_rect.isNull():
             self._select_rect_geom = QgsGeometry.fromRect(self._filter_rect)
-            self._select_rect_engine = QgsGeometry.createGeometryEngine(
-                self._select_rect_geom.constGet()
-            )
+            self._select_rect_engine = QgsGeometry.createGeometryEngine(self._select_rect_geom.constGet())
             self._select_rect_engine.prepareGeometry()
         else:
             self._select_rect_engine = None
             self._select_rect_geom = None
 
-        if (
-            self._request.spatialFilterType() == Qgis.SpatialFilterType.DistanceWithin
-            and not self._request.referenceGeometry().isEmpty()
-        ):
+        if self._request.spatialFilterType() == Qgis.SpatialFilterType.DistanceWithin and not self._request.referenceGeometry().isEmpty():
             self._select_distance_within_geom = self._request.referenceGeometry()
-            self._select_distance_within_engine = QgsGeometry.createGeometryEngine(
-                self._select_distance_within_geom.constGet()
-            )
+            self._select_distance_within_engine = QgsGeometry.createGeometryEngine(self._select_distance_within_geom.constGet())
             self._select_distance_within_engine.prepareGeometry()
         else:
             self._select_distance_within_geom = None
             self._select_distance_within_engine = None
 
         self._feature_id_list = None
-        if (
-            self._filter_rect is not None
-            and self._source._provider._spatialindex is not None
-        ):
-            self._feature_id_list = self._source._provider._spatialindex.intersects(
-                self._filter_rect
-            )
+        if self._filter_rect is not None and self._source._provider._spatialindex is not None:
+            self._feature_id_list = self._source._provider._spatialindex.intersects(self._filter_rect)
 
-        if (
-            self._request.filterType() == QgsFeatureRequest.FilterType.FilterFid
-            or self._request.filterType() == QgsFeatureRequest.FilterType.FilterFids
-        ):
-            fids = (
-                [self._request.filterFid()]
-                if self._request.filterType() == QgsFeatureRequest.FilterType.FilterFid
-                else self._request.filterFids()
-            )
-            self._feature_id_list = (
-                list(set(self._feature_id_list).intersection(set(fids)))
-                if self._feature_id_list
-                else fids
-            )
+        if self._request.filterType() == QgsFeatureRequest.FilterType.FilterFid or self._request.filterType() == QgsFeatureRequest.FilterType.FilterFids:
+            fids = [self._request.filterFid()] if self._request.filterType() == QgsFeatureRequest.FilterType.FilterFid else self._request.filterFids()
+            self._feature_id_list = list(set(self._feature_id_list).intersection(set(fids))) if self._feature_id_list else fids
 
     def fetchFeature(self, f):
         """fetch next feature, return true on success"""
@@ -107,15 +83,10 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
         try:
             found = False
             while not found:
-                _f = self._source._features[
-                    list(self._source._features.keys())[self._index]
-                ]
+                _f = self._source._features[list(self._source._features.keys())[self._index]]
                 self._index += 1
 
-                if (
-                    self._feature_id_list is not None
-                    and _f.id() not in self._feature_id_list
-                ):
+                if self._feature_id_list is not None and _f.id() not in self._feature_id_list:
                     continue
 
                 if not self._filter_rect.isNull():
@@ -123,53 +94,29 @@ class PyFeatureIterator(QgsAbstractFeatureIterator):
                         continue
                     if self._request.flags() & QgsFeatureRequest.Flag.ExactIntersect:
                         # do exact check in case we're doing intersection
-                        if not self._select_rect_engine.intersects(
-                            _f.geometry().constGet()
-                        ):
+                        if not self._select_rect_engine.intersects(_f.geometry().constGet()):
                             continue
                     else:
-                        if (
-                            not _f.geometry()
-                            .boundingBox()
-                            .intersects(self._filter_rect)
-                        ):
+                        if not _f.geometry().boundingBox().intersects(self._filter_rect):
                             continue
 
                 self._source._expression_context.setFeature(_f)
-                if (
-                    self._request.filterType()
-                    == QgsFeatureRequest.FilterType.FilterExpression
-                ):
-                    if not self._request.filterExpression().evaluate(
-                        self._source._expression_context
-                    ):
+                if self._request.filterType() == QgsFeatureRequest.FilterType.FilterExpression:
+                    if not self._request.filterExpression().evaluate(self._source._expression_context):
                         continue
                 if self._source._subset_expression:
-                    if not self._source._subset_expression.evaluate(
-                        self._source._expression_context
-                    ):
+                    if not self._source._subset_expression.evaluate(self._source._expression_context):
                         continue
-                elif (
-                    self._request.filterType()
-                    == QgsFeatureRequest.FilterType.FilterFids
-                ):
+                elif self._request.filterType() == QgsFeatureRequest.FilterType.FilterFids:
                     if not _f.id() in self._request.filterFids():
                         continue
-                elif (
-                    self._request.filterType() == QgsFeatureRequest.FilterType.FilterFid
-                ):
+                elif self._request.filterType() == QgsFeatureRequest.FilterType.FilterFid:
                     if _f.id() != self._request.filterFid():
                         continue
                 f.setGeometry(_f.geometry())
                 self.geometryToDestinationCrs(f, self._transform)
 
-                if (
-                    self._select_distance_within_engine
-                    and self._select_distance_within_engine.distance(
-                        f.geometry().constGet()
-                    )
-                    > self._request.distanceWithin()
-                ):
+                if self._select_distance_within_engine and self._select_distance_within_engine.distance(f.geometry().constGet()) > self._request.distanceWithin():
                     continue
 
                 f.setFields(_f.fields())
@@ -218,9 +165,7 @@ class PyFeatureSource(QgsAbstractFeatureSource):
 
         self._expression_context = QgsExpressionContext()
         self._expression_context.appendScope(QgsExpressionContextUtils.globalScope())
-        self._expression_context.appendScope(
-            QgsExpressionContextUtils.projectScope(QgsProject.instance())
-        )
+        self._expression_context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
         self._expression_context.setFields(self._provider.fields())
         if self._provider.subsetString():
             self._subset_expression = QgsExpression(self._provider.subsetString())
@@ -239,12 +184,12 @@ class PyProvider(QgsVectorDataProvider):
     @classmethod
     def providerKey(cls):
         """Returns the memory provider key"""
-        return "pythonprovider"
+        return 'pythonprovider'
 
     @classmethod
     def description(cls):
         """Returns the memory provider description"""
-        return "Python Test Provider"
+        return 'Python Test Provider'
 
     @classmethod
     def createProvider(cls, uri, providerOptions, flags=QgsDataProvider.ReadFlags()):
@@ -252,15 +197,10 @@ class PyProvider(QgsVectorDataProvider):
 
     # Implementation of functions from QgsVectorDataProvider
 
-    def __init__(
-        self,
-        uri="",
-        providerOptions=QgsDataProvider.ProviderOptions(),
-        flags=QgsDataProvider.ReadFlags(),
-    ):
+    def __init__(self, uri='', providerOptions=QgsDataProvider.ProviderOptions(), flags=QgsDataProvider.ReadFlags()):
         super().__init__(uri)
         # Use the memory layer to parse the uri
-        mlayer = QgsVectorLayer(uri, "ml", "memory")
+        mlayer = QgsVectorLayer(uri, 'ml', 'memory')
         self.setNativeTypes(mlayer.dataProvider().nativeTypes())
         self._uri = uri
         self._fields = mlayer.fields()
@@ -268,12 +208,12 @@ class PyProvider(QgsVectorDataProvider):
         self._features = {}
         self._extent = QgsRectangle()
         self._extent.setNull()
-        self._subset_string = ""
+        self._subset_string = ''
         self._crs = mlayer.crs()
         self._spatialindex = None
         self._provider_options = providerOptions
         self._flags = flags
-        if "index=yes" in self._uri:
+        if 'index=yes' in self._uri:
             self.createSpatialIndex()
 
     def featureSource(self):
@@ -360,17 +300,7 @@ class PyProvider(QgsVectorDataProvider):
     def addAttributes(self, attrs):
         try:
             for new_f in attrs:
-                if new_f.type() not in (
-                    QVariant.Int,
-                    QVariant.Double,
-                    QVariant.String,
-                    QVariant.Date,
-                    QVariant.Time,
-                    QVariant.DateTime,
-                    QVariant.LongLong,
-                    QVariant.StringList,
-                    QVariant.List,
-                ):
+                if new_f.type() not in (QVariant.Int, QVariant.Double, QVariant.String, QVariant.Date, QVariant.Time, QVariant.DateTime, QVariant.LongLong, QVariant.StringList, QVariant.List):
                     continue
                 self._fields.append(new_f)
                 for f in self._features.values():
@@ -409,7 +339,7 @@ class PyProvider(QgsVectorDataProvider):
             self._fields.remove(idx)
             for f in self._features.values():
                 attr = f.attributes()
-                del attr[idx]
+                del (attr[idx])
                 f.setAttributes(attr)
         self.clearMinMaxCache()
         return True
@@ -461,18 +391,7 @@ class PyProvider(QgsVectorDataProvider):
         return True
 
     def capabilities(self):
-        return (
-            QgsVectorDataProvider.Capability.AddFeatures
-            | QgsVectorDataProvider.Capability.DeleteFeatures
-            | QgsVectorDataProvider.Capability.CreateSpatialIndex
-            | QgsVectorDataProvider.Capability.ChangeGeometries
-            | QgsVectorDataProvider.Capability.ChangeAttributeValues
-            | QgsVectorDataProvider.Capability.AddAttributes
-            | QgsVectorDataProvider.Capability.DeleteAttributes
-            | QgsVectorDataProvider.Capability.RenameAttributes
-            | QgsVectorDataProvider.Capability.SelectAtId
-            | QgsVectorDataProvider.Capability.CircularGeometries
-        )
+        return QgsVectorDataProvider.Capability.AddFeatures | QgsVectorDataProvider.Capability.DeleteFeatures | QgsVectorDataProvider.Capability.CreateSpatialIndex | QgsVectorDataProvider.Capability.ChangeGeometries | QgsVectorDataProvider.Capability.ChangeAttributeValues | QgsVectorDataProvider.Capability.AddAttributes | QgsVectorDataProvider.Capability.DeleteAttributes | QgsVectorDataProvider.Capability.RenameAttributes | QgsVectorDataProvider.Capability.SelectAtId | QgsVectorDataProvider.Capability. CircularGeometries
 
     # /* Implementation of functions from QgsDataProvider */
 
@@ -488,9 +407,7 @@ class PyProvider(QgsVectorDataProvider):
                     if feat.hasGeometry():
                         self._extent.combineExtentWith(feat.geometry().boundingBox())
             else:
-                for f in self.getFeatures(
-                    QgsFeatureRequest().setSubsetOfAttributes([])
-                ):
+                for f in self.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([])):
                     if f.hasGeometry():
                         self._extent.combineExtentWith(f.geometry().boundingBox())
 

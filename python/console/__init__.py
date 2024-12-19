@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 ***************************************************************************
     __init__.py
@@ -15,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = "Salvatore Larosa"
-__date__ = "September 2012"
-__copyright__ = "(C) 2012, Salvatore Larosa"
+__author__ = 'Salvatore Larosa'
+__date__ = 'September 2012'
+__copyright__ = '(C) 2012, Salvatore Larosa'
 
 from .console import show_console  # NOQA
 from .console import init_options_widget

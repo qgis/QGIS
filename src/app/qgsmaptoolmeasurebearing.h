@@ -26,7 +26,7 @@ class QgsRubberBand;
 class QgsSnapIndicator;
 
 //! Map tool to measure bearing between two points
-class APP_EXPORT QgsMapToolMeasureBearing : public QgsMapTool
+class APP_EXPORT QgsMapToolMeasureBearing: public QgsMapTool
 {
     Q_OBJECT
   public:
@@ -66,6 +66,7 @@ class APP_EXPORT QgsMapToolMeasureBearing : public QgsMapTool
     void configureDistanceArea();
 
     friend class TestQgsMeasureBearingTool;
+
 };
 
 #endif // QGSMAPTOOLMEASUREBEARING_H

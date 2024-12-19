@@ -3,5 +3,5 @@ try:
     QgsProjectFileTransform.convertRasterProperties = staticmethod(QgsProjectFileTransform.convertRasterProperties)
     QgsProjectFileTransform.fixOldSymbolLayerReferences = staticmethod(QgsProjectFileTransform.fixOldSymbolLayerReferences)
     QgsProjectFileTransform.__group__ = ['project']
-except (NameError, AttributeError):
+except NameError:
     pass

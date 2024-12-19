@@ -31,9 +31,9 @@ SIP_IF_MODULE( HAVE_QTGAMEPAD )
 
 #ifdef SIP_RUN
 // this is needed for the "convert to subclass" code below to compile
-//%ModuleHeaderCode
+% ModuleHeaderCode
 #include "qgs3dgamepadcontroller.h"
-//%End
+% End
 #endif
 
 class QGamepad;
@@ -52,7 +52,7 @@ class GUI_EXPORT QgsGamepad3DMapController : public QgsAbstract3DMapController
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( qobject_cast<QgsGamepad3DMapController *>( sipCpp ) )
+    if ( qobject_cast< QgsGamepad3DMapController * >( sipCpp ) )
 
       sipType = sipType_QgsGamepad3DMapController;
     else
@@ -61,6 +61,7 @@ class GUI_EXPORT QgsGamepad3DMapController : public QgsAbstract3DMapController
 #endif
 
   public:
+
     /**
      * Constructor for QgsGamepad3DMapController, with the specified \a gamepadDeviceId and \a parent object.
      */
@@ -367,8 +368,9 @@ class GUI_EXPORT QgsGamepad3DMapController : public QgsAbstract3DMapController
     void buttonGuideChanged( bool value );
 
   private:
+
     int mGamepadDeviceId = -1;
-    QPointer<QGamepad> mGamepad;
+    QPointer< QGamepad> mGamepad;
 };
 
 

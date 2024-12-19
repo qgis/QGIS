@@ -61,7 +61,7 @@ class _3D_EXPORT QgsDirectionalLightSettings : public QgsLightSource
     bool operator==( const QgsDirectionalLightSettings &other );
 
   private:
-    QgsVector3D mDirection { -0.32, 0.27, -0.91 };
+    QgsVector3D mDirection { -0.32, -0.91, -0.27 };
     QColor mColor = Qt::white;
     float mIntensity = 1.0;
 };

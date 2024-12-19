@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "16/08/2016"
-__copyright__ = "Copyright 2016, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '16/08/2016'
+__copyright__ = 'Copyright 2016, The QGIS Project'
 
 from qgis.PyQt.QtWidgets import QDialog, QWidget
 from qgis.gui import QgsPanelWidget
@@ -21,7 +20,7 @@ start_app()
 class TestQgsPanelWidget(QgisTestCase):
 
     def testFindParentPanel(self):
-        """test QgsPanelWidget.findParentPanel"""
+        """ test QgsPanelWidget.findParentPanel """
 
         # no widget
         self.assertFalse(QgsPanelWidget.findParentPanel(None))
@@ -53,5 +52,5 @@ class TestQgsPanelWidget(QgisTestCase):
         self.assertFalse(QgsPanelWidget.findParentPanel(n3))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

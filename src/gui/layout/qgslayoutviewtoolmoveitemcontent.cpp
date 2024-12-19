@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtoolmoveitemcontent.h"
-#include "moc_qgslayoutviewtoolmoveitemcontent.cpp"
 #include "qgslayoutviewmouseevent.h"
 #include "qgslayoutview.h"
 #include "qgslayout.h"
@@ -65,7 +64,8 @@ void QgsLayoutViewToolMoveItemContent::layoutMoveEvent( QgsLayoutViewMouseEvent 
   }
 
   //update item preview
-  mMoveContentItem->setMoveContentPreviewOffset( event->layoutPoint().x() - mMoveContentStartPos.x(), event->layoutPoint().y() - mMoveContentStartPos.y() );
+  mMoveContentItem->setMoveContentPreviewOffset( event->layoutPoint().x() - mMoveContentStartPos.x(),
+      event->layoutPoint().y() - mMoveContentStartPos.y() );
   mMoveContentItem->update();
 }
 

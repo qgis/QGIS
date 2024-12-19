@@ -15,40 +15,41 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "August 2012"
-__copyright__ = "(C) 2012, Victor Olaya"
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 import warnings
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QEvent
-from qgis.PyQt.QtWidgets import (
-    QFileDialog,
-    QStyle,
-    QMessageBox,
-    QStyledItemDelegate,
-    QLineEdit,
-    QWidget,
-    QToolButton,
-    QHBoxLayout,
-    QComboBox,
-    QPushButton,
-    QApplication,
-)
-from qgis.PyQt.QtGui import QIcon, QStandardItemModel, QStandardItem, QCursor
+from qgis.PyQt.QtWidgets import (QFileDialog,
+                                 QStyle,
+                                 QMessageBox,
+                                 QStyledItemDelegate,
+                                 QLineEdit,
+                                 QWidget,
+                                 QToolButton,
+                                 QHBoxLayout,
+                                 QComboBox,
+                                 QPushButton,
+                                 QApplication)
+from qgis.PyQt.QtGui import (QIcon,
+                             QStandardItemModel,
+                             QStandardItem,
+                             QCursor)
 
-from qgis.gui import (
-    QgsDoubleSpinBox,
-    QgsSpinBox,
-    QgsOptionsPageWidget,
-    QgsOptionsDialogHighlightWidget,
-)
+from qgis.gui import (QgsDoubleSpinBox,
+                      QgsSpinBox,
+                      QgsOptionsPageWidget,
+                      QgsOptionsDialogHighlightWidget)
 from qgis.core import NULL, QgsApplication, QgsSettings
 from qgis.utils import OverrideCursor
 
-from processing.core.ProcessingConfig import ProcessingConfig, settingsWatcher, Setting
+from processing.core.ProcessingConfig import (ProcessingConfig,
+                                              settingsWatcher,
+                                              Setting)
 from processing.core.Processing import Processing
 from processing.gui.DirectorySelectorDialog import DirectorySelectorDialog
 from processing.gui.menus import defaultMenuEntries, menusSettingsGroup
@@ -56,7 +57,8 @@ from processing.gui.menus import defaultMenuEntries, menusSettingsGroup
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
-    WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, "ui", "DlgConfig.ui"))
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'DlgConfig.ui'))
 
 
 class ConfigOptionsPage(QgsOptionsPageWidget):
@@ -69,7 +71,7 @@ class ConfigOptionsPage(QgsOptionsPageWidget):
         layout.setMargin(0)
         self.setLayout(layout)
         layout.addWidget(self.config_widget)
-        self.setObjectName("processingOptions")
+        self.setObjectName('processingOptions')
         self.highlightWidget = ProcessingTreeHighlight(self.config_widget)
         self.registerHighlightWidget(self.highlightWidget)
 
@@ -77,7 +79,7 @@ class ConfigOptionsPage(QgsOptionsPageWidget):
         self.config_widget.accept()
 
     def helpKey(self):
-        return "processing/index.html"
+        return 'processing/index.html'
 
 
 class ProcessingTreeHighlight(QgsOptionsDialogHighlightWidget):
@@ -93,7 +95,7 @@ class ProcessingTreeHighlight(QgsOptionsDialogHighlightWidget):
         return self.config_dialog.textChanged(text)
 
     def reset(self):
-        self.config_dialog.textChanged("")
+        self.config_dialog.textChanged('')
 
 
 class ConfigDialog(BASE, WIDGET):
@@ -102,7 +104,7 @@ class ConfigDialog(BASE, WIDGET):
         super().__init__(None)
         self.setupUi(self)
 
-        self.groupIcon = QgsApplication.getThemeIcon("mIconFolder.svg")
+        self.groupIcon = QgsApplication.getThemeIcon('mIconFolder.svg')
 
         self.model = QStandardItemModel()
         self.tree.setModel(self.model)
@@ -111,10 +113,8 @@ class ConfigDialog(BASE, WIDGET):
         self.tree.setItemDelegateForColumn(1, self.delegate)
 
         if showSearch:
-            if hasattr(self.searchBox, "setPlaceholderText"):
-                self.searchBox.setPlaceholderText(
-                    QApplication.translate("ConfigDialog", "Search…")
-                )
+            if hasattr(self.searchBox, 'setPlaceholderText'):
+                self.searchBox.setPlaceholderText(QApplication.translate('ConfigDialog', 'Search…'))
             self.searchBox.textChanged.connect(self.textChanged)
         else:
             self.searchBox.hide()
@@ -130,9 +130,7 @@ class ConfigDialog(BASE, WIDGET):
             text = str(text.lower())
         else:
             text = str(self.searchBox.text().lower())
-        found = self._filterItem(
-            self.model.invisibleRootItem(), text, False if text else True
-        )
+        found = self._filterItem(self.model.invisibleRootItem(), text, False if text else True)
 
         self.auto_adjust_columns = False
         if text:
@@ -150,12 +148,7 @@ class ConfigDialog(BASE, WIDGET):
 
     def _filterItem(self, item, text, forceShow=False):
         if item.hasChildren():
-            show = (
-                forceShow
-                or isinstance(item, QStandardItem)
-                and bool(text)
-                and (text in item.text().lower())
-            )
+            show = forceShow or isinstance(item, QStandardItem) and bool(text) and (text in item.text().lower())
             for i in range(item.rowCount()):
                 child = item.child(i)
                 show = self._filterItem(child, text, forceShow) or show
@@ -173,7 +166,8 @@ class ConfigDialog(BASE, WIDGET):
     def fillTreeUsingProviders(self):
         self.items = {}
         self.model.clear()
-        self.model.setHorizontalHeaderLabels([self.tr("Setting"), self.tr("Value")])
+        self.model.setHorizontalHeaderLabels([self.tr('Setting'),
+                                              self.tr('Value')])
 
         settings = ProcessingConfig.getSettings()
 
@@ -182,7 +176,7 @@ class ConfigDialog(BASE, WIDGET):
         """
         Filter 'General', 'Models' and 'Scripts' items
         """
-        priorityKeys = [self.tr("General"), self.tr("Models"), self.tr("Scripts")]
+        priorityKeys = [self.tr('General'), self.tr('Models'), self.tr('Scripts')]
         for group in priorityKeys:
             groupItem = QStandardItem(group)
             icon = ProcessingConfig.getGroupIcon(group)
@@ -209,7 +203,7 @@ class ConfigDialog(BASE, WIDGET):
         """
         Filter 'Providers' items
         """
-        providersItem = QStandardItem(self.tr("Providers"))
+        providersItem = QStandardItem(self.tr('Providers'))
         icon = QgsApplication.getThemeIcon("/processingAlgorithm.svg")
         providersItem.setIcon(icon)
         providersItem.setEditable(False)
@@ -243,8 +237,8 @@ class ConfigDialog(BASE, WIDGET):
         """
         Filter 'Menus' items
         """
-        self.menusItem = QStandardItem(self.tr("Menus"))
-        icon = QIcon(os.path.join(pluginPath, "images", "menu.png"))
+        self.menusItem = QStandardItem(self.tr('Menus'))
+        icon = QIcon(os.path.join(pluginPath, 'images', 'menu.png'))
         self.menusItem.setIcon(icon)
         self.menusItem.setEditable(False)
         emptyItem = QStandardItem()
@@ -252,7 +246,7 @@ class ConfigDialog(BASE, WIDGET):
 
         rootItem.insertRow(0, [self.menusItem, emptyItem])
 
-        button = QPushButton(self.tr("Reset to defaults"))
+        button = QPushButton(self.tr('Reset to defaults'))
         button.clicked.connect(self.resetMenusToDefaults)
         layout = QHBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
@@ -317,20 +311,13 @@ class ConfigDialog(BASE, WIDGET):
         for setting in list(self.items.keys()):
             if setting.group != menusSettingsGroup or self.saveMenus:
                 if isinstance(setting.value, bool):
-                    setting.setValue(
-                        self.items[setting].checkState() == Qt.CheckState.Checked
-                    )
+                    setting.setValue(self.items[setting].checkState() == Qt.CheckState.Checked)
                 else:
                     try:
                         setting.setValue(str(self.items[setting].text()))
                     except ValueError as e:
-                        QMessageBox.warning(
-                            self,
-                            self.tr("Wrong value"),
-                            self.tr('Wrong value for parameter "{0}":\n\n{1}').format(
-                                setting.description, str(e)
-                            ),
-                        )
+                        QMessageBox.warning(self, self.tr('Wrong value'),
+                                            self.tr('Wrong value for parameter "{0}":\n\n{1}').format(setting.description, str(e)))
                         return
                 setting.save(qsettings)
 
@@ -391,9 +378,7 @@ class SettingDelegate(QStyledItemDelegate):
         elif setting.valuetype == Setting.MULTIPLE_FOLDERS:
             return MultipleDirectorySelector(parent, setting.placeholder)
         else:
-            value = self.convertValue(
-                index.model().data(index, Qt.ItemDataRole.EditRole)
-            )
+            value = self.convertValue(index.model().data(index, Qt.ItemDataRole.EditRole))
             if isinstance(value, int):
                 spnBox = QgsSpinBox(parent)
                 spnBox.setRange(-999999999, 999999999)
@@ -437,7 +422,7 @@ class SettingDelegate(QStyledItemDelegate):
         return QgsSpinBox().sizeHint()
 
     def eventFilter(self, editor, event):
-        if event.type() == QEvent.Type.FocusOut and hasattr(editor, "canFocusOut"):
+        if event.type() == QEvent.Type.FocusOut and hasattr(editor, 'canFocusOut'):
             if not editor.canFocusOut:
                 return False
         return QStyledItemDelegate.eventFilter(self, editor, event)
@@ -461,7 +446,7 @@ class FileDirectorySelector(QWidget):
 
         # create gui
         self.btnSelect = QToolButton()
-        self.btnSelect.setText("…")
+        self.btnSelect.setText('…')
         self.lineEdit = QLineEdit()
         self.lineEdit.setPlaceholderText(placeholder)
         self.hbl = QHBoxLayout()
@@ -479,18 +464,15 @@ class FileDirectorySelector(QWidget):
         self.btnSelect.clicked.connect(self.select)
 
     def select(self):
-        lastDir = ""
+        lastDir = ''
         if not self.selectFile:
-            selectedPath = QFileDialog.getExistingDirectory(
-                None,
-                self.tr("Select directory"),
-                lastDir,
-                QFileDialog.Option.ShowDirsOnly,
-            )
+            selectedPath = QFileDialog.getExistingDirectory(None,
+                                                            self.tr('Select directory'), lastDir,
+                                                            QFileDialog.Option.ShowDirsOnly)
         else:
-            selectedPath, selected_filter = QFileDialog.getOpenFileName(
-                None, self.tr("Select file"), lastDir, self.tr("All files (*)")
-            )
+            selectedPath, selected_filter = QFileDialog.getOpenFileName(None,
+                                                                        self.tr('Select file'), lastDir, self.tr('All files (*)')
+                                                                        )
 
         if not selectedPath:
             return
@@ -512,7 +494,7 @@ class MultipleDirectorySelector(QWidget):
 
         # create gui
         self.btnSelect = QToolButton()
-        self.btnSelect.setText("…")
+        self.btnSelect.setText('…')
         self.lineEdit = QLineEdit()
         self.lineEdit.setPlaceholderText(placeholder)
         self.hbl = QHBoxLayout()
@@ -530,8 +512,8 @@ class MultipleDirectorySelector(QWidget):
 
     def select(self):
         text = self.lineEdit.text()
-        if text != "":
-            items = text.split(";")
+        if text != '':
+            items = text.split(';')
         else:
             items = []
 

@@ -29,6 +29,7 @@ and stores it to a given external storage backend if defined
       sipType = NULL;
 %End
   public:
+
     explicit QgsExternalStorageFileWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsExternalStorageFileWidget creates a widget for selecting a file or a folder.
@@ -160,6 +161,7 @@ It defines the variable containing the user selected file name
 
 
   protected:
+
     virtual void updateLayout();
 
 

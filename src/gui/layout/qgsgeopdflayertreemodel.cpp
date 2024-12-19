@@ -17,7 +17,6 @@
 #include <QDoubleSpinBox>
 
 #include "qgsgeopdflayertreemodel.h"
-#include "moc_qgsgeopdflayertreemodel.cpp"
 #include "qgslayertree.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
@@ -246,6 +245,7 @@ bool QgsGeospatialPdfLayerFilteredTreeModel::filterAcceptsRow( int source_row, c
     // filter out non-spatial layers
     if ( !layer->isSpatial() )
       return false;
+
   }
   return true;
 }

@@ -4,5 +4,5 @@ QgsIdentifyMenu.FeatureLevel = QgsIdentifyMenu.MenuLevel.FeatureLevel
 try:
     QgsIdentifyMenu.findFeaturesOnCanvas = staticmethod(QgsIdentifyMenu.findFeaturesOnCanvas)
     QgsIdentifyMenu.styleHighlight = staticmethod(QgsIdentifyMenu.styleHighlight)
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -27,6 +27,7 @@ the components related to the GUI behavior of an annotation item.
 #include "qgsannotationitemguiregistry.h"
 %End
   public:
+
     QgsAnnotationItemAbstractGuiMetadata( const QString &type, const QString &visibleName, const QString &groupId = QString(), Qgis::AnnotationItemGuiFlags flags = Qgis::AnnotationItemGuiFlags() );
 %Docstring
 Constructor for QgsAnnotationItemAbstractGuiMetadata with the specified class ``type``.
@@ -113,6 +114,7 @@ to display grouped within toolbars.
 #include "qgsannotationitemguiregistry.h"
 %End
   public:
+
     QgsAnnotationItemGuiGroup( const QString &id = QString(), const QString &name = QString(), const QIcon &icon = QIcon() );
 %Docstring
 Constructor for QgsAnnotationItemGuiGroup.
@@ -123,6 +125,7 @@ Constructor for QgsAnnotationItemGuiGroup.
     QString name;
 
     QIcon icon;
+
 };
 
 
@@ -144,6 +147,7 @@ the components related to the GUI behavior of annotation items.
 #include "qgsannotationitemguiregistry.h"
 %End
   public:
+
     QgsAnnotationItemGuiRegistry( QObject *parent = 0 );
 %Docstring
 Creates a new empty item GUI registry.
@@ -214,7 +218,7 @@ called for items added programmatically.
 Creates a new instance of an annotation item configuration widget for the specified ``item``.
 %End
 
-    QList<int> itemMetadataIds() const;
+    QList< int > itemMetadataIds() const;
 %Docstring
 Returns a list of available item metadata ids handled by the registry.
 %End
@@ -235,6 +239,9 @@ Emitted whenever a new item type is added to the registry, with the specified
   private:
     QgsAnnotationItemGuiRegistry( const QgsAnnotationItemGuiRegistry &rh );
 };
+
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

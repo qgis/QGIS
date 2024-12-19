@@ -47,7 +47,7 @@ set (GRASS_PLUGIN_UIS
    ${CMAKE_CURRENT_SOURCE_DIR}/../../ui/qgsprojectionselectorbase.ui
 )
 
-set (GRASS_PLUGIN_HDRS
+set (GRASS_PLUGIN_MOC_HDRS
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassaddfeature.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrasseditrenderer.h
    ${CMAKE_CURRENT_SOURCE_DIR}/qgsgrassplugin.h
@@ -92,8 +92,10 @@ macro(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
 
     if (BUILD_WITH_QT6)
       QT6_WRAP_UI (GRASS_PLUGIN_UIS_H ${GRASS_PLUGIN_UIS})
+      QT6_WRAP_CPP (GRASS_PLUGIN_MOC_SRCS ${GRASS_PLUGIN_MOC_HDRS})
     else()
       QT5_WRAP_UI (GRASS_PLUGIN_UIS_H ${GRASS_PLUGIN_UIS})
+      QT5_WRAP_CPP (GRASS_PLUGIN_MOC_SRCS ${GRASS_PLUGIN_MOC_HDRS})
     endif()
 
     include_directories(
@@ -102,7 +104,6 @@ macro(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
 
     add_library (plugin_grass${GRASS_BUILD_VERSION} MODULE
       ${GRASS_PLUGIN_SRCS}
-      ${GRASS_PLUGIN_HDRS}
       ${GRASS_PLUGIN_MOC_SRCS}
       ${GRASS_PLUGIN_UIS_H}
       ${GRASS_PLUGIN_RCCS}

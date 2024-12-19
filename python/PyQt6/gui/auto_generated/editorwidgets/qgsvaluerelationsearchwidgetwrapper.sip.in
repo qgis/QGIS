@@ -23,6 +23,7 @@ It will be used as a search widget and produces expression to look for in the la
 #include "qgsvaluerelationsearchwidgetwrapper.h"
 %End
   public:
+
     explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsValueRelationSearchWidgetWrapper

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsabstract3dengine.h"
-#include "moc_qgsabstract3dengine.cpp"
 
 #include "qgsframegraph.h"
 
@@ -24,6 +23,7 @@
 QgsAbstract3DEngine::QgsAbstract3DEngine( QObject *parent )
   : QObject( parent )
 {
+
 }
 
 void QgsAbstract3DEngine::requestCaptureImage()
@@ -31,7 +31,8 @@ void QgsAbstract3DEngine::requestCaptureImage()
   Qt3DRender::QRenderCaptureReply *captureReply;
   captureReply = mFrameGraph->renderCapture()->requestCapture();
 
-  connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [=] {
+  connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [ = ]
+  {
     emit imageCaptured( captureReply->image() );
     captureReply->deleteLater();
   } );
@@ -42,7 +43,8 @@ void QgsAbstract3DEngine::requestDepthBufferCapture()
   Qt3DRender::QRenderCaptureReply *captureReply;
   captureReply = mFrameGraph->depthRenderCapture()->requestCapture();
 
-  connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [=] {
+  connect( captureReply, &Qt3DRender::QRenderCaptureReply::completed, this, [ = ]
+  {
     emit depthBufferCaptured( captureReply->image() );
     captureReply->deleteLater();
   } );
@@ -62,10 +64,8 @@ void QgsAbstract3DEngine::dumpFrameGraphToConsole() const
 {
   if ( mFrameGraph )
   {
-    qDebug() << "FrameGraph:\n"
-             << mFrameGraph->dumpFrameGraph();
-    qDebug() << "SceneGraph:\n"
-             << mFrameGraph->dumpSceneGraph();
+    qDebug() << "FrameGraph:\n" << mFrameGraph->dumpFrameGraph();
+    qDebug() << "SceneGraph:\n" << mFrameGraph->dumpSceneGraph();
   }
 }
 

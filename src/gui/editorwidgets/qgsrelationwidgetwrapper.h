@@ -34,12 +34,13 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     Q_OBJECT
 
   public:
+
     //! Constructor for QgsRelationWidgetWrapper
     QgsRelationWidgetWrapper(
       QgsVectorLayer *vl,
       const QgsRelation &relation,
       QWidget *editor SIP_CONSTRAINED = nullptr,
-      QWidget *parent SIP_TRANSFERTHIS SIP_CONSTRAINED = nullptr
+      QWidget *parent SIP_TRANSFERTHIS SIP_CONSTRAINED  = nullptr
     );
 
     //! Constructor for QgsRelationWidgetWrapper

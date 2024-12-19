@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayerelevationproperties.h"
-#include "moc_qgspointcloudlayerelevationproperties.cpp"
 #include "qgspointcloudlayer.h"
 #include "qgsapplication.h"
 #include "qgscolorschemeregistry.h"

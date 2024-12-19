@@ -2,5 +2,5 @@
 try:
     QgsElevationMap.encodeElevation = staticmethod(QgsElevationMap.encodeElevation)
     QgsElevationMap.decodeElevation = staticmethod(QgsElevationMap.decodeElevation)
-except (NameError, AttributeError):
+except NameError:
     pass

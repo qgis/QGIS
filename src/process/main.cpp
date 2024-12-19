@@ -49,8 +49,9 @@ typedef SInt32 SRefCon;
 #undef QgsDebugError
 #undef QgsDebugMsgLevel
 #define QgsDebugCall
-#define QgsDebugError( str )
-#define QgsDebugMsgLevel( str, level )
+#define QgsDebugError(str)
+#define QgsDebugMsgLevel(str, level)
+
 
 
 /////////////////////////////////////////////////////////////////
@@ -68,13 +69,13 @@ static QStringList sFileList;
 
 int main( int argc, char *argv[] )
 {
-#ifdef Q_OS_WIN // Windows
+#ifdef Q_OS_WIN  // Windows
 #ifdef _MSC_VER
   _set_fmode( _O_BINARY );
-#else  //MinGW
+#else //MinGW
   _fmode = _O_BINARY;
-#endif // _MSC_VER
-#endif // Q_OS_WIN
+#endif  // _MSC_VER
+#endif  // Q_OS_WIN
 
   // a shortcut -- let's see if we are being called without any arguments, or just the usage/version argument.
   // If so, let's skip the startup cost of a QCoreApplication/QgsApplication
@@ -105,7 +106,7 @@ int main( int argc, char *argv[] )
 
   if ( argc == 1 || hasHelpArgument )
   {
-    QgsProcessingExec::showUsage( QString( argv[0] ) );
+    QgsProcessingExec::showUsage( QString( argv[ 0 ] ) );
     return 0;
   }
   else if ( hasVersionArgument )
@@ -183,7 +184,8 @@ int main( int argc, char *argv[] )
 
   QgsProcessingExec exec;
   int res = 0;
-  QTimer::singleShot( 0, &app, [&exec, args, logLevel, flags, &res] {
+  QTimer::singleShot( 0, &app, [&exec, args, logLevel, flags, &res]
+  {
     res = exec.run( args, logLevel, flags );
     QgsApplication::exitQgis();
     QCoreApplication::exit( res );

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsprojectdisplaysettings.h"
-#include "moc_qgsprojectdisplaysettings.cpp"
 #include "qgis.h"
 #include "qgsbearingnumericformat.h"
 #include "qgscoordinatenumericformat.h"

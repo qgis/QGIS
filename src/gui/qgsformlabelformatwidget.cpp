@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsformlabelformatwidget.h"
-#include "moc_qgsformlabelformatwidget.cpp"
 #include "qgsguiutils.h"
 #include "qgsfontutils.h"
 
@@ -47,6 +46,7 @@ QgsFormLabelFormatWidget::QgsFormLabelFormatWidget( QWidget *parent )
 
   btnTextColor->setAllowOpacity( true );
   btnTextColor->setShowNull( true, tr( "Default color" ) );
+
 }
 
 void QgsFormLabelFormatWidget::setLabelStyle( const QgsAttributeEditorElement::LabelStyle &labelStyle )
@@ -66,8 +66,8 @@ void QgsFormLabelFormatWidget::setLabelStyle( const QgsAttributeEditorElement::L
   }
   mOverrideLabelColorGroupBox->setChecked( labelStyle.overrideColor );
   mOverrideLabelFontGroupBox->setChecked( labelStyle.overrideFont );
-  mOverrideLabelColorGroupBox->setCollapsed( !labelStyle.overrideColor );
-  mOverrideLabelFontGroupBox->setCollapsed( !labelStyle.overrideFont );
+  mOverrideLabelColorGroupBox->setCollapsed( ! labelStyle.overrideColor );
+  mOverrideLabelFontGroupBox->setCollapsed( ! labelStyle.overrideFont );
 }
 
 QgsAttributeEditorElement::LabelStyle QgsFormLabelFormatWidget::labelStyle() const
@@ -81,8 +81,8 @@ QgsAttributeEditorElement::LabelStyle QgsFormLabelFormatWidget::labelStyle() con
   currentFont.setUnderline( mFontUnderlineBtn->isChecked() );
   currentFont.setStrikeOut( mFontStrikethroughBtn->isChecked() );
   style.font = currentFont;
-  style.overrideColor = mOverrideLabelColorGroupBox->isChecked();
-  style.overrideFont = mOverrideLabelFontGroupBox->isChecked();
+  style.overrideColor = mOverrideLabelColorGroupBox->isChecked( );
+  style.overrideFont = mOverrideLabelFontGroupBox->isChecked( );
   return style;
 }
 

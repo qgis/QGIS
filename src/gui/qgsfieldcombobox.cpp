@@ -14,7 +14,6 @@
 ***************************************************************************/
 
 #include "qgsfieldcombobox.h"
-#include "moc_qgsfieldcombobox.cpp"
 #include "qgsfieldproxymodel.h"
 #include "qgsmaplayer.h"
 #include "qgsvectorlayer.h"
@@ -26,7 +25,7 @@ QgsFieldComboBox::QgsFieldComboBox( QWidget *parent )
   mFieldProxyModel = new QgsFieldProxyModel( this );
   setModel( mFieldProxyModel );
 
-  connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsFieldComboBox::indexChanged );
+  connect( this, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::activated ), this, &QgsFieldComboBox::indexChanged );
 }
 
 void QgsFieldComboBox::setFilters( QgsFieldProxyModel::Filters filters )
@@ -100,7 +99,7 @@ QString QgsFieldComboBox::currentField() const
     return QString();
   }
 
-  QString name = mFieldProxyModel->data( proxyIndex, static_cast<int>( QgsFieldModel::CustomRole::FieldName ) ).toString();
+  QString name = mFieldProxyModel->data( proxyIndex, static_cast< int >( QgsFieldModel::CustomRole::FieldName ) ).toString();
   return name;
 }
 

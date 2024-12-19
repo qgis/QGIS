@@ -74,8 +74,8 @@ void QgsDxfExportAlgorithm::initAlgorithm( const QVariantMap & )
   std::unique_ptr<QgsProcessingParameterBoolean> useTitleParam = std::make_unique<QgsProcessingParameterBoolean>( QStringLiteral( "USE_LAYER_TITLE" ), QObject::tr( "Use layer title as name" ), false );
   useTitleParam->setHelp( QObject::tr( "If no attribute is chosen and layer name is not being overridden, prefer layer title (set in layer properties) to layer name" ) );
   addParameter( useTitleParam.release() );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "FORCE_2D" ), QObject::tr( "Force 2D output" ), false ) );
-  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "MTEXT" ), QObject::tr( "Export labels as MTEXT elements" ), true ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "FORCE_2D" ), QObject::tr( "Force 2D output" ),  false ) );
+  addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "MTEXT" ), QObject::tr( "Export labels as MTEXT elements" ),  true ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "EXPORT_LINES_WITH_ZERO_WIDTH" ), QObject::tr( "Export lines with zero width" ) ), false );
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "DXF" ), QObject::tr( "DXF Files" ) + " (*.dxf *.DXF)" ) );
 }
@@ -86,7 +86,7 @@ bool QgsDxfExportAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
   const QString mapTheme = parameterAsString( parameters, QStringLiteral( "MAP_THEME" ), context );
   if ( !mapTheme.isEmpty() && context.project()->mapThemeCollection()->hasMapTheme( mapTheme ) )
   {
-    mMapThemeStyleOverrides = context.project()->mapThemeCollection()->mapThemeStyleOverrides( mapTheme );
+    mMapThemeStyleOverrides = context.project()->mapThemeCollection( )->mapThemeStyleOverrides( mapTheme );
   }
   return true;
 }
@@ -109,7 +109,7 @@ QVariantMap QgsDxfExportAlgorithm::processAlgorithm( const QVariantMap &paramete
     mapLayers.push_back( layer.layer() );
   }
 
-  const Qgis::FeatureSymbologyExport symbologyMode = static_cast<Qgis::FeatureSymbologyExport>( parameterAsInt( parameters, QStringLiteral( "SYMBOLOGY_MODE" ), context ) );
+  const Qgis::FeatureSymbologyExport symbologyMode = static_cast< Qgis::FeatureSymbologyExport >( parameterAsInt( parameters, QStringLiteral( "SYMBOLOGY_MODE" ), context ) );
   const double symbologyScale = parameterAsDouble( parameters, QStringLiteral( "SYMBOLOGY_SCALE" ), context );
   const QString encoding = parameterAsEnumString( parameters, QStringLiteral( "ENCODING" ), context );
   const QgsCoordinateReferenceSystem crs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );

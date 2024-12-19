@@ -40,3 +40,4 @@ QString QgsWFSUtils::nameSpacePrefix( const QString &tname )
   }
   return splitList.at( 0 );
 }
+

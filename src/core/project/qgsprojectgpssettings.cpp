@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprojectgpssettings.h"
-#include "moc_qgsprojectgpssettings.cpp"
 
 #include <QDomElement>
 

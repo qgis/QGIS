@@ -3,7 +3,7 @@
 #include <QMap>
 #include <QString>
 #include <QStringList>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
+#if QT_VERSION >= 0x050000
 #include <QUrlQuery>
 #endif
 
@@ -41,7 +41,7 @@ void O2Skydrive::link() {
 
     // Show authentication URL with a web browser
     QUrl url(requestUrl_);
-#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
+#if QT_VERSION < 0x050000
     url.setQueryItems(parameters);
 #else
     QUrlQuery query(url);
@@ -59,7 +59,7 @@ void O2Skydrive::redirected(const QUrl &url) {
     if (grantFlow_ == GrantFlowAuthorizationCode) {
         // Get access code
         QString urlCode;
-#if QT_VERSION < QT_VERSION_CHECK(5,0,0)
+#if QT_VERSION < 0x050000
         urlCode = url.queryItemValue(O2_OAUTH2_GRANT_TYPE_CODE);
 #else
         QUrlQuery query(url);
@@ -84,20 +84,8 @@ void O2Skydrive::redirected(const QUrl &url) {
         QByteArray data = buildRequestBody(parameters);
         QNetworkReply *tokenReply = manager_->post(tokenRequest, data);
         timedReplies_.add(tokenReply);
-        connect(tokenReply,
-                &QNetworkReply::finished,
-                this,
-                &O2Skydrive::onTokenReplyFinished,
-                Qt::QueuedConnection);
-#if QT_VERSION < QT_VERSION_CHECK(5,15,0)
+        connect(tokenReply, SIGNAL(finished()), this, SLOT(onTokenReplyFinished()), Qt::QueuedConnection);
         connect(tokenReply, SIGNAL(error(QNetworkReply::NetworkError)), this, SLOT(onTokenReplyError(QNetworkReply::NetworkError)), Qt::QueuedConnection);
-#else
-        connect(tokenReply,
-                &QNetworkReply::errorOccurred,
-                this,
-                &O2Skydrive::onTokenReplyError,
-                Qt::QueuedConnection);
-#endif
     } else {
         // Get access token
         QString urlToken = "";
@@ -106,8 +94,7 @@ void O2Skydrive::redirected(const QUrl &url) {
 
         QStringList parts = url.toString().split("#");
         if (parts.length() > 1) {
-            const QStringList items = parts[1].split("&");
-            for (const QString &item: items) {
+            foreach (QString item, parts[1].split("&")) {
                 int index = item.indexOf("=");
                 if (index == -1) {
                     continue;

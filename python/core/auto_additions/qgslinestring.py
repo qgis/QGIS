@@ -3,5 +3,5 @@ try:
     QgsLineString.fromBezierCurve = staticmethod(QgsLineString.fromBezierCurve)
     QgsLineString.fromQPolygonF = staticmethod(QgsLineString.fromQPolygonF)
     QgsLineString.__group__ = ['geometry']
-except (NameError, AttributeError):
+except NameError:
     pass

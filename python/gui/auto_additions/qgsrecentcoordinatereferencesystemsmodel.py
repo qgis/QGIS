@@ -25,9 +25,9 @@ QgsRecentCoordinateReferenceSystemsModel.CustomRole.__doc__ = """Custom model ro
 QgsRecentCoordinateReferenceSystemsModel.CustomRole.baseClass = QgsRecentCoordinateReferenceSystemsModel
 try:
     QgsRecentCoordinateReferenceSystemsModel.__group__ = ['proj']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsRecentCoordinateReferenceSystemsProxyModel.__group__ = ['proj']
-except (NameError, AttributeError):
+except NameError:
     pass

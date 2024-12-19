@@ -30,7 +30,9 @@
  */
 class QgsRasterSurfaceVolumeAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
+
     QgsRasterSurfaceVolumeAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -43,10 +45,13 @@ class QgsRasterSurfaceVolumeAlgorithm : public QgsProcessingAlgorithm
     QgsRasterSurfaceVolumeAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
+
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
+
     enum Method
     {
       CountOnlyAboveBaseLevel = 0,
@@ -55,7 +60,7 @@ class QgsRasterSurfaceVolumeAlgorithm : public QgsProcessingAlgorithm
       AddVolumesBelowBaseLevel
     };
 
-    std::unique_ptr<QgsRasterInterface> mInterface;
+    std::unique_ptr< QgsRasterInterface > mInterface;
     bool mHasNoDataValue = false;
     int mBand = 1;
     int mLayerWidth = 0;
@@ -67,8 +72,11 @@ class QgsRasterSurfaceVolumeAlgorithm : public QgsProcessingAlgorithm
     double mLevel = 0;
     QString mSource;
     Method mMethod = Method::CountOnlyAboveBaseLevel;
+
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMRASTERSURFACEVOLUME_H
+
+

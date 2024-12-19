@@ -106,7 +106,8 @@ bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameter
       continue;
     const QVariantMap layerMap = layer.toMap();
     const QString layerSource = layerMap.value( QStringLiteral( "source" ) ).toString();
-    const Qgis::ProcessingTinInputLayerType type = static_cast<Qgis::ProcessingTinInputLayerType>( layerMap.value( QStringLiteral( "type" ) ).toInt() );
+    const Qgis::ProcessingTinInputLayerType type =
+      static_cast<Qgis::ProcessingTinInputLayerType>( layerMap.value( QStringLiteral( "type" ) ).toInt() );
     const int attributeIndex = layerMap.value( QStringLiteral( "attributeIndex" ) ).toInt();
 
     std::unique_ptr<QgsProcessingFeatureSource> featureSource( QgsProcessingUtils::variantToSource( layerSource, context ) );
@@ -119,10 +120,10 @@ bool QgsTinMeshCreationAlgorithm::prepareAlgorithm( const QVariantMap &parameter
     switch ( type )
     {
       case Qgis::ProcessingTinInputLayerType::Vertices:
-        mVerticesLayer.append( { featureSource->getFeatures(), transform, attributeIndex, featureCount } );
+        mVerticesLayer.append( {featureSource->getFeatures(), transform, attributeIndex, featureCount} );
         break;
       case Qgis::ProcessingTinInputLayerType::BreakLines:
-        mBreakLinesLayer.append( { featureSource->getFeatures(), transform, attributeIndex, featureCount } );
+        mBreakLinesLayer.append( {featureSource->getFeatures(), transform, attributeIndex, featureCount} );
         break;
       default:
         break;
@@ -183,7 +184,10 @@ QVariantMap QgsTinMeshCreationAlgorithm::processAlgorithm( const QVariantMap &pa
   if ( providerMetadata )
     providerMetadata->createMeshData( mesh, fileName, driver, destinationCrs );
 
-  context.addLayerToLoadOnCompletion( fileName, QgsProcessingContext::LayerDetails( "TIN Mesh", context.project(), "TIN", QgsProcessingUtils::LayerHint::Mesh ) );
+  context.addLayerToLoadOnCompletion( fileName, QgsProcessingContext::LayerDetails( "TIN Mesh",
+                                      context.project(),
+                                      "TIN",
+                                      QgsProcessingUtils::LayerHint::Mesh ) );
 
   //SELAFIN format doesn't support saving Z value on mesh vertices, so create a specific dataset group
   if ( driver == "SELAFIN" )

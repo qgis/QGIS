@@ -2,35 +2,35 @@
 try:
     QgsPaintEffectWidget.__attribute_docs__ = {'changed': 'Emitted when properties of the effect are changed through the widget\n'}
     QgsPaintEffectWidget.__group__ = ['effects']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsDrawSourceWidget.create = staticmethod(QgsDrawSourceWidget.create)
     QgsDrawSourceWidget.__group__ = ['effects']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsBlurWidget.create = staticmethod(QgsBlurWidget.create)
     QgsBlurWidget.__group__ = ['effects']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsShadowEffectWidget.create = staticmethod(QgsShadowEffectWidget.create)
     QgsShadowEffectWidget.__group__ = ['effects']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsGlowWidget.create = staticmethod(QgsGlowWidget.create)
     QgsGlowWidget.__group__ = ['effects']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsTransformWidget.create = staticmethod(QgsTransformWidget.create)
     QgsTransformWidget.__group__ = ['effects']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsColorEffectWidget.create = staticmethod(QgsColorEffectWidget.create)
     QgsColorEffectWidget.__group__ = ['effects']
-except (NameError, AttributeError):
+except NameError:
     pass

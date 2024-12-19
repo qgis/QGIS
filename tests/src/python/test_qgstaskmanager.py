@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "26/04/2016"
-__copyright__ = "Copyright 2016, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '26/04/2016'
+__copyright__ = 'Copyright 2016, The QGIS Project'
 
 import os
 from time import sleep
@@ -24,14 +23,14 @@ start_app()
 
 def run(task, result):
     if not result:
-        raise Exception("canceled")
+        raise Exception('canceled')
     else:
         return result
 
 
 def run_with_kwargs(task, password, result):
     if not password == 1:
-        raise Exception("bad password value")
+        raise Exception('bad password value')
     else:
         return result
 
@@ -40,7 +39,7 @@ def cancelable(task):
     while not task.isCanceled():
         pass
     if task.isCanceled():
-        raise Exception("canceled")
+        raise Exception('canceled')
 
 
 def progress_function(task):
@@ -49,7 +48,7 @@ def progress_function(task):
     while not task.isCanceled():
         pass
     if task.isCanceled():
-        raise Exception("canceled")
+        raise Exception('canceled')
 
 
 def run_no_result(task):
@@ -57,7 +56,7 @@ def run_no_result(task):
 
 
 def run_fail(task):
-    raise Exception("fail")
+    raise Exception('fail')
 
 
 def run_single_val_result(task):
@@ -65,20 +64,17 @@ def run_single_val_result(task):
 
 
 def run_multiple_val_result(task):
-    return 5, "whoo"
+    return 5, 'whoo'
 
 
 class TestQgsTaskManager(QgisTestCase):
 
     def testTaskFromFunction(self):
-        """test creating task from function"""
+        """ test creating task from function """
 
-        task = QgsTask.fromFunction("test task", run, 20)
+        task = QgsTask.fromFunction('test task', run, 20)
         QgsApplication.taskManager().addTask(task)
-        while task.status() not in [
-            QgsTask.TaskStatus.Complete,
-            QgsTask.TaskStatus.Terminated,
-        ]:
+        while task.status() not in [QgsTask.TaskStatus.Complete, QgsTask.TaskStatus.Terminated]:
             QCoreApplication.processEvents()
 
         self.assertEqual(task.returned_values, 20)
@@ -86,12 +82,9 @@ class TestQgsTaskManager(QgisTestCase):
         self.assertEqual(task.status(), QgsTask.TaskStatus.Complete)
 
         # try a task which cancels itself
-        bad_task = QgsTask.fromFunction("test task2", run, None)
+        bad_task = QgsTask.fromFunction('test task2', run, None)
         QgsApplication.taskManager().addTask(bad_task)
-        while bad_task.status() not in [
-            QgsTask.TaskStatus.Complete,
-            QgsTask.TaskStatus.Terminated,
-        ]:
+        while bad_task.status() not in [QgsTask.TaskStatus.Complete, QgsTask.TaskStatus.Terminated]:
             QCoreApplication.processEvents()
 
         self.assertFalse(bad_task.returned_values)
@@ -99,22 +92,19 @@ class TestQgsTaskManager(QgisTestCase):
         self.assertEqual(bad_task.status(), QgsTask.TaskStatus.Terminated)
 
     def testTaskFromFunctionWithFlags(self):
-        """test creating task from function with flags"""
+        """ test creating task from function with flags"""
 
-        task = QgsTask.fromFunction("test task", run, 20, flags=QgsTask.Flags())
+        task = QgsTask.fromFunction('test task', run, 20, flags=QgsTask.Flags())
         self.assertFalse(task.canCancel())
-        task2 = QgsTask.fromFunction("test task", run, 20, flags=QgsTask.Flag.CanCancel)
+        task2 = QgsTask.fromFunction('test task', run, 20, flags=QgsTask.Flag.CanCancel)
         self.assertTrue(task2.canCancel())
 
     def testTaskFromFunctionWithKwargs(self):
-        """test creating task from function using kwargs"""
+        """ test creating task from function using kwargs """
 
-        task = QgsTask.fromFunction("test task3", run_with_kwargs, result=5, password=1)
+        task = QgsTask.fromFunction('test task3', run_with_kwargs, result=5, password=1)
         QgsApplication.taskManager().addTask(task)
-        while task.status() not in [
-            QgsTask.TaskStatus.Complete,
-            QgsTask.TaskStatus.Terminated,
-        ]:
+        while task.status() not in [QgsTask.TaskStatus.Complete, QgsTask.TaskStatus.Terminated]:
             QCoreApplication.processEvents()
 
         self.assertEqual(task.returned_values, 5)
@@ -122,8 +112,8 @@ class TestQgsTaskManager(QgisTestCase):
         self.assertEqual(task.status(), QgsTask.TaskStatus.Complete)
 
     def testTaskFromFunctionIsCancelable(self):
-        """test that task from function can check canceled status"""
-        bad_task = QgsTask.fromFunction("test task4", cancelable)
+        """ test that task from function can check canceled status """
+        bad_task = QgsTask.fromFunction('test task4', cancelable)
         QgsApplication.taskManager().addTask(bad_task)
         while bad_task.status() != QgsTask.TaskStatus.Running:
             QCoreApplication.processEvents()
@@ -138,8 +128,8 @@ class TestQgsTaskManager(QgisTestCase):
         self.assertTrue(bad_task.exception)
 
     def testTaskFromFunctionCanSetProgress(self):
-        """test that task from function can set progress"""
-        task = QgsTask.fromFunction("test task5", progress_function)
+        """ test that task from function can set progress """
+        task = QgsTask.fromFunction('test task5', progress_function)
         QgsApplication.taskManager().addTask(task)
         while task.status() != QgsTask.TaskStatus.Running:
             QCoreApplication.processEvents()
@@ -156,7 +146,7 @@ class TestQgsTaskManager(QgisTestCase):
             QCoreApplication.processEvents()
 
     def testTaskFromFunctionFinished(self):
-        """test that task from function can have callback finished function"""
+        """ test that task from function can have callback finished function"""
         called = False
 
         def finished_no_val(e):
@@ -165,14 +155,9 @@ class TestQgsTaskManager(QgisTestCase):
             called = True
             return
 
-        task = QgsTask.fromFunction(
-            "test task", run_no_result, on_finished=finished_no_val
-        )
+        task = QgsTask.fromFunction('test task', run_no_result, on_finished=finished_no_val)
         QgsApplication.taskManager().addTask(task)
-        while task.status() not in [
-            QgsTask.TaskStatus.Complete,
-            QgsTask.TaskStatus.Terminated,
-        ]:
+        while task.status() not in [QgsTask.TaskStatus.Complete, QgsTask.TaskStatus.Terminated]:
             QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
@@ -183,7 +168,7 @@ class TestQgsTaskManager(QgisTestCase):
         self.assertTrue(called)
 
     def testTaskFromFunctionFinishedFail(self):
-        """test that task from function which fails calls finished with exception"""
+        """ test that task from function which fails calls finished with exception"""
         finished_exception = None
 
         def finished_fail(e):
@@ -191,12 +176,9 @@ class TestQgsTaskManager(QgisTestCase):
             assert e
             finished_exception = e
 
-        task = QgsTask.fromFunction("test task", run_fail, on_finished=finished_fail)
+        task = QgsTask.fromFunction('test task', run_fail, on_finished=finished_fail)
         QgsApplication.taskManager().addTask(task)
-        while task.status() not in [
-            QgsTask.TaskStatus.Complete,
-            QgsTask.TaskStatus.Terminated,
-        ]:
+        while task.status() not in [QgsTask.TaskStatus.Complete, QgsTask.TaskStatus.Terminated]:
             QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
@@ -207,7 +189,7 @@ class TestQgsTaskManager(QgisTestCase):
         self.assertEqual(task.exception, finished_exception)
 
     def testTaskFromFunctionCanceledWhileQueued(self):
-        """test that task from finished is called with exception when task is terminated while queued"""
+        """ test that task from finished is called with exception when task is terminated while queued"""
         finished_exception = None
 
         def finished_fail(e):
@@ -215,16 +197,11 @@ class TestQgsTaskManager(QgisTestCase):
             assert e
             finished_exception = e
 
-        task = QgsTask.fromFunction(
-            "test task", run_no_result, on_finished=finished_fail
-        )
+        task = QgsTask.fromFunction('test task', run_no_result, on_finished=finished_fail)
         task.hold()
         QgsApplication.taskManager().addTask(task)
         task.cancel()
-        while task.status() not in [
-            QgsTask.TaskStatus.Complete,
-            QgsTask.TaskStatus.Terminated,
-        ]:
+        while task.status() not in [QgsTask.TaskStatus.Complete, QgsTask.TaskStatus.Terminated]:
             QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
@@ -235,7 +212,7 @@ class TestQgsTaskManager(QgisTestCase):
         self.assertEqual(task.exception, finished_exception)
 
     def testTaskFromFunctionFinishedWithVal(self):
-        """test that task from function can have callback finished function and is passed result values"""
+        """ test that task from function can have callback finished function and is passed result values"""
         result_value = None
 
         def finished_single_value_result(e, value):
@@ -244,14 +221,9 @@ class TestQgsTaskManager(QgisTestCase):
             result_value = value
             return
 
-        task = QgsTask.fromFunction(
-            "test task", run_single_val_result, on_finished=finished_single_value_result
-        )
+        task = QgsTask.fromFunction('test task', run_single_val_result, on_finished=finished_single_value_result)
         QgsApplication.taskManager().addTask(task)
-        while task.status() not in [
-            QgsTask.TaskStatus.Complete,
-            QgsTask.TaskStatus.Terminated,
-        ]:
+        while task.status() not in [QgsTask.TaskStatus.Complete, QgsTask.TaskStatus.Terminated]:
             QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
@@ -262,7 +234,7 @@ class TestQgsTaskManager(QgisTestCase):
         self.assertEqual(result_value, 5)
 
     def testTaskFromFunctionFinishedWithMultipleValues(self):
-        """test that task from function can have callback finished function and is passed multiple result values"""
+        """ test that task from function can have callback finished function and is passed multiple result values"""
         result_value = None
         result_statement = None
 
@@ -273,32 +245,22 @@ class TestQgsTaskManager(QgisTestCase):
             result_value = results[0]
             result_statement = results[1]
 
-        task = QgsTask.fromFunction(
-            "test task",
-            run_multiple_val_result,
-            on_finished=finished_multiple_value_result,
-        )
+        task = QgsTask.fromFunction('test task', run_multiple_val_result, on_finished=finished_multiple_value_result)
         QgsApplication.taskManager().addTask(task)
-        while task.status() not in [
-            QgsTask.TaskStatus.Complete,
-            QgsTask.TaskStatus.Terminated,
-        ]:
+        while task.status() not in [QgsTask.TaskStatus.Complete, QgsTask.TaskStatus.Terminated]:
             QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
 
         # check that the finished function was called
-        self.assertEqual(task.returned_values, (5, "whoo"))
+        self.assertEqual(task.returned_values, (5, 'whoo'))
         self.assertFalse(task.exception)
         self.assertEqual(result_value, 5)
-        self.assertEqual(result_statement, "whoo")
+        self.assertEqual(result_statement, 'whoo')
 
-    @unittest.skipIf(
-        os.environ.get("QGIS_CONTINUOUS_INTEGRATION_RUN", "true"),
-        "Test is unstable on Travis",
-    )
+    @unittest.skipIf(os.environ.get('QGIS_CONTINUOUS_INTEGRATION_RUN', 'true'), 'Test is unstable on Travis')
     def testTaskFromFunctionWithSubTaskCompletedIsCalledOnce(self):  # spellok
-        """test that when a parent task has subtasks it does emit taskCompleted only once"""
+        """ test that when a parent task has subtasks it does emit taskCompleted only once"""
 
         self.finished = 0
         self.completed = 0
@@ -309,29 +271,16 @@ class TestQgsTaskManager(QgisTestCase):
         def _on_completed():
             self.completed += 1
 
-        task = QgsTask.fromFunction(
-            "test task", run_no_result, on_finished=_on_finished
-        )
+        task = QgsTask.fromFunction('test task', run_no_result, on_finished=_on_finished)
         task.taskCompleted.connect(_on_completed)
         spy = QSignalSpy(task.taskCompleted)
-        sub_task_1 = QgsTask.fromFunction(
-            "test subtask 1", run_no_result, on_finished=_on_finished
-        )
-        sub_task_2 = QgsTask.fromFunction(
-            "test subtask 2", run_no_result, on_finished=_on_finished
-        )
-        task.addSubTask(
-            sub_task_1, [], QgsTask.SubTaskDependency.ParentDependsOnSubTask
-        )
-        task.addSubTask(
-            sub_task_2, [], QgsTask.SubTaskDependency.ParentDependsOnSubTask
-        )
+        sub_task_1 = QgsTask.fromFunction('test subtask 1', run_no_result, on_finished=_on_finished)
+        sub_task_2 = QgsTask.fromFunction('test subtask 2', run_no_result, on_finished=_on_finished)
+        task.addSubTask(sub_task_1, [], QgsTask.SubTaskDependency.ParentDependsOnSubTask)
+        task.addSubTask(sub_task_2, [], QgsTask.SubTaskDependency.ParentDependsOnSubTask)
 
         QgsApplication.taskManager().addTask(task)
-        while task.status() not in [
-            QgsTask.TaskStatus.Complete,
-            QgsTask.TaskStatus.Terminated,
-        ]:
+        while task.status() not in [QgsTask.TaskStatus.Complete, QgsTask.TaskStatus.Terminated]:
             QCoreApplication.processEvents()
         while QgsApplication.taskManager().countActiveTasks() > 0:
             QCoreApplication.processEvents()
@@ -341,5 +290,5 @@ class TestQgsTaskManager(QgisTestCase):
         self.assertEqual(len(spy), 1)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

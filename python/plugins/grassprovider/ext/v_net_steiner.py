@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Médéric Ribreux"
-__date__ = "December 2015"
-__copyright__ = "(C) 2015, Médéric Ribreux"
+__author__ = 'Médéric Ribreux'
+__date__ = 'December 2015'
+__copyright__ = '(C) 2015, Médéric Ribreux'
 
 from .v_net import incorporatePoints, variableOutput
 
@@ -27,5 +27,5 @@ def processCommand(alg, parameters, context, feedback):
 
 
 def processOutputs(alg, parameters, context, feedback):
-    outputParameter = {"output": ["output", "line", 1, False]}
+    outputParameter = {'output': ['output', 'line', 1, False]}
     variableOutput(alg, outputParameter, parameters, context)

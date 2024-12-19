@@ -16,5 +16,5 @@ try:
     QgsPointCloudDataProvider.translatedDataFormatIds = staticmethod(QgsPointCloudDataProvider.translatedDataFormatIds)
     QgsPointCloudDataProvider.__signal_arguments__ = {'indexGenerationStateChanged': ['state: QgsPointCloudDataProvider.PointCloudIndexGenerationState']}
     QgsPointCloudDataProvider.__group__ = ['pointcloud']
-except (NameError, AttributeError):
+except NameError:
     pass

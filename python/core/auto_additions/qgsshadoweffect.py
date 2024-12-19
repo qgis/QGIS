@@ -2,14 +2,14 @@
 try:
     QgsDropShadowEffect.create = staticmethod(QgsDropShadowEffect.create)
     QgsDropShadowEffect.__group__ = ['effects']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsInnerShadowEffect.create = staticmethod(QgsInnerShadowEffect.create)
     QgsInnerShadowEffect.__group__ = ['effects']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsShadowEffect.__group__ = ['effects']
-except (NameError, AttributeError):
+except NameError:
     pass

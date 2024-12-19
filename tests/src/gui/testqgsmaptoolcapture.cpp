@@ -30,14 +30,15 @@ class TestQgsMapToolCapture : public QObject
     TestQgsMapToolCapture() = default;
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
+    void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void init(); // will be called before each testfunction is executed.
+    void cleanup(); // will be called after every testfunction.
 
     void addVertexNoLayer();
     void addVertexNonVectorLayer();
     void addVertexNonVectorLayerTransform();
+
 };
 
 void TestQgsMapToolCapture::initTestCase()
@@ -119,6 +120,7 @@ void TestQgsMapToolCapture::addVertexNonVectorLayer()
   QCOMPARE( tool.nextPoint( QgsPoint( 5, 6 ), layerPoint ), 0 );
   QCOMPARE( layerPoint.x(), 5.0 );
   QCOMPARE( layerPoint.y(), 6.0 );
+
 }
 
 void TestQgsMapToolCapture::addVertexNonVectorLayerTransform()

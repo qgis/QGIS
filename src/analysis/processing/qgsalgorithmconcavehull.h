@@ -32,6 +32,7 @@
 class QgsConcaveHullAlgorithm : public QgsProcessingAlgorithm
 {
   public:
+
     QgsConcaveHullAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmConcaveHull.svg" ) ); }
@@ -45,14 +46,16 @@ class QgsConcaveHullAlgorithm : public QgsProcessingAlgorithm
     QgsConcaveHullAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
+
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    void concaveHullGeos( std::unique_ptr<QgsFeatureSink> &sink, const QVariantMap &parameters, QgsProcessingFeedback *feedback );
-    void concaveHullQgis( std::unique_ptr<QgsFeatureSink> &sink, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+    void concaveHullGeos( std::unique_ptr< QgsFeatureSink > &sink, const QVariantMap &parameters, QgsProcessingFeedback *feedback );
+    void concaveHullQgis( std::unique_ptr< QgsFeatureSink > &sink, const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
-    std::unique_ptr<QgsProcessingFeatureSource> mSource;
+    std::unique_ptr< QgsProcessingFeatureSource > mSource;
     double mPercentage = 0;
     bool mAllowHoles = false;
     bool mSplitMultipart = false;

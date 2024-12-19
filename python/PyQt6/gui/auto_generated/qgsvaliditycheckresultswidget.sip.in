@@ -24,12 +24,13 @@ A QAbstractItemModel subclass for displaying the results from a :py:class:`QgsAb
 %End
   public:
 
+
     enum class CustomRole /BaseType=IntEnum/
     {
       Description,
     };
 
-    QgsValidityCheckResultsModel( const QList<QgsValidityCheckResult> &results, QObject *parent /TransferThis/ = 0 );
+    QgsValidityCheckResultsModel( const QList< QgsValidityCheckResult > &results, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsValidityCheckResultsModel, showing the specified list of checks ``results``.
 %End
@@ -43,7 +44,6 @@ Constructor for QgsValidityCheckResultsModel, showing the specified list of chec
     virtual int columnCount( const QModelIndex &parent ) const;
 
     virtual QVariant data( const QModelIndex &index, int role ) const;
-
 
 };
 
@@ -59,6 +59,7 @@ A reusable widget which displays a summary of the results from a :py:class:`QgsA
 #include "qgsvaliditycheckresultswidget.h"
 %End
   public:
+
     QgsValidityCheckResultsWidget( QWidget *parent /TransferThis/ );
 %Docstring
 Constructor for QgsValidityCheckResultsWidget, with the specified ``parent`` widget.
@@ -70,7 +71,7 @@ Sets a ``description`` label to show at the top of the widget, e.g. notifying us
 why they are being shown the warnings.
 %End
 
-    void setResults( const QList<QgsValidityCheckResult> &results );
+    void setResults( const QList< QgsValidityCheckResult > &results );
 %Docstring
 Sets the list of check ``results`` to show in the dialog.
 %End

@@ -287,9 +287,5 @@
  */
 #define SIP_PYQT5_RUN
 
-/*
- * Adds an include in the type header code
- */
-#define SIP_TYPEHEADER_INCLUDE(file)
 
 #endif // QGIS_SIP_H

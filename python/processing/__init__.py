@@ -1,3 +1,5 @@
+# -#- coding: utf-8 -#-
+
 ###########################################################################
 #    __init__.py
 #    ---------------------
@@ -20,9 +22,9 @@ This module contains stable API adding additional Python specific functionality
 to the core QGIS c++ Processing classes.
 """
 
-__author__ = "Nathan Woodrow"
-__date__ = "November 2018"
-__copyright__ = "(C) 2018, Nathan Woodrow"
+__author__ = 'Nathan Woodrow'
+__date__ = 'November 2018'
+__copyright__ = '(C) 2018, Nathan Woodrow'
 
 import typing as _typing
 
@@ -37,7 +39,6 @@ alg = ProcessingAlgFactory()
 
 # "Forward declare" functions which will be patched in when the Processing plugin loads:
 
-
 def algorithmHelp(id: str) -> None:
     """
     Prints algorithm parameters with their types. Also
@@ -49,18 +50,15 @@ def algorithmHelp(id: str) -> None:
     :raises: QgsNotSupportedException if the Processing plugin has not been loaded
     """
     from qgis.core import QgsNotSupportedException
+    raise QgsNotSupportedException('Processing plugin has not been loaded')
 
-    raise QgsNotSupportedException("Processing plugin has not been loaded")
 
-
-def run(
-    algOrName: _typing.Union[str, _QgsProcessingAlgorithm],
-    parameters: _typing.Dict[str, object],
-    onFinish: _typing.Optional[_typing.Callable] = None,
-    feedback: _typing.Optional[_QgsProcessingFeedback] = None,
-    context: _typing.Optional[_QgsProcessingContext] = None,
-    is_child_algorithm: bool = False,
-) -> _typing.Union[_typing.Dict, None]:
+def run(algOrName: _typing.Union[str, _QgsProcessingAlgorithm],
+        parameters: _typing.Dict[str, object],
+        onFinish: _typing.Optional[_typing.Callable] = None,
+        feedback: _typing.Optional[_QgsProcessingFeedback] = None,
+        context: _typing.Optional[_QgsProcessingContext] = None,
+        is_child_algorithm: bool = False) -> _typing.Union[_typing.Dict, None]:
     """
     Executes given algorithm and returns its outputs as dictionary object.
 
@@ -77,16 +75,13 @@ def run(
     :raises: QgsNotSupportedException if the Processing plugin has not been loaded
     """
     from qgis.core import QgsNotSupportedException
+    raise QgsNotSupportedException('Processing plugin has not been loaded')
 
-    raise QgsNotSupportedException("Processing plugin has not been loaded")
 
-
-def runAndLoadResults(
-    algOrName: _typing.Union[str, _QgsProcessingAlgorithm],
-    parameters: _typing.Dict[str, object],
-    feedback: _typing.Optional[_QgsProcessingFeedback] = None,
-    context: _typing.Optional[_QgsProcessingContext] = None,
-) -> _typing.Union[_typing.Dict, None]:
+def runAndLoadResults(algOrName: _typing.Union[str, _QgsProcessingAlgorithm],
+                      parameters: _typing.Dict[str, object],
+                      feedback: _typing.Optional[_QgsProcessingFeedback] = None,
+                      context: _typing.Optional[_QgsProcessingContext] = None) -> _typing.Union[_typing.Dict, None]:
     """
     Executes given algorithm and load its results into the current QGIS project
     when possible.
@@ -102,14 +97,11 @@ def runAndLoadResults(
     :raises: QgsNotSupportedException if the Processing plugin has not been loaded
     """
     from qgis.core import QgsNotSupportedException
+    raise QgsNotSupportedException('Processing plugin has not been loaded')
 
-    raise QgsNotSupportedException("Processing plugin has not been loaded")
 
-
-def createAlgorithmDialog(
-    algOrName: _typing.Union[str, _QgsProcessingAlgorithm],
-    parameters: _typing.Dict[str, object] = {},
-) -> _typing.Union[str, _QgsProcessingAlgorithm]:
+def createAlgorithmDialog(algOrName: _typing.Union[str, _QgsProcessingAlgorithm],
+                          parameters: _typing.Dict[str, object] = {}) -> _typing.Union[str, _QgsProcessingAlgorithm]:
     """
     Creates and returns an algorithm dialog for the specified algorithm, prepopulated
     with a given set of parameters. It is the caller's responsibility to execute
@@ -123,14 +115,11 @@ def createAlgorithmDialog(
     :raises: QgsNotSupportedException if the Processing plugin has not been loaded
     """
     from qgis.core import QgsNotSupportedException
+    raise QgsNotSupportedException('Processing plugin has not been loaded')
 
-    raise QgsNotSupportedException("Processing plugin has not been loaded")
 
-
-def execAlgorithmDialog(
-    algOrName: _typing.Union[str, _QgsProcessingAlgorithm],
-    parameters: _typing.Dict[str, object] = {},
-) -> _typing.Union[_typing.Dict, None]:
+def execAlgorithmDialog(algOrName: _typing.Union[str, _QgsProcessingAlgorithm],
+                        parameters: _typing.Dict[str, object] = {}) -> _typing.Union[_typing.Dict, None]:
     """
     Executes an algorithm dialog for the specified algorithm, prepopulated
     with a given set of parameters.
@@ -143,13 +132,10 @@ def execAlgorithmDialog(
     :raises: QgsNotSupportedException if the Processing plugin has not been loaded
     """
     from qgis.core import QgsNotSupportedException
+    raise QgsNotSupportedException('Processing plugin has not been loaded')
 
-    raise QgsNotSupportedException("Processing plugin has not been loaded")
 
-
-def createContext(
-    feedback: _typing.Optional[_QgsProcessingFeedback] = None,
-) -> _QgsProcessingContext:
+def createContext(feedback: _typing.Optional[_QgsProcessingFeedback] = None) -> _QgsProcessingContext:
     """
     Creates a default processing context
 
@@ -161,5 +147,4 @@ def createContext(
     :raises: QgsNotSupportedException if the Processing plugin has not been loaded
     """
     from qgis.core import QgsNotSupportedException
-
-    raise QgsNotSupportedException("Processing plugin has not been loaded")
+    raise QgsNotSupportedException('Processing plugin has not been loaded')

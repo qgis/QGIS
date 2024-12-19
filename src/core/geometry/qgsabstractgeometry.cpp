@@ -14,7 +14,6 @@ email                : marco.hugentobler at sourcepole dot com
  ***************************************************************************/
 
 #include "qgsabstractgeometry.h"
-#include "moc_qgsabstractgeometry.cpp"
 #include "qgspoint.h"
 #include "qgsgeometrycollection.h"
 #include "qgsvertexid.h"

@@ -39,11 +39,12 @@
  * \ingroup UnitTests
  * This is a unit test to verify that zip vector layers work
  */
-class TestZipLayer : public QObject
+class TestZipLayer: public QObject
 {
     Q_OBJECT
 
   private:
+
     QString mDataDir;
     QString mScanZipSetting;
     QString mSettingsKey;
@@ -61,10 +62,10 @@ class TestZipLayer : public QObject
   private slots:
 
     // init / cleanup
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init() {}          // will be called before each testfunction is executed.
-    void cleanup() {}       // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     // tests
     // test for .zip and .gz files using all options
@@ -141,7 +142,7 @@ QgsMapLayer *TestZipLayer::getZipLayer( const QString &myPath, const QString &my
 
 bool TestZipLayer::testZipItemPassthru( const QString &myFileName, const QString &myProviderKey )
 {
-  std::unique_ptr<QgsMapLayer> layer( getLayer( myFileName, QString(), myProviderKey ) );
+  std::unique_ptr< QgsMapLayer > layer( getLayer( myFileName, QString(), myProviderKey ) );
   return layer && layer->isValid();
 }
 
@@ -170,7 +171,8 @@ QgsDataItem *getItemFromZip( const QString &fileName, const QString &childName )
 
 bool TestZipLayer::testZipItem( const QString &myFileName, const QString &myChildName, const QString &myProviderName )
 {
-  QgsDebugMsgLevel( QStringLiteral( "\n=======================================\nfile = %1 name = %2 provider = %3" ).arg( myFileName, myChildName, myProviderName ), 2 );
+  QgsDebugMsgLevel( QStringLiteral( "\n=======================================\nfile = %1 name = %2 provider = %3"
+                                  ).arg( myFileName, myChildName, myProviderName ), 2 );
   QFileInfo myFileInfo( myFileName );
   QgsZipItem *myZipItem = new QgsZipItem( nullptr, myFileInfo.fileName(), myFileName );
   myZipItem->populate();
@@ -207,13 +209,13 @@ bool TestZipLayer::testZipItem( const QString &myFileName, const QString &myChil
             QgsDebugMsgLevel( QStringLiteral( "valid: %1" ).arg( layer->isValid() ), 2 );
             ok = layer->isValid();
             delete layer;
-            if ( !ok )
+            if ( ! ok )
             {
               QWARN( QString( "Invalid layer %1" ).arg( layerItem->path() ).toLocal8Bit().data() );
             }
             if ( myChildName.isEmpty() )
             {
-              if ( !ok )
+              if ( ! ok )
                 break;
             }
             else
@@ -222,13 +224,10 @@ bool TestZipLayer::testZipItem( const QString &myFileName, const QString &myChil
               if ( !myProviderName.isEmpty() )
               {
                 ok = ( myProviderName == layerItem->providerKey() );
-                if ( !ok )
+                if ( ! ok )
                 {
                   QWARN( QString( "Layer %1 opened by provider %2, expecting %3"
-                  )
-                           .arg( layerItem->path(), layerItem->providerKey(), myProviderName )
-                           .toLocal8Bit()
-                           .data() );
+                                ).arg( layerItem->path(), layerItem->providerKey(), myProviderName ).toLocal8Bit().data() );
                 }
               }
               break;
@@ -505,7 +504,7 @@ void TestZipLayer::testZipItemVRT()
   QVERIFY( zipItem );
 
   // VRT items will be a collection type
-  QgsFileDataCollectionItem *collectionItem = dynamic_cast<QgsFileDataCollectionItem *>( zipItem );
+  QgsFileDataCollectionItem *collectionItem = dynamic_cast< QgsFileDataCollectionItem * >( zipItem );
   QVERIFY( collectionItem );
 
   collectionItem->populate();
@@ -518,7 +517,7 @@ void TestZipLayer::testZipItemVRT()
     QCoreApplication::processEvents();
   }
 
-  QgsProviderSublayerItem *sublayerItem = qobject_cast<QgsProviderSublayerItem *>( collectionItem->children().at( 0 ) );
+  QgsProviderSublayerItem *sublayerItem = qobject_cast< QgsProviderSublayerItem * >( collectionItem->children().at( 0 ) );
   QVERIFY( sublayerItem );
   QCOMPARE( sublayerItem->sublayerDetails().name(), QStringLiteral( "landsat_b1.vrt" ) );
   QCOMPARE( sublayerItem->sublayerDetails().providerKey(), QStringLiteral( "gdal" ) );
@@ -528,7 +527,7 @@ void TestZipLayer::testZipItemVRT()
   zipItem = getItemFromZip( QDir::tempPath() + "/testzip.zip", "landsat_b1.vrt" );
   QVERIFY( zipItem );
 
-  collectionItem = dynamic_cast<QgsFileDataCollectionItem *>( zipItem );
+  collectionItem = dynamic_cast< QgsFileDataCollectionItem * >( zipItem );
   QVERIFY( collectionItem );
 
   collectionItem->populate();
@@ -540,10 +539,11 @@ void TestZipLayer::testZipItemVRT()
     QCoreApplication::processEvents();
   }
 
-  sublayerItem = qobject_cast<QgsProviderSublayerItem *>( collectionItem->children().at( 0 ) );
+  sublayerItem = qobject_cast< QgsProviderSublayerItem * >( collectionItem->children().at( 0 ) );
   QVERIFY( sublayerItem );
   QCOMPARE( sublayerItem->sublayerDetails().name(), QStringLiteral( "landsat_b1.vrt" ) );
   QCOMPARE( sublayerItem->sublayerDetails().providerKey(), QStringLiteral( "gdal" ) );
+
 }
 
 QGSTEST_MAIN( TestZipLayer )

@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgselevationprofileimageexportdialog.h"
-#include "moc_qgselevationprofileimageexportdialog.cpp"
 #include "qgsplot.h"
 #include "qgselevationprofileexportsettingswidget.h"
 #include "qgsgui.h"
@@ -53,3 +52,4 @@ QSize QgsElevationProfileImageExportDialog::imageSize() const
 {
   return QSize( mWidthSpinBox->value(), mHeightSpinBox->value() );
 }
+

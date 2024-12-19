@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgskeyvaluewidget.h"
-#include "moc_qgskeyvaluewidget.cpp"
 
 QgsKeyValueWidget::QgsKeyValueWidget( QWidget *parent )
   : QgsTableWidgetBase( parent )
@@ -60,8 +59,8 @@ QVariantMap QgsKeyValueModel::map() const
   return ret;
 }
 
-QgsKeyValueModel::QgsKeyValueModel( QObject *parent )
-  : QAbstractTableModel( parent )
+QgsKeyValueModel::QgsKeyValueModel( QObject *parent ) :
+  QAbstractTableModel( parent )
 {
 }
 
@@ -88,7 +87,9 @@ QVariant QgsKeyValueModel::headerData( int section, Qt::Orientation orientation,
 
 QVariant QgsKeyValueModel::data( const QModelIndex &index, int role ) const
 {
-  if ( index.row() < 0 || index.row() >= mLines.count() || ( role != Qt::DisplayRole && role != Qt::EditRole ) )
+  if ( index.row() < 0 ||
+       index.row() >= mLines.count() ||
+       ( role != Qt::DisplayRole && role != Qt::EditRole ) )
   {
     return QVariant();
   }

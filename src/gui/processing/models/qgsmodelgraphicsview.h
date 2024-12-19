@@ -44,6 +44,7 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsModelGraphicsView, with the specified \a parent widget.
      */
@@ -113,7 +114,7 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
     //! Clipboard operations
     enum ClipboardOperation
     {
-      ClipboardCut,  //!< Cut items
+      ClipboardCut, //!< Cut items
       ClipboardCopy, //!< Copy items
     };
 
@@ -129,13 +130,13 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      * \see copySelectedItems()
      * \see pasteItems()
      */
-    void copyItems( const QList<QgsModelComponentGraphicItem *> &items, ClipboardOperation operation );
+    void copyItems( const QList< QgsModelComponentGraphicItem * > &items, ClipboardOperation operation );
 
     //! Paste modes
     enum PasteMode
     {
-      PasteModeCursor,  //!< Paste items at cursor position
-      PasteModeCenter,  //!< Paste items in center of view
+      PasteModeCursor, //!< Paste items at cursor position
+      PasteModeCenter, //!< Paste items in center of view
       PasteModeInPlace, //!< Paste items in place
     };
 
@@ -210,6 +211,7 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
     void deleteSelectedItems();
 
   private:
+
     //! Zoom layout from a mouse wheel event
     void wheelZoom( QWheelEvent *event );
 
@@ -225,7 +227,7 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
      */
     QPointF deltaForKeyEvent( QKeyEvent *event );
 
-    QPointer<QgsModelViewTool> mTool;
+    QPointer< QgsModelViewTool > mTool;
 
     QgsModelViewToolTemporaryKeyPan *mSpacePanTool = nullptr;
     QgsModelViewToolTemporaryMousePan *mMidMouseButtonPanTool = nullptr;
@@ -245,12 +247,15 @@ class GUI_EXPORT QgsModelGraphicsView : public QGraphicsView
 class GUI_EXPORT QgsModelViewSnapMarker : public QGraphicsRectItem
 {
   public:
+
     QgsModelViewSnapMarker();
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
   private:
+
     int mSize = 0;
+
 };
 
 

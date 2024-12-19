@@ -105,7 +105,7 @@ Type used to refer to a specific symbol layer in a symbol of a layer.
 
     QgsSymbolLayerReference();
 
- QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer ) /Deprecated="Since 3.30. "/;
+ QgsSymbolLayerReference( const QString &layerId, const QgsSymbolLayerId &symbolLayer ) /Deprecated/;
 %Docstring
 Constructor
 
@@ -130,13 +130,13 @@ Constructor
 The referenced vector layer / feature renderer
 %End
 
- QgsSymbolLayerId symbolLayerId() const /Deprecated="Since 3.30. Use symbolLayerIdV2() instead."/;
+ QgsSymbolLayerId symbolLayerId() const /Deprecated/;
 %Docstring
 The symbol layer's id
 
 .. deprecated:: 3.30
 
-   Use :py:func:`~QgsSymbolLayerReference.symbolLayerIdV2` instead.
+   Use symbolLayerIdV2 instead.
 %End
 
     QString symbolLayerIdV2() const;

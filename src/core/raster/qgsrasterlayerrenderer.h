@@ -30,7 +30,6 @@ struct QgsRasterViewPort;
 class QgsRenderContext;
 
 class QgsRasterLayerRenderer;
-class QgsRasterLayerLabelProvider;
 
 #include "qgsrasterinterface.h"
 
@@ -77,9 +76,6 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
 
   private:
 
-    void prepareLabeling( QgsRasterLayer *layer );
-    void drawLabeling();
-
     QString mLayerName;
     QgsRasterViewPort *mRasterViewPort = nullptr;
 
@@ -101,9 +97,6 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
 
     bool mEnableProfile = false;
     quint64 mPreparationTime = 0;
-
-    // may be NULLPTR. no need to delete: if exists it is owned by labeling engine
-    QgsRasterLayerLabelProvider *mLabelProvider = nullptr;
 
     void drawElevationMap();
 

@@ -31,10 +31,7 @@ class GPKGDatabaseInfo(DatabaseInfo):
 
     def connectionDetails(self):
         tbl = [
-            (
-                QApplication.translate("DBManagerPlugin", "Filename:"),
-                self.db.connector.dbname,
-            )
+            (QApplication.translate("DBManagerPlugin", "Filename:"), self.db.connector.dbname)
         ]
         return HtmlTable(tbl)
 

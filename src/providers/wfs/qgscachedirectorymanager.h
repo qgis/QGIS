@@ -75,7 +75,7 @@ class QgsCacheDirectoryManager
 
 #if not defined( Q_OS_ANDROID )
 //! For internal use of QgsCacheDirectoryManager
-class QgsCacheDirectoryManagerKeepAlive : public QThread
+class QgsCacheDirectoryManagerKeepAlive: public QThread
 {
     Q_OBJECT
   public:
@@ -85,7 +85,6 @@ class QgsCacheDirectoryManagerKeepAlive : public QThread
     void run() override;
   private slots:
     void updateTimestamp();
-
   private:
     std::unique_ptr<QSharedMemory> mSharedMemory;
 };

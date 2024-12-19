@@ -21,16 +21,18 @@ This class is a menu that is populated automatically with the actions defined fo
 #include "qgsactionmenu.h"
 %End
   public:
+
     struct ActionData
     {
-        ActionData();
-        ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
-        ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
 
-        Qgis::ActionType actionType;
-        QVariant actionData;
-        QgsFeatureId featureId;
-        QgsMapLayer *mapLayer;
+      ActionData();
+      ActionData( const QgsAction &action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
+      ActionData( QgsMapLayerAction *action, QgsFeatureId featureId, QgsMapLayer *mapLayer );
+
+      Qgis::ActionType actionType;
+      QVariant actionData;
+      QgsFeatureId featureId;
+      QgsMapLayer *mapLayer;
     };
 
     explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget *parent /TransferThis/ = 0 );

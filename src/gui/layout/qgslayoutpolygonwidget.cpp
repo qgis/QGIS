@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgslayoutpolygonwidget.h"
-#include "moc_qgslayoutpolygonwidget.cpp"
 #include "qgslayout.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoutundostack.h"
@@ -72,7 +71,7 @@ bool QgsLayoutPolygonWidget::setNewItem( QgsLayoutItem *item )
     disconnect( mPolygon, &QgsLayoutObject::changed, this, &QgsLayoutPolygonWidget::setGuiElementValues );
   }
 
-  mPolygon = qobject_cast<QgsLayoutItemPolygon *>( item );
+  mPolygon = qobject_cast< QgsLayoutItemPolygon * >( item );
   mItemPropertiesWidget->setItem( mPolygon );
 
   if ( mPolygon )

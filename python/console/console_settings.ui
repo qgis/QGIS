@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>753</width>
-    <height>556</height>
+    <width>809</width>
+    <height>974</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,7 +24,6 @@
   </property>
   <property name="font">
    <font>
-    <weight>50</weight>
     <bold>false</bold>
    </font>
   </property>
@@ -53,9 +52,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
-        <width>739</width>
-        <height>1240</height>
+        <y>-115</y>
+        <width>795</width>
+        <height>1089</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout">
@@ -71,95 +70,8 @@
        <property name="bottomMargin">
         <number>0</number>
        </property>
-       <item row="8" column="0">
-        <spacer name="verticalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item row="4" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="groupBoxRunDebugEditor">
-         <property name="title">
-          <string>Run and Debug</string>
-         </property>
-         <property name="collapsed" stdset="0">
-          <bool>true</bool>
-         </property>
-         <property name="saveCollapsedState" stdset="0">
-          <bool>true</bool>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_21">
-          <property name="verticalSpacing">
-           <number>2</number>
-          </property>
-          <item row="1" column="0">
-           <widget class="QCheckBox" name="autoSaveScript">
-            <property name="text">
-             <string>Auto-save script before running</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="enableObjectInspector">
-            <property name="text">
-             <string>Enable Object Inspector (switching between tabs may be slow)</string>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="1" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="groupBoxTyping">
-         <property name="title">
-          <string>Typing</string>
-         </property>
-         <property name="collapsed" stdset="0">
-          <bool>false</bool>
-         </property>
-         <property name="saveCollapsedState" stdset="0">
-          <bool>true</bool>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_11">
-          <property name="verticalSpacing">
-           <number>2</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QCheckBox" name="autoCloseBracket">
-            <property name="text">
-             <string>Automatic parentheses insertion</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QCheckBox" name="autoSurround">
-            <property name="text">
-             <string>Automatically surround selection when typing quotes or brackets</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QCheckBox" name="autoInsertImport">
-            <property name="text">
-             <string>Automatic insertion of the 'import' string on 'from xxx'</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item row="3" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="groupBoxFormatting">
+       <item row="2" column="0">
+        <widget class="QgsCollapsibleGroupBox" name="groupBoxFromatting">
          <property name="title">
           <string>Formatting</string>
          </property>
@@ -264,35 +176,6 @@
          </layout>
         </widget>
        </item>
-       <item row="7" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
-         <property name="title">
-          <string>External Editor</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_8">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_2">
-            <property name="text">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Command to launch an external Python code editor. If empty, the default system editor will be used.&lt;/p&gt;&lt;p&gt;Use the token &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;lt;file&amp;gt;&lt;/span&gt; to insert the filename, &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;lt;line&amp;gt;&lt;/span&gt; to insert line number, and &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;lt;col&amp;gt;&lt;/span&gt; to insert the column number. For example:&lt;br/&gt;&lt;span style=&quot; font-family:'Noto Sans Mono';&quot;&gt;kate -l &amp;lt;line&amp;gt; -c &amp;lt;col&amp;gt; &amp;quot;&amp;lt;file&amp;gt;&amp;quot;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="textInteractionFlags">
-             <set>Qt::TextBrowserInteraction</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QgsFilterLineEdit" name="externalEditor">
-            <property name="placeholderText">
-             <string>Default</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
        <item row="0" column="0">
         <widget class="QgsCollapsibleGroupBox" name="groupBoxAutoCompletion">
          <property name="title">
@@ -381,7 +264,7 @@
          </layout>
         </widget>
        </item>
-       <item row="6" column="0">
+       <item row="5" column="0">
         <widget class="QgsCollapsibleGroupBox" name="groupBoxApi">
          <property name="title">
           <string>APIs</string>
@@ -583,10 +466,58 @@
          </layout>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QgsCollapsibleGroupBox" name="groupBoxContextHelp">
+       <item row="3" column="0">
+        <widget class="QgsCollapsibleGroupBox" name="groupBoxRunDebugEditor">
          <property name="title">
-          <string>Contextual Help (F1)</string>
+          <string>Run and Debug</string>
+         </property>
+         <property name="collapsed" stdset="0">
+          <bool>true</bool>
+         </property>
+         <property name="saveCollapsedState" stdset="0">
+          <bool>true</bool>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_21">
+          <property name="verticalSpacing">
+           <number>2</number>
+          </property>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="autoSaveScript">
+            <property name="text">
+             <string>Auto-save script before running</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="enableObjectInspector">
+            <property name="text">
+             <string>Enable Object Inspector (switching between tabs may be slow)</string>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0">
+        <widget class="QgsCollapsibleGroupBox" name="groupBoxTyping">
+         <property name="title">
+          <string>Typing</string>
          </property>
          <property name="collapsed" stdset="0">
           <bool>false</bool>
@@ -594,24 +525,57 @@
          <property name="saveCollapsedState" stdset="0">
           <bool>true</bool>
          </property>
-         <layout class="QFormLayout" name="formLayout">
+         <layout class="QGridLayout" name="gridLayout_11">
           <property name="verticalSpacing">
            <number>2</number>
           </property>
           <item row="0" column="0">
-           <widget class="QLabel" name="label_3">
+           <widget class="QCheckBox" name="autoCloseBracket">
             <property name="text">
-             <string>Open in</string>
+             <string>Automatic parentheses insertion</string>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QComboBox" name="contextHelpBrowser"/>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QCheckBox" name="contextHelpHover">
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="autoSurround">
             <property name="text">
-             <string>F1 works on hovered words</string>
+             <string>Automatically surround selection when typing quotes or brackets</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QCheckBox" name="autoInsertImport">
+            <property name="text">
+             <string>Automatic insertion of the 'import' string on 'from xxx'</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QgsCollapsibleGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>External Editor</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_8">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Command to launch an external Python code editor. If empty, the default system editor will be used.&lt;/p&gt;&lt;p&gt;Use the token &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;lt;file&amp;gt;&lt;/span&gt; to insert the filename, &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;lt;line&amp;gt;&lt;/span&gt; to insert line number, and &lt;span style=&quot; font-style:italic;&quot;&gt;&amp;lt;col&amp;gt;&lt;/span&gt; to insert the column number. For example:&lt;br/&gt;&lt;span style=&quot; font-family:'Noto Sans Mono';&quot;&gt;kate -l &amp;lt;line&amp;gt; -c &amp;lt;col&amp;gt; &amp;quot;&amp;lt;file&amp;gt;&amp;quot;&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+            <property name="textInteractionFlags">
+             <set>Qt::TextBrowserInteraction</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QgsFilterLineEdit" name="externalEditor">
+            <property name="placeholderText">
+             <string>Default</string>
             </property>
            </widget>
           </item>
@@ -644,6 +608,7 @@
  </customwidgets>
  <tabstops>
   <tabstop>groupBoxAutoCompletion</tabstop>
+  <tabstop>scrollArea</tabstop>
   <tabstop>autoCompThreshold</tabstop>
   <tabstop>autoCompFromDoc</tabstop>
   <tabstop>autoCompFromAPI</tabstop>
@@ -651,7 +616,6 @@
   <tabstop>autoCloseBracket</tabstop>
   <tabstop>autoSurround</tabstop>
   <tabstop>autoInsertImport</tabstop>
-  <tabstop>contextHelpBrowser</tabstop>
   <tabstop>formatOnSave</tabstop>
   <tabstop>sortImports</tabstop>
   <tabstop>maxLineLength</tabstop>
@@ -667,8 +631,6 @@
   <tabstop>groupBoxPreparedAPI</tabstop>
   <tabstop>compileAPIs</tabstop>
   <tabstop>lineEdit</tabstop>
-  <tabstop>scrollArea</tabstop>
-  <tabstop>externalEditor</tabstop>
  </tabstops>
  <resources/>
  <connections/>

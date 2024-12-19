@@ -28,6 +28,7 @@ class QgsIdeOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsIdeOptio
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsIdeOptionsWidget with the specified \a parent widget.
      */
@@ -41,6 +42,7 @@ class QgsIdeOptionsWidget : public QgsOptionsPageWidget, private Ui::QgsIdeOptio
   private slots:
 
     void generateGitHubToken();
+
 };
 
 
@@ -49,11 +51,13 @@ class QgsIdeOptionsFactory : public QgsOptionsWidgetFactory
     Q_OBJECT
 
   public:
+
     QgsIdeOptionsFactory();
 
     QIcon icon() const override;
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
     QString pagePositionHint() const override;
+
 };
 
 #endif // QGSIDEOPTIONS_H

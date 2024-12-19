@@ -73,7 +73,7 @@ The Field class represents a Raster Attribute Table field, including its name, u
 Creates a new Field with ``name``, ``type`` and ``usage``.
 %End
 
- Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QVariant::Type type ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
+ Field( const QString &name, const Qgis::RasterAttributeTableFieldUsage &usage, const QVariant::Type type ) /Deprecated/;
 %Docstring
 Creates a new Field with ``name``, ``type`` and ``usage``.
 
@@ -264,7 +264,7 @@ Inserts a new ``field`` at ``position``, optionally reporting any error in ``err
 Creates a new field from ``name``, ``usage`` and ``type`` and inserts it at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 %End
 
- bool insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
+ bool insertField( int position, const QString &name, const Qgis::RasterAttributeTableFieldUsage usage, const QVariant::Type type, QString *errorMessage /Out/ = 0 ) /Deprecated/;
 %Docstring
 Creates a new field from ``name``, ``usage`` and ``type`` and inserts it at ``position``, optionally reporting any error in ``errorMessage``, returns ``True`` on success.
 

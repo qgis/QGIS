@@ -2,7 +2,7 @@
 try:
     QgsExifTools.GeoTagDetails.__attribute_docs__ = {'elevation': 'GPS elevation, or NaN if elevation is not available.'}
     QgsExifTools.GeoTagDetails.__group__ = ['raster']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsExifTools.readTags = staticmethod(QgsExifTools.readTags)
@@ -12,5 +12,5 @@ try:
     QgsExifTools.geoTagImage = staticmethod(QgsExifTools.geoTagImage)
     QgsExifTools.tagImage = staticmethod(QgsExifTools.tagImage)
     QgsExifTools.__group__ = ['raster']
-except (NameError, AttributeError):
+except NameError:
     pass

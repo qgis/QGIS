@@ -16,11 +16,10 @@
  ***************************************************************************/
 
 #include "qgscachedpointcloudblockrequest.h"
-#include "moc_qgscachedpointcloudblockrequest.cpp"
 
 ///@cond PRIVATE
 
-QgsCachedPointCloudBlockRequest::QgsCachedPointCloudBlockRequest( QgsPointCloudBlock *block, const QgsPointCloudNodeId &node, const QString &uri,
+QgsCachedPointCloudBlockRequest::QgsCachedPointCloudBlockRequest( QgsPointCloudBlock *block, const IndexedPointCloudNode &node, const QString &uri,
     const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
     const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect )
   : QgsPointCloudBlockRequest( node, uri, attributes, requestedAttributes, scale, offset, filterExpression, filterRect )

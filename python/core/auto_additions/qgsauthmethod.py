@@ -2,5 +2,5 @@
 try:
     QgsAuthMethod.authMethodTag = staticmethod(QgsAuthMethod.authMethodTag)
     QgsAuthMethod.__group__ = ['auth']
-except (NameError, AttributeError):
+except NameError:
     pass

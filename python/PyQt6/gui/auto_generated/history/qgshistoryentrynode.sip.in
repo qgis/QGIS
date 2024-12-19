@@ -20,6 +20,7 @@ Base class for nodes representing a :py:class:`QgsHistoryEntry`.
 #include "qgshistoryentrynode.h"
 %End
   public:
+
     QgsHistoryEntryNode();
     virtual ~QgsHistoryEntryNode();
 
@@ -102,6 +103,7 @@ Base class for history entry "group" nodes, which contain children of their own.
 #include "qgshistoryentrynode.h"
 %End
   public:
+
     QgsHistoryEntryGroup();
     ~QgsHistoryEntryGroup();
 
@@ -152,6 +154,9 @@ Clears the group, removing all its children.
   private:
     QgsHistoryEntryGroup( const QgsHistoryEntryGroup &other );
 };
+
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

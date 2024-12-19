@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgshistoryproviderregistry.h"
-#include "moc_qgshistoryproviderregistry.cpp"
 #include "qgshistoryprovider.h"
 #include "qgsapplication.h"
 #include "qgsruntimeprofiler.h"
@@ -110,14 +109,15 @@ long long QgsHistoryProviderRegistry::addEntry( const QgsHistoryEntry &entry, bo
     const QString entryXml = xmlDoc.toString();
     const QString dateTime = entry.timestamp.toString( QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) );
 
-    QString query = qgs_sqlite3_mprintf( "INSERT INTO history VALUES (NULL, '%q', '%q', '%q');", entry.providerId.toUtf8().constData(), entryXml.toUtf8().constData(), dateTime.toUtf8().constData() );
+    QString query = qgs_sqlite3_mprintf( "INSERT INTO history VALUES (NULL, '%q', '%q', '%q');",
+                                         entry.providerId.toUtf8().constData(), entryXml.toUtf8().constData(), dateTime.toUtf8().constData() );
     if ( !runEmptyQuery( query ) )
     {
       QgsDebugError( QStringLiteral( "Couldn't story history entry in database!" ) );
       ok = false;
       return -1;
     }
-    id = static_cast<int>( sqlite3_last_insert_rowid( mLocalDB.get() ) );
+    id = static_cast< int >( sqlite3_last_insert_rowid( mLocalDB.get() ) );
 
     QgsHistoryEntry addedEntry( entry );
     addedEntry.id = id;
@@ -171,10 +171,10 @@ QgsHistoryEntry QgsHistoryProviderRegistry::entry( long long id, bool &ok, Qgis:
 
         ok = true;
         QgsHistoryEntry res = QgsHistoryEntry(
-          statement.columnAsText( 0 ),
-          QDateTime::fromString( statement.columnAsText( 2 ), QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) ),
-          QgsXmlUtils::readVariant( doc.documentElement() ).toMap()
-        );
+                                statement.columnAsText( 0 ),
+                                QDateTime::fromString( statement.columnAsText( 2 ), QStringLiteral( "yyyy-MM-dd HH:mm:ss" ) ),
+                                QgsXmlUtils::readVariant( doc.documentElement() ).toMap()
+                              );
         res.id = id;
         return res;
       }
@@ -197,7 +197,8 @@ bool QgsHistoryProviderRegistry::updateEntry( long long id, const QVariantMap &e
       xmlDoc.appendChild( QgsXmlUtils::writeVariant( cleanedMap, xmlDoc ) );
       const QString entryXml = xmlDoc.toString();
 
-      QString query = qgs_sqlite3_mprintf( "UPDATE history SET xml='%q' WHERE id = %d;", entryXml.toUtf8().constData(), id );
+      QString query = qgs_sqlite3_mprintf( "UPDATE history SET xml='%q' WHERE id = %d;",
+                                           entryXml.toUtf8().constData(), id );
       if ( !runEmptyQuery( query ) )
       {
         QgsDebugError( QStringLiteral( "Couldn't update history entry in database!" ) );
@@ -281,7 +282,7 @@ bool QgsHistoryProviderRegistry::clearHistory( Qgis::HistoryProviderBackend back
         runEmptyQuery( QStringLiteral( "DELETE from history;" ) );
       else
         runEmptyQuery( QStringLiteral( "DELETE from history WHERE provider_id='%1'" )
-                         .arg( providerId ) );
+                       .arg( providerId ) );
       break;
     }
   }
@@ -317,14 +318,14 @@ bool QgsHistoryProviderRegistry::openDatabase( const QString &filename, QString 
 
 void QgsHistoryProviderRegistry::createTables()
 {
-  QString query = qgs_sqlite3_mprintf( "CREATE TABLE history("
-                                       "id INTEGER PRIMARY KEY,"
-                                       "provider_id TEXT,"
-                                       "xml TEXT,"
-                                       "timestamp DATETIME);"
-                                       "CREATE INDEX provider_index ON history(provider_id);"
+  QString query = qgs_sqlite3_mprintf( "CREATE TABLE history("\
+                                       "id INTEGER PRIMARY KEY,"\
+                                       "provider_id TEXT,"\
+                                       "xml TEXT,"\
+                                       "timestamp DATETIME);" \
+                                       "CREATE INDEX provider_index ON history(provider_id);"\
                                        "CREATE INDEX timestamp_index ON history(timestamp);"
-  );
+                                     );
 
   runEmptyQuery( query );
 }
@@ -345,3 +346,4 @@ bool QgsHistoryProviderRegistry::runEmptyQuery( const QString &query )
 
   return nErr == SQLITE_OK;
 }
+

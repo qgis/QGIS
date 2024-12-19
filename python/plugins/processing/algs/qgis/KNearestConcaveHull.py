@@ -18,9 +18,9 @@
  ***************************************************************************/
 """
 
-__author__ = "Detlev Neumann"
-__date__ = "November 2014"
-__copyright__ = "(C) 2014, Detlev Neumann"
+__author__ = 'Detlev Neumann'
+__date__ = 'November 2014'
+__copyright__ = '(C) 2014, Detlev Neumann'
 
 import os.path
 import math
@@ -28,43 +28,41 @@ import math
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QMetaType
 
-from qgis.core import (
-    QgsApplication,
-    QgsExpression,
-    QgsFeature,
-    QgsFeatureRequest,
-    QgsFeatureSink,
-    QgsField,
-    QgsFields,
-    QgsGeometry,
-    QgsProcessing,
-    QgsProcessingAlgorithm,
-    QgsProcessingException,
-    QgsProcessingParameterFeatureSink,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterField,
-    QgsProcessingParameterNumber,
-    QgsPoint,
-    QgsPointXY,
-    QgsWkbTypes,
-)
+from qgis.core import (QgsApplication,
+                       QgsExpression,
+                       QgsFeature,
+                       QgsFeatureRequest,
+                       QgsFeatureSink,
+                       QgsField,
+                       QgsFields,
+                       QgsGeometry,
+                       QgsProcessing,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingException,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterNumber,
+                       QgsPoint,
+                       QgsPointXY,
+                       QgsWkbTypes)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
 class KNearestConcaveHull(QgisAlgorithm):
-    KNEIGHBORS = "KNEIGHBORS"
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
-    FIELD = "FIELD"
+    KNEIGHBORS = 'KNEIGHBORS'
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
+    FIELD = 'FIELD'
 
     def name(self):
-        return "knearestconcavehull"
+        return 'knearestconcavehull'
 
     def displayName(self):
-        return self.tr("Concave hull (k-nearest neighbor)")
+        return self.tr('Concave hull (k-nearest neighbor)')
 
     def shortDescription(self):
-        return self.tr("Creates a concave hull using the k-nearest neighbor algorithm.")
+        return self.tr('Creates a concave hull using the k-nearest neighbor algorithm.')
 
     def icon(self):
         return QgsApplication.getThemeIcon("/algorithms/mAlgorithmConcaveHull.svg")
@@ -73,59 +71,35 @@ class KNearestConcaveHull(QgisAlgorithm):
         return QgsApplication.iconPath("/algorithms/mAlgorithmConcaveHull.svg")
 
     def group(self):
-        return self.tr("Vector geometry")
+        return self.tr('Vector geometry')
 
     def groupId(self):
-        return "vectorgeometry"
+        return 'vectorgeometry'
 
     def flags(self):
-        return (
-            super().flags()
-            | QgsProcessingAlgorithm.Flag.FlagDeprecated
-            | QgsProcessingAlgorithm.Flag.FlagNotAvailableInStandaloneTool
-        )
+        return super().flags() | QgsProcessingAlgorithm.Flag.FlagDeprecated | QgsProcessingAlgorithm.Flag.FlagNotAvailableInStandaloneTool
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(
-            QgsProcessingParameterFeatureSource(self.INPUT, self.tr("Input layer"))
-        )
-        self.addParameter(
-            QgsProcessingParameterNumber(
-                self.KNEIGHBORS,
-                self.tr(
-                    "Number of neighboring points to consider (a lower number is more concave, a higher number is smoother)"
-                ),
-                QgsProcessingParameterNumber.Type.Integer,
-                defaultValue=3,
-                minValue=3,
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterField(
-                self.FIELD,
-                self.tr("Field (set if creating concave hulls by class)"),
-                parentLayerParameterName=self.INPUT,
-                optional=True,
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterFeatureSink(
-                self.OUTPUT,
-                self.tr("Concave hull"),
-                QgsProcessing.SourceType.TypeVectorPolygon,
-            )
-        )
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterNumber(self.KNEIGHBORS,
+                                                       self.tr('Number of neighboring points to consider (a lower number is more concave, a higher number is smoother)'),
+                                                       QgsProcessingParameterNumber.Type.Integer,
+                                                       defaultValue=3, minValue=3))
+        self.addParameter(QgsProcessingParameterField(self.FIELD,
+                                                      self.tr('Field (set if creating concave hulls by class)'),
+                                                      parentLayerParameterName=self.INPUT, optional=True))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Concave hull'),
+                                                            QgsProcessing.SourceType.TypeVectorPolygon))
 
     def processAlgorithm(self, parameters, context, feedback):
         # Get variables from dialog
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
-            raise QgsProcessingException(
-                self.invalidSourceError(parameters, self.INPUT)
-            )
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         field_name = self.parameterAsString(parameters, self.FIELD, context)
         kneighbors = self.parameterAsInt(parameters, self.KNEIGHBORS, context)
@@ -134,7 +108,7 @@ class KNearestConcaveHull(QgisAlgorithm):
         field_index = -1
 
         fields = QgsFields()
-        fields.append(QgsField("id", QMetaType.Type.Int, "", 20))
+        fields.append(QgsField('id', QMetaType.Type.Int, '', 20))
 
         current = 0
 
@@ -142,23 +116,13 @@ class KNearestConcaveHull(QgisAlgorithm):
         if use_field:
             field_index = source.fields().lookupField(field_name)
             if field_index >= 0:
-                fields.append(
-                    source.fields()[field_index]
-                )  # Add a field with the name of the grouping field
+                fields.append(source.fields()[field_index])  # Add a field with the name of the grouping field
 
                 # Initialize writer
-                (sink, dest_id) = self.parameterAsSink(
-                    parameters,
-                    self.OUTPUT,
-                    context,
-                    fields,
-                    QgsWkbTypes.Type.Polygon,
-                    source.sourceCrs(),
-                )
+                (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                                       fields, QgsWkbTypes.Type.Polygon, source.sourceCrs())
                 if sink is None:
-                    raise QgsProcessingException(
-                        self.invalidSinkError(parameters, self.OUTPUT)
-                    )
+                    raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
                 success = False
                 fid = 0
@@ -169,9 +133,7 @@ class KNearestConcaveHull(QgisAlgorithm):
 
                 for unique in unique_values:
                     points = []
-                    filter = QgsExpression.createFieldEqualityExpression(
-                        field_name, unique
-                    )
+                    filter = QgsExpression.createFieldEqualityExpression(field_name, unique)
                     request = QgsFeatureRequest().setFilterExpression(filter)
                     request.setSubsetOfAttributes([])
                     # Get features with the grouping attribute equal to the current grouping value
@@ -188,9 +150,7 @@ class KNearestConcaveHull(QgisAlgorithm):
                         out_feature = QgsFeature()
                         the_hull = concave_hull(points, kneighbors)
                         if the_hull:
-                            vertex = [
-                                QgsPointXY(point[0], point[1]) for point in the_hull
-                            ]
+                            vertex = [QgsPointXY(point[0], point[1]) for point in the_hull]
                             poly = QgsGeometry().fromPolygonXY([vertex])
 
                             out_feature.setGeometry(poly)
@@ -200,29 +160,18 @@ class KNearestConcaveHull(QgisAlgorithm):
                             success = True  # at least one polygon created
                     fid += 1
                 if not success:
-                    raise QgsProcessingException(
-                        "No hulls could be created. Most likely there were not at least three unique points in any of the groups."
-                    )
-                sink.finalize()
+                    raise QgsProcessingException('No hulls could be created. Most likely there were not at least three unique points in any of the groups.')
             else:
                 # Field parameter provided but can't read from it
-                raise QgsProcessingException("Unable to find grouping field")
+                raise QgsProcessingException('Unable to find grouping field')
 
         else:
             # Not grouped by field
             # Initialize writer
-            (sink, dest_id) = self.parameterAsSink(
-                parameters,
-                self.OUTPUT,
-                context,
-                fields,
-                QgsWkbTypes.Type.Polygon,
-                source.sourceCrs(),
-            )
+            (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                                   fields, QgsWkbTypes.Type.Polygon, source.sourceCrs())
             if sink is None:
-                raise QgsProcessingException(
-                    self.invalidSinkError(parameters, self.OUTPUT)
-                )
+                raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
             points = []
             request = QgsFeatureRequest()
@@ -250,15 +199,9 @@ class KNearestConcaveHull(QgisAlgorithm):
                     sink.addFeature(out_feature, QgsFeatureSink.Flag.FastInsert)
                 else:
                     # the_hull returns None only when there are less than three points after cleaning
-                    raise QgsProcessingException(
-                        "At least three unique points are required to create a concave hull."
-                    )
+                    raise QgsProcessingException('At least three unique points are required to create a concave hull.')
             else:
-                raise QgsProcessingException(
-                    "At least three points are required to create a concave hull."
-                )
-
-            sink.finalize()
+                raise QgsProcessingException('At least three points are required to create a concave hull.')
 
         return {self.OUTPUT: dest_id}
 
@@ -279,9 +222,7 @@ def find_min_y_point(list_of_points):
     """
     min_y_pt = list_of_points[0]
     for point in list_of_points[1:]:
-        if point[1] < min_y_pt[1] or (
-            point[1] == min_y_pt[1] and point[0] < min_y_pt[0]
-        ):
+        if point[1] < min_y_pt[1] or (point[1] == min_y_pt[1] and point[0] < min_y_pt[0]):
             min_y_pt = point
     return min_y_pt
 
@@ -310,9 +251,7 @@ def euclidean_distance(point1, point2):
     :param point2: tuple (x, y)
     :return: float
     """
-    return math.sqrt(
-        math.pow(point1[0] - point2[0], 2) + math.pow(point1[1] - point2[1], 2)
-    )
+    return math.sqrt(math.pow(point1[0] - point2[0], 2) + math.pow(point1[1] - point2[1], 2))
 
 
 def nearest_points(list_of_points, point, k):
@@ -330,9 +269,7 @@ def nearest_points(list_of_points, point, k):
     # their respective index of list *list_of_distances*
     list_of_distances = []
     for index in range(len(list_of_points)):
-        list_of_distances.append(
-            (euclidean_distance(list_of_points[index], point), index)
-        )
+        list_of_distances.append((euclidean_distance(list_of_points[index], point), index))
 
     # sort distances in ascending order
     list_of_distances.sort()
@@ -395,24 +332,16 @@ def intersect(line1, line2):
     a2 = line2[1][1] - line2[0][1]
     b2 = line2[0][0] - line2[1][0]
     c2 = a2 * line2[0][0] + b2 * line2[0][1]
-    tmp = a1 * b2 - a2 * b1
+    tmp = (a1 * b2 - a2 * b1)
     if tmp == 0:
         return False
     sx = (c1 * b2 - c2 * b1) / tmp
-    if (
-        (sx > line1[0][0] and sx > line1[1][0])
-        or (sx > line2[0][0] and sx > line2[1][0])
-        or (sx < line1[0][0] and sx < line1[1][0])
-        or (sx < line2[0][0] and sx < line2[1][0])
-    ):
+    if (sx > line1[0][0] and sx > line1[1][0]) or (sx > line2[0][0] and sx > line2[1][0]) or\
+            (sx < line1[0][0] and sx < line1[1][0]) or (sx < line2[0][0] and sx < line2[1][0]):
         return False
     sy = (a1 * c2 - a2 * c1) / tmp
-    if (
-        (sy > line1[0][1] and sy > line1[1][1])
-        or (sy > line2[0][1] and sy > line2[1][1])
-        or (sy < line1[0][1] and sy < line1[1][1])
-        or (sy < line2[0][1] and sy < line2[1][1])
-    ):
+    if (sy > line1[0][1] and sy > line1[1][1]) or (sy > line2[0][1] and sy > line2[1][1]) or\
+            (sy < line1[0][1] and sy < line1[1][1]) or (sy < line2[0][1] and sy < line2[1][1]):
         return False
     return True
 
@@ -584,10 +513,7 @@ def concave_hull(points_list, k):
             its = False
 
             while its is False and (j < len(hull) - last_point):
-                its = intersect(
-                    (hull[step - 2], c_points[i]),
-                    (hull[step - 2 - j], hull[step - 1 - j]),
-                )
+                its = intersect((hull[step - 2], c_points[i]), (hull[step - 2 - j], hull[step - 1 - j]))
                 j += 1
 
         # there is no candidate to which the connecting line does not intersect any existing segment, so the

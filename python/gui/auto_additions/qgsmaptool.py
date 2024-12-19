@@ -5,5 +5,5 @@ try:
     QgsMapTool.searchRadiusMU = staticmethod(QgsMapTool.searchRadiusMU)
     QgsMapTool.__signal_arguments__ = {'messageEmitted': ['message: str', ': Qgis.MessageLevel = Qgis.MessageLevel.Info']}
     QgsMapTool.__group__ = ['maptools']
-except (NameError, AttributeError):
+except NameError:
     pass

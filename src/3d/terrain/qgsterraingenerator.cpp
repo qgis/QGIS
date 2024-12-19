@@ -14,20 +14,19 @@
  ***************************************************************************/
 
 #include "qgsterraingenerator.h"
-#include "moc_qgsterraingenerator.cpp"
 
+#include "qgsaabb.h"
 #include "qgs3dmapsettings.h"
 #include "qgs3dutils.h"
 #include "qgscoordinatetransform.h"
-#include "qgsabstractterrainsettings.h"
 
-QgsBox3D QgsTerrainGenerator::rootChunkBox3D( const Qgs3DMapSettings &map ) const
+QgsAABB QgsTerrainGenerator::rootChunkBbox( const Qgs3DMapSettings &map ) const
 {
   QgsRectangle te = Qgs3DUtils::tryReprojectExtent2D( rootChunkExtent(), crs(), map.crs(), map.transformContext() );
 
   float hMin, hMax;
   rootChunkHeightRange( hMin, hMax );
-  return QgsBox3D( te.xMinimum(), te.yMinimum(), hMin * map.terrainSettings()->verticalScale(), te.xMaximum(), te.yMaximum(), hMax * map.terrainSettings()->verticalScale() );
+  return Qgs3DUtils::mapToWorldExtent( te, hMin * map.terrainVerticalScale(), hMax * map.terrainVerticalScale(), map.origin() );
 }
 
 float QgsTerrainGenerator::rootChunkError( const Qgs3DMapSettings &map ) const
@@ -35,7 +34,7 @@ float QgsTerrainGenerator::rootChunkError( const Qgs3DMapSettings &map ) const
   QgsRectangle te = Qgs3DUtils::tryReprojectExtent2D( rootChunkExtent(), crs(), map.crs(), map.transformContext() );
 
   // use texel size as the error
-  return te.width() / map.terrainSettings()->mapTileResolution();
+  return te.width() / map.mapTileResolution();
 }
 
 void QgsTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) const
@@ -69,10 +68,6 @@ QString QgsTerrainGenerator::typeToString( QgsTerrainGenerator::Type type )
       return QStringLiteral( "quantizedmesh" );
   }
   return QString();
-}
-
-void QgsTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &, const QgsCoordinateTransformContext & )
-{
 }
 
 bool QgsTerrainGenerator::isValid() const

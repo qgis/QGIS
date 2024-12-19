@@ -74,6 +74,7 @@ class GUI_EXPORT QgsLayoutItemsListView : public QTreeView
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutItemsListView.
      */
@@ -95,6 +96,7 @@ class GUI_EXPORT QgsLayoutItemsListView : public QTreeView
     void onItemFocused( QgsLayoutItem *focusedItem );
 
   private:
+
     QgsLayout *mLayout = nullptr;
     QgsLayoutItemsListViewModel *mModel = nullptr;
     QgsLayoutDesignerInterface *mDesigner = nullptr;

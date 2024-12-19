@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsuserprofilemanager.h"
-#include "moc_qgsuserprofilemanager.cpp"
 #include "qgsuserprofile.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"

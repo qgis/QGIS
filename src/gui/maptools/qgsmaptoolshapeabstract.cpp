@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapeabstract.h"
-#include "moc_qgsmaptoolshapeabstract.cpp"
 #include "qgsgeometryrubberband.h"
 
 #include <QKeyEvent>

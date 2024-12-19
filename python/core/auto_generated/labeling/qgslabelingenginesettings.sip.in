@@ -92,7 +92,7 @@ Sets the maximum number of polygon label ``candidates`` per centimeter squared.
 .. versionadded:: 3.12
 %End
 
- void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const /Deprecated="Since 3.12. Use maximumPolygonCandidatesPerCmSquared() and maximumLineCandidatesPerCm() instead."/;
+ void numCandidatePositions( int &candPoint, int &candLine, int &candPolygon ) const /Deprecated/;
 %Docstring
 Gets number of candidate positions that will be generated for each label feature.
 
@@ -101,7 +101,7 @@ Gets number of candidate positions that will be generated for each label feature
    Use :py:func:`~QgsLabelingEngineSettings.maximumPolygonCandidatesPerCmSquared` and :py:func:`~QgsLabelingEngineSettings.maximumLineCandidatesPerCm` instead.
 %End
 
- void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) /Deprecated="Since 3.12. Use setMaximumPolygonCandidatesPerCmSquared() and setMaximumLineCandidatesPerCm() instead."/;
+ void setNumCandidatePositions( int candPoint, int candLine, int candPolygon ) /Deprecated/;
 %Docstring
 Sets the number of candidate positions that will be generated for each label feature.
 
@@ -110,7 +110,7 @@ Sets the number of candidate positions that will be generated for each label fea
    Use :py:func:`~QgsLabelingEngineSettings.setMaximumPolygonCandidatesPerCmSquared` and :py:func:`~QgsLabelingEngineSettings.setMaximumLineCandidatesPerCm` instead.
 %End
 
- void setSearchMethod( Search s ) /Deprecated="Since 3.10. Chain is always used."/;
+ void setSearchMethod( Search s ) /Deprecated/;
 %Docstring
 Used to set which search method to use for removal collisions between labels
 
@@ -119,7 +119,7 @@ Used to set which search method to use for removal collisions between labels
    Chain is always used.
 %End
 
- Search searchMethod() const /Deprecated="Since 3.10. Chain is always used."/;
+ Search searchMethod() const /Deprecated/;
 %Docstring
 Which search method to use for removal collisions between labels
 
@@ -247,7 +247,7 @@ Sets the placement engine ``version``, which dictates how the label placement pr
 
     QList< QgsAbstractLabelingEngineRule * > rules();
 %Docstring
-Returns a list of labeling engine rules which must be satisfied
+Returns a list of labeling engine rules which must be satifisfied
 while placing labels.
 
 .. seealso:: :py:func:`addRule`
@@ -260,7 +260,7 @@ while placing labels.
 
     void addRule( QgsAbstractLabelingEngineRule *rule /Transfer/ );
 %Docstring
-Adds a labeling engine ``rule`` which must be satisfied
+Adds a labeling engine ``rule`` which must be satifisfied
 while placing labels.
 
 Ownership of the rule is transferred to the settings.
@@ -274,7 +274,7 @@ Ownership of the rule is transferred to the settings.
 
     void setRules( const QList< QgsAbstractLabelingEngineRule * > &rules /Transfer/ );
 %Docstring
-Sets the labeling engine ``rules`` which must be satisfied
+Sets the labeling engine ``rules`` which must be satifisfied
 while placing labels.
 
 Ownership of the rules are transferred to the settings.

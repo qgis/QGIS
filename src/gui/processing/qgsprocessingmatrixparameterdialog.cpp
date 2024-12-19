@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsprocessingmatrixparameterdialog.h"
-#include "moc_qgsprocessingmatrixparameterdialog.cpp"
 #include "qgsgui.h"
 #include <QStandardItemModel>
 #include <QStandardItem>
@@ -45,11 +44,13 @@ QgsProcessingMatrixParameterPanelWidget::QgsProcessingMatrixParameterPanelWidget
   mButtonBox->addButton( mButtonRemoveAll, QDialogButtonBox::ActionRole );
 
   connect( mButtonBox->button( QDialogButtonBox::Ok ), &QPushButton::clicked, this, &QgsPanelWidget::acceptPanel );
-  connect( mButtonBox->button( QDialogButtonBox::Cancel ), &QPushButton::clicked, this, [=] {
+  connect( mButtonBox->button( QDialogButtonBox::Cancel ), &QPushButton::clicked, this, [ = ]
+  {
     mWasCanceled = true;
     acceptPanel();
   } );
-  connect( this, &QgsPanelWidget::panelAccepted, this, [=]() {
+  connect( this, &QgsPanelWidget::panelAccepted, this, [ = ]()
+  {
     // save any current cell edits
     mTblView->setCurrentIndex( QModelIndex() );
 
@@ -90,7 +91,7 @@ QVariantList QgsProcessingMatrixParameterPanelWidget::table() const
 
 void QgsProcessingMatrixParameterPanelWidget::addRow()
 {
-  QList<QStandardItem *> items;
+  QList< QStandardItem * > items;
   for ( int i = 0; i < mTblView->model()->columnCount(); ++i )
   {
     items << new QStandardItem( '0' );
@@ -101,12 +102,12 @@ void QgsProcessingMatrixParameterPanelWidget::addRow()
 void QgsProcessingMatrixParameterPanelWidget::deleteRow()
 {
   QModelIndexList selected = mTblView->selectionModel()->selectedRows();
-  QSet<int> rows;
+  QSet< int > rows;
   rows.reserve( selected.count() );
   for ( const QModelIndex &i : selected )
     rows << i.row();
 
-  QList<int> rowsToDelete = qgis::setToList( rows );
+  QList< int > rowsToDelete = qgis::setToList( rows );
   std::sort( rowsToDelete.begin(), rowsToDelete.end(), std::greater<int>() );
   mTblView->setUpdatesEnabled( false );
   for ( int i : std::as_const( rowsToDelete ) )
@@ -196,7 +197,8 @@ void QgsProcessingMatrixParameterPanel::showDialog()
 
     panel->openPanel( widget );
 
-    connect( widget, &QgsPanelWidget::widgetChanged, this, [=] {
+    connect( widget, &QgsPanelWidget::widgetChanged, this, [ = ]
+    {
       setValue( widget->table() );
     } );
   }

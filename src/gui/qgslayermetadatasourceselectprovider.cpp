@@ -20,11 +20,13 @@
 QgsLayerMetadataSourceSelectProvider::QgsLayerMetadataSourceSelectProvider()
   : QgsSourceSelectProvider()
 {
+
 }
 
 QString QgsLayerMetadataSourceSelectProvider::providerKey() const
 {
   return QStringLiteral( "layermetadata" );
+
 }
 
 QString QgsLayerMetadataSourceSelectProvider::text() const

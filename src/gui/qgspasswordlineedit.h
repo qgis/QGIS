@@ -35,6 +35,7 @@ class GUI_EXPORT QgsPasswordLineEdit : public QLineEdit
     Q_PROPERTY( bool showLockIcon READ showLockIcon WRITE setShowLockIcon )
 
   public:
+
     /**
      * Constructor for QgsPasswordLineEdit.
      * \param parent parent widget
@@ -62,6 +63,7 @@ class GUI_EXPORT QgsPasswordLineEdit : public QLineEdit
     void togglePasswordVisibility( bool toggled );
 
   private:
+
     QAction *mActionShowHidePassword = nullptr;
     QAction *mActionLock = nullptr;
 

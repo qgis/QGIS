@@ -17,7 +17,6 @@
 
 #include "qgsproviderregistry.h"
 #include "qgsrasterdataprovider.h"
-#include "moc_qgsrasterdataprovider.cpp"
 #include "qgsrasteridentifyresult.h"
 #include "qgslogger.h"
 #include "qgspoint.h"
@@ -598,37 +597,37 @@ void QgsRasterDataProvider::copyBaseSettings( const QgsRasterDataProvider &other
   }
 }
 
-static Qgis::RasterResamplingMethod resamplingMethodFromString( const QString &str )
+static QgsRasterDataProvider::ResamplingMethod resamplingMethodFromString( const QString &str )
 {
   if ( str == QLatin1String( "bilinear" ) )
   {
-    return Qgis::RasterResamplingMethod::Bilinear;
+    return QgsRasterDataProvider::ResamplingMethod::Bilinear;
   }
   else if ( str == QLatin1String( "cubic" ) )
   {
-    return Qgis::RasterResamplingMethod::Cubic;
+    return QgsRasterDataProvider::ResamplingMethod::Cubic;
   }
   else if ( str == QLatin1String( "cubicSpline" ) )
   {
-    return Qgis::RasterResamplingMethod::CubicSpline;
+    return QgsRasterDataProvider::ResamplingMethod::CubicSpline;
   }
   else if ( str == QLatin1String( "lanczos" ) )
   {
-    return Qgis::RasterResamplingMethod::Lanczos;
+    return QgsRasterDataProvider::ResamplingMethod::Lanczos;
   }
   else if ( str == QLatin1String( "average" ) )
   {
-    return Qgis::RasterResamplingMethod::Average;
+    return QgsRasterDataProvider::ResamplingMethod::Average;
   }
   else if ( str == QLatin1String( "mode" ) )
   {
-    return Qgis::RasterResamplingMethod::Mode;
+    return QgsRasterDataProvider::ResamplingMethod::Mode;
   }
   else if ( str == QLatin1String( "gauss" ) )
   {
-    return Qgis::RasterResamplingMethod::Gauss;
+    return QgsRasterDataProvider::ResamplingMethod::Gauss;
   }
-  return  Qgis::RasterResamplingMethod::Nearest;
+  return  QgsRasterDataProvider::ResamplingMethod::Nearest;
 }
 
 void QgsRasterDataProvider::readXml( const QDomElement &filterElem )
@@ -650,25 +649,25 @@ void QgsRasterDataProvider::readXml( const QDomElement &filterElem )
   }
 }
 
-static QString resamplingMethodToString( Qgis::RasterResamplingMethod method )
+static QString resamplingMethodToString( QgsRasterDataProvider::ResamplingMethod method )
 {
   switch ( method )
   {
-    case Qgis::RasterResamplingMethod::Nearest:
+    case QgsRasterDataProvider::ResamplingMethod::Nearest:
       return QStringLiteral( "nearestNeighbour" );
-    case Qgis::RasterResamplingMethod::Bilinear:
+    case QgsRasterDataProvider::ResamplingMethod::Bilinear:
       return QStringLiteral( "bilinear" );
-    case Qgis::RasterResamplingMethod::Cubic:
+    case QgsRasterDataProvider::ResamplingMethod::Cubic:
       return QStringLiteral( "cubic" );
-    case Qgis::RasterResamplingMethod::CubicSpline:
+    case QgsRasterDataProvider::ResamplingMethod::CubicSpline:
       return QStringLiteral( "cubicSpline" );
-    case Qgis::RasterResamplingMethod::Lanczos:
+    case QgsRasterDataProvider::ResamplingMethod::Lanczos:
       return QStringLiteral( "lanczos" );
-    case Qgis::RasterResamplingMethod::Average:
+    case QgsRasterDataProvider::ResamplingMethod::Average:
       return QStringLiteral( "average" );
-    case Qgis::RasterResamplingMethod::Mode:
+    case QgsRasterDataProvider::ResamplingMethod::Mode:
       return QStringLiteral( "mode" );
-    case Qgis::RasterResamplingMethod::Gauss:
+    case QgsRasterDataProvider::ResamplingMethod::Gauss:
       return QStringLiteral( "gauss" );
   }
   // should not happen
@@ -1050,5 +1049,3 @@ QString QgsRasterDataProvider::encodeVirtualRasterProviderUri( const VirtualRast
   uri.setQuery( query );
   return QString( QUrl::toPercentEncoding( uri.toEncoded() ) );
 }
-
-#undef ERR

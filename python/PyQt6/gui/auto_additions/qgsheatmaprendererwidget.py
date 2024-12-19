@@ -2,5 +2,5 @@
 try:
     QgsHeatmapRendererWidget.create = staticmethod(QgsHeatmapRendererWidget.create)
     QgsHeatmapRendererWidget.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

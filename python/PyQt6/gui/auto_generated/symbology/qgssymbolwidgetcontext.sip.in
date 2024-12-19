@@ -20,6 +20,7 @@ map canvas and relevant expression contexts.
 #include "qgssymbolwidgetcontext.h"
 %End
   public:
+
     QgsSymbolWidgetContext();
     QgsSymbolWidgetContext( const QgsSymbolWidgetContext &other );
 
@@ -81,7 +82,7 @@ the layer widget.
 .. seealso:: :py:func:`setExpressionContext`
 %End
 
-    void setAdditionalExpressionContextScopes( const QList<QgsExpressionContextScope> &scopes );
+    void setAdditionalExpressionContextScopes( const QList< QgsExpressionContextScope > &scopes );
 %Docstring
 Sets a list of additional expression context scopes to show as available within the layer.
 
@@ -90,7 +91,7 @@ Sets a list of additional expression context scopes to show as available within 
 .. seealso:: :py:func:`setExpressionContext`
 %End
 
-    QList<QgsExpressionContextScope> additionalExpressionContextScopes() const;
+    QList< QgsExpressionContextScope > additionalExpressionContextScopes() const;
 %Docstring
 Returns the list of additional expression context scopes to show as available within the layer.
 

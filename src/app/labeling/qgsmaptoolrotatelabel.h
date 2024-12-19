@@ -23,7 +23,7 @@
 #include "qobjectuniqueptr.h"
 class QgsPointRotationItem;
 
-class APP_EXPORT QgsMapToolRotateLabel : public QgsMapToolLabel
+class APP_EXPORT QgsMapToolRotateLabel: public QgsMapToolLabel
 {
     Q_OBJECT
 
@@ -37,6 +37,7 @@ class APP_EXPORT QgsMapToolRotateLabel : public QgsMapToolLabel
     void keyReleaseEvent( QKeyEvent *e ) override;
 
   protected:
+
     static int roundTo15Degrees( double n );
     //! Converts azimuth value so that 0 is corresponds to East
     static double convertAzimuth( double a );

@@ -2,14 +2,14 @@
 try:
     QgsOuterGlowEffect.create = staticmethod(QgsOuterGlowEffect.create)
     QgsOuterGlowEffect.__group__ = ['effects']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsInnerGlowEffect.create = staticmethod(QgsInnerGlowEffect.create)
     QgsInnerGlowEffect.__group__ = ['effects']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsGlowEffect.__group__ = ['effects']
-except (NameError, AttributeError):
+except NameError:
     pass

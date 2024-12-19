@@ -381,13 +381,8 @@ tests:
         type: raster
     results:
       signaturefile:
+        type: file
         name: expected/i.gensig.txt
-        type: regex
-        rules:
-          - '300\s*\n(?:\d+\s*\n)?7043\.06\s*\n1\.89772e\+07\s*'
-          - '1700\s*\n(?:\d+\s*\n)?7405\.93\s*\n2\.01921e\+07\s*'
-          - '6000\s*\n(?:\d+\s*\n)?7287\.21\s*\n1\.90221e\+07\s*'
-          - '7000\s*\n(?:\d+\s*\n)?7246\.81\s*\n1\.90226e\+07\s*'
 
   - algorithm: grass7:i.gensigset
     name: GRASS7 i.gensigset
@@ -404,26 +399,8 @@ tests:
         type: raster
     results:
       signaturefile:
-        type: regex
+        type: file
         name: expected/i.gensigset.txt
-        rules:
-          - 'subclass:\s*\n\s*pi:\s*0\.22802\s*\n\s*means:\s*9764\.5\s*\n\s*covar:\s*\n\s*3\.02234e\+06'
-          - 'subclass:\s*\n\s*pi:\s*0\.495197\s*\n\s*means:\s*5208\.5\s*\n\s*covar:\s*\n\s*7\.97435e\+06'
-          - 'subclass:\s*\n\s*pi:\s*0\.118668\s*\n\s*means:\s*997\.979\s*\n\s*covar:\s*\n\s*686411'
-          - 'subclass:\s*\n\s*pi:\s*0\.158115\s*\n\s*means:\s*13401\s*\n\s*covar:\s*\n\s*702077'
-          - 'subclass:\s*\n\s*pi:\s*0\.177696\s*\n\s*means:\s*13267\.4\s*\n\s*covar:\s*\n\s*1\.06971e\+06'
-          - 'subclass:\s*\n\s*pi:\s*0\.172485\s*\n\s*means:\s*3861\.81\s*\n\s*covar:\s*\n\s*2\.35556e\+06'
-          - 'subclass:\s*\n\s*pi:\s*0\.48383\s*\n\s*means:\s*8696\.48\s*\n\s*covar:\s*\n\s*7\.62681e\+06'
-          - 'subclass:\s*\n\s*pi:\s*0\.165989\s*\n\s*means:\s*1052\.05\s*\n\s*covar:\s*\n\s*692627'
-          - 'subclass:\s*\n\s*pi:\s*0\.135816\s*\n\s*means:\s*1158\.36\s*\n\s*covar:\s*\n\s*934515'
-          - 'subclass:\s*\n\s*pi:\s*0\.187835\s*\n\s*means:\s*11847\.9\s*\n\s*covar:\s*\n\s*1\.74438e\+06'
-          - 'subclass:\s*\n\s*pi:\s*0\.0829488\s*\n\s*means:\s*14066\.2\s*\n\s*covar:\s*\n\s*268579'
-          - 'subclass:\s*\n\s*pi:\s*0\.5934\s*\n\s*means:\s*6298\.74\s*\n\s*covar:\s*\n\s*8\.66516e\+06'
-          - 'subclass:\s*\n\s*pi:\s*0\.278456\s*\n\s*means:\s*3394\.59\s*\n\s*covar:\s*\n\s*2\.33337e\+06'
-          - 'subclass:\s*\n\s*pi:\s*0\.0849227\s*\n\s*means:\s*13998\.4\s*\n\s*covar:\s*\n\s*256746'
-          - 'subclass:\s*\n\s*pi:\s*0\.102818\s*\n\s*means:\s*686\.099\s*\n\s*covar:\s*\n\s*379342'
-          - 'subclass:\s*\n\s*pi:\s*0\.222279\s*\n\s*means:\s*11683\.6\s*\n\s*covar:\s*\n\s*1\.75208e\+06'
-          - 'subclass:\s*\n\s*pi:\s*0\.311523\s*\n\s*means:\s*7849\.26\s*\n\s*covar:\s*\n\s*3\.21781e\+06'
 
   - algorithm: grass7:i.rgb.his
     name: GRASS7 i.rgb.his
@@ -449,53 +426,43 @@ tests:
         hash: 07578ad38cf948473a519f040acb0235f60a592904ac8ef46aa607e1
         type: rasterhash
 
-  - algorithm: grass7:i.pansharpen
-    name: GRASS7 i.pansharpen
-    condition:
-      grass:
-        # This test used to segfault on older GRASS releases
-        at_least: 8040000
-    params:
-      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
-      blue:
-        name: raster_4class.tif
-        type: raster
-      green:
-        name: raster_5class.tif
-        type: raster
-      method: 2
-      pan:
-        name: float_raster.tif
-        type: raster
-      red:
-        name: raster_6class.tif
-        type: raster
-    results:
-      blueoutput:
-        hash:
-        - 906de8be89e302057ed849d00eaf49332ecca73ffaba1374994f1a17
-        - 6abf8904844b902dfb567246ad906ff51673fa61a821633eadc480c4
-        type: rasterhash
-      greenoutput:
-        hash:
-        - 588ad1ef8360ce903fc2defb1a1728a1dc8335d737d5fa77797605ed
-        - 5c3ac77c7ac4a57b7a985541ce0c5f76c1709d8de7aa66b3acfa45d6
-        type: rasterhash
-      redoutput:
-        hash:
-        - ad80c0007faa1b0dc15c0b0c21ff4e0045ff5e67b454df0f65e68899
-        - b488227a86c3ed58f5b2328238d109e69c55024f86efb1d4876de1f6
-        type: rasterhash
-
-
+# Triggers a Python exception on the GRASS version used on the CI - disabling until fixed in GRASS
+#  - algorithm: grass7:i.pansharpen
+#    name: GRASS7 i.pansharpen
+#    params:
+#      GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
+#      blue:
+#        name: raster_4class.tif
+#        type: raster
+#      green:
+#        name: raster_5class.tif
+#        type: raster
+#      method: 2
+#      pan:
+#        name: float_raster.tif
+#        type: raster
+#      red:
+#        name: raster_6class.tif
+#        type: raster
+#    results:
+#      blueoutput:
+#        hash:
+#        - 906de8be89e302057ed849d00eaf49332ecca73ffaba1374994f1a17
+#        - 6abf8904844b902dfb567246ad906ff51673fa61a821633eadc480c4
+#        type: rasterhash
+#      greenoutput:
+#        hash:
+#        - 588ad1ef8360ce903fc2defb1a1728a1dc8335d737d5fa77797605ed
+#        - 5c3ac77c7ac4a57b7a985541ce0c5f76c1709d8de7aa66b3acfa45d6
+#        type: rasterhash
+#      redoutput:
+#        hash:
+#        - ad80c0007faa1b0dc15c0b0c21ff4e0045ff5e67b454df0f65e68899
+#        - b488227a86c3ed58f5b2328238d109e69c55024f86efb1d4876de1f6
+#        type: rasterhash
+#
   - algorithm: grass7:i.smap
     name: GRASS7 i.smap
-    condition:
-      grass:
-        # we can only run this test on older GRASS versions -- newer ones
-        # have the raster paths hardcoded into the signature file, and we can't handle
-        # that currently in the test suite
-        less_than: 8000000
     params:
       GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
       blocksize: 1024
@@ -517,12 +484,6 @@ tests:
 
   - algorithm: grass7:i.maxlik
     name: GRASS7 i.maxlik
-    condition:
-      grass:
-        # we can only run this test on older GRASS versions -- newer ones
-        # have the raster paths hardcoded into the signature file, and we can't handle
-        # that currently in the test suite
-        less_than: 8000000
     params:
       GRASS_REGION_PARAMETER: '344500.0,358400.0,6682800.0,6693700.0'
       input:

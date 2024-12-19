@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Jorge Gustavo Rocha"
-__date__ = "January 2017"
-__copyright__ = "(C) 2017, Jorge Gustavo Rocha"
+__author__ = 'Jorge Gustavo Rocha'
+__date__ = 'January 2017'
+__copyright__ = '(C) 2017, Jorge Gustavo Rocha'
 
 import os
 
@@ -55,24 +55,17 @@ TEST_DATA_DIR = unitTestDataPath()
 def createLayerWithOneLine():
     # create a temporary layer
     # linelayer = iface.addVectorLayer("LineString?crs=epsg:4326&field=gid:int&field=name:string", "simple_line", "memory")
-    linelayer = QgsVectorLayer(
-        "LineString?crs=epsg:4326&field=gid:int&field=name:string",
-        "simple_line",
-        "memory",
-    )
+    linelayer = QgsVectorLayer("LineString?crs=epsg:4326&field=gid:int&field=name:string", "simple_line", "memory")
     one = QgsFeature(linelayer.dataProvider().fields(), 0)
-    one.setAttributes([1, "one"])
-    one.setGeometry(
-        QgsGeometry.fromPolylineXY([QgsPointXY(-7, 38), QgsPointXY(-8, 42)])
-    )
+    one.setAttributes([1, 'one'])
+    one.setGeometry(QgsGeometry.fromPolylineXY([QgsPointXY(-7, 38), QgsPointXY(-8, 42)]))
     linelayer.dataProvider().addFeatures([one])
     return linelayer
 
 
 def createLayerWithOnePoint():
-    layer = QgsVectorLayer(
-        "Point?field=fldtxt:string&field=fldint:integer", "addfeat", "memory"
-    )
+    layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                           "addfeat", "memory")
     pr = layer.dataProvider()
     f = QgsFeature()
     f.setAttributes(["test", 123])
@@ -87,19 +80,9 @@ def createLayerWithOnePolygon():
     assert layer.isValid()
     f1 = QgsFeature(layer.dataProvider().fields(), 1)
     f1.setAttribute("pk", 1)
-    f1.setGeometry(
-        QgsGeometry.fromPolygonXY(
-            [
-                [
-                    QgsPointXY(2484588, 2425722),
-                    QgsPointXY(2482767, 2398853),
-                    QgsPointXY(2520109, 2397715),
-                    QgsPointXY(2520792, 2425494),
-                    QgsPointXY(2484588, 2425722),
-                ]
-            ]
-        )
-    )
+    f1.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(2484588, 2425722), QgsPointXY(2482767, 2398853),
+                                               QgsPointXY(2520109, 2397715), QgsPointXY(2520792, 2425494),
+                                               QgsPointXY(2484588, 2425722)]]))
     assert layer.dataProvider().addFeatures([f1])
     return layer
 
@@ -116,30 +99,23 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
     # test <CSSParameter><ogc:Literal>VALUE<ogc:Literal/><CSSParameter/>
     def test_Literal_within_CSSParameter(self):
         layer = createLayerWithOneLine()
-        mFilePath = os.path.join(
-            TEST_DATA_DIR, "symbol_layer/external_sld/simple_streams.sld"
-        )
+        mFilePath = os.path.join(TEST_DATA_DIR, 'symbol_layer/external_sld/simple_streams.sld')
         layer.loadSldStyle(mFilePath)
         props = layer.renderer().symbol().symbolLayers()[0].properties()
 
         def testLineColor():
             # stroke CSSParameter within ogc:Literal
             # expected color is #003EBA, RGB 0,62,186
-            self.assertEqual(
-                layer.renderer().symbol().symbolLayers()[0].color().name(), "#003eba"
-            )
+            self.assertEqual(layer.renderer().symbol().symbolLayers()[0].color().name(), '#003eba')
 
         def testLineWidth():
             # stroke-width CSSParameter within ogc:Literal
-            self.assertEqual(props["line_width"], "2")
+            self.assertEqual(props['line_width'], '2')
 
         def testLineOpacity():
             # stroke-opacity CSSParameter NOT within ogc:Literal
             # stroke-opacity=0.1
-            self.assertEqual(
-                props["line_color"],
-                "0,62,186,25,rgb:0,0.24313725490196078,0.72941176470588232,0.09803921568627451",
-            )
+            self.assertEqual(props['line_color'], '0,62,186,25,rgb:0,0.24313725490196078,0.72941176470588232,0.09803921568627451')
 
         testLineColor()
         testLineWidth()
@@ -158,30 +134,26 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         # myShpFile = os.path.join(unitTestDataPath(), 'points.shp')
         # layer = QgsVectorLayer(myShpFile, 'points', 'ogr')
         layer = QgsVectorLayer("Point", "addfeat", "memory")
-        assert layer.isValid()
+        assert (layer.isValid())
         # test if able to read <sld:Rotation>50.0</sld:Rotation>
-        mFilePath = os.path.join(
-            unitTestDataPath(),
-            "symbol_layer/external_sld/testSimpleMarkerRotation-directValue.sld",
-        )
+        mFilePath = os.path.join(unitTestDataPath(),
+                                 'symbol_layer/external_sld/testSimpleMarkerRotation-directValue.sld')
         layer.loadSldStyle(mFilePath)
         props = layer.renderer().symbol().symbolLayers()[0].properties()
-        self.assertEqual(props["angle"], "50")
+        self.assertEqual(props['angle'], '50')
         # test if able to read <se:Rotation><ogc:Literal>50</ogc:Literal></se:Rotation>
-        mFilePath = os.path.join(
-            unitTestDataPath(),
-            "symbol_layer/external_sld/testSimpleMarkerRotation-ogcLiteral.sld",
-        )
+        mFilePath = os.path.join(unitTestDataPath(),
+                                 'symbol_layer/external_sld/testSimpleMarkerRotation-ogcLiteral.sld')
         layer.loadSldStyle(mFilePath)
         props = layer.renderer().symbol().symbolLayers()[0].properties()
-        self.assertEqual(props["angle"], "50")
+        self.assertEqual(props['angle'], '50')
 
     def testSymbolSizeUom(self):
         # create a layer
         layer = createLayerWithOnePoint()
 
         # load a sld with marker size without uom attribute (pixels)
-        sld = "symbol_layer/QgsSvgMarkerSymbolLayer.sld"
+        sld = 'symbol_layer/QgsSvgMarkerSymbolLayer.sld'
         mFilePath = os.path.join(TEST_DATA_DIR, sld)
         layer.loadSldStyle(mFilePath)
 
@@ -194,7 +166,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         self.assertEqual(size, sld_size_px)
 
         # load a sld with marker size with uom attribute in pixel
-        sld = "symbol_layer/QgsSvgMarkerSymbolLayerUomPixel.sld"
+        sld = 'symbol_layer/QgsSvgMarkerSymbolLayerUomPixel.sld'
         mFilePath = os.path.join(TEST_DATA_DIR, sld)
         layer.loadSldStyle(mFilePath)
 
@@ -207,7 +179,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         self.assertEqual(size, sld_size_px)
 
         # load a sld with marker size with uom attribute in meter
-        sld = "symbol_layer/QgsSvgMarkerSymbolLayerUomMetre.sld"
+        sld = 'symbol_layer/QgsSvgMarkerSymbolLayerUomMetre.sld'
         mFilePath = os.path.join(TEST_DATA_DIR, sld)
         layer.loadSldStyle(mFilePath)
 
@@ -220,7 +192,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         self.assertEqual(size, sld_size_meters_at_scale)
 
         # load a sld with marker size with uom attribute in foot
-        sld = "symbol_layer/QgsSvgMarkerSymbolLayerUomFoot.sld"
+        sld = 'symbol_layer/QgsSvgMarkerSymbolLayerUomFoot.sld'
         mFilePath = os.path.join(TEST_DATA_DIR, sld)
         layer.loadSldStyle(mFilePath)
 
@@ -238,7 +210,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         player = createLayerWithOnePolygon()
 
         # size test for QgsEllipseSymbolLayer
-        sld = "symbol_layer/QgsEllipseSymbolLayer.sld"
+        sld = 'symbol_layer/QgsEllipseSymbolLayer.sld'
         mFilePath = os.path.join(TEST_DATA_DIR, sld)
         layer.loadSldStyle(mFilePath)
 
@@ -258,7 +230,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         # createFromSld not implemented
 
         # size test for QgsSimpleFillSymbolLayer
-        sld = "symbol_layer/QgsSimpleFillSymbolLayer.sld"
+        sld = 'symbol_layer/QgsSimpleFillSymbolLayer.sld'
         mFilePath = os.path.join(TEST_DATA_DIR, sld)
         player.loadSldStyle(mFilePath)
 
@@ -272,7 +244,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         self.assertEqual(stroke_width, sld_stroke_width_px)
 
         # size test for QgsSVGFillSymbolLayer
-        sld = "symbol_layer/QgsSVGFillSymbolLayer.sld"
+        sld = 'symbol_layer/QgsSVGFillSymbolLayer.sld'
         mFilePath = os.path.join(TEST_DATA_DIR, sld)
         player.loadSldStyle(mFilePath)
 
@@ -289,7 +261,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         self.assertEqual(stroke_width, sld_stroke_width_px)
 
         # size test for QgsSvgMarkerSymbolLayer
-        sld = "symbol_layer/QgsSvgMarkerSymbolLayer.sld"
+        sld = 'symbol_layer/QgsSvgMarkerSymbolLayer.sld'
         mFilePath = os.path.join(TEST_DATA_DIR, sld)
         layer.loadSldStyle(mFilePath)
 
@@ -306,7 +278,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         # createFromSld not implemented
 
         # size test for QgsLinePatternFillSymbolLayer
-        sld = "symbol_layer/QgsLinePatternFillSymbolLayer.sld"
+        sld = 'symbol_layer/QgsLinePatternFillSymbolLayer.sld'
         mFilePath = os.path.join(TEST_DATA_DIR, sld)
         player.loadSldStyle(mFilePath)
 
@@ -323,7 +295,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         self.assertEqual(stroke_width, sld_stroke_width_px)
 
         # test size for QgsSimpleLineSymbolLayer
-        sld = "symbol_layer/QgsSimpleLineSymbolLayer.sld"
+        sld = 'symbol_layer/QgsSimpleLineSymbolLayer.sld'
         mFilePath = os.path.join(TEST_DATA_DIR, sld)
         player.loadSldStyle(mFilePath)
 
@@ -337,7 +309,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         self.assertEqual(stroke_width, sld_stroke_width_px)
 
         # test size for QgsMarkerLineSymbolLayer
-        sld = "symbol_layer/QgsMarkerLineSymbolLayer.sld"
+        sld = 'symbol_layer/QgsMarkerLineSymbolLayer.sld'
         mFilePath = os.path.join(TEST_DATA_DIR, sld)
         player.loadSldStyle(mFilePath)
 
@@ -354,7 +326,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         self.assertEqual(offset, sld_offset_px)
 
         # test size for QgsSimpleMarkerSymbolLayer
-        sld = "symbol_layer/QgsSimpleMarkerSymbolLayer.sld"
+        sld = 'symbol_layer/QgsSimpleMarkerSymbolLayer.sld'
         mFilePath = os.path.join(TEST_DATA_DIR, sld)
         layer.loadSldStyle(mFilePath)
 
@@ -373,7 +345,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         self.assertEqual(offset.y(), sld_displacement_y_px)
 
         # test size for QgsSVGMarkerSymbolLayer
-        sld = "symbol_layer/QgsSvgMarkerSymbolLayer.sld"
+        sld = 'symbol_layer/QgsSvgMarkerSymbolLayer.sld'
         mFilePath = os.path.join(TEST_DATA_DIR, sld)
         layer.loadSldStyle(mFilePath)
 
@@ -386,7 +358,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         self.assertEqual(size, sld_size_px)
 
         # test size for QgsFontMarkerSymbolLayer
-        sld = "symbol_layer/QgsFontMarkerSymbolLayer.sld"
+        sld = 'symbol_layer/QgsFontMarkerSymbolLayer.sld'
         mFilePath = os.path.join(TEST_DATA_DIR, sld)
         layer.loadSldStyle(mFilePath)
 
@@ -399,20 +371,20 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         self.assertEqual(size, sld_size_px)
 
         # test percent encoding  for QgsFontMarkerSymbolLayer
-        sld = "symbol_layer/QgsFontMarkerSymbolLayerPercentEncoding.sld"
+        sld = 'symbol_layer/QgsFontMarkerSymbolLayerPercentEncoding.sld'
         mFilePath = os.path.join(TEST_DATA_DIR, sld)
         layer.loadSldStyle(mFilePath)
 
         sl = layer.renderer().symbol().symbolLayers()[0]
         self.assertTrue(isinstance(sl, QgsFontMarkerSymbolLayer))
-        self.assertEqual(sl.fontFamily(), "MapInfo Miscellaneous")
+        self.assertEqual(sl.fontFamily(), 'MapInfo Miscellaneous')
 
     def testSymbolSizeAfterReload(self):
         # create a layer
         layer = createLayerWithOnePoint()
 
         # load a sld with marker size
-        sld = "symbol_layer/QgsSvgMarkerSymbolLayer.sld"
+        sld = 'symbol_layer/QgsSvgMarkerSymbolLayer.sld'
         mFilePath = os.path.join(TEST_DATA_DIR, sld)
         layer.loadSldStyle(mFilePath)
 
@@ -445,30 +417,23 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
 
     def test_Literal_within_CSSParameter_and_Text(self):
         layer = createLayerWithOneLine()
-        mFilePath = os.path.join(
-            TEST_DATA_DIR, "symbol_layer/external_sld/simple_line_with_text.sld"
-        )
+        mFilePath = os.path.join(TEST_DATA_DIR, 'symbol_layer/external_sld/simple_line_with_text.sld')
         layer.loadSldStyle(mFilePath)
         props = layer.renderer().symbol().symbolLayers()[0].properties()
 
         def testLineColor():
             # stroke SvgParameter within ogc:Literal
             # expected color is #003EBA, RGB 0,62,186
-            self.assertEqual(
-                layer.renderer().symbol().symbolLayers()[0].color().name(), "#003eba"
-            )
+            self.assertEqual(layer.renderer().symbol().symbolLayers()[0].color().name(), '#003eba')
 
         def testLineWidth():
             # stroke-width SvgParameter within ogc:Literal
-            self.assertEqual(props["line_width"], "2")
+            self.assertEqual(props['line_width'], '2')
 
         def testLineOpacity():
             # stroke-opacity SvgParameter NOT within ogc:Literal
             # stroke-opacity=0.1
-            self.assertEqual(
-                props["line_color"],
-                "0,62,186,24,rgb:0,0.24313725490196078,0.72941176470588232,0.09411764705882353",
-            )
+            self.assertEqual(props['line_color'], '0,62,186,24,rgb:0,0.24313725490196078,0.72941176470588232,0.09411764705882353')
 
         testLineColor()
         testLineWidth()
@@ -477,16 +442,16 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         from qgis.core import QgsPalLayerSettings
 
         self.assertTrue(layer.labelsEnabled())
-        self.assertEqual(layer.labeling().type(), "simple")
+        self.assertEqual(layer.labeling().type(), 'simple')
 
         settings = layer.labeling().settings()
-        self.assertEqual(settings.fieldName, "name")
+        self.assertEqual(settings.fieldName, 'name')
 
         format = settings.format()
-        self.assertEqual(format.color().name(), "#ff0000")
+        self.assertEqual(format.color().name(), '#ff0000')
 
         font = format.font()
-        self.assertEqual(font.family(), "QGIS Vera Sans")
+        self.assertEqual(font.family(), 'QGIS Vera Sans')
         self.assertTrue(font.bold())
         self.assertFalse(font.italic())
 
@@ -551,7 +516,7 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
 
         tmp_dir = QTemporaryDir()
         tmp_path = tmp_dir.path()
-        sld_path = os.path.join(tmp_path, "circle_fill.sld")
+        sld_path = os.path.join(tmp_path, 'circle_fill.sld')
 
         layer = createLayerWithOnePolygon()
 
@@ -565,35 +530,21 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
                        - QgsSimpleMarkerSymbolLayer (shape)
             """
             layer.loadSldStyle(sld_path)
-            point_pattern_fill_symbol_layer = (
-                layer.renderer().symbol().symbolLayers()[0]
-            )
+            point_pattern_fill_symbol_layer = layer.renderer().symbol().symbolLayers()[0]
             marker = point_pattern_fill_symbol_layer.subSymbol()
             self.assertEqual(marker.type(), QgsSymbol.SymbolType.Marker)
             marker_symbol = marker.symbolLayers()[0]
-            self.assertEqual(marker_symbol.strokeColor().name(), "#801119")
+            self.assertEqual(marker_symbol.strokeColor().name(), '#801119')
             self.assertEqual(marker_symbol.strokeWidth(), 1.5)
             self.assertEqual(marker_symbol.shape(), Qgis.MarkerShape.Circle)
             self.assertEqual(marker_symbol.size(), 14)
-            self.assertEqual(
-                point_pattern_fill_symbol_layer.distanceXUnit(),
-                QgsUnitTypes.RenderUnit.RenderPixels,
-            )
-            self.assertEqual(
-                point_pattern_fill_symbol_layer.distanceYUnit(),
-                QgsUnitTypes.RenderUnit.RenderPixels,
-            )
-            self.assertEqual(
-                point_pattern_fill_symbol_layer.distanceX(),
-                xMargin * 2 + marker_symbol.size(),
-            )
-            self.assertEqual(
-                point_pattern_fill_symbol_layer.distanceY(),
-                yMargin * 2 + marker_symbol.size(),
-            )
+            self.assertEqual(point_pattern_fill_symbol_layer.distanceXUnit(), QgsUnitTypes.RenderUnit.RenderPixels)
+            self.assertEqual(point_pattern_fill_symbol_layer.distanceYUnit(), QgsUnitTypes.RenderUnit.RenderPixels)
+            self.assertEqual(point_pattern_fill_symbol_layer.distanceX(), xMargin * 2 + marker_symbol.size())
+            self.assertEqual(point_pattern_fill_symbol_layer.distanceY(), yMargin * 2 + marker_symbol.size())
 
-        with open(sld_path, "w+") as f:
-            f.write(sld.format("25"))
+        with open(sld_path, 'w+') as f:
+            f.write(sld.format('25'))
         _check_layer(layer, 25, 25)
 
         # From: https://docs.geoserver.org/stable/en/user/styling/sld/extensions/margins.html
@@ -602,8 +553,8 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         # top-bottom,right-left (two values, top and bottom sharing the same value)
         # top-right-bottom-left (single value for all four margins)
 
-        for margin in ("10 15", "10 15 10", "10 15 10 15"):
-            with open(sld_path, "w+") as f:
+        for margin in ('10 15', '10 15 10', '10 15 10 15'):
+            with open(sld_path, 'w+') as f:
                 f.write(sld.format(margin))
             _check_layer(layer)
 
@@ -617,5 +568,5 @@ class TestQgsSymbolLayerReadSld(QgisTestCase):
         _check_layer(layer)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

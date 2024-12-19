@@ -11,7 +11,7 @@
 
 
 
-class QgsMessageBar : QFrame
+class QgsMessageBar: QFrame
 {
 %Docstring(signature="appended")
 A bar for displaying non-blocking messages to the user.
@@ -36,6 +36,7 @@ the :py:func:`~pushWidget` method.
 #include "qgsmessagebar.h"
 %End
   public:
+
     QgsMessageBar( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsMessageBar

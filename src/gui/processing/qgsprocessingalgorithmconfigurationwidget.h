@@ -42,6 +42,7 @@ class GUI_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget, pub
     Q_OBJECT
 
   public:
+
     /**
      * Creates a new QgsProcessingAlgorithmConfigurationWidget
      */
@@ -107,6 +108,7 @@ class GUI_EXPORT QgsProcessingAlgorithmConfigurationWidget : public QWidget, pub
     QgsExpressionContext createExpressionContext() const override;
 
   private:
+
     QgsProcessingContextGenerator *mContextGenerator = nullptr;
     const QgsProcessingAlgorithm *mAlgorithm = nullptr;
     QgsProcessingParameterWidgetContext mWidgetContext;

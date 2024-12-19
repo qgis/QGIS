@@ -36,6 +36,7 @@ to run Fix geometries algorithm afterwards.
 #include "qgsgeometrysnappersinglesource.h"
 %End
   public:
+
     static int run( const QgsFeatureSource &source, QgsFeatureSink &sink, double thresh, QgsFeedback *feedback );
 %Docstring
 Run the algorithm on given source and output results to the sink, using threshold value in the source's map units.

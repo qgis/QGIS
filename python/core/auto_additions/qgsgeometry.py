@@ -24,13 +24,13 @@ try:
     QgsGeometry.createGeometryEngine = staticmethod(QgsGeometry.createGeometryEngine)
     QgsGeometry.convertPointList = staticmethod(QgsGeometry.convertPointList)
     QgsGeometry.__group__ = ['geometry']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsGeometryParameters.__group__ = ['geometry']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsGeometry.Error.__group__ = ['geometry']
-except (NameError, AttributeError):
+except NameError:
     pass

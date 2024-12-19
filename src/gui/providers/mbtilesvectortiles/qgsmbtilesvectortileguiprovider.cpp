@@ -36,6 +36,7 @@
 
 QgsMbtilesVectorTileSourceWidgetProvider::QgsMbtilesVectorTileSourceWidgetProvider()
 {
+
 }
 
 QString QgsMbtilesVectorTileSourceWidgetProvider::providerKey() const
@@ -49,9 +50,8 @@ bool QgsMbtilesVectorTileSourceWidgetProvider::canHandleLayer( QgsMapLayer *laye
     return false;
 
   const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri(
-    QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY,
-    layer->source()
-  );
+                              QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY,
+                              layer->source() );
   if ( parts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
     return false;
 
@@ -64,9 +64,9 @@ QgsProviderSourceWidget *QgsMbtilesVectorTileSourceWidgetProvider::createWidget(
     return nullptr;
 
   const QVariantMap parts = QgsProviderRegistry::instance()->decodeUri(
-    QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY,
-    layer->source()
-  );
+                              QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY,
+                              layer->source()
+                            );
 
   if ( parts.value( QStringLiteral( "path" ) ).toString().isEmpty() )
     return nullptr;
@@ -78,8 +78,8 @@ QgsProviderSourceWidget *QgsMbtilesVectorTileSourceWidgetProvider::createWidget(
 //
 // QgsMbtilesVectorTileGuiProviderMetadata
 //
-QgsMbtilesVectorTileGuiProviderMetadata::QgsMbtilesVectorTileGuiProviderMetadata()
-  : QgsProviderGuiMetadata( QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY )
+QgsMbtilesVectorTileGuiProviderMetadata::QgsMbtilesVectorTileGuiProviderMetadata():
+  QgsProviderGuiMetadata( QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY )
 {
 }
 

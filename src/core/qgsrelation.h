@@ -233,8 +233,7 @@ class CORE_EXPORT QgsRelation
      *
      * \param feature A feature from the referencing (child) layer
      *
-     * \returns The referenced (parent) feature, or an invalid feature if no matching feature
-     * was found
+     * \returns A request the referenced feature
      */
     QgsFeature getReferencedFeature( const QgsFeature &feature ) const;
 

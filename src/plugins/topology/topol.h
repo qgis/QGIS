@@ -54,10 +54,11 @@ class checkDock;
 * \brief [name] plugin for QGIS
 * [description]
 */
-class Topol : public QObject, public QgisPlugin
+class Topol: public QObject, public QgisPlugin
 {
     Q_OBJECT
   public:
+
     //////////////////////////////////////////////////////////////////////
     //
     //                MANDATORY PLUGIN METHODS FOLLOW
@@ -84,6 +85,7 @@ class Topol : public QObject, public QgisPlugin
     void help();
 
   private:
+
     ////////////////////////////////////////////////////////////////////
     //
     // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....

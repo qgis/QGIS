@@ -27,6 +27,7 @@ class QgsTiledSceneElevationPropertiesWidget : public QgsMapLayerConfigWidget, p
 {
     Q_OBJECT
   public:
+
     QgsTiledSceneElevationPropertiesWidget( QgsTiledSceneLayer *layer, QgsMapCanvas *canvas, QWidget *parent );
 
     void syncToLayer( QgsMapLayer *layer ) final;
@@ -39,10 +40,11 @@ class QgsTiledSceneElevationPropertiesWidget : public QgsMapLayerConfigWidget, p
 
     void onChanged();
     void shiftSceneZAxis();
-
   private:
+
     QgsTiledSceneLayer *mLayer = nullptr;
     bool mBlockUpdates = false;
+
 };
 
 
@@ -58,6 +60,7 @@ class QgsTiledSceneElevationPropertiesWidgetFactory : public QObject, public Qgs
     bool supportsLayer( QgsMapLayer *layer ) const override;
     QString layerPropertiesPagePositionHint() const override;
 };
+
 
 
 #endif // QGSTILEDSCENEELEVATIONPROPERTIESWIDGET_H

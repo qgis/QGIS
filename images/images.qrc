@@ -938,13 +938,11 @@
         <file>themes/default/mActionMeshDigitizing.svg</file>
         <file>themes/default/mActionMeshSelectPolygon.svg</file>
         <file>themes/default/mActionMeshSelectExpression.svg</file>
-        <file>themes/default/mActionMeshSelectIsolatedVertices.svg</file>
         <file>themes/default/mActionNewMeshLayer.svg</file>
         <file>themes/default/mActionMeshTransformByExpression.svg</file>
         <file>themes/default/mIconVertexCoordinates.svg</file>
         <file>themes/default/mActionMeshEditForceByVectorLines.svg</file>
         <file>themes/default/mActionMeshReindex.svg</file>
-        <file>themes/default/mActionMeshSelectAll.svg</file>
         <file>themes/default/mIconGeometryCollectionLayer.svg</file>
         <file>themes/default/mIconGps.svg</file>
         <file>themes/default/mActionNewGpx.svg</file>
@@ -1015,7 +1013,6 @@
         <file>themes/default/propertyicons/notes.svg</file>
         <file>themes/default/stacked-diagram.svg</file>
         <file>themes/default/mIconStac.svg</file>
-        <file>themes/default/mIconQt.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

@@ -38,7 +38,6 @@
 #include <QDomDocument>
 #include <QPolygonF>
 #include <QThread>
-#include <algorithm>
 
 QgsPropertiesDefinition QgsFeatureRenderer::sPropertyDefinitions;
 
@@ -418,53 +417,6 @@ QgsLegendSymbolList QgsFeatureRenderer::legendSymbolItems() const
   return QgsLegendSymbolList();
 }
 
-double QgsFeatureRenderer::maximumExtentBuffer( QgsRenderContext &context ) const
-{
-  const QgsSymbolList symbolList = symbols( context );
-
-  if ( symbolList.empty() )
-    return 0;
-
-  QgsExpressionContext &expContext = context.expressionContext();
-
-  auto getValueFromSymbol = [ &expContext, &context ]( const QgsSymbol * sym ) -> double
-  {
-    const QgsProperty property = sym->dataDefinedProperties().property( QgsSymbol::Property::ExtentBuffer );
-
-    double value = 0.0;
-
-    if ( property.isActive() )
-    {
-      expContext.setOriginalValueVariable( sym->extentBuffer() );
-
-      value = sym->dataDefinedProperties().valueAsDouble( QgsSymbol::Property::ExtentBuffer, expContext, sym->extentBuffer() );
-      if ( value < 0 )
-        value = 0;
-    }
-    else
-    {
-      value = sym->extentBuffer();
-    }
-
-    if ( sym->extentBufferSizeUnit() != Qgis::RenderUnit::MapUnits )
-    {
-      value = context.convertToMapUnits( value, sym->extentBufferSizeUnit(), sym->mapUnitScale() );
-    }
-
-    return value;
-  };
-
-  if ( symbolList.size() == 1 )
-    return getValueFromSymbol( symbolList[0] );
-
-  auto it = std::max_element( symbolList.constBegin(), symbolList.constEnd(), [ &getValueFromSymbol ]( const QgsSymbol * a, const QgsSymbol * b ) -> bool
-  {
-    return getValueFromSymbol( a ) < getValueFromSymbol( b );
-  } );
-
-  return getValueFromSymbol( *it );
-}
-
 QList<QgsLayerTreeModelLegendNode *> QgsFeatureRenderer::createLegendNodes( QgsLayerTreeLayer *nodeLayer ) const
 {
   QList<QgsLayerTreeModelLegendNode *> nodes;
@@ -540,9 +492,8 @@ QgsSymbolList QgsFeatureRenderer::symbolsForFeature( const QgsFeature &feature, 
 
 void QgsFeatureRenderer::modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context )
 {
-  double extentBuffer = maximumExtentBuffer( context );
-
-  extent.grow( extentBuffer );
+  Q_UNUSED( extent )
+  Q_UNUSED( context )
 }
 
 QgsSymbolList QgsFeatureRenderer::originalSymbolsForFeature( const QgsFeature &feature, QgsRenderContext &context ) const

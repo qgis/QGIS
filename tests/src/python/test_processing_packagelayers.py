@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Alessandro Pasotti"
-__date__ = "2022-07"
-__copyright__ = "Copyright 2022, The QGIS Project"
+__author__ = 'Alessandro Pasotti'
+__date__ = '2022-07'
+__copyright__ = 'Copyright 2022, The QGIS Project'
 
 import os
 
@@ -56,17 +55,16 @@ class TestPackageLayers(QgisTestCase):
         """Run before all tests"""
         super().setUpClass()
         QCoreApplication.setOrganizationName("QGIS_Test")
-        QCoreApplication.setOrganizationDomain("QGIS_TestPyQgsPackageLayers.com")
+        QCoreApplication.setOrganizationDomain(
+            "QGIS_TestPyQgsPackageLayers.com")
         QCoreApplication.setApplicationName("QGIS_TestPyQgsPackageLayers")
         QgsSettings().clear()
         Processing.initialize()
         QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms())
         cls.registry = QgsApplication.instance().processingRegistry()
         cls.tmp_dir = QTemporaryDir()
-        cls.temp_path = os.path.join(cls.tmp_dir.path(), "package_layers.gpkg")
-        cls.temp_export_path = os.path.join(
-            cls.tmp_dir.path(), "package_layers_export.gpkg"
-        )
+        cls.temp_path = os.path.join(cls.tmp_dir.path(), 'package_layers.gpkg')
+        cls.temp_export_path = os.path.join(cls.tmp_dir.path(), 'package_layers_export.gpkg')
 
         # Create test DB
 
@@ -85,83 +83,83 @@ class TestPackageLayers(QgisTestCase):
                 City 4
         """
 
-        ds = ogr.GetDriverByName("GPKG").CreateDataSource(cls.temp_path)
-        lyr = ds.CreateLayer("region", geom_type=ogr.wkbNone)
-        lyr.CreateField(ogr.FieldDefn("name", ogr.OFTString))
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(cls.temp_path)
+        lyr = ds.CreateLayer('region', geom_type=ogr.wkbNone)
+        lyr.CreateField(ogr.FieldDefn('name', ogr.OFTString))
         f = ogr.Feature(lyr.GetLayerDefn())
-        f["name"] = "region one"
+        f['name'] = 'region one'
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
-        f["name"] = "region two"
-        lyr.CreateFeature(f)
-
-        lyr = ds.CreateLayer("province", geom_type=ogr.wkbNone)
-        lyr.CreateField(ogr.FieldDefn("name", ogr.OFTString))
-        lyr.CreateField(ogr.FieldDefn("region", ogr.OFTInteger))
-        f = ogr.Feature(lyr.GetLayerDefn())
-        f["name"] = "province one"
-        f["region"] = 1
-        lyr.CreateFeature(f)
-        f = ogr.Feature(lyr.GetLayerDefn())
-        f["name"] = "province two"
-        f["region"] = 1
-        lyr.CreateFeature(f)
-        f = ogr.Feature(lyr.GetLayerDefn())
-        f["name"] = "province three"
-        f["region"] = 2
-        lyr.CreateFeature(f)
-        f = ogr.Feature(lyr.GetLayerDefn())
-        f["name"] = "province four"
-        f["region"] = 2
+        f['name'] = 'region two'
         lyr.CreateFeature(f)
 
-        lyr = ds.CreateLayer("city", geom_type=ogr.wkbNone)
-        lyr.CreateField(ogr.FieldDefn("name", ogr.OFTString))
-        lyr.CreateField(ogr.FieldDefn("province", ogr.OFTInteger))
+        lyr = ds.CreateLayer('province', geom_type=ogr.wkbNone)
+        lyr.CreateField(ogr.FieldDefn('name', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('region', ogr.OFTInteger))
         f = ogr.Feature(lyr.GetLayerDefn())
-        f["name"] = "city one"
-        f["province"] = 1
+        f['name'] = 'province one'
+        f['region'] = 1
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
-        f["name"] = "city two"
-        f["province"] = 1
+        f['name'] = 'province two'
+        f['region'] = 1
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
-        f["name"] = "city three"
-        f["province"] = 2
+        f['name'] = 'province three'
+        f['region'] = 2
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
-        f["name"] = "city four"
-        f["province"] = 4
+        f['name'] = 'province four'
+        f['region'] = 2
+        lyr.CreateFeature(f)
+
+        lyr = ds.CreateLayer('city', geom_type=ogr.wkbNone)
+        lyr.CreateField(ogr.FieldDefn('name', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('province', ogr.OFTInteger))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f['name'] = 'city one'
+        f['province'] = 1
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f['name'] = 'city two'
+        f['province'] = 1
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f['name'] = 'city three'
+        f['province'] = 2
+        lyr.CreateFeature(f)
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f['name'] = 'city four'
+        f['province'] = 4
         lyr.CreateFeature(f)
 
         f = None
         ds = None
 
-        region = QgsVectorLayer(cls.temp_path + "|layername=region", "region")
-        province = QgsVectorLayer(cls.temp_path + "|layername=province", "province")
-        city = QgsVectorLayer(cls.temp_path + "|layername=city", "city")
+        region = QgsVectorLayer(cls.temp_path + '|layername=region', 'region')
+        province = QgsVectorLayer(cls.temp_path + '|layername=province', 'province')
+        city = QgsVectorLayer(cls.temp_path + '|layername=city', 'city')
 
         QgsProject.instance().addMapLayers([region, province, city])
 
         relMgr = QgsProject.instance().relationManager()
 
         rel = QgsRelation()
-        rel.setId("rel1")
-        rel.setName("province -> region")
+        rel.setId('rel1')
+        rel.setName('province -> region')
         rel.setReferencingLayer(province.id())
         rel.setReferencedLayer(region.id())
-        rel.addFieldPair("region", "fid")
+        rel.addFieldPair('region', 'fid')
         assert rel.isValid()
 
         relMgr.addRelation(rel)
 
         rel = QgsRelation()
-        rel.setId("rel2")
-        rel.setName("city -> province")
+        rel.setId('rel2')
+        rel.setName('city -> province')
         rel.setReferencingLayer(city.id())
         rel.setReferencedLayer(province.id())
-        rel.addFieldPair("province", "fid")
+        rel.addFieldPair('province', 'fid')
         assert rel.isValid()
 
         relMgr.addRelation(rel)
@@ -187,37 +185,35 @@ class TestPackageLayers(QgisTestCase):
             self.assertEqual(feedback._errors, [])
 
             # Check export
-            l = QgsVectorLayer(
-                self.temp_export_path + "|layername=province", "province"
-            )
+            l = QgsVectorLayer(self.temp_export_path + '|layername=province', 'province')
             self.assertTrue(l.isValid())
             self.assertEqual(l.featureCount(), 4)
 
-            l = QgsVectorLayer(self.temp_export_path + "|layername=region", "region")
+            l = QgsVectorLayer(self.temp_export_path + '|layername=region', 'region')
             self.assertTrue(l.isValid())
             self.assertEqual(l.featureCount(), 2)
 
-            l = QgsVectorLayer(self.temp_export_path + "|layername=city", "city")
+            l = QgsVectorLayer(self.temp_export_path + '|layername=city', 'city')
             self.assertTrue(l.isValid())
             self.assertEqual(l.featureCount(), 4)
 
         parameters = {
-            "EXPORT_RELATED_LAYERS": True,
-            "LAYERS": [QgsProject.instance().mapLayersByName("province")[0]],
-            "OUTPUT": self.temp_export_path,
-            "OVERWRITE": True,
-            "SELECTED_FEATURES_ONLY": False,
+            'EXPORT_RELATED_LAYERS': True,
+            'LAYERS': [QgsProject.instance().mapLayersByName('province')[0]],
+            'OUTPUT': self.temp_export_path,
+            'OVERWRITE': True,
+            'SELECTED_FEATURES_ONLY': False
         }
 
         # Test province
         _test(parameters)
 
         # Test region
-        parameters["LAYERS"] = [QgsProject.instance().mapLayersByName("region")[0]]
+        parameters['LAYERS'] = [QgsProject.instance().mapLayersByName('region')[0]]
         _test(parameters)
 
         # Test city
-        parameters["LAYERS"] = [QgsProject.instance().mapLayersByName("city")[0]]
+        parameters['LAYERS'] = [QgsProject.instance().mapLayersByName('city')[0]]
         _test(parameters)
 
     def test_selected_features_export(self):
@@ -238,62 +234,60 @@ class TestPackageLayers(QgisTestCase):
 
             # Check export
             for layer_name in list(expected_ids.keys()):
-                l = QgsVectorLayer(
-                    self.temp_export_path + f"|layername={layer_name}", layer_name
-                )
+                l = QgsVectorLayer(self.temp_export_path + f'|layername={layer_name}', layer_name)
                 self.assertTrue(l.isValid())
                 ids = {l.id() for l in l.getFeatures()}
                 self.assertEqual(ids, expected_ids[layer_name], layer_name + str(ids))
 
-        region = QgsProject.instance().mapLayersByName("region")[0]
-        province = QgsProject.instance().mapLayersByName("province")[0]
-        city = QgsProject.instance().mapLayersByName("city")[0]
+        region = QgsProject.instance().mapLayersByName('region')[0]
+        province = QgsProject.instance().mapLayersByName('province')[0]
+        city = QgsProject.instance().mapLayersByName('city')[0]
 
         parameters = {
-            "EXPORT_RELATED_LAYERS": True,
-            "LAYERS": [province],
-            "OUTPUT": self.temp_export_path,
-            "OVERWRITE": True,
-            "SELECTED_FEATURES_ONLY": True,
+            'EXPORT_RELATED_LAYERS': True,
+            'LAYERS': [province],
+            'OUTPUT': self.temp_export_path,
+            'OVERWRITE': True,
+            'SELECTED_FEATURES_ONLY': True
         }
 
         # Test province
         province.selectByIds([1])
-        _test(parameters, {"region": {1}, "province": {1}, "city": {1, 2}})
+        _test(parameters, {'region': {1}, 'province': {1}, 'city': {1, 2}})
         province.selectByIds([])
 
         # Test region
-        parameters["LAYERS"] = [region]
+        parameters['LAYERS'] = [region]
         region.selectByIds([1])
-        _test(parameters, {"region": {1}, "province": {1, 2}, "city": {1, 2, 3}})
+        _test(parameters, {'region': {1}, 'province': {1, 2}, 'city': {1, 2, 3}})
         region.selectByIds([])
 
         # Test city
-        parameters["LAYERS"] = [city]
+        parameters['LAYERS'] = [city]
         city.selectByIds([3])
-        _test(parameters, {"region": {1}, "province": {2}, "city": {3}})
+        _test(parameters, {'region': {1}, 'province': {2}, 'city': {3}})
         city.selectByIds([])
 
         # Test multiple selection
-        parameters["LAYERS"] = [city, province]
+        parameters['LAYERS'] = [city, province]
         city.selectByIds([3])
         province.selectByIds([3])
-        _test(parameters, {"region": {1, 2}, "province": {2, 3}, "city": {3}})
+        _test(parameters, {'region': {1, 2}, 'province': {2, 3}, 'city': {3}})
         city.selectByIds([])
         province.selectByIds([])
 
         # Test referencing with selection
-        parameters["LAYERS"] = [region]
+        parameters['LAYERS'] = [region]
         region.selectByIds([2])
-        _test(parameters, {"region": {2}, "province": {3, 4}, "city": {4}})
+        _test(parameters, {'region': {2}, 'province': {3, 4}, 'city': {4}})
         region.selectByIds([])
 
         # Test referencing with selection, empty city expected not to be exported
-        parameters["LAYERS"] = [province]
+        parameters['LAYERS'] = [province]
         province.selectByIds([3])
-        _test(parameters, {"region": {2}, "province": {3}})
+        _test(parameters, {'region': {2}, 'province': {3}})
         province.selectByIds([])
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

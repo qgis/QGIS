@@ -63,16 +63,7 @@ QgsPhongTexturedMaterialSettings *QgsPhongTexturedMaterialSettings::clone() cons
   return new QgsPhongTexturedMaterialSettings( *this );
 }
 
-bool QgsPhongTexturedMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
-{
-  const QgsPhongTexturedMaterialSettings *otherPhong = dynamic_cast<const QgsPhongTexturedMaterialSettings *>( other );
-  if ( !otherPhong )
-    return false;
-
-  return *this == *otherPhong;
-}
-
-double QgsPhongTexturedMaterialSettings::textureRotation() const
+float QgsPhongTexturedMaterialSettings::textureRotation() const
 {
   return mTextureRotation;
 }
@@ -84,8 +75,8 @@ void QgsPhongTexturedMaterialSettings::readXml( const QDomElement &elem, const Q
   mShininess = elem.attribute( QStringLiteral( "shininess" ) ).toDouble();
   mOpacity = elem.attribute( QStringLiteral( "opacity" ), QStringLiteral( "1.0" ) ).toDouble();
   mDiffuseTexturePath = elem.attribute( QStringLiteral( "diffuse_texture_path" ), QString() );
-  mTextureScale = elem.attribute( QStringLiteral( "texture_scale" ), QString( "1.0" ) ).toDouble();
-  mTextureRotation = elem.attribute( QStringLiteral( "texture-rotation" ), QString( "0.0" ) ).toDouble();
+  mTextureScale = elem.attribute( QStringLiteral( "texture_scale" ), QString( "1.0" ) ).toFloat();
+  mTextureRotation = elem.attribute( QStringLiteral( "texture-rotation" ), QString( "0.0" ) ).toFloat();
 
   QgsAbstractMaterialSettings::readXml( elem, context );
 }
@@ -116,7 +107,7 @@ QgsMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterialSettingsRe
     {
       bool fitsInCache = false;
       const QImage textureSourceImage = QgsApplication::imageCache()->pathAsImage( mDiffuseTexturePath, QSize(), true, 1.0, fitsInCache );
-      ( void ) fitsInCache;
+      ( void )fitsInCache;
 
       // No texture image was provided.
       // Fallback to QgsPhongMaterialSettings.
@@ -158,13 +149,14 @@ QgsMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterialSettingsRe
       texture->setMinificationFilter( Qt3DRender::QTexture2D::Linear );
 
       material->setDiffuseTexture( texture );
-      material->setDiffuseTextureScale( static_cast<float>( mTextureScale ) );
+      material->setDiffuseTextureScale( mTextureScale );
 
       return material;
     }
 
     case QgsMaterialSettingsRenderingTechnique::Lines:
       return nullptr;
+
   }
   return nullptr;
 }
@@ -172,9 +164,9 @@ QgsMaterial *QgsPhongTexturedMaterialSettings::toMaterial( QgsMaterialSettingsRe
 QMap<QString, QString> QgsPhongTexturedMaterialSettings::toExportParameters() const
 {
   QMap<QString, QString> parameters;
-  parameters[QStringLiteral( "Ka" )] = QStringLiteral( "%1 %2 %3" ).arg( mAmbient.redF() ).arg( mAmbient.greenF() ).arg( mAmbient.blueF() );
-  parameters[QStringLiteral( "Ks" )] = QStringLiteral( "%1 %2 %3" ).arg( mSpecular.redF() ).arg( mSpecular.greenF() ).arg( mSpecular.blueF() );
-  parameters[QStringLiteral( "Ns" )] = QString::number( mShininess );
+  parameters[ QStringLiteral( "Ka" ) ] = QStringLiteral( "%1 %2 %3" ).arg( mAmbient.redF() ).arg( mAmbient.greenF() ).arg( mAmbient.blueF() );
+  parameters[ QStringLiteral( "Ks" ) ] = QStringLiteral( "%1 %2 %3" ).arg( mSpecular.redF() ).arg( mSpecular.greenF() ).arg( mSpecular.blueF() );
+  parameters[ QStringLiteral( "Ns" ) ] = QString::number( mShininess );
   return parameters;
 }
 

@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprofileexporter.h"
-#include "moc_qgsprofileexporter.cpp"
 #include "qgsabstractprofilesource.h"
 #include "qgsabstractprofilegenerator.h"
 #include "qgsdxfexport.h"

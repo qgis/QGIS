@@ -62,8 +62,7 @@ class QgsHanaFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsHa
     QgsHanaFeatureIterator(
       QgsHanaFeatureSource *source,
       bool ownSource,
-      const QgsFeatureRequest &request
-    );
+      const QgsFeatureRequest &request );
 
     ~QgsHanaFeatureIterator() override;
 
@@ -78,7 +77,7 @@ class QgsHanaFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsHa
     bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
     QString buildSqlQuery( const QgsFeatureRequest &request );
-    QVariantList buildSqlQueryParameters() const;
+    QVariantList buildSqlQueryParameters( ) const;
     QString getBBOXFilter() const;
     QgsRectangle getFilterRect() const;
 
@@ -90,7 +89,7 @@ class QgsHanaFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsHa
     QVariantList mSqlQueryParams;
     QgsRectangle mFilterRect;
     QgsGeometry mDistanceWithinGeom;
-    std::unique_ptr<QgsGeometryEngine> mDistanceWithinEngine;
+    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
     QgsAttributeList mAttributesToFetch;
     QgsCoordinateTransform mTransform;
     bool mHasAttributes = false;

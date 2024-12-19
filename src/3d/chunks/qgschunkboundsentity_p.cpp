@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgschunkboundsentity_p.h"
-#include "moc_qgschunkboundsentity_p.cpp"
 
 #include <Qt3DExtras/QPhongMaterial>
 

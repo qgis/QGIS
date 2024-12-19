@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 ***************************************************************************
     validitycheck.py
@@ -14,8 +16,9 @@
 *                                                                         *
 ***************************************************************************
 """
-
-from qgis._core import QgsAbstractValidityCheck, QgsApplication
+from qgis._core import (
+    QgsAbstractValidityCheck,
+    QgsApplication)
 
 
 class CheckFactory:

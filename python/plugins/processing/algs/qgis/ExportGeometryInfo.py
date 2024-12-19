@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "August 2012"
-__copyright__ = "(C) 2012, Victor Olaya"
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 import math
@@ -25,24 +25,22 @@ import math
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QMetaType
 
-from qgis.core import (
-    NULL,
-    Qgis,
-    QgsApplication,
-    QgsCoordinateTransform,
-    QgsField,
-    QgsFields,
-    QgsWkbTypes,
-    QgsPointXY,
-    QgsFeatureSink,
-    QgsDistanceArea,
-    QgsProcessingUtils,
-    QgsProcessingException,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterEnum,
-    QgsProcessingParameterFeatureSink,
-    QgsUnitTypes,
-)
+from qgis.core import (NULL,
+                       Qgis,
+                       QgsApplication,
+                       QgsCoordinateTransform,
+                       QgsField,
+                       QgsFields,
+                       QgsWkbTypes,
+                       QgsPointXY,
+                       QgsFeatureSink,
+                       QgsDistanceArea,
+                       QgsProcessingUtils,
+                       QgsProcessingException,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterFeatureSink,
+                       QgsUnitTypes)
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
@@ -50,30 +48,24 @@ pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
 class ExportGeometryInfo(QgisAlgorithm):
-    INPUT = "INPUT"
-    METHOD = "CALC_METHOD"
-    OUTPUT = "OUTPUT"
+    INPUT = 'INPUT'
+    METHOD = 'CALC_METHOD'
+    OUTPUT = 'OUTPUT'
 
     def icon(self):
-        return QgsApplication.getThemeIcon(
-            "/algorithms/mAlgorithmAddGeometryAttributes.svg"
-        )
+        return QgsApplication.getThemeIcon("/algorithms/mAlgorithmAddGeometryAttributes.svg")
 
     def svgIconPath(self):
-        return QgsApplication.iconPath(
-            "/algorithms/mAlgorithmAddGeometryAttributes.svg"
-        )
+        return QgsApplication.iconPath("/algorithms/mAlgorithmAddGeometryAttributes.svg")
 
     def tags(self):
-        return self.tr(
-            "export,add,information,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons,sinuosity,fields"
-        ).split(",")
+        return self.tr('export,add,information,measurements,areas,lengths,perimeters,latitudes,longitudes,x,y,z,extract,points,lines,polygons,sinuosity,fields').split(',')
 
     def group(self):
-        return self.tr("Vector geometry")
+        return self.tr('Vector geometry')
 
     def groupId(self):
-        return "vectorgeometry"
+        return 'vectorgeometry'
 
     def __init__(self):
         super().__init__()
@@ -82,40 +74,27 @@ class ExportGeometryInfo(QgisAlgorithm):
         self.distance_area = None
         self.distance_conversion_factor = 1
         self.area_conversion_factor = 1
-        self.calc_methods = [
-            self.tr("Layer CRS"),
-            self.tr("Project CRS"),
-            self.tr("Ellipsoidal"),
-        ]
+        self.calc_methods = [self.tr('Layer CRS'),
+                             self.tr('Project CRS'),
+                             self.tr('Ellipsoidal')]
 
     def initAlgorithm(self, config=None):
-        self.addParameter(
-            QgsProcessingParameterFeatureSource(self.INPUT, self.tr("Input layer"))
-        )
-        self.addParameter(
-            QgsProcessingParameterEnum(
-                self.METHOD,
-                self.tr("Calculate using"),
-                options=self.calc_methods,
-                defaultValue=0,
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr("Added geom info"))
-        )
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterEnum(self.METHOD,
+                                                     self.tr('Calculate using'), options=self.calc_methods, defaultValue=0))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Added geom info')))
 
     def name(self):
-        return "exportaddgeometrycolumns"
+        return 'exportaddgeometrycolumns'
 
     def displayName(self):
-        return self.tr("Add geometry attributes")
+        return self.tr('Add geometry attributes')
 
     def processAlgorithm(self, parameters, context, feedback):
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
-            raise QgsProcessingException(
-                self.invalidSourceError(parameters, self.INPUT)
-            )
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         method = self.parameterAsEnum(parameters, self.METHOD, context)
 
@@ -123,36 +102,30 @@ class ExportGeometryInfo(QgisAlgorithm):
         fields = source.fields()
 
         new_fields = QgsFields()
-        if (
-            QgsWkbTypes.geometryType(wkb_type)
-            == QgsWkbTypes.GeometryType.PolygonGeometry
-        ):
-            new_fields.append(QgsField("area", QMetaType.Type.Double))
-            new_fields.append(QgsField("perimeter", QMetaType.Type.Double))
-        elif (
-            QgsWkbTypes.geometryType(wkb_type) == QgsWkbTypes.GeometryType.LineGeometry
-        ):
-            new_fields.append(QgsField("length", QMetaType.Type.Double))
+        if QgsWkbTypes.geometryType(wkb_type) == QgsWkbTypes.GeometryType.PolygonGeometry:
+            new_fields.append(QgsField('area', QMetaType.Type.Double))
+            new_fields.append(QgsField('perimeter', QMetaType.Type.Double))
+        elif QgsWkbTypes.geometryType(wkb_type) == QgsWkbTypes.GeometryType.LineGeometry:
+            new_fields.append(QgsField('length', QMetaType.Type.Double))
             if not QgsWkbTypes.isMultiType(source.wkbType()):
-                new_fields.append(QgsField("straightdis", QMetaType.Type.Double))
-                new_fields.append(QgsField("sinuosity", QMetaType.Type.Double))
+                new_fields.append(QgsField('straightdis', QMetaType.Type.Double))
+                new_fields.append(QgsField('sinuosity', QMetaType.Type.Double))
         else:
             if QgsWkbTypes.isMultiType(source.wkbType()):
-                new_fields.append(QgsField("numparts", QMetaType.Type.Int))
+                new_fields.append(QgsField('numparts', QMetaType.Type.Int))
             else:
-                new_fields.append(QgsField("xcoord", QMetaType.Type.Double))
-                new_fields.append(QgsField("ycoord", QMetaType.Type.Double))
+                new_fields.append(QgsField('xcoord', QMetaType.Type.Double))
+                new_fields.append(QgsField('ycoord', QMetaType.Type.Double))
                 if QgsWkbTypes.hasZ(source.wkbType()):
                     self.export_z = True
-                    new_fields.append(QgsField("zcoord", QMetaType.Type.Double))
+                    new_fields.append(QgsField('zcoord', QMetaType.Type.Double))
                 if QgsWkbTypes.hasM(source.wkbType()):
                     self.export_m = True
-                    new_fields.append(QgsField("mvalue", QMetaType.Type.Double))
+                    new_fields.append(QgsField('mvalue', QMetaType.Type.Double))
 
         fields = QgsProcessingUtils.combineFields(fields, new_fields)
-        (sink, dest_id) = self.parameterAsSink(
-            parameters, self.OUTPUT, context, fields, wkb_type, source.sourceCrs()
-        )
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, wkb_type, source.sourceCrs())
         if sink is None:
             raise QgsProcessingException(self.invalidSinkError(parameters, self.OUTPUT))
 
@@ -165,27 +138,19 @@ class ExportGeometryInfo(QgisAlgorithm):
 
         self.distance_area = QgsDistanceArea()
         if method == 2:
-            self.distance_area.setSourceCrs(
-                source.sourceCrs(), context.transformContext()
-            )
+            self.distance_area.setSourceCrs(source.sourceCrs(), context.transformContext())
             self.distance_area.setEllipsoid(context.ellipsoid())
 
-            self.distance_conversion_factor = QgsUnitTypes.fromUnitToUnitFactor(
-                self.distance_area.lengthUnits(), context.distanceUnit()
-            )
+            self.distance_conversion_factor = QgsUnitTypes.fromUnitToUnitFactor(self.distance_area.lengthUnits(),
+                                                                                context.distanceUnit())
 
-            self.area_conversion_factor = QgsUnitTypes.fromUnitToUnitFactor(
-                self.distance_area.areaUnits(), context.areaUnit()
-            )
+            self.area_conversion_factor = QgsUnitTypes.fromUnitToUnitFactor(self.distance_area.areaUnits(),
+                                                                            context.areaUnit())
 
         elif method == 1:
             if not context.project():
-                raise QgsProcessingException(
-                    self.tr("No project is available in this context")
-                )
-            coordTransform = QgsCoordinateTransform(
-                source.sourceCrs(), context.project().crs(), context.project()
-            )
+                raise QgsProcessingException(self.tr('No project is available in this context'))
+            coordTransform = QgsCoordinateTransform(source.sourceCrs(), context.project().crs(), context.project())
 
         features = source.getFeatures()
         total = 100.0 / source.featureCount() if source.featureCount() else 0
@@ -218,7 +183,6 @@ class ExportGeometryInfo(QgisAlgorithm):
 
             feedback.setProgress(int(current * total))
 
-        sink.finalize()
         return {self.OUTPUT: dest_id}
 
     def point_attributes(self, geometry):
@@ -243,24 +207,13 @@ class ExportGeometryInfo(QgisAlgorithm):
             curve = geometry.constGet()
             p1 = curve.startPoint()
             p2 = curve.endPoint()
-            straight_distance = (
-                self.distance_conversion_factor
-                * self.distance_area.measureLine(QgsPointXY(p1), QgsPointXY(p2))
-            )
+            straight_distance = self.distance_conversion_factor * self.distance_area.measureLine(QgsPointXY(p1), QgsPointXY(p2))
             sinuosity = curve.sinuosity()
             if math.isnan(sinuosity):
                 sinuosity = NULL
-            return [
-                self.distance_conversion_factor
-                * self.distance_area.measureLength(geometry),
-                straight_distance,
-                sinuosity,
-            ]
+            return [self.distance_conversion_factor * self.distance_area.measureLength(geometry), straight_distance, sinuosity]
 
     def polygon_attributes(self, geometry):
         area = self.area_conversion_factor * self.distance_area.measureArea(geometry)
-        perimeter = (
-            self.distance_conversion_factor
-            * self.distance_area.measurePerimeter(geometry)
-        )
+        perimeter = self.distance_conversion_factor * self.distance_area.measurePerimeter(geometry)
         return [area, perimeter]

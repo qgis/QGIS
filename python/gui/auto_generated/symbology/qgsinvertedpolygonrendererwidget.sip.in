@@ -18,6 +18,7 @@ A widget used represent options of a :py:class:`QgsInvertedPolygonRenderer`
 #include "qgsinvertedpolygonrendererwidget.h"
 %End
   public:
+
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
 Static creation method

@@ -33,13 +33,15 @@ namespace QgsWcs
   class QgsServiceException : public QgsOgcServiceException
   {
     public:
+
       /**
        * Constructor for QgsServiceException (empty locator attribute).
        * \param code Error code name
        * \param message Exception message to return to the client
        * \param responseCode HTTP error code
        */
-      QgsServiceException( const QString &code, const QString &message, int responseCode = 200 )
+      QgsServiceException( const QString &code, const QString &message,
+                           int responseCode = 200 )
         : QgsOgcServiceException( code, message, QString(), responseCode, QStringLiteral( "1.2.0" ) )
       {}
 
@@ -50,9 +52,11 @@ namespace QgsWcs
        * \param locator Locator attribute according to OGC specifications
        * \param responseCode HTTP error code
        */
-      QgsServiceException( const QString &code, const QString &message, const QString &locator, int responseCode = 200 )
+      QgsServiceException( const QString &code, const QString &message, const QString &locator,
+                           int responseCode = 200 )
         : QgsOgcServiceException( code, message, locator, responseCode, QStringLiteral( "1.2.0" ) )
       {}
+
   };
 
   /**
@@ -60,9 +64,10 @@ namespace QgsWcs
    * \class  QgsWcs::QgsSecurityAccessException
    * \brief Exception thrown when data access violates access controls
    */
-  class QgsSecurityAccessException : public QgsServiceException
+  class QgsSecurityAccessException: public QgsServiceException
   {
     public:
+
       /**
        * Constructor for QgsSecurityAccessException (Security code name).
        * \param message Exception message to return to the client
@@ -78,9 +83,10 @@ namespace QgsWcs
    * \class  QgsWcs::QgsRequestNotWellFormedException
    * \brief Exception thrown in case of malformed request
    */
-  class QgsRequestNotWellFormedException : public QgsServiceException
+  class QgsRequestNotWellFormedException: public QgsServiceException
   {
     public:
+
       /**
        * Constructor for QgsRequestNotWellFormedException (RequestNotWellFormed code name).
        * \param message Exception message to return to the client
@@ -93,3 +99,4 @@ namespace QgsWcs
 } // namespace QgsWcs
 
 #endif
+

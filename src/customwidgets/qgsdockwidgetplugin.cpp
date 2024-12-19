@@ -16,7 +16,6 @@
 #include "qgiscustomwidgets.h"
 #include "qgsdockwidget.h"
 #include "qgsdockwidgetplugin.h"
-#include "moc_qgsdockwidgetplugin.cpp"
 
 
 QgsDockWidgetPlugin::QgsDockWidgetPlugin( QObject *parent )
@@ -95,5 +94,5 @@ QString QgsDockWidgetPlugin::domXml() const
                   "  <widget class=\"QWidget\" name=\"dockWidgetContents\"/>"
                   " </widget>\n"
                   "</ui>\n" )
-    .arg( name() );
+         .arg( name() );
 }

@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsowssourcewidget.h"
-#include "moc_qgsowssourcewidget.cpp"
 #include "qgsproviderregistry.h"
 #include "qgsmapcanvas.h"
 
@@ -83,17 +82,15 @@ void QgsOWSSourceWidget::setSourceUri( const QString &uri )
   {
     QStringList coords = bbox.split( ',' );
     extent = inverted ? QgsRectangle(
-                          coords.takeAt( 1 ).toDouble(),
-                          coords.takeAt( 0 ).toDouble(),
-                          coords.takeAt( 2 ).toDouble(),
-                          coords.takeAt( 3 ).toDouble()
-                        )
-                      : QgsRectangle(
-                          coords.takeAt( 0 ).toDouble(),
-                          coords.takeAt( 1 ).toDouble(),
-                          coords.takeAt( 2 ).toDouble(),
-                          coords.takeAt( 3 ).toDouble()
-                        );
+               coords.takeAt( 1 ).toDouble(),
+               coords.takeAt( 0 ).toDouble(),
+               coords.takeAt( 2 ).toDouble(),
+               coords.takeAt( 3 ).toDouble() ) :
+             QgsRectangle(
+               coords.takeAt( 0 ).toDouble(),
+               coords.takeAt( 1 ).toDouble(),
+               coords.takeAt( 2 ).toDouble(),
+               coords.takeAt( 3 ).toDouble() );
   }
   else
   {
@@ -115,7 +112,10 @@ QString QgsOWSSourceWidget::sourceUri() const
     bool inverted = parts.value( QStringLiteral( "InvertAxisOrientation" ) ).toBool();
 
     QString bbox = QString( inverted ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-                     .arg( qgsDoubleToString( spatialExtent.xMinimum() ), qgsDoubleToString( spatialExtent.yMinimum() ), qgsDoubleToString( spatialExtent.xMaximum() ), qgsDoubleToString( spatialExtent.yMaximum() ) );
+                   .arg( qgsDoubleToString( spatialExtent.xMinimum() ),
+                         qgsDoubleToString( spatialExtent.yMinimum() ),
+                         qgsDoubleToString( spatialExtent.xMaximum() ),
+                         qgsDoubleToString( spatialExtent.yMaximum() ) );
 
     parts.insert( QStringLiteral( "bbox" ), bbox );
   }
@@ -123,3 +123,4 @@ QString QgsOWSSourceWidget::sourceUri() const
 
   return QgsProviderRegistry::instance()->encodeUri( mProviderKey, parts );
 }
+

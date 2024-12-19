@@ -15,7 +15,6 @@ email                : jef at norbit dot de
 
 #include "qgis.h"
 #include "qgsgeometryvalidator.h"
-#include "moc_qgsgeometryvalidator.cpp"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsgeos.h"
@@ -258,7 +257,7 @@ void QgsGeometryValidator::run()
         return;
       }
 
-      const QgsGeos geos( mGeometry.constGet(), 0, Qgis::GeosCreationFlags() );
+      const QgsGeos geos( mGeometry.constGet() );
       QString error;
       QgsGeometry errorLoc;
       if ( !geos.isValid( &error, true, &errorLoc ) )

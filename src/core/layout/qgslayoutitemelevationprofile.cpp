@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgslayoutitemelevationprofile.h"
-#include "moc_qgslayoutitemelevationprofile.cpp"
 #include "qgslayoutitemregistry.h"
 #include "qgsplot.h"
 #include "qgslayout.h"

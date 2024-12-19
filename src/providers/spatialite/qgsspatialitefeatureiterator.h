@@ -29,7 +29,7 @@ extern "C"
 class QgsSqliteHandle;
 class QgsSpatiaLiteProvider;
 
-class QgsSpatiaLiteFeatureSource final : public QgsAbstractFeatureSource
+class QgsSpatiaLiteFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsSpatiaLiteFeatureSource( const QgsSpatiaLiteProvider *p );
@@ -59,7 +59,7 @@ class QgsSpatiaLiteFeatureSource final : public QgsAbstractFeatureSource
     friend class QgsSpatiaLiteExpressionCompiler;
 };
 
-class QgsSpatiaLiteFeatureIterator final : public QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>
+class QgsSpatiaLiteFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>
 {
   public:
     QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
@@ -69,10 +69,12 @@ class QgsSpatiaLiteFeatureIterator final : public QgsAbstractFeatureIteratorFrom
     bool close() override;
 
   protected:
+
     bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
   private:
+
     QString whereClauseRect();
     QString whereClauseFid();
     QString whereClauseFids();
@@ -111,7 +113,7 @@ class QgsSpatiaLiteFeatureIterator final : public QgsAbstractFeatureIteratorFrom
     QgsRectangle mFilterRect;
     QgsCoordinateTransform mTransform;
     QgsGeometry mDistanceWithinGeom;
-    std::unique_ptr<QgsGeometryEngine> mDistanceWithinEngine;
+    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
 
     // Last prepared sql statement for logging purposes
     QString mLastSql;

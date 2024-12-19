@@ -29,6 +29,7 @@ is too complex or large for use.
 #include "qgsexpressionlineedit.h"
 %End
   public:
+
     explicit QgsExpressionLineEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsExpressionLineEdit.
@@ -145,6 +146,7 @@ Sets the current expression to show in the widget.
 %End
 
   protected:
+
     virtual void changeEvent( QEvent *event );
 
 

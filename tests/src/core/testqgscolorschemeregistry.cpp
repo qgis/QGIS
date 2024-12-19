@@ -26,13 +26,15 @@
 class DummyColorScheme : public QgsColorScheme
 {
   public:
+
     DummyColorScheme() = default;
 
     QString schemeName() const override { return QStringLiteral( "Dummy scheme" ); }
 
-    QgsNamedColorList fetchColors( const QString &context = QString(), const QColor &baseColor = QColor() ) override
+    QgsNamedColorList fetchColors( const QString &context = QString(),
+                                   const QColor &baseColor = QColor() ) override
     {
-      QList<QPair<QColor, QString>> colors;
+      QList< QPair< QColor, QString> > colors;
       if ( context == QLatin1String( "testscheme" ) )
       {
         colors << qMakePair( QColor( 255, 255, 0 ), QStringLiteral( "schemetest" ) );
@@ -52,18 +54,21 @@ class DummyColorScheme : public QgsColorScheme
     {
       return new DummyColorScheme();
     }
+
 };
 
 class DummyColorScheme2 : public QgsColorScheme
 {
   public:
+
     DummyColorScheme2() = default;
 
     QString schemeName() const override { return QStringLiteral( "Dummy scheme2" ); }
 
-    QgsNamedColorList fetchColors( const QString & = QString(), const QColor & = QColor() ) override
+    QgsNamedColorList fetchColors( const QString & = QString(),
+                                   const QColor & = QColor() ) override
     {
-      QList<QPair<QColor, QString>> colors;
+      QList< QPair< QColor, QString> > colors;
       colors << qMakePair( QColor( 255, 255, 0 ), QStringLiteral( "schemetest" ) );
       return colors;
     }
@@ -72,6 +77,7 @@ class DummyColorScheme2 : public QgsColorScheme
     {
       return new DummyColorScheme2();
     }
+
 };
 
 class TestQgsColorSchemeRegistry : public QObject
@@ -79,21 +85,22 @@ class TestQgsColorSchemeRegistry : public QObject
     Q_OBJECT
 
   private slots:
-    void initTestCase();              // will be called before the first testfunction is executed.
-    void cleanupTestCase();           // will be called after the last testfunction was executed.
-    void init();                      // will be called before each testfunction is executed.
-    void cleanup();                   // will be called after every testfunction.
-    void createInstance();            // create global instance of QgsColorSchemeRegistry
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init();// will be called before each testfunction is executed.
+    void cleanup();// will be called after every testfunction.
+    void createInstance(); // create global instance of QgsColorSchemeRegistry
     void instanceHasDefaultSchemes(); // check that global instance is populated with default schemes
-    void createEmpty();               // check that creating an empty registry works
-    void addScheme();                 // check adding a scheme to an empty registry
-    void addDefaultSchemes();         // check adding a scheme to an empty registry
-    void populateFromInstance();      // check populating an empty scheme from the registry
-    void removeScheme();              // check removing a scheme from a registry
-    void matchingSchemes();           //check fetching schemes of specific type
+    void createEmpty(); // check that creating an empty registry works
+    void addScheme(); // check adding a scheme to an empty registry
+    void addDefaultSchemes(); // check adding a scheme to an empty registry
+    void populateFromInstance(); // check populating an empty scheme from the registry
+    void removeScheme(); // check removing a scheme from a registry
+    void matchingSchemes(); //check fetching schemes of specific type
     void fetchRandomStyleColor();
 
   private:
+
 };
 
 void TestQgsColorSchemeRegistry::initTestCase()
@@ -109,10 +116,12 @@ void TestQgsColorSchemeRegistry::cleanupTestCase()
 
 void TestQgsColorSchemeRegistry::init()
 {
+
 }
 
 void TestQgsColorSchemeRegistry::cleanup()
 {
+
 }
 
 void TestQgsColorSchemeRegistry::createInstance()
@@ -192,8 +201,8 @@ void TestQgsColorSchemeRegistry::matchingSchemes()
   DummyColorScheme *dummyScheme = new DummyColorScheme();
   registry->addColorScheme( dummyScheme );
   QVERIFY( registry->schemes().length() == 2 );
-  QList<QgsRecentColorScheme *> recentSchemes;
-  QList<DummyColorScheme *> dummySchemes;
+  QList< QgsRecentColorScheme * > recentSchemes;
+  QList< DummyColorScheme * > dummySchemes;
   registry->schemes( recentSchemes );
   QVERIFY( recentSchemes.length() == 1 );
   QCOMPARE( recentSchemes.at( 0 ), recentScheme );
@@ -204,7 +213,7 @@ void TestQgsColorSchemeRegistry::matchingSchemes()
 
 void TestQgsColorSchemeRegistry::fetchRandomStyleColor()
 {
-  std::unique_ptr<QgsColorSchemeRegistry> registry = std::make_unique<QgsColorSchemeRegistry>();
+  std::unique_ptr<QgsColorSchemeRegistry> registry = std::make_unique< QgsColorSchemeRegistry >();
 
   // no randomStyleColorScheme set - test lots of colors to make sure their valid
   for ( int i = 0; i < 10000; ++i )

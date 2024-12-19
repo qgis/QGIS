@@ -68,7 +68,7 @@ Qgis::ProcessingAlgorithmDocumentationFlags QgsSplitLinesByLengthAlgorithm::docu
 
 QList<int> QgsSplitLinesByLengthAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine );
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine );
 }
 
 Qgis::ProcessingSourceType QgsSplitLinesByLengthAlgorithm::outputLayerType() const
@@ -83,7 +83,8 @@ QgsSplitLinesByLengthAlgorithm *QgsSplitLinesByLengthAlgorithm::createInstance()
 
 void QgsSplitLinesByLengthAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterDistance> length = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "LENGTH" ), QObject::tr( "Maximum line length" ), 10, QStringLiteral( "INPUT" ), false, 0 );
+  std::unique_ptr< QgsProcessingParameterDistance > length = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "LENGTH" ),
+      QObject::tr( "Maximum line length" ), 10, QStringLiteral( "INPUT" ), false, 0 );
   length->setIsDynamic( true );
   length->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "LENGTH" ), QObject::tr( "Maximum length" ), QgsPropertyDefinition::DoublePositive ) );
   length->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -95,7 +96,7 @@ bool QgsSplitLinesByLengthAlgorithm::prepareAlgorithm( const QVariantMap &parame
   mLength = parameterAsDouble( parameters, QStringLiteral( "LENGTH" ), context );
   mDynamicLength = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "LENGTH" ) );
   if ( mDynamicLength )
-    mLengthProperty = parameters.value( QStringLiteral( "LENGTH" ) ).value<QgsProperty>();
+    mLengthProperty = parameters.value( QStringLiteral( "LENGTH" ) ).value< QgsProperty >();
 
   return true;
 }
@@ -128,7 +129,7 @@ QgsFeatureList QgsSplitLinesByLengthAlgorithm::processFeature( const QgsFeature 
     const QgsGeometry inputGeom = f.geometry();
     for ( auto it = inputGeom.const_parts_begin(); it != inputGeom.const_parts_end(); ++it )
     {
-      const QgsCurve *part = qgsgeometry_cast<const QgsCurve *>( *it );
+      const QgsCurve *part = qgsgeometry_cast< const QgsCurve * >( *it );
       if ( !part )
         continue;
 
@@ -142,6 +143,7 @@ QgsFeatureList QgsSplitLinesByLengthAlgorithm::processFeature( const QgsFeature 
         end += distance;
         features << outputFeature;
       }
+
     }
     return features;
   }
@@ -159,3 +161,6 @@ QgsFeatureSink::SinkFlags QgsSplitLinesByLengthAlgorithm::sinkFlags() const
 
 
 ///@endcond
+
+
+

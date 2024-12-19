@@ -2,9 +2,9 @@
 try:
     QgsSettingsEntryBase.dynamicKeyPartToList = staticmethod(QgsSettingsEntryBase.dynamicKeyPartToList)
     QgsSettingsEntryBase.__group__ = ['settings']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsSettingsEntryBaseTemplate.__group__ = ['settings']
-except (NameError, AttributeError):
+except NameError:
     pass

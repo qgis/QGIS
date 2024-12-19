@@ -24,7 +24,9 @@ Query Builder for search strings
 #include "qgssearchquerybuilder.h"
 %End
   public:
-    QgsSearchQueryBuilder( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsSearchQueryBuilder( QgsVectorLayer *layer,
+                           QWidget *parent /TransferThis/ = 0,
+                           Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor - takes pointer to vector layer as a parameter
 %End

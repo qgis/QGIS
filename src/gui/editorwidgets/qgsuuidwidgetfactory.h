@@ -30,6 +30,7 @@ SIP_NO_FILE
 class GUI_EXPORT QgsUuidWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
+
     /**
      * Constructor for QgsUuidWidgetFactory, where \a name is a human-readable
      * name for the factory.

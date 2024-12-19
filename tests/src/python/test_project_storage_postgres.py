@@ -10,9 +10,9 @@ the Free Software Foundation; either version 2 of the License, or
 
 """
 
-__author__ = "Martin Dobias"
-__date__ = "2018-03-29"
-__copyright__ = "Copyright 2018, The QGIS Project"
+__author__ = 'Martin Dobias'
+__date__ = '2018-03-29'
+__copyright__ = 'Copyright 2018, The QGIS Project'
 
 import os
 
@@ -38,26 +38,21 @@ class TestPyQgsProjectStoragePostgres(QgisTestCase, TestPyQgsProjectStorageBase)
     def setUpClass(cls):
         """Run before all tests"""
 
-        super().setUpClass()
+        super(TestPyQgsProjectStoragePostgres, cls).setUpClass()
 
-        cls.dbconn = "service=qgis_test"
-        if "QGIS_PGTEST_DB" in os.environ:
-            cls.dbconn = os.environ["QGIS_PGTEST_DB"]
+        cls.dbconn = 'service=qgis_test'
+        if 'QGIS_PGTEST_DB' in os.environ:
+            cls.dbconn = os.environ['QGIS_PGTEST_DB']
         cls.ds_uri = QgsDataSourceUri(cls.dbconn)
 
         # Create test layers
-        cls.vl = QgsVectorLayer(
-            cls.dbconn
-            + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=',
-            "test",
-            "postgres",
-        )
+        cls.vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'postgres')
         assert cls.vl.isValid()
         cls.con = psycopg2.connect(cls.dbconn)
 
-        cls.schema = "qgis_test"
-        cls.provider = "postgres"
-        cls.project_storage_type = "postgresql"
+        cls.schema = 'qgis_test'
+        cls.provider = 'postgres'
+        cls.project_storage_type = 'postgresql'
 
     def execSQLCommand(self, sql):
         self.assertTrue(self.con)
@@ -76,21 +71,19 @@ class TestPyQgsProjectStoragePostgres(QgisTestCase, TestPyQgsProjectStorageBase)
 
         u.setScheme("postgresql")
         u.setHost(ds_uri.host())
-        if ds_uri.port() != "":
+        if ds_uri.port() != '':
             u.setPort(int(ds_uri.port()))
-        if ds_uri.username() != "":
+        if ds_uri.username() != '':
             u.setUserName(ds_uri.username())
-        if ds_uri.password() != "":
+        if ds_uri.password() != '':
             u.setPassword(ds_uri.password())
 
-        if ds_uri.service() != "":
+        if ds_uri.service() != '':
             urlQuery.addQueryItem("service", ds_uri.service())
-        if ds_uri.authConfigId() != "":
+        if ds_uri.authConfigId() != '':
             urlQuery.addQueryItem("authcfg", ds_uri.authConfigId())
         if ds_uri.sslMode() != QgsDataSourceUri.SslMode.SslPrefer:
-            urlQuery.addQueryItem(
-                "sslmode", QgsDataSourceUri.encodeSslMode(ds_uri.sslMode())
-            )
+            urlQuery.addQueryItem("sslmode", QgsDataSourceUri.encodeSslMode(ds_uri.sslMode()))
 
         urlQuery.addQueryItem("dbname", ds_uri.database())
 
@@ -99,8 +92,8 @@ class TestPyQgsProjectStoragePostgres(QgisTestCase, TestPyQgsProjectStorageBase)
             urlQuery.addQueryItem("project", project_name)
 
         u.setQuery(urlQuery)
-        return str(u.toEncoded(), "utf-8")
+        return str(u.toEncoded(), 'utf-8')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

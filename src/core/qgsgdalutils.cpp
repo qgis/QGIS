@@ -636,37 +636,37 @@ GDALDataType QgsGdalUtils::gdalDataTypeFromQgisDataType( Qgis::DataType dataType
   return GDALDataType::GDT_Unknown;
 }
 
-GDALResampleAlg QgsGdalUtils::gdalResamplingAlgorithm( Qgis::RasterResamplingMethod method )
+GDALResampleAlg QgsGdalUtils::gdalResamplingAlgorithm( QgsRasterDataProvider::ResamplingMethod method )
 {
   GDALResampleAlg eResampleAlg = GRA_NearestNeighbour;
   switch ( method )
   {
-    case Qgis::RasterResamplingMethod::Nearest:
-    case Qgis::RasterResamplingMethod::Gauss: // Gauss not available in GDALResampleAlg
+    case QgsRasterDataProvider::ResamplingMethod::Nearest:
+    case QgsRasterDataProvider::ResamplingMethod::Gauss: // Gauss not available in GDALResampleAlg
       eResampleAlg = GRA_NearestNeighbour;
       break;
 
-    case Qgis::RasterResamplingMethod::Bilinear:
+    case QgsRasterDataProvider::ResamplingMethod::Bilinear:
       eResampleAlg = GRA_Bilinear;
       break;
 
-    case Qgis::RasterResamplingMethod::Cubic:
+    case QgsRasterDataProvider::ResamplingMethod::Cubic:
       eResampleAlg = GRA_Cubic;
       break;
 
-    case Qgis::RasterResamplingMethod::CubicSpline:
+    case QgsRasterDataProvider::ResamplingMethod::CubicSpline:
       eResampleAlg = GRA_CubicSpline;
       break;
 
-    case Qgis::RasterResamplingMethod::Lanczos:
+    case QgsRasterDataProvider::ResamplingMethod::Lanczos:
       eResampleAlg = GRA_Lanczos;
       break;
 
-    case Qgis::RasterResamplingMethod::Average:
+    case QgsRasterDataProvider::ResamplingMethod::Average:
       eResampleAlg = GRA_Average;
       break;
 
-    case Qgis::RasterResamplingMethod::Mode:
+    case QgsRasterDataProvider::ResamplingMethod::Mode:
       eResampleAlg = GRA_Mode;
       break;
   }
@@ -855,13 +855,7 @@ QString QgsGdalUtils::vsiPrefixForPath( const QString &path )
     return QStringLiteral( "/vsizip/" );
   }
   else if ( path.endsWith( QLatin1String( ".zip" ), Qt::CaseInsensitive ) )
-  {
-    // GTFS driver directly handles .zip files
-    const char *const apszAllowedDrivers[] = { "GTFS", nullptr };
-    if ( GDALIdentifyDriverEx( path.toUtf8().constData(), GDAL_OF_VECTOR, apszAllowedDrivers, nullptr ) )
-      return QString();
     return QStringLiteral( "/vsizip/" );
-  }
   else if ( path.endsWith( QLatin1String( ".tar" ), Qt::CaseInsensitive ) ||
             path.endsWith( QLatin1String( ".tar.gz" ), Qt::CaseInsensitive ) ||
             path.endsWith( QLatin1String( ".tgz" ), Qt::CaseInsensitive ) )

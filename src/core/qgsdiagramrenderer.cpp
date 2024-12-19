@@ -1122,19 +1122,19 @@ void QgsStackedDiagramRenderer::_readXmlSubRenderers( const QDomElement &elem, c
     {
       const QDomElement subRendererElem = childRendererList.at( i ).toElement();
 
-      if ( subRendererElem.nodeName() == QLatin1String( "SingleCategoryDiagramRenderer" ) )
+      if ( subRendererElem.nodeName() == QStringLiteral( "SingleCategoryDiagramRenderer" ) )
       {
         std::unique_ptr< QgsSingleCategoryDiagramRenderer > singleCatDiagramRenderer = std::make_unique< QgsSingleCategoryDiagramRenderer >();
         singleCatDiagramRenderer->readXml( subRendererElem, context );
         addRenderer( singleCatDiagramRenderer.release() );
       }
-      else if ( subRendererElem.nodeName() == QLatin1String( "LinearlyInterpolatedDiagramRenderer" ) )
+      else if ( subRendererElem.nodeName() == QStringLiteral( "LinearlyInterpolatedDiagramRenderer" ) )
       {
         std::unique_ptr< QgsLinearlyInterpolatedDiagramRenderer > linearDiagramRenderer = std::make_unique< QgsLinearlyInterpolatedDiagramRenderer >();
         linearDiagramRenderer->readXml( subRendererElem, context );
         addRenderer( linearDiagramRenderer.release() );
       }
-      else if ( subRendererElem.nodeName() == QLatin1String( "StackedDiagramRenderer" ) )
+      else if ( subRendererElem.nodeName() == QStringLiteral( "StackedDiagramRenderer" ) )
       {
         std::unique_ptr< QgsStackedDiagramRenderer > stackedDiagramRenderer = std::make_unique< QgsStackedDiagramRenderer >();
         stackedDiagramRenderer->readXml( subRendererElem, context );

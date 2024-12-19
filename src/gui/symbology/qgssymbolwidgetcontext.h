@@ -34,6 +34,7 @@ class QgsMessageBar;
 class GUI_EXPORT QgsSymbolWidgetContext // clazy:exclude=rule-of-three
 {
   public:
+
     QgsSymbolWidgetContext() = default;
     QgsSymbolWidgetContext( const QgsSymbolWidgetContext &other );
     QgsSymbolWidgetContext &operator=( const QgsSymbolWidgetContext &other );
@@ -90,13 +91,13 @@ class GUI_EXPORT QgsSymbolWidgetContext // clazy:exclude=rule-of-three
      * \param scopes list of additional scopes which will be added in order to the end of the default expression context
      * \see setExpressionContext()
      */
-    void setAdditionalExpressionContextScopes( const QList<QgsExpressionContextScope> &scopes );
+    void setAdditionalExpressionContextScopes( const QList< QgsExpressionContextScope > &scopes );
 
     /**
      * Returns the list of additional expression context scopes to show as available within the layer.
      * \see setAdditionalExpressionContextScopes()
      */
-    QList<QgsExpressionContextScope> additionalExpressionContextScopes() const;
+    QList< QgsExpressionContextScope > additionalExpressionContextScopes() const;
 
     /**
      * Returns list of scopes: global, project, atlas, map, layer.
@@ -123,11 +124,13 @@ class GUI_EXPORT QgsSymbolWidgetContext // clazy:exclude=rule-of-three
     void setSymbolType( Qgis::SymbolType type );
 
   private:
+
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
-    std::unique_ptr<QgsExpressionContext> mExpressionContext;
-    QList<QgsExpressionContextScope> mAdditionalScopes;
+    std::unique_ptr< QgsExpressionContext > mExpressionContext;
+    QList< QgsExpressionContextScope > mAdditionalScopes;
     Qgis::SymbolType mSymbolType = Qgis::SymbolType::Hybrid;
+
 };
 
 #endif // QGSSYMBOLWIDGETCONTEXT_H

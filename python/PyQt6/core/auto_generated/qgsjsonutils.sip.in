@@ -366,7 +366,7 @@ Parse a simple array (depth=1)
              the conversion is not possible.
 %End
 
- static QVariantList parseArray( const QString &json, QVariant::Type type ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
+ static QVariantList parseArray( const QString &json, QVariant::Type type ) /Deprecated/;
 %Docstring
 Parse a simple array (depth=1)
 

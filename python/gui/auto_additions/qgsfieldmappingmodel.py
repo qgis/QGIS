@@ -25,5 +25,5 @@ QgsFieldMappingModel.ColumnDataIndex.baseClass = QgsFieldMappingModel
 try:
     QgsFieldMappingModel.Field.__attribute_docs__ = {'originalName': 'The original name of the field', 'field': 'The field in its current status (it might have been renamed)', 'expression': 'The expression for the mapped field from the source fields'}
     QgsFieldMappingModel.Field.__doc__ = """The Field struct holds information about a mapped field"""
-except (NameError, AttributeError):
+except NameError:
     pass

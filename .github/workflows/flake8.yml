@@ -1,0 +1,38 @@
+name: ❄ Flake8
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches:
+      - master
+      - release-*
+    paths:
+      - '**.py'
+  pull_request:
+    paths:
+      - '**.py'
+
+permissions:
+  contents: read
+
+jobs:
+  flake8_py3:
+    name: Python Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: 3.12
+          architecture: x64
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run flake8
+        uses: julianwachholz/flake8-action@v2.0.2
+        with:
+          checkName: 'Python Lint'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

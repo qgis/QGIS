@@ -15,7 +15,6 @@
 
 #include "qgslogger.h"
 #include "qgsmaptool.h"
-#include "moc_qgsmaptool.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
 #include "qgsrendercontext.h"
@@ -126,6 +125,7 @@ void QgsMapTool::reactivate()
 
 void QgsMapTool::clean()
 {
+
 }
 
 void QgsMapTool::setAction( QAction *action )
@@ -254,6 +254,7 @@ double QgsMapTool::searchRadiusMU( QgsMapCanvas *canvas )
 
 void QgsMapTool::populateContextMenu( QMenu * )
 {
+
 }
 
 

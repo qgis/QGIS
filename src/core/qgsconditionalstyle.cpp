@@ -15,7 +15,6 @@
 #include <QPainter>
 
 #include "qgsconditionalstyle.h"
-#include "moc_qgsconditionalstyle.cpp"
 #include "qgsexpression.h"
 #include "qgsfontutils.h"
 #include "qgssymbollayerutils.h"

@@ -40,7 +40,7 @@ SIP_IF_MODULE( HAVE_SERVER_PYTHON_PLUGINS )
  */
 class SERVER_EXPORT QgsServerCacheManager
 {
-#ifdef SIP_RUN
+#ifdef   SIP_RUN
 #include "qgsservercachefilter.h"
 #endif
 

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmaprenderersequentialjob.h"
-#include "moc_qgsmaprenderersequentialjob.cpp"
 
 #include "qgslogger.h"
 #include "qgsmaprenderercustompainterjob.h"

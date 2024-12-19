@@ -23,6 +23,7 @@ class QgsPenStyleComboBox : QComboBox
 
   protected:
     QIcon iconForPen( Qt::PenStyle style );
+
 };
 
 class QgsPenJoinStyleComboBox : QComboBox

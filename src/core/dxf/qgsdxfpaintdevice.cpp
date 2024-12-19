@@ -36,7 +36,6 @@ QPaintEngine *QgsDxfPaintDevice::paintEngine() const
 
 int QgsDxfPaintDevice::metric( PaintDeviceMetric metric ) const
 {
-  // NOLINTBEGIN(bugprone-branch-clone)
   switch ( metric )
   {
     case QPaintDevice::PdmWidth:
@@ -60,14 +59,7 @@ int QgsDxfPaintDevice::metric( PaintDeviceMetric metric ) const
       return 1;
     case QPaintDevice::PdmDevicePixelRatioScaled:
       return 1;
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 8, 0))
-    case PdmDevicePixelRatioF_EncodedA:
-      return 1;
-    case PdmDevicePixelRatioF_EncodedB:
-      return 1;
-#endif
   }
-  // NOLINTEND(bugprone-branch-clone)
   return 0;
 }
 

@@ -28,6 +28,7 @@ class QgsOracleColumnTypeTask : public QgsTask
 {
     Q_OBJECT
   public:
+
     /**
      *
      * \param connName
@@ -35,7 +36,10 @@ class QgsOracleColumnTypeTask : public QgsTask
      * \param useEstimatedMetaData
      * \param allowGeometrylessTables
      */
-    QgsOracleColumnTypeTask( const QString &connName, const QString &limitToSchema, bool useEstimatedMetaData, bool allowGeometrylessTables );
+    QgsOracleColumnTypeTask( const QString &connName,
+                             const QString &limitToSchema,
+                             bool useEstimatedMetaData,
+                             bool allowGeometrylessTables );
 
     // These functions get the layer types and pass that information out
     // by emitting the setLayerType() signal.

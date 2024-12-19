@@ -30,7 +30,7 @@
  * \ingroup gui
  * \since QGIS 3.38
  */
-class GUI_EXPORT QgsRasterSingleColorRendererWidget : public QgsRasterRendererWidget, private Ui::QgsRasterSingleColorRendererWidgetBase
+class GUI_EXPORT QgsRasterSingleColorRendererWidget: public QgsRasterRendererWidget, private Ui::QgsRasterSingleColorRendererWidgetBase
 {
     Q_OBJECT
   public:
@@ -46,6 +46,7 @@ class GUI_EXPORT QgsRasterSingleColorRendererWidget : public QgsRasterRendererWi
      * Sets the widget state from the specified renderer.
      */
     void setFromRenderer( const QgsRasterRenderer *r );
+
 };
 
 #endif // QGSRASTERSINGLECOLORRENDERERWIDGET_H

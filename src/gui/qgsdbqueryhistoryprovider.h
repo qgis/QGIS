@@ -37,6 +37,7 @@ class GUI_EXPORT QgsDatabaseQueryHistoryProvider : public QgsAbstractHistoryProv
     Q_OBJECT
 
   public:
+
     QgsDatabaseQueryHistoryProvider();
 
     QString id() const override;
@@ -55,6 +56,10 @@ class GUI_EXPORT QgsDatabaseQueryHistoryProvider : public QgsAbstractHistoryProv
      * Emitted when the provider wants to trigger a SQL execution dialog.
      */
     void openSqlDialog( const QString &connectionUri, const QString &provider, const QString &sql );
+
 };
 
 #endif //QGSDBQUERYHISTORYPROVIDER_H
+
+
+

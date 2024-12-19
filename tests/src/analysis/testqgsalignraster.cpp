@@ -26,6 +26,7 @@
 #include <gdal.h>
 
 
+
 static QString _tempFile( const QString &name )
 {
   return QStringLiteral( "%1/aligntest-%2.tif" ).arg( QDir::tempPath(), name );
@@ -168,6 +169,7 @@ class TestAlignRaster : public QgsTest
       QCOMPARE( out.rasterSize(), QSize( 8, 8 ) );
       QCOMPARE( out.cellSize(), QSizeF( 0.1, 0.1 ) );
       QCOMPARE( out.identify( 106.15, -6.35 ), 2.25 );
+
     }
 
 
@@ -237,10 +239,10 @@ class TestAlignRaster : public QgsTest
       QCOMPARE( outCRS, destCRS );
       QCOMPARE( out.rasterSize(), QSize( 4, 4 ) );
       // tolerance of 1 to keep the test more robust
-      QGSCOMPARENEAR( out.cellSize().width(), 22293, 1 );  // ~ 22293.256065
+      QGSCOMPARENEAR( out.cellSize().width(), 22293, 1 ); // ~ 22293.256065
       QGSCOMPARENEAR( out.cellSize().height(), 22293, 1 ); // ~ 22293.256065
-      QGSCOMPARENEAR( out.gridOffset().x(), 4327, 1 );     // ~ 4327.168434
-      QGSCOMPARENEAR( out.gridOffset().y(), 637, 1 );      // ~ 637.007990
+      QGSCOMPARENEAR( out.gridOffset().x(), 4327, 1 ); // ~ 4327.168434
+      QGSCOMPARENEAR( out.gridOffset().y(), 637, 1 ); // ~ 637.007990
       QCOMPARE( out.identify( 1308405, -746611 ), 10. );
     }
 
@@ -255,7 +257,9 @@ class TestAlignRaster : public QgsTest
       align.setRasters( rasters );
 
       QCOMPARE( align.suggestedReferenceLayer(), 0 );
+
     }
+
 };
 
 QGSTEST_MAIN( TestAlignRaster )

@@ -2,5 +2,5 @@
 try:
     QgsEllipseSymbolLayerWidget.create = staticmethod(QgsEllipseSymbolLayerWidget.create)
     QgsEllipseSymbolLayerWidget.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

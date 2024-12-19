@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsgraduatedhistogramwidget.h"
-#include "moc_qgsgraduatedhistogramwidget.cpp"
 #include "qgsgraduatedsymbolrenderer.h"
 #include "qgsgraduatedsymbolrendererwidget.h"
 #include "qgsapplication.h"
@@ -128,7 +127,8 @@ void QgsGraduatedHistogramWidget::mouseRelease( double value )
 
     //new value needs to be within range covered by closestRangeIndex or
     //closestRangeIndex + 1
-    if ( value <= mRenderer->ranges().at( closestRangeIndex ).lowerValue() || value >= mRenderer->ranges().at( closestRangeIndex + 1 ).upperValue() )
+    if ( value <= mRenderer->ranges().at( closestRangeIndex ).lowerValue() ||
+         value >= mRenderer->ranges().at( closestRangeIndex + 1 ).upperValue() )
     {
       refresh();
       return;
@@ -185,7 +185,7 @@ bool QgsGraduatedHistogramEventFilter::eventFilter( QObject *object, QEvent *eve
   {
     case QEvent::MouseButtonPress:
     {
-      const QMouseEvent *mouseEvent = static_cast<QMouseEvent *>( event );
+      const QMouseEvent *mouseEvent = static_cast<QMouseEvent * >( event );
       if ( mouseEvent->button() == Qt::LeftButton )
       {
         emit mousePress( posToValue( mouseEvent->pos() ) );
@@ -194,7 +194,7 @@ bool QgsGraduatedHistogramEventFilter::eventFilter( QObject *object, QEvent *eve
     }
     case QEvent::MouseButtonRelease:
     {
-      const QMouseEvent *mouseEvent = static_cast<QMouseEvent *>( event );
+      const QMouseEvent *mouseEvent = static_cast<QMouseEvent * >( event );
       if ( mouseEvent->button() == Qt::LeftButton )
       {
         emit mouseRelease( posToValue( mouseEvent->pos() ) );

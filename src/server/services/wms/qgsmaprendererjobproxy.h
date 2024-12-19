@@ -34,6 +34,7 @@ namespace QgsWms
   class QgsMapRendererJobProxy
   {
     public:
+
       /**
        * Constructor for QgsMapRendererJobProxy. Does not take ownership of
        * \a featureFilterProvider.
@@ -42,7 +43,9 @@ namespace QgsWms
        * \param featureFilterProvider Features filtering
        */
       QgsMapRendererJobProxy(
-        bool parallelRendering, int maxThreads, QgsFeatureFilterProvider *featureFilterProvider
+        bool parallelRendering
+        , int maxThreads
+        , QgsFeatureFilterProvider *featureFilterProvider
       );
 
       /**
@@ -77,5 +80,5 @@ namespace QgsWms
   };
 
 
-} // namespace QgsWms
+}
 #endif

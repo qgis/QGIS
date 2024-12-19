@@ -27,6 +27,7 @@ the scale and map units must be set by calling :py:func:`~setScale` and :py:func
 #include "qgstextpreview.h"
 %End
   public:
+
     QgsTextPreview( QWidget *parent = 0 );
 %Docstring
 Constructor for QgsTextPreview

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgs2dgamepadcontroller.h"
-#include "moc_qgs2dgamepadcontroller.cpp"
 
 #ifdef HAVE_QTGAMEPAD
 
@@ -60,6 +59,7 @@ QgsGamepad2DMapController::QgsGamepad2DMapController( int gamepadDeviceId, QObje
     emit zoomMap( value + 1 );
   } );
 #endif
+
 }
 
 QgsGamepad2DMapController *QgsGamepad2DMapController::clone() const

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtooladditem.h"
-#include "moc_qgslayoutviewtooladditem.cpp"
 #include "qgslayoutview.h"
 #include "qgslayout.h"
 #include "qgslayoutviewmouseevent.h"
@@ -55,7 +54,8 @@ void QgsLayoutViewToolAddItem::layoutPressEvent( QgsLayoutViewMouseEvent *event 
   mRubberBand.reset( QgsGui::layoutItemGuiRegistry()->createItemRubberBand( mItemMetadataId, view() ) );
   if ( mRubberBand )
   {
-    connect( mRubberBand.get(), &QgsLayoutViewRubberBand::sizeChanged, this, [=]( const QString &size ) {
+    connect( mRubberBand.get(), &QgsLayoutViewRubberBand::sizeChanged, this, [ = ]( const QString & size )
+    {
       view()->pushStatusMessage( size );
     } );
     mRubberBand->start( event->snappedPoint(), event->modifiers() );

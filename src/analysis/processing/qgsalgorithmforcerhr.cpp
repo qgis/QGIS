@@ -71,7 +71,7 @@ QString QgsForceRHRAlgorithm::shortDescription() const
 
 QList<int> QgsForceRHRAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon );
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon );
 }
 
 QgsForceRHRAlgorithm *QgsForceRHRAlgorithm::createInstance() const

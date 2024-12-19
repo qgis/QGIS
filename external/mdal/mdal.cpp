@@ -21,7 +21,7 @@ static const char *EMPTY_STR = "";
 
 const char *MDAL_Version()
 {
-  return "1.3.0";
+  return "1.2.0";
 }
 
 MDAL_Status MDAL_LastStatus()
@@ -580,34 +580,6 @@ MDAL_DatasetGroupH MDAL_M_addDatasetGroup(
     return nullptr;
 }
 
-void MDAL_M_RemoveDatasetGroup( MDAL_MeshH mesh, int index )
-{
-  MDAL::Log::resetLastStatus();
-
-  if ( !mesh )
-  {
-    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, "Mesh is not valid (null)" );
-    return;
-  }
-
-  if ( index < 0 )
-  {
-    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, "Requested index is not valid: " + std::to_string( index ) );
-    return;
-  }
-
-  MDAL::Mesh *m = static_cast< MDAL::Mesh * >( mesh );
-  int len = static_cast<int>( m->datasetGroups.size() );
-  if ( len <= index )
-  {
-    MDAL::Log::error( MDAL_Status::Err_IncompatibleMesh, "Requested index " + std::to_string( index ) + " is bigger than datasets count" );
-    return;
-  }
-  size_t i = static_cast<size_t>( index );
-
-  m->datasetGroups.erase( m->datasetGroups.begin() + static_cast<long>( i ) );
-}
-
 const char *MDAL_M_driverName( MDAL_MeshH mesh )
 {
   if ( !mesh )
@@ -873,18 +845,6 @@ const char *MDAL_G_name( MDAL_DatasetGroupH group )
   }
   MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
   return _return_str( g->name() );
-}
-
-void MDAL_G_setName( MDAL_DatasetGroupH group, const char *name )
-{
-  if ( !group )
-  {
-    MDAL::Log::error( MDAL_Status::Err_IncompatibleDataset, "Dataset Group is not valid (null)" );
-    return;
-  }
-
-  MDAL::DatasetGroup *g = static_cast< MDAL::DatasetGroup * >( group );
-  g->setName( name );
 }
 
 bool MDAL_G_hasScalarData( MDAL_DatasetGroupH group )

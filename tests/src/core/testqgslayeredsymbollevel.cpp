@@ -44,12 +44,11 @@ class TestQgsLayeredSymbolLevel : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsLayeredSymbolLevel()
-      : QgsTest( QStringLiteral( "Layered Symbol Level Rendering Tests" ) ) {}
+    TestQgsLayeredSymbolLevel() : QgsTest( QStringLiteral( "Layered Symbol Level Rendering Tests" ) ) {}
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void render();
 
@@ -77,13 +76,15 @@ void TestQgsLayeredSymbolLevel::initTestCase()
   //
   const QString myRoadsFileName = mTestDataDir + "layered_roads.shp";
   const QFileInfo myRoadsFileInfo( myRoadsFileName );
-  mpRoadsLayer = new QgsVectorLayer( myRoadsFileInfo.filePath(), myRoadsFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpRoadsLayer = new QgsVectorLayer( myRoadsFileInfo.filePath(),
+                                     myRoadsFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   mpRoadsLayer->setSimplifyMethod( simplifyMethod );
 
   mMapSettings.setLayers( QList<QgsMapLayer *>() << mpRoadsLayer );
+
 }
 void TestQgsLayeredSymbolLevel::cleanupTestCase()
 {

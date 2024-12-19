@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "(C) 2022 by Nyall Dawson"
-__date__ = "27/04/2022"
-__copyright__ = "Copyright 2022, The QGIS Project"
+__author__ = '(C) 2022 by Nyall Dawson'
+__date__ = '27/04/2022'
+__copyright__ = 'Copyright 2022, The QGIS Project'
 
 import http.server
 import os
@@ -37,10 +36,10 @@ class TestQgsNetworkAccessManager(QgisTestCase):
     def setUpClass(cls):
         super().setUpClass()
         # Bring up a simple HTTP server
-        os.chdir(unitTestDataPath() + "")
+        os.chdir(unitTestDataPath() + '')
         handler = http.server.SimpleHTTPRequestHandler
 
-        cls.httpd = socketserver.TCPServer(("localhost", 0), handler)
+        cls.httpd = socketserver.TCPServer(('localhost', 0), handler)
         cls.port = cls.httpd.server_address[1]
 
         cls.httpd_thread = threading.Thread(target=cls.httpd.serve_forever)
@@ -49,11 +48,7 @@ class TestQgsNetworkAccessManager(QgisTestCase):
 
     def test_request_preprocessor(self):
         """Test request preprocessor."""
-        url = (
-            "http://localhost:"
-            + str(TestQgsNetworkAccessManager.port)
-            + "/qgis_local_server/index.html"
-        )
+        url = 'http://localhost:' + str(TestQgsNetworkAccessManager.port) + '/qgis_local_server/index.html'
 
         TestQgsNetworkAccessManager.preprocessed = False
 
@@ -92,16 +87,12 @@ class TestQgsNetworkAccessManager(QgisTestCase):
 
     def _on_reply_ready_read(self, reply):
         _bytes = reply.peek(reply.bytesAvailable())
-        self.assertEqual(_bytes.data().decode()[:14], "<!DOCTYPE html")
+        self.assertEqual(_bytes.data().decode()[:14], '<!DOCTYPE html')
         TestQgsNetworkAccessManager.peeked = True
 
     def test_response_preprocessor(self):
         """Test response preprocessor."""
-        url = (
-            "http://localhost:"
-            + str(TestQgsNetworkAccessManager.port)
-            + "/qgis_local_server/index.html"
-        )
+        url = 'http://localhost:' + str(TestQgsNetworkAccessManager.port) + '/qgis_local_server/index.html'
 
         TestQgsNetworkAccessManager.preprocessed = False
         TestQgsNetworkAccessManager.peeked = False
@@ -111,9 +102,7 @@ class TestQgsNetworkAccessManager(QgisTestCase):
             self.assertIsInstance(reply, QNetworkReply)
             self.assertEqual(request.url(), QUrl(url))
 
-            self.assertTrue(
-                reply.readyRead.connect(partial(self._on_reply_ready_read, reply))
-            )
+            self.assertTrue(reply.readyRead.connect(partial(self._on_reply_ready_read, reply)))
 
             TestQgsNetworkAccessManager.preprocessed = True
 
@@ -149,5 +138,5 @@ class TestQgsNetworkAccessManager(QgisTestCase):
             QgsNetworkAccessManager.removeReplyPreprocessor(_id)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

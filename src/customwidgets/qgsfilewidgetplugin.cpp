@@ -15,7 +15,6 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsfilewidgetplugin.h"
-#include "moc_qgsfilewidgetplugin.cpp"
 #include "qgsfilewidget.h"
 
 
@@ -93,5 +92,5 @@ QString QgsFileWidgetPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-    .arg( name() );
+         .arg( name() );
 }

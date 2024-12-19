@@ -458,23 +458,3 @@ void QgsSingleBandGrayRenderer::setLegendSettings( QgsColorRampLegendNodeSetting
     return;
   mLegendSettings.reset( settings );
 }
-
-bool QgsSingleBandGrayRenderer::refresh( const QgsRectangle &extent, const QList<double> &min, const QList<double> &max, bool forceRefresh )
-{
-  if ( !needsRefresh( extent ) && !forceRefresh )
-  {
-    return false;
-  }
-
-  bool refreshed = false;
-  if ( mContrastEnhancement && mContrastEnhancement->contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement &&
-       min.size() >= 1 && max.size() >= 1 )
-  {
-    mLastRectangleUsedByRefreshContrastEnhancementIfNeeded = extent;
-    mContrastEnhancement->setMinimumValue( min[0] );
-    mContrastEnhancement->setMaximumValue( max[0] );
-    refreshed = true;
-  }
-
-  return refreshed;
-}

@@ -30,7 +30,9 @@
  */
 class QgsDrapeAlgorithmBase : public QgsProcessingFeatureBasedAlgorithm
 {
+
   public:
+
     QString group() const override;
     QString groupId() const override;
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
@@ -38,9 +40,10 @@ class QgsDrapeAlgorithmBase : public QgsProcessingFeatureBasedAlgorithm
   protected:
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
+
     virtual void prepareGeometry( QgsGeometry &geometry, double defaultVal ) const = 0;
     virtual QgsPoint drapeVertex( const QgsPoint &vertex, double rasterVal ) const = 0;
 
@@ -56,16 +59,18 @@ class QgsDrapeAlgorithmBase : public QgsProcessingFeatureBasedAlgorithm
     bool mDynamicOffset = false;
     QgsProperty mOffsetProperty;
 
-    std::unique_ptr<QgsRasterDataProvider> mRasterProvider;
+    std::unique_ptr< QgsRasterDataProvider > mRasterProvider;
     int mBand = 1;
     QgsRectangle mRasterExtent;
     bool mCreatedTransform = false;
     QgsCoordinateTransform mTransform;
+
 };
 
 class QgsDrapeToZAlgorithm : public QgsDrapeAlgorithmBase
 {
   public:
+
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -75,17 +80,21 @@ class QgsDrapeToZAlgorithm : public QgsDrapeAlgorithmBase
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
+
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
 
   private:
     void prepareGeometry( QgsGeometry &geometry, double defaultVal ) const override;
     QgsPoint drapeVertex( const QgsPoint &vertex, double rasterVal ) const override;
+
+
 };
 
 
 class QgsDrapeToMAlgorithm : public QgsDrapeAlgorithmBase
 {
   public:
+
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;
@@ -95,13 +104,17 @@ class QgsDrapeToMAlgorithm : public QgsDrapeAlgorithmBase
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
+
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
 
   private:
     void prepareGeometry( QgsGeometry &geometry, double defaultVal ) const override;
     QgsPoint drapeVertex( const QgsPoint &vertex, double rasterVal ) const override;
+
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMDRAPE_H
+
+

@@ -102,17 +102,6 @@ class CORE_EXPORT QgsSingleBandGrayRenderer: public QgsRasterRenderer
      */
     void setLegendSettings( QgsColorRampLegendNodeSettings *settings SIP_TRANSFER );
 
-    /**
-     * \brief Refreshes the renderer according to the \a min and \a max values associated with the \a extent.
-     * If \a min or \a max size is greater than 1, the last values are ignored.
-     * If \a forceRefresh is TRUE, this will force the refresh even if needsRefresh() returns FALSE.
-     * \returns TRUE if the renderer has been refreshed
-     * \note not available in Python bindings
-     *
-     * \since QGIS 3.42
-     */
-    bool refresh( const QgsRectangle &extent, const QList<double> &min, const QList<double> &max, bool forceRefresh = false ) override SIP_SKIP;
-
   private:
 #ifdef SIP_RUN
     QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer & );

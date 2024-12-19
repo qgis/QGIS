@@ -2,5 +2,5 @@
 try:
     QgsPalettedRendererWidget.create = staticmethod(QgsPalettedRendererWidget.create)
     QgsPalettedRendererWidget.__group__ = ['raster']
-except (NameError, AttributeError):
+except NameError:
     pass

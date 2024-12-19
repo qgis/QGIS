@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgspdalalgorithms.h"
-#include "moc_qgspdalalgorithms.cpp"
 #include "qgsruntimeprofiler.h"
 #include "qgsapplication.h"
 

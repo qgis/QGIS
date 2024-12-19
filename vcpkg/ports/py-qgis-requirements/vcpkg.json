@@ -1,0 +1,16 @@
+{
+  "name": "py-qgis-requirements",
+  "version-date": "2024-05-14",
+  "description": "pip installed python requirements",
+  "dependencies": [
+    {
+      "name": "py-setuptools",
+      "host": true
+    },
+    {
+      "name": "py-pip",
+      "host": true
+    },
+    "python3"
+  ]
+}

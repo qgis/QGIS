@@ -51,8 +51,9 @@ class QToolBar;
  * deleted.
  *
  */
-class GUI_EXPORT QgsLayoutDesignerInterface : public QObject
+class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
 {
+
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsLayoutDesignerInterface *>( sipCpp ) )
@@ -65,11 +66,12 @@ class GUI_EXPORT QgsLayoutDesignerInterface : public QObject
     Q_OBJECT
 
   public:
+
     //! Standard designer tools which are always available for use
     enum StandardTool
     {
       ToolMoveItemContent, //!< Move item content tool
-      ToolMoveItemNodes,   //!< Move item nodes tool
+      ToolMoveItemNodes, //!< Move item nodes tool
     };
 
     /**
@@ -112,7 +114,7 @@ class GUI_EXPORT QgsLayoutDesignerInterface : public QObject
     /**
      * Selects the specified \a items.
      */
-    virtual void selectItems( const QList<QgsLayoutItem *> &items ) = 0;
+    virtual void selectItems( const QList< QgsLayoutItem * > &items ) = 0;
 
     /**
      * Toggles whether the atlas preview mode should be \a enabled in the designer.
@@ -357,6 +359,7 @@ class GUI_EXPORT QgsLayoutDesignerInterface : public QObject
     class ExportResults
     {
       public:
+
         /**
          * Result/error code of export.
          */
@@ -367,7 +370,8 @@ class GUI_EXPORT QgsLayoutDesignerInterface : public QObject
          *
          * Ownership of the results remains with the layout designer.
          */
-        QMap<QString, QgsLabelingResults *> labelingResults;
+        QMap< QString, QgsLabelingResults * > labelingResults;
+
     };
 
     /**
@@ -411,6 +415,7 @@ class GUI_EXPORT QgsLayoutDesignerInterface : public QObject
      * \since QGIS 3.20
      */
     void mapPreviewRefreshed( QgsLayoutItemMap *map );
+
 };
 
 #endif // QGSLAYOUTDESIGNERINTERFACE_H

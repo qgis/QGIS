@@ -4,5 +4,5 @@ try:
     QgsTextDocument.fromHtml = staticmethod(QgsTextDocument.fromHtml)
     QgsTextDocument.fromTextAndFormat = staticmethod(QgsTextDocument.fromTextAndFormat)
     QgsTextDocument.__group__ = ['textrenderer']
-except (NameError, AttributeError):
+except NameError:
     pass

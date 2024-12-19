@@ -28,6 +28,7 @@ implementation, and then implement :py:func:`~handleProjectOpen` to open the ass
 #include "qgscustomprojectopenhandler.h"
 %End
   public:
+
     virtual bool handleProjectOpen( const QString &file ) = 0;
 %Docstring
 Called when the specified project ``file`` has been opened within QGIS. If ``True``

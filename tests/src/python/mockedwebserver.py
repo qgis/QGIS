@@ -52,19 +52,7 @@ def install_http_handler(handler_instance):
 
 
 class RequestResponse:
-    def __init__(
-        self,
-        method,
-        path,
-        code,
-        headers=None,
-        body=None,
-        custom_method=None,
-        expected_headers=None,
-        expected_body=None,
-        add_content_length_header=True,
-        unexpected_headers=[],
-    ):
+    def __init__(self, method, path, code, headers=None, body=None, custom_method=None, expected_headers=None, expected_body=None, add_content_length_header=True, unexpected_headers=[]):
         self.method = method
         self.path = path
         self.code = code
@@ -85,38 +73,12 @@ class SequentialHandler:
 
     def final_check(self):
         assert not self.unexpected
-        assert self.req_count == len(self.req_resp), (
-            self.req_count,
-            len(self.req_resp),
-        )
+        assert self.req_count == len(self.req_resp), (self.req_count, len(self.req_resp))
 
-    def add(
-        self,
-        method,
-        path,
-        code=None,
-        headers=None,
-        body=None,
-        custom_method=None,
-        expected_headers=None,
-        expected_body=None,
-        add_content_length_header=True,
-        unexpected_headers=[],
-    ):
+    def add(self, method, path, code=None, headers=None, body=None, custom_method=None, expected_headers=None, expected_body=None, add_content_length_header=True, unexpected_headers=[]):
         hdrs = {} if headers is None else headers
         expected_hdrs = {} if expected_headers is None else expected_headers
-        req = RequestResponse(
-            method,
-            path,
-            code,
-            hdrs,
-            body,
-            custom_method,
-            expected_hdrs,
-            expected_body,
-            add_content_length_header,
-            unexpected_headers,
-        )
+        req = RequestResponse(method, path, code, hdrs, body, custom_method, expected_hdrs, expected_body, add_content_length_header, unexpected_headers)
         self.req_resp.append(req)
         return req
 
@@ -127,34 +89,29 @@ class SequentialHandler:
 
             if req_resp.expected_headers:
                 for k in req_resp.expected_headers:
-                    if (
-                        k not in request.headers
-                        or request.headers[k] != req_resp.expected_headers[k]
-                    ):
-                        sys.stderr.write(
-                            "Did not get expected headers: %s\n" % str(request.headers)
-                        )
+                    if k not in request.headers or request.headers[k] != req_resp.expected_headers[k]:
+                        sys.stderr.write('Did not get expected headers: %s\n' % str(request.headers))
                         request.send_response(400)
-                        request.send_header("Content-Length", 0)
+                        request.send_header('Content-Length', 0)
                         request.end_headers()
                         self.unexpected = True
                         return
 
             for k in req_resp.unexpected_headers:
                 if k in request.headers:
-                    sys.stderr.write("Did not expect header: %s\n" % k)
+                    sys.stderr.write('Did not expect header: %s\n' % k)
                     request.send_response(400)
-                    request.send_header("Content-Length", 0)
+                    request.send_header('Content-Length', 0)
                     request.end_headers()
                     self.unexpected = True
                     return
 
             if req_resp.expected_body:
-                content = request.rfile.read(int(request.headers["Content-Length"]))
+                content = request.rfile.read(int(request.headers['Content-Length']))
                 if content != req_resp.expected_body:
-                    sys.stderr.write("Did not get expected content: %s\n" % content)
+                    sys.stderr.write('Did not get expected content: %s\n' % content)
                     request.send_response(400)
-                    request.send_header("Content-Length", 0)
+                    request.send_header('Content-Length', 0)
                     request.end_headers()
                     self.unexpected = True
                     return
@@ -164,15 +121,15 @@ class SequentialHandler:
                 request.send_header(k, req_resp.headers[k])
             if req_resp.add_content_length_header:
                 if req_resp.body:
-                    request.send_header("Content-Length", len(req_resp.body))
-                elif "Content-Length" not in req_resp.headers:
-                    request.send_header("Content-Length", "0")
+                    request.send_header('Content-Length', len(req_resp.body))
+                elif 'Content-Length' not in req_resp.headers:
+                    request.send_header('Content-Length', '0')
             request.end_headers()
             if req_resp.body:
                 try:
                     request.wfile.write(req_resp.body)
                 except:
-                    request.wfile.write(req_resp.body.encode("ascii"))
+                    request.wfile.write(req_resp.body.encode('ascii'))
 
     def process(self, method, request):
         if self.req_count < len(self.req_resp):
@@ -182,42 +139,38 @@ class SequentialHandler:
                 self._process_req_resp(req_resp, request)
                 return
 
-        request.send_error(
-            500,
-            "Unexpected %s request for %s, req_count = %d"
-            % (method, request.path, self.req_count),
-        )
+        request.send_error(500, 'Unexpected %s request for %s, req_count = %d' % (method, request.path, self.req_count))
         self.unexpected = True
 
     def do_HEAD(self, request):
-        self.process("HEAD", request)
+        self.process('HEAD', request)
 
     def do_GET(self, request):
-        self.process("GET", request)
+        self.process('GET', request)
 
     def do_POST(self, request):
-        self.process("POST", request)
+        self.process('POST', request)
 
     def do_PUT(self, request):
-        self.process("PUT", request)
+        self.process('PUT', request)
 
     def do_DELETE(self, request):
-        self.process("DELETE", request)
+        self.process('DELETE', request)
 
 
 class DispatcherHttpHandler(BaseHTTPRequestHandler):
 
     # protocol_version = 'HTTP/1.1'
 
-    def log_request(self, code="-", size="-"):
+    def log_request(self, code='-', size='-'):
         # pylint: disable=unused-argument
         pass
 
     def do_HEAD(self):
 
         if do_log:
-            f = open(tempfile.gettempdir() + "/log.txt", "a")
-            f.write("HEAD %s\n" % self.path)
+            f = open(tempfile.gettempdir() + '/log.txt', 'a')
+            f.write('HEAD %s\n' % self.path)
             f.close()
 
         custom_handler.do_HEAD(self)
@@ -225,8 +178,8 @@ class DispatcherHttpHandler(BaseHTTPRequestHandler):
     def do_DELETE(self):
 
         if do_log:
-            f = open(tempfile.gettempdir() + "/log.txt", "a")
-            f.write("DELETE %s\n" % self.path)
+            f = open(tempfile.gettempdir() + '/log.txt', 'a')
+            f.write('DELETE %s\n' % self.path)
             f.close()
 
         custom_handler.do_DELETE(self)
@@ -234,8 +187,8 @@ class DispatcherHttpHandler(BaseHTTPRequestHandler):
     def do_POST(self):
 
         if do_log:
-            f = open(tempfile.gettempdir() + "/log.txt", "a")
-            f.write("POST %s\n" % self.path)
+            f = open(tempfile.gettempdir() + '/log.txt', 'a')
+            f.write('POST %s\n' % self.path)
             f.close()
 
         custom_handler.do_POST(self)
@@ -243,8 +196,8 @@ class DispatcherHttpHandler(BaseHTTPRequestHandler):
     def do_PUT(self):
 
         if do_log:
-            f = open(tempfile.gettempdir() + "/log.txt", "a")
-            f.write("PUT %s\n" % self.path)
+            f = open(tempfile.gettempdir() + '/log.txt', 'a')
+            f.write('PUT %s\n' % self.path)
             f.close()
 
         custom_handler.do_PUT(self)
@@ -252,8 +205,8 @@ class DispatcherHttpHandler(BaseHTTPRequestHandler):
     def do_GET(self):
 
         if do_log:
-            f = open(tempfile.gettempdir() + "/log.txt", "a")
-            f.write("GET %s\n" % self.path)
+            f = open(tempfile.gettempdir() + '/log.txt', 'a')
+            f.write('GET %s\n' % self.path)
             f.close()
 
         custom_handler.do_GET(self)
@@ -263,7 +216,7 @@ class ThreadedHttpServer(Thread):
 
     def __init__(self, handlerClass):
         Thread.__init__(self)
-        self.server = HTTPServer(("", 0), handlerClass)
+        self.server = HTTPServer(('', 0), handlerClass)
         self.running = False
 
     def getPort(self):
@@ -274,7 +227,7 @@ class ThreadedHttpServer(Thread):
             self.running = True
             self.server.serve_forever()
         except KeyboardInterrupt:
-            print("^C received, shutting down server")
+            print('^C received, shutting down server')
             self.stop()
 
     def start_and_wait_ready(self):

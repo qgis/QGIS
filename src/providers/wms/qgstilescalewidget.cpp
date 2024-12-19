@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgstilescalewidget.h"
-#include "moc_qgstilescalewidget.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsrasterlayer.h"
 #include "qgsrasterdataprovider.h"
@@ -53,7 +52,7 @@ void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
   if ( !rl || !rl->dataProvider() )
     return;
 
-  const QList<double> resolutions = rl->dataProvider()->nativeResolutions();
+  const QList< double > resolutions = rl->dataProvider()->nativeResolutions();
   if ( resolutions.isEmpty() )
     return;
 
@@ -95,7 +94,8 @@ void QgsTileScaleWidget::scaleChanged( double scale )
     QgsDebugMsgLevel( QStringLiteral( "test resolution %1: %2 d:%3" ).arg( i ).arg( mResolutions.at( i ) ).arg( mupp - mResolutions.at( i ) ), 2 );
   }
 
-  if ( i == mResolutions.size() || ( i > 0 && mResolutions.at( i ) - mupp > mupp - mResolutions.at( i - 1 ) ) )
+  if ( i == mResolutions.size() ||
+       ( i > 0 && mResolutions.at( i ) - mupp > mupp - mResolutions.at( i - 1 ) ) )
   {
     QgsDebugMsgLevel( QStringLiteral( "previous resolution" ), 2 );
     i--;
@@ -147,7 +147,8 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   QgsLayerTreeView *legend = mainWindow->findChild<QgsLayerTreeView *>( QStringLiteral( "theLayerTreeView" ) );
   if ( legend )
   {
-    connect( legend, &QgsLayerTreeView::currentLayerChanged, tws, &QgsTileScaleWidget::layerChanged );
+    connect( legend, &QgsLayerTreeView::currentLayerChanged,
+             tws, &QgsTileScaleWidget::layerChanged );
   }
   else
   {

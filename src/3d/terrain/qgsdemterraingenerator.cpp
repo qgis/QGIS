@@ -14,18 +14,12 @@
  ***************************************************************************/
 
 #include "qgsdemterraingenerator.h"
-#include "moc_qgsdemterraingenerator.cpp"
 
 #include "qgsdemterraintileloader_p.h"
 
 #include "qgs3dutils.h"
 #include "qgsrasterlayer.h"
 #include "qgscoordinatetransform.h"
-
-QgsTerrainGenerator *QgsDemTerrainGenerator::create()
-{
-  return new QgsDemTerrainGenerator();
-}
 
 QgsDemTerrainGenerator::~QgsDemTerrainGenerator()
 {
@@ -34,13 +28,13 @@ QgsDemTerrainGenerator::~QgsDemTerrainGenerator()
 
 void QgsDemTerrainGenerator::setLayer( QgsRasterLayer *layer )
 {
-  mLayer = layer;
+  mLayer = QgsMapLayerRef( layer );
   updateGenerator();
 }
 
 QgsRasterLayer *QgsDemTerrainGenerator::layer() const
 {
-  return mLayer;
+  return qobject_cast<QgsRasterLayer *>( mLayer.layer.data() );
 }
 
 void QgsDemTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context )
@@ -82,6 +76,31 @@ float QgsDemTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderCon
     return 0;
 }
 
+void QgsDemTerrainGenerator::writeXml( QDomElement &elem ) const
+{
+  elem.setAttribute( QStringLiteral( "layer" ), mLayer.layerId );
+  elem.setAttribute( QStringLiteral( "resolution" ), mResolution );
+  elem.setAttribute( QStringLiteral( "skirt-height" ), mSkirtHeight );
+
+  // crs is not read/written - it should be the same as destination crs of the map
+}
+
+void QgsDemTerrainGenerator::readXml( const QDomElement &elem )
+{
+  mLayer = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
+  mResolution = elem.attribute( QStringLiteral( "resolution" ) ).toInt();
+  mSkirtHeight = elem.attribute( QStringLiteral( "skirt-height" ) ).toFloat();
+
+  // crs is not read/written - it should be the same as destination crs of the map
+}
+
+void QgsDemTerrainGenerator::resolveReferences( const QgsProject &project )
+{
+  mLayer = QgsMapLayerRef( project.mapLayer( mLayer.layerId ) );
+  // now that we have the layer, call setExtent() again so we can keep the intersection of mExtent and layer's extent
+  setExtent( mExtent );
+}
+
 QgsChunkLoader *QgsDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
   // A bit of a hack to make cloning terrain generator work properly
@@ -90,7 +109,16 @@ QgsChunkLoader *QgsDemTerrainGenerator::createChunkLoader( QgsChunkNode *node ) 
 
 void QgsDemTerrainGenerator::setExtent( const QgsRectangle &extent )
 {
-  mExtent = extent;
+  if ( !mLayer )
+  {
+    // Keep the whole extent for now and setExtent() will be called by again by resolveReferences()
+    mExtent = extent;
+    return;
+  }
+
+  QgsRectangle layerExtent = Qgs3DUtils::tryReprojectExtent2D( mLayer->extent(), mLayer->crs(), mCrs, mTransformContext );
+  // no need to have an mExtent larger than the actual layer's extent
+  mExtent = extent.intersect( layerExtent );
   updateGenerator();
 }
 
@@ -99,11 +127,7 @@ void QgsDemTerrainGenerator::updateGenerator()
   QgsRasterLayer *dem = layer();
   if ( dem && mCrs.isValid() )
   {
-    QgsRectangle layerExtent = Qgs3DUtils::tryReprojectExtent2D( mLayer->extent(), mLayer->crs(), mCrs, mTransformContext );
-    // no need to have an mExtent larger than the actual layer's extent
-    const QgsRectangle intersectExtent = mExtent.intersect( layerExtent );
-
-    mTerrainTilingScheme = QgsTilingScheme( intersectExtent, mCrs );
+    mTerrainTilingScheme = QgsTilingScheme( mExtent, mCrs );
     delete mHeightMapGenerator;
     mHeightMapGenerator = new QgsDemHeightMapGenerator( dem, mTerrainTilingScheme, mResolution, mTransformContext );
     mIsValid = true;

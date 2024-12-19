@@ -11,29 +11,29 @@ QgsSettingsStringComboBoxWrapper.Mode.__doc__ = """Mode to determine if the valu
 # --
 try:
     QgsSettingsEditorWidgetWrapperTemplate.__group__ = ['settings']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsSettingsStringLineEditWrapper.__group__ = ['settings']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsSettingsStringComboBoxWrapper.__group__ = ['settings']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsSettingsBoolCheckBoxWrapper.__group__ = ['settings']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsSettingsIntegerSpinBoxWrapper.__group__ = ['settings']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsSettingsDoubleSpinBoxWrapper.__group__ = ['settings']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsSettingsColorButtonWrapper.__group__ = ['settings']
-except (NameError, AttributeError):
+except NameError:
     pass

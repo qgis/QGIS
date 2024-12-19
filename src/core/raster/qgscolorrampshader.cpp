@@ -379,14 +379,14 @@ void QgsColorRampShader::classifyColorRamp( const int band, const QgsRectangle &
 
 bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGreenValue, int *returnBlueValue, int *returnAlphaValue ) const
 {
-  const int colorRampItemListCount = mColorRampItemList.count();
-  if ( colorRampItemListCount == 0 )
+  if ( mColorRampItemList.isEmpty() )
   {
     return false;
   }
   if ( std::isnan( value ) || std::isinf( value ) )
     return false;
 
+  const int colorRampItemListCount = mColorRampItemList.count();
   const QgsColorRampShader::ColorRampItem *colorRampItems = mColorRampItemList.constData();
   int idx;
   if ( !mLUTInitialized )
@@ -463,7 +463,7 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
 
   const QgsColorRampShader::ColorRampItem &currentColorRampItem = colorRampItems[idx];
 
-  switch ( mColorRampType )
+  switch ( colorRampType() )
   {
     case Qgis::ShaderInterpolationMethod::Linear:
     {
@@ -488,20 +488,13 @@ bool QgsColorRampShader::shade( double value, int *returnRedValue, int *returnGr
       const float offsetInRange = value - previousColorRampItem.value;
       const float scale = offsetInRange / currentRampRange;
 
-      const int c1Red = previousColorRampItem.color.red();
-      const int c1Green = previousColorRampItem.color.green();
-      const int c1Blue = previousColorRampItem.color.blue();
-      const int c1Alpha = previousColorRampItem.color.alpha();
+      const QRgb c1 = previousColorRampItem.color.rgba();
+      const QRgb c2 = currentColorRampItem.color.rgba();
 
-      const int c2Red = currentColorRampItem.color.red();
-      const int c2Green = currentColorRampItem.color.green();
-      const int c2Blue = currentColorRampItem.color.blue();
-      const int c2Alpha = currentColorRampItem.color.alpha();
-
-      *returnRedValue   = c1Red   + static_cast< int >( ( c2Red - c1Red )   * scale );
-      *returnGreenValue = c1Green + static_cast< int >( ( c2Green - c1Green ) * scale );
-      *returnBlueValue  = c1Blue  + static_cast< int >( ( c2Blue - c1Blue )  * scale );
-      *returnAlphaValue = c1Alpha + static_cast< int >( ( c2Alpha - c1Alpha ) * scale );
+      *returnRedValue   = qRed( c1 )   + static_cast< int >( ( qRed( c2 )   - qRed( c1 ) )   * scale );
+      *returnGreenValue = qGreen( c1 ) + static_cast< int >( ( qGreen( c2 ) - qGreen( c1 ) ) * scale );
+      *returnBlueValue  = qBlue( c1 )  + static_cast< int >( ( qBlue( c2 )  - qBlue( c1 ) )  * scale );
+      *returnAlphaValue = qAlpha( c1 ) + static_cast< int >( ( qAlpha( c2 ) - qAlpha( c1 ) ) * scale );
       return true;
     };
     case Qgis::ShaderInterpolationMethod::Discrete:

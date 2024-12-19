@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgslayoutitemlabel.h"
-#include "moc_qgslayoutitemlabel.cpp"
 #include "qgslayoutitemregistry.h"
 #include "qgslayoututils.h"
 #include "qgslayoutmodel.h"
@@ -335,76 +334,13 @@ void QgsLayoutItemLabel::adjustSizeToText()
   attemptSetSceneRect( QRectF( pos().x() + xShift, pos().y() + yShift, newSize.width(), newSize.height() ) );
 }
 
-void QgsLayoutItemLabel::adjustSizeToText( ReferencePoint referencePoint )
-{
-  const QSizeF newSize = sizeForText();
-  const double newWidth = newSize.width();
-  const double newHeight = newSize.height();
-  const double currentWidth = rect().width();
-  const double currentHeight = rect().height();
-
-  //keep reference point constant
-  double xShift = 0;
-  double yShift = 0;
-  switch ( referencePoint )
-  {
-    case QgsLayoutItem::UpperLeft:
-      xShift = 0;
-      yShift = 0;
-      break;
-    case QgsLayoutItem::UpperMiddle:
-      xShift = - ( newWidth - currentWidth ) / 2.0;
-      yShift = 0;
-      break;
-
-    case QgsLayoutItem::UpperRight:
-      xShift = - ( newWidth - currentWidth );
-      yShift = 0;
-      break;
-
-    case QgsLayoutItem::MiddleLeft:
-      xShift = 0;
-      yShift = -( newHeight - currentHeight ) / 2.0;
-      break;
-
-    case QgsLayoutItem::Middle:
-      xShift = - ( newWidth - currentWidth ) / 2.0;
-      yShift = -( newHeight - currentHeight ) / 2.0;
-      break;
-
-    case QgsLayoutItem::MiddleRight:
-      xShift = - ( newWidth - currentWidth );
-      yShift = -( newHeight - currentHeight ) / 2.0;
-      break;
-
-    case QgsLayoutItem::LowerLeft:
-      xShift = 0;
-      yShift = - ( newHeight - currentHeight );
-      break;
-
-    case QgsLayoutItem::LowerMiddle:
-      xShift = - ( newWidth - currentWidth ) / 2.0;
-      yShift = - ( newHeight - currentHeight );
-      break;
-
-    case QgsLayoutItem::LowerRight:
-      xShift = - ( newWidth - currentWidth );
-      yShift = - ( newHeight - currentHeight );
-      break;
-  }
-
-  //update rect for data defined size and position
-  attemptSetSceneRect( QRectF( pos().x() + xShift, pos().y() + yShift, newSize.width(), newSize.height() ) );
-}
-
 QSizeF QgsLayoutItemLabel::sizeForText() const
 {
   QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( mLayout, nullptr );
-  context.setFlag( Qgis::RenderContextFlag::ApplyScalingWorkaroundForTextRendering );
 
   const QStringList lines = currentText().split( '\n' );
-  const double textWidth = std::ceil( QgsTextRenderer::textWidth( context, mFormat, lines ) + 1 ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
-  const double fontHeight = std::ceil( QgsTextRenderer::textHeight( context, mFormat, lines ) + 1 ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
+  const double textWidth = QgsTextRenderer::textWidth( context, mFormat, lines ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
+  const double fontHeight = QgsTextRenderer::textHeight( context, mFormat, lines ) / context.convertToPainterUnits( 1, Qgis::RenderUnit::Millimeters );
 
   const double penWidth = frameEnabled() ? ( pen().widthF() / 2.0 ) : 0;
 

@@ -30,7 +30,9 @@
  */
 class QgsOrthogonalizeAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
+
   public:
+
     QgsOrthogonalizeAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -43,17 +45,22 @@ class QgsOrthogonalizeAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
 
   protected:
+
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
+
     double mMaxIterations = 0.0;
     double mAngleTolerance = 0.0;
     bool mDynamicAngleTolerance = false;
     QgsProperty mAngleToleranceProperty;
+
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMORTHOGONALIZE_H
+
+

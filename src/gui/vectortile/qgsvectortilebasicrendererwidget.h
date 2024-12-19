@@ -63,7 +63,7 @@ class GUI_EXPORT QgsVectorTileBasicRendererWidget : public QgsMapLayerConfigWidg
     void updateSymbolsFromWidget( QgsSymbolSelectorWidget *widget );
 
   private:
-    QPointer<QgsVectorTileLayer> mVTLayer;
+    QPointer< QgsVectorTileLayer > mVTLayer;
     std::unique_ptr<QgsVectorTileBasicRenderer> mRenderer;
     QgsVectorTileBasicRendererListModel *mModel = nullptr;
     QgsVectorTileBasicRendererProxyModel *mProxyModel = nullptr;
@@ -78,6 +78,7 @@ class QgsVectorTileBasicRendererListModel : public QAbstractListModel
 {
     Q_OBJECT
   public:
+
     enum Role
     {
       MinZoom = Qt::UserRole + 1,
@@ -108,7 +109,7 @@ class QgsVectorTileBasicRendererListModel : public QAbstractListModel
 
   private:
     QgsVectorTileBasicRenderer *mRenderer = nullptr;
-    QPointer<QScreen> mScreen;
+    QPointer< QScreen > mScreen;
 };
 
 class QgsVectorTileBasicRendererProxyModel : public QSortFilterProxyModel
@@ -124,6 +125,7 @@ class QgsVectorTileBasicRendererProxyModel : public QSortFilterProxyModel
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
+
     bool mFilterVisible = false;
     QString mFilterString;
     int mCurrentZoom = -1;

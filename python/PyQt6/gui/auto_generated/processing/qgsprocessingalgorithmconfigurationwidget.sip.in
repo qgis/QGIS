@@ -26,6 +26,7 @@ configuration options directly on algorithm level, in addition to parameters.
 #include "qgsprocessingalgorithmconfigurationwidget.h"
 %End
   public:
+
     QgsProcessingAlgorithmConfigurationWidget( QWidget *parent = 0 );
 %Docstring
 Creates a new QgsProcessingAlgorithmConfigurationWidget

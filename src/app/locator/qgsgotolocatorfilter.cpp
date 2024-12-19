@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsgotolocatorfilter.h"
-#include "moc_qgsgotolocatorfilter.cpp"
 #include "qgsfeedback.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
@@ -48,7 +47,9 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
   const QLocale locale;
 
   // Coordinates such as 106.8468,-6.3804
-  QRegularExpression separatorRx( QStringLiteral( "^([0-9\\-\\%1\\%2]*)[\\s%3]*([0-9\\-\\%1\\%2]*)$" ).arg( locale.decimalPoint(), locale.groupSeparator(), locale.decimalPoint() != ',' && locale.groupSeparator() != ',' ? QStringLiteral( "\\," ) : QString() ) );
+  QRegularExpression separatorRx( QStringLiteral( "^([0-9\\-\\%1\\%2]*)[\\s%3]*([0-9\\-\\%1\\%2]*)$" ).arg( locale.decimalPoint(),
+                                  locale.groupSeparator(),
+                                  locale.decimalPoint() != ',' && locale.groupSeparator() != ',' ? QStringLiteral( "\\," ) : QString() ) );
   QRegularExpressionMatch match = separatorRx.match( string.trimmed() );
   if ( match.hasMatch() )
   {
@@ -72,7 +73,7 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
   {
     // Check if the string is a pair of decimal degrees with [N,S,E,W] suffixes
     separatorRx = QRegularExpression( QStringLiteral( "^\\s*([-]?\\d{1,3}(?:[\\.\\%1]\\d+)?\\s*[NSEWnsew])[\\s\\,]*([-]?\\d{1,3}(?:[\\.\\%1]\\d+)?\\s*[NSEWnsew])\\s*$" )
-                                        .arg( locale.decimalPoint() ) );
+                                      .arg( locale.decimalPoint() ) );
     match = separatorRx.match( string.trimmed() );
     if ( match.hasMatch() )
     {
@@ -90,7 +91,7 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
   {
     // Check if the string is a pair of degree minute second
     separatorRx = QRegularExpression( QStringLiteral( "^((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:[\\.\\%1]\\d+)?[^0-9.,]*[-+nsew]?)[,\\s]+((?:([-+nsew])\\s*)?\\d{1,3}(?:[^0-9.]+[0-5]?\\d)?[^0-9.]+[0-5]?\\d(?:[\\.\\%1]\\d+)?[^0-9.,]*[-+nsew]?)$" )
-                                        .arg( locale.decimalPoint() ) );
+                                      .arg( locale.decimalPoint() ) );
     match = separatorRx.match( string.trimmed() );
     if ( match.hasMatch() )
     {
@@ -115,10 +116,11 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
 
     if ( !posIsWgs84 && currentCrs != wgs84Crs )
     {
-      const QgsPointXY point( currentCrsIsXY ? firstNumber : secondNumber, currentCrsIsXY ? secondNumber : firstNumber );
+      const QgsPointXY point( currentCrsIsXY ? firstNumber : secondNumber,
+                              currentCrsIsXY ? secondNumber : firstNumber );
       data.insert( QStringLiteral( "point" ), point );
 
-      const QList<Qgis::CrsAxisDirection> axisList = currentCrs.axisOrdering();
+      const QList< Qgis::CrsAxisDirection > axisList = currentCrs.axisOrdering();
       QString firstSuffix;
       QString secondSuffix;
       if ( axisList.size() >= 2 )
@@ -129,7 +131,9 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
 
       QgsLocatorResult result;
       result.filter = this;
-      result.displayString = tr( "Go to %1%2 %3%4 (Map CRS, %5)" ).arg( locale.toString( firstNumber, 'g', 10 ), firstSuffix, locale.toString( secondNumber, 'g', 10 ), secondSuffix, currentCrs.userFriendlyIdentifier() );
+      result.displayString = tr( "Go to %1%2 %3%4 (Map CRS, %5)" ).arg( locale.toString( firstNumber, 'g', 10 ), firstSuffix,
+                             locale.toString( secondNumber, 'g', 10 ), secondSuffix,
+                             currentCrs.userFriendlyIdentifier() );
       result.setUserData( data );
       result.score = 0.9;
       emit resultFetched( result );
@@ -280,10 +284,10 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
         const double width = outputSize.width() * ( height / outputSize.height() );
 
         QgsRectangle extent;
-        extent.setYMinimum( dataPoint.y() - height / 2.0 );
-        extent.setYMaximum( dataPoint.y() + height / 2.0 );
-        extent.setXMinimum( dataPoint.x() - width / 2.0 );
-        extent.setXMaximum( dataPoint.x() + width / 2.0 );
+        extent.setYMinimum( dataPoint.y() -  height / 2.0 );
+        extent.setYMaximum( dataPoint.y() +  height / 2.0 );
+        extent.setXMinimum( dataPoint.x() -  width / 2.0 );
+        extent.setXMaximum( dataPoint.x() +  width / 2.0 );
 
         QgsScaleCalculator calculator;
         calculator.setMapUnits( currentCrs.mapUnits() );
@@ -298,7 +302,9 @@ void QgsGotoLocatorFilter::fetchResults( const QString &string, const QgsLocator
 
       QgsLocatorResult result;
       result.filter = this;
-      result.displayString = tr( "Go to %1°N %2°E %3(%4)" ).arg( locale.toString( point.y(), 'g', 10 ), locale.toString( point.x(), 'g', 10 ), scale > 0.0 ? tr( "at scale 1:%1 " ).arg( scale ) : QString(), wgs84Crs.userFriendlyIdentifier() );
+      result.displayString = tr( "Go to %1°N %2°E %3(%4)" ).arg( locale.toString( point.y(), 'g', 10 ), locale.toString( point.x(), 'g', 10 ),
+                             scale > 0.0 ? tr( "at scale 1:%1 " ).arg( scale ) : QString(),
+                             wgs84Crs.userFriendlyIdentifier() );
       result.setUserData( data );
       result.score = 1.0;
       emit resultFetched( result );
@@ -322,5 +328,5 @@ void QgsGotoLocatorFilter::triggerResult( const QgsLocatorResult &result )
     mapCanvas->refresh();
   }
 
-  mapCanvas->flashGeometries( QList<QgsGeometry>() << QgsGeometry::fromPointXY( point ) );
+  mapCanvas->flashGeometries( QList< QgsGeometry >() << QgsGeometry::fromPointXY( point ) );
 }

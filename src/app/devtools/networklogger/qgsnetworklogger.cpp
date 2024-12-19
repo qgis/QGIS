@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsnetworklogger.h"
-#include "moc_qgsnetworklogger.cpp"
 #include "qgsnetworkloggernode.h"
 #include "qgssettings.h"
 #include "qgis.h"
@@ -25,7 +24,7 @@
 QgsNetworkLogger::QgsNetworkLogger( QgsNetworkAccessManager *manager, QObject *parent )
   : QAbstractItemModel( parent )
   , mNam( manager )
-  , mRootNode( std::make_unique<QgsNetworkLoggerRootNode>() )
+  , mRootNode( std::make_unique< QgsNetworkLoggerRootNode >() )
 {
   // logger must be created on the main thread
   Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
@@ -46,19 +45,19 @@ void QgsNetworkLogger::enableLogging( bool enabled )
 {
   if ( enabled )
   {
-    connect( mNam, qOverload<QgsNetworkRequestParameters>( &QgsNetworkAccessManager::requestAboutToBeCreated ), this, &QgsNetworkLogger::requestAboutToBeCreated, Qt::UniqueConnection );
-    connect( mNam, qOverload<const QgsNetworkRequestParameters &>( &QgsNetworkAccessManager::requestCreated ), this, &QgsNetworkLogger::requestCreated, Qt::UniqueConnection );
-    connect( mNam, qOverload<QgsNetworkReplyContent>( &QgsNetworkAccessManager::finished ), this, &QgsNetworkLogger::requestFinished, Qt::UniqueConnection );
-    connect( mNam, qOverload<QgsNetworkRequestParameters>( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsNetworkLogger::requestTimedOut, Qt::UniqueConnection );
+    connect( mNam, qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestAboutToBeCreated ), this, &QgsNetworkLogger::requestAboutToBeCreated, Qt::UniqueConnection );
+    connect( mNam, qOverload< const QgsNetworkRequestParameters &>( &QgsNetworkAccessManager::requestCreated ), this, &QgsNetworkLogger::requestCreated, Qt::UniqueConnection );
+    connect( mNam, qOverload< QgsNetworkReplyContent >( &QgsNetworkAccessManager::finished ), this, &QgsNetworkLogger::requestFinished, Qt::UniqueConnection );
+    connect( mNam, qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsNetworkLogger::requestTimedOut, Qt::UniqueConnection );
     connect( mNam, &QgsNetworkAccessManager::downloadProgress, this, &QgsNetworkLogger::downloadProgress, Qt::UniqueConnection );
     connect( mNam, &QgsNetworkAccessManager::requestEncounteredSslErrors, this, &QgsNetworkLogger::requestEncounteredSslErrors, Qt::UniqueConnection );
   }
   else
   {
-    disconnect( mNam, qOverload<QgsNetworkRequestParameters>( &QgsNetworkAccessManager::requestAboutToBeCreated ), this, &QgsNetworkLogger::requestAboutToBeCreated );
-    disconnect( mNam, qOverload<const QgsNetworkRequestParameters &>( &QgsNetworkAccessManager::requestCreated ), this, &QgsNetworkLogger::requestCreated );
-    disconnect( mNam, qOverload<QgsNetworkReplyContent>( &QgsNetworkAccessManager::finished ), this, &QgsNetworkLogger::requestFinished );
-    disconnect( mNam, qOverload<QgsNetworkRequestParameters>( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsNetworkLogger::requestTimedOut );
+    disconnect( mNam, qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestAboutToBeCreated ), this, &QgsNetworkLogger::requestAboutToBeCreated );
+    disconnect( mNam, qOverload< const QgsNetworkRequestParameters &>( &QgsNetworkAccessManager::requestCreated ), this, &QgsNetworkLogger::requestCreated );
+    disconnect( mNam, qOverload< QgsNetworkReplyContent >( &QgsNetworkAccessManager::finished ), this, &QgsNetworkLogger::requestFinished );
+    disconnect( mNam, qOverload< QgsNetworkRequestParameters >( &QgsNetworkAccessManager::requestTimedOut ), this, &QgsNetworkLogger::requestTimedOut );
     disconnect( mNam, &QgsNetworkAccessManager::downloadProgress, this, &QgsNetworkLogger::downloadProgress );
     disconnect( mNam, &QgsNetworkAccessManager::requestEncounteredSslErrors, this, &QgsNetworkLogger::requestEncounteredSslErrors );
   }
@@ -79,7 +78,7 @@ void QgsNetworkLogger::requestAboutToBeCreated( QgsNetworkRequestParameters para
 
   beginInsertRows( QModelIndex(), childCount, childCount );
 
-  std::unique_ptr<QgsNetworkLoggerRequestGroup> group = std::make_unique<QgsNetworkLoggerRequestGroup>( parameters );
+  std::unique_ptr< QgsNetworkLoggerRequestGroup > group = std::make_unique< QgsNetworkLoggerRequestGroup >( parameters );
   mRequestGroups.insert( parameters.requestId(), group.get() );
   mRootNode->addChild( std::move( group ) );
   endInsertRows();
@@ -145,7 +144,7 @@ void QgsNetworkLogger::downloadProgress( int requestId, qint64 bytesReceived, qi
 
   requestGroup->setProgress( bytesReceived, bytesTotal );
 
-  emit dataChanged( requestIndex, requestIndex, QVector<int>() << Qt::ToolTipRole );
+  emit dataChanged( requestIndex, requestIndex, QVector<int >() << Qt::ToolTipRole );
 }
 
 void QgsNetworkLogger::requestEncounteredSslErrors( int requestId, const QList<QSslError> &errors )
@@ -177,7 +176,7 @@ QList<QAction *> QgsNetworkLogger::actions( const QModelIndex &index, QObject *p
 {
   QgsDevToolsModelNode *node = index2node( index );
   if ( !node )
-    return QList<QAction *>();
+    return QList< QAction * >();
 
   return node->actions( parent );
 }
@@ -200,7 +199,7 @@ QModelIndex QgsNetworkLogger::indexOfParentLayerTreeNode( QgsDevToolsModelNode *
 
   QgsDevToolsModelGroup *grandParentNode = parentNode->parent();
   if ( !grandParentNode )
-    return QModelIndex(); // root node -> invalid index
+    return QModelIndex();  // root node -> invalid index
 
   int row = grandParentNode->indexOf( parentNode );
   Q_ASSERT( row >= 0 );
@@ -210,8 +209,8 @@ QModelIndex QgsNetworkLogger::indexOfParentLayerTreeNode( QgsDevToolsModelNode *
 
 void QgsNetworkLogger::removeRequestRows( const QList<int> &rows )
 {
-  QList<int> res = rows;
-  std::sort( res.begin(), res.end(), std::greater<int>() );
+  QList< int > res = rows;
+  std::sort( res.begin(), res.end(), std::greater< int >() );
 
   for ( int row : std::as_const( res ) )
   {
@@ -246,10 +245,11 @@ int QgsNetworkLogger::columnCount( const QModelIndex &parent ) const
 
 QModelIndex QgsNetworkLogger::index( int row, int column, const QModelIndex &parent ) const
 {
-  if ( column < 0 || column >= columnCount( parent ) || row < 0 || row >= rowCount( parent ) )
+  if ( column < 0 || column >= columnCount( parent ) ||
+       row < 0 || row >= rowCount( parent ) )
     return QModelIndex();
 
-  QgsDevToolsModelGroup *n = dynamic_cast<QgsDevToolsModelGroup *>( index2node( parent ) );
+  QgsDevToolsModelGroup *n = dynamic_cast< QgsDevToolsModelGroup * >( index2node( parent ) );
   if ( !n )
     return QModelIndex(); // have no children
 
@@ -342,7 +342,7 @@ void QgsNetworkLoggerProxyModel::setShowCached( bool show )
 bool QgsNetworkLoggerProxyModel::filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
 {
   QgsDevToolsModelNode *node = mLogger->index2node( mLogger->index( source_row, 0, source_parent ) );
-  if ( QgsNetworkLoggerRequestGroup *request = dynamic_cast<QgsNetworkLoggerRequestGroup *>( node ) )
+  if ( QgsNetworkLoggerRequestGroup *request = dynamic_cast< QgsNetworkLoggerRequestGroup * >( node ) )
   {
     if ( ( request->status() == QgsNetworkLoggerRequestGroup::Status::Complete || request->status() == QgsNetworkLoggerRequestGroup::Status::Canceled )
          & !mShowSuccessful )

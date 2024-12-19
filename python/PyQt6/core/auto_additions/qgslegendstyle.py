@@ -14,5 +14,5 @@ try:
     QgsLegendStyle.styleName = staticmethod(QgsLegendStyle.styleName)
     QgsLegendStyle.styleFromName = staticmethod(QgsLegendStyle.styleFromName)
     QgsLegendStyle.styleLabel = staticmethod(QgsLegendStyle.styleLabel)
-except (NameError, AttributeError):
+except NameError:
     pass

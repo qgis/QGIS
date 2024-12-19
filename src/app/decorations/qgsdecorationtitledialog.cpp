@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsdecorationtitledialog.h"
-#include "moc_qgsdecorationtitledialog.cpp"
 #include "qgsdecorationtitle.h"
 
 #include "qgisapp.h"
@@ -74,7 +73,8 @@ QgsDecorationTitleDialog::QgsDecorationTitleDialog( QgsDecorationTitle &deco, QW
   cboPlacement->addItem( tr( "Bottom Left" ), QgsDecorationItem::BottomLeft );
   cboPlacement->addItem( tr( "Bottom Center" ), QgsDecorationItem::BottomCenter );
   cboPlacement->addItem( tr( "Bottom Right" ), QgsDecorationItem::BottomRight );
-  connect( cboPlacement, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( cboPlacement, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
     spnHorizontal->setMinimum( cboPlacement->currentData() == QgsDecorationItem::TopCenter || cboPlacement->currentData() == QgsDecorationItem::BottomCenter ? -100 : 0 );
   } );
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
@@ -83,11 +83,11 @@ QgsDecorationTitleDialog::QgsDecorationTitleDialog( QgsDecorationTitle &deco, QW
   spnHorizontal->setValue( mDeco.mMarginHorizontal );
   spnVertical->setValue( mDeco.mMarginVertical );
   wgtUnitSelection->setUnits(
-    { Qgis::RenderUnit::Millimeters,
-      Qgis::RenderUnit::Percentage,
-      Qgis::RenderUnit::Pixels
-    }
-  );
+  {
+    Qgis::RenderUnit::Millimeters,
+    Qgis::RenderUnit::Percentage,
+    Qgis::RenderUnit::Pixels
+  } );
   wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
   // font settings
@@ -128,7 +128,7 @@ void QgsDecorationTitleDialog::apply()
   mDeco.setTextFormat( mButtonFontStyle->textFormat() );
   mDeco.mLabelText = txtTitleText->toPlainText();
   mDeco.mBackgroundColor = pbnBackgroundColor->color();
-  mDeco.setPlacement( static_cast<QgsDecorationItem::Placement>( cboPlacement->currentData().toInt() ) );
+  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->currentData().toInt() ) );
   mDeco.mMarginUnit = wgtUnitSelection->unit();
   mDeco.mMarginHorizontal = spnHorizontal->value();
   mDeco.mMarginVertical = spnVertical->value();

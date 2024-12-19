@@ -39,7 +39,7 @@ QVariant QgsDevToolsModelNode::toVariant() const
 
 QList<QAction *> QgsDevToolsModelNode::actions( QObject * )
 {
-  return QList<QAction *>();
+  return QList< QAction * >();
 }
 
 
@@ -66,7 +66,8 @@ QgsDevToolsModelNode *QgsDevToolsModelGroup::addChild( std::unique_ptr<QgsDevToo
 int QgsDevToolsModelGroup::indexOf( QgsDevToolsModelNode *child ) const
 {
   Q_ASSERT( child->mParent == this );
-  auto it = std::find_if( mChildren.begin(), mChildren.end(), [&]( const std::unique_ptr<QgsDevToolsModelNode> &p ) {
+  auto it = std::find_if( mChildren.begin(), mChildren.end(), [&]( const std::unique_ptr<QgsDevToolsModelNode> &p )
+  {
     return p.get() == child;
   } );
   if ( it != mChildren.end() )
@@ -76,8 +77,8 @@ int QgsDevToolsModelGroup::indexOf( QgsDevToolsModelNode *child ) const
 
 QgsDevToolsModelNode *QgsDevToolsModelGroup::childAt( int index )
 {
-  Q_ASSERT( static_cast<std::size_t>( index ) < mChildren.size() );
-  return mChildren[index].get();
+  Q_ASSERT( static_cast< std::size_t >( index ) < mChildren.size() );
+  return mChildren[ index ].get();
 }
 
 void QgsDevToolsModelGroup::clear()
@@ -101,9 +102,9 @@ QVariant QgsDevToolsModelGroup::data( int role ) const
 QVariant QgsDevToolsModelGroup::toVariant() const
 {
   QVariantMap res;
-  for ( const std::unique_ptr<QgsDevToolsModelNode> &child : mChildren )
+  for ( const std::unique_ptr< QgsDevToolsModelNode > &child : mChildren )
   {
-    if ( const QgsDevToolsModelValueNode *valueNode = dynamic_cast<const QgsDevToolsModelValueNode *>( child.get() ) )
+    if ( const QgsDevToolsModelValueNode *valueNode = dynamic_cast< const QgsDevToolsModelValueNode *>( child.get() ) )
     {
       res.insert( valueNode->key(), valueNode->value() );
     }
@@ -120,6 +121,7 @@ QgsDevToolsModelValueNode::QgsDevToolsModelValueNode( const QString &key, const 
   , mValue( value )
   , mColor( color )
 {
+
 }
 
 QVariant QgsDevToolsModelValueNode::data( int role ) const
@@ -146,10 +148,11 @@ QVariant QgsDevToolsModelValueNode::data( int role ) const
 
 QList<QAction *> QgsDevToolsModelValueNode::actions( QObject *parent )
 {
-  QList<QAction *> res;
+  QList< QAction * > res;
 
   QAction *copyAction = new QAction( QObject::tr( "Copy" ), parent );
-  QObject::connect( copyAction, &QAction::triggered, copyAction, [=] {
+  QObject::connect( copyAction, &QAction::triggered, copyAction, [ = ]
+  {
     QApplication::clipboard()->setText( QStringLiteral( "%1: %2" ).arg( mKey, mValue ) );
   } );
 
@@ -164,5 +167,6 @@ QList<QAction *> QgsDevToolsModelValueNode::actions( QObject *parent )
 
 void QgsDevToolsModelGroup::addKeyValueNode( const QString &key, const QString &value, const QColor &color )
 {
-  addChild( std::make_unique<QgsDevToolsModelValueNode>( key, value, color ) );
+  addChild( std::make_unique< QgsDevToolsModelValueNode >( key, value, color ) );
 }
+

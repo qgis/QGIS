@@ -2,5 +2,5 @@
 try:
     QgsLayoutItemPolygon.create = staticmethod(QgsLayoutItemPolygon.create)
     QgsLayoutItemPolygon.__group__ = ['layout']
-except (NameError, AttributeError):
+except NameError:
     pass

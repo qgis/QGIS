@@ -67,8 +67,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
     QgsCoordinateTransformContext( const QgsCoordinateTransformContext &rhs );
     QgsCoordinateTransformContext &operator=( const QgsCoordinateTransformContext &rhs ) SIP_SKIP;
 
-    bool operator==( const QgsCoordinateTransformContext &rhs ) const;
-    bool operator!=( const QgsCoordinateTransformContext &rhs ) const;
+    bool operator==( const QgsCoordinateTransformContext &rhs ) const ;
 
     /**
      * Clears all stored transform information from the context.

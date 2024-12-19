@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 ***************************************************************************
     __init__.py
@@ -20,9 +22,9 @@
  ***************************************************************************/
 """
 
-__author__ = "Borys Jurgiel"
-__date__ = "May 2013"
-__copyright__ = "(C) 2013, Borys Jurgiel"
+__author__ = 'Borys Jurgiel'
+__date__ = 'May 2013'
+__copyright__ = '(C) 2013, Borys Jurgiel'
 
 
 # import functions for easier access

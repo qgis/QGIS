@@ -36,6 +36,7 @@ class GUI_EXPORT QgsCodeEditorDockWidget : public QWidget
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsCodeEditorDockWidget, with the specified window geometry settings key.
      *
@@ -77,8 +78,11 @@ class GUI_EXPORT QgsCodeEditorDockWidget : public QWidget
     void visibilityChanged( bool isVisible );
 
   private:
+
     QgsDockableWidgetHelper *mDockableWidgetHelper = nullptr;
     QToolButton *mDockToggleButton = nullptr;
+
+
 };
 
 #endif // QGSCODEEDITORDOCKWIDGET_H

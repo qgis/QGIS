@@ -12,13 +12,14 @@
 
 
 
-class QgsElevationControllerSettingsAction : QWidgetAction
+class QgsElevationControllerSettingsAction: QWidgetAction
 {
 
 %TypeHeaderCode
 #include "qgselevationcontrollerwidget.h"
 %End
   public:
+
     QgsElevationControllerSettingsAction( QWidget *parent = 0 );
 
     QgsDoubleSpinBox *sizeSpin();
@@ -45,6 +46,7 @@ A widget for configuring vertical elevation slicing behavior for maps.
       sipType = nullptr;
 %End
   public:
+
     QgsElevationControllerWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsElevationControllerWidget, with the specified ``parent`` widget.
@@ -127,7 +129,7 @@ Sets whether the elevation slider should be inverted.
 .. seealso:: :py:func:`invertedChanged`
 %End
 
-    void setSignificantElevations( const QList<double> &elevations );
+    void setSignificantElevations( const QList< double > &elevations );
 %Docstring
 Sets a list of significant ``elevations`` to highlight in the widget.
 %End

@@ -43,7 +43,11 @@ class TestQgs3dMaterial : public QgsTest
     void colorDataDefinedGooch();
 
   private:
-    void setColorProperty( const QgsProperty &property, QgsAbstractMaterialSettings::Property propertyType, QgsPropertyCollection &collection, QgsAbstractMaterialSettings &materialSettings );
+    void setColorProperty( const QgsProperty &property,
+                           QgsAbstractMaterialSettings::Property propertyType,
+                           QgsPropertyCollection &collection,
+                           QgsAbstractMaterialSettings &materialSettings );
+
 };
 
 void TestQgs3dMaterial::initTestCase()
@@ -59,10 +63,12 @@ void TestQgs3dMaterial::cleanupTestCase()
 
 void TestQgs3dMaterial::init()
 {
+
 }
 
 void TestQgs3dMaterial::cleanup()
 {
+
 }
 
 void TestQgs3dMaterial::setColorProperty( const QgsProperty &property, QgsAbstractMaterialSettings::Property propertyType, QgsPropertyCollection &collection, QgsAbstractMaterialSettings &materialSettings )

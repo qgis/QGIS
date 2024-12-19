@@ -2,5 +2,5 @@
 try:
     QgsMapTip.vectorMapTipPreviewText = staticmethod(QgsMapTip.vectorMapTipPreviewText)
     QgsMapTip.rasterMapTipPreviewText = staticmethod(QgsMapTip.rasterMapTipPreviewText)
-except (NameError, AttributeError):
+except NameError:
     pass

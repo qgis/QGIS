@@ -38,6 +38,7 @@ class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsDateTimeSearchWidgetWrapper.
      * \param vl associated vector layer
@@ -76,6 +77,7 @@ class GUI_EXPORT QgsDateTimeSearchWidgetWrapper : public QgsSearchWidgetWrapper
 
   private:
     QgsDateTimeEdit *mDateTimeEdit = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
 
     friend class QgsDateTimeEditFactory;
 };

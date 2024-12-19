@@ -1,4 +1,5 @@
 #include "o2hubic.h"
+#include "o2globals.h"
 #include "o2replyserver.h"
 #include <QHostAddress>
 

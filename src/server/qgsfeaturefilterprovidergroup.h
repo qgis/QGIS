@@ -59,6 +59,8 @@ class SERVER_EXPORT QgsFeatureFilterProviderGroup : public QgsFeatureFilterProvi
 
   private:
     QList<const QgsFeatureFilterProvider *> mProviders;
+
+
 };
 
 #endif

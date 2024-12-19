@@ -32,64 +32,64 @@ namespace QgsWms
 {
   struct QgsWmsParametersFilter
   {
-      //! Filter type
-      enum Type
-      {
-        UNKNOWN,
-        SQL,
-        OGC_FE
-      };
+    //! Filter type
+    enum Type
+    {
+      UNKNOWN,
+      SQL,
+      OGC_FE
+    };
 
-      QString mFilter;
-      QgsWmsParametersFilter::Type mType = QgsWmsParametersFilter::UNKNOWN;
-      QgsOgcUtils::FilterVersion mVersion = QgsOgcUtils::FILTER_OGC_1_0; // only if FE
+    QString mFilter;
+    QgsWmsParametersFilter::Type mType = QgsWmsParametersFilter::UNKNOWN;
+    QgsOgcUtils::FilterVersion mVersion = QgsOgcUtils::FILTER_OGC_1_0; // only if FE
   };
 
   struct QgsWmsParametersLayer
   {
-      QString mNickname; // name, id or short name
-      int mOpacity = -1;
-      QList<QgsWmsParametersFilter> mFilter; // list of filter
-      QStringList mSelection;                // list of string fid
-      QString mStyle;
-      QString mExternalUri;
+    QString mNickname; // name, id or short name
+    int mOpacity = -1;
+    QList<QgsWmsParametersFilter> mFilter; // list of filter
+    QStringList mSelection; // list of string fid
+    QString mStyle;
+    QString mExternalUri;
   };
 
   struct QgsWmsParametersExternalLayer
   {
-      QString mName;
-      QString mUri;
+    QString mName;
+    QString mUri;
   };
 
   struct QgsWmsParametersHighlightLayer
   {
-      QString mName;
-      QgsGeometry mGeom;
-      QString mSld;
-      QString mLabel;
-      QColor mColor;
-      int mSize = 0;
-      int mWeight = 0;
-      QString mFont;
-      float mBufferSize = 0;
-      QColor mBufferColor;
-      double mLabelRotation = 0;
-      double mLabelDistance = 2; //label distance from feature in mm
-      QString mHali;             //horizontal alignment
-      QString mVali;             //vertical alignment
+    QString mName;
+    QgsGeometry mGeom;
+    QString mSld;
+    QString mLabel;
+    QColor mColor;
+    int mSize = 0;
+    int mWeight = 0;
+    QString mFont;
+    float mBufferSize = 0;
+    QColor mBufferColor;
+    double mLabelRotation = 0;
+    double mLabelDistance = 2; //label distance from feature in mm
+    QString mHali; //horizontal alignment
+    QString mVali; //vertical alignment
   };
 
   struct QgsWmsParametersComposerMap
   {
-      int mId = 0;             // composer map id
-      bool mHasExtent = false; // does the request contains extent for this composer map
-      QgsRectangle mExtent;    // the request extent for this composer map
-      float mScale = -1;
-      float mRotation = 0;
-      float mGridX = 0;
-      float mGridY = 0;
-      QList<QgsWmsParametersLayer> mLayers;                   // list of layers for this composer map
-      QList<QgsWmsParametersHighlightLayer> mHighlightLayers; // list of highlight layers for this composer map
+    int mId = 0; // composer map id
+    bool mHasExtent = false; // does the request contains extent for this composer map
+    QgsRectangle mExtent; // the request extent for this composer map
+    float mScale = -1;
+    float mRotation = 0;
+    float mGridX = 0;
+    float mGridY = 0;
+    QList<QgsWmsParametersLayer> mLayers; // list of layers for this composer map
+    QList<QgsWmsParametersHighlightLayer> mHighlightLayers; // list of highlight layers for this composer map
   };
 
   /**
@@ -198,7 +198,9 @@ namespace QgsWms
        * \param type Type of the parameter
        * \param defaultValue Default value of the parameter
        */
-      QgsWmsParameter( const QgsWmsParameter::Name name = QgsWmsParameter::UNKNOWN, const QMetaType::Type type = QMetaType::Type::QString, const QVariant defaultValue = QVariant( "" ) );
+      QgsWmsParameter( const QgsWmsParameter::Name name = QgsWmsParameter::UNKNOWN,
+                       const QMetaType::Type type = QMetaType::Type::QString,
+                       const QVariant defaultValue = QVariant( "" ) );
 
       /**
        * Default destructor for QgsWmsParameter.
@@ -334,6 +336,7 @@ namespace QgsWms
       Q_GADGET
 
     public:
+
       //! Output format for the response
       enum Format
       {
@@ -1495,7 +1498,7 @@ namespace QgsWms
        * \returns a key-value map
        * \since QGIS 3.32
        */
-      template<typename T> QMap<T, QString> formatOptions() const
+      template<typename T> QMap< T, QString > formatOptions() const
       {
         QMap<T, QString> options;
         const QMetaEnum metaEnum( QMetaEnum::fromType<T>() );
@@ -1512,7 +1515,7 @@ namespace QgsWms
             {
               continue; //option for a different format
             }
-            const T option = ( T ) metaEnumVal;
+            const T option = ( T )metaEnumVal;
             const QString value = it->right( it->length() - equalIdx - 1 );
             options.insert( option, value );
           }
@@ -1521,6 +1524,7 @@ namespace QgsWms
       }
 
     private:
+
       static bool isExternalLayer( const QString &name );
 
       bool loadParameter( const QString &name, const QString &value ) override;
@@ -1538,9 +1542,9 @@ namespace QgsWms
 
 
       QMultiMap<QgsWmsParameter::Name, QgsWmsParameter> mWmsParameters;
-      QMap<QString, QMap<QString, QString>> mExternalWMSParameters;
+      QMap<QString, QMap<QString, QString> > mExternalWMSParameters;
       QList<QgsProjectVersion> mVersions;
   };
-} // namespace QgsWms
+}
 
 #endif

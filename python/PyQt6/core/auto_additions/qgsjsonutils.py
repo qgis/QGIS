@@ -6,5 +6,5 @@ try:
     QgsJsonUtils.exportAttributes = staticmethod(QgsJsonUtils.exportAttributes)
     QgsJsonUtils.parseArray = staticmethod(QgsJsonUtils.parseArray)
     QgsJsonUtils.geometryFromGeoJson = staticmethod(QgsJsonUtils.geometryFromGeoJson)
-except (NameError, AttributeError):
+except NameError:
     pass

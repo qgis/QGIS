@@ -928,32 +928,25 @@ void QgsVectorFileWriter::init( QString vectorFileName,
               // - if successful, note that we know that field domain (if it
               //   is shared by other fields)
               // - assign its name to the new field.
-              try
+              std::unique_ptr<QgsFieldDomain> domain( sourceDatabaseProviderConnection->fieldDomain( domainName ) );
+              if ( domain )
               {
-                std::unique_ptr<QgsFieldDomain> domain( sourceDatabaseProviderConnection->fieldDomain( domainName ) );
-                if ( domain )
+                OGRFieldDomainH hFieldDomain = QgsOgrUtils::convertFieldDomain( domain.get() );
+                if ( hFieldDomain )
                 {
-                  OGRFieldDomainH hFieldDomain = QgsOgrUtils::convertFieldDomain( domain.get() );
-                  if ( hFieldDomain )
+                  char *pszFailureReason = nullptr;
+                  if ( GDALDatasetAddFieldDomain( mDS.get(), hFieldDomain, &pszFailureReason ) )
                   {
-                    char *pszFailureReason = nullptr;
-                    if ( GDALDatasetAddFieldDomain( mDS.get(), hFieldDomain, &pszFailureReason ) )
-                    {
-                      existingDestDomainNames.insert( domainName );
-                      canSetFieldDomainName = true;
-                    }
-                    else
-                    {
-                      QgsDebugError( QStringLiteral( "cannot create field domain: %1" ).arg( pszFailureReason ) );
-                    }
-                    CPLFree( pszFailureReason );
-                    OGR_FldDomain_Destroy( hFieldDomain );
+                    existingDestDomainNames.insert( domainName );
+                    canSetFieldDomainName = true;
                   }
+                  else
+                  {
+                    QgsDebugMsgLevel( QStringLiteral( "cannot create field domain: %1" ).arg( pszFailureReason ), 2 );
+                  }
+                  CPLFree( pszFailureReason );
+                  OGR_FldDomain_Destroy( hFieldDomain );
                 }
-              }
-              catch ( QgsProviderConnectionException & )
-              {
-                QgsDebugError( QStringLiteral( "Cannot retrieve field domain: %1" ).arg( domainName ) );
               }
             }
             if ( canSetFieldDomainName )
@@ -3776,7 +3769,7 @@ QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV2( Qgs
   if ( err != NoError )
     return err;
 
-  return writeAsVectorFormatV2( details, fileName, transformContext, options, newFilename, newLayer, errorMessage );
+  return writeAsVectorFormatV2( details, fileName, transformContext, options, errorMessage, newFilename, newLayer );
 }
 
 QgsVectorFileWriter::WriterError QgsVectorFileWriter::writeAsVectorFormatV3( QgsVectorLayer *layer, const QString &fileName, const QgsCoordinateTransformContext &transformContext, const QgsVectorFileWriter::SaveVectorOptions &options, QString *errorMessage, QString *newFilename, QString *newLayer )

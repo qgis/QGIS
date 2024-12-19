@@ -36,9 +36,11 @@ class QSlider;
  */
 class GUI_EXPORT QgsMediaWidget : public QWidget
 {
+
     Q_OBJECT
 
   public:
+
     /**
      * The mode determines the user interface elements visible within the widget.
     */
@@ -94,6 +96,7 @@ class GUI_EXPORT QgsMediaWidget : public QWidget
     void mediaStatusChanged( QMediaPlayer::MediaStatus status );
 
   private:
+
     void adjustControls();
     void setControlsEnabled( bool enabled );
 
@@ -108,6 +111,7 @@ class GUI_EXPORT QgsMediaWidget : public QWidget
     QMediaPlayer mMediaPlayer;
 
     QString mMediaPath;
+
 };
 
 #endif // QGSMEDIAWIDGET_H

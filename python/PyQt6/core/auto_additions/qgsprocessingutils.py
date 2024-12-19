@@ -78,9 +78,9 @@ try:
     QgsProcessingUtils.preprocessQgisProcessParameters = staticmethod(QgsProcessingUtils.preprocessQgisProcessParameters)
     QgsProcessingUtils.resolveDefaultEncoding = staticmethod(QgsProcessingUtils.resolveDefaultEncoding)
     QgsProcessingUtils.__group__ = ['processing']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsProcessingFeatureSource.__group__ = ['processing']
-except (NameError, AttributeError):
+except NameError:
     pass

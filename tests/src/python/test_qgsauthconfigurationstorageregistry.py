@@ -41,17 +41,17 @@ class TestQgsAuthConfigurationStorageRegistry(QgisTestCase):
         self.temp_dir_path = self.temp_dir.path()
 
         # Create an empty sqlite database using GDAL
-        self.db_path = os.path.join(self.temp_dir_path, "test.sqlite")
-        ds = gdal.GetDriverByName("SQLite").Create(self.db_path, 0, 0, 0)
+        self.db_path = os.path.join(self.temp_dir_path, 'test.sqlite')
+        ds = gdal.GetDriverByName('SQLite').Create(self.db_path, 0, 0, 0)
         del ds
 
         # Verify that the file was created
         assert os.path.exists(self.db_path)
 
-        self.storage = QgsAuthConfigurationStorageDb("QSQLITE:" + self.db_path)
+        self.storage = QgsAuthConfigurationStorageDb('QSQLITE:' + self.db_path)
         assert self.storage.initialize()
 
-        assert self.storage.type() == "DB-QSQLITE"
+        assert self.storage.type() == 'DB-QSQLITE'
 
     def testStorageRegistry(self):
         """Test storage registry"""
@@ -70,11 +70,11 @@ class TestQgsAuthConfigurationStorageRegistry(QgisTestCase):
 
         # Create a new configuration
         config = QgsAuthMethodConfig()
-        config.setId("test")
-        config.setName("Test")
-        config.setMethod("basic")
-        config.setConfig("username", "test")
-        config.setConfig("password", "test")
+        config.setId('test')
+        config.setName('Test')
+        config.setMethod('basic')
+        config.setConfig('username', 'test')
+        config.setConfig('password', 'test')
         payload = config.configString()
 
         self.assertTrue(self.storage.storeMethodConfig(config, payload))
@@ -92,5 +92,5 @@ class TestQgsAuthConfigurationStorageRegistry(QgisTestCase):
         self.assertEqual(len(spy_removed), 1)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

@@ -36,6 +36,7 @@ Implementations have three approaches they can use to handle drops.
 #include "qgscustomdrophandler.h"
 %End
   public:
+
     virtual QString customUriProviderKey() const;
 %Docstring
 Type of custom URI recognized by the handler. This must match
@@ -69,7 +70,7 @@ determine whether the drag action should be accepted.
 %End
 
 
- virtual void handleMimeData( const QMimeData *data ) /Deprecated="Since 3.10. Use handleMimeDataV2() instead."/;
+ virtual void handleMimeData( const QMimeData *data ) /Deprecated/;
 %Docstring
 Called when the specified mime ``data`` has been dropped onto QGIS.
 

@@ -64,7 +64,7 @@ void QgsCameraPose::setPitchAngle( float pitch )
   // With a mPitchAngle < 0.2 or > 179.8, QQuaternion::fromEulerAngles( mPitchAngle, mHeadingAngle, 0 )
   // will return bad rotation angle in Qt5.
   // See https://bugreports.qt.io/browse/QTBUG-72103
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   mPitchAngle = std::clamp( pitch, 0.2f, 179.8f );
 #else
   mPitchAngle = std::clamp( pitch, 0.0f, 180.0f );
@@ -73,11 +73,13 @@ void QgsCameraPose::setPitchAngle( float pitch )
 
 void QgsCameraPose::updateCamera( Qt3DRender::QCamera *camera )
 {
-  // first rotate by pitch angle around X axis, then by heading angle around Z axis
-  // (we use two separate fromEulerAngles() calls because one would not do rotations in order we need)
-  QQuaternion q = QQuaternion::fromEulerAngles( 0, 0, mHeadingAngle ) * QQuaternion::fromEulerAngles( mPitchAngle, 0, 0 );
-  QVector3D cameraToCenter = q * QVector3D( 0, 0, -mDistanceFromCenterPoint );
-  camera->setUpVector( q * QVector3D( 0, 1, 0 ) );
-  camera->setPosition( mCenterPoint.toVector3D() - cameraToCenter );
-  camera->setViewCenter( mCenterPoint.toVector3D() );
+  // basic scene setup:
+  // - x grows to the right
+  // - z grows to the bottom
+  // - y grows towards camera
+  // so a point on the plane (x',y') is transformed to (x,-z) in our 3D world
+  camera->setUpVector( QVector3D( 0, 0, -1 ) );
+  camera->setPosition( QVector3D( mCenterPoint.x(), mDistanceFromCenterPoint + mCenterPoint.y(), mCenterPoint.z() ) );
+  camera->setViewCenter( QVector3D( mCenterPoint.x(), mCenterPoint.y(), mCenterPoint.z() ) );
+  camera->rotateAboutViewCenter( QQuaternion::fromEulerAngles( mPitchAngle, mHeadingAngle, 0 ) );
 }

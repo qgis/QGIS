@@ -32,10 +32,11 @@ class QgsSymbolBufferSettings;
  * \brief A widget for customising buffer settings for a symbol.
  * \since QGIS 3.40
 */
-class GUI_EXPORT QgsSymbolBufferSettingsWidget : public QgsPanelWidget, private Ui::QgsSymbolBufferSettingsWidgetBase
+class GUI_EXPORT QgsSymbolBufferSettingsWidget: public QgsPanelWidget, private Ui::QgsSymbolBufferSettingsWidgetBase
 {
     Q_OBJECT
   public:
+
     //! Constructor for QgsSymbolBufferSettingsWidget
     QgsSymbolBufferSettingsWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -58,7 +59,9 @@ class GUI_EXPORT QgsSymbolBufferSettingsWidget : public QgsPanelWidget, private 
     void onWidgetChanged();
 
   private:
+
     bool mBlockUpdates = false;
+
 };
 
 /**
@@ -70,6 +73,7 @@ class GUI_EXPORT QgsSymbolBufferSettingsDialog : public QDialog
 {
     Q_OBJECT
   public:
+
     //! Constructor for QgsSymbolBufferSettingsDialog
     QgsSymbolBufferSettingsDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
@@ -88,7 +92,9 @@ class GUI_EXPORT QgsSymbolBufferSettingsDialog : public QDialog
     QgsSymbolBufferSettings bufferSettings() const;
 
   private:
+
     QgsSymbolBufferSettingsWidget *mWidget = nullptr;
+
 };
 
 #endif // QGSSYMBOLBUFFERSETTINGSWIDGET_H

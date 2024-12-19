@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "07/06/2018"
-__copyright__ = "Copyright 2018, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '07/06/2018'
+__copyright__ = 'Copyright 2018, The QGIS Project'
 
 import pathlib
 
@@ -31,7 +30,7 @@ class TestQgsRasterTransparencyWidget(TestCase):
         return [n.min() for n in layer.dataProvider().userNoDataValues(1)]
 
     def test_transparency_widget(self):
-        path = pathlib.Path(unitTestDataPath()) / "landsat_4326.tif"
+        path = pathlib.Path(unitTestDataPath()) / 'landsat_4326.tif'
         self.assertTrue(path.is_file())
         layer = QgsRasterLayer(path.as_posix())
         self.assertTrue(layer.isValid())
@@ -40,20 +39,14 @@ class TestQgsRasterTransparencyWidget(TestCase):
 
         no_data_value = -99
         nd_ref = [no_data_value]
-        layer.dataProvider().setUserNoDataValue(
-            1, [QgsRasterRange(no_data_value, no_data_value)]
-        )
+        layer.dataProvider().setUserNoDataValue(1, [QgsRasterRange(no_data_value, no_data_value)])
         nd0 = self.no_data_values(layer)
         self.assertListEqual(nd0, nd_ref)
 
         w = QgsRasterTransparencyWidget(layer, canvas)
         self.assertIsInstance(w, QgsRasterTransparencyWidget)
         nd1 = self.no_data_values(layer)
-        self.assertListEqual(
-            nd1,
-            nd_ref,
-            msg='Widget initialization should not change the "no data value"',
-        )
+        self.assertListEqual(nd1, nd_ref, msg='Widget initialization should not change the "no data value"')
 
         w.syncToLayer()
         nd2 = self.no_data_values(layer)
@@ -61,22 +54,16 @@ class TestQgsRasterTransparencyWidget(TestCase):
 
         w.syncToLayer()
         nd3 = self.no_data_values(layer)
-        self.assertListEqual(
-            nd3, nd_ref, msg='repeated syncToLayer changed the "no data value"'
-        )
+        self.assertListEqual(nd3, nd_ref, msg='repeated syncToLayer changed the "no data value"')
 
         w.apply()
         nd4 = self.no_data_values(layer)
-        self.assertListEqual(
-            nd4, nd_ref, msg='apply changed the "no data value" but should not'
-        )
+        self.assertListEqual(nd4, nd_ref, msg='apply changed the "no data value" but should not')
 
         w.apply()
         nd5 = self.no_data_values(layer)
-        self.assertListEqual(
-            nd5, nd_ref, msg='repeated apply changed the "no data value" but should not'
-        )
+        self.assertListEqual(nd5, nd_ref, msg='repeated apply changed the "no data value" but should not')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

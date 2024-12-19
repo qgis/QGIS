@@ -22,7 +22,6 @@
 
 #include "qgssettings.h"
 #include "qgsmanageconnectionsdialog.h"
-#include "moc_qgsmanageconnectionsdialog.cpp"
 #include "qgshttpheaders.h"
 #include "qgsowsconnection.h"
 #include "qgsvectortileconnection.h"
@@ -86,7 +85,8 @@ void QgsManageConnectionsDialog::doExportImport()
   const QList<QListWidgetItem *> selection = listConnections->selectedItems();
   if ( selection.isEmpty() )
   {
-    QMessageBox::warning( this, tr( "Export/Import Error" ), tr( "You should select at least one connection from list." ) );
+    QMessageBox::warning( this, tr( "Export/Import Error" ),
+                          tr( "You should select at least one connection from list." ) );
     return;
   }
 
@@ -99,7 +99,8 @@ void QgsManageConnectionsDialog::doExportImport()
 
   if ( mDialogMode == Export )
   {
-    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
+    QString fileName = QFileDialog::getSaveFileName( this, tr( "Save Connections" ), QDir::homePath(),
+                       tr( "XML files (*.xml *.XML)" ) );
     // return dialog focus on Mac
     activateWindow();
     raise();
@@ -167,7 +168,10 @@ void QgsManageConnectionsDialog::doExportImport()
     QFile file( mFileName );
     if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
     {
-      QMessageBox::warning( this, tr( "Saving Connections" ), tr( "Cannot write file %1:\n%2." ).arg( mFileName, file.errorString() ) );
+      QMessageBox::warning( this, tr( "Saving Connections" ),
+                            tr( "Cannot write file %1:\n%2." )
+                            .arg( mFileName,
+                                  file.errorString() ) );
       return;
     }
 
@@ -179,7 +183,10 @@ void QgsManageConnectionsDialog::doExportImport()
     QFile file( mFileName );
     if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
-      QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Cannot read file %1:\n%2." ).arg( mFileName, file.errorString() ) );
+      QMessageBox::warning( this, tr( "Loading Connections" ),
+                            tr( "Cannot read file %1:\n%2." )
+                            .arg( mFileName,
+                                  file.errorString() ) );
       return;
     }
 
@@ -190,7 +197,11 @@ void QgsManageConnectionsDialog::doExportImport()
 
     if ( !doc.setContent( &file, true, &errorStr, &errorLine, &errorColumn ) )
     {
-      QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Parse error at line %1, column %2:\n%3" ).arg( errorLine ).arg( errorColumn ).arg( errorStr ) );
+      QMessageBox::warning( this, tr( "Loading Connections" ),
+                            tr( "Parse error at line %1, column %2:\n%3" )
+                            .arg( errorLine )
+                            .arg( errorColumn )
+                            .arg( errorStr ) );
       return;
     }
 
@@ -260,13 +271,13 @@ bool QgsManageConnectionsDialog::populateConnections()
     switch ( mConnectionType )
     {
       case WMS:
-        connections = QgsOwsConnection::sTreeOwsConnections->items( { QStringLiteral( "wms" ) } );
+        connections = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "wms" )} );
         break;
       case WFS:
-        connections = QgsOwsConnection::sTreeOwsConnections->items( { QStringLiteral( "wfs" ) } );
+        connections = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "wfs" )} );
         break;
       case WCS:
-        connections = QgsOwsConnection::sTreeOwsConnections->items( { QStringLiteral( "wcs" ) } );
+        connections = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "wcs" )} );
         break;
       case PostGIS:
         settings.beginGroup( QStringLiteral( "/PostgreSQL/connections" ) );
@@ -320,7 +331,10 @@ bool QgsManageConnectionsDialog::populateConnections()
     QFile file( mFileName );
     if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
-      QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Cannot read file %1:\n%2." ).arg( mFileName, file.errorString() ) );
+      QMessageBox::warning( this, tr( "Loading Connections" ),
+                            tr( "Cannot read file %1:\n%2." )
+                            .arg( mFileName,
+                                  file.errorString() ) );
       return false;
     }
 
@@ -331,7 +345,11 @@ bool QgsManageConnectionsDialog::populateConnections()
 
     if ( !doc.setContent( &file, true, &errorStr, &errorLine, &errorColumn ) )
     {
-      QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Parse error at line %1, column %2:\n%3" ).arg( errorLine ).arg( errorColumn ).arg( errorStr ) );
+      QMessageBox::warning( this, tr( "Loading Connections" ),
+                            tr( "Parse error at line %1, column %2:\n%3" )
+                            .arg( errorLine )
+                            .arg( errorColumn )
+                            .arg( errorStr ) );
       return false;
     }
 
@@ -341,7 +359,8 @@ bool QgsManageConnectionsDialog::populateConnections()
       case WMS:
         if ( root.tagName() != QLatin1String( "qgsWMSConnections" ) )
         {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a WMS connections exchange file." ) );
+          QMessageBox::information( this, tr( "Loading Connections" ),
+                                    tr( "The file is not a WMS connections exchange file." ) );
           return false;
         }
         break;
@@ -349,7 +368,8 @@ bool QgsManageConnectionsDialog::populateConnections()
       case WFS:
         if ( root.tagName() != QLatin1String( "qgsWFSConnections" ) )
         {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a WFS connections exchange file." ) );
+          QMessageBox::information( this, tr( "Loading Connections" ),
+                                    tr( "The file is not a WFS connections exchange file." ) );
           return false;
         }
         break;
@@ -357,7 +377,8 @@ bool QgsManageConnectionsDialog::populateConnections()
       case WCS:
         if ( root.tagName() != QLatin1String( "qgsWCSConnections" ) )
         {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a WCS connections exchange file." ) );
+          QMessageBox::information( this, tr( "Loading Connections" ),
+                                    tr( "The file is not a WCS connections exchange file." ) );
           return false;
         }
         break;
@@ -365,7 +386,8 @@ bool QgsManageConnectionsDialog::populateConnections()
       case PostGIS:
         if ( root.tagName() != QLatin1String( "qgsPgConnections" ) )
         {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a PostGIS connections exchange file." ) );
+          QMessageBox::information( this, tr( "Loading Connections" ),
+                                    tr( "The file is not a PostGIS connections exchange file." ) );
           return false;
         }
         break;
@@ -373,77 +395,88 @@ bool QgsManageConnectionsDialog::populateConnections()
       case MSSQL:
         if ( root.tagName() != QLatin1String( "qgsMssqlConnections" ) )
         {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a MS SQL Server connections exchange file." ) );
+          QMessageBox::information( this, tr( "Loading Connections" ),
+                                    tr( "The file is not a MS SQL Server connections exchange file." ) );
           return false;
         }
         break;
       case Oracle:
         if ( root.tagName() != QLatin1String( "qgsOracleConnections" ) )
         {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not an Oracle connections exchange file." ) );
+          QMessageBox::information( this, tr( "Loading Connections" ),
+                                    tr( "The file is not an Oracle connections exchange file." ) );
           return false;
         }
         break;
       case HANA:
         if ( root.tagName() != QLatin1String( "qgsHanaConnections" ) )
         {
-          QMessageBox::warning( this, tr( "Loading Connections" ), tr( "The file is not a HANA connections exchange file." ) );
+          QMessageBox::warning( this, tr( "Loading Connections" ),
+                                tr( "The file is not a HANA connections exchange file." ) );
           return false;
         }
         break;
       case XyzTiles:
         if ( root.tagName() != QLatin1String( "qgsXYZTilesConnections" ) )
         {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a XYZ Tiles connections exchange file." ) );
+          QMessageBox::information( this, tr( "Loading Connections" ),
+                                    tr( "The file is not a XYZ Tiles connections exchange file." ) );
           return false;
         }
         break;
       case ArcgisMapServer:
         if ( root.tagName() != QLatin1String( "qgsARCGISMAPSERVERConnections" ) )
         {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a ArcGIS Map Service connections exchange file." ) );
+          QMessageBox::information( this, tr( "Loading Connections" ),
+                                    tr( "The file is not a ArcGIS Map Service connections exchange file." ) );
           return false;
         }
         break;
       case ArcgisFeatureServer:
         if ( root.tagName() != QLatin1String( "qgsARCGISFEATURESERVERConnections" ) )
         {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a ArcGIS Feature Service connections exchange file." ) );
+          QMessageBox::information( this, tr( "Loading Connections" ),
+                                    tr( "The file is not a ArcGIS Feature Service connections exchange file." ) );
           return false;
         }
         break;
       case VectorTile:
         if ( root.tagName() != QLatin1String( "qgsVectorTileConnections" ) )
         {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a Vector Tile connections exchange file." ) );
+          QMessageBox::information( this, tr( "Loading Connections" ),
+                                    tr( "The file is not a Vector Tile connections exchange file." ) );
           return false;
         }
         break;
       case TiledScene:
         if ( root.tagName() != QLatin1String( "qgsTiledSceneConnections" ) )
         {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a tiled scene connections exchange file." ) );
+          QMessageBox::information( this, tr( "Loading Connections" ),
+                                    tr( "The file is not a tiled scene connections exchange file." ) );
           return false;
         }
         break;
       case SensorThings:
         if ( root.tagName() != QLatin1String( "qgsSensorThingsConnections" ) )
         {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a SensorThings connections exchange file." ) );
+          QMessageBox::information( this, tr( "Loading Connections" ),
+                                    tr( "The file is not a SensorThings connections exchange file." ) );
           return false;
         }
         break;
       case CloudStorage:
         if ( root.tagName() != QLatin1String( "qgsCloudStorageConnections" ) )
         {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a cloud storage connections exchange file." ) );
+          QMessageBox::information( this, tr( "Loading Connections" ),
+                                    tr( "The file is not a cloud storage connections exchange file." ) );
           return false;
         }
         break;
       case STAC:
         if ( root.tagName() != QLatin1String( "qgsStacConnections" ) )
         {
-          QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a STAC connections exchange file." ) );
+          QMessageBox::information( this, tr( "Loading Connections" ),
+                                    tr( "The file is not a STAC connections exchange file." ) );
           return false;
         }
         break;
@@ -471,24 +504,24 @@ QDomDocument QgsManageConnectionsDialog::saveOWSConnections( const QStringList &
   for ( int i = 0; i < connections.count(); ++i )
   {
     QDomElement el = doc.createElement( service.toLower() );
-    el.setAttribute( QStringLiteral( "name" ), connections[i] );
-    el.setAttribute( QStringLiteral( "url" ), QgsOwsConnection::settingsUrl->value( { service.toLower(), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "url" ), QgsOwsConnection::settingsUrl->value( {service.toLower(), connections[i] } ) );
 
     if ( service == QLatin1String( "WMS" ) )
     {
-      el.setAttribute( QStringLiteral( "ignoreGetMapURI" ), QgsOwsConnection::settingsIgnoreGetMapURI->value( { service.toLower(), connections[i] } ) );
-      el.setAttribute( QStringLiteral( "ignoreGetFeatureInfoURI" ), QgsOwsConnection::settingsIgnoreGetFeatureInfoURI->value( { service.toLower(), connections[i] } ) );
-      el.setAttribute( QStringLiteral( "ignoreAxisOrientation" ), QgsOwsConnection::settingsIgnoreAxisOrientation->value( { service.toLower(), connections[i] } ) );
-      el.setAttribute( QStringLiteral( "invertAxisOrientation" ), QgsOwsConnection::settingsInvertAxisOrientation->value( { service.toLower(), connections[i] } ) );
-      el.setAttribute( QStringLiteral( "smoothPixmapTransform" ), QgsOwsConnection::settingsSmoothPixmapTransform->value( { service.toLower(), connections[i] } ) );
-      el.setAttribute( QStringLiteral( "dpiMode" ), static_cast<int>( QgsOwsConnection::settingsDpiMode->value( { service.toLower(), connections[i] } ) ) );
+      el.setAttribute( QStringLiteral( "ignoreGetMapURI" ), QgsOwsConnection::settingsIgnoreGetMapURI->value( {service.toLower(), connections[i] } ) );
+      el.setAttribute( QStringLiteral( "ignoreGetFeatureInfoURI" ), QgsOwsConnection::settingsIgnoreGetFeatureInfoURI->value( {service.toLower(), connections[i] } ) );
+      el.setAttribute( QStringLiteral( "ignoreAxisOrientation" ), QgsOwsConnection::settingsIgnoreAxisOrientation->value( {service.toLower(), connections[i] } ) );
+      el.setAttribute( QStringLiteral( "invertAxisOrientation" ), QgsOwsConnection::settingsInvertAxisOrientation->value( {service.toLower(), connections[i] } ) );
+      el.setAttribute( QStringLiteral( "smoothPixmapTransform" ), QgsOwsConnection::settingsSmoothPixmapTransform->value( {service.toLower(), connections[i] } ) );
+      el.setAttribute( QStringLiteral( "dpiMode" ), static_cast<int>( QgsOwsConnection::settingsDpiMode->value( {service.toLower(), connections[i] } ) ) );
 
-      QgsHttpHeaders httpHeader( QgsOwsConnection::settingsHeaders->value( { service.toLower(), connections[i] } ) );
+      QgsHttpHeaders httpHeader( QgsOwsConnection::settingsHeaders->value( {service.toLower(), connections[i] } ) );
       httpHeader.updateDomElement( el );
     }
 
-    el.setAttribute( QStringLiteral( "username" ), QgsOwsConnection::settingsUsername->value( { service.toLower(), connections[i] } ) );
-    el.setAttribute( QStringLiteral( "password" ), QgsOwsConnection::settingsPassword->value( { service.toLower(), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "username" ), QgsOwsConnection::settingsUsername->value( {service.toLower(), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "password" ), QgsOwsConnection::settingsPassword->value( {service.toLower(), connections[i] } ) );
     root.appendChild( el );
   }
 
@@ -505,17 +538,17 @@ QDomDocument QgsManageConnectionsDialog::saveWfsConnections( const QStringList &
   for ( int i = 0; i < connections.count(); ++i )
   {
     QDomElement el = doc.createElement( QStringLiteral( "wfs" ) );
-    el.setAttribute( QStringLiteral( "name" ), connections[i] );
-    el.setAttribute( QStringLiteral( "url" ), QgsOwsConnection::settingsUrl->value( { QStringLiteral( "wfs" ), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "url" ), QgsOwsConnection::settingsUrl->value( {QStringLiteral( "wfs" ), connections[i] } ) );
 
-    el.setAttribute( QStringLiteral( "version" ), QgsOwsConnection::settingsVersion->value( { QStringLiteral( "wfs" ), connections[i] } ) );
-    el.setAttribute( QStringLiteral( "maxnumfeatures" ), QgsOwsConnection::settingsMaxNumFeatures->value( { QStringLiteral( "wfs" ), connections[i] } ) );
-    el.setAttribute( QStringLiteral( "pagesize" ), QgsOwsConnection::settingsPagesize->value( { QStringLiteral( "wfs" ), connections[i] } ) );
-    el.setAttribute( QStringLiteral( "pagingenabled" ), QgsOwsConnection::settingsPagingEnabled->value( { QStringLiteral( "wfs" ), connections[i] } ) );
-    el.setAttribute( QStringLiteral( "ignoreAxisOrientation" ), QgsOwsConnection::settingsIgnoreAxisOrientation->value( { QStringLiteral( "wfs" ), connections[i] } ) );
-    el.setAttribute( QStringLiteral( "invertAxisOrientation" ), QgsOwsConnection::settingsInvertAxisOrientation->value( { QStringLiteral( "wfs" ), connections[i] } ) );
-    el.setAttribute( QStringLiteral( "username" ), QgsOwsConnection::settingsUsername->value( { QStringLiteral( "wfs" ), connections[i] } ) );
-    el.setAttribute( QStringLiteral( "password" ), QgsOwsConnection::settingsPassword->value( { QStringLiteral( "wfs" ), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "version" ), QgsOwsConnection::settingsVersion->value( {QStringLiteral( "wfs" ), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "maxnumfeatures" ), QgsOwsConnection::settingsMaxNumFeatures->value( {QStringLiteral( "wfs" ), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "pagesize" ), QgsOwsConnection::settingsPagesize->value( {QStringLiteral( "wfs" ), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "pagingenabled" ), QgsOwsConnection::settingsPagingEnabled->value( {QStringLiteral( "wfs" ), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "ignoreAxisOrientation" ), QgsOwsConnection::settingsIgnoreAxisOrientation->value( {QStringLiteral( "wfs" ), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "invertAxisOrientation" ), QgsOwsConnection::settingsInvertAxisOrientation->value( {QStringLiteral( "wfs" ), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "username" ), QgsOwsConnection::settingsUsername->value( {QStringLiteral( "wfs" ), connections[i] } ) );
+    el.setAttribute( QStringLiteral( "password" ), QgsOwsConnection::settingsPassword->value( {QStringLiteral( "wfs" ), connections[i] } ) );
     root.appendChild( el );
   }
 
@@ -533,9 +566,9 @@ QDomDocument QgsManageConnectionsDialog::savePgConnections( const QStringList &c
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
-    path = "/PostgreSQL/connections/" + connections[i];
+    path = "/PostgreSQL/connections/" + connections[ i ];
     QDomElement el = doc.createElement( QStringLiteral( "postgis" ) );
-    el.setAttribute( QStringLiteral( "name" ), connections[i] );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
     el.setAttribute( QStringLiteral( "host" ), settings.value( path + "/host" ).toString() );
     el.setAttribute( QStringLiteral( "port" ), settings.value( path + "/port" ).toString() );
     el.setAttribute( QStringLiteral( "database" ), settings.value( path + "/database" ).toString() );
@@ -579,9 +612,9 @@ QDomDocument QgsManageConnectionsDialog::saveMssqlConnections( const QStringList
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
-    path = "/MSSQL/connections/" + connections[i];
+    path = "/MSSQL/connections/" + connections[ i ];
     QDomElement el = doc.createElement( QStringLiteral( "mssql" ) );
-    el.setAttribute( QStringLiteral( "name" ), connections[i] );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
     el.setAttribute( QStringLiteral( "host" ), settings.value( path + "/host" ).toString() );
     el.setAttribute( QStringLiteral( "port" ), settings.value( path + "/port" ).toString() );
     el.setAttribute( QStringLiteral( "database" ), settings.value( path + "/database" ).toString() );
@@ -620,9 +653,9 @@ QDomDocument QgsManageConnectionsDialog::saveOracleConnections( const QStringLis
   QString path;
   for ( int i = 0; i < connections.count(); ++i )
   {
-    path = "/Oracle/connections/" + connections[i];
+    path = "/Oracle/connections/" + connections[ i ];
     QDomElement el = doc.createElement( QStringLiteral( "oracle" ) );
-    el.setAttribute( QStringLiteral( "name" ), connections[i] );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
     el.setAttribute( QStringLiteral( "host" ), settings.value( path + "/host" ).toString() );
     el.setAttribute( QStringLiteral( "port" ), settings.value( path + "/port" ).toString() );
     el.setAttribute( QStringLiteral( "database" ), settings.value( path + "/database" ).toString() );
@@ -712,18 +745,19 @@ QDomDocument QgsManageConnectionsDialog::saveXyzTilesConnections( const QStringL
 
   for ( int i = 0; i < connections.count(); ++i )
   {
+
     QDomElement el = doc.createElement( QStringLiteral( "xyztiles" ) );
 
-    el.setAttribute( QStringLiteral( "name" ), connections[i] );
-    el.setAttribute( QStringLiteral( "url" ), QgsXyzConnectionSettings::settingsUrl->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "zmin" ), QgsXyzConnectionSettings::settingsZmin->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "zmax" ), QgsXyzConnectionSettings::settingsZmax->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "authcfg" ), QgsXyzConnectionSettings::settingsAuthcfg->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "username" ), QgsXyzConnectionSettings::settingsUsername->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "password" ), QgsXyzConnectionSettings::settingsPassword->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "tilePixelRatio" ), QgsXyzConnectionSettings::settingsTilePixelRatio->value( connections[i] ) );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "url" ), QgsXyzConnectionSettings::settingsUrl->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "zmin" ), QgsXyzConnectionSettings::settingsZmin->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "zmax" ), QgsXyzConnectionSettings::settingsZmax->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "authcfg" ), QgsXyzConnectionSettings::settingsAuthcfg->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "username" ), QgsXyzConnectionSettings::settingsUsername->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "password" ), QgsXyzConnectionSettings::settingsPassword->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "tilePixelRatio" ), QgsXyzConnectionSettings::settingsTilePixelRatio->value( connections[ i ] ) );
 
-    QgsHttpHeaders httpHeader( QgsXyzConnectionSettings::settingsHeaders->value( connections[i] ) );
+    QgsHttpHeaders httpHeader( QgsXyzConnectionSettings::settingsHeaders->value( connections[ i ] ) );
     httpHeader.updateDomElement( el );
 
     root.appendChild( el );
@@ -769,17 +803,17 @@ QDomDocument QgsManageConnectionsDialog::saveVectorTileConnections( const QStrin
   {
     QDomElement el = doc.createElement( QStringLiteral( "vectortile" ) );
 
-    el.setAttribute( QStringLiteral( "name" ), connections[i] );
-    el.setAttribute( QStringLiteral( "url" ), QgsVectorTileProviderConnection::settingsUrl->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "zmin" ), QgsVectorTileProviderConnection::settingsZmin->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "zmax" ), QgsVectorTileProviderConnection::settingsZmax->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "serviceType" ), QgsVectorTileProviderConnection::settingsServiceType->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "authcfg" ), QgsVectorTileProviderConnection::settingsAuthcfg->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "username" ), QgsVectorTileProviderConnection::settingsUsername->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "password" ), QgsVectorTileProviderConnection::settingsPassword->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "styleUrl" ), QgsVectorTileProviderConnection::settingsStyleUrl->value( connections[i] ) );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "url" ), QgsVectorTileProviderConnection::settingsUrl->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "zmin" ), QgsVectorTileProviderConnection::settingsZmin->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "zmax" ), QgsVectorTileProviderConnection::settingsZmax->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "serviceType" ), QgsVectorTileProviderConnection::settingsServiceType->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "authcfg" ), QgsVectorTileProviderConnection::settingsAuthcfg->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "username" ), QgsVectorTileProviderConnection::settingsUsername->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "password" ), QgsVectorTileProviderConnection::settingsPassword->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "styleUrl" ), QgsVectorTileProviderConnection::settingsStyleUrl->value( connections[ i ] ) );
 
-    QgsHttpHeaders httpHeader( QgsVectorTileProviderConnection::settingsHeaders->value( connections[i] ) );
+    QgsHttpHeaders httpHeader( QgsVectorTileProviderConnection::settingsHeaders->value( connections[ i ] ) );
     httpHeader.updateDomElement( el );
 
     root.appendChild( el );
@@ -799,14 +833,14 @@ QDomDocument QgsManageConnectionsDialog::saveTiledSceneConnections( const QStrin
   {
     QDomElement el = doc.createElement( QStringLiteral( "tiledscene" ) );
 
-    el.setAttribute( QStringLiteral( "name" ), connections[i] );
-    el.setAttribute( QStringLiteral( "provider" ), QgsTiledSceneProviderConnection::settingsProvider->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "url" ), QgsTiledSceneProviderConnection::settingsUrl->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "authcfg" ), QgsTiledSceneProviderConnection::settingsAuthcfg->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "username" ), QgsTiledSceneProviderConnection::settingsUsername->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "password" ), QgsTiledSceneProviderConnection::settingsPassword->value( connections[i] ) );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "provider" ), QgsTiledSceneProviderConnection::settingsProvider->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "url" ), QgsTiledSceneProviderConnection::settingsUrl->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "authcfg" ), QgsTiledSceneProviderConnection::settingsAuthcfg->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "username" ), QgsTiledSceneProviderConnection::settingsUsername->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "password" ), QgsTiledSceneProviderConnection::settingsPassword->value( connections[ i ] ) );
 
-    QgsHttpHeaders httpHeader( QgsTiledSceneProviderConnection::settingsHeaders->value( connections[i] ) );
+    QgsHttpHeaders httpHeader( QgsTiledSceneProviderConnection::settingsHeaders->value( connections[ i ] ) );
     httpHeader.updateDomElement( el );
 
     root.appendChild( el );
@@ -826,13 +860,13 @@ QDomDocument QgsManageConnectionsDialog::saveSensorThingsConnections( const QStr
   {
     QDomElement el = doc.createElement( QStringLiteral( "sensorthings" ) );
 
-    el.setAttribute( QStringLiteral( "name" ), connections[i] );
-    el.setAttribute( QStringLiteral( "url" ), QgsSensorThingsProviderConnection::settingsUrl->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "authcfg" ), QgsSensorThingsProviderConnection::settingsAuthcfg->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "username" ), QgsSensorThingsProviderConnection::settingsUsername->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "password" ), QgsSensorThingsProviderConnection::settingsPassword->value( connections[i] ) );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "url" ), QgsSensorThingsProviderConnection::settingsUrl->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "authcfg" ), QgsSensorThingsProviderConnection::settingsAuthcfg->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "username" ), QgsSensorThingsProviderConnection::settingsUsername->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "password" ), QgsSensorThingsProviderConnection::settingsPassword->value( connections[ i ] ) );
 
-    QgsHttpHeaders httpHeader( QgsTiledSceneProviderConnection::settingsHeaders->value( connections[i] ) );
+    QgsHttpHeaders httpHeader( QgsTiledSceneProviderConnection::settingsHeaders->value( connections[ i ] ) );
     httpHeader.updateDomElement( el );
 
     root.appendChild( el );
@@ -853,12 +887,12 @@ QDomDocument QgsManageConnectionsDialog::saveCloudStorageConnections( const QStr
   {
     QDomElement el = doc.createElement( QStringLiteral( "cloudstorage" ) );
 
-    el.setAttribute( QStringLiteral( "name" ), connections[i] );
-    el.setAttribute( QStringLiteral( "handler" ), QgsGdalCloudProviderConnection::settingsVsiHandler->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "container" ), QgsGdalCloudProviderConnection::settingsContainer->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "path" ), QgsGdalCloudProviderConnection::settingsPath->value( connections[i] ) );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "handler" ), QgsGdalCloudProviderConnection::settingsVsiHandler->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "container" ), QgsGdalCloudProviderConnection::settingsContainer->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "path" ), QgsGdalCloudProviderConnection::settingsPath->value( connections[ i ] ) );
 
-    const QVariantMap credentialOptions = QgsGdalCloudProviderConnection::settingsCredentialOptions->value( connections[i] );
+    const QVariantMap credentialOptions = QgsGdalCloudProviderConnection::settingsCredentialOptions->value( connections[ i ] );
     QString credentialString;
     for ( auto it = credentialOptions.constBegin(); it != credentialOptions.constEnd(); ++it )
     {
@@ -886,13 +920,13 @@ QDomDocument QgsManageConnectionsDialog::saveStacConnections( const QStringList 
   {
     QDomElement el = doc.createElement( QStringLiteral( "stac" ) );
 
-    el.setAttribute( QStringLiteral( "name" ), connections[i] );
-    el.setAttribute( QStringLiteral( "url" ), QgsStacConnection::settingsUrl->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "authcfg" ), QgsStacConnection::settingsAuthcfg->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "username" ), QgsStacConnection::settingsUsername->value( connections[i] ) );
-    el.setAttribute( QStringLiteral( "password" ), QgsStacConnection::settingsPassword->value( connections[i] ) );
+    el.setAttribute( QStringLiteral( "name" ), connections[ i ] );
+    el.setAttribute( QStringLiteral( "url" ), QgsStacConnection::settingsUrl->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "authcfg" ), QgsStacConnection::settingsAuthcfg->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "username" ), QgsStacConnection::settingsUsername->value( connections[ i ] ) );
+    el.setAttribute( QStringLiteral( "password" ), QgsStacConnection::settingsPassword->value( connections[ i ] ) );
 
-    QgsHttpHeaders httpHeader( QgsStacConnection::settingsHeaders->value( connections[i] ) );
+    QgsHttpHeaders httpHeader( QgsStacConnection::settingsHeaders->value( connections[ i ] ) );
     httpHeader.updateDomElement( el );
 
     root.appendChild( el );
@@ -906,7 +940,8 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
   const QDomElement root = doc.documentElement();
   if ( root.tagName() != "qgs" + service.toUpper() + "Connections" )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a %1 connections exchange file." ).arg( service ) );
+    QMessageBox::information( this, tr( "Loading Connections" ),
+                              tr( "The file is not a %1 connections exchange file." ).arg( service ) );
     return;
   }
 
@@ -926,9 +961,13 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
     }
 
     // check for duplicates
-    if ( QgsOwsConnection::settingsUrl->exists( { service.toLower(), connectionName } ) && prompt )
+    if ( QgsOwsConnection::settingsUrl->exists( {service.toLower(), connectionName} ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::warning( this,
+                                            tr( "Loading Connections" ),
+                                            tr( "Connection with name '%1' already exists. Overwrite?" )
+                                            .arg( connectionName ),
+                                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {
@@ -951,28 +990,28 @@ void QgsManageConnectionsDialog::loadOWSConnections( const QDomDocument &doc, co
       }
     }
 
-    if ( QgsOwsConnection::settingsUrl->exists( { service.toLower(), connectionName } ) && !overwrite )
+    if ( QgsOwsConnection::settingsUrl->exists( {service.toLower(), connectionName} ) && !overwrite )
     {
       child = child.nextSiblingElement();
       continue;
     }
 
     // no dups detected or overwrite is allowed
-    QgsOwsConnection::settingsUrl->setValue( child.attribute( QStringLiteral( "url" ) ), { service.toLower(), connectionName } );
-    QgsOwsConnection::settingsIgnoreGetMapURI->setValue( child.attribute( QStringLiteral( "ignoreGetMapURI" ) ) == QLatin1String( "true" ), { service.toLower(), connectionName } );
-    QgsOwsConnection::settingsIgnoreGetFeatureInfoURI->setValue( child.attribute( QStringLiteral( "ignoreGetFeatureInfoURI" ) ) == QLatin1String( "true" ), { service.toLower(), connectionName } );
-    QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( child.attribute( QStringLiteral( "ignoreAxisOrientation" ) ) == QLatin1String( "true" ), { service.toLower(), connectionName } );
-    QgsOwsConnection::settingsInvertAxisOrientation->setValue( child.attribute( QStringLiteral( "invertAxisOrientation" ) ) == QLatin1String( "true" ), { service.toLower(), connectionName } );
-    QgsOwsConnection::settingsSmoothPixmapTransform->setValue( child.attribute( QStringLiteral( "smoothPixmapTransform" ) ) == QLatin1String( "true" ), { service.toLower(), connectionName } );
-    QgsOwsConnection::settingsDpiMode->setValue( static_cast<Qgis::DpiMode>( child.attribute( QStringLiteral( "dpiMode" ), QStringLiteral( "7" ) ).toInt() ), { service.toLower(), connectionName } );
+    QgsOwsConnection::settingsUrl->setValue( child.attribute( QStringLiteral( "url" ) ), {service.toLower(), connectionName} );
+    QgsOwsConnection::settingsIgnoreGetMapURI->setValue( child.attribute( QStringLiteral( "ignoreGetMapURI" ) ) == QLatin1String( "true" ), {service.toLower(), connectionName} );
+    QgsOwsConnection::settingsIgnoreGetFeatureInfoURI->setValue( child.attribute( QStringLiteral( "ignoreGetFeatureInfoURI" ) ) == QLatin1String( "true" ), {service.toLower(), connectionName} );
+    QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( child.attribute( QStringLiteral( "ignoreAxisOrientation" ) ) == QLatin1String( "true" ), {service.toLower(), connectionName} );
+    QgsOwsConnection::settingsInvertAxisOrientation->setValue( child.attribute( QStringLiteral( "invertAxisOrientation" ) ) == QLatin1String( "true" ), {service.toLower(), connectionName} );
+    QgsOwsConnection::settingsSmoothPixmapTransform->setValue( child.attribute( QStringLiteral( "smoothPixmapTransform" ) ) == QLatin1String( "true" ), {service.toLower(), connectionName} );
+    QgsOwsConnection::settingsDpiMode->setValue( static_cast<Qgis::DpiMode>( child.attribute( QStringLiteral( "dpiMode" ), QStringLiteral( "7" ) ).toInt() ), {service.toLower(), connectionName} );
 
     QgsHttpHeaders httpHeader( child );
-    QgsOwsConnection::settingsHeaders->setValue( httpHeader.headers(), { service.toLower(), connectionName } );
+    QgsOwsConnection::settingsHeaders->setValue( httpHeader.headers(), {service.toLower(), connectionName} );
 
     if ( !child.attribute( QStringLiteral( "username" ) ).isEmpty() )
     {
-      QgsOwsConnection::settingsUsername->setValue( child.attribute( QStringLiteral( "username" ) ), { service.toUpper(), connectionName } );
-      QgsOwsConnection::settingsPassword->setValue( child.attribute( QStringLiteral( "password" ) ), { service.toUpper(), connectionName } );
+      QgsOwsConnection::settingsUsername->setValue( child.attribute( QStringLiteral( "username" ) ), {service.toUpper(), connectionName} );
+      QgsOwsConnection::settingsPassword->setValue( child.attribute( QStringLiteral( "password" ) ), {service.toUpper(), connectionName} );
     }
     child = child.nextSiblingElement();
   }
@@ -983,12 +1022,13 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
   const QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsWFSConnections" ) )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a WFS connections exchange file." ) );
+    QMessageBox::information( this, tr( "Loading Connections" ),
+                              tr( "The file is not a WFS connections exchange file." ) );
     return;
   }
 
   QString connectionName;
-  QStringList keys = QgsOwsConnection::sTreeOwsConnections->items( { QStringLiteral( "wfs" ) } );
+  QStringList keys =  QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "wfs" ) } );
 
   QDomElement child = root.firstChildElement();
   bool prompt = true;
@@ -1006,7 +1046,11 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::warning( this,
+                                            tr( "Loading Connections" ),
+                                            tr( "Connection with name '%1' already exists. Overwrite?" )
+                                            .arg( connectionName ),
+                                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {
@@ -1044,18 +1088,18 @@ void QgsManageConnectionsDialog::loadWfsConnections( const QDomDocument &doc, co
 
     // no dups detected or overwrite is allowed
 
-    QgsOwsConnection::settingsUrl->setValue( child.attribute( QStringLiteral( "url" ) ), { QStringLiteral( "wfs" ), connectionName } );
-    QgsOwsConnection::settingsVersion->setValue( child.attribute( QStringLiteral( "version" ) ), { QStringLiteral( "wfs" ), connectionName } );
-    QgsOwsConnection::settingsMaxNumFeatures->setValue( child.attribute( QStringLiteral( "maxnumfeatures" ) ), { QStringLiteral( "wfs" ), connectionName } );
-    QgsOwsConnection::settingsPagesize->setValue( child.attribute( QStringLiteral( "pagesize" ) ), { QStringLiteral( "wfs" ), connectionName } );
-    QgsOwsConnection::settingsPagingEnabled->setValue( child.attribute( QStringLiteral( "pagingenabled" ) ), { QStringLiteral( "wfs" ), connectionName } );
-    QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( child.attribute( QStringLiteral( "ignoreAxisOrientation" ) ).toInt(), { QStringLiteral( "wfs" ), connectionName } );
-    QgsOwsConnection::settingsInvertAxisOrientation->setValue( child.attribute( QStringLiteral( "invertAxisOrientation" ) ).toInt(), { QStringLiteral( "wfs" ), connectionName } );
+    QgsOwsConnection::settingsUrl->setValue( child.attribute( QStringLiteral( "url" ) ), {QStringLiteral( "wfs" ), connectionName} );
+    QgsOwsConnection::settingsVersion->setValue( child.attribute( QStringLiteral( "version" ) ), {QStringLiteral( "wfs" ), connectionName} );
+    QgsOwsConnection::settingsMaxNumFeatures->setValue( child.attribute( QStringLiteral( "maxnumfeatures" ) ), {QStringLiteral( "wfs" ), connectionName} );
+    QgsOwsConnection::settingsPagesize->setValue( child.attribute( QStringLiteral( "pagesize" ) ), {QStringLiteral( "wfs" ), connectionName} );
+    QgsOwsConnection::settingsPagingEnabled->setValue( child.attribute( QStringLiteral( "pagingenabled" ) ), {QStringLiteral( "wfs" ), connectionName} );
+    QgsOwsConnection::settingsIgnoreAxisOrientation->setValue( child.attribute( QStringLiteral( "ignoreAxisOrientation" ) ).toInt(), {QStringLiteral( "wfs" ), connectionName} );
+    QgsOwsConnection::settingsInvertAxisOrientation->setValue( child.attribute( QStringLiteral( "invertAxisOrientation" ) ).toInt(), {QStringLiteral( "wfs" ), connectionName} );
 
     if ( !child.attribute( QStringLiteral( "username" ) ).isEmpty() )
     {
-      QgsOwsConnection::settingsUsername->setValue( child.attribute( QStringLiteral( "username" ) ), { QStringLiteral( "wfs" ), connectionName } );
-      QgsOwsConnection::settingsPassword->setValue( child.attribute( QStringLiteral( "password" ) ), { QStringLiteral( "wfs" ), connectionName } );
+      QgsOwsConnection::settingsUsername->setValue( child.attribute( QStringLiteral( "username" ) ), {QStringLiteral( "wfs" ), connectionName} );
+      QgsOwsConnection::settingsPassword->setValue( child.attribute( QStringLiteral( "password" ) ), {QStringLiteral( "wfs" ), connectionName} );
     }
     child = child.nextSiblingElement();
   }
@@ -1066,7 +1110,9 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
   const QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsPgConnections" ) )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a PostGIS connections exchange file." ) );
+    QMessageBox::information( this,
+                              tr( "Loading Connections" ),
+                              tr( "The file is not a PostGIS connections exchange file." ) );
     return;
   }
 
@@ -1091,7 +1137,11 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::warning( this,
+                                            tr( "Loading Connections" ),
+                                            tr( "Connection with name '%1' already exists. Overwrite?" )
+                                            .arg( connectionName ),
+                                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
       switch ( res )
       {
         case QMessageBox::Cancel:
@@ -1162,7 +1212,9 @@ void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, 
   const QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsMssqlConnections" ) )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a MS SQL Server connections exchange file." ) );
+    QMessageBox::information( this,
+                              tr( "Loading Connections" ),
+                              tr( "The file is not a MS SQL Server connections exchange file." ) );
     return;
   }
 
@@ -1187,7 +1239,11 @@ void QgsManageConnectionsDialog::loadMssqlConnections( const QDomDocument &doc, 
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::warning( this,
+                                            tr( "Loading Connections" ),
+                                            tr( "Connection with name '%1' already exists. Overwrite?" )
+                                            .arg( connectionName ),
+                                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
       switch ( res )
       {
         case QMessageBox::Cancel:
@@ -1253,7 +1309,9 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
   const QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsOracleConnections" ) )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not an Oracle connections exchange file." ) );
+    QMessageBox::information( this,
+                              tr( "Loading Connections" ),
+                              tr( "The file is not an Oracle connections exchange file." ) );
     return;
   }
 
@@ -1278,7 +1336,11 @@ void QgsManageConnectionsDialog::loadOracleConnections( const QDomDocument &doc,
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::warning( this,
+                                            tr( "Loading Connections" ),
+                                            tr( "Connection with name '%1' already exists. Overwrite?" )
+                                            .arg( connectionName ),
+                                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
       switch ( res )
       {
         case QMessageBox::Cancel:
@@ -1341,14 +1403,18 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
   QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsHanaConnections" ) )
   {
-    QMessageBox::warning( this, tr( "Loading Connections" ), tr( "The file is not a HANA connections exchange file." ) );
+    QMessageBox::warning( this,
+                          tr( "Loading Connections" ),
+                          tr( "The file is not a HANA connections exchange file." ) );
     return;
   }
 
   const QDomAttr version = root.attributeNode( "version" );
   if ( version.value() != QLatin1String( "1.0" ) )
   {
-    QMessageBox::warning( this, tr( "Loading Connections" ), tr( "The HANA connections exchange file version '%1' is not supported." ).arg( version.value() ) );
+    QMessageBox::warning( this,
+                          tr( "Loading Connections" ),
+                          tr( "The HANA connections exchange file version '%1' is not supported." ).arg( version.value() ) );
     return;
   }
 
@@ -1372,7 +1438,11 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::warning( this,
+                                            tr( "Loading Connections" ),
+                                            tr( "Connection with name '%1' already exists. Overwrite?" )
+                                            .arg( connectionName ),
+                                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
       switch ( res )
       {
         case QMessageBox::Cancel:
@@ -1411,9 +1481,9 @@ void QgsManageConnectionsDialog::loadHanaConnections( const QDomDocument &doc, c
     settings.beginGroup( "/HANA/connections/" + connectionName );
 
     for ( const QString param :
-          { "driver", "host", "database", "identifierType", "identifier", "multitenant", "schema", "userTablesOnly",
-            "allowGeometrylessTables", "saveUsername", "username", "savePassword", "password", "sslEnabled",
-            "sslCryptoProvider", "sslKeyStore", "sslTrustStore", "sslValidateCertificate", "sslHostNameInCertificate"
+          {"driver", "host", "database", "identifierType", "identifier", "multitenant", "schema", "userTablesOnly",
+           "allowGeometrylessTables", "saveUsername", "username", "savePassword", "password", "sslEnabled",
+           "sslCryptoProvider", "sslKeyStore", "sslTrustStore", "sslValidateCertificate", "sslHostNameInCertificate"
           } )
       settings.setValue( QStringLiteral( "/" ) + param, child.attribute( param ) );
 
@@ -1428,7 +1498,8 @@ void QgsManageConnectionsDialog::loadXyzTilesConnections( const QDomDocument &do
   const QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsXYZTilesConnections" ) )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a XYZ Tiles connections exchange file." ) );
+    QMessageBox::information( this, tr( "Loading Connections" ),
+                              tr( "The file is not a XYZ Tiles connections exchange file." ) );
     return;
   }
 
@@ -1450,7 +1521,11 @@ void QgsManageConnectionsDialog::loadXyzTilesConnections( const QDomDocument &do
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::warning( this,
+                                            tr( "Loading Connections" ),
+                                            tr( "Connection with name '%1' already exists. Overwrite?" )
+                                            .arg( connectionName ),
+                                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {
@@ -1507,12 +1582,13 @@ void QgsManageConnectionsDialog::loadArcgisConnections( const QDomDocument &doc,
   const QDomElement root = doc.documentElement();
   if ( root.tagName() != "qgs" + service.toUpper() + "Connections" )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a %1 connections exchange file." ).arg( service ) );
+    QMessageBox::information( this, tr( "Loading Connections" ),
+                              tr( "The file is not a %1 connections exchange file." ).arg( service ) );
     return;
   }
 
   QString connectionName;
-  QStringList keys = QgsArcGisConnectionSettings::sTreeConnectionArcgis->items();
+  QStringList keys  = QgsArcGisConnectionSettings::sTreeConnectionArcgis->items();
   QDomElement child = root.firstChildElement();
   bool prompt = true;
   bool overwrite = true;
@@ -1529,7 +1605,11 @@ void QgsManageConnectionsDialog::loadArcgisConnections( const QDomDocument &doc,
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::warning( this,
+                                            tr( "Loading Connections" ),
+                                            tr( "Connection with name '%1' already exists. Overwrite?" )
+                                            .arg( connectionName ),
+                                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {
@@ -1584,7 +1664,8 @@ void QgsManageConnectionsDialog::loadVectorTileConnections( const QDomDocument &
   const QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsVectorTileConnections" ) )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a Vector Tile connections exchange file." ) );
+    QMessageBox::information( this, tr( "Loading Connections" ),
+                              tr( "The file is not a Vector Tile connections exchange file." ) );
     return;
   }
 
@@ -1609,7 +1690,11 @@ void QgsManageConnectionsDialog::loadVectorTileConnections( const QDomDocument &
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::warning( this,
+                                            tr( "Loading Connections" ),
+                                            tr( "Connection with name '%1' already exists. Overwrite?" )
+                                            .arg( connectionName ),
+                                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {
@@ -1666,7 +1751,8 @@ void QgsManageConnectionsDialog::loadTiledSceneConnections( const QDomDocument &
   const QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsTiledSceneConnections" ) )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a tiled scene connections exchange file." ) );
+    QMessageBox::information( this, tr( "Loading Connections" ),
+                              tr( "The file is not a tiled scene connections exchange file." ) );
     return;
   }
 
@@ -1691,7 +1777,11 @@ void QgsManageConnectionsDialog::loadTiledSceneConnections( const QDomDocument &
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::warning( this,
+                                            tr( "Loading Connections" ),
+                                            tr( "Connection with name '%1' already exists. Overwrite?" )
+                                            .arg( connectionName ),
+                                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {
@@ -1745,7 +1835,8 @@ void QgsManageConnectionsDialog::loadSensorThingsConnections( const QDomDocument
   const QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsSensorThingsConnections" ) )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a SensorThings connections exchange file." ) );
+    QMessageBox::information( this, tr( "Loading Connections" ),
+                              tr( "The file is not a SensorThings connections exchange file." ) );
     return;
   }
 
@@ -1770,7 +1861,11 @@ void QgsManageConnectionsDialog::loadSensorThingsConnections( const QDomDocument
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::warning( this,
+                                            tr( "Loading Connections" ),
+                                            tr( "Connection with name '%1' already exists. Overwrite?" )
+                                            .arg( connectionName ),
+                                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {
@@ -1823,7 +1918,8 @@ void QgsManageConnectionsDialog::loadCloudStorageConnections( const QDomDocument
   const QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsCloudStorageConnections" ) )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a cloud storage connections exchange file." ) );
+    QMessageBox::information( this, tr( "Loading Connections" ),
+                              tr( "The file is not a cloud storage connections exchange file." ) );
     return;
   }
 
@@ -1848,7 +1944,11 @@ void QgsManageConnectionsDialog::loadCloudStorageConnections( const QDomDocument
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::warning( this,
+                                            tr( "Loading Connections" ),
+                                            tr( "Connection with name '%1' already exists. Overwrite?" )
+                                            .arg( connectionName ),
+                                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {
@@ -1923,7 +2023,8 @@ void QgsManageConnectionsDialog::loadStacConnections( const QDomDocument &doc, c
   const QDomElement root = doc.documentElement();
   if ( root.tagName() != QLatin1String( "qgsStacConnections" ) )
   {
-    QMessageBox::information( this, tr( "Loading Connections" ), tr( "The file is not a STAC connections exchange file." ) );
+    QMessageBox::information( this, tr( "Loading Connections" ),
+                              tr( "The file is not a STAC connections exchange file." ) );
     return;
   }
 
@@ -1948,7 +2049,11 @@ void QgsManageConnectionsDialog::loadStacConnections( const QDomDocument &doc, c
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      const int res = QMessageBox::warning( this, tr( "Loading Connections" ), tr( "Connection with name '%1' already exists. Overwrite?" ).arg( connectionName ), QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
+      const int res = QMessageBox::warning( this,
+                                            tr( "Loading Connections" ),
+                                            tr( "Connection with name '%1' already exists. Overwrite?" )
+                                            .arg( connectionName ),
+                                            QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {

@@ -21,7 +21,9 @@ Definition of a parameter with basic conversion methods
 #include "qgsserverparameters.h"
 %End
   public:
-    QgsServerParameterDefinition( const QMetaType::Type type = QMetaType::Type::QString, const QVariant defaultValue = QVariant( "" ) );
+
+    QgsServerParameterDefinition( const QMetaType::Type type = QMetaType::Type::QString,
+                                  const QVariant defaultValue = QVariant( "" ) );
 %Docstring
 Constructor for QgsServerParameterDefinition.
 
@@ -30,7 +32,8 @@ Constructor for QgsServerParameterDefinition.
 %End
 
 
- QgsServerParameterDefinition( const QVariant::Type type, const QVariant defaultValue = QVariant( "" ) ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
+ QgsServerParameterDefinition( const QVariant::Type type,
+        const QVariant defaultValue = QVariant( "" ) ) /Deprecated/;
 %Docstring
 Constructor for QgsServerParameterDefinition.
 
@@ -232,7 +235,9 @@ Parameter common to all services (WMS, WFS, ...)
       FILE_NAME
     };
 
-    QgsServerParameter( const QgsServerParameter::Name name = QgsServerParameter::UNKNOWN, const QMetaType::Type type = QMetaType::Type::QString, const QVariant defaultValue = QVariant( "" ) );
+    QgsServerParameter( const QgsServerParameter::Name name = QgsServerParameter::UNKNOWN,
+                        const QMetaType::Type type = QMetaType::Type::QString,
+                        const QVariant defaultValue = QVariant( "" ) );
 %Docstring
 Constructor for QgsServerParameter.
 
@@ -241,7 +246,9 @@ Constructor for QgsServerParameter.
 :param defaultValue: The default value to use if not defined
 %End
 
- QgsServerParameter( const QgsServerParameter::Name name, const QVariant::Type type, const QVariant defaultValue = QVariant( "" ) ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
+ QgsServerParameter( const QgsServerParameter::Name name,
+                                          const QVariant::Type type,
+                                          const QVariant defaultValue = QVariant( "" ) ) /Deprecated/;
 %Docstring
 Constructor for QgsServerParameter.
 
@@ -290,6 +297,7 @@ class QgsServerParameters
     static const QMetaObject staticMetaObject;
 
   public:
+
     QgsServerParameters();
 %Docstring
 Constructor.
@@ -396,6 +404,7 @@ defined.
 %End
 
   protected:
+
     virtual bool loadParameter( const QString &name, const QString &value );
 %Docstring
 Loads a parameter with a specific value. This method should be

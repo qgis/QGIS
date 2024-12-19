@@ -14,8 +14,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSQUANTIZEDMESHTILED_H
-#define QGSQUANTIZEDMESHTILED_H
+#pragma once
 
 #include "qgis_core.h"
 #include "qgsexception.h"
@@ -98,5 +97,3 @@ struct CORE_EXPORT QgsQuantizedMeshTile
   // Make sure to call removeDegenerateTriangles() beforehand!
   QgsMesh toMesh( QgsRectangle tileBounds );
 };
-
-#endif // QGSQUANTIZEDMESHTILED_H

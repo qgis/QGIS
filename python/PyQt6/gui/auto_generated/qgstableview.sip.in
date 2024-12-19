@@ -25,6 +25,7 @@ experience in QGIS.
 #include "qgstableview.h"
 %End
   public:
+
     explicit QgsTableView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsTableView.

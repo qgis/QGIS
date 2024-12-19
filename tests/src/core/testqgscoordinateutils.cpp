@@ -55,7 +55,7 @@ void TestQgsCoordinateUtils::testPrecisionForCrs()
 
 void TestQgsCoordinateUtils::testDegreeWithSuffix()
 {
-  bool ok = false;
+  bool ok = false ;
   bool isEasting = false;
   double value = 0.0;
 
@@ -91,7 +91,7 @@ void TestQgsCoordinateUtils::testDegreeWithSuffix()
 
 void TestQgsCoordinateUtils::testLocale()
 {
-  bool ok = false;
+  bool ok = false ;
   bool isEasting = false;
   double value = 0.0;
 

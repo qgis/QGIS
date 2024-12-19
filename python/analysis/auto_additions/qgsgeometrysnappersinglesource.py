@@ -2,5 +2,5 @@
 try:
     QgsGeometrySnapperSingleSource.run = staticmethod(QgsGeometrySnapperSingleSource.run)
     QgsGeometrySnapperSingleSource.__group__ = ['vector']
-except (NameError, AttributeError):
+except NameError:
     pass

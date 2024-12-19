@@ -28,6 +28,7 @@
 class QgsSpatialiteSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
+
     QString providerKey() const override { return QStringLiteral( "spatialite" ); }
     QString text() const override { return QObject::tr( "SpatiaLite" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 10; }
@@ -42,6 +43,7 @@ class QgsSpatialiteSourceSelectProvider : public QgsSourceSelectProvider
       return QgsSourceSelectProvider::Capability::ConfigureFromUri;
     }
 };
+
 
 
 QgsSpatiaLiteProviderGuiMetadata::QgsSpatiaLiteProviderGuiMetadata()

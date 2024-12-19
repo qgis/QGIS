@@ -32,15 +32,15 @@
  * \ingroup UnitTests
  * This is a unit test for the vertex tool
  */
-class TestQgsMapToolReshape : public QObject
+class TestQgsMapToolReshape: public QObject
 {
     Q_OBJECT
   public:
     TestQgsMapToolReshape();
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void testReshapeZ();
     void testTopologicalEditing();
@@ -117,7 +117,7 @@ void TestQgsMapToolReshape::initTestCase()
   QgsFeatureList flist;
   flist << f1 << f2;
   mLayerLineZ->dataProvider()->addFeatures( flist );
-  QCOMPARE( mLayerLineZ->featureCount(), ( long ) 2 );
+  QCOMPARE( mLayerLineZ->featureCount(), ( long )2 );
   QCOMPARE( mLayerLineZ->getFeature( 1 ).geometry().asWkt(), wkt1 );
   QCOMPARE( mLayerLineZ->getFeature( 2 ).geometry().asWkt(), wkt2 );
 
@@ -132,7 +132,7 @@ void TestQgsMapToolReshape::initTestCase()
   QgsFeatureList flistPoint;
   flistPoint << f3 << f4;
   mLayerPointZ->dataProvider()->addFeatures( flistPoint );
-  QCOMPARE( mLayerPointZ->featureCount(), ( long ) 2 );
+  QCOMPARE( mLayerPointZ->featureCount(), ( long )2 );
   QCOMPARE( mLayerPointZ->getFeature( 1 ).geometry().asWkt(), wkt3 );
   QCOMPARE( mLayerPointZ->getFeature( 2 ).geometry().asWkt(), wkt4 );
 
@@ -143,7 +143,7 @@ void TestQgsMapToolReshape::initTestCase()
   QgsFeatureList flistPolygon;
   flistPolygon << f5;
   mLayerPolygonZ->dataProvider()->addFeatures( flistPolygon );
-  QCOMPARE( mLayerPolygonZ->featureCount(), ( long ) 1 );
+  QCOMPARE( mLayerPolygonZ->featureCount(), ( long )1 );
   QCOMPARE( mLayerPolygonZ->getFeature( 1 ).geometry().asWkt(), wkt5 );
 
   mLayerTopo->startEditing();
@@ -156,7 +156,7 @@ void TestQgsMapToolReshape::initTestCase()
   QgsFeatureList flistTopo;
   flistTopo << f6 << f7;
   mLayerTopo->dataProvider()->addFeatures( flistTopo );
-  QCOMPARE( mLayerTopo->featureCount(), ( long ) 2 );
+  QCOMPARE( mLayerTopo->featureCount(), ( long )2 );
   QCOMPARE( mLayerTopo->getFeature( 1 ).geometry().asWkt(), wkt6 );
   QCOMPARE( mLayerTopo->getFeature( 2 ).geometry().asWkt(), wkt7 );
 
@@ -231,6 +231,7 @@ void TestQgsMapToolReshape::testReshapeZ()
   const QString wkt3 = "LineString Z (0 0 0, 1 1 0, 1 2 0, 2 1 5, 5 5 5, 6 6 6, 7 5 4, 3 2 1)";
   QCOMPARE( mLayerLineZ->getFeature( 1 ).geometry().asWkt(), wkt3 );
   mLayerLineZ->undoStack()->undo();
+
 }
 
 void TestQgsMapToolReshape::testTopologicalEditing()

@@ -21,7 +21,9 @@
 namespace QgsWmts
 {
 
-  void writeGetFeatureInfo( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response )
+  void writeGetFeatureInfo( QgsServerInterface *serverIface, const QgsProject *project,
+                            const QString &version, const QgsServerRequest &request,
+                            QgsServerResponse &response )
   {
     Q_UNUSED( version )
     const QgsWmtsParameters params( QUrlQuery( request.url() ) );
@@ -41,3 +43,7 @@ namespace QgsWmts
   }
 
 } // namespace QgsWmts
+
+
+
+

@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsmbtilesvectortilesourcewidget.h"
-#include "moc_qgsmbtilesvectortilesourcewidget.cpp"
 ///@cond PRIVATE
 
 #include "qgsproviderregistry.h"
@@ -47,9 +46,9 @@ QgsMbtilesVectorTileSourceWidget::QgsMbtilesVectorTileSourceWidget( QWidget *par
 void QgsMbtilesVectorTileSourceWidget::setSourceUri( const QString &uri )
 {
   mSourceParts = QgsProviderRegistry::instance()->decodeUri(
-    QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY,
-    uri
-  );
+                   QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY,
+                   uri
+                 );
 
   mFileWidget->setFilePath( mSourceParts.value( QStringLiteral( "path" ) ).toString() );
   mIsValid = true;
@@ -60,9 +59,9 @@ QString QgsMbtilesVectorTileSourceWidget::sourceUri() const
   QVariantMap parts = mSourceParts;
   parts.insert( QStringLiteral( "path" ), mFileWidget->filePath() );
   return QgsProviderRegistry::instance()->encodeUri(
-    QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY,
-    parts
-  );
+           QgsMbTilesVectorTileDataProvider::MB_TILES_VECTOR_TILE_DATA_PROVIDER_KEY,
+           parts
+         );
 }
 
 void QgsMbtilesVectorTileSourceWidget::validate()

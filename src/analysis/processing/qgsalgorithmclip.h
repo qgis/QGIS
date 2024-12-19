@@ -31,7 +31,9 @@
  */
 class QgsClipAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
+
     QgsClipAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmClip.svg" ) ); }
@@ -46,11 +48,15 @@ class QgsClipAlgorithm : public QgsProcessingAlgorithm
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
     Qgis::ProcessingAlgorithmFlags flags() const override;
-
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMCLIP_H
+
+

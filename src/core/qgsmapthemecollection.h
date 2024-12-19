@@ -105,7 +105,6 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
          * \since QGIS 3.2
          */
         bool expandedLayerNode = false;
-
       private:
         //! Weak pointer to the layer
         QgsWeakMapLayerPointer mLayer;
@@ -203,24 +202,6 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
          * \since QGIS 3.10.1
          */
         void setCheckedGroupNodes( const QSet<QString> &checkedGroupNodes ) { mCheckedGroupNodes = checkedGroupNodes; }
-
-        /**
-         * Reads the map theme record from XML
-         * \param element DOM element
-         * \param project the QGIS project
-         * \see writeXml
-         * \since QGIS 3.42
-         */
-        static MapThemeRecord readXml( const QDomElement &element, const QgsProject *project );
-
-        /**
-         * Writes the map theme record to XML.
-         * \param element DOM element
-         * \param document DOM document
-         * \see readXml
-         * \since QGIS 3.42
-         */
-        void writeXml( QDomElement element, QDomDocument &document ) const;
 
       private:
         //! Layer-specific records for the theme. Only visible layers are listed.
@@ -328,7 +309,7 @@ class CORE_EXPORT QgsMapThemeCollection : public QObject
      * \param doc DOM document
      * \see readXml
      */
-    void writeXml( QDomDocument &doc ) const;
+    void writeXml( QDomDocument &doc );
 
     /**
      * Static method to create theme from the current state of layer visibilities in layer tree,

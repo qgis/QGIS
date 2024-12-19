@@ -29,17 +29,16 @@
  * \ingroup UnitTests
  * This is a unit test for the TestQgsMeshLayerInterpolator class
  */
-class TestQgsMeshLayerInterpolator : public QObject
+class TestQgsMeshLayerInterpolator: public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init() {}          // will be called before each testfunction is executed.
-    void cleanup() {}       // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void testExportRasterBand();
-
   private:
     QString mTestDataDir;
 };
@@ -61,20 +60,21 @@ void TestQgsMeshLayerInterpolator::cleanupTestCase()
 
 void TestQgsMeshLayerInterpolator::testExportRasterBand()
 {
-  QgsMeshLayer meshLayer( mTestDataDir + "/mesh/quad_and_triangle.2dm", "Triangle and Quad Mdal", "mdal" );
+  QgsMeshLayer meshLayer( mTestDataDir + "/mesh/quad_and_triangle.2dm",
+                          "Triangle and Quad Mdal",
+                          "mdal" );
   QVERIFY( meshLayer.isValid() );
   QgsMeshDatasetIndex index( 0, 0 ); // bed elevation
   meshLayer.setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 27700 ) );
 
   std::unique_ptr<QgsRasterBlock> block;
   block.reset( QgsMeshUtils::exportRasterBlock(
-    meshLayer,
-    index,
-    meshLayer.crs(),
-    QgsProject::instance()->transformContext(),
-    100,
-    meshLayer.extent()
-  ) );
+                 meshLayer,
+                 index,
+                 meshLayer.crs(),
+                 QgsProject::instance()->transformContext(),
+                 100,
+                 meshLayer.extent() ) );
 
   QVERIFY( block );
 
@@ -91,7 +91,7 @@ void TestQgsMeshLayerInterpolator::testExportRasterBand()
   QVERIFY( block->isNoData( 10, 10 ) );
 
   std::unique_ptr<QgsMeshMemoryDatasetGroup> virtualGroup = std::make_unique<QgsMeshMemoryDatasetGroup>( QStringLiteral( "on face" ), QgsMeshDatasetGroupMetadata::DataOnFaces );
-  std::shared_ptr<QgsMeshMemoryDataset> dataset = std::make_shared<QgsMeshMemoryDataset>();
+  std::shared_ptr<QgsMeshMemoryDataset> dataset = std::make_shared < QgsMeshMemoryDataset>();
   dataset->values.resize( 2 );
   dataset->values[0] = 12;
   dataset->values[1] = 36;
@@ -109,13 +109,12 @@ void TestQgsMeshLayerInterpolator::testExportRasterBand()
   index = QgsMeshDatasetIndex( 1, 0 );
 
   block.reset( QgsMeshUtils::exportRasterBlock(
-    meshLayer,
-    index,
-    meshLayer.crs(),
-    QgsProject::instance()->transformContext(),
-    100,
-    meshLayer.extent()
-  ) );
+                 meshLayer,
+                 index,
+                 meshLayer.crs(),
+                 QgsProject::instance()->transformContext(),
+                 100,
+                 meshLayer.extent() ) );
 
   QVERIFY( block );
 

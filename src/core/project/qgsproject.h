@@ -1022,7 +1022,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      * all tables that originate from the same database are synchronized and executed in a server side
      * transaction.
      *
-     * \deprecated QGIS 3.26. Use transactionMode() instead.
+     * \deprecated QGIS 3.26. Use transactionMode instead.
      */
     Q_DECL_DEPRECATED bool autoTransaction() const SIP_DEPRECATED;
 
@@ -1033,7 +1033,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * \warning Make sure that this is only called when all layers are not in edit mode.
      *
-     * \deprecated QGIS 3.26. Use setTransactionMode() instead.
+     * \deprecated QGIS 3.26. Use setTransactionMode instead.
      */
     Q_DECL_DEPRECATED void setAutoTransaction( bool autoTransaction ) SIP_DEPRECATED;
 
@@ -1113,7 +1113,6 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Sets the list of layers with which intersections should be avoided.
      * Only used if the avoid intersection mode is set to advanced.
-     * Line and point layers will not be added.
      *
      */
     void setAvoidIntersectionsLayers( const QList<QgsVectorLayer *> &layers );

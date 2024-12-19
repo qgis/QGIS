@@ -18,6 +18,7 @@ Layout view tool for zooming into and out of the layout.
 #include "qgslayoutviewtoolzoom.h"
 %End
   public:
+
     QgsLayoutViewToolZoom( QgsLayoutView *view /TransferThis/ );
 %Docstring
 Constructor for QgsLayoutViewToolZoom.
@@ -37,6 +38,7 @@ Constructor for QgsLayoutViewToolZoom.
 
 
   protected:
+
 
 };
 

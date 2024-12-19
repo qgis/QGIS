@@ -24,6 +24,7 @@ QgsGcpPoint::QgsGcpPoint( const QgsPointXY &sourcePoint, const QgsPointXY &desti
   , mDestinationCrs( destinationPointCrs )
   , mEnabled( enabled )
 {
+
 }
 
 QgsCoordinateReferenceSystem QgsGcpPoint::destinationPointCrs() const

@@ -19,23 +19,16 @@ Before using a v.net module you often have to incorporate a points layer into
 the network vector map.
 """
 
-__author__ = "Médéric Ribreux"
-__date__ = "December 2015"
-__copyright__ = "(C) 2015, Médéric Ribreux"
+__author__ = 'Médéric Ribreux'
+__date__ = 'December 2015'
+__copyright__ = '(C) 2015, Médéric Ribreux'
 
 import os
 from qgis.core import QgsProcessingException
 from processing.tools.system import getTempFilename
 
 
-def incorporatePoints(
-    alg,
-    parameters,
-    context,
-    feedback,
-    pointLayerName="points",
-    networkLayerName="input",
-):
+def incorporatePoints(alg, parameters, context, feedback, pointLayerName='points', networkLayerName='input'):
     """
     incorporate points with lines to form a GRASS network
     """
@@ -44,7 +37,7 @@ def incorporatePoints(
     pointLayer = alg.parameterAsVectorLayer(parameters, pointLayerName, context)
     if pointLayer:
         # Create an intermediate GRASS layer which is the combination of network + centers
-        intLayer = "net" + os.path.basename(getTempFilename(context=context))
+        intLayer = 'net' + os.path.basename(getTempFilename(context=context))
 
         pointLayer = alg.exportedLayers[pointLayerName]
 
@@ -54,19 +47,17 @@ def incorporatePoints(
             lineLayer = alg.exportedLayers[networkLayerName]
         else:
             raise QgsProcessingException(
-                alg.tr("GRASS GIS v.net requires a lines layer!")
-            )
+                alg.tr('GRASS GIS v.net requires a lines layer!'))
 
-        threshold = alg.parameterAsDouble(parameters, "threshold", context)
+        threshold = alg.parameterAsDouble(parameters, 'threshold', context)
 
         # Create the v.net connect command for point layer integration
-        command = "v.net -s input={} points={} output={} operation=connect threshold={}".format(
-            lineLayer, pointLayer, intLayer, threshold
-        )
+        command = 'v.net -s input={} points={} output={} operation=connect threshold={}'.format(
+            lineLayer, pointLayer, intLayer, threshold)
         alg.commands.append(command)
 
         # Connect the point layer database to the layer 2 of the network
-        command = f"v.db.connect -o map={intLayer} table={pointLayer} layer=2"
+        command = 'v.db.connect -o map={} table={} layer=2'.format(intLayer, pointLayer)
         alg.commands.append(command)
 
         # remove undesired parameters
@@ -76,14 +67,14 @@ def incorporatePoints(
         alg.exportedLayers[networkLayerName] = intLayer
 
     # Process the command
-    if "threshold" in parameters:
-        alg.removeParameter("threshold")
+    if 'threshold' in parameters:
+        alg.removeParameter('threshold')
 
     alg.processCommand(parameters, context, feedback)
 
 
 def variableOutput(alg, layers, parameters, context, nocats=True):
-    """Handle variable data output for v.net modules:
+    """ Handle variable data output for v.net modules:
     :param layers:
     layers is a dict of outputs:
     { 'outputName': ['srcLayer', 'output_type', output_layer_number, nocats],
@@ -110,25 +101,23 @@ def variableOutput(alg, layers, parameters, context, nocats=True):
         output_layer_number = typeList[2]
         no_cats = typeList[3]
 
-        grass_name = f"{src_layer}{alg.uniqueSuffix}"
-        alg.exportVectorLayer(
-            grassName=grass_name,
-            fileName=file_name,
-            layer=output_layer_number,
-            exportnocat=no_cats,
-            dataType=output_type,
-        )
+        grass_name = '{}{}'.format(src_layer, alg.uniqueSuffix)
+        alg.exportVectorLayer(grassName=grass_name,
+                              fileName=file_name,
+                              layer=output_layer_number,
+                              exportnocat=no_cats,
+                              dataType=output_type)
 
 
 def processOutputs(alg, parameters, context, feedback):
-    idx = alg.parameterAsInt(parameters, "operation", context)
-    operations = alg.parameterDefinition("operation").options()
+    idx = alg.parameterAsInt(parameters, 'operation', context)
+    operations = alg.parameterDefinition('operation').options()
     operation = operations[idx]
 
-    if operation == "nodes":
-        outputParameter = {"output": ["output", "point", 2, True]}
-    elif operation == "connect":
-        outputParameter = {"output": ["output", "line", 1, False]}
-    elif operation == "arcs":
-        outputParameter = {"output": ["output", "line", 1, True]}
+    if operation == 'nodes':
+        outputParameter = {'output': ['output', 'point', 2, True]}
+    elif operation == 'connect':
+        outputParameter = {'output': ['output', 'line', 1, False]}
+    elif operation == 'arcs':
+        outputParameter = {'output': ['output', 'line', 1, True]}
     variableOutput(alg, outputParameter, parameters, context)

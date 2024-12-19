@@ -3,5 +3,5 @@ try:
     Qgs25DRenderer.create = staticmethod(Qgs25DRenderer.create)
     Qgs25DRenderer.convertFromRenderer = staticmethod(Qgs25DRenderer.convertFromRenderer)
     Qgs25DRenderer.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

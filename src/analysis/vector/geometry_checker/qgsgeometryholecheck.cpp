@@ -39,6 +39,7 @@ void QgsGeometryHoleCheck::collectErrors( const QMap<QString, QgsFeaturePool *> 
       // Rings after the first one are interiors
       for ( int iRing = 1, nRings = poly->ringCount( iPart ); iRing < nRings; ++iRing )
       {
+
         const QgsPoint pos = poly->interiorRing( iRing - 1 )->centroid();
         errors.append( new QgsGeometryCheckError( this, layerFeature, pos, QgsVertexId( iPart, iRing ) ) );
       }
@@ -48,7 +49,7 @@ void QgsGeometryHoleCheck::collectErrors( const QMap<QString, QgsFeaturePool *> 
 
 void QgsGeometryHoleCheck::fixError( const QMap<QString, QgsFeaturePool *> &featurePools, QgsGeometryCheckError *error, int method, const QMap<QString, int> & /*mergeAttributeIndices*/, Changes &changes ) const
 {
-  QgsFeaturePool *featurePool = featurePools[error->layerId()];
+  QgsFeaturePool *featurePool = featurePools[ error->layerId() ];
   QgsFeature feature;
   if ( !featurePool->getFeature( error->featureId(), feature ) )
   {

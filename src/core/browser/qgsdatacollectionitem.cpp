@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsdatacollectionitem.h"
-#include "moc_qgsdatacollectionitem.cpp"
 #include "qgsapplication.h"
 #include "qgsdataitemproviderregistry.h"
 #include "qgsprovidermetadata.h"

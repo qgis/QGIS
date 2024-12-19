@@ -26,7 +26,7 @@ bool MathUtils::calcBarycentricCoordinates( double x, double y, QgsPoint *p1, Qg
   {
     QgsPoint p( x, y, 0 );
     const double area = triArea( p1, p2, p3 );
-    if ( area == 0 ) //p1, p2, p3 are in a line
+    if ( area == 0 )//p1, p2, p3 are in a line
     {
       return false;
     }
@@ -41,14 +41,14 @@ bool MathUtils::calcBarycentricCoordinates( double x, double y, QgsPoint *p1, Qg
     result->setZ( w );
     return true;
   }
-  else //null pointer
+  else//null pointer
   {
     QgsDebugError( QStringLiteral( "warning, null pointer" ) );
     return false;
   }
 }
 
-bool MathUtils::BarycentricToXY( double u, double v, double w, QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint *result ) //this is wrong at the moment. Furthermore, the case, where the denominators are 0 have to be treated (two ways of calculating px and py)
+bool MathUtils::BarycentricToXY( double u, double v, double w, QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint *result )//this is wrong at the moment. Furthermore, the case, where the denominators are 0 have to be treated (two ways of calculating px and py)
 {
   Q_UNUSED( w )
 
@@ -64,7 +64,7 @@ bool MathUtils::BarycentricToXY( double u, double v, double w, QgsPoint *p1, Qgs
     }
 
     const double denominator = ( ( p2->y() - p3->y() ) * ( p1->x() - p3->x() ) - ( p3->y() - p1->y() ) * ( p3->x() - p2->x() ) );
-    if ( denominator != 0 ) //drop out py in the two equations
+    if ( denominator != 0 )//drop out py in the two equations
     {
       px = ( 2 * u * area * ( p1->x() - p3->x() ) - 2 * v * area * ( p3->x() - p2->x() ) - p2->x() * p3->y() * ( p1->x() - p3->x() ) + p3->x() * p1->y() * ( p3->x() - p2->x() ) + p3->x() * p2->y() * ( p1->x() - p3->x() ) - p1->x() * p3->y() * ( p3->x() - p2->x() ) ) / denominator;
       if ( ( p3->x() - p2->x() ) != 0 )
@@ -76,7 +76,7 @@ bool MathUtils::BarycentricToXY( double u, double v, double w, QgsPoint *p1, Qgs
         py = ( 2 * v * area - px * ( p3->y() - p1->y() ) - p3->x() * p1->y() + p1->x() * p3->y() ) / ( p1->x() - p3->x() );
       }
     }
-    else //drop out px in the two equations(maybe this possibility occurs only, if p1, p2 and p3 are coplanar
+    else//drop out px in the two equations(maybe this possibility occurs only, if p1, p2 and p3 are coplanar
     {
       py = ( 2 * u * area * ( p3->y() - p1->y() ) - 2 * v * area * ( p2->y() - p3->y() ) - p2->x() * p3->y() * ( p3->y() - p1->y() ) + p3->x() * p1->y() * ( p2->y() - p3->y() ) + p3->x() * p2->y() * ( p3->y() - p1->y() ) - p1->x() * p3->y() * ( p2->y() - p3->y() ) ) / ( ( p3->x() - p2->x() ) * ( p3->y() - p1->y() ) - ( p1->x() - p3->x() ) * ( p2->y() - p3->y() ) );
       if ( ( p2->y() - p3->y() ) != 0 )
@@ -92,7 +92,7 @@ bool MathUtils::BarycentricToXY( double u, double v, double w, QgsPoint *p1, Qgs
     result->setY( py );
     return true;
   }
-  else //null pointer
+  else//null pointer
   {
     QgsDebugError( QStringLiteral( "warning, null pointer" ) );
     return false;
@@ -114,7 +114,7 @@ double MathUtils::cFDerBernsteinPoly( int n, int i, double t )
   return n * ( calcBernsteinPoly( n - 1, i - 1, t ) - calcBernsteinPoly( n - 1, i, t ) );
 }
 
-bool MathUtils::circumcenter( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint *result ) //version using the property that the distances from p1, p2, p3 to the circumcenter have to be equal. Possibly there is a bug
+bool MathUtils::circumcenter( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint *result )//version using the property that the distances from p1, p2, p3 to the circumcenter have to be equal. Possibly there is a bug
 {
   if ( p1 && p2 && p3 && result )
   {
@@ -136,8 +136,8 @@ bool MathUtils::circumcenter( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsPoint
     }
     else
     {
-      result->setX( 0.5 * ( p1->x() * p1->x() * p2->y() - p1->x() * p1->x() * p3->y() - p3->x() * p3->x() * p2->y() - p1->y() * p2->x() * p2->x() - p1->y() * p1->y() * p3->y() - p3->y() * p3->y() * p2->y() + p1->y() * p1->y() * p2->y() + p3->y() * p2->x() * p2->x() - p1->y() * p2->y() * p2->y() + p1->y() * p3->y() * p3->y() + p1->y() * p3->x() * p3->x() + p3->y() * p2->y() * p2->y() ) / denominator );
-      result->setY( -0.5 * ( p3->x() * p2->x() * p2->x() + p2->x() * p1->y() * p1->y() + p3->x() * p2->y() * p2->y() - p3->x() * p1->x() * p1->x() + p1->x() * p3->y() * p3->y() - p3->x() * p1->y() * p1->y() - p1->x() * p2->x() * p2->x() - p2->x() * p3->y() * p3->y() - p1->x() * p2->y() * p2->y() - p2->x() * p3->x() * p3->x() + p1->x() * p3->x() * p3->x() + p2->x() * p1->x() * p1->x() ) / denominator );
+      result->setX( 0.5 * ( p1->x()*p1->x()*p2->y() - p1->x()*p1->x()*p3->y() - p3->x()*p3->x()*p2->y() - p1->y()*p2->x()*p2->x() - p1->y()*p1->y()*p3->y() - p3->y()*p3->y()*p2->y() + p1->y()*p1->y()*p2->y() + p3->y()*p2->x()*p2->x() - p1->y()*p2->y()*p2->y() + p1->y()*p3->y()*p3->y() + p1->y()*p3->x()*p3->x() + p3->y()*p2->y()*p2->y() ) / denominator );
+      result->setY( -0.5 * ( p3->x()*p2->x()*p2->x() + p2->x()*p1->y()*p1->y() + p3->x()*p2->y()*p2->y() - p3->x()*p1->x()*p1->x() + p1->x()*p3->y()*p3->y() - p3->x()*p1->y()*p1->y() - p1->x()*p2->x()*p2->x() - p2->x()*p3->y()*p3->y() - p1->x()*p2->y()*p2->y() - p2->x()*p3->x()*p3->x() + p1->x()*p3->x()*p3->x() + p2->x()*p1->x()*p1->x() ) / denominator );
 
       return true;
     }
@@ -176,7 +176,7 @@ int MathUtils::faculty( int n )
 
 bool MathUtils::inCircle( QgsPoint *testp, QgsPoint *p1, QgsPoint *p2, QgsPoint *p3 )
 {
-  const double tolerance = 0.0001; //if the amount of aValue is below this, testp is approximately on the circle and we have to define another criterion to tell, if it is inside or outside.
+  const double tolerance = 0.0001;//if the amount of aValue is below this, testp is approximately on the circle and we have to define another criterion to tell, if it is inside or outside.
 
   if ( testp && p1 && p2 && p3 )
   {
@@ -245,17 +245,17 @@ bool MathUtils::lineIntersection( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsP
     double t1, t2;
     const Vector3D p1p2( p2->x() - p1->x(), p2->y() - p1->y(), 0 );
     const Vector3D p3p4( p4->x() - p3->x(), p4->y() - p3->y(), 0 );
-    if ( ( p3p4.getX() * p1p2.getY() - p3p4.getY() * p1p2.getX() ) != 0 && p1p2.getX() != 0 ) //avoid division through zero
+    if ( ( p3p4.getX()*p1p2.getY() - p3p4.getY()*p1p2.getX() ) != 0 && p1p2.getX() != 0 ) //avoid division through zero
     {
       t2 = ( p1->x() * p1p2.getY() - p1->y() * p1p2.getX() + p3->y() * p1p2.getX() - p3->x() * p1p2.getY() ) / ( p3p4.getX() * p1p2.getY() - p3p4.getY() * p1p2.getX() );
       t1 = ( p3->x() - p1->x() + t2 * p3p4.getX() ) / p1p2.getX();
     }
-    else if ( ( p1p2.getX() * p3p4.getY() - p1p2.getY() * p3p4.getX() ) != 0 && p3p4.getX() != 0 )
+    else if ( ( p1p2.getX()*p3p4.getY() - p1p2.getY()*p3p4.getX() ) != 0 && p3p4.getX() != 0 )
     {
       t1 = ( p3->x() * p3p4.getY() - p3->y() * p3p4.getX() - p1->x() * p3p4.getY() + p1->y() * p3p4.getX() ) / ( p1p2.getX() * p3p4.getY() - p1p2.getY() * p3p4.getX() );
       t2 = ( p1->x() + t1 * p1p2.getX() - p3->x() ) / p3p4.getX();
     }
-    else //the lines are parallel
+    else//the lines are parallel
     {
       return false;
     }
@@ -288,17 +288,17 @@ bool MathUtils::lineIntersection( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsP
     double t1, t2;
     const Vector3D p1p2( p2->x() - p1->x(), p2->y() - p1->y(), 0 );
     const Vector3D p3p4( p4->x() - p3->x(), p4->y() - p3->y(), 0 );
-    if ( ( p3p4.getX() * p1p2.getY() - p3p4.getY() * p1p2.getX() ) != 0 && p1p2.getX() != 0 ) //avoid division through zero
+    if ( ( p3p4.getX()*p1p2.getY() - p3p4.getY()*p1p2.getX() ) != 0 && p1p2.getX() != 0 ) //avoid division through zero
     {
       t2 = ( p1->x() * p1p2.getY() - p1->y() * p1p2.getX() + p3->y() * p1p2.getX() - p3->x() * p1p2.getY() ) / ( p3p4.getX() * p1p2.getY() - p3p4.getY() * p1p2.getX() );
       t1 = ( p3->x() - p1->x() + t2 * p3p4.getX() ) / p1p2.getX();
     }
-    else if ( ( p1p2.getX() * p3p4.getY() - p1p2.getY() * p3p4.getX() ) != 0 && p3p4.getX() != 0 )
+    else if ( ( p1p2.getX()*p3p4.getY() - p1p2.getY()*p3p4.getX() ) != 0 && p3p4.getX() != 0 )
     {
       t1 = ( p3->x() * p3p4.getY() - p3->y() * p3p4.getX() - p1->x() * p3p4.getY() + p1->y() * p3p4.getX() ) / ( p1p2.getX() * p3p4.getY() - p1p2.getY() * p3p4.getX() );
       t2 = ( p1->x() + t1 * p1p2.getX() - p3->x() ) / p3p4.getX();
     }
-    else //the lines are parallel
+    else//the lines are parallel
     {
       intersection_point->setX( 0 );
       intersection_point->setY( 0 );
@@ -316,8 +316,8 @@ bool MathUtils::lineIntersection( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, QgsP
         return false;
       }
       //calculate the intersection point
-      intersection_point->setX( p1->x() * ( 1 - t1 ) + p2->x() * t1 );
-      intersection_point->setY( p1->y() * ( 1 - t1 ) + p2->y() * t1 );
+      intersection_point->setX( p1->x() * ( 1 - t1 ) + p2->x()*t1 );
+      intersection_point->setY( p1->y() * ( 1 - t1 ) + p2->y()*t1 );
       intersection_point->setZ( 0 );
       return true;
     }
@@ -353,7 +353,7 @@ double MathUtils::triArea( QgsPoint *pa, QgsPoint *pb, QgsPoint *pc )
     const double deter = ( pa->x() * pb->y() + pb->x() * pc->y() + pc->x() * pa->y() - pa->x() * pc->y() - pb->x() * pa->y() - pc->x() * pb->y() );
     return 0.5 * deter;
   }
-  else //null pointer
+  else//null pointer
   {
     QgsDebugError( QStringLiteral( "warning, null pointer" ) );
     return 0;
@@ -386,7 +386,7 @@ double MathUtils::calcCubicHermitePoly( int n, int i, double t )
   {
     return ( calcBernsteinPoly( 3, 2, t ) + calcBernsteinPoly( 3, 3, t ) );
   }
-  else //something went wrong
+  else//something went wrong
   {
     QgsDebugError( QStringLiteral( "unexpected error" ) );
     return 0;
@@ -434,7 +434,7 @@ double MathUtils::cFDerCubicHermitePoly( int n, int i, double t )
 
 bool MathUtils::derVec( const Vector3D *v1, const Vector3D *v2, Vector3D *result, double x, double y )
 {
-  if ( v1 && v2 && result ) //no null pointers
+  if ( v1 && v2 && result )//no null pointers
   {
     const double u = ( x * v2->getY() - y * v2->getX() ) / ( v1->getX() * v2->getY() - v1->getY() * v2->getX() );
     const double v = ( x * v1->getY() - y * v1->getX() ) / ( v2->getX() * v1->getY() - v2->getY() * v1->getX() );
@@ -449,9 +449,9 @@ bool MathUtils::derVec( const Vector3D *v1, const Vector3D *v2, Vector3D *result
 
 bool MathUtils::normalLeft( Vector3D *v1, Vector3D *result, double length )
 {
-  if ( v1 && result ) //we don't like null pointers
+  if ( v1 && result )//we don't like null pointers
   {
-    if ( v1->getY() == 0 ) //this would cause a division with zero
+    if ( v1->getY() == 0 )//this would cause a division with zero
     {
       result->setX( 0 );
 
@@ -473,20 +473,20 @@ bool MathUtils::normalLeft( Vector3D *v1, Vector3D *result, double length )
     const double c = -( length * length );
     const double d = b * b - 4 * a * c;
 
-    if ( d < 0 ) //no solution in R
+    if ( d < 0 )//no solution in R
     {
       QgsDebugError( QStringLiteral( "Determinant Error" ) );
       return false;
     }
 
     result->setX( ( -b + std::sqrt( d ) ) / ( 2 * a ) ); //take one of the two solutions of the quadratic equation
-    result->setY( ( -result->getX() * v1->getX() ) / v1->getY() );
+    result->setY( ( -result->getX()*v1->getX() ) / v1->getY() );
 
     const QgsPoint point1( 0, 0, 0 );
     const QgsPoint point2( v1->getX(), v1->getY(), 0 );
     const QgsPoint point3( result->getX(), result->getY(), 0 );
 
-    if ( !( leftOf( point1, &point2, &point3 ) < 0 ) ) //if we took the solution on the right side, change the sign of the components of the result
+    if ( !( leftOf( point1, &point2, &point3 ) < 0 ) )//if we took the solution on the right side, change the sign of the components of the result
     {
       result->setX( -result->getX() );
       result->setY( -result->getY() );
@@ -502,11 +502,13 @@ bool MathUtils::normalLeft( Vector3D *v1, Vector3D *result, double length )
 }
 
 
+
 bool MathUtils::normalRight( Vector3D *v1, Vector3D *result, double length )
 {
-  if ( v1 && result ) //we don't like null pointers
+  if ( v1 && result )//we don't like null pointers
   {
-    if ( v1->getY() == 0 ) //this would cause a division with zero
+
+    if ( v1->getY() == 0 )//this would cause a division with zero
     {
       result->setX( 0 );
 
@@ -528,14 +530,14 @@ bool MathUtils::normalRight( Vector3D *v1, Vector3D *result, double length )
     const double c = -( length * length );
     const double d = b * b - 4 * a * c;
 
-    if ( d < 0 ) //no solution in R
+    if ( d < 0 )//no solution in R
     {
       QgsDebugError( QStringLiteral( "Determinant Error" ) );
       return false;
     }
 
     result->setX( ( -b + std::sqrt( d ) ) / ( 2 * a ) ); //take one of the two solutions of the quadratic equation
-    result->setY( ( -result->getX() * v1->getX() ) / v1->getY() );
+    result->setY( ( -result->getX()*v1->getX() ) / v1->getY() );
 
     const QgsPoint point1( 0, 0, 0 );
     const QgsPoint point2( v1->getX(), v1->getY(), 0 );
@@ -559,7 +561,7 @@ bool MathUtils::normalRight( Vector3D *v1, Vector3D *result, double length )
 
 void MathUtils::normalFromPoints( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, Vector3D *vec )
 {
-  if ( p1 && p2 && p3 && vec ) //no null pointers
+  if ( p1 && p2 && p3 && vec )//no null pointers
   {
     const double ax = p2->x() - p1->x();
     const double ay = p2->y() - p1->y();
@@ -572,13 +574,14 @@ void MathUtils::normalFromPoints( QgsPoint *p1, QgsPoint *p2, QgsPoint *p3, Vect
     vec->setY( az * bx - ax * bz );
     vec->setZ( ax * by - ay * bx );
   }
+
 }
 
 double MathUtils::crossVec( QgsPoint *first, Vector3D *vec1, QgsPoint *second, Vector3D *vec2 )
 {
   if ( first && vec1 && second && vec2 )
   {
-    if ( ( vec2->getX() * vec1->getY() - vec2->getY() * vec1->getX() ) != 0 )
+    if ( ( vec2->getX()*vec1->getY() - vec2->getY()*vec1->getX() ) != 0 )
     {
       /*cout << "first: " << first->getX() << "//" << first->getY() << "//" << first->getZ() << endl << flush;
       cout << "vec1: " << vec1->getX() << "//" << vec1->getY() << "//" << vec1->getZ() << endl << flush;
@@ -587,8 +590,9 @@ double MathUtils::crossVec( QgsPoint *first, Vector3D *vec1, QgsPoint *second, V
       cout << "t2: " << ((first->getX()*vec1->getY()-first->getY()*vec1->getX()-second->getX()*vec1->getY()+second->getY()*vec1->getX())/(vec2->getX()*vec1->getY()-vec2->getY()*vec1->getX())) << endl << flush;*/
 
       return ( ( first->x() * vec1->getY() - first->y() * vec1->getX() - second->x() * vec1->getY() + second->y() * vec1->getX() ) / ( vec2->getX() * vec1->getY() - vec2->getY() * vec1->getX() ) );
+
     }
-    else //if a division by zero would occur
+    else//if a division by zero would occur
     {
       QgsDebugError( QStringLiteral( "warning: vectors are parallel" ) );
       return 0;
@@ -596,7 +600,7 @@ double MathUtils::crossVec( QgsPoint *first, Vector3D *vec1, QgsPoint *second, V
   }
 
 
-  else //null pointer
+  else//null pointer
   {
     QgsDebugError( QStringLiteral( "warning, null pointer" ) );
     return 0;
@@ -633,8 +637,8 @@ bool MathUtils::normalMinDistance( Vector3D *tangent, Vector3D *target, Vector3D
     const double yw = target->getY();
     const double zw = target->getZ();
 
-    double xg1, yg1, zg1; //the coordinates of the first result
-    double xg2, yg2, zg2; //the coordinates of the second result
+    double xg1, yg1, zg1;//the coordinates of the first result
+    double xg2, yg2, zg2;//the coordinates of the second result
 
     //calculate xg
     const double xgalpha1 = 1 / ( 2 * xt * xt * yw * yw * zt * zt - 2 * zt * zt * zt * xt * zw * xw + yt * yt * yt * yt * zw * zw + yt * yt * zw * zw * zt * zt + xt * xt * yt * yt * xw * xw + xt * xt * yw * yw * yt * yt - 2 * xt * xt * xt * zt * zw * xw + yt * yt * yt * yt * xw * xw + yt * yt * yw * yw * zt * zt + 2 * xt * xt * yt * yt * zw * zw - 2 * yt * yt * yt * yw * zt * zw + zt * zt * xt * xt * zw * zw + zt * zt * zt * zt * xw * xw + xt * xt * zt * zt * xw * xw + 2 * zt * zt * xw * xw * yt * yt - 2 * xt * xt * yw * zt * yt * zw - 2 * xt * yt * yt * yt * xw * yw - 2 * xt * xt * xt * yw * yt * xw - 2 * xt * zt * zt * xw * yt * yw - 2 * xt * zt * xw * yt * yt * zw - 2 * yw * zt * zt * zt * yt * zw + xt * xt * xt * xt * yw * yw + yw * yw * zt * zt * zt * zt + xt * xt * xt * xt * zw * zw );
@@ -669,7 +673,7 @@ bool MathUtils::normalMinDistance( Vector3D *tangent, Vector3D *target, Vector3D
     const double distance1 = QgsGeometryUtilsBase::distance2D( xw, yw, xg1, yg1 );
     const double distance2 = QgsGeometryUtilsBase::distance2D( xw, yw, xg2, yg2 );
 
-    if ( distance1 <= distance2 ) //find out, which solution is the maximum and which the minimum
+    if ( distance1 <= distance2 )//find out, which solution is the maximum and which the minimum
     {
       result->setX( xg1 );
       result->setY( yg1 );

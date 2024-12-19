@@ -17,6 +17,7 @@
 
 #include "qgschunknode.h"
 #include "qgscoordinatetransform.h"
+#include "qgsmaplayerref.h"
 #include "qgsterrainentity.h"
 #include "qgsrectangle.h"
 #include "qgsterraingenerator.h"
@@ -24,7 +25,6 @@
 #include "qgstiledsceneindex.h"
 #include "qgstiledscenelayer.h"
 #include "qgstiles.h"
-#include <QPointer>
 
 #define SIP_NO_FILE
 
@@ -37,11 +37,6 @@ class _3D_EXPORT QgsQuantizedMeshTerrainGenerator : public QgsTerrainGenerator
 {
     Q_OBJECT
   public:
-    /**
-     * Creates a new instance of a QgsQuantizedMeshTerrainGenerator object.
-     */
-    static QgsTerrainGenerator *create() SIP_FACTORY;
-
     QgsQuantizedMeshTerrainGenerator() { mIsValid = false; }
 
     virtual void setTerrain( QgsTerrainEntity *t ) override;
@@ -52,6 +47,9 @@ class _3D_EXPORT QgsQuantizedMeshTerrainGenerator : public QgsTerrainGenerator
     virtual float rootChunkError( const Qgs3DMapSettings &map ) const override;
     virtual void rootChunkHeightRange( float &hMin, float &hMax ) const override;
     virtual float heightAt( double x, double y, const Qgs3DRenderContext &context ) const override;
+    virtual void writeXml( QDomElement &elem ) const override;
+    virtual void readXml( const QDomElement &elem ) override;
+    virtual void resolveReferences( const QgsProject &project ) override;
     virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override;
     // Root node has zoom=0, x=0, y=0.
     // It corresponds to a fake zoom=-1 tile for QgsTileMatrix
@@ -67,10 +65,12 @@ class _3D_EXPORT QgsQuantizedMeshTerrainGenerator : public QgsTerrainGenerator
     QgsTiledSceneLayer *layer() const;
 
   private:
-    QPointer<QgsTiledSceneLayer> mLayer;
+    QgsMapLayerRef mLayerRef;
     std::optional<QgsQuantizedMeshMetadata> mMetadata;
     QgsCoordinateTransform mTileCrsToMapCrs;
     QgsTiledSceneIndex mIndex;
     QgsRectangle mMapExtent;
+
+    QgsQuantizedMeshTerrainGenerator( QgsMapLayerRef layerRef, const QgsQuantizedMeshMetadata &metadata );
     QgsTileXYZ nodeIdToTile( QgsChunkNodeId nodeId ) const;
 };

@@ -65,6 +65,7 @@ Layer tree must have UseEmbeddedWidgets flag enabled in order to show assigned w
 #include "qgslayertreeembeddedwidgetregistry.h"
 %End
   public:
+
     QgsLayerTreeEmbeddedWidgetRegistry();
 %Docstring
 Constructor for QgsLayerTreeEmbeddedWidgetRegistry
@@ -99,6 +100,7 @@ Returns ``True`` on success, ``False`` if the provider was not registered.
 %End
 
   protected:
+
 
   private:
     QgsLayerTreeEmbeddedWidgetRegistry( const QgsLayerTreeEmbeddedWidgetRegistry &other );

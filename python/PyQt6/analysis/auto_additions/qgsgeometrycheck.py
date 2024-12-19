@@ -19,7 +19,7 @@ try:
 
 .. versionadded:: 3.4"""
     QgsGeometryCheck.Change.__group__ = ['vector', 'geometry_checker']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsGeometryCheck.LayerFeatureIds.__doc__ = """A list of layers and feature ids for each of these layers.
@@ -28,9 +28,9 @@ In Python some accessor methods will need to be written.
 
 .. versionadded:: 3.4"""
     QgsGeometryCheck.LayerFeatureIds.__group__ = ['vector', 'geometry_checker']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsGeometryCheck.__group__ = ['vector', 'geometry_checker']
-except (NameError, AttributeError):
+except NameError:
     pass

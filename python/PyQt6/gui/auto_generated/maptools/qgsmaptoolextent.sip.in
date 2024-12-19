@@ -20,6 +20,7 @@ A map tool that emits an extent from a rectangle drawn onto the map canvas.
 #include "qgsmaptoolextent.h"
 %End
   public:
+
     QgsMapToolExtent( QgsMapCanvas *canvas );
 %Docstring
 constructor

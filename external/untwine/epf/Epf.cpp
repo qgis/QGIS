@@ -33,7 +33,6 @@
 #include <pdal/util/FileUtils.hpp>
 #include <pdal/util/ProgramArgs.hpp>
 
-#include <dirlist.hpp>  // untwine/os
 
 namespace untwine
 {
@@ -266,7 +265,7 @@ void Epf::createFileInfos(const StringList& input, std::vector<FileInfo>& fileIn
     {
         if (FileUtils::isDirectory(filename))
         {
-            StringList dirfiles = os::directoryList(filename);
+            StringList dirfiles = directoryList(filename);
             filenames.insert(filenames.end(), dirfiles.begin(), dirfiles.end());
         }
         else
@@ -282,18 +281,12 @@ void Epf::createFileInfos(const StringList& input, std::vector<FileInfo>& fileIn
         std::string driver = factory.inferReaderDriver(filename);
         if (driver.empty())
             throw FatalError("Can't infer reader for '" + filename + "'.");
-        // Use LAS reader for COPC files.
-        if (driver == "readers.copc")
-            driver = "readers.las";
         Stage *s = factory.createStage(driver);
 
         pdal::Options opts;
         opts.add("filename", filename);
         if (driver == "readers.las")
-        {
             opts.add("nosrs", m_b.opts.no_srs);
-            opts.add("use_eb_vlr", "true");
-        }
         s->setOptions(opts);
 
         FileInfo fi;
@@ -444,8 +437,8 @@ std::vector<FileInfo> Epf::processLas(pdal::LasReader& r, FileInfo fi)
     fi.numPoints = h.pointCount();
 
     m_b.scale[0] = (std::max)(m_b.scale[0], h.scaleX());
-    m_b.scale[1] = (std::max)(m_b.scale[1], h.scaleY());
-    m_b.scale[2] = (std::max)(m_b.scale[2], h.scaleZ());
+    m_b.scale[1] = (std::max)(m_b.scale[0], h.scaleY());
+    m_b.scale[2] = (std::max)(m_b.scale[0], h.scaleZ());
 
     fi.offsets[0] = h.offsetX();
     fi.offsets[1] = h.offsetY();

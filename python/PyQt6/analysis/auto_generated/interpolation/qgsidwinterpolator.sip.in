@@ -9,7 +9,7 @@
 
 
 
-class QgsIDWInterpolator : QgsInterpolator
+class QgsIDWInterpolator: QgsInterpolator
 {
 %Docstring(signature="appended")
 Inverse distance weight interpolator.
@@ -19,6 +19,7 @@ Inverse distance weight interpolator.
 #include "qgsidwinterpolator.h"
 %End
   public:
+
     QgsIDWInterpolator( const QList<QgsInterpolator::LayerData> &layerData );
 %Docstring
 Constructor for QgsIDWInterpolator, with the specified ``layerData`` sources.

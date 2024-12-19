@@ -29,15 +29,18 @@
  */
 class QgsPostgresRasterProvider : public QgsRasterDataProvider
 {
+
     Q_OBJECT
 
   public:
+
     QgsPostgresRasterProvider( const QString &uri, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
     explicit QgsPostgresRasterProvider( const QgsPostgresRasterProvider &other, const QgsDataProvider::ProviderOptions &providerOptions, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() );
 
     virtual ~QgsPostgresRasterProvider() override = default;
 
   public:
+
     // QgsDataProvider interface
     Qgis::DataProviderFlags flags() const override;
     virtual QgsCoordinateReferenceSystem crs() const override;
@@ -86,6 +89,7 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     static QgsPostgresPrimaryKeyType pkType( const QgsField &fld );
 
   private:
+
     bool mValid = false;
     QgsCoordinateReferenceSystem mCrs;
     //! Data source URI struct for this layer
@@ -150,10 +154,10 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
     QgsLayerMetadata mLayerMetadata;
 
 
-    QString mDetectedSrid;                    //!< Spatial reference detected in the database
-    QString mRequestedSrid;                   //!< Spatial reference requested in the uri
-    QgsPostgresConn *mConnectionRO = nullptr; //!< Read-only database connection (initially)
-    QgsPostgresConn *mConnectionRW = nullptr; //!< Read-write database connection (on update)
+    QString mDetectedSrid;            //!< Spatial reference detected in the database
+    QString mRequestedSrid;           //!< Spatial reference requested in the uri
+    QgsPostgresConn *mConnectionRO = nullptr ; //!< Read-only database connection (initially)
+    QgsPostgresConn *mConnectionRW = nullptr ; //!< Read-write database connection (on update)
 
     /**
      * Data type for the primary key
@@ -234,24 +238,27 @@ class QgsPostgresRasterProvider : public QgsRasterDataProvider
      */
     struct PGTypeInfo
     {
-        QString typeName;
-        QString typeType;
-        QString typeElem;
-        int typeLen;
+      QString typeName;
+      QString typeType;
+      QString typeElem;
+      int typeLen;
     };
 
     QStringList parseUriKey( const QString &key );
+
 };
 
 
-struct QgsPostgresRasterProviderException : public std::exception
+
+struct QgsPostgresRasterProviderException: public std::exception
 {
-    QgsPostgresRasterProviderException( const QString &msg );
 
-    QString message;
+  QgsPostgresRasterProviderException( const QString &msg );
+
+  QString message;
 };
 
-class QgsPostgresRasterProviderMetadata : public QgsProviderMetadata
+class QgsPostgresRasterProviderMetadata: public QgsProviderMetadata
 {
     Q_OBJECT
   public:
@@ -260,10 +267,11 @@ class QgsPostgresRasterProviderMetadata : public QgsProviderMetadata
     QVariantMap decodeUri( const QString &uri ) const override;
     QgsPostgresRasterProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QString encodeUri( const QVariantMap &parts ) const override;
-    QList<Qgis::LayerType> supportedLayerTypes() const override;
+    QList< Qgis::LayerType > supportedLayerTypes() const override;
     bool saveLayerMetadata( const QString &uri, const QgsLayerMetadata &metadata, QString &errorMessage ) override;
     QgsProviderMetadata::ProviderCapabilities providerCapabilities() const override;
 };
+
 
 
 #endif // QGSPOSTGRESRASTERPROVIDER_H

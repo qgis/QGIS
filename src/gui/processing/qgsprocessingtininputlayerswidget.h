@@ -27,7 +27,7 @@
 
 /// @cond PRIVATE
 
-class QgsProcessingTinInputLayersModel : public QAbstractTableModel
+class QgsProcessingTinInputLayersModel: public QAbstractTableModel
 {
     Q_OBJECT
   public:
@@ -58,12 +58,11 @@ class QgsProcessingTinInputLayersModel : public QAbstractTableModel
     QgsProject *mProject = nullptr;
 };
 
-class QgsProcessingTinInputLayersDelegate : public QStyledItemDelegate
+class QgsProcessingTinInputLayersDelegate: public QStyledItemDelegate
 {
     Q_OBJECT
   public:
-    QgsProcessingTinInputLayersDelegate( QObject *parent )
-      : QStyledItemDelegate( parent ) {}
+    QgsProcessingTinInputLayersDelegate( QObject *parent ): QStyledItemDelegate( parent ) {}
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
     void setEditorData( QWidget *editor, const QModelIndex &index ) const override;
@@ -71,7 +70,7 @@ class QgsProcessingTinInputLayersDelegate : public QStyledItemDelegate
 };
 
 
-class GUI_EXPORT QgsProcessingTinInputLayersWidget : public QWidget, private Ui::QgsProcessingTinInputLayersWidgetBase
+class GUI_EXPORT QgsProcessingTinInputLayersWidget: public QWidget, private Ui::QgsProcessingTinInputLayersWidgetBase
 {
     Q_OBJECT
   public:
@@ -90,16 +89,18 @@ class GUI_EXPORT QgsProcessingTinInputLayersWidget : public QWidget, private Ui:
     void onLayersRemove();
 
   private:
+
     QgsProcessingTinInputLayersModel mInputLayersModel;
 };
 
 
-class GUI_EXPORT QgsProcessingTinInputLayersWidgetWrapper : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
+class GUI_EXPORT QgsProcessingTinInputLayersWidgetWrapper  : public QgsAbstractProcessingParameterWidgetWrapper, public QgsProcessingParameterWidgetFactoryInterface
 {
     Q_OBJECT
 
   public:
-    QgsProcessingTinInputLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+    QgsProcessingTinInputLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
 
     QString parameterType() const override;
     QgsAbstractProcessingParameterWidgetWrapper *createWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type ) override;

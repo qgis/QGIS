@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsgenericfeatureselectionmanager.h"
-#include "moc_qgsgenericfeatureselectionmanager.cpp"
 
 QgsGenericFeatureSelectionManager::QgsGenericFeatureSelectionManager( QObject *parent )
   : QgsIFeatureSelectionManager( parent )

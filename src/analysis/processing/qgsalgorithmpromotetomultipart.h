@@ -32,7 +32,9 @@
  */
 class QgsPromoteToMultipartAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
+
   public:
+
     QgsPromoteToMultipartAlgorithm() = default;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmSingleToMulti.svg" ) ); }
     QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmSingleToMulti.svg" ) ); }
@@ -50,8 +52,11 @@ class QgsPromoteToMultipartAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
     QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMPROMOTETOMULTIPART_H
+
+

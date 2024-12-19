@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgslayoutguidecollection.h"
-#include "moc_qgslayoutguidecollection.cpp"
 #include "qgslayout.h"
 #include "qgsreadwritecontext.h"
 #include "qgslayoutpagecollection.h"

@@ -79,3 +79,5 @@ class QgsWCSSourceSelect : public QgsOWSSourceSelect
     void showHelp();
 };
 #endif // QGSWCSSOURCESELECT_H
+
+

@@ -28,9 +28,11 @@ class QgsLayoutNodesItem;
  */
 class GUI_EXPORT QgsLayoutViewToolEditNodes : public QgsLayoutViewTool
 {
+
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutViewToolEditNodes.
      */
@@ -48,12 +50,13 @@ class GUI_EXPORT QgsLayoutViewToolEditNodes : public QgsLayoutViewTool
     void layoutDoubleClickEvent( QgsLayoutViewMouseEvent *event ) override;
     void keyPressEvent( QKeyEvent *event ) override;
     void deactivate() override;
-    QList<QgsLayoutItem *> ignoredSnapItems() const override;
+    QList< QgsLayoutItem * > ignoredSnapItems() const override;
 
   private:
+
     const double mMoveContentSearchRadius = 25;
 
-    QPointer<QgsLayoutNodesItem> mNodesItem;
+    QPointer< QgsLayoutNodesItem > mNodesItem;
     int mNodesItemIndex = -1;
 
     //! Start position of content move
@@ -64,6 +67,8 @@ class GUI_EXPORT QgsLayoutViewToolEditNodes : public QgsLayoutViewTool
     void displayNodes( bool display = true );
     void deselectNodes();
     void setSelectedNode( QgsLayoutNodesItem *shape, int index );
+
+
 };
 
 #endif // QGSLAYOUTVIEWTOOLEDITNODES_H

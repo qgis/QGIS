@@ -22,6 +22,7 @@ Encapsulates the context in which a :py:class:`QgsMapLayerAction` action is exec
 #include "qgsmaplayeractioncontext.h"
 %End
   public:
+
     QgsMapLayerActionContext();
 
     QgsAttributeDialog *attributeDialog() const;

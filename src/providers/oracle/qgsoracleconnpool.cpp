@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsoracleconnpool.h"
-#include "moc_qgsoracleconnpool.cpp"
 #include "qgsoracleconn.h"
 #include "qgslogger.h"
 
@@ -33,8 +32,7 @@ void QgsOracleConnPool::cleanupInstance()
   sInstance = nullptr;
 }
 
-QgsOracleConnPool::QgsOracleConnPool()
-  : QgsConnectionPool<QgsOracleConn *, QgsOracleConnPoolGroup>()
+QgsOracleConnPool::QgsOracleConnPool() : QgsConnectionPool<QgsOracleConn *, QgsOracleConnPoolGroup>()
 {
   QgsDebugCall;
 }
@@ -43,3 +41,4 @@ QgsOracleConnPool::~QgsOracleConnPool()
 {
   QgsDebugCall;
 }
+

@@ -25,6 +25,7 @@
 class QgsPointCloudSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
+
     QString providerKey() const override { return QStringLiteral( "pointcloud" ); }
     QString text() const override { return QObject::tr( "Point Cloud" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 25; }

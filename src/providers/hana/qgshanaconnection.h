@@ -28,21 +28,21 @@
 
 struct AttributeField
 {
-    QString schemaName;
-    QString tableName;
-    QString name;
-    QgsHanaDataType type = QgsHanaDataType::Unknown;
-    int srid = -1;
-    QString typeName;
-    int size = 0;
-    int precision = 0;
-    bool isAutoIncrement = false;
-    bool isNullable = false;
-    bool isSigned = false;
-    bool isUnique = false;
-    QString comment;
+  QString schemaName;
+  QString tableName;
+  QString name;
+  QgsHanaDataType type = QgsHanaDataType::Unknown;
+  int srid = -1;
+  QString typeName;
+  int size = 0;
+  int precision = 0;
+  bool isAutoIncrement = false;
+  bool isNullable = false;
+  bool isSigned = false;
+  bool isUnique = false;
+  QString comment;
 
-    QgsField toQgsField() const;
+  QgsField toQgsField() const;
 };
 
 using AttributeFields = QVector<AttributeField>;
@@ -78,14 +78,12 @@ class QgsHanaConnection : public QObject
       const QString &schemaName,
       bool allowGeometrylessTables,
       bool userTablesOnly = true,
-      const std::function<bool( const QgsHanaLayerProperty &layer )> &layerFilter = nullptr
-    );
+      const std::function<bool( const QgsHanaLayerProperty &layer )> &layerFilter = nullptr );
     QVector<QgsHanaLayerProperty> getLayersFull(
       const QString &schemaName,
       bool allowGeometrylessTables,
       bool userTablesOnly = true,
-      const std::function<bool( const QgsHanaLayerProperty &layer )> &layerFilter = nullptr
-    );
+      const std::function<bool( const QgsHanaLayerProperty &layer )> &layerFilter = nullptr );
     void readLayerInfo( QgsHanaLayerProperty &layerProperty );
     void readQueryFields( const QString &schemaName, const QString &sql, const std::function<void( const AttributeField &field )> &callback );
     void readTableFields( const QString &schemaName, const QString &tableName, const std::function<void( const AttributeField &field )> &callback );
@@ -120,4 +118,4 @@ class QgsHanaConnection : public QObject
     QString mUserName;
 };
 
-#endif // QGSHANACONNECTION_H
+#endif  // QGSHANACONNECTION_H

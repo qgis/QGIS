@@ -2,5 +2,5 @@
 try:
     QgsRasterCalcNode.parseRasterCalcString = staticmethod(QgsRasterCalcNode.parseRasterCalcString)
     QgsRasterCalcNode.__group__ = ['raster']
-except (NameError, AttributeError):
+except NameError:
     pass

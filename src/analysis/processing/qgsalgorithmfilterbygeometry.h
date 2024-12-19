@@ -30,7 +30,9 @@
  */
 class QgsFilterByGeometryAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
+
     QgsFilterByGeometryAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -43,7 +45,10 @@ class QgsFilterByGeometryAlgorithm : public QgsProcessingAlgorithm
     QgsFilterByGeometryAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
 };
 
 
@@ -52,7 +57,9 @@ class QgsFilterByGeometryAlgorithm : public QgsProcessingAlgorithm
  */
 class QgsFilterByLayerTypeAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
+
     QgsFilterByLayerTypeAlgorithm() = default;
     Qgis::ProcessingAlgorithmFlags flags() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
@@ -66,9 +73,14 @@ class QgsFilterByLayerTypeAlgorithm : public QgsProcessingAlgorithm
     QgsFilterByLayerTypeAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMFILTERBYGEOMETRY_H
+
+

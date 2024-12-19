@@ -25,6 +25,7 @@ as well as a more specific handler (pointCaptured, lineCaptured or polygonCaptur
 #include "qgsmaptoolcapture.h"
 %End
   public:
+
     enum CaptureMode /BaseType=IntEnum/
     {
       CaptureNone,
@@ -94,7 +95,7 @@ The capture mode
 Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS
 %End
 
-    void clearCurve();
+    void clearCurve( );
 %Docstring
 Clear capture curve.
 %End
@@ -169,7 +170,7 @@ WkbType of the current layer).
 
   public slots:
 
- void setCircularDigitizingEnabled( bool enable ) /Deprecated="Since 3.26. Use setCurrentCaptureTechnique() instead."/;
+ void setCircularDigitizingEnabled( bool enable ) /Deprecated/;
 %Docstring
 Enable the digitizing with curve
 
@@ -178,7 +179,7 @@ Enable the digitizing with curve
    Use :py:func:`~QgsMapToolCapture.setCurrentCaptureTechnique` instead.
 %End
 
- void setStreamDigitizingEnabled( bool enable ) /Deprecated="Since 3.26. Use setCurrentCaptureTechnique() instead."/;
+ void setStreamDigitizingEnabled( bool enable ) /Deprecated/;
 %Docstring
 Toggles the stream digitizing mode.
 
@@ -190,6 +191,7 @@ Toggles the stream digitizing mode.
 %End
 
   protected:
+
 
     int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );
 %Docstring
@@ -275,7 +277,7 @@ Number of points digitized
 :return: Number of points
 %End
 
- QVector<QgsPointXY> points() const /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant returns QgsPoint objects instead of QgsPointXY."/;
+ QVector<QgsPointXY> points() const /Deprecated/;
 %Docstring
 List of digitized points
 
@@ -296,7 +298,7 @@ List of digitized points
 .. versionadded:: 3.12
 %End
 
- void setPoints( const QVector<QgsPointXY> &pointList ) /Deprecated="Since 3.12. Will be removed in QGIS 4.0. Use the variant which accepts QgsPoint objects instead of QgsPointXY."/;
+ void setPoints( const QVector<QgsPointXY> &pointList ) /Deprecated/;
 %Docstring
 Set the points on which to work
 

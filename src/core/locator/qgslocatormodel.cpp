@@ -18,7 +18,6 @@
 #include <QFont>
 
 #include "qgslocatormodel.h"
-#include "moc_qgslocatormodel.cpp"
 #include "qgslocator.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -131,7 +130,7 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
       switch ( static_cast<Column>( index.column() ) )
       {
         case Name:
-          if ( entry.type == EntryType::Result )
+          if ( !entry.filter )
           {
             const QIcon &icon = entry.result.icon;
             if ( !icon.isNull() )
@@ -161,10 +160,16 @@ QVariant QgsLocatorModel::data( const QModelIndex &index, int role ) const
         return ( entry.result.score );
 
     case static_cast< int >( CustomRole::ResultFilterPriority ):
-      return entry.filter->priority();
+      if ( !entry.filter )
+        return entry.result.filter->priority();
+      else
+        return entry.filter->priority();
 
     case static_cast< int >( CustomRole::ResultFilterName ):
-      return entry.filterTitle;
+      if ( !entry.filter )
+        return entry.result.filter->displayName();
+      else
+        return entry.filterTitle;
 
     case static_cast< int >( CustomRole::ResultFilterGroupTitle ):
       return entry.groupTitle;

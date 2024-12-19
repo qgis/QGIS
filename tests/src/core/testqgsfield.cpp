@@ -27,23 +27,23 @@
 #include "qgstest.h"
 #include "qgsreferencedgeometry.h"
 
-class TestQgsField : public QObject
+class TestQgsField: public QObject
 {
     Q_OBJECT
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
-    void create();          //test creating a data defined container
-    void copy();            // test cpy destruction (double delete)
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init();// will be called before each testfunction is executed.
+    void cleanup();// will be called after every testfunction.
+    void create();//test creating a data defined container
+    void copy();// test cpy destruction (double delete)
     void assignment();
     void gettersSetters(); //test getters and setters
-    void isNumeric();      //test isNumeric
-    void isDateTime();     //test isNumeric
-    void equality();       //test equality operators
-    void asVariant();      //test conversion to and from a QVariant
+    void isNumeric(); //test isNumeric
+    void isDateTime(); //test isNumeric
+    void equality(); //test equality operators
+    void asVariant(); //test conversion to and from a QVariant
     void displayString();
     void convertCompatible();
     void dataStream();
@@ -67,6 +67,7 @@ void TestQgsField::initTestCase()
 
 void TestQgsField::cleanupTestCase()
 {
+
 }
 
 void TestQgsField::init()
@@ -103,7 +104,7 @@ void TestQgsField::copy()
   original.setReadOnly( true );
   original.setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
   original.setDuplicatePolicy( Qgis::FieldDuplicatePolicy::UnsetField );
-  original.setMetadata( { { 1, QStringLiteral( "abc" ) }, { 2, 5 } } );
+  original.setMetadata( {{ 1, QStringLiteral( "abc" )}, {2, 5 }} );
 
   QVariantMap config;
   config.insert( QStringLiteral( "a" ), "value_a" );
@@ -131,7 +132,7 @@ void TestQgsField::assignment()
   original.setReadOnly( true );
   original.setSplitPolicy( Qgis::FieldDomainSplitPolicy::GeometryRatio );
   original.setDuplicatePolicy( Qgis::FieldDuplicatePolicy::UnsetField );
-  original.setMetadata( { { 1, QStringLiteral( "abc" ) }, { 2, 5 } } );
+  original.setMetadata( {{ 1, QStringLiteral( "abc" )}, {2, 5 }} );
   QgsField copy;
   copy = original;
   QVERIFY( copy == original );
@@ -208,15 +209,17 @@ void TestQgsField::gettersSetters()
   field.setDuplicatePolicy( Qgis::FieldDuplicatePolicy::UnsetField );
   QCOMPARE( field.duplicatePolicy(), Qgis::FieldDuplicatePolicy::UnsetField );
 
-  field.setMetadata( { { static_cast<int>( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" ) }, { 2, 5 } } );
-  QMap<int, QVariant> expected { { static_cast<int>( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" ) }, { 2, 5 } };
+  field.setMetadata( {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }} );
+  QMap< int, QVariant> expected {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }};
   QCOMPARE( field.metadata(), expected );
   QVERIFY( !field.metadata( Qgis::FieldMetadataProperty::GeometryWkbType ).isValid() );
   QCOMPARE( field.metadata( Qgis::FieldMetadataProperty::GeometryCrs ).toString(), QStringLiteral( "abc" ) );
   field.setMetadata( Qgis::FieldMetadataProperty::GeometryWkbType, QStringLiteral( "def" ) );
   QCOMPARE( field.metadata( Qgis::FieldMetadataProperty::GeometryWkbType ).toString(), QStringLiteral( "def" ) );
 
-  expected = QMap<int, QVariant> { { static_cast<int>( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" ) }, { 2, 5 }, { static_cast<int>( Qgis::FieldMetadataProperty::GeometryWkbType ), QStringLiteral( "def" ) } };
+  expected = QMap< int, QVariant> {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }
+    , {static_cast<int>( Qgis::FieldMetadataProperty::GeometryWkbType ), QStringLiteral( "def" ) }
+  };
   QCOMPARE( field.metadata(), expected );
 }
 
@@ -278,7 +281,7 @@ void TestQgsField::equality()
   field1.setLength( 5 );
   field1.setPrecision( 2 );
   field1.setTypeName( QStringLiteral( "typename1" ) ); //typename is NOT required for equality
-  field1.setComment( QStringLiteral( "comment1" ) );   //comment is NOT required for equality
+  field1.setComment( QStringLiteral( "comment1" ) ); //comment is NOT required for equality
   QgsFieldConstraints constraints;
   constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
   field1.setConstraints( constraints );
@@ -288,7 +291,7 @@ void TestQgsField::equality()
   field2.setLength( 5 );
   field2.setPrecision( 2 );
   field2.setTypeName( QStringLiteral( "typename2" ) ); //typename is NOT required for equality
-  field2.setComment( QStringLiteral( "comment2" ) );   //comment is NOT required for equality
+  field2.setComment( QStringLiteral( "comment2" ) ); //comment is NOT required for equality
   constraints = field2.constraints();
   constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
   field2.setConstraints( constraints );
@@ -367,10 +370,10 @@ void TestQgsField::equality()
   field2.setDuplicatePolicy( Qgis::FieldDuplicatePolicy::UnsetField );
   QVERIFY( field1 == field2 );
 
-  field1.setMetadata( { { static_cast<int>( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" ) }, { 2, 5 } } );
+  field1.setMetadata( {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }} );
   QVERIFY( !( field1 == field2 ) );
   QVERIFY( field1 != field2 );
-  field2.setMetadata( { { static_cast<int>( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" ) }, { 2, 5 } } );
+  field2.setMetadata( {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }} );
   QVERIFY( field1 == field2 );
   QVERIFY( !( field1 != field2 ) );
 
@@ -388,22 +391,23 @@ void TestQgsField::equality()
   field2.setEditorWidgetSetup( setup2 );
   QVERIFY( field1 == field2 );
 
-  setup2 = QgsEditorWidgetSetup { QStringLiteral( "Text" ), QVariantMap() };
+  setup2 = QgsEditorWidgetSetup{ QStringLiteral( "Text" ), QVariantMap() };
   field2.setEditorWidgetSetup( setup2 );
   QVERIFY( field1 != field2 );
-  setup1 = QgsEditorWidgetSetup { QStringLiteral( "Text" ), QVariantMap() };
+  setup1 = QgsEditorWidgetSetup{ QStringLiteral( "Text" ), QVariantMap() };
   field1.setEditorWidgetSetup( setup1 );
   QVERIFY( field1 == field2 );
 
-  setup1 = QgsEditorWidgetSetup { QStringLiteral( "TextEdit" ), QVariantMap { { QStringLiteral( "a" ), QStringLiteral( "b" ) } } };
-  setup2 = QgsEditorWidgetSetup { QStringLiteral( "TextEdit" ), QVariantMap { { QStringLiteral( "a" ), QStringLiteral( "b" ) } } };
+  setup1 = QgsEditorWidgetSetup{ QStringLiteral( "TextEdit" ), QVariantMap{ { QStringLiteral( "a" ), QStringLiteral( "b" ) } } };
+  setup2 = QgsEditorWidgetSetup{ QStringLiteral( "TextEdit" ), QVariantMap{ { QStringLiteral( "a" ), QStringLiteral( "b" ) } } };
   field1.setEditorWidgetSetup( setup1 );
   field2.setEditorWidgetSetup( setup2 );
   QVERIFY( field1 == field2 );
 
-  setup2 = QgsEditorWidgetSetup { QStringLiteral( "TextEdit" ), QVariantMap { { QStringLiteral( "a" ), QStringLiteral( "XXXXXX" ) } } };
+  setup2 = QgsEditorWidgetSetup{ QStringLiteral( "TextEdit" ), QVariantMap{ { QStringLiteral( "a" ), QStringLiteral( "XXXXXX" ) } } };
   field2.setEditorWidgetSetup( setup2 );
   QVERIFY( field1 != field2 );
+
 }
 
 void TestQgsField::asVariant()
@@ -775,7 +779,7 @@ void TestQgsField::convertCompatible()
   QCOMPARE( stringDouble, QVariant( 1223456.012345 ) );
   // This should not convert
   stringDouble = QVariant( "1.223.456,012345" );
-  QVERIFY( !doubleField.convertCompatible( stringDouble, &error ) );
+  QVERIFY( ! doubleField.convertCompatible( stringDouble, &error ) );
   QCOMPARE( error, QStringLiteral( "Could not convert value \"1.223.456,012345\" to target type \"double\"" ) );
 
   //double with precision
@@ -907,7 +911,7 @@ void TestQgsField::convertCompatible()
   QVERIFY( geometryValue.isNull() );
   geometryValue = QVariant::fromValue( QgsGeometry::fromWkt( QStringLiteral( "Point( 1 2 )" ) ) );
   QVERIFY( geometryField.convertCompatible( geometryValue ) );
-  QCOMPARE( geometryValue.userType(), qMetaTypeId<QgsGeometry>() );
+  QCOMPARE( geometryValue.userType(), qMetaTypeId< QgsGeometry>() );
 
   geometryValue = QVariant::fromValue( QgsReferencedGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point( 1 2 )" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:3111" ) ) ) );
   QVERIFY( geometryField.convertCompatible( geometryValue ) );
@@ -915,7 +919,7 @@ void TestQgsField::convertCompatible()
 
   geometryValue = QStringLiteral( "LineString( 1 2, 3 4 )" );
   QVERIFY( geometryField.convertCompatible( geometryValue ) );
-  QCOMPARE( geometryValue.userType(), qMetaTypeId<QgsGeometry>() );
+  QCOMPARE( geometryValue.userType(), qMetaTypeId< QgsGeometry>() );
 }
 
 void TestQgsField::dataStream()
@@ -937,7 +941,7 @@ void TestQgsField::dataStream()
   constraints.setConstraintExpression( QStringLiteral( "constraint expression" ), QStringLiteral( "description" ) );
   constraints.setConstraintStrength( QgsFieldConstraints::ConstraintExpression, QgsFieldConstraints::ConstraintStrengthSoft );
   original.setConstraints( constraints );
-  original.setMetadata( { { static_cast<int>( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" ) }, { 2, 5 } } );
+  original.setMetadata( {{ static_cast< int >( Qgis::FieldMetadataProperty::GeometryCrs ), QStringLiteral( "abc" )}, {2, 5 }} );
 
   QByteArray ba;
   QDataStream ds( &ba, QIODevice::ReadWrite );
@@ -949,7 +953,7 @@ void TestQgsField::dataStream()
 
   QCOMPARE( result, original );
   QCOMPARE( result.typeName(), original.typeName() ); //typename is NOT required for equality
-  QCOMPARE( result.comment(), original.comment() );   //comment is NOT required for equality
+  QCOMPARE( result.comment(), original.comment() ); //comment is NOT required for equality
 }
 
 void TestQgsField::displayName()
@@ -1048,18 +1052,18 @@ void TestQgsField::collection()
   QVariant str( "hello" );
   QVERIFY( !field.convertCompatible( str ) );
 
-  QVariant intList = QVariantList( { 1, 2, 3 } );
+  QVariant intList = QVariantList( {1, 2, 3 } );
   QVERIFY( field.convertCompatible( intList ) );
-  QCOMPARE( intList.toList(), QVariantList( { 1, 2, 3 } ) );
+  QCOMPARE( intList.toList(), QVariantList( {1, 2, 3} ) );
 
-  QVariant doubleList = QVariantList( { 1.1, 2.2, 3.3 } );
+  QVariant doubleList = QVariantList( {1.1, 2.2, 3.3 } );
   QVERIFY( field.convertCompatible( doubleList ) );
-  QCOMPARE( doubleList.toList(), QVariantList( { 1.1, 2.2, 3.3 } ) );
+  QCOMPARE( doubleList.toList(), QVariantList( {1.1, 2.2, 3.3 } ) );
 
   QgsField stringListField( QStringLiteral( "collection" ), QMetaType::Type::QStringList );
   str = QVariant( "hello" );
   QVERIFY( stringListField.convertCompatible( str ) );
-  QCOMPARE( str, QStringList { QStringLiteral( "hello" ) } );
+  QCOMPARE( str, QStringList{ QStringLiteral( "hello" )} );
 
   QVariant strList = QVariant( QStringList( { "hello", "there" } ) );
   QVERIFY( stringListField.convertCompatible( strList ) );

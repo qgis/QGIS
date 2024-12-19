@@ -63,9 +63,9 @@ class QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWra
 
     virtual bool setSettingFromWidget() const override = 0;
 
-    bool setWidgetFromVariant( const QVariant &value ) const override
+    void setWidgetFromVariant( const QVariant &value ) const override
     {
-      return setWidgetValue( mSetting->convertFromVariant( value ) );
+      setWidgetValue( mSetting->convertFromVariant( value ) );
     }
 
     //! Sets the widget value
@@ -80,10 +80,10 @@ class QgsSettingsEditorWidgetWrapperTemplate : public QgsSettingsEditorWidgetWra
     virtual U valueFromWidget() const = 0;
 
     //! Returns the editor
-    V *editor() const { return mEditor; }
+    V *editor() const {return mEditor;}
 
     //! Returns the setting
-    const T *setting() const { return mSetting; }
+    const T *setting() const {return mSetting;}
 
     virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override = 0;
 
@@ -135,7 +135,7 @@ class GUI_EXPORT QgsSettingsStringLineEditWrapper : public QgsSettingsEditorWidg
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QLineEdit, QString>( editor ) { configureEditor( editor, setting, dynamicKeyPartList ); }
 
 
-    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsStringLineEditWrapper( parent ); }
+    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsStringLineEditWrapper( parent );}
 
     QString id() const override;
 
@@ -163,7 +163,7 @@ class GUI_EXPORT QgsSettingsStringComboBoxWrapper : public QgsSettingsEditorWidg
     enum class Mode : int
     {
       Text, //!< Value is defined as the text entry
-      Data  //!< Value is defined as data entry with Qt::UserRole
+      Data //!< Value is defined as data entry with Qt::UserRole
     };
 
     //! Constructor of the factory
@@ -178,7 +178,7 @@ class GUI_EXPORT QgsSettingsStringComboBoxWrapper : public QgsSettingsEditorWidg
     QgsSettingsStringComboBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, Mode mode, const QStringList &dynamicKeyPartList = QStringList() )
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QComboBox, QString>( editor ), mMode( mode ) { configureEditor( editor, setting, dynamicKeyPartList ); }
 
-    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsStringComboBoxWrapper( parent ); }
+    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsStringComboBoxWrapper( parent );}
 
     QString id() const override;
 
@@ -213,7 +213,7 @@ class GUI_EXPORT QgsSettingsBoolCheckBoxWrapper : public QgsSettingsEditorWidget
     QgsSettingsBoolCheckBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() )
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QCheckBox, bool>( editor ) { configureEditor( editor, setting, dynamicKeyPartList ); }
 
-    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsBoolCheckBoxWrapper( parent ); }
+    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsBoolCheckBoxWrapper( parent );}
 
     QString id() const override;
 
@@ -244,7 +244,7 @@ class GUI_EXPORT QgsSettingsIntegerSpinBoxWrapper : public QgsSettingsEditorWidg
     QgsSettingsIntegerSpinBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() )
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryInteger, QSpinBox, int>( editor ) { configureEditor( editor, setting, dynamicKeyPartList ); }
 
-    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsIntegerSpinBoxWrapper( parent ); }
+    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsIntegerSpinBoxWrapper( parent );}
 
     QString id() const override;
 
@@ -276,7 +276,7 @@ class GUI_EXPORT QgsSettingsDoubleSpinBoxWrapper : public QgsSettingsEditorWidge
     QgsSettingsDoubleSpinBoxWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() )
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryDouble, QDoubleSpinBox, double>( editor ) { configureEditor( editor, setting, dynamicKeyPartList ); }
 
-    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsDoubleSpinBoxWrapper( parent ); }
+    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsDoubleSpinBoxWrapper( parent );}
 
     QString id() const override;
 
@@ -308,7 +308,7 @@ class GUI_EXPORT QgsSettingsColorButtonWrapper : public QgsSettingsEditorWidgetW
     QgsSettingsColorButtonWrapper( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() )
       : QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor, QgsColorButton, QColor>( editor ) { configureEditor( editor, setting, dynamicKeyPartList ); }
 
-    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override { return new QgsSettingsColorButtonWrapper( parent ); }
+    QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const override {return new QgsSettingsColorButtonWrapper( parent );}
 
     QString id() const override;
 
@@ -345,7 +345,7 @@ class GUI_EXPORT QgsSettingsColorButtonWrapper : public QgsSettingsEditorWidgetW
 //    QStringList valueFromWidget() const override;
 //};
 
-#if defined( _MSC_VER )
+#if defined(_MSC_VER)
 #ifndef SIP_RUN
 template class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryBool, QCheckBox, bool>;
 template class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryColor, QgsColorButton, QColor>;
@@ -354,6 +354,7 @@ template class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntr
 template class GUI_EXPORT QgsSettingsEditorWidgetWrapperTemplate<QgsSettingsEntryString, QLineEdit, QString>;
 #endif
 #endif
+
 
 
 #endif // QGSSETTINGSEDITORWIDGETWRAPPERIMPL_H

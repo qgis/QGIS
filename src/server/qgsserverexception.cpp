@@ -24,6 +24,7 @@ QgsServerException::QgsServerException( const QString &message, int responseCode
   : QgsException( message )
   , mResponseCode( responseCode )
 {
+
 }
 
 QByteArray QgsServerException::formatResponse( QString &responseFormat ) const
@@ -42,7 +43,8 @@ QByteArray QgsServerException::formatResponse( QString &responseFormat ) const
 
 
 // QgsOgcServiceException
-QgsOgcServiceException::QgsOgcServiceException( const QString &code, const QString &message, const QString &locator, int responseCode, const QString &version )
+QgsOgcServiceException:: QgsOgcServiceException( const QString &code, const QString &message, const QString &locator,
+    int responseCode, const QString &version )
   : QgsServerException( message, responseCode )
   , mCode( code )
   , mMessage( message )
@@ -67,7 +69,7 @@ QByteArray QgsOgcServiceException::formatResponse( QString &responseFormat ) con
   elem.appendChild( doc.createTextNode( mMessage ) );
   root.appendChild( elem );
 
-  if ( !mLocator.isEmpty() )
+  if ( ! mLocator.isEmpty() )
   {
     elem.setAttribute( QStringLiteral( "locator" ), mLocator );
   }
@@ -75,3 +77,6 @@ QByteArray QgsOgcServiceException::formatResponse( QString &responseFormat ) con
   responseFormat = QStringLiteral( "text/xml; charset=utf-8" );
   return doc.toByteArray();
 }
+
+
+

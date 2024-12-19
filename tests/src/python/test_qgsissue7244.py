@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Vincent Mora"
-__date__ = "09/07/2013"
-__copyright__ = "Copyright 2013, The QGIS Project"
+__author__ = 'Vincent Mora'
+__date__ = '09/07/2013'
+__copyright__ = 'Copyright 2013, The QGIS Project'
 
 import os
 
@@ -88,39 +87,27 @@ class TestQgsSpatialiteProvider(QgisTestCase):
 
     def test_SplitMultipolygon(self):
         """Split multipolygon"""
-        layer = QgsVectorLayer(
-            "dbname=test.sqlite table=test_mpg (geometry)", "test_mpg", "spatialite"
-        )
+        layer = QgsVectorLayer("dbname=test.sqlite table=test_mpg (geometry)", "test_mpg", "spatialite")
         assert layer.isValid()
         assert layer.isSpatial()
         layer.featureCount() == 1 or die("wrong number of features")
         layer.startEditing()
-        layer.splitFeatures(
-            [QgsPointXY(0.5, -0.5), QgsPointXY(0.5, 1.5)], 0
-        ) == 0 or die("error in split of one polygon of multipolygon")
-        layer.splitFeatures([QgsPointXY(2.5, -0.5), QgsPointXY(2.5, 4)], 0) == 0 or die(
-            "error in split of two polygons of multipolygon at a time"
-        )
+        layer.splitFeatures([QgsPointXY(0.5, -0.5), QgsPointXY(0.5, 1.5)], 0) == 0 or die("error in split of one polygon of multipolygon")
+        layer.splitFeatures([QgsPointXY(2.5, -0.5), QgsPointXY(2.5, 4)], 0) == 0 or die("error in split of two polygons of multipolygon at a time")
         layer.commitChanges() or die("this commit should work")
         layer.featureCount() == 7 or die("wrong number of features after 2 split")
 
     def test_SplitTruToCreateCutEdge(self):
         """Try to creat a cut edge"""
-        layer = QgsVectorLayer(
-            "dbname=test.sqlite table=test_pg (geometry)", "test_pg", "spatialite"
-        )
+        layer = QgsVectorLayer("dbname=test.sqlite table=test_pg (geometry)", "test_pg", "spatialite")
         assert layer.isValid()
         assert layer.isSpatial()
         layer.featureCount() == 1 or die("wrong number of features")
         layer.startEditing()
-        layer.splitFeatures(
-            [QgsPointXY(1.5, -0.5), QgsPointXY(1.5, 1.5)], 0
-        ) == 0 or die("error when trying to create an invalid polygon in split")
+        layer.splitFeatures([QgsPointXY(1.5, -0.5), QgsPointXY(1.5, 1.5)], 0) == 0 or die("error when trying to create an invalid polygon in split")
         layer.commitChanges() or die("this commit should work")
-        layer.featureCount() == 1 or die(
-            "wrong number of features, polygon should be unafected by cut"
-        )
+        layer.featureCount() == 1 or die("wrong number of features, polygon should be unafected by cut")
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

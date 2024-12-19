@@ -34,7 +34,8 @@ extern "C"
 }
 
 // From configuration
-const QStringList QgsPostgresProviderConnection::CONFIGURATION_PARAMETERS = {
+const QStringList QgsPostgresProviderConnection::CONFIGURATION_PARAMETERS =
+{
   QStringLiteral( "publicOnly" ),
   QStringLiteral( "geometryColumnsOnly" ),
   QStringLiteral( "dontResolveType" ),
@@ -80,8 +81,8 @@ QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &nam
   setDefaultCapabilities();
 }
 
-QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &uri, const QVariantMap &configuration )
-  : QgsAbstractDatabaseProviderConnection( QgsDataSourceUri( uri ).connectionInfo( false ), configuration )
+QgsPostgresProviderConnection::QgsPostgresProviderConnection( const QString &uri, const QVariantMap &configuration ):
+  QgsAbstractDatabaseProviderConnection( QgsDataSourceUri( uri ).connectionInfo( false ), configuration )
 {
   mProviderKey = QStringLiteral( "postgres" );
   setDefaultCapabilities();
@@ -91,7 +92,8 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
 {
   // TODO: we might check at this point if the user actually has the privileges and return
   //       properly filtered capabilities instead of all of them
-  mCapabilities = {
+  mCapabilities =
+  {
     Capability::DropVectorTable,
     Capability::DropRasterTable,
     Capability::CreateVectorTable,
@@ -115,7 +117,8 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     Capability::DeleteFieldCascade,
     Capability::AddField
   };
-  mGeometryColumnCapabilities = {
+  mGeometryColumnCapabilities =
+  {
     GeometryColumnCapability::Z,
     GeometryColumnCapability::M,
     GeometryColumnCapability::SinglePoint,
@@ -124,7 +127,8 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
     GeometryColumnCapability::Curves,
     GeometryColumnCapability::PolyhedralSurfaces
   };
-  mSqlLayerDefinitionCapabilities = {
+  mSqlLayerDefinitionCapabilities =
+  {
     Qgis::SqlLayerDefinitionCapability::SubsetStringFilter,
     Qgis::SqlLayerDefinitionCapability::PrimaryKeys,
     Qgis::SqlLayerDefinitionCapability::GeometryColumn,
@@ -134,7 +138,8 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
   mCapabilities2 |= Qgis::DatabaseProviderConnectionCapability2::SetFieldComment;
 
   // see https://www.postgresql.org/docs/current/ddl-system-columns.html
-  mIllegalFieldNames = {
+  mIllegalFieldNames =
+  {
     QStringLiteral( "tableoid" ),
     QStringLiteral( "xmin" ),
     QStringLiteral( "cmin" ),
@@ -148,33 +153,41 @@ void QgsPostgresProviderConnection::setDefaultCapabilities()
 void QgsPostgresProviderConnection::dropTablePrivate( const QString &schema, const QString &name ) const
 {
   executeSqlPrivate( QStringLiteral( "DROP TABLE %1.%2" )
-                       .arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( name ) ) );
+                     .arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( name ) ) );
 }
 
-void QgsPostgresProviderConnection::createVectorTable( const QString &schema, const QString &name, const QgsFields &fields, Qgis::WkbType wkbType, const QgsCoordinateReferenceSystem &srs, bool overwrite, const QMap<QString, QVariant> *options ) const
+void QgsPostgresProviderConnection::createVectorTable( const QString &schema,
+    const QString &name,
+    const QgsFields &fields,
+    Qgis::WkbType wkbType,
+    const QgsCoordinateReferenceSystem &srs,
+    bool overwrite,
+    const QMap<QString,
+    QVariant> *options ) const
 {
+
   checkCapability( Capability::CreateVectorTable );
 
   QgsDataSourceUri newUri { uri() };
   newUri.setSchema( schema );
   newUri.setTable( name );
   // Set geometry column if it's not aspatial
-  if ( wkbType != Qgis::WkbType::Unknown && wkbType != Qgis::WkbType::NoGeometry )
+  if ( wkbType != Qgis::WkbType::Unknown &&  wkbType != Qgis::WkbType::NoGeometry )
   {
     newUri.setGeometryColumn( options->value( QStringLiteral( "geometryColumn" ), QStringLiteral( "geom" ) ).toString() );
   }
   QMap<int, int> map;
   QString errCause;
   Qgis::VectorExportResult res = QgsPostgresProvider::createEmptyLayer(
-    newUri.uri(),
-    fields,
-    wkbType,
-    srs,
-    overwrite,
-    &map,
-    &errCause,
-    options
-  );
+                                   newUri.uri(),
+                                   fields,
+                                   wkbType,
+                                   srs,
+                                   overwrite,
+                                   &map,
+                                   &errCause,
+                                   options
+                                 );
   if ( res != Qgis::VectorExportResult::Success )
   {
     throw QgsProviderConnectionException( QObject::tr( "An error occurred while creating the vector layer: %1" ).arg( errCause ) );
@@ -205,7 +218,9 @@ void QgsPostgresProviderConnection::dropRasterTable( const QString &schema, cons
 void QgsPostgresProviderConnection::renameTablePrivate( const QString &schema, const QString &name, const QString &newName ) const
 {
   executeSqlPrivate( QStringLiteral( "ALTER TABLE %1.%2 RENAME TO %3" )
-                       .arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( name ), QgsPostgresConn::quotedIdentifier( newName ) ) );
+                     .arg( QgsPostgresConn::quotedIdentifier( schema ),
+                           QgsPostgresConn::quotedIdentifier( name ),
+                           QgsPostgresConn::quotedIdentifier( newName ) ) );
 }
 
 QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsPostgresProviderConnection::tablesPrivate( const QString &schema, const QString &table, const TableFlags &flags, QgsFeedback *feedback ) const
@@ -227,8 +242,8 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsPostgresProviderC
   {
     bool ok { false };
     QVector<QgsPostgresLayerProperty> properties;
-    const bool aspatial { !flags || flags.testFlag( TableFlag::Aspatial ) };
-    if ( !table.isEmpty() )
+    const bool aspatial { ! flags || flags.testFlag( TableFlag::Aspatial ) };
+    if ( ! table.isEmpty() )
     {
       QgsPostgresLayerProperty property;
       ok = conn->supportedLayer( property, schema, table );
@@ -242,9 +257,9 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsPostgresProviderC
       ok = conn->supportedLayers( properties, false, schema == QStringLiteral( "public" ), aspatial, schema );
     }
 
-    if ( !ok )
+    if ( ! ok )
     {
-      if ( !table.isEmpty() )
+      if ( ! table.isEmpty() )
       {
         errCause = QObject::tr( "Could not retrieve table '%2' from %1" ).arg( uri(), table );
       }
@@ -255,6 +270,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsPostgresProviderC
     }
     else
     {
+
       bool dontResolveType = configuration().value( QStringLiteral( "dontResolveType" ), false ).toBool();
       bool useEstimatedMetadata = configuration().value( QStringLiteral( "estimatedMetadata" ), false ).toBool();
 
@@ -288,16 +304,18 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsPostgresProviderC
           prFlags.setFlag( QgsPostgresProviderConnection::TableFlag::Aspatial );
         }
         // Filter
-        if ( !flags || ( prFlags & flags ) )
+        if ( ! flags || ( prFlags & flags ) )
         {
           // retrieve layer types if needed
-          if ( !dontResolveType && ( !pr.geometryColName.isNull() && ( pr.types.value( 0, Qgis::WkbType::Unknown ) == Qgis::WkbType::Unknown || pr.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) ) )
+          if ( ! dontResolveType && ( !pr.geometryColName.isNull() &&
+                                      ( pr.types.value( 0, Qgis::WkbType::Unknown ) == Qgis::WkbType::Unknown ||
+                                        pr.srids.value( 0, std::numeric_limits<int>::min() ) == std::numeric_limits<int>::min() ) ) )
           {
             conn->retrieveLayerTypes( pr, useEstimatedMetadata, feedback );
           }
           QgsPostgresProviderConnection::TableProperty property;
           property.setFlags( prFlags );
-          for ( int i = 0; i < std::min( pr.types.size(), pr.srids.size() ); i++ )
+          for ( int i = 0; i < std::min( pr.types.size(), pr.srids.size() ) ; i++ )
           {
             property.addGeometryColumnType( pr.types.at( i ), QgsCoordinateReferenceSystem::fromEpsgId( pr.srids.at( i ) ) );
           }
@@ -317,7 +335,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsPostgresProviderC
             // Set the candidates
             property.setPrimaryKeyColumns( pr.pkCols );
           }
-          else // Fetch and set the real pks
+          else  // Fetch and set the real pks
           {
             try
             {
@@ -327,9 +345,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsPostgresProviderC
                 ORDER BY CASE WHEN indisprimary THEN 1 ELSE 2 END LIMIT 1)
               SELECT attname FROM pg_index,pg_attribute, pkrelid
               WHERE indexrelid=pkrelid.idxri AND indrelid=attrelid AND pg_attribute.attnum=any(pg_index.indkey);
-             )" )
-                                                                   .arg( QgsPostgresConn::quotedValue( QString( QgsPostgresConn::quotedIdentifier( pr.schemaName ) + "." + QgsPostgresConn::quotedIdentifier( pr.tableName ) ) ) ),
-                                                                 false );
+             )" ).arg( QgsPostgresConn::quotedValue( QString( QgsPostgresConn::quotedIdentifier( pr.schemaName ) + "." + QgsPostgresConn::quotedIdentifier( pr.tableName ) ) ) ), false );
               QStringList pkNames;
               for ( const QVariantList &pk : std::as_const( pks ) )
               {
@@ -349,7 +365,7 @@ QList<QgsAbstractDatabaseProviderConnection::TableProperty> QgsPostgresProviderC
     }
     QgsPostgresConnPool::instance()->releaseConnection( conn );
   }
-  if ( !errCause.isEmpty() )
+  if ( ! errCause.isEmpty() )
   {
     throw QgsProviderConnectionException( errCause );
   }
@@ -372,21 +388,24 @@ void QgsPostgresProviderConnection::createSchema( const QString &name ) const
 {
   checkCapability( Capability::CreateSchema );
   executeSqlPrivate( QStringLiteral( "CREATE SCHEMA %1" )
-                       .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
+                     .arg( QgsPostgresConn::quotedIdentifier( name ) ) );
+
 }
 
-void QgsPostgresProviderConnection::dropSchema( const QString &name, bool force ) const
+void QgsPostgresProviderConnection::dropSchema( const QString &name,  bool force ) const
 {
   checkCapability( Capability::DropSchema );
   executeSqlPrivate( QStringLiteral( "DROP SCHEMA %1 %2" )
-                       .arg( QgsPostgresConn::quotedIdentifier( name ), force ? QStringLiteral( "CASCADE" ) : QString() ) );
+                     .arg( QgsPostgresConn::quotedIdentifier( name ),
+                           force ? QStringLiteral( "CASCADE" ) : QString() ) );
 }
 
 void QgsPostgresProviderConnection::renameSchema( const QString &name, const QString &newName ) const
 {
   checkCapability( Capability::RenameSchema );
   executeSqlPrivate( QStringLiteral( "ALTER SCHEMA %1 RENAME TO %2" )
-                       .arg( QgsPostgresConn::quotedIdentifier( name ), QgsPostgresConn::quotedIdentifier( newName ) ) );
+                     .arg( QgsPostgresConn::quotedIdentifier( name ),
+                           QgsPostgresConn::quotedIdentifier( newName ) ) );
 }
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::execSql( const QString &sql, QgsFeedback *feedback ) const
@@ -402,7 +421,7 @@ QList<QVariantList> QgsPostgresProviderConnection::executeSqlPrivate( const QStr
 
 QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection::execSqlPrivate( const QString &sql, bool resolveTypes, QgsFeedback *feedback, std::shared_ptr<QgsPoolPostgresConn> pgconn ) const
 {
-  if ( !pgconn )
+  if ( ! pgconn )
   {
     pgconn = std::make_shared<QgsPoolPostgresConn>( QgsDataSourceUri( uri() ).connectionInfo( false ) );
   }
@@ -418,12 +437,13 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
 
   QgsPostgresConn *conn = pgconn->get();
 
-  if ( !conn )
+  if ( ! conn )
   {
     throw QgsProviderConnectionException( QObject::tr( "Connection failed: %1" ).arg( uri() ) );
   }
   else
   {
+
     if ( feedback && feedback->isCanceled() )
     {
       return results;
@@ -433,7 +453,8 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
     QMetaObject::Connection qtConnection;
     if ( feedback )
     {
-      qtConnection = QObject::connect( feedback, &QgsFeedback::canceled, [&pgconn] {
+      qtConnection = QObject::connect( feedback, &QgsFeedback::canceled, [ &pgconn ]
+      {
         if ( pgconn )
           pgconn->get()->PQCancel();
       } );
@@ -450,26 +471,25 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
     }
 
     QString errCause;
-    if ( conn->PQstatus() != CONNECTION_OK || !res->result() )
+    if ( conn->PQstatus() != CONNECTION_OK || ! res->result() )
     {
       errCause = QObject::tr( "Connection error: %1 returned %2 [%3]" )
-                   .arg( sql )
-                   .arg( conn->PQstatus() )
-                   .arg( conn->PQerrorMessage() );
+                 .arg( sql ).arg( conn->PQstatus() )
+                 .arg( conn->PQerrorMessage() );
     }
     else
     {
       const QString err { conn->PQerrorMessage() };
-      if ( !err.isEmpty() )
+      if ( ! err.isEmpty() )
       {
         errCause = QObject::tr( "SQL error: %1 returned %2 [%3]" )
-                     .arg( sql )
-                     .arg( conn->PQstatus() )
-                     .arg( err );
+                   .arg( sql )
+                   .arg( conn->PQstatus() )
+                   .arg( err );
       }
     }
 
-    if ( !errCause.isEmpty() )
+    if ( ! errCause.isEmpty() )
     {
       throw QgsProviderConnectionException( errCause );
     }
@@ -478,6 +498,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
 
     if ( numRows > 0 )
     {
+
       // Get column names
       for ( int rowIdx = 0; rowIdx < res->PQnfields(); rowIdx++ )
       {
@@ -506,7 +527,7 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
         for ( const auto &typeRes : std::as_const( typesResolved ) )
         {
           const QString oid { typeRes.constLast().toString() };
-          if ( !oidTypeMap.contains( oid ) )
+          if ( ! oidTypeMap.contains( oid ) )
           {
             oidTypeMap.insert( typeRes.constFirst().toString(), typeRes.constLast().toString() );
           }
@@ -514,15 +535,17 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
 
         for ( int rowIdx = 0; rowIdx < numFields; rowIdx++ )
         {
-          static const QStringList intTypes = {
-            QStringLiteral( "oid" ),
-            QStringLiteral( "int2" ),
-            QStringLiteral( "int4" ),
-            QStringLiteral( "int8" ),
-          };
-          static const QStringList floatTypes = { QStringLiteral( "float4" ), QStringLiteral( "float8" ), QStringLiteral( "numeric" ) };
+          static const QStringList intTypes = { QStringLiteral( "oid" ),
+                                                QStringLiteral( "int2" ),
+                                                QStringLiteral( "int4" ),
+                                                QStringLiteral( "int8" ),
+                                              };
+          static const QStringList floatTypes = { QStringLiteral( "float4" ),
+                                                  QStringLiteral( "float8" ),
+                                                  QStringLiteral( "numeric" )
+                                                };
 
-          const QString typName { oidTypeMap[oids.at( rowIdx )] };
+          const QString typName { oidTypeMap[ oids.at( rowIdx )] };
           QMetaType::Type vType { QMetaType::Type::QString };
           if ( floatTypes.contains( typName ) )
           {
@@ -557,11 +580,11 @@ QgsAbstractDatabaseProviderConnection::QueryResult QgsPostgresProviderConnection
             // Just a warning, usually ok
             QgsDebugMsgLevel( QStringLiteral( "Unhandled PostgreSQL type %1, assuming string" ).arg( typName ), 2 );
           }
-          static_cast<QgsPostgresProviderResultIterator *>( iterator.get() )->typeMap[rowIdx] = vType;
+          static_cast<QgsPostgresProviderResultIterator *>( iterator.get() )->typeMap[ rowIdx ] = vType;
         }
       }
     }
-    if ( !errCause.isEmpty() )
+    if ( ! errCause.isEmpty() )
     {
       throw QgsProviderConnectionException( errCause );
     }
@@ -593,7 +616,7 @@ QVariantList QgsPostgresProviderResultIterator::nextRowPrivate()
       if ( vType == QMetaType::Type::Bool )
       {
         const QString boolStrVal { val.toString() };
-        if ( !boolStrVal.isEmpty() )
+        if ( ! boolStrVal.isEmpty() )
         {
           val = boolStrVal == 't';
         }
@@ -620,16 +643,18 @@ bool QgsPostgresProviderResultIterator::hasNextRowPrivate() const
 
 long long QgsPostgresProviderResultIterator::rowCountPrivate() const
 {
-  return result ? result->PQntuples() : static_cast<long long>( Qgis::FeatureCountState::UnknownCount );
+  return result ? result->PQntuples() : static_cast< long long >( Qgis::FeatureCountState::UnknownCount );
 }
 
 
 void QgsPostgresProviderConnection::vacuum( const QString &schema, const QString &name ) const
 {
   checkCapability( Capability::Vacuum );
-  if ( !schema.isEmpty() && !name.isEmpty() )
+  if ( ! schema.isEmpty() && ! name.isEmpty() )
   {
-    executeSqlPrivate( QStringLiteral( "VACUUM FULL ANALYZE %1.%2" ).arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( name ) ), false );
+    executeSqlPrivate( QStringLiteral( "VACUUM FULL ANALYZE %1.%2" )
+                       .arg( QgsPostgresConn::quotedIdentifier( schema ),
+                             QgsPostgresConn::quotedIdentifier( name ) ), false );
   }
   else
   {
@@ -662,7 +687,11 @@ void QgsPostgresProviderConnection::createSpatialIndex( const QString &schema, c
   }
 
   const QString indexName = QStringLiteral( "sidx_%1_%2" ).arg( name, geometryColumnName );
-  executeSqlPrivate( QStringLiteral( "CREATE INDEX %1 ON %2.%3 USING GIST (%4);" ).arg( QgsPostgresConn::quotedIdentifier( indexName ), QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( name ), QgsPostgresConn::quotedIdentifier( geometryColumnName ) ), false );
+  executeSqlPrivate( QStringLiteral( "CREATE INDEX %1 ON %2.%3 USING GIST (%4);" )
+                     .arg( QgsPostgresConn::quotedIdentifier( indexName ),
+                           QgsPostgresConn::quotedIdentifier( schema ),
+                           QgsPostgresConn::quotedIdentifier( name ),
+                           QgsPostgresConn::quotedIdentifier( geometryColumnName ) ), false );
 }
 
 bool QgsPostgresProviderConnection::spatialIndexExists( const QString &schema, const QString &name, const QString &geometryColumn ) const
@@ -681,12 +710,10 @@ bool QgsPostgresProviderConnection::spatialIndexExists( const QString &schema, c
                                                                   AND ns.nspname=%1
                                                                   AND t.relname=%2
                                                                   AND a.attname=%3;
-                                                              )""" )
-                                                .arg(
-                                                  QgsPostgresConn::quotedValue( schema ),
-                                                  QgsPostgresConn::quotedValue( name ),
-                                                  QgsPostgresConn::quotedValue( geometryColumn )
-                                                ) );
+                                                              )""" ).arg(
+                                    QgsPostgresConn::quotedValue( schema ),
+                                    QgsPostgresConn::quotedValue( name ),
+                                    QgsPostgresConn::quotedValue( geometryColumn ) ) );
   return !res.isEmpty() && !res.at( 0 ).isEmpty() && res.at( 0 ).at( 0 ).toBool();
 }
 
@@ -706,24 +733,27 @@ void QgsPostgresProviderConnection::deleteSpatialIndex( const QString &schema, c
                                                                     AND ns.nspname=%1
                                                                     AND t.relname=%2
                                                                     AND a.attname=%3;
-                                                                )""" )
-                                                .arg(
-                                                  QgsPostgresConn::quotedValue( schema ),
-                                                  QgsPostgresConn::quotedValue( name ),
-                                                  QgsPostgresConn::quotedValue( geometryColumn )
-                                                ) );
+                                                                )""" ).arg(
+                                    QgsPostgresConn::quotedValue( schema ),
+                                    QgsPostgresConn::quotedValue( name ),
+                                    QgsPostgresConn::quotedValue( geometryColumn ) ) );
   if ( res.isEmpty() )
     throw QgsProviderConnectionException( QObject::tr( "No spatial index exists for %1.%2" ).arg( schema, name ) );
 
   const QString indexName = res.at( 0 ).at( 0 ).toString();
 
-  executeSqlPrivate( QStringLiteral( "DROP INDEX %1.%2" ).arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( indexName ) ), false );
+  executeSqlPrivate( QStringLiteral( "DROP INDEX %1.%2" ).arg( QgsPostgresConn::quotedIdentifier( schema ),
+                     QgsPostgresConn::quotedIdentifier( indexName ) ), false );
 }
 
 void QgsPostgresProviderConnection::setFieldComment( const QString &fieldName, const QString &schema, const QString &tableName, const QString &comment ) const
 {
   executeSqlPrivate( QStringLiteral( "COMMENT ON COLUMN %1.%2.%3 IS %4;" )
-                       .arg( QgsPostgresConn::quotedIdentifier( schema ), QgsPostgresConn::quotedIdentifier( tableName ), QgsPostgresConn::quotedIdentifier( fieldName ), QgsPostgresConn::quotedValue( comment ) ) );
+                     .arg( QgsPostgresConn::quotedIdentifier( schema ),
+                           QgsPostgresConn::quotedIdentifier( tableName ),
+                           QgsPostgresConn::quotedIdentifier( fieldName ),
+                           QgsPostgresConn::quotedValue( comment )
+                         ) );
 }
 
 QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnection::tables( const QString &schema, const TableFlags &flags, QgsFeedback *feedback ) const
@@ -734,18 +764,18 @@ QList<QgsPostgresProviderConnection::TableProperty> QgsPostgresProviderConnectio
 QgsAbstractDatabaseProviderConnection::TableProperty QgsPostgresProviderConnection::table( const QString &schema, const QString &table, QgsFeedback *feedback ) const
 {
   const QList<QgsPostgresProviderConnection::TableProperty> properties { tablesPrivate( schema, table, TableFlags(), feedback ) };
-  if ( !properties.empty() )
+  if ( ! properties.empty() )
   {
     return properties.first();
   }
   else
   {
     throw QgsProviderConnectionException( QObject::tr( "Table '%1' was not found in schema '%2'" )
-                                            .arg( table, schema ) );
+                                          .arg( table, schema ) );
   }
 }
 
-QStringList QgsPostgresProviderConnection::schemas() const
+QStringList QgsPostgresProviderConnection::schemas( ) const
 {
   checkCapability( Capability::Schemas );
   QStringList schemas;
@@ -761,7 +791,7 @@ QStringList QgsPostgresProviderConnection::schemas() const
     QList<QgsPostgresSchemaProperty> schemaProperties;
     bool ok = conn->getSchemas( schemaProperties );
     QgsPostgresConnPool::instance()->releaseConnection( conn );
-    if ( !ok )
+    if ( ! ok )
     {
       errCause = QObject::tr( "Could not retrieve schemas: %1" ).arg( uri() );
     }
@@ -773,7 +803,7 @@ QStringList QgsPostgresProviderConnection::schemas() const
       }
     }
   }
-  if ( !errCause.isEmpty() )
+  if ( ! errCause.isEmpty() )
   {
     throw QgsProviderConnectionException( errCause );
   }
@@ -794,7 +824,7 @@ void QgsPostgresProviderConnection::store( const QString &name ) const
   // From URI
   const QgsDataSourceUri dsUri { uri() };
   settings.setValue( "service", dsUri.service() );
-  settings.setValue( "host", dsUri.host() );
+  settings.setValue( "host",  dsUri.host() );
   settings.setValue( "port", dsUri.port() );
   settings.setValue( "database", dsUri.database() );
   settings.setValue( "username", dsUri.username() );
@@ -827,7 +857,7 @@ QIcon QgsPostgresProviderConnection::icon() const
 QList<QgsVectorDataProvider::NativeType> QgsPostgresProviderConnection::nativeTypes() const
 {
   QList<QgsVectorDataProvider::NativeType> types;
-  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsDataSourceUri { uri() }.connectionInfo( false ) );
+  QgsPostgresConn *conn = QgsPostgresConnPool::instance()->acquireConnection( QgsDataSourceUri{ uri() } .connectionInfo( false ) );
   if ( conn )
   {
     types = conn->nativeTypes();
@@ -867,12 +897,12 @@ QgsVectorLayer *QgsPostgresProviderConnection::createSqlVectorLayer( const SqlVe
     throw QgsProviderConnectionException( QObject::tr( "Could not create a SQL vector layer: SQL expression is empty." ) );
   }
 
-  QgsDataSourceUri tUri( uri() );
+  QgsDataSourceUri tUri( uri( ) );
 
   tUri.setSql( options.filter );
   tUri.disableSelectAtId( options.disableSelectAtId );
 
-  if ( !options.primaryKeyColumns.isEmpty() )
+  if ( ! options.primaryKeyColumns.isEmpty() )
   {
     tUri.setKeyColumn( options.primaryKeyColumns.join( ',' ) );
     tUri.setTable( QStringLiteral( "(%1)" ).arg( options.sql ) );
@@ -882,964 +912,968 @@ QgsVectorLayer *QgsPostgresProviderConnection::createSqlVectorLayer( const SqlVe
     int pkId { 0 };
     while ( options.sql.contains( QStringLiteral( "_uid%1_" ).arg( pkId ), Qt::CaseSensitivity::CaseInsensitive ) )
     {
-      pkId++;
+      pkId ++;
     }
     tUri.setKeyColumn( QStringLiteral( "_uid%1_" ).arg( pkId ) );
 
     int sqlId { 0 };
     while ( options.sql.contains( QStringLiteral( "_subq_%1_" ).arg( sqlId ), Qt::CaseSensitivity::CaseInsensitive ) )
     {
-      sqlId++;
+      sqlId ++;
     }
     tUri.setTable( QStringLiteral( "(SELECT row_number() over () AS _uid%1_, * FROM (%2\n) AS _subq_%3_\n)" ).arg( QString::number( pkId ), options.sql, QString::number( sqlId ) ) );
   }
 
-  if ( !options.geometryColumn.isEmpty() )
+  if ( ! options.geometryColumn.isEmpty() )
   {
     tUri.setGeometryColumn( options.geometryColumn );
   }
 
   QgsVectorLayer::LayerOptions vectorLayerOptions { false, true };
   vectorLayerOptions.skipCrsValidation = true;
-  return new QgsVectorLayer { tUri.uri( false ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey(), vectorLayerOptions };
+  return new QgsVectorLayer{ tUri.uri( false ), options.layerName.isEmpty() ? QStringLiteral( "QueryLayer" ) : options.layerName, providerKey(), vectorLayerOptions };
 }
 
 QMultiMap<Qgis::SqlKeywordCategory, QStringList> QgsPostgresProviderConnection::sqlDictionary()
 {
   return QgsAbstractDatabaseProviderConnection::sqlDictionary().unite(
-    { { Qgis::SqlKeywordCategory::Keyword,
-        {
-          QStringLiteral( "absolute" ),
-          QStringLiteral( "action" ),
-          QStringLiteral( "add" ),
-          QStringLiteral( "admin" ),
-          QStringLiteral( "after" ),
-          QStringLiteral( "aggregate" ),
-          QStringLiteral( "alias" ),
-          QStringLiteral( "all" ),
-          QStringLiteral( "allocate" ),
-          QStringLiteral( "alter" ),
-          QStringLiteral( "analyse" ),
-          QStringLiteral( "analyze" ),
-          QStringLiteral( "and" ),
-          QStringLiteral( "any" ),
-          QStringLiteral( "are" ),
-          QStringLiteral( "array" ),
-          QStringLiteral( "as" ),
-          QStringLiteral( "asc" ),
-          QStringLiteral( "asensitive" ),
-          QStringLiteral( "assertion" ),
-          QStringLiteral( "asymmetric" ),
-          QStringLiteral( "at" ),
-          QStringLiteral( "atomic" ),
-          QStringLiteral( "authorization" ),
-          QStringLiteral( "avg" ),
-          QStringLiteral( "before" ),
-          QStringLiteral( "begin" ),
-          QStringLiteral( "between" ),
-          QStringLiteral( "bigint" ),
-          QStringLiteral( "binary" ),
-          QStringLiteral( "bit" ),
-          QStringLiteral( "bit_length" ),
-          QStringLiteral( "blob" ),
-          QStringLiteral( "boolean" ),
-          QStringLiteral( "both" ),
-          QStringLiteral( "breadth" ),
-          QStringLiteral( "by" ),
-          QStringLiteral( "call" ),
-          QStringLiteral( "called" ),
-          QStringLiteral( "cardinality" ),
-          QStringLiteral( "cascade" ),
-          QStringLiteral( "cascaded" ),
-          QStringLiteral( "case" ),
-          QStringLiteral( "cast" ),
-          QStringLiteral( "catalog" ),
-          QStringLiteral( "ceil" ),
-          QStringLiteral( "ceiling" ),
-          QStringLiteral( "char" ),
-          QStringLiteral( "character" ),
-          QStringLiteral( "character_length" ),
-          QStringLiteral( "char_length" ),
-          QStringLiteral( "check" ),
-          QStringLiteral( "class" ),
-          QStringLiteral( "clob" ),
-          QStringLiteral( "close" ),
-          QStringLiteral( "coalesce" ),
-          QStringLiteral( "collate" ),
-          QStringLiteral( "collation" ),
-          QStringLiteral( "collect" ),
-          QStringLiteral( "column" ),
-          QStringLiteral( "commit" ),
-          QStringLiteral( "completion" ),
-          QStringLiteral( "condition" ),
-          QStringLiteral( "connect" ),
-          QStringLiteral( "connection" ),
-          QStringLiteral( "constraint" ),
-          QStringLiteral( "constraints" ),
-          QStringLiteral( "constructor" ),
-          QStringLiteral( "continue" ),
-          QStringLiteral( "convert" ),
-          QStringLiteral( "corr" ),
-          QStringLiteral( "corresponding" ),
-          QStringLiteral( "count" ),
-          QStringLiteral( "covar_pop" ),
-          QStringLiteral( "covar_samp" ),
-          QStringLiteral( "create" ),
-          QStringLiteral( "cross" ),
-          QStringLiteral( "cube" ),
-          QStringLiteral( "cume_dist" ),
-          QStringLiteral( "current" ),
-          QStringLiteral( "current_date" ),
-          QStringLiteral( "current_default_transform_group" ),
-          QStringLiteral( "current_path" ),
-          QStringLiteral( "current_role" ),
-          QStringLiteral( "current_time" ),
-          QStringLiteral( "current_timestamp" ),
-          QStringLiteral( "current_transform_group_for_type" ),
-          QStringLiteral( "current_user" ),
-          QStringLiteral( "cursor" ),
-          QStringLiteral( "cycle" ),
-          QStringLiteral( "data" ),
-          QStringLiteral( "date" ),
-          QStringLiteral( "day" ),
-          QStringLiteral( "deallocate" ),
-          QStringLiteral( "dec" ),
-          QStringLiteral( "decimal" ),
-          QStringLiteral( "declare" ),
-          QStringLiteral( "default" ),
-          QStringLiteral( "deferrable" ),
-          QStringLiteral( "deferred" ),
-          QStringLiteral( "delete" ),
-          QStringLiteral( "dense_rank" ),
-          QStringLiteral( "depth" ),
-          QStringLiteral( "deref" ),
-          QStringLiteral( "desc" ),
-          QStringLiteral( "describe" ),
-          QStringLiteral( "descriptor" ),
-          QStringLiteral( "destroy" ),
-          QStringLiteral( "destructor" ),
-          QStringLiteral( "deterministic" ),
-          QStringLiteral( "diagnostics" ),
-          QStringLiteral( "dictionary" ),
-          QStringLiteral( "disconnect" ),
-          QStringLiteral( "distinct" ),
-          QStringLiteral( "do" ),
-          QStringLiteral( "domain" ),
-          QStringLiteral( "double" ),
-          QStringLiteral( "drop" ),
-          QStringLiteral( "dynamic" ),
-          QStringLiteral( "each" ),
-          QStringLiteral( "element" ),
-          QStringLiteral( "else" ),
-          QStringLiteral( "end" ),
-          QStringLiteral( "end-exec" ),
-          QStringLiteral( "equals" ),
-          QStringLiteral( "escape" ),
-          QStringLiteral( "every" ),
-          QStringLiteral( "except" ),
-          QStringLiteral( "exception" ),
-          QStringLiteral( "exec" ),
-          QStringLiteral( "execute" ),
-          QStringLiteral( "exists" ),
-          QStringLiteral( "exp" ),
-          QStringLiteral( "external" ),
-          QStringLiteral( "extract" ),
-          QStringLiteral( "false" ),
-          QStringLiteral( "fetch" ),
-          QStringLiteral( "filter" ),
-          QStringLiteral( "first" ),
-          QStringLiteral( "float" ),
-          QStringLiteral( "floor" ),
-          QStringLiteral( "for" ),
-          QStringLiteral( "foreign" ),
-          QStringLiteral( "found" ),
-          QStringLiteral( "free" ),
-          QStringLiteral( "freeze" ),
-          QStringLiteral( "from" ),
-          QStringLiteral( "full" ),
-          QStringLiteral( "function" ),
-          QStringLiteral( "fusion" ),
-          QStringLiteral( "general" ),
-          QStringLiteral( "get" ),
-          QStringLiteral( "global" ),
-          QStringLiteral( "go" ),
-          QStringLiteral( "goto" ),
-          QStringLiteral( "grant" ),
-          QStringLiteral( "group" ),
-          QStringLiteral( "grouping" ),
-          QStringLiteral( "having" ),
-          QStringLiteral( "hold" ),
-          QStringLiteral( "host" ),
-          QStringLiteral( "hour" ),
-          QStringLiteral( "identity" ),
-          QStringLiteral( "ignore" ),
-          QStringLiteral( "ilike" ),
-          QStringLiteral( "immediate" ),
-          QStringLiteral( "in" ),
-          QStringLiteral( "indicator" ),
-          QStringLiteral( "initialize" ),
-          QStringLiteral( "initially" ),
-          QStringLiteral( "inner" ),
-          QStringLiteral( "inout" ),
-          QStringLiteral( "input" ),
-          QStringLiteral( "insensitive" ),
-          QStringLiteral( "insert" ),
-          QStringLiteral( "int" ),
-          QStringLiteral( "integer" ),
-          QStringLiteral( "intersect" ),
-          QStringLiteral( "intersection" ),
-          QStringLiteral( "interval" ),
-          QStringLiteral( "into" ),
-          QStringLiteral( "is" ),
-          QStringLiteral( "isnull" ),
-          QStringLiteral( "isolation" ),
-          QStringLiteral( "iterate" ),
-          QStringLiteral( "join" ),
-          QStringLiteral( "key" ),
-          QStringLiteral( "language" ),
-          QStringLiteral( "large" ),
-          QStringLiteral( "last" ),
-          QStringLiteral( "lateral" ),
-          QStringLiteral( "leading" ),
-          QStringLiteral( "left" ),
-          QStringLiteral( "less" ),
-          QStringLiteral( "level" ),
-          QStringLiteral( "like" ),
-          QStringLiteral( "limit" ),
-          QStringLiteral( "ln" ),
-          QStringLiteral( "local" ),
-          QStringLiteral( "localtime" ),
-          QStringLiteral( "localtimestamp" ),
-          QStringLiteral( "locator" ),
-          QStringLiteral( "lower" ),
-          QStringLiteral( "map" ),
-          QStringLiteral( "match" ),
-          QStringLiteral( "max" ),
-          QStringLiteral( "member" ),
-          QStringLiteral( "merge" ),
-          QStringLiteral( "method" ),
-          QStringLiteral( "min" ),
-          QStringLiteral( "minute" ),
-          QStringLiteral( "mod" ),
-          QStringLiteral( "modifies" ),
-          QStringLiteral( "modify" ),
-          QStringLiteral( "module" ),
-          QStringLiteral( "month" ),
-          QStringLiteral( "multiset" ),
-          QStringLiteral( "names" ),
-          QStringLiteral( "national" ),
-          QStringLiteral( "natural" ),
-          QStringLiteral( "nchar" ),
-          QStringLiteral( "nclob" ),
-          QStringLiteral( "new" ),
-          QStringLiteral( "next" ),
-          QStringLiteral( "no" ),
-          QStringLiteral( "none" ),
-          QStringLiteral( "normalize" ),
-          QStringLiteral( "not" ),
-          QStringLiteral( "notnull" ),
-          QStringLiteral( "null" ),
-          QStringLiteral( "nullif" ),
-          QStringLiteral( "numeric" ),
-          QStringLiteral( "object" ),
-          QStringLiteral( "octet_length" ),
-          QStringLiteral( "of" ),
-          QStringLiteral( "off" ),
-          QStringLiteral( "offset" ),
-          QStringLiteral( "old" ),
-          QStringLiteral( "on" ),
-          QStringLiteral( "only" ),
-          QStringLiteral( "open" ),
-          QStringLiteral( "operation" ),
-          QStringLiteral( "option" ),
-          QStringLiteral( "or" ),
-          QStringLiteral( "order" ),
-          QStringLiteral( "ordinality" ),
-          QStringLiteral( "out" ),
-          QStringLiteral( "outer" ),
-          QStringLiteral( "output" ),
-          QStringLiteral( "over" ),
-          QStringLiteral( "overlaps" ),
-          QStringLiteral( "overlay" ),
-          QStringLiteral( "pad" ),
-          QStringLiteral( "parameter" ),
-          QStringLiteral( "parameters" ),
-          QStringLiteral( "partial" ),
-          QStringLiteral( "partition" ),
-          QStringLiteral( "path" ),
-          QStringLiteral( "percentile_cont" ),
-          QStringLiteral( "percentile_disc" ),
-          QStringLiteral( "percent_rank" ),
-          QStringLiteral( "placing" ),
-          QStringLiteral( "position" ),
-          QStringLiteral( "postfix" ),
-          QStringLiteral( "power" ),
-          QStringLiteral( "precision" ),
-          QStringLiteral( "prefix" ),
-          QStringLiteral( "preorder" ),
-          QStringLiteral( "prepare" ),
-          QStringLiteral( "preserve" ),
-          QStringLiteral( "primary" ),
-          QStringLiteral( "prior" ),
-          QStringLiteral( "privileges" ),
-          QStringLiteral( "procedure" ),
-          QStringLiteral( "public" ),
-          QStringLiteral( "range" ),
-          QStringLiteral( "rank" ),
-          QStringLiteral( "read" ),
-          QStringLiteral( "reads" ),
-          QStringLiteral( "real" ),
-          QStringLiteral( "recursive" ),
-          QStringLiteral( "ref" ),
-          QStringLiteral( "references" ),
-          QStringLiteral( "referencing" ),
-          QStringLiteral( "regr_avgx" ),
-          QStringLiteral( "regr_avgy" ),
-          QStringLiteral( "regr_count" ),
-          QStringLiteral( "regr_intercept" ),
-          QStringLiteral( "regr_r2" ),
-          QStringLiteral( "regr_slope" ),
-          QStringLiteral( "regr_sxx" ),
-          QStringLiteral( "regr_sxy" ),
-          QStringLiteral( "regr_syy" ),
-          QStringLiteral( "relative" ),
-          QStringLiteral( "release" ),
-          QStringLiteral( "restrict" ),
-          QStringLiteral( "result" ),
-          QStringLiteral( "return" ),
-          QStringLiteral( "returning" ),
-          QStringLiteral( "returns" ),
-          QStringLiteral( "revoke" ),
-          QStringLiteral( "right" ),
-          QStringLiteral( "role" ),
-          QStringLiteral( "rollback" ),
-          QStringLiteral( "rollup" ),
-          QStringLiteral( "routine" ),
-          QStringLiteral( "row" ),
-          QStringLiteral( "row_number" ),
-          QStringLiteral( "rows" ),
-          QStringLiteral( "savepoint" ),
-          QStringLiteral( "schema" ),
-          QStringLiteral( "scope" ),
-          QStringLiteral( "scroll" ),
-          QStringLiteral( "search" ),
-          QStringLiteral( "second" ),
-          QStringLiteral( "section" ),
-          QStringLiteral( "select" ),
-          QStringLiteral( "sensitive" ),
-          QStringLiteral( "sequence" ),
-          QStringLiteral( "session" ),
-          QStringLiteral( "session_user" ),
-          QStringLiteral( "set" ),
-          QStringLiteral( "sets" ),
-          QStringLiteral( "similar" ),
-          QStringLiteral( "size" ),
-          QStringLiteral( "smallint" ),
-          QStringLiteral( "some" ),
-          QStringLiteral( "space" ),
-          QStringLiteral( "specific" ),
-          QStringLiteral( "specifictype" ),
-          QStringLiteral( "sql" ),
-          QStringLiteral( "sqlcode" ),
-          QStringLiteral( "sqlerror" ),
-          QStringLiteral( "sqlexception" ),
-          QStringLiteral( "sqlstate" ),
-          QStringLiteral( "sqlwarning" ),
-          QStringLiteral( "sqrt" ),
-          QStringLiteral( "start" ),
-          QStringLiteral( "state" ),
-          QStringLiteral( "statement" ),
-          QStringLiteral( "static" ),
-          QStringLiteral( "stddev_pop" ),
-          QStringLiteral( "stddev_samp" ),
-          QStringLiteral( "structure" ),
-          QStringLiteral( "submultiset" ),
-          QStringLiteral( "substring" ),
-          QStringLiteral( "sum" ),
-          QStringLiteral( "symmetric" ),
-          QStringLiteral( "system" ),
-          QStringLiteral( "system_user" ),
-          QStringLiteral( "table" ),
-          QStringLiteral( "tablesample" ),
-          QStringLiteral( "temporary" ),
-          QStringLiteral( "terminate" ),
-          QStringLiteral( "than" ),
-          QStringLiteral( "then" ),
-          QStringLiteral( "time" ),
-          QStringLiteral( "timestamp" ),
-          QStringLiteral( "timezone_hour" ),
-          QStringLiteral( "timezone_minute" ),
-          QStringLiteral( "to" ),
-          QStringLiteral( "trailing" ),
-          QStringLiteral( "transaction" ),
-          QStringLiteral( "translate" ),
-          QStringLiteral( "translation" ),
-          QStringLiteral( "treat" ),
-          QStringLiteral( "trigger" ),
-          QStringLiteral( "trim" ),
-          QStringLiteral( "true" ),
-          QStringLiteral( "uescape" ),
-          QStringLiteral( "under" ),
-          QStringLiteral( "union" ),
-          QStringLiteral( "unique" ),
-          QStringLiteral( "unknown" ),
-          QStringLiteral( "unnest" ),
-          QStringLiteral( "update" ),
-          QStringLiteral( "upper" ),
-          QStringLiteral( "usage" ),
-          QStringLiteral( "user" ),
-          QStringLiteral( "using" ),
-          QStringLiteral( "value" ),
-          QStringLiteral( "values" ),
-          QStringLiteral( "varchar" ),
-          QStringLiteral( "variable" ),
-          QStringLiteral( "var_pop" ),
-          QStringLiteral( "var_samp" ),
-          QStringLiteral( "varying" ),
-          QStringLiteral( "verbose" ),
-          QStringLiteral( "view" ),
-          QStringLiteral( "when" ),
-          QStringLiteral( "whenever" ),
-          QStringLiteral( "where" ),
-          QStringLiteral( "width_bucket" ),
-          QStringLiteral( "window" ),
-          QStringLiteral( "with" ),
-          QStringLiteral( "within" ),
-          QStringLiteral( "without" ),
-          QStringLiteral( "work" ),
-          QStringLiteral( "write" ),
-          QStringLiteral( "xml" ),
-          QStringLiteral( "xmlagg" ),
-          QStringLiteral( "xmlattributes" ),
-          QStringLiteral( "xmlbinary" ),
-          QStringLiteral( "xmlcomment" ),
-          QStringLiteral( "xmlconcat" ),
-          QStringLiteral( "xmlelement" ),
-          QStringLiteral( "xmlforest" ),
-          QStringLiteral( "xmlnamespaces" ),
-          QStringLiteral( "xmlparse" ),
-          QStringLiteral( "xmlpi" ),
-          QStringLiteral( "xmlroot" ),
-          QStringLiteral( "xmlserialize" ),
-          QStringLiteral( "year" ),
-          QStringLiteral( "zone" ),
-        }
-      },
-      { Qgis::SqlKeywordCategory::Aggregate,
-        {
-          QStringLiteral( "Max" ),
-          QStringLiteral( "Min" ),
-          QStringLiteral( "Avg" ),
-          QStringLiteral( "Count" ),
-          QStringLiteral( "Sum" ),
-          QStringLiteral( "Group_Concat" ),
-          QStringLiteral( "Total" ),
-          QStringLiteral( "Var_Pop" ),
-          QStringLiteral( "Var_Samp" ),
-          QStringLiteral( "StdDev_Pop" ),
-          QStringLiteral( "StdDev_Samp" ),
-        }
-      },
-      { Qgis::SqlKeywordCategory::Math,
-        {
-          QStringLiteral( "Abs" ),
-          QStringLiteral( "ACos" ),
-          QStringLiteral( "ASin" ),
-          QStringLiteral( "ATan" ),
-          QStringLiteral( "Cos" ),
-          QStringLiteral( "Cot" ),
-          QStringLiteral( "Degrees" ),
-          QStringLiteral( "Exp" ),
-          QStringLiteral( "Floor" ),
-          QStringLiteral( "Log" ),
-          QStringLiteral( "Log2" ),
+  {
+    {
+      Qgis::SqlKeywordCategory::Keyword,
+      {
+        QStringLiteral( "absolute" ),
+        QStringLiteral( "action" ),
+        QStringLiteral( "add" ),
+        QStringLiteral( "admin" ),
+        QStringLiteral( "after" ),
+        QStringLiteral( "aggregate" ),
+        QStringLiteral( "alias" ),
+        QStringLiteral( "all" ),
+        QStringLiteral( "allocate" ),
+        QStringLiteral( "alter" ),
+        QStringLiteral( "analyse" ),
+        QStringLiteral( "analyze" ),
+        QStringLiteral( "and" ),
+        QStringLiteral( "any" ),
+        QStringLiteral( "are" ),
+        QStringLiteral( "array" ),
+        QStringLiteral( "as" ),
+        QStringLiteral( "asc" ),
+        QStringLiteral( "asensitive" ),
+        QStringLiteral( "assertion" ),
+        QStringLiteral( "asymmetric" ),
+        QStringLiteral( "at" ),
+        QStringLiteral( "atomic" ),
+        QStringLiteral( "authorization" ),
+        QStringLiteral( "avg" ),
+        QStringLiteral( "before" ),
+        QStringLiteral( "begin" ),
+        QStringLiteral( "between" ),
+        QStringLiteral( "bigint" ),
+        QStringLiteral( "binary" ),
+        QStringLiteral( "bit" ),
+        QStringLiteral( "bit_length" ),
+        QStringLiteral( "blob" ),
+        QStringLiteral( "boolean" ),
+        QStringLiteral( "both" ),
+        QStringLiteral( "breadth" ),
+        QStringLiteral( "by" ),
+        QStringLiteral( "call" ),
+        QStringLiteral( "called" ),
+        QStringLiteral( "cardinality" ),
+        QStringLiteral( "cascade" ),
+        QStringLiteral( "cascaded" ),
+        QStringLiteral( "case" ),
+        QStringLiteral( "cast" ),
+        QStringLiteral( "catalog" ),
+        QStringLiteral( "ceil" ),
+        QStringLiteral( "ceiling" ),
+        QStringLiteral( "char" ),
+        QStringLiteral( "character" ),
+        QStringLiteral( "character_length" ),
+        QStringLiteral( "char_length" ),
+        QStringLiteral( "check" ),
+        QStringLiteral( "class" ),
+        QStringLiteral( "clob" ),
+        QStringLiteral( "close" ),
+        QStringLiteral( "coalesce" ),
+        QStringLiteral( "collate" ),
+        QStringLiteral( "collation" ),
+        QStringLiteral( "collect" ),
+        QStringLiteral( "column" ),
+        QStringLiteral( "commit" ),
+        QStringLiteral( "completion" ),
+        QStringLiteral( "condition" ),
+        QStringLiteral( "connect" ),
+        QStringLiteral( "connection" ),
+        QStringLiteral( "constraint" ),
+        QStringLiteral( "constraints" ),
+        QStringLiteral( "constructor" ),
+        QStringLiteral( "continue" ),
+        QStringLiteral( "convert" ),
+        QStringLiteral( "corr" ),
+        QStringLiteral( "corresponding" ),
+        QStringLiteral( "count" ),
+        QStringLiteral( "covar_pop" ),
+        QStringLiteral( "covar_samp" ),
+        QStringLiteral( "create" ),
+        QStringLiteral( "cross" ),
+        QStringLiteral( "cube" ),
+        QStringLiteral( "cume_dist" ),
+        QStringLiteral( "current" ),
+        QStringLiteral( "current_date" ),
+        QStringLiteral( "current_default_transform_group" ),
+        QStringLiteral( "current_path" ),
+        QStringLiteral( "current_role" ),
+        QStringLiteral( "current_time" ),
+        QStringLiteral( "current_timestamp" ),
+        QStringLiteral( "current_transform_group_for_type" ),
+        QStringLiteral( "current_user" ),
+        QStringLiteral( "cursor" ),
+        QStringLiteral( "cycle" ),
+        QStringLiteral( "data" ),
+        QStringLiteral( "date" ),
+        QStringLiteral( "day" ),
+        QStringLiteral( "deallocate" ),
+        QStringLiteral( "dec" ),
+        QStringLiteral( "decimal" ),
+        QStringLiteral( "declare" ),
+        QStringLiteral( "default" ),
+        QStringLiteral( "deferrable" ),
+        QStringLiteral( "deferred" ),
+        QStringLiteral( "delete" ),
+        QStringLiteral( "dense_rank" ),
+        QStringLiteral( "depth" ),
+        QStringLiteral( "deref" ),
+        QStringLiteral( "desc" ),
+        QStringLiteral( "describe" ),
+        QStringLiteral( "descriptor" ),
+        QStringLiteral( "destroy" ),
+        QStringLiteral( "destructor" ),
+        QStringLiteral( "deterministic" ),
+        QStringLiteral( "diagnostics" ),
+        QStringLiteral( "dictionary" ),
+        QStringLiteral( "disconnect" ),
+        QStringLiteral( "distinct" ),
+        QStringLiteral( "do" ),
+        QStringLiteral( "domain" ),
+        QStringLiteral( "double" ),
+        QStringLiteral( "drop" ),
+        QStringLiteral( "dynamic" ),
+        QStringLiteral( "each" ),
+        QStringLiteral( "element" ),
+        QStringLiteral( "else" ),
+        QStringLiteral( "end" ),
+        QStringLiteral( "end-exec" ),
+        QStringLiteral( "equals" ),
+        QStringLiteral( "escape" ),
+        QStringLiteral( "every" ),
+        QStringLiteral( "except" ),
+        QStringLiteral( "exception" ),
+        QStringLiteral( "exec" ),
+        QStringLiteral( "execute" ),
+        QStringLiteral( "exists" ),
+        QStringLiteral( "exp" ),
+        QStringLiteral( "external" ),
+        QStringLiteral( "extract" ),
+        QStringLiteral( "false" ),
+        QStringLiteral( "fetch" ),
+        QStringLiteral( "filter" ),
+        QStringLiteral( "first" ),
+        QStringLiteral( "float" ),
+        QStringLiteral( "floor" ),
+        QStringLiteral( "for" ),
+        QStringLiteral( "foreign" ),
+        QStringLiteral( "found" ),
+        QStringLiteral( "free" ),
+        QStringLiteral( "freeze" ),
+        QStringLiteral( "from" ),
+        QStringLiteral( "full" ),
+        QStringLiteral( "function" ),
+        QStringLiteral( "fusion" ),
+        QStringLiteral( "general" ),
+        QStringLiteral( "get" ),
+        QStringLiteral( "global" ),
+        QStringLiteral( "go" ),
+        QStringLiteral( "goto" ),
+        QStringLiteral( "grant" ),
+        QStringLiteral( "group" ),
+        QStringLiteral( "grouping" ),
+        QStringLiteral( "having" ),
+        QStringLiteral( "hold" ),
+        QStringLiteral( "host" ),
+        QStringLiteral( "hour" ),
+        QStringLiteral( "identity" ),
+        QStringLiteral( "ignore" ),
+        QStringLiteral( "ilike" ),
+        QStringLiteral( "immediate" ),
+        QStringLiteral( "in" ),
+        QStringLiteral( "indicator" ),
+        QStringLiteral( "initialize" ),
+        QStringLiteral( "initially" ),
+        QStringLiteral( "inner" ),
+        QStringLiteral( "inout" ),
+        QStringLiteral( "input" ),
+        QStringLiteral( "insensitive" ),
+        QStringLiteral( "insert" ),
+        QStringLiteral( "int" ),
+        QStringLiteral( "integer" ),
+        QStringLiteral( "intersect" ),
+        QStringLiteral( "intersection" ),
+        QStringLiteral( "interval" ),
+        QStringLiteral( "into" ),
+        QStringLiteral( "is" ),
+        QStringLiteral( "isnull" ),
+        QStringLiteral( "isolation" ),
+        QStringLiteral( "iterate" ),
+        QStringLiteral( "join" ),
+        QStringLiteral( "key" ),
+        QStringLiteral( "language" ),
+        QStringLiteral( "large" ),
+        QStringLiteral( "last" ),
+        QStringLiteral( "lateral" ),
+        QStringLiteral( "leading" ),
+        QStringLiteral( "left" ),
+        QStringLiteral( "less" ),
+        QStringLiteral( "level" ),
+        QStringLiteral( "like" ),
+        QStringLiteral( "limit" ),
+        QStringLiteral( "ln" ),
+        QStringLiteral( "local" ),
+        QStringLiteral( "localtime" ),
+        QStringLiteral( "localtimestamp" ),
+        QStringLiteral( "locator" ),
+        QStringLiteral( "lower" ),
+        QStringLiteral( "map" ),
+        QStringLiteral( "match" ),
+        QStringLiteral( "max" ),
+        QStringLiteral( "member" ),
+        QStringLiteral( "merge" ),
+        QStringLiteral( "method" ),
+        QStringLiteral( "min" ),
+        QStringLiteral( "minute" ),
+        QStringLiteral( "mod" ),
+        QStringLiteral( "modifies" ),
+        QStringLiteral( "modify" ),
+        QStringLiteral( "module" ),
+        QStringLiteral( "month" ),
+        QStringLiteral( "multiset" ),
+        QStringLiteral( "names" ),
+        QStringLiteral( "national" ),
+        QStringLiteral( "natural" ),
+        QStringLiteral( "nchar" ),
+        QStringLiteral( "nclob" ),
+        QStringLiteral( "new" ),
+        QStringLiteral( "next" ),
+        QStringLiteral( "no" ),
+        QStringLiteral( "none" ),
+        QStringLiteral( "normalize" ),
+        QStringLiteral( "not" ),
+        QStringLiteral( "notnull" ),
+        QStringLiteral( "null" ),
+        QStringLiteral( "nullif" ),
+        QStringLiteral( "numeric" ),
+        QStringLiteral( "object" ),
+        QStringLiteral( "octet_length" ),
+        QStringLiteral( "of" ),
+        QStringLiteral( "off" ),
+        QStringLiteral( "offset" ),
+        QStringLiteral( "old" ),
+        QStringLiteral( "on" ),
+        QStringLiteral( "only" ),
+        QStringLiteral( "open" ),
+        QStringLiteral( "operation" ),
+        QStringLiteral( "option" ),
+        QStringLiteral( "or" ),
+        QStringLiteral( "order" ),
+        QStringLiteral( "ordinality" ),
+        QStringLiteral( "out" ),
+        QStringLiteral( "outer" ),
+        QStringLiteral( "output" ),
+        QStringLiteral( "over" ),
+        QStringLiteral( "overlaps" ),
+        QStringLiteral( "overlay" ),
+        QStringLiteral( "pad" ),
+        QStringLiteral( "parameter" ),
+        QStringLiteral( "parameters" ),
+        QStringLiteral( "partial" ),
+        QStringLiteral( "partition" ),
+        QStringLiteral( "path" ),
+        QStringLiteral( "percentile_cont" ),
+        QStringLiteral( "percentile_disc" ),
+        QStringLiteral( "percent_rank" ),
+        QStringLiteral( "placing" ),
+        QStringLiteral( "position" ),
+        QStringLiteral( "postfix" ),
+        QStringLiteral( "power" ),
+        QStringLiteral( "precision" ),
+        QStringLiteral( "prefix" ),
+        QStringLiteral( "preorder" ),
+        QStringLiteral( "prepare" ),
+        QStringLiteral( "preserve" ),
+        QStringLiteral( "primary" ),
+        QStringLiteral( "prior" ),
+        QStringLiteral( "privileges" ),
+        QStringLiteral( "procedure" ),
+        QStringLiteral( "public" ),
+        QStringLiteral( "range" ),
+        QStringLiteral( "rank" ),
+        QStringLiteral( "read" ),
+        QStringLiteral( "reads" ),
+        QStringLiteral( "real" ),
+        QStringLiteral( "recursive" ),
+        QStringLiteral( "ref" ),
+        QStringLiteral( "references" ),
+        QStringLiteral( "referencing" ),
+        QStringLiteral( "regr_avgx" ),
+        QStringLiteral( "regr_avgy" ),
+        QStringLiteral( "regr_count" ),
+        QStringLiteral( "regr_intercept" ),
+        QStringLiteral( "regr_r2" ),
+        QStringLiteral( "regr_slope" ),
+        QStringLiteral( "regr_sxx" ),
+        QStringLiteral( "regr_sxy" ),
+        QStringLiteral( "regr_syy" ),
+        QStringLiteral( "relative" ),
+        QStringLiteral( "release" ),
+        QStringLiteral( "restrict" ),
+        QStringLiteral( "result" ),
+        QStringLiteral( "return" ),
+        QStringLiteral( "returning" ),
+        QStringLiteral( "returns" ),
+        QStringLiteral( "revoke" ),
+        QStringLiteral( "right" ),
+        QStringLiteral( "role" ),
+        QStringLiteral( "rollback" ),
+        QStringLiteral( "rollup" ),
+        QStringLiteral( "routine" ),
+        QStringLiteral( "row" ),
+        QStringLiteral( "row_number" ),
+        QStringLiteral( "rows" ),
+        QStringLiteral( "savepoint" ),
+        QStringLiteral( "schema" ),
+        QStringLiteral( "scope" ),
+        QStringLiteral( "scroll" ),
+        QStringLiteral( "search" ),
+        QStringLiteral( "second" ),
+        QStringLiteral( "section" ),
+        QStringLiteral( "select" ),
+        QStringLiteral( "sensitive" ),
+        QStringLiteral( "sequence" ),
+        QStringLiteral( "session" ),
+        QStringLiteral( "session_user" ),
+        QStringLiteral( "set" ),
+        QStringLiteral( "sets" ),
+        QStringLiteral( "similar" ),
+        QStringLiteral( "size" ),
+        QStringLiteral( "smallint" ),
+        QStringLiteral( "some" ),
+        QStringLiteral( "space" ),
+        QStringLiteral( "specific" ),
+        QStringLiteral( "specifictype" ),
+        QStringLiteral( "sql" ),
+        QStringLiteral( "sqlcode" ),
+        QStringLiteral( "sqlerror" ),
+        QStringLiteral( "sqlexception" ),
+        QStringLiteral( "sqlstate" ),
+        QStringLiteral( "sqlwarning" ),
+        QStringLiteral( "sqrt" ),
+        QStringLiteral( "start" ),
+        QStringLiteral( "state" ),
+        QStringLiteral( "statement" ),
+        QStringLiteral( "static" ),
+        QStringLiteral( "stddev_pop" ),
+        QStringLiteral( "stddev_samp" ),
+        QStringLiteral( "structure" ),
+        QStringLiteral( "submultiset" ),
+        QStringLiteral( "substring" ),
+        QStringLiteral( "sum" ),
+        QStringLiteral( "symmetric" ),
+        QStringLiteral( "system" ),
+        QStringLiteral( "system_user" ),
+        QStringLiteral( "table" ),
+        QStringLiteral( "tablesample" ),
+        QStringLiteral( "temporary" ),
+        QStringLiteral( "terminate" ),
+        QStringLiteral( "than" ),
+        QStringLiteral( "then" ),
+        QStringLiteral( "time" ),
+        QStringLiteral( "timestamp" ),
+        QStringLiteral( "timezone_hour" ),
+        QStringLiteral( "timezone_minute" ),
+        QStringLiteral( "to" ),
+        QStringLiteral( "trailing" ),
+        QStringLiteral( "transaction" ),
+        QStringLiteral( "translate" ),
+        QStringLiteral( "translation" ),
+        QStringLiteral( "treat" ),
+        QStringLiteral( "trigger" ),
+        QStringLiteral( "trim" ),
+        QStringLiteral( "true" ),
+        QStringLiteral( "uescape" ),
+        QStringLiteral( "under" ),
+        QStringLiteral( "union" ),
+        QStringLiteral( "unique" ),
+        QStringLiteral( "unknown" ),
+        QStringLiteral( "unnest" ),
+        QStringLiteral( "update" ),
+        QStringLiteral( "upper" ),
+        QStringLiteral( "usage" ),
+        QStringLiteral( "user" ),
+        QStringLiteral( "using" ),
+        QStringLiteral( "value" ),
+        QStringLiteral( "values" ),
+        QStringLiteral( "varchar" ),
+        QStringLiteral( "variable" ),
+        QStringLiteral( "var_pop" ),
+        QStringLiteral( "var_samp" ),
+        QStringLiteral( "varying" ),
+        QStringLiteral( "verbose" ),
+        QStringLiteral( "view" ),
+        QStringLiteral( "when" ),
+        QStringLiteral( "whenever" ),
+        QStringLiteral( "where" ),
+        QStringLiteral( "width_bucket" ),
+        QStringLiteral( "window" ),
+        QStringLiteral( "with" ),
+        QStringLiteral( "within" ),
+        QStringLiteral( "without" ),
+        QStringLiteral( "work" ),
+        QStringLiteral( "write" ),
+        QStringLiteral( "xml" ),
+        QStringLiteral( "xmlagg" ),
+        QStringLiteral( "xmlattributes" ),
+        QStringLiteral( "xmlbinary" ),
+        QStringLiteral( "xmlcomment" ),
+        QStringLiteral( "xmlconcat" ),
+        QStringLiteral( "xmlelement" ),
+        QStringLiteral( "xmlforest" ),
+        QStringLiteral( "xmlnamespaces" ),
+        QStringLiteral( "xmlparse" ),
+        QStringLiteral( "xmlpi" ),
+        QStringLiteral( "xmlroot" ),
+        QStringLiteral( "xmlserialize" ),
+        QStringLiteral( "year" ),
+        QStringLiteral( "zone" ),
+      }
+    },
+    {
+      Qgis::SqlKeywordCategory::Aggregate,
+      {
+        QStringLiteral( "Max" ),
+        QStringLiteral( "Min" ),
+        QStringLiteral( "Avg" ),
+        QStringLiteral( "Count" ),
+        QStringLiteral( "Sum" ),
+        QStringLiteral( "Group_Concat" ),
+        QStringLiteral( "Total" ),
+        QStringLiteral( "Var_Pop" ),
+        QStringLiteral( "Var_Samp" ),
+        QStringLiteral( "StdDev_Pop" ),
+        QStringLiteral( "StdDev_Samp" ),
+      }
+    },
+    {
+      Qgis::SqlKeywordCategory::Math,
+      {
+        QStringLiteral( "Abs" ),
+        QStringLiteral( "ACos" ),
+        QStringLiteral( "ASin" ),
+        QStringLiteral( "ATan" ),
+        QStringLiteral( "Cos" ),
+        QStringLiteral( "Cot" ),
+        QStringLiteral( "Degrees" ),
+        QStringLiteral( "Exp" ),
+        QStringLiteral( "Floor" ),
+        QStringLiteral( "Log" ),
+        QStringLiteral( "Log2" ),
 
-          QStringLiteral( "Log10" ),
-          QStringLiteral( "Pi" ),
-          QStringLiteral( "Radians" ),
-          QStringLiteral( "Round" ),
-          QStringLiteral( "Sign" ),
-          QStringLiteral( "Sin" ),
-          QStringLiteral( "Sqrt" ),
-          QStringLiteral( "StdDev_Pop" ),
-          QStringLiteral( "StdDev_Samp" ),
-          QStringLiteral( "Tan" ),
-          QStringLiteral( "Var_Pop" ),
-          QStringLiteral( "Var_Samp" ),
-        }
-      },
-      { Qgis::SqlKeywordCategory::Geospatial,
-        {
-          // List from:
-          // import requests, re, html;
-          // result = requests.get('https://postgis.net/docs/PostGIS_Special_Functions_Index.html')
-          // m = re.findall('<a class="link".*?title="(.*?)">.*?</li>', result.content.replace(b'\xc2', b'').replace(b'\xa0', b'').decode('utf8'), re.MULTILINE)
-          // for f_name in sorted(set(m)):
-          //     print(f'              QStringLiteral( "{html.unescape(f_name)}" ),')
+        QStringLiteral( "Log10" ),
+        QStringLiteral( "Pi" ),
+        QStringLiteral( "Radians" ),
+        QStringLiteral( "Round" ),
+        QStringLiteral( "Sign" ),
+        QStringLiteral( "Sin" ),
+        QStringLiteral( "Sqrt" ),
+        QStringLiteral( "StdDev_Pop" ),
+        QStringLiteral( "StdDev_Samp" ),
+        QStringLiteral( "Tan" ),
+        QStringLiteral( "Var_Pop" ),
+        QStringLiteral( "Var_Samp" ),
+      }
+    },
+    {
+      Qgis::SqlKeywordCategory::Geospatial,
+      {
+        // List from:
+        // import requests, re, html;
+        // result = requests.get('https://postgis.net/docs/PostGIS_Special_Functions_Index.html')
+        // m = re.findall('<a class="link".*?title="(.*?)">.*?</li>', result.content.replace(b'\xc2', b'').replace(b'\xa0', b'').decode('utf8'), re.MULTILINE)
+        // for f_name in sorted(set(m)):
+        //     print(f'              QStringLiteral( "{html.unescape(f_name)}" ),')
 
-          QStringLiteral( "&&" ),
-          QStringLiteral( "&&&" ),
-          QStringLiteral( "&&&(geometry,gidx)" ),
-          QStringLiteral( "&&&(gidx,geometry)" ),
-          QStringLiteral( "&&&(gidx,gidx)" ),
-          QStringLiteral( "&&(box2df,box2df)" ),
-          QStringLiteral( "&&(box2df,geometry)" ),
-          QStringLiteral( "&&(geometry,box2df)" ),
-          QStringLiteral( "&>" ),
-          QStringLiteral( "&<" ),
-          QStringLiteral( "&<|" ),
-          QStringLiteral( "<#>" ),
-          QStringLiteral( "<<#>>" ),
-          QStringLiteral( "<<->>" ),
-          QStringLiteral( "<->" ),
-          QStringLiteral( "=" ),
-          QStringLiteral( "@" ),
-          QStringLiteral( "@(box2df,box2df)" ),
-          QStringLiteral( "@(box2df,geometry)" ),
-          QStringLiteral( "@(geometry,box2df)" ),
-          QStringLiteral( "AddEdge" ),
-          QStringLiteral( "AddFace" ),
-          QStringLiteral( "AddGeometryColumn" ),
-          QStringLiteral( "AddNode" ),
-          QStringLiteral( "AddOverviewConstraints" ),
-          QStringLiteral( "AddRasterConstraints" ),
-          QStringLiteral( "AsGML" ),
-          QStringLiteral( "AsTopoJSON" ),
-          QStringLiteral( "Box2D" ),
-          QStringLiteral( "Box3D" ),
-          QStringLiteral( "CopyTopology" ),
-          QStringLiteral( "DropGeometryColumn" ),
-          QStringLiteral( "DropOverviewConstraints" ),
-          QStringLiteral( "DropRasterConstraints" ),
-          QStringLiteral( "Drop_Indexes_Generate_Script" ),
-          QStringLiteral( "Drop_Nation_Tables_Generate_Script" ),
-          QStringLiteral( "Drop_State_Tables_Generate_Script" ),
-          QStringLiteral( "Equals" ),
-          QStringLiteral( "Geocode" ),
-          QStringLiteral( "Geocode_Intersection" ),
-          QStringLiteral( "GeometryType" ),
-          QStringLiteral( "GetEdgeByPoint" ),
-          QStringLiteral( "GetFaceByPoint" ),
-          QStringLiteral( "GetNodeByPoint" ),
-          QStringLiteral( "GetNodeEdges" ),
-          QStringLiteral( "GetRingEdges" ),
-          QStringLiteral( "GetTopoGeomElements" ),
-          QStringLiteral( "GetTopologySRID" ),
-          QStringLiteral( "Get_Geocode_Setting" ),
-          QStringLiteral( "Get_Tract" ),
-          QStringLiteral( "Install_Missing_Indexes" ),
-          QStringLiteral( "Intersects" ),
-          QStringLiteral( "Loader_Generate_Census_Script" ),
-          QStringLiteral( "Loader_Generate_Nation_Script" ),
-          QStringLiteral( "Loader_Generate_Script" ),
-          QStringLiteral( "Missing_Indexes_Generate_Script" ),
-          QStringLiteral( "Normalize_Address" ),
-          QStringLiteral( "Pagc_Normalize_Address" ),
-          QStringLiteral( "Polygonize" ),
-          QStringLiteral( "Populate_Geometry_Columns" ),
-          QStringLiteral( "Populate_Topology_Layer" ),
-          QStringLiteral( "PostGIS_AddBBox" ),
-          QStringLiteral( "PostGIS_DropBBox" ),
-          QStringLiteral( "PostGIS_Extensions_Upgrade" ),
-          QStringLiteral( "PostGIS_HasBBox" ),
-          QStringLiteral( "PostGIS_LibXML_Version" ),
-          QStringLiteral( "Reverse_Geocode" ),
-          QStringLiteral( "ST_3DArea" ),
-          QStringLiteral( "ST_3DClosestPoint" ),
-          QStringLiteral( "ST_3DDFullyWithin" ),
-          QStringLiteral( "ST_3DDWithin" ),
-          QStringLiteral( "ST_3DDifference" ),
-          QStringLiteral( "ST_3DDistance" ),
-          QStringLiteral( "ST_3DExtent" ),
-          QStringLiteral( "ST_3DIntersection" ),
-          QStringLiteral( "ST_3DIntersects" ),
-          QStringLiteral( "ST_3DLength" ),
-          QStringLiteral( "ST_3DLineInterpolatePoint" ),
-          QStringLiteral( "ST_3DLongestLine" ),
-          QStringLiteral( "ST_3DMakeBox" ),
-          QStringLiteral( "ST_3DMaxDistance" ),
-          QStringLiteral( "ST_3DPerimeter" ),
-          QStringLiteral( "ST_3DShortestLine" ),
-          QStringLiteral( "ST_3DUnion" ),
-          QStringLiteral( "ST_AddBand" ),
-          QStringLiteral( "ST_AddEdgeModFace" ),
-          QStringLiteral( "ST_AddEdgeNewFaces" ),
-          QStringLiteral( "ST_AddMeasure" ),
-          QStringLiteral( "ST_AddPoint" ),
-          QStringLiteral( "ST_Affine" ),
-          QStringLiteral( "ST_Angle" ),
-          QStringLiteral( "ST_ApproximateMedialAxis" ),
-          QStringLiteral( "ST_Area" ),
-          QStringLiteral( "ST_AsBinary" ),
-          QStringLiteral( "ST_AsBinary/ST_AsWKB" ),
-          QStringLiteral( "ST_AsEWKB" ),
-          QStringLiteral( "ST_AsEWKT" ),
-          QStringLiteral( "ST_AsEncodedPolyline" ),
-          QStringLiteral( "ST_AsGDALRaster" ),
-          QStringLiteral( "ST_AsGML" ),
-          QStringLiteral( "ST_AsGeoJSON" ),
-          QStringLiteral( "ST_AsGeobuf" ),
-          QStringLiteral( "ST_AsHEXEWKB" ),
-          QStringLiteral( "ST_AsHexWKB" ),
-          QStringLiteral( "ST_AsJPEG" ),
-          QStringLiteral( "ST_AsKML" ),
-          QStringLiteral( "ST_AsLatLonText" ),
-          QStringLiteral( "ST_AsMVT" ),
-          QStringLiteral( "ST_AsMVTGeom" ),
-          QStringLiteral( "ST_AsPNG" ),
-          QStringLiteral( "ST_AsRaster" ),
-          QStringLiteral( "ST_AsSVG" ),
-          QStringLiteral( "ST_AsTIFF" ),
-          QStringLiteral( "ST_AsTWKB" ),
-          QStringLiteral( "ST_AsText" ),
-          QStringLiteral( "ST_AsX3D" ),
-          QStringLiteral( "ST_Aspect" ),
-          QStringLiteral( "ST_Azimuth" ),
-          QStringLiteral( "ST_Band" ),
-          QStringLiteral( "ST_BandFileSize" ),
-          QStringLiteral( "ST_BandFileTimestamp" ),
-          QStringLiteral( "ST_BandIsNoData" ),
-          QStringLiteral( "ST_BandMetaData" ),
-          QStringLiteral( "ST_BandNoDataValue" ),
-          QStringLiteral( "ST_BandPath" ),
-          QStringLiteral( "ST_BandPixelType" ),
-          QStringLiteral( "ST_Boundary" ),
-          QStringLiteral( "ST_BoundingDiagonal" ),
-          QStringLiteral( "ST_Box2dFromGeoHash" ),
-          QStringLiteral( "ST_Buffer" ),
-          QStringLiteral( "ST_CPAWithin" ),
-          QStringLiteral( "ST_Centroid" ),
-          QStringLiteral( "ST_ChaikinSmoothing" ),
-          QStringLiteral( "ST_Clip" ),
-          QStringLiteral( "ST_ClipByBox2D" ),
-          QStringLiteral( "ST_ClosestPoint" ),
-          QStringLiteral( "ST_ClosestPointOfApproach" ),
-          QStringLiteral( "ST_ClusterDBSCAN" ),
-          QStringLiteral( "ST_ClusterIntersecting" ),
-          QStringLiteral( "ST_ClusterKMeans" ),
-          QStringLiteral( "ST_ClusterWithin" ),
-          QStringLiteral( "ST_Collect" ),
-          QStringLiteral( "ST_CollectionExtract" ),
-          QStringLiteral( "ST_CollectionHomogenize" ),
-          QStringLiteral( "ST_ColorMap" ),
-          QStringLiteral( "ST_ConcaveHull" ),
-          QStringLiteral( "ST_ConstrainedDelaunayTriangles" ),
-          QStringLiteral( "ST_Contains" ),
-          QStringLiteral( "ST_ContainsProperly" ),
-          QStringLiteral( "ST_ConvexHull" ),
-          QStringLiteral( "ST_CoordDim" ),
-          QStringLiteral( "ST_Count" ),
-          QStringLiteral( "ST_CountAgg" ),
-          QStringLiteral( "ST_CoveredBy" ),
-          QStringLiteral( "ST_Covers" ),
-          QStringLiteral( "ST_CreateOverview" ),
-          QStringLiteral( "ST_CreateTopoGeo" ),
-          QStringLiteral( "ST_Crosses" ),
-          QStringLiteral( "ST_CurveToLine" ),
-          QStringLiteral( "ST_DFullyWithin" ),
-          QStringLiteral( "ST_DWithin" ),
-          QStringLiteral( "ST_DelaunayTriangles" ),
-          QStringLiteral( "ST_Difference" ),
-          QStringLiteral( "ST_Dimension" ),
-          QStringLiteral( "ST_Disjoint" ),
-          QStringLiteral( "ST_Distance" ),
-          QStringLiteral( "ST_DistanceCPA" ),
-          QStringLiteral( "ST_DistanceSphere" ),
-          QStringLiteral( "ST_DistanceSpheroid" ),
-          QStringLiteral( "ST_Distinct4ma" ),
-          QStringLiteral( "ST_Dump" ),
-          QStringLiteral( "ST_DumpAsPolygons" ),
-          QStringLiteral( "ST_DumpPoints" ),
-          QStringLiteral( "ST_DumpRings" ),
-          QStringLiteral( "ST_DumpValues" ),
-          QStringLiteral( "ST_EndPoint" ),
-          QStringLiteral( "ST_Envelope" ),
-          QStringLiteral( "ST_Equals" ),
-          QStringLiteral( "ST_EstimatedExtent" ),
-          QStringLiteral( "ST_Expand" ),
-          QStringLiteral( "ST_Extent" ),
-          QStringLiteral( "ST_ExteriorRing" ),
-          QStringLiteral( "ST_Extrude" ),
-          QStringLiteral( "ST_FilterByM" ),
-          QStringLiteral( "ST_FlipCoordinates" ),
-          QStringLiteral( "ST_Force2D" ),
-          QStringLiteral( "ST_Force3D" ),
-          QStringLiteral( "ST_Force3DM" ),
-          QStringLiteral( "ST_Force3DZ" ),
-          QStringLiteral( "ST_Force4D" ),
-          QStringLiteral( "ST_ForceCollection" ),
-          QStringLiteral( "ST_ForceCurve" ),
-          QStringLiteral( "ST_ForceLHR" ),
-          QStringLiteral( "ST_ForcePolygonCCW" ),
-          QStringLiteral( "ST_ForcePolygonCW" ),
-          QStringLiteral( "ST_ForceRHR" ),
-          QStringLiteral( "ST_ForceSFS" ),
-          QStringLiteral( "ST_FrechetDistance" ),
-          QStringLiteral( "ST_FromGDALRaster" ),
-          QStringLiteral( "ST_GDALDrivers" ),
-          QStringLiteral( "ST_GMLToSQL" ),
-          QStringLiteral( "ST_GeneratePoints" ),
-          QStringLiteral( "ST_GeoHash" ),
-          QStringLiteral( "ST_GeoReference" ),
-          QStringLiteral( "ST_GeogFromText" ),
-          QStringLiteral( "ST_GeogFromWKB" ),
-          QStringLiteral( "ST_GeographyFromText" ),
-          QStringLiteral( "ST_GeomFromEWKB" ),
-          QStringLiteral( "ST_GeomFromEWKT" ),
-          QStringLiteral( "ST_GeomFromGML" ),
-          QStringLiteral( "ST_GeomFromGeoHash" ),
-          QStringLiteral( "ST_GeomFromGeoJSON" ),
-          QStringLiteral( "ST_GeomFromKML" ),
-          QStringLiteral( "ST_GeomFromText" ),
-          QStringLiteral( "ST_GeomFromWKB" ),
-          QStringLiteral( "ST_GeometricMedian" ),
-          QStringLiteral( "ST_GeometryN" ),
-          QStringLiteral( "ST_GeometryType" ),
-          QStringLiteral( "ST_GetFaceEdges" ),
-          QStringLiteral( "ST_Grayscale" ),
-          QStringLiteral( "ST_HasArc" ),
-          QStringLiteral( "ST_HasNoBand" ),
-          QStringLiteral( "ST_HausdorffDistance" ),
-          QStringLiteral( "ST_Height" ),
-          QStringLiteral( "ST_Hexagon" ),
-          QStringLiteral( "ST_HexagonGrid" ),
-          QStringLiteral( "ST_HillShade" ),
-          QStringLiteral( "ST_Histogram" ),
-          QStringLiteral( "ST_InteriorRingN" ),
-          QStringLiteral( "ST_InterpolatePoint" ),
-          QStringLiteral( "ST_Intersection" ),
-          QStringLiteral( "ST_Intersects" ),
-          QStringLiteral( "ST_InvDistWeight4ma" ),
-          QStringLiteral( "ST_IsClosed" ),
-          QStringLiteral( "ST_IsCollection" ),
-          QStringLiteral( "ST_IsEmpty" ),
-          QStringLiteral( "ST_IsPlanar" ),
-          QStringLiteral( "ST_IsPolygonCCW" ),
-          QStringLiteral( "ST_IsPolygonCW" ),
-          QStringLiteral( "ST_IsSimple" ),
-          QStringLiteral( "ST_IsSolid" ),
-          QStringLiteral( "ST_IsValidDetail" ),
-          QStringLiteral( "ST_IsValidReason" ),
-          QStringLiteral( "ST_IsValidTrajectory" ),
-          QStringLiteral( "ST_Length" ),
-          QStringLiteral( "ST_LengthSpheroid" ),
-          QStringLiteral( "ST_LineCrossingDirection" ),
-          QStringLiteral( "ST_LineFromEncodedPolyline" ),
-          QStringLiteral( "ST_LineFromMultiPoint" ),
-          QStringLiteral( "ST_LineInterpolatePoint" ),
-          QStringLiteral( "ST_LineInterpolatePoints" ),
-          QStringLiteral( "ST_LineLocatePoint" ),
-          QStringLiteral( "ST_LineSubstring" ),
-          QStringLiteral( "ST_LineToCurve" ),
-          QStringLiteral( "ST_LocateAlong" ),
-          QStringLiteral( "ST_LocateBetween" ),
-          QStringLiteral( "ST_LocateBetweenElevations" ),
-          QStringLiteral( "ST_LongestLine" ),
-          QStringLiteral( "ST_M" ),
-          QStringLiteral( "ST_MakeBox2D" ),
-          QStringLiteral( "ST_MakeEmptyCoverage" ),
-          QStringLiteral( "ST_MakeEmptyRaster" ),
-          QStringLiteral( "ST_MakeEnvelope" ),
-          QStringLiteral( "ST_MakeLine" ),
-          QStringLiteral( "ST_MakePoint" ),
-          QStringLiteral( "ST_MakePolygon" ),
-          QStringLiteral( "ST_MakeSolid" ),
-          QStringLiteral( "ST_MakeValid" ),
-          QStringLiteral( "ST_MapAlgebra (callback function version)" ),
-          QStringLiteral( "ST_MapAlgebra (expression version)" ),
-          QStringLiteral( "ST_MapAlgebraExpr" ),
-          QStringLiteral( "ST_MapAlgebraFct" ),
-          QStringLiteral( "ST_MapAlgebraFctNgb" ),
-          QStringLiteral( "ST_Max4ma" ),
-          QStringLiteral( "ST_MaxDistance" ),
-          QStringLiteral( "ST_MaximumInscribedCircle" ),
-          QStringLiteral( "ST_Mean4ma" ),
-          QStringLiteral( "ST_MemSize" ),
-          QStringLiteral( "ST_MemUnion" ),
-          QStringLiteral( "ST_MetaData" ),
-          QStringLiteral( "ST_Min4ma" ),
-          QStringLiteral( "ST_MinConvexHull" ),
-          QStringLiteral( "ST_MinDist4ma" ),
-          QStringLiteral( "ST_MinimumBoundingCircle" ),
-          QStringLiteral( "ST_MinimumClearance" ),
-          QStringLiteral( "ST_MinimumClearanceLine" ),
-          QStringLiteral( "ST_MinkowskiSum" ),
-          QStringLiteral( "ST_ModEdgeHeal" ),
-          QStringLiteral( "ST_ModEdgeSplit" ),
-          QStringLiteral( "ST_NDims" ),
-          QStringLiteral( "ST_NPoints" ),
-          QStringLiteral( "ST_NRings" ),
-          QStringLiteral( "ST_NearestValue" ),
-          QStringLiteral( "ST_Neighborhood" ),
-          QStringLiteral( "ST_NewEdgeHeal" ),
-          QStringLiteral( "ST_Node" ),
-          QStringLiteral( "ST_Normalize" ),
-          QStringLiteral( "ST_NotSameAlignmentReason" ),
-          QStringLiteral( "ST_NumBands" ),
-          QStringLiteral( "ST_NumGeometries" ),
-          QStringLiteral( "ST_NumInteriorRings" ),
-          QStringLiteral( "ST_NumPatches" ),
-          QStringLiteral( "ST_OffsetCurve" ),
-          QStringLiteral( "ST_Orientation" ),
-          QStringLiteral( "ST_Overlaps" ),
-          QStringLiteral( "ST_PatchN" ),
-          QStringLiteral( "ST_Perimeter" ),
-          QStringLiteral( "ST_PixelAsCentroid" ),
-          QStringLiteral( "ST_PixelAsCentroids" ),
-          QStringLiteral( "ST_PixelAsPoint" ),
-          QStringLiteral( "ST_PixelAsPoints" ),
-          QStringLiteral( "ST_PixelAsPolygon" ),
-          QStringLiteral( "ST_PixelAsPolygons" ),
-          QStringLiteral( "ST_PixelHeight" ),
-          QStringLiteral( "ST_PixelOfValue" ),
-          QStringLiteral( "ST_PixelWidth" ),
-          QStringLiteral( "ST_PointFromGeoHash" ),
-          QStringLiteral( "ST_PointFromWKB" ),
-          QStringLiteral( "ST_PointInsideCircle" ),
-          QStringLiteral( "ST_PointN" ),
-          QStringLiteral( "ST_PointOnSurface" ),
-          QStringLiteral( "ST_Points" ),
-          QStringLiteral( "ST_Polygon" ),
-          QStringLiteral( "ST_Polygonize" ),
-          QStringLiteral( "ST_Project" ),
-          QStringLiteral( "ST_Quantile" ),
-          QStringLiteral( "ST_Range4ma" ),
-          QStringLiteral( "ST_RastFromHexWKB" ),
-          QStringLiteral( "ST_RastFromWKB" ),
-          QStringLiteral( "ST_RasterToWorldCoord" ),
-          QStringLiteral( "ST_RasterToWorldCoordX" ),
-          QStringLiteral( "ST_RasterToWorldCoordY" ),
-          QStringLiteral( "ST_Reclass" ),
-          QStringLiteral( "ST_ReducePrecision" ),
-          QStringLiteral( "ST_Relate" ),
-          QStringLiteral( "ST_RelateMatch" ),
-          QStringLiteral( "ST_RemEdgeModFace" ),
-          QStringLiteral( "ST_RemEdgeNewFace" ),
-          QStringLiteral( "ST_RemovePoint" ),
-          QStringLiteral( "ST_RemoveRepeatedPoints" ),
-          QStringLiteral( "ST_Resample" ),
-          QStringLiteral( "ST_Rescale" ),
-          QStringLiteral( "ST_Resize" ),
-          QStringLiteral( "ST_Reskew" ),
-          QStringLiteral( "ST_Retile" ),
-          QStringLiteral( "ST_Reverse" ),
-          QStringLiteral( "ST_Rotate" ),
-          QStringLiteral( "ST_RotateX" ),
-          QStringLiteral( "ST_RotateY" ),
-          QStringLiteral( "ST_RotateZ" ),
-          QStringLiteral( "ST_Rotation" ),
-          QStringLiteral( "ST_Roughness" ),
-          QStringLiteral( "ST_SRID" ),
-          QStringLiteral( "ST_SameAlignment" ),
-          QStringLiteral( "ST_Scale" ),
-          QStringLiteral( "ST_ScaleX" ),
-          QStringLiteral( "ST_ScaleY" ),
-          QStringLiteral( "ST_Segmentize" ),
-          QStringLiteral( "ST_SetBandIndex" ),
-          QStringLiteral( "ST_SetBandIsNoData" ),
-          QStringLiteral( "ST_SetBandNoDataValue" ),
-          QStringLiteral( "ST_SetBandPath" ),
-          QStringLiteral( "ST_SetEffectiveArea" ),
-          QStringLiteral( "ST_SetGeoReference" ),
-          QStringLiteral( "ST_SetPoint" ),
-          QStringLiteral( "ST_SetRotation" ),
-          QStringLiteral( "ST_SetSRID" ),
-          QStringLiteral( "ST_SetScale" ),
-          QStringLiteral( "ST_SetSkew" ),
-          QStringLiteral( "ST_SetUpperLeft" ),
-          QStringLiteral( "ST_SetValue" ),
-          QStringLiteral( "ST_SetValues" ),
-          QStringLiteral( "ST_SharedPaths" ),
-          QStringLiteral( "ST_ShiftLongitude" ),
-          QStringLiteral( "ST_ShortestLine" ),
-          QStringLiteral( "ST_Simplify" ),
-          QStringLiteral( "ST_SimplifyPreserveTopology" ),
-          QStringLiteral( "ST_SimplifyVW" ),
-          QStringLiteral( "ST_SkewX" ),
-          QStringLiteral( "ST_SkewY" ),
-          QStringLiteral( "ST_Slope" ),
-          QStringLiteral( "ST_Snap" ),
-          QStringLiteral( "ST_SnapToGrid" ),
-          QStringLiteral( "ST_Split" ),
-          QStringLiteral( "ST_Square" ),
-          QStringLiteral( "ST_SquareGrid" ),
-          QStringLiteral( "ST_StartPoint" ),
-          QStringLiteral( "ST_StdDev4ma" ),
-          QStringLiteral( "ST_StraightSkeleton" ),
-          QStringLiteral( "ST_Subdivide" ),
-          QStringLiteral( "ST_Sum4ma" ),
-          QStringLiteral( "ST_Summary" ),
-          QStringLiteral( "ST_SummaryStats" ),
-          QStringLiteral( "ST_SummaryStatsAgg" ),
-          QStringLiteral( "ST_SwapOrdinates" ),
-          QStringLiteral( "ST_SymDifference" ),
-          QStringLiteral( "ST_TPI" ),
-          QStringLiteral( "ST_TRI" ),
-          QStringLiteral( "ST_Tesselate" ), //#spellok
-          QStringLiteral( "ST_Tile" ),
-          QStringLiteral( "ST_TileEnvelope" ),
-          QStringLiteral( "ST_Touches" ),
-          QStringLiteral( "ST_TransScale" ),
-          QStringLiteral( "ST_Transform" ),
-          QStringLiteral( "ST_Translate" ),
-          QStringLiteral( "ST_UnaryUnion" ),
-          QStringLiteral( "ST_Union" ),
-          QStringLiteral( "ST_UpperLeftX" ),
-          QStringLiteral( "ST_UpperLeftY" ),
-          QStringLiteral( "ST_Value" ),
-          QStringLiteral( "ST_ValueCount" ),
-          QStringLiteral( "ST_Volume" ),
-          QStringLiteral( "ST_VoronoiLines" ),
-          QStringLiteral( "ST_VoronoiPolygons" ),
-          QStringLiteral( "ST_Width" ),
-          QStringLiteral( "ST_Within" ),
-          QStringLiteral( "ST_WorldToRasterCoord" ),
-          QStringLiteral( "ST_WorldToRasterCoordX" ),
-          QStringLiteral( "ST_WorldToRasterCoordY" ),
-          QStringLiteral( "ST_WrapX" ),
-          QStringLiteral( "ST_X" ),
-          QStringLiteral( "ST_XMax" ),
-          QStringLiteral( "ST_XMin" ),
-          QStringLiteral( "ST_Y" ),
-          QStringLiteral( "ST_YMax" ),
-          QStringLiteral( "ST_YMin" ),
-          QStringLiteral( "ST_Z" ),
-          QStringLiteral( "ST_ZMax" ),
-          QStringLiteral( "ST_ZMin" ),
-          QStringLiteral( "ST_Zmflag" ),
-          QStringLiteral( "Set_Geocode_Setting" ),
-          QStringLiteral( "TopoElementArray_Agg" ),
-          QStringLiteral( "TopoGeo_AddLineString" ),
-          QStringLiteral( "TopoGeo_AddPoint" ),
-          QStringLiteral( "TopoGeo_AddPolygon" ),
-          QStringLiteral( "TopoGeom_addElement" ),
-          QStringLiteral( "TopoGeom_remElement" ),
-          QStringLiteral( "TopologySummary" ),
-          QStringLiteral( "Topology_Load_Tiger" ),
-          QStringLiteral( "UpdateGeometrySRID" ),
-          QStringLiteral( "UpdateRasterSRID" ),
-          QStringLiteral( "ValidateTopology" ),
-          QStringLiteral( "box2d" ),
-          QStringLiteral( "clearTopoGeom" ),
-          QStringLiteral( "geometry_dump" ),
-          QStringLiteral( "parse_address" ),
-          QStringLiteral( "postgis.backend" ),
-          QStringLiteral( "postgis.enable_outdb_rasters" ),
-          QStringLiteral( "postgis.gdal_datapath" ),
-          QStringLiteral( "postgis.gdal_enabled_drivers" ),
-          QStringLiteral( "postgis_sfcgal_version" ),
-          QStringLiteral( "standardize_address" ),
-          QStringLiteral( "toTopoGeom" ),
-          QStringLiteral( "|=|" ),
-          QStringLiteral( "~" ),
-          QStringLiteral( "~(box2df,box2df)" ),
-          QStringLiteral( "~(box2df,geometry)" ),
-          QStringLiteral( "~(geometry,box2df)" ),
-          QStringLiteral( "~=" ),
-        }
+        QStringLiteral( "&&" ),
+        QStringLiteral( "&&&" ),
+        QStringLiteral( "&&&(geometry,gidx)" ),
+        QStringLiteral( "&&&(gidx,geometry)" ),
+        QStringLiteral( "&&&(gidx,gidx)" ),
+        QStringLiteral( "&&(box2df,box2df)" ),
+        QStringLiteral( "&&(box2df,geometry)" ),
+        QStringLiteral( "&&(geometry,box2df)" ),
+        QStringLiteral( "&>" ),
+        QStringLiteral( "&<" ),
+        QStringLiteral( "&<|" ),
+        QStringLiteral( "<#>" ),
+        QStringLiteral( "<<#>>" ),
+        QStringLiteral( "<<->>" ),
+        QStringLiteral( "<->" ),
+        QStringLiteral( "=" ),
+        QStringLiteral( "@" ),
+        QStringLiteral( "@(box2df,box2df)" ),
+        QStringLiteral( "@(box2df,geometry)" ),
+        QStringLiteral( "@(geometry,box2df)" ),
+        QStringLiteral( "AddEdge" ),
+        QStringLiteral( "AddFace" ),
+        QStringLiteral( "AddGeometryColumn" ),
+        QStringLiteral( "AddNode" ),
+        QStringLiteral( "AddOverviewConstraints" ),
+        QStringLiteral( "AddRasterConstraints" ),
+        QStringLiteral( "AsGML" ),
+        QStringLiteral( "AsTopoJSON" ),
+        QStringLiteral( "Box2D" ),
+        QStringLiteral( "Box3D" ),
+        QStringLiteral( "CopyTopology" ),
+        QStringLiteral( "DropGeometryColumn" ),
+        QStringLiteral( "DropOverviewConstraints" ),
+        QStringLiteral( "DropRasterConstraints" ),
+        QStringLiteral( "Drop_Indexes_Generate_Script" ),
+        QStringLiteral( "Drop_Nation_Tables_Generate_Script" ),
+        QStringLiteral( "Drop_State_Tables_Generate_Script" ),
+        QStringLiteral( "Equals" ),
+        QStringLiteral( "Geocode" ),
+        QStringLiteral( "Geocode_Intersection" ),
+        QStringLiteral( "GeometryType" ),
+        QStringLiteral( "GetEdgeByPoint" ),
+        QStringLiteral( "GetFaceByPoint" ),
+        QStringLiteral( "GetNodeByPoint" ),
+        QStringLiteral( "GetNodeEdges" ),
+        QStringLiteral( "GetRingEdges" ),
+        QStringLiteral( "GetTopoGeomElements" ),
+        QStringLiteral( "GetTopologySRID" ),
+        QStringLiteral( "Get_Geocode_Setting" ),
+        QStringLiteral( "Get_Tract" ),
+        QStringLiteral( "Install_Missing_Indexes" ),
+        QStringLiteral( "Intersects" ),
+        QStringLiteral( "Loader_Generate_Census_Script" ),
+        QStringLiteral( "Loader_Generate_Nation_Script" ),
+        QStringLiteral( "Loader_Generate_Script" ),
+        QStringLiteral( "Missing_Indexes_Generate_Script" ),
+        QStringLiteral( "Normalize_Address" ),
+        QStringLiteral( "Pagc_Normalize_Address" ),
+        QStringLiteral( "Polygonize" ),
+        QStringLiteral( "Populate_Geometry_Columns" ),
+        QStringLiteral( "Populate_Topology_Layer" ),
+        QStringLiteral( "PostGIS_AddBBox" ),
+        QStringLiteral( "PostGIS_DropBBox" ),
+        QStringLiteral( "PostGIS_Extensions_Upgrade" ),
+        QStringLiteral( "PostGIS_HasBBox" ),
+        QStringLiteral( "PostGIS_LibXML_Version" ),
+        QStringLiteral( "Reverse_Geocode" ),
+        QStringLiteral( "ST_3DArea" ),
+        QStringLiteral( "ST_3DClosestPoint" ),
+        QStringLiteral( "ST_3DDFullyWithin" ),
+        QStringLiteral( "ST_3DDWithin" ),
+        QStringLiteral( "ST_3DDifference" ),
+        QStringLiteral( "ST_3DDistance" ),
+        QStringLiteral( "ST_3DExtent" ),
+        QStringLiteral( "ST_3DIntersection" ),
+        QStringLiteral( "ST_3DIntersects" ),
+        QStringLiteral( "ST_3DLength" ),
+        QStringLiteral( "ST_3DLineInterpolatePoint" ),
+        QStringLiteral( "ST_3DLongestLine" ),
+        QStringLiteral( "ST_3DMakeBox" ),
+        QStringLiteral( "ST_3DMaxDistance" ),
+        QStringLiteral( "ST_3DPerimeter" ),
+        QStringLiteral( "ST_3DShortestLine" ),
+        QStringLiteral( "ST_3DUnion" ),
+        QStringLiteral( "ST_AddBand" ),
+        QStringLiteral( "ST_AddEdgeModFace" ),
+        QStringLiteral( "ST_AddEdgeNewFaces" ),
+        QStringLiteral( "ST_AddMeasure" ),
+        QStringLiteral( "ST_AddPoint" ),
+        QStringLiteral( "ST_Affine" ),
+        QStringLiteral( "ST_Angle" ),
+        QStringLiteral( "ST_ApproximateMedialAxis" ),
+        QStringLiteral( "ST_Area" ),
+        QStringLiteral( "ST_AsBinary" ),
+        QStringLiteral( "ST_AsBinary/ST_AsWKB" ),
+        QStringLiteral( "ST_AsEWKB" ),
+        QStringLiteral( "ST_AsEWKT" ),
+        QStringLiteral( "ST_AsEncodedPolyline" ),
+        QStringLiteral( "ST_AsGDALRaster" ),
+        QStringLiteral( "ST_AsGML" ),
+        QStringLiteral( "ST_AsGeoJSON" ),
+        QStringLiteral( "ST_AsGeobuf" ),
+        QStringLiteral( "ST_AsHEXEWKB" ),
+        QStringLiteral( "ST_AsHexWKB" ),
+        QStringLiteral( "ST_AsJPEG" ),
+        QStringLiteral( "ST_AsKML" ),
+        QStringLiteral( "ST_AsLatLonText" ),
+        QStringLiteral( "ST_AsMVT" ),
+        QStringLiteral( "ST_AsMVTGeom" ),
+        QStringLiteral( "ST_AsPNG" ),
+        QStringLiteral( "ST_AsRaster" ),
+        QStringLiteral( "ST_AsSVG" ),
+        QStringLiteral( "ST_AsTIFF" ),
+        QStringLiteral( "ST_AsTWKB" ),
+        QStringLiteral( "ST_AsText" ),
+        QStringLiteral( "ST_AsX3D" ),
+        QStringLiteral( "ST_Aspect" ),
+        QStringLiteral( "ST_Azimuth" ),
+        QStringLiteral( "ST_Band" ),
+        QStringLiteral( "ST_BandFileSize" ),
+        QStringLiteral( "ST_BandFileTimestamp" ),
+        QStringLiteral( "ST_BandIsNoData" ),
+        QStringLiteral( "ST_BandMetaData" ),
+        QStringLiteral( "ST_BandNoDataValue" ),
+        QStringLiteral( "ST_BandPath" ),
+        QStringLiteral( "ST_BandPixelType" ),
+        QStringLiteral( "ST_Boundary" ),
+        QStringLiteral( "ST_BoundingDiagonal" ),
+        QStringLiteral( "ST_Box2dFromGeoHash" ),
+        QStringLiteral( "ST_Buffer" ),
+        QStringLiteral( "ST_CPAWithin" ),
+        QStringLiteral( "ST_Centroid" ),
+        QStringLiteral( "ST_ChaikinSmoothing" ),
+        QStringLiteral( "ST_Clip" ),
+        QStringLiteral( "ST_ClipByBox2D" ),
+        QStringLiteral( "ST_ClosestPoint" ),
+        QStringLiteral( "ST_ClosestPointOfApproach" ),
+        QStringLiteral( "ST_ClusterDBSCAN" ),
+        QStringLiteral( "ST_ClusterIntersecting" ),
+        QStringLiteral( "ST_ClusterKMeans" ),
+        QStringLiteral( "ST_ClusterWithin" ),
+        QStringLiteral( "ST_Collect" ),
+        QStringLiteral( "ST_CollectionExtract" ),
+        QStringLiteral( "ST_CollectionHomogenize" ),
+        QStringLiteral( "ST_ColorMap" ),
+        QStringLiteral( "ST_ConcaveHull" ),
+        QStringLiteral( "ST_ConstrainedDelaunayTriangles" ),
+        QStringLiteral( "ST_Contains" ),
+        QStringLiteral( "ST_ContainsProperly" ),
+        QStringLiteral( "ST_ConvexHull" ),
+        QStringLiteral( "ST_CoordDim" ),
+        QStringLiteral( "ST_Count" ),
+        QStringLiteral( "ST_CountAgg" ),
+        QStringLiteral( "ST_CoveredBy" ),
+        QStringLiteral( "ST_Covers" ),
+        QStringLiteral( "ST_CreateOverview" ),
+        QStringLiteral( "ST_CreateTopoGeo" ),
+        QStringLiteral( "ST_Crosses" ),
+        QStringLiteral( "ST_CurveToLine" ),
+        QStringLiteral( "ST_DFullyWithin" ),
+        QStringLiteral( "ST_DWithin" ),
+        QStringLiteral( "ST_DelaunayTriangles" ),
+        QStringLiteral( "ST_Difference" ),
+        QStringLiteral( "ST_Dimension" ),
+        QStringLiteral( "ST_Disjoint" ),
+        QStringLiteral( "ST_Distance" ),
+        QStringLiteral( "ST_DistanceCPA" ),
+        QStringLiteral( "ST_DistanceSphere" ),
+        QStringLiteral( "ST_DistanceSpheroid" ),
+        QStringLiteral( "ST_Distinct4ma" ),
+        QStringLiteral( "ST_Dump" ),
+        QStringLiteral( "ST_DumpAsPolygons" ),
+        QStringLiteral( "ST_DumpPoints" ),
+        QStringLiteral( "ST_DumpRings" ),
+        QStringLiteral( "ST_DumpValues" ),
+        QStringLiteral( "ST_EndPoint" ),
+        QStringLiteral( "ST_Envelope" ),
+        QStringLiteral( "ST_Equals" ),
+        QStringLiteral( "ST_EstimatedExtent" ),
+        QStringLiteral( "ST_Expand" ),
+        QStringLiteral( "ST_Extent" ),
+        QStringLiteral( "ST_ExteriorRing" ),
+        QStringLiteral( "ST_Extrude" ),
+        QStringLiteral( "ST_FilterByM" ),
+        QStringLiteral( "ST_FlipCoordinates" ),
+        QStringLiteral( "ST_Force2D" ),
+        QStringLiteral( "ST_Force3D" ),
+        QStringLiteral( "ST_Force3DM" ),
+        QStringLiteral( "ST_Force3DZ" ),
+        QStringLiteral( "ST_Force4D" ),
+        QStringLiteral( "ST_ForceCollection" ),
+        QStringLiteral( "ST_ForceCurve" ),
+        QStringLiteral( "ST_ForceLHR" ),
+        QStringLiteral( "ST_ForcePolygonCCW" ),
+        QStringLiteral( "ST_ForcePolygonCW" ),
+        QStringLiteral( "ST_ForceRHR" ),
+        QStringLiteral( "ST_ForceSFS" ),
+        QStringLiteral( "ST_FrechetDistance" ),
+        QStringLiteral( "ST_FromGDALRaster" ),
+        QStringLiteral( "ST_GDALDrivers" ),
+        QStringLiteral( "ST_GMLToSQL" ),
+        QStringLiteral( "ST_GeneratePoints" ),
+        QStringLiteral( "ST_GeoHash" ),
+        QStringLiteral( "ST_GeoReference" ),
+        QStringLiteral( "ST_GeogFromText" ),
+        QStringLiteral( "ST_GeogFromWKB" ),
+        QStringLiteral( "ST_GeographyFromText" ),
+        QStringLiteral( "ST_GeomFromEWKB" ),
+        QStringLiteral( "ST_GeomFromEWKT" ),
+        QStringLiteral( "ST_GeomFromGML" ),
+        QStringLiteral( "ST_GeomFromGeoHash" ),
+        QStringLiteral( "ST_GeomFromGeoJSON" ),
+        QStringLiteral( "ST_GeomFromKML" ),
+        QStringLiteral( "ST_GeomFromText" ),
+        QStringLiteral( "ST_GeomFromWKB" ),
+        QStringLiteral( "ST_GeometricMedian" ),
+        QStringLiteral( "ST_GeometryN" ),
+        QStringLiteral( "ST_GeometryType" ),
+        QStringLiteral( "ST_GetFaceEdges" ),
+        QStringLiteral( "ST_Grayscale" ),
+        QStringLiteral( "ST_HasArc" ),
+        QStringLiteral( "ST_HasNoBand" ),
+        QStringLiteral( "ST_HausdorffDistance" ),
+        QStringLiteral( "ST_Height" ),
+        QStringLiteral( "ST_Hexagon" ),
+        QStringLiteral( "ST_HexagonGrid" ),
+        QStringLiteral( "ST_HillShade" ),
+        QStringLiteral( "ST_Histogram" ),
+        QStringLiteral( "ST_InteriorRingN" ),
+        QStringLiteral( "ST_InterpolatePoint" ),
+        QStringLiteral( "ST_Intersection" ),
+        QStringLiteral( "ST_Intersects" ),
+        QStringLiteral( "ST_InvDistWeight4ma" ),
+        QStringLiteral( "ST_IsClosed" ),
+        QStringLiteral( "ST_IsCollection" ),
+        QStringLiteral( "ST_IsEmpty" ),
+        QStringLiteral( "ST_IsPlanar" ),
+        QStringLiteral( "ST_IsPolygonCCW" ),
+        QStringLiteral( "ST_IsPolygonCW" ),
+        QStringLiteral( "ST_IsSimple" ),
+        QStringLiteral( "ST_IsSolid" ),
+        QStringLiteral( "ST_IsValidDetail" ),
+        QStringLiteral( "ST_IsValidReason" ),
+        QStringLiteral( "ST_IsValidTrajectory" ),
+        QStringLiteral( "ST_Length" ),
+        QStringLiteral( "ST_LengthSpheroid" ),
+        QStringLiteral( "ST_LineCrossingDirection" ),
+        QStringLiteral( "ST_LineFromEncodedPolyline" ),
+        QStringLiteral( "ST_LineFromMultiPoint" ),
+        QStringLiteral( "ST_LineInterpolatePoint" ),
+        QStringLiteral( "ST_LineInterpolatePoints" ),
+        QStringLiteral( "ST_LineLocatePoint" ),
+        QStringLiteral( "ST_LineSubstring" ),
+        QStringLiteral( "ST_LineToCurve" ),
+        QStringLiteral( "ST_LocateAlong" ),
+        QStringLiteral( "ST_LocateBetween" ),
+        QStringLiteral( "ST_LocateBetweenElevations" ),
+        QStringLiteral( "ST_LongestLine" ),
+        QStringLiteral( "ST_M" ),
+        QStringLiteral( "ST_MakeBox2D" ),
+        QStringLiteral( "ST_MakeEmptyCoverage" ),
+        QStringLiteral( "ST_MakeEmptyRaster" ),
+        QStringLiteral( "ST_MakeEnvelope" ),
+        QStringLiteral( "ST_MakeLine" ),
+        QStringLiteral( "ST_MakePoint" ),
+        QStringLiteral( "ST_MakePolygon" ),
+        QStringLiteral( "ST_MakeSolid" ),
+        QStringLiteral( "ST_MakeValid" ),
+        QStringLiteral( "ST_MapAlgebra (callback function version)" ),
+        QStringLiteral( "ST_MapAlgebra (expression version)" ),
+        QStringLiteral( "ST_MapAlgebraExpr" ),
+        QStringLiteral( "ST_MapAlgebraFct" ),
+        QStringLiteral( "ST_MapAlgebraFctNgb" ),
+        QStringLiteral( "ST_Max4ma" ),
+        QStringLiteral( "ST_MaxDistance" ),
+        QStringLiteral( "ST_MaximumInscribedCircle" ),
+        QStringLiteral( "ST_Mean4ma" ),
+        QStringLiteral( "ST_MemSize" ),
+        QStringLiteral( "ST_MemUnion" ),
+        QStringLiteral( "ST_MetaData" ),
+        QStringLiteral( "ST_Min4ma" ),
+        QStringLiteral( "ST_MinConvexHull" ),
+        QStringLiteral( "ST_MinDist4ma" ),
+        QStringLiteral( "ST_MinimumBoundingCircle" ),
+        QStringLiteral( "ST_MinimumClearance" ),
+        QStringLiteral( "ST_MinimumClearanceLine" ),
+        QStringLiteral( "ST_MinkowskiSum" ),
+        QStringLiteral( "ST_ModEdgeHeal" ),
+        QStringLiteral( "ST_ModEdgeSplit" ),
+        QStringLiteral( "ST_NDims" ),
+        QStringLiteral( "ST_NPoints" ),
+        QStringLiteral( "ST_NRings" ),
+        QStringLiteral( "ST_NearestValue" ),
+        QStringLiteral( "ST_Neighborhood" ),
+        QStringLiteral( "ST_NewEdgeHeal" ),
+        QStringLiteral( "ST_Node" ),
+        QStringLiteral( "ST_Normalize" ),
+        QStringLiteral( "ST_NotSameAlignmentReason" ),
+        QStringLiteral( "ST_NumBands" ),
+        QStringLiteral( "ST_NumGeometries" ),
+        QStringLiteral( "ST_NumInteriorRings" ),
+        QStringLiteral( "ST_NumPatches" ),
+        QStringLiteral( "ST_OffsetCurve" ),
+        QStringLiteral( "ST_Orientation" ),
+        QStringLiteral( "ST_Overlaps" ),
+        QStringLiteral( "ST_PatchN" ),
+        QStringLiteral( "ST_Perimeter" ),
+        QStringLiteral( "ST_PixelAsCentroid" ),
+        QStringLiteral( "ST_PixelAsCentroids" ),
+        QStringLiteral( "ST_PixelAsPoint" ),
+        QStringLiteral( "ST_PixelAsPoints" ),
+        QStringLiteral( "ST_PixelAsPolygon" ),
+        QStringLiteral( "ST_PixelAsPolygons" ),
+        QStringLiteral( "ST_PixelHeight" ),
+        QStringLiteral( "ST_PixelOfValue" ),
+        QStringLiteral( "ST_PixelWidth" ),
+        QStringLiteral( "ST_PointFromGeoHash" ),
+        QStringLiteral( "ST_PointFromWKB" ),
+        QStringLiteral( "ST_PointInsideCircle" ),
+        QStringLiteral( "ST_PointN" ),
+        QStringLiteral( "ST_PointOnSurface" ),
+        QStringLiteral( "ST_Points" ),
+        QStringLiteral( "ST_Polygon" ),
+        QStringLiteral( "ST_Polygonize" ),
+        QStringLiteral( "ST_Project" ),
+        QStringLiteral( "ST_Quantile" ),
+        QStringLiteral( "ST_Range4ma" ),
+        QStringLiteral( "ST_RastFromHexWKB" ),
+        QStringLiteral( "ST_RastFromWKB" ),
+        QStringLiteral( "ST_RasterToWorldCoord" ),
+        QStringLiteral( "ST_RasterToWorldCoordX" ),
+        QStringLiteral( "ST_RasterToWorldCoordY" ),
+        QStringLiteral( "ST_Reclass" ),
+        QStringLiteral( "ST_ReducePrecision" ),
+        QStringLiteral( "ST_Relate" ),
+        QStringLiteral( "ST_RelateMatch" ),
+        QStringLiteral( "ST_RemEdgeModFace" ),
+        QStringLiteral( "ST_RemEdgeNewFace" ),
+        QStringLiteral( "ST_RemovePoint" ),
+        QStringLiteral( "ST_RemoveRepeatedPoints" ),
+        QStringLiteral( "ST_Resample" ),
+        QStringLiteral( "ST_Rescale" ),
+        QStringLiteral( "ST_Resize" ),
+        QStringLiteral( "ST_Reskew" ),
+        QStringLiteral( "ST_Retile" ),
+        QStringLiteral( "ST_Reverse" ),
+        QStringLiteral( "ST_Rotate" ),
+        QStringLiteral( "ST_RotateX" ),
+        QStringLiteral( "ST_RotateY" ),
+        QStringLiteral( "ST_RotateZ" ),
+        QStringLiteral( "ST_Rotation" ),
+        QStringLiteral( "ST_Roughness" ),
+        QStringLiteral( "ST_SRID" ),
+        QStringLiteral( "ST_SameAlignment" ),
+        QStringLiteral( "ST_Scale" ),
+        QStringLiteral( "ST_ScaleX" ),
+        QStringLiteral( "ST_ScaleY" ),
+        QStringLiteral( "ST_Segmentize" ),
+        QStringLiteral( "ST_SetBandIndex" ),
+        QStringLiteral( "ST_SetBandIsNoData" ),
+        QStringLiteral( "ST_SetBandNoDataValue" ),
+        QStringLiteral( "ST_SetBandPath" ),
+        QStringLiteral( "ST_SetEffectiveArea" ),
+        QStringLiteral( "ST_SetGeoReference" ),
+        QStringLiteral( "ST_SetPoint" ),
+        QStringLiteral( "ST_SetRotation" ),
+        QStringLiteral( "ST_SetSRID" ),
+        QStringLiteral( "ST_SetScale" ),
+        QStringLiteral( "ST_SetSkew" ),
+        QStringLiteral( "ST_SetUpperLeft" ),
+        QStringLiteral( "ST_SetValue" ),
+        QStringLiteral( "ST_SetValues" ),
+        QStringLiteral( "ST_SharedPaths" ),
+        QStringLiteral( "ST_ShiftLongitude" ),
+        QStringLiteral( "ST_ShortestLine" ),
+        QStringLiteral( "ST_Simplify" ),
+        QStringLiteral( "ST_SimplifyPreserveTopology" ),
+        QStringLiteral( "ST_SimplifyVW" ),
+        QStringLiteral( "ST_SkewX" ),
+        QStringLiteral( "ST_SkewY" ),
+        QStringLiteral( "ST_Slope" ),
+        QStringLiteral( "ST_Snap" ),
+        QStringLiteral( "ST_SnapToGrid" ),
+        QStringLiteral( "ST_Split" ),
+        QStringLiteral( "ST_Square" ),
+        QStringLiteral( "ST_SquareGrid" ),
+        QStringLiteral( "ST_StartPoint" ),
+        QStringLiteral( "ST_StdDev4ma" ),
+        QStringLiteral( "ST_StraightSkeleton" ),
+        QStringLiteral( "ST_Subdivide" ),
+        QStringLiteral( "ST_Sum4ma" ),
+        QStringLiteral( "ST_Summary" ),
+        QStringLiteral( "ST_SummaryStats" ),
+        QStringLiteral( "ST_SummaryStatsAgg" ),
+        QStringLiteral( "ST_SwapOrdinates" ),
+        QStringLiteral( "ST_SymDifference" ),
+        QStringLiteral( "ST_TPI" ),
+        QStringLiteral( "ST_TRI" ),
+        QStringLiteral( "ST_Tesselate" ),  //#spellok
+        QStringLiteral( "ST_Tile" ),
+        QStringLiteral( "ST_TileEnvelope" ),
+        QStringLiteral( "ST_Touches" ),
+        QStringLiteral( "ST_TransScale" ),
+        QStringLiteral( "ST_Transform" ),
+        QStringLiteral( "ST_Translate" ),
+        QStringLiteral( "ST_UnaryUnion" ),
+        QStringLiteral( "ST_Union" ),
+        QStringLiteral( "ST_UpperLeftX" ),
+        QStringLiteral( "ST_UpperLeftY" ),
+        QStringLiteral( "ST_Value" ),
+        QStringLiteral( "ST_ValueCount" ),
+        QStringLiteral( "ST_Volume" ),
+        QStringLiteral( "ST_VoronoiLines" ),
+        QStringLiteral( "ST_VoronoiPolygons" ),
+        QStringLiteral( "ST_Width" ),
+        QStringLiteral( "ST_Within" ),
+        QStringLiteral( "ST_WorldToRasterCoord" ),
+        QStringLiteral( "ST_WorldToRasterCoordX" ),
+        QStringLiteral( "ST_WorldToRasterCoordY" ),
+        QStringLiteral( "ST_WrapX" ),
+        QStringLiteral( "ST_X" ),
+        QStringLiteral( "ST_XMax" ),
+        QStringLiteral( "ST_XMin" ),
+        QStringLiteral( "ST_Y" ),
+        QStringLiteral( "ST_YMax" ),
+        QStringLiteral( "ST_YMin" ),
+        QStringLiteral( "ST_Z" ),
+        QStringLiteral( "ST_ZMax" ),
+        QStringLiteral( "ST_ZMin" ),
+        QStringLiteral( "ST_Zmflag" ),
+        QStringLiteral( "Set_Geocode_Setting" ),
+        QStringLiteral( "TopoElementArray_Agg" ),
+        QStringLiteral( "TopoGeo_AddLineString" ),
+        QStringLiteral( "TopoGeo_AddPoint" ),
+        QStringLiteral( "TopoGeo_AddPolygon" ),
+        QStringLiteral( "TopoGeom_addElement" ),
+        QStringLiteral( "TopoGeom_remElement" ),
+        QStringLiteral( "TopologySummary" ),
+        QStringLiteral( "Topology_Load_Tiger" ),
+        QStringLiteral( "UpdateGeometrySRID" ),
+        QStringLiteral( "UpdateRasterSRID" ),
+        QStringLiteral( "ValidateTopology" ),
+        QStringLiteral( "box2d" ),
+        QStringLiteral( "clearTopoGeom" ),
+        QStringLiteral( "geometry_dump" ),
+        QStringLiteral( "parse_address" ),
+        QStringLiteral( "postgis.backend" ),
+        QStringLiteral( "postgis.enable_outdb_rasters" ),
+        QStringLiteral( "postgis.gdal_datapath" ),
+        QStringLiteral( "postgis.gdal_enabled_drivers" ),
+        QStringLiteral( "postgis_sfcgal_version" ),
+        QStringLiteral( "standardize_address" ),
+        QStringLiteral( "toTopoGeom" ),
+        QStringLiteral( "|=|" ),
+        QStringLiteral( "~" ),
+        QStringLiteral( "~(box2df,box2df)" ),
+        QStringLiteral( "~(box2df,geometry)" ),
+        QStringLiteral( "~(geometry,box2df)" ),
+        QStringLiteral( "~=" ),
       }
     }
-  );
+  } );
 }
 
 QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QString &tableName, QgsFeedback *feedback ) const
@@ -1862,7 +1896,7 @@ QgsFields QgsPostgresProviderConnection::fields( const QString &schema, const QS
     {
       QgsDataSourceUri tUri { tableUri( schema, tableName ) };
 
-      if ( tableInfo.geometryColumnTypes().count() > 1 )
+      if ( tableInfo.geometryColumnTypes().count( ) > 1 )
       {
         const auto geomColTypes( tableInfo.geometryColumnTypes() );
         TableProperty::GeometryColumnType geomCol { geomColTypes.first() };

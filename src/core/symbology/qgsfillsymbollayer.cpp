@@ -2707,6 +2707,7 @@ QImage QgsLinePatternFillSymbolLayer::toTiledPatternImage() const
   layerClone->drawPreviewIcon( symbolContext, pixmap.size() );
   painter.end();
   return pixmap.toImage();
+  return QImage();
 }
 
 double QgsLinePatternFillSymbolLayer::estimateMaxBleed( const QgsRenderContext & ) const
@@ -3287,14 +3288,12 @@ void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF &points, cons
     case Qgis::LineClipMode::ClipToIntersection:
     {
       shapePolygon = std::make_unique< QgsPolygon >();
-      std::unique_ptr< QgsLineString > fromPolygon = QgsLineString::fromQPolygonF( points );
-      shapePolygon->setExteriorRing( fromPolygon.release() );
+      shapePolygon->setExteriorRing( QgsLineString::fromQPolygonF( points ) );
       if ( rings )
       {
         for ( const QPolygonF &ring : *rings )
         {
-          std::unique_ptr< QgsLineString > fromRing = QgsLineString::fromQPolygonF( ring );
-          shapePolygon->addInteriorRing( fromRing.release() );
+          shapePolygon->addInteriorRing( QgsLineString::fromQPolygonF( ring ) );
         }
       }
       shapeEngine.reset( QgsGeometry::createGeometryEngine( shapePolygon.get() ) );
@@ -4133,14 +4132,12 @@ void QgsPointPatternFillSymbolLayer::renderPolygon( const QPolygonF &points, con
     case Qgis::MarkerClipMode::CompletelyWithin:
     {
       shapePolygon = std::make_unique< QgsPolygon >();
-      std::unique_ptr< QgsLineString > fromPolygon = QgsLineString::fromQPolygonF( points );
-      shapePolygon->setExteriorRing( fromPolygon.release() );
+      shapePolygon->setExteriorRing( QgsLineString::fromQPolygonF( points ) );
       if ( rings )
       {
         for ( const QPolygonF &ring : *rings )
         {
-          std::unique_ptr< QgsLineString > fromRing = QgsLineString::fromQPolygonF( ring );
-          shapePolygon->addInteriorRing( fromRing.release() );
+          shapePolygon->addInteriorRing( QgsLineString::fromQPolygonF( ring ) );
         }
       }
       shapeEngine.reset( QgsGeometry::createGeometryEngine( shapePolygon.get() ) );
@@ -5630,8 +5627,7 @@ void QgsRandomMarkerFillSymbolLayer::render( QgsRenderContext &context, const QV
       QgsPolygon *poly = qgsgeometry_cast< QgsPolygon * >( geom.get() );
       for ( const QPolygonF &ring : part.rings )
       {
-        std::unique_ptr< QgsLineString > fromRing = QgsLineString::fromQPolygonF( ring );
-        poly->addInteriorRing( fromRing.release() );
+        poly->addInteriorRing( QgsLineString::fromQPolygonF( ring ) );
       }
     }
     if ( !geom.isGeosValid() )

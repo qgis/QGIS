@@ -33,6 +33,7 @@
  */
 class QgsExportToPostgresqlAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
     QgsExportToPostgresqlAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
@@ -47,7 +48,9 @@ class QgsExportToPostgresqlAlgorithm : public QgsProcessingAlgorithm
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback * ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context,
+                                  QgsProcessingFeedback *feedback ) override;
 
   private:
     std::unique_ptr<QgsProcessingFeatureSource> mSource;
@@ -60,7 +63,8 @@ class QgsExportToPostgresqlAlgorithm : public QgsProcessingAlgorithm
     QString mEncoding = QStringLiteral( "UTF-8" );
     bool mCreateIndex = true;
     bool mOverwrite = true;
-    QMap<QString, QVariant> mOptions;
+    QMap< QString, QVariant > mOptions;
+
 };
 
 ///@endcond PRIVATE

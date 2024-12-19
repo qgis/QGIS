@@ -35,7 +35,7 @@ class QgsLayoutFrame;
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutAttributeTableWidget : public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutAttributeTableWidgetBase
+class GUI_EXPORT QgsLayoutAttributeTableWidget: public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutAttributeTableWidgetBase
 {
     Q_OBJECT
   public:
@@ -47,11 +47,12 @@ class GUI_EXPORT QgsLayoutAttributeTableWidget : public QgsLayoutItemBaseWidget,
     QgsExpressionContext createExpressionContext() const override;
 
   protected:
+
     bool setNewItem( QgsLayoutItem *item ) override;
 
   private:
-    QPointer<QgsLayoutItemAttributeTable> mTable;
-    QPointer<QgsLayoutFrame> mFrame;
+    QPointer< QgsLayoutItemAttributeTable > mTable;
+    QPointer< QgsLayoutFrame > mFrame;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
     //! Blocks / unblocks the signals of all GUI elements
@@ -107,6 +108,7 @@ class GUI_EXPORT QgsLayoutAttributeTableWidget : public QgsLayoutItemBaseWidget,
     void atlasToggled();
 
     void updateRelationsCombo();
+
 };
 
 #endif // QGSLAYOUTATTRIBUTETABLEWIDGET_H

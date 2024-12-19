@@ -41,8 +41,12 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
     Q_OBJECT
 
   public:
+
     //! Constructor for QgsAuthCertInfo
-    explicit QgsAuthCertInfo( const QSslCertificate &cert, bool manageCertTrust = false, QWidget *parent SIP_TRANSFERTHIS = nullptr, const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
+    explicit QgsAuthCertInfo( const QSslCertificate &cert,
+                              bool manageCertTrust = false,
+                              QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                              const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 
     bool trustCacheRebuilt() { return mTrustCacheRebuilt; }
 
@@ -57,7 +61,9 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
 
     void currentPolicyIndexChanged( int indx );
 
-    void decorateCertTreeItem( const QSslCertificate &cert, QgsAuthCertUtils::CertTrustPolicy trustpolicy, QTreeWidgetItem *item = nullptr );
+    void decorateCertTreeItem( const QSslCertificate &cert,
+                               QgsAuthCertUtils::CertTrustPolicy trustpolicy,
+                               QTreeWidgetItem *item = nullptr );
 
   private:
     enum DetailsType
@@ -92,7 +98,8 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
 
     QTreeWidgetItem *addGroupItem( QTreeWidgetItem *parent, const QString &group );
 
-    void addFieldItem( QTreeWidgetItem *parent, const QString &field, const QString &value, FieldWidget wdgt = NoWidget, const QColor &color = QColor() );
+    void addFieldItem( QTreeWidgetItem *parent, const QString &field, const QString &value, FieldWidget wdgt = NoWidget,
+                       const QColor &color = QColor() );
 
     void populateInfoGeneralSection();
 
@@ -102,7 +109,7 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
 
     QCA::Certificate mCert;
     QList<QSslCertificate> mConnectionCAs;
-    QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate>> mCaCertsCache;
+    QMap<QString, QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > mCaCertsCache;
     QCA::CertificateCollection mCaCerts;
     QCA::CertificateChain mACertChain;
     QList<QSslCertificate> mQCertChain;
@@ -140,6 +147,7 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Construct a dialog displaying detailed info on a certificate and its hierarchical trust chain
      * \param cert Certificate object
@@ -147,7 +155,10 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
      * \param parent Parent widget
      * \param connectionCAs List of hierarchical certificates in a connection
      */
-    explicit QgsAuthCertInfoDialog( const QSslCertificate &cert, bool manageCertTrust, QWidget *parent SIP_TRANSFERTHIS = nullptr, const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
+    explicit QgsAuthCertInfoDialog( const QSslCertificate &cert,
+                                    bool manageCertTrust,
+                                    QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                                    const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 
     //! Gets access to embedded info widget
     QgsAuthCertInfo *certInfoWidget() { return mCertInfoWdgt; }

@@ -20,11 +20,14 @@
 
 #include "qgsrasterlayer.h"
 #include "qgsrasterminmaxwidget.h"
-#include "moc_qgsrasterminmaxwidget.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterminmaxorigin.h"
 #include "qgsdoublespinbox.h"
+
+const int IDX_WHOLE_RASTER = 0;
+const int IDX_CURRENT_CANVAS = 1;
+const int IDX_UPDATED_CANVAS = 2;
 
 QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *parent )
   : QWidget( parent )
@@ -35,13 +38,6 @@ QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *pa
   QgsDebugMsgLevel( QStringLiteral( "Entered." ), 4 );
   setupUi( this );
 
-  mStatisticsExtentCombo->addItem( tr( "Whole Raster" ), QVariant::fromValue( Qgis::RasterRangeExtent::WholeRaster ) );
-  mStatisticsExtentCombo->addItem( tr( "Current Canvas" ), QVariant::fromValue( Qgis::RasterRangeExtent::FixedCanvas ) );
-  mStatisticsExtentCombo->addItem( tr( "Updated Canvas" ), QVariant::fromValue( Qgis::RasterRangeExtent::UpdatedCanvas ) );
-
-  cboAccuracy->addItem( tr( "Estimate (faster)" ), QVariant::fromValue( Qgis::RasterRangeAccuracy::Estimated ) );
-  cboAccuracy->addItem( tr( "Actual (slower)" ), QVariant::fromValue( Qgis::RasterRangeAccuracy::Exact ) );
-
   // use maximum value as a clear value for the upper border of the cumulative cut
   mCumulativeCutUpperDoubleSpinBox->setClearValueMode( QgsDoubleSpinBox::MaximumValue );
 
@@ -50,9 +46,9 @@ QgsRasterMinMaxWidget::QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *pa
   connect( mStdDevRadioButton, &QRadioButton::toggled, this, &QgsRasterMinMaxWidget::mStdDevRadioButton_toggled );
   connect( mCumulativeCutRadioButton, &QRadioButton::toggled, this, &QgsRasterMinMaxWidget::mCumulativeCutRadioButton_toggled );
   connect( mStatisticsExtentCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterMinMaxWidget::mStatisticsExtentCombo_currentIndexChanged );
-  connect( mCumulativeCutLowerDoubleSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMinMaxWidget::mCumulativeCutLowerDoubleSpinBox_valueChanged );
-  connect( mCumulativeCutUpperDoubleSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMinMaxWidget::mCumulativeCutUpperDoubleSpinBox_valueChanged );
-  connect( mStdDevSpinBox, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMinMaxWidget::mStdDevSpinBox_valueChanged );
+  connect( mCumulativeCutLowerDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMinMaxWidget::mCumulativeCutLowerDoubleSpinBox_valueChanged );
+  connect( mCumulativeCutUpperDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMinMaxWidget::mCumulativeCutUpperDoubleSpinBox_valueChanged );
+  connect( mStdDevSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsRasterMinMaxWidget::mStdDevSpinBox_valueChanged );
   connect( cboAccuracy, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterMinMaxWidget::cboAccuracy_currentIndexChanged );
 
   const QgsRasterMinMaxOrigin defaultMinMaxOrigin;
@@ -77,16 +73,9 @@ void QgsRasterMinMaxWidget::setBands( const QList<int> &bands )
 
 QgsRectangle QgsRasterMinMaxWidget::extent()
 {
-  const Qgis::RasterRangeExtent extentType = mStatisticsExtentCombo->currentData().value<Qgis::RasterRangeExtent>();
-  switch ( extentType )
-  {
-    case Qgis::RasterRangeExtent::WholeRaster:
-      return QgsRectangle();
-
-    case Qgis::RasterRangeExtent::FixedCanvas:
-    case Qgis::RasterRangeExtent::UpdatedCanvas:
-      break;
-  }
+  const int nExtentIdx = mStatisticsExtentCombo->currentIndex();
+  if ( nExtentIdx != IDX_CURRENT_CANVAS && nExtentIdx != IDX_UPDATED_CANVAS )
+    return QgsRectangle();
 
   if ( mLayer && mCanvas )
     return mCanvas->mapSettings().outputExtentToLayerExtent( mLayer, mCanvas->extent() );
@@ -99,7 +88,7 @@ QgsRectangle QgsRasterMinMaxWidget::extent()
 void QgsRasterMinMaxWidget::userHasSetManualMinMaxValues()
 {
   mUserDefinedRadioButton->setChecked( true );
-  mStatisticsExtentCombo->setCurrentIndex( mStatisticsExtentCombo->findData( QVariant::fromValue( Qgis::RasterRangeExtent::WholeRaster ) ) );
+  mStatisticsExtentCombo->setCurrentIndex( IDX_WHOLE_RASTER );
 }
 
 void QgsRasterMinMaxWidget::mUserDefinedRadioButton_toggled( bool toggled )
@@ -113,30 +102,43 @@ void QgsRasterMinMaxWidget::setFromMinMaxOrigin( const QgsRasterMinMaxOrigin &mi
 {
   switch ( minMaxOrigin.limits() )
   {
-    case Qgis::RasterRangeLimit::NotSet:
+    case QgsRasterMinMaxOrigin::None:
       mUserDefinedRadioButton->setChecked( true );
       break;
 
-    case Qgis::RasterRangeLimit::MinimumMaximum:
+    case QgsRasterMinMaxOrigin::MinMax:
       mMinMaxRadioButton->setChecked( true );
       break;
 
-    case Qgis::RasterRangeLimit::StdDev:
+    case QgsRasterMinMaxOrigin::StdDev:
       mStdDevRadioButton->setChecked( true );
       break;
 
-    case Qgis::RasterRangeLimit::CumulativeCut:
+    case QgsRasterMinMaxOrigin::CumulativeCut:
       mCumulativeCutRadioButton->setChecked( true );
       break;
   }
 
-  mStatisticsExtentCombo->setCurrentIndex( mStatisticsExtentCombo->findData( QVariant::fromValue( minMaxOrigin.extent() ) ) );
+  switch ( minMaxOrigin.extent() )
+  {
+    case QgsRasterMinMaxOrigin::WholeRaster:
+      mStatisticsExtentCombo->setCurrentIndex( IDX_WHOLE_RASTER );
+      break;
+
+    case QgsRasterMinMaxOrigin::CurrentCanvas:
+      mStatisticsExtentCombo->setCurrentIndex( IDX_CURRENT_CANVAS );
+      break;
+
+    case QgsRasterMinMaxOrigin::UpdatedCanvas:
+      mStatisticsExtentCombo->setCurrentIndex( IDX_UPDATED_CANVAS );
+      break;
+  }
 
   mCumulativeCutLowerDoubleSpinBox->setValue( 100.0 * minMaxOrigin.cumulativeCutLower() );
   mCumulativeCutUpperDoubleSpinBox->setValue( 100.0 * minMaxOrigin.cumulativeCutUpper() );
   mStdDevSpinBox->setValue( minMaxOrigin.stdDevFactor() );
 
-  cboAccuracy->setCurrentIndex( cboAccuracy->findData( QVariant::fromValue( minMaxOrigin.statAccuracy() ) ) );
+  cboAccuracy->setCurrentIndex( minMaxOrigin.statAccuracy() == QgsRasterMinMaxOrigin::Estimated ? 0 : 1 );
 }
 
 QgsRasterMinMaxOrigin QgsRasterMinMaxWidget::minMaxOrigin()
@@ -144,23 +146,37 @@ QgsRasterMinMaxOrigin QgsRasterMinMaxWidget::minMaxOrigin()
   QgsRasterMinMaxOrigin minMaxOrigin;
 
   if ( mMinMaxRadioButton->isChecked() )
-    minMaxOrigin.setLimits( Qgis::RasterRangeLimit::MinimumMaximum );
+    minMaxOrigin.setLimits( QgsRasterMinMaxOrigin::MinMax );
   else if ( mStdDevRadioButton->isChecked() )
-    minMaxOrigin.setLimits( Qgis::RasterRangeLimit::StdDev );
+    minMaxOrigin.setLimits( QgsRasterMinMaxOrigin::StdDev );
   else if ( mCumulativeCutRadioButton->isChecked() )
-    minMaxOrigin.setLimits( Qgis::RasterRangeLimit::CumulativeCut );
+    minMaxOrigin.setLimits( QgsRasterMinMaxOrigin::CumulativeCut );
   else
-    minMaxOrigin.setLimits( Qgis::RasterRangeLimit::NotSet );
+    minMaxOrigin.setLimits( QgsRasterMinMaxOrigin::None );
 
-  minMaxOrigin.setExtent( mStatisticsExtentCombo->currentData().value<Qgis::RasterRangeExtent>() );
-  minMaxOrigin.setStatAccuracy( cboAccuracy->currentData().value<Qgis::RasterRangeAccuracy>() );
+  switch ( mStatisticsExtentCombo->currentIndex() )
+  {
+    case IDX_WHOLE_RASTER:
+    default:
+      minMaxOrigin.setExtent( QgsRasterMinMaxOrigin::WholeRaster );
+      break;
+    case IDX_CURRENT_CANVAS:
+      minMaxOrigin.setExtent( QgsRasterMinMaxOrigin::CurrentCanvas );
+      break;
+    case IDX_UPDATED_CANVAS:
+      minMaxOrigin.setExtent( QgsRasterMinMaxOrigin::UpdatedCanvas );
+      break;
+  }
+
+  if ( cboAccuracy->currentIndex() == 0 )
+    minMaxOrigin.setStatAccuracy( QgsRasterMinMaxOrigin::Estimated );
+  else
+    minMaxOrigin.setStatAccuracy( QgsRasterMinMaxOrigin::Exact );
 
   minMaxOrigin.setCumulativeCutLower(
-    mCumulativeCutLowerDoubleSpinBox->value() / 100.0
-  );
+    mCumulativeCutLowerDoubleSpinBox->value() / 100.0 );
   minMaxOrigin.setCumulativeCutUpper(
-    mCumulativeCutUpperDoubleSpinBox->value() / 100.0
-  );
+    mCumulativeCutUpperDoubleSpinBox->value() / 100.0 );
   minMaxOrigin.setStdDevFactor( mStdDevSpinBox->value() );
 
   return minMaxOrigin;
@@ -173,10 +189,12 @@ void QgsRasterMinMaxWidget::doComputations()
     return;
 
   const QgsRectangle myExtent = extent(); // empty == full
-  const int mySampleSize = sampleSize();  // 0 == exact
+  const int mySampleSize = sampleSize(); // 0 == exact
 
   const QgsRasterMinMaxOrigin newMinMaxOrigin = minMaxOrigin();
-  if ( mLastRectangleValid && mLastRectangle == myExtent && mLastMinMaxOrigin == newMinMaxOrigin && !mBandsChanged )
+  if ( mLastRectangleValid && mLastRectangle == myExtent &&
+       mLastMinMaxOrigin == newMinMaxOrigin &&
+       !mBandsChanged )
   {
     QgsDebugMsgLevel( QStringLiteral( "Does not need to redo statistics computations" ), 2 );
     return;
@@ -229,5 +247,5 @@ void QgsRasterMinMaxWidget::doComputations()
 
 void QgsRasterMinMaxWidget::hideUpdatedExtent()
 {
-  mStatisticsExtentCombo->removeItem( mStatisticsExtentCombo->findData( QVariant::fromValue( Qgis::RasterRangeExtent::UpdatedCanvas ) ) );
+  mStatisticsExtentCombo->removeItem( IDX_UPDATED_CANVAS );
 }

@@ -32,6 +32,7 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui
     Q_OBJECT
 
   public:
+
     /**
      * Static creation method
      * \param layer the layer where this renderer is applied
@@ -54,7 +55,7 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui
     QgsExpressionContext createExpressionContext() const override;
 
   private:
-    std::unique_ptr<QgsHeatmapRenderer> mRenderer;
+    std::unique_ptr< QgsHeatmapRenderer > mRenderer;
 
   private slots:
 
@@ -65,6 +66,7 @@ class GUI_EXPORT QgsHeatmapRendererWidget : public QgsRendererWidget, private Ui
     void mMaxSpinBox_valueChanged( double d );
     void mQualitySlider_valueChanged( int v );
     void weightExpressionChanged( const QString &expression );
+
 };
 
 

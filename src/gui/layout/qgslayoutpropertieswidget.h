@@ -34,7 +34,7 @@ class QgsMasterLayoutInterface;
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutPropertiesWidget : public QgsPanelWidget, private Ui::QgsLayoutWidgetBase
+class GUI_EXPORT QgsLayoutPropertiesWidget: public QgsPanelWidget, private Ui::QgsLayoutWidgetBase
 {
     Q_OBJECT
   public:
@@ -68,11 +68,13 @@ class GUI_EXPORT QgsLayoutPropertiesWidget : public QgsPanelWidget, private Ui::
     void updateVariables();
 
   private:
+
     QgsLayout *mLayout = nullptr;
 
     void updateSnappingElements();
     void blockSignals( bool block );
     bool mBlockVariableUpdates = false;
+
 };
 
 #endif // QGSLAYOUTPROPERTIESWIDGET_H

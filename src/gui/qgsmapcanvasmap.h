@@ -34,6 +34,7 @@ class QgsMapCanvas;
 class QgsMapCanvasMap : public QgsMapCanvasItem
 {
   public:
+
     //! constructor
     QgsMapCanvasMap( QgsMapCanvas *canvas );
 
@@ -48,10 +49,11 @@ class QgsMapCanvasMap : public QgsMapCanvasItem
     QRectF boundingRect() const override;
 
   private:
+
     QImage mImage;
 
     //! Preview images for panning. Usually cover area around the rendered image
-    QList<QPair<QImage, QgsRectangle>> mPreviewImages;
+    QList< QPair< QImage, QgsRectangle > > mPreviewImages;
 };
 
 /// @endcond

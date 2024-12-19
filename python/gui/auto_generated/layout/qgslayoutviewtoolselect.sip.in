@@ -19,6 +19,7 @@ Layout view tool for selecting items in the layout.
 #include "qgslayoutviewtoolselect.h"
 %End
   public:
+
     QgsLayoutViewToolSelect( QgsLayoutView *view /TransferThis/ );
 %Docstring
 Constructor for QgsLayoutViewToolSelect.

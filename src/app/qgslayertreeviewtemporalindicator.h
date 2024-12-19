@@ -42,6 +42,7 @@ class QgsLayerTreeViewTemporalIndicatorProvider : public QgsLayerTreeViewIndicat
     bool acceptLayer( QgsMapLayer *layer ) override;
     QString iconName( QgsMapLayer *layer ) override;
     QString tooltipText( QgsMapLayer *layer ) override;
+
 };
 
 #endif // QGSLAYERTREEVIEWTEMPORALINDICATOR_H

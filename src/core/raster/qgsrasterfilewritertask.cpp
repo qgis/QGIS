@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsrasterfilewritertask.h"
-#include "moc_qgsrasterfilewritertask.cpp"
 #include "qgsrasterinterface.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterpipe.h"

@@ -34,6 +34,7 @@ class GUI_EXPORT QgsMapToolExtent : public QgsMapTool
     Q_OBJECT
 
   public:
+
     //! constructor
     QgsMapToolExtent( QgsMapCanvas *canvas );
 
@@ -75,11 +76,12 @@ class GUI_EXPORT QgsMapToolExtent : public QgsMapTool
     void extentChanged( const QgsRectangle &extent );
 
   private:
+
     void calculateEndPoint( QgsPointXY &point );
 
     void drawExtent();
 
-    QObjectUniquePtr<QgsRubberBand> mRubberBand;
+    QObjectUniquePtr< QgsRubberBand > mRubberBand;
 
     QgsPointXY mStartPoint;
     QgsPointXY mEndPoint;
@@ -87,6 +89,7 @@ class GUI_EXPORT QgsMapToolExtent : public QgsMapTool
     bool mDraw = false;
 
     QSize mRatio;
+
 };
 
 #endif

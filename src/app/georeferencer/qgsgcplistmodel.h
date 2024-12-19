@@ -87,7 +87,7 @@ class APP_EXPORT QgsGCPListModel : public QAbstractTableModel
     QgsCoordinateReferenceSystem mTargetCrs;
     QgsCoordinateTransformContext mTransformContext;
 
-    QgsGCPList *mGCPList = nullptr;
+    QgsGCPList         *mGCPList = nullptr;
     QgsGeorefTransform *mGeorefTransform = nullptr;
 };
 

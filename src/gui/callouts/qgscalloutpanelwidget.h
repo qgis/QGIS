@@ -37,6 +37,7 @@ class GUI_EXPORT QgsCalloutPanelWidget : public QgsPanelWidget, private Ui::QgsC
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsCalloutPanelWidget, with the specified \a parent widget
      *
@@ -103,7 +104,8 @@ class GUI_EXPORT QgsCalloutPanelWidget : public QgsPanelWidget, private Ui::QgsC
     void updateCalloutWidget( const QgsCallout *callout );
 
   private:
-    QPointer<QgsMapLayer> mLayer;
+
+    QPointer< QgsMapLayer > mLayer;
     Qgis::GeometryType mGeometryType = Qgis::GeometryType::Unknown;
 
     //! Context in which widget is shown

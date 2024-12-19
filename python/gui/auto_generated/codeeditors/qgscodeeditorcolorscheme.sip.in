@@ -20,6 +20,7 @@ Defines a color scheme for use in :py:class:`QgsCodeEditor` widgets.
 #include "qgscodeeditorcolorscheme.h"
 %End
   public:
+
     enum class ColorRole
     {
       Default,

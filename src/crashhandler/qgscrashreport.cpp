@@ -258,7 +258,9 @@ void QgsCrashReport::exportToCrashFolder()
 
 QString QgsCrashReport::crashReportFolder()
 {
-  return QStandardPaths::standardLocations( QStandardPaths::AppLocalDataLocation ).value( 0 ) + "/crashes/" + QUuid::createUuid().toString().replace( "{", "" ).replace( "}", "" );
+  return QStandardPaths::standardLocations( QStandardPaths::AppLocalDataLocation ).value( 0 ) +
+         "/crashes/" +
+         QUuid::createUuid().toString().replace( "{", "" ).replace( "}", "" );
 }
 
 void QgsCrashReport::setPythonCrashLogFilePath( const QString &path )

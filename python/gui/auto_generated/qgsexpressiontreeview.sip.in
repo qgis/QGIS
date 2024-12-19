@@ -12,6 +12,7 @@
 
 
 
+
 class QgsExpressionItem : QStandardItem
 {
 %Docstring(signature="appended")
@@ -29,9 +30,14 @@ An expression item that can be used in the :py:class:`QgsExpressionBuilderWidget
       ExpressionNode
     };
 
-    QgsExpressionItem( const QString &label, const QString &expressionText, const QString &helpText, QgsExpressionItem::ItemType itemType = ExpressionNode );
+    QgsExpressionItem( const QString &label,
+                       const QString &expressionText,
+                       const QString &helpText,
+                       QgsExpressionItem::ItemType itemType = ExpressionNode );
 
-    QgsExpressionItem( const QString &label, const QString &expressionText, QgsExpressionItem::ItemType itemType = ExpressionNode );
+    QgsExpressionItem( const QString &label,
+                       const QString &expressionText,
+                       QgsExpressionItem::ItemType itemType = ExpressionNode );
 
     QString getExpressionText() const;
 
@@ -92,6 +98,7 @@ Sets the search filter ``string``.
 %End
 
   protected:
+
     virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
 
 
@@ -112,6 +119,7 @@ functions, variables and fields that can be used in an expression.
 #include "qgsexpressiontreeview.h"
 %End
   public:
+
     class MenuProvider
 {
 %Docstring(signature="appended")
@@ -125,6 +133,7 @@ instance to provide custom context menus (opened upon right-click).
 #include "qgsexpressiontreeview.h"
 %End
       public:
+
         explicit MenuProvider();
         virtual ~MenuProvider();
 
@@ -221,7 +230,7 @@ Stores the user ``expression`` with given ``label`` and ``helpText``.
 Removes the expression ``label`` from the user stored expressions.
 %End
 
-    void loadUserExpressions();
+    void loadUserExpressions( );
 %Docstring
 Loads the user expressions.
 This is done on request since it can be very slow if there are thousands of user expressions

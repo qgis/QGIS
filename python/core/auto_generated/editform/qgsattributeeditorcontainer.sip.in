@@ -55,7 +55,7 @@ Returns the container type.
 .. versionadded:: 3.32
 %End
 
- virtual void setIsGroupBox( bool isGroupBox ) /Deprecated="Since 3.40. Use setType() instead."/;
+ virtual void setIsGroupBox( bool isGroupBox ) /Deprecated/;
 %Docstring
 Determines if this container is rendered as collapsible group box or tab in a tabwidget
 
@@ -66,7 +66,7 @@ Determines if this container is rendered as collapsible group box or tab in a ta
    Use :py:func:`~QgsAttributeEditorContainer.setType` instead.
 %End
 
- virtual bool isGroupBox() const /Deprecated="Since 3.40. Use type() instead."/;
+ virtual bool isGroupBox() const /Deprecated/;
 %Docstring
 Returns if this container is going to be a group box
 

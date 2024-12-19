@@ -301,7 +301,7 @@ Returns the number of tangents (either 0 or 2).
     virtual void setSemiMajorAxis( double semiMajorAxis ) /HoldGIL/;
 
 %Docstring
-Inherited method. Use :py:func:`~QgsCircle.setRadius` instead.
+Inherited method. Use setRadius instead.
 
 .. seealso:: :py:func:`radius`
 
@@ -311,7 +311,7 @@ Inherited method. Use :py:func:`~QgsCircle.setRadius` instead.
     virtual void setSemiMinorAxis( double semiMinorAxis ) /HoldGIL/;
 
 %Docstring
-Inherited method. Use :py:func:`~QgsCircle.setRadius` instead.
+Inherited method. Use setRadius instead.
 
 .. seealso:: :py:func:`radius`
 

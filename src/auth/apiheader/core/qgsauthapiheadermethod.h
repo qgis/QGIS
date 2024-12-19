@@ -30,6 +30,7 @@ class QgsAuthApiHeaderMethod : public QgsAuthMethod
     Q_OBJECT
 
   public:
+
     static const QString AUTH_METHOD_KEY;
     static const QString AUTH_METHOD_DESCRIPTION;
     static const QString AUTH_METHOD_DISPLAY_DESCRIPTION;
@@ -43,13 +44,14 @@ class QgsAuthApiHeaderMethod : public QgsAuthMethod
 
     QString displayDescription() const override;
 
-    bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider = QString() ) override;
+    bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
+                               const QString &dataprovider = QString() ) override;
 
     void clearCachedConfig( const QString &authcfg ) override;
     void updateMethodConfig( QgsAuthMethodConfig &config ) override;
 
 #ifdef HAVE_GUI
-    QWidget *editWidget( QWidget *parent ) const override;
+    QWidget *editWidget( QWidget *parent )const override;
 #endif
 
   private:
@@ -60,6 +62,7 @@ class QgsAuthApiHeaderMethod : public QgsAuthMethod
     void removeMethodConfig( const QString &authcfg );
 
     static QMap<QString, QgsAuthMethodConfig> sAuthConfigCache;
+
 };
 
 
@@ -69,7 +72,7 @@ class QgsAuthApiHeaderMethodMetadata : public QgsAuthMethodMetadata
     QgsAuthApiHeaderMethodMetadata()
       : QgsAuthMethodMetadata( QgsAuthApiHeaderMethod::AUTH_METHOD_KEY, QgsAuthApiHeaderMethod::AUTH_METHOD_DESCRIPTION )
     {}
-    QgsAuthApiHeaderMethod *createAuthMethod() const override { return new QgsAuthApiHeaderMethod; }
+    QgsAuthApiHeaderMethod *createAuthMethod() const override {return new QgsAuthApiHeaderMethod;}
     //QStringList supportedDataProviders() const override;
 };
 

@@ -528,12 +528,6 @@ class CORE_EXPORT QgsProcessingAlgorithm
     bool addParameter( QgsProcessingParameterDefinition *parameterDefinition SIP_TRANSFER, bool createOutput = true ) SIP_HOLDGIL;
 
     /**
-     * Same as above addParameter(QgsProcessingParameterDefinition*, bool), but using
-     * a smart pointer for safer use.
-     */
-    bool addParameter( std::unique_ptr<QgsProcessingParameterDefinition> parameterDefinition, bool createOutput = true ) SIP_SKIP;
-
-    /**
      * Removes the parameter with matching \a name from the algorithm, and deletes any existing
      * definition.
      */
@@ -553,12 +547,6 @@ class CORE_EXPORT QgsProcessingAlgorithm
      * \see initAlgorithm()
      */
     bool addOutput( QgsProcessingOutputDefinition *outputDefinition SIP_TRANSFER ) SIP_HOLDGIL;
-
-    /**
-     * Same as above addOutput(QgsProcessingOutputDefinition*), but using
-     * a smart pointer for safer use.
-     */
-    bool addOutput( std::unique_ptr<QgsProcessingOutputDefinition> outputDefinition ) SIP_SKIP;
 
     /**
      * Prepares the algorithm to run using the specified \a parameters. Algorithms should implement
@@ -1122,7 +1110,7 @@ class CORE_EXPORT QgsProcessingAlgorithm
     bool mHasPostProcessed = false;
     std::unique_ptr< QgsProcessingContext > mLocalContext;
 
-    bool createAutoOutputForParameter( const QgsProcessingParameterDefinition *parameter );
+    bool createAutoOutputForParameter( QgsProcessingParameterDefinition *parameter );
 
 
     friend class QgsProcessingProvider;

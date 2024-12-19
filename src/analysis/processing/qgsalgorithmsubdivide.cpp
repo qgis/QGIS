@@ -21,7 +21,8 @@
 
 void QgsSubdivideAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterNumber> nodes = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MAX_NODES" ), QObject::tr( "Maximum nodes in parts" ), Qgis::ProcessingNumberParameterType::Integer, 256, false, 8, 100000 );
+  std::unique_ptr< QgsProcessingParameterNumber> nodes = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MAX_NODES" ), QObject::tr( "Maximum nodes in parts" ), Qgis::ProcessingNumberParameterType::Integer,
+      256, false, 8, 100000 );
   nodes->setIsDynamic( true );
   nodes->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "MAX_NODES" ), QObject::tr( "Maximum nodes in parts" ), QgsPropertyDefinition::Integer ) );
   nodes->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -102,10 +103,14 @@ bool QgsSubdivideAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qgs
   mMaxNodes = parameterAsInt( parameters, QStringLiteral( "MAX_NODES" ), context );
   mDynamicMaxNodes = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "MAX_NODES" ) );
   if ( mDynamicMaxNodes )
-    mMaxNodesProperty = parameters.value( QStringLiteral( "MAX_NODES" ) ).value<QgsProperty>();
+    mMaxNodesProperty = parameters.value( QStringLiteral( "MAX_NODES" ) ).value< QgsProperty >();
 
   return true;
 }
 
 
+
 ///@endcond
+
+
+

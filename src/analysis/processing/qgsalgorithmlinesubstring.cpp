@@ -68,7 +68,7 @@ QString QgsLineSubstringAlgorithm::shortDescription() const
 
 QList<int> QgsLineSubstringAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine );
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine );
 }
 
 Qgis::ProcessingSourceType QgsLineSubstringAlgorithm::outputLayerType() const
@@ -83,13 +83,15 @@ QgsLineSubstringAlgorithm *QgsLineSubstringAlgorithm::createInstance() const
 
 void QgsLineSubstringAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterDistance> startDistance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "START_DISTANCE" ), QObject::tr( "Start distance" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
+  std::unique_ptr< QgsProcessingParameterDistance> startDistance = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "START_DISTANCE" ),
+      QObject::tr( "Start distance" ), 0.0, QStringLiteral( "INPUT" ), false, 0 );
   startDistance->setIsDynamic( true );
   startDistance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Start Distance" ), QObject::tr( "Start distance" ), QgsPropertyDefinition::DoublePositive ) );
   startDistance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( startDistance.release() );
 
-  std::unique_ptr<QgsProcessingParameterDistance> endDistance = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "END_DISTANCE" ), QObject::tr( "End distance" ), 1.0, QStringLiteral( "INPUT" ), false, 0 );
+  std::unique_ptr< QgsProcessingParameterDistance> endDistance = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "END_DISTANCE" ),
+      QObject::tr( "End distance" ), 1.0, QStringLiteral( "INPUT" ), false, 0 );
   endDistance->setIsDynamic( true );
   endDistance->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "End Distance" ), QObject::tr( "End distance" ), QgsPropertyDefinition::DoublePositive ) );
   endDistance->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -107,12 +109,12 @@ bool QgsLineSubstringAlgorithm::prepareAlgorithm( const QVariantMap &parameters,
   mStartDistance = parameterAsDouble( parameters, QStringLiteral( "START_DISTANCE" ), context );
   mDynamicStartDistance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "START_DISTANCE" ) );
   if ( mDynamicStartDistance )
-    mStartDistanceProperty = parameters.value( QStringLiteral( "START_DISTANCE" ) ).value<QgsProperty>();
+    mStartDistanceProperty = parameters.value( QStringLiteral( "START_DISTANCE" ) ).value< QgsProperty >();
 
   mEndDistance = parameterAsDouble( parameters, QStringLiteral( "END_DISTANCE" ), context );
   mDynamicEndDistance = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "END_DISTANCE" ) );
   if ( mDynamicEndDistance )
-    mEndDistanceProperty = parameters.value( QStringLiteral( "END_DISTANCE" ) ).value<QgsProperty>();
+    mEndDistanceProperty = parameters.value( QStringLiteral( "END_DISTANCE" ) ).value< QgsProperty >();
 
   return true;
 }
@@ -133,20 +135,20 @@ QgsFeatureList QgsLineSubstringAlgorithm::processFeature( const QgsFeature &feat
 
     const QgsCurve *curve = nullptr;
     if ( !geometry.isMultipart() )
-      curve = qgsgeometry_cast<const QgsCurve *>( geometry.constGet() );
+      curve = qgsgeometry_cast< const QgsCurve * >( geometry.constGet() );
     else
     {
-      if ( const QgsGeometryCollection *collection = qgsgeometry_cast<const QgsGeometryCollection *>( geometry.constGet() ) )
+      if ( const QgsGeometryCollection *collection = qgsgeometry_cast< const QgsGeometryCollection * >( geometry.constGet() ) )
       {
         if ( collection->numGeometries() > 0 )
         {
-          curve = qgsgeometry_cast<const QgsCurve *>( collection->geometryN( 0 ) );
+          curve = qgsgeometry_cast< const QgsCurve * >( collection->geometryN( 0 ) );
         }
       }
     }
     if ( curve )
     {
-      std::unique_ptr<QgsCurve> substring( curve->curveSubstring( startDistance, endDistance ) );
+      std::unique_ptr< QgsCurve > substring( curve->curveSubstring( startDistance, endDistance ) );
       const QgsGeometry result( std::move( substring ) );
       f.setGeometry( result );
     }
@@ -159,3 +161,5 @@ QgsFeatureList QgsLineSubstringAlgorithm::processFeature( const QgsFeature &feat
 }
 
 ///@endcond
+
+

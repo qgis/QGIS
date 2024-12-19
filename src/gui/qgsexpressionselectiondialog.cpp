@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsexpressionselectiondialog.h"
-#include "moc_qgsexpressionselectiondialog.cpp"
 
 #include "qgsapplication.h"
 #include "qgsexpression.h"
@@ -101,28 +100,32 @@ void QgsExpressionSelectionDialog::setMapCanvas( QgsMapCanvas *canvas )
 
 void QgsExpressionSelectionDialog::mActionSelect_triggered()
 {
-  mLayer->selectByExpression( mExpressionBuilder->expressionText(), Qgis::SelectBehavior::SetSelection );
+  mLayer->selectByExpression( mExpressionBuilder->expressionText(),
+                              Qgis::SelectBehavior::SetSelection );
   pushSelectedFeaturesMessage();
   saveRecent();
 }
 
 void QgsExpressionSelectionDialog::mActionAddToSelection_triggered()
 {
-  mLayer->selectByExpression( mExpressionBuilder->expressionText(), Qgis::SelectBehavior::AddToSelection );
+  mLayer->selectByExpression( mExpressionBuilder->expressionText(),
+                              Qgis::SelectBehavior::AddToSelection );
   pushSelectedFeaturesMessage();
   saveRecent();
 }
 
 void QgsExpressionSelectionDialog::mActionSelectIntersect_triggered()
 {
-  mLayer->selectByExpression( mExpressionBuilder->expressionText(), Qgis::SelectBehavior::IntersectSelection );
+  mLayer->selectByExpression( mExpressionBuilder->expressionText(),
+                              Qgis::SelectBehavior::IntersectSelection );
   pushSelectedFeaturesMessage();
   saveRecent();
 }
 
 void QgsExpressionSelectionDialog::mActionRemoveFromSelection_triggered()
 {
-  mLayer->selectByExpression( mExpressionBuilder->expressionText(), Qgis::SelectBehavior::RemoveFromSelection );
+  mLayer->selectByExpression( mExpressionBuilder->expressionText(),
+                              Qgis::SelectBehavior::RemoveFromSelection );
   pushSelectedFeaturesMessage();
   saveRecent();
 }
@@ -135,11 +138,15 @@ void QgsExpressionSelectionDialog::pushSelectedFeaturesMessage()
   const int count = mLayer->selectedFeatureCount();
   if ( count > 0 )
   {
-    mMessageBar->pushMessage( QString(), tr( "%n matching feature(s) selected", "matching features", count ), Qgis::MessageLevel::Info );
+    mMessageBar->pushMessage( QString(),
+                              tr( "%n matching feature(s) selected", "matching features", count ),
+                              Qgis::MessageLevel::Info );
   }
   else
   {
-    mMessageBar->pushMessage( QString(), tr( "No matching features found" ), Qgis::MessageLevel::Info );
+    mMessageBar->pushMessage( QString(),
+                              tr( "No matching features found" ),
+                              Qgis::MessageLevel::Info );
   }
 }
 
@@ -150,7 +157,9 @@ void QgsExpressionSelectionDialog::mButtonZoomToFeatures_clicked()
 
   const QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
-  const QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( mExpressionBuilder->expressionText() ).setExpressionContext( context ).setNoAttributes();
+  const QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( mExpressionBuilder->expressionText() )
+                                    .setExpressionContext( context )
+                                    .setNoAttributes();
 
   QgsFeatureIterator features = mLayer->getFeatures( request );
 
@@ -175,12 +184,16 @@ void QgsExpressionSelectionDialog::mButtonZoomToFeatures_clicked()
     mMapCanvas->zoomToFeatureExtent( bbox );
     if ( mMessageBar )
     {
-      mMessageBar->pushMessage( QString(), tr( "Zoomed to %n matching feature(s)", "number of matching features", featureCount ), Qgis::MessageLevel::Info );
+      mMessageBar->pushMessage( QString(),
+                                tr( "Zoomed to %n matching feature(s)", "number of matching features", featureCount ),
+                                Qgis::MessageLevel::Info );
     }
   }
   else if ( mMessageBar )
   {
-    mMessageBar->pushMessage( QString(), tr( "No matching features found" ), Qgis::MessageLevel::Info );
+    mMessageBar->pushMessage( QString(),
+                              tr( "No matching features found" ),
+                              Qgis::MessageLevel::Info );
   }
   saveRecent();
 }

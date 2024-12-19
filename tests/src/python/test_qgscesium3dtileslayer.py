@@ -5,7 +5,6 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
 __author__ = "Nyall Dawson"
 __date__ = "27/06/2023"
 __copyright__ = "Copyright 2023, The QGIS Project"
@@ -34,25 +33,21 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
     def test_invalid_json(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             tmp_file = os.path.join(temp_dir, "tileset.json")
-            with open(tmp_file, "w", encoding="utf-8") as f:
+            with open(tmp_file, "wt", encoding="utf-8") as f:
                 f.write(
                     """
 {
   "featurecollection": {}
 }
-"""
-                )
+""")
             layer = QgsTiledSceneLayer(tmp_file, "my layer", "cesiumtiles")
             self.assertFalse(layer.dataProvider().isValid())
-            self.assertEqual(
-                layer.error().summary(),
-                'JSON is not a valid Cesium 3D Tiles source (does not contain "root" value)',
-            )
+            self.assertEqual(layer.error().summary(), 'JSON is not a valid Cesium 3D Tiles source (does not contain "root" value)')
 
     def test_source_bounding_volume_region(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             tmp_file = os.path.join(temp_dir, "tileset.json")
-            with open(tmp_file, "w", encoding="utf-8") as f:
+            with open(tmp_file, "wt", encoding="utf-8") as f:
                 f.write(
                     """
 {
@@ -103,8 +98,12 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertAlmostEqual(
                 layer.dataProvider().boundingVolume().box().centerZ(), 34.105, 3
             )
-            self.assertAlmostEqual(layer.dataProvider().zRange().lower(), 1.2, 3)
-            self.assertAlmostEqual(layer.dataProvider().zRange().upper(), 67.0099, 3)
+            self.assertAlmostEqual(
+                layer.dataProvider().zRange().lower(), 1.2, 3
+            )
+            self.assertAlmostEqual(
+                layer.dataProvider().zRange().upper(), 67.0099, 3
+            )
 
             # check that version, tileset version, and z range are in html metadata
             self.assertIn("1.1", layer.dataProvider().htmlMetadata())
@@ -114,45 +113,32 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             # check metadata
             layer.loadDefaultMetadata()
             self.assertEqual(layer.metadata().type(), "dataset")
-            self.assertEqual(layer.metadata().identifier(), "e575c6f1")
-            self.assertEqual(layer.metadata().crs().authid(), "EPSG:4978")
-            self.assertEqual(
-                layer.metadata().extent().spatialExtents()[0].extentCrs.authid(),
-                "EPSG:4979",
+            self.assertEqual(layer.metadata().identifier(), 'e575c6f1')
+            self.assertEqual(layer.metadata().crs().authid(), 'EPSG:4978')
+            self.assertEqual(layer.metadata().extent().spatialExtents()[0].extentCrs.authid(), "EPSG:4979")
+            self.assertAlmostEqual(
+                layer.metadata().extent().spatialExtents()[0].bounds.xMinimum(), -75.61444, 3
             )
             self.assertAlmostEqual(
-                layer.metadata().extent().spatialExtents()[0].bounds.xMinimum(),
-                -75.61444,
-                3,
+                layer.metadata().extent().spatialExtents()[0].bounds.xMaximum(), -75.609747, 3
             )
             self.assertAlmostEqual(
-                layer.metadata().extent().spatialExtents()[0].bounds.xMaximum(),
-                -75.609747,
-                3,
+                layer.metadata().extent().spatialExtents()[0].bounds.yMinimum(), 40.040721, 3
             )
             self.assertAlmostEqual(
-                layer.metadata().extent().spatialExtents()[0].bounds.yMinimum(),
-                40.040721,
-                3,
-            )
-            self.assertAlmostEqual(
-                layer.metadata().extent().spatialExtents()[0].bounds.yMaximum(),
-                40.0443399,
-                3,
+                layer.metadata().extent().spatialExtents()[0].bounds.yMaximum(), 40.0443399, 3
             )
             self.assertAlmostEqual(
                 layer.metadata().extent().spatialExtents()[0].bounds.zMinimum(), 1.2, 3
             )
             self.assertAlmostEqual(
-                layer.metadata().extent().spatialExtents()[0].bounds.zMaximum(),
-                67.0099999,
-                3,
+                layer.metadata().extent().spatialExtents()[0].bounds.zMaximum(), 67.0099999, 3
             )
 
     def test_source_bounding_volume_region_with_transform(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             tmp_file = os.path.join(temp_dir, "tileset.json")
-            with open(tmp_file, "w", encoding="utf-8") as f:
+            with open(tmp_file, "wt", encoding="utf-8") as f:
                 f.write(
                     """
 {
@@ -191,7 +177,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
     def test_source_bounding_volume_box(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             tmp_file = os.path.join(temp_dir, "tileset.json")
-            with open(tmp_file, "w", encoding="utf-8") as f:
+            with open(tmp_file, "wt", encoding="utf-8") as f:
                 f.write(
                     """
 {
@@ -254,7 +240,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
     def test_source_bounding_sphere(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             tmp_file = os.path.join(temp_dir, "tileset.json")
-            with open(tmp_file, "w", encoding="utf-8") as f:
+            with open(tmp_file, "wt", encoding="utf-8") as f:
                 f.write(
                     """
 {
@@ -332,7 +318,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
     def test_index(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             tmp_file = os.path.join(temp_dir, "tileset.json")
-            with open(tmp_file, "w", encoding="utf-8") as f:
+            with open(tmp_file, "wt", encoding="utf-8") as f:
                 f.write(
                     """
         {
@@ -1142,8 +1128,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[2])
             self.assertEqual(
-                tile.resources(),
-                {"content": "file://" + temp_dir + "/LOD-2/Mesh-XR-YR.b3dm"},
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-2/Mesh-XR-YR.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 9.1)
             self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
@@ -1170,8 +1155,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[1])
             self.assertEqual(
-                tile.resources(),
-                {"content": "file://" + temp_dir + "/LOD-1/Mesh-XR-YR.b3dm"},
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-1/Mesh-XR-YR.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 3)
             self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
@@ -1198,8 +1182,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[0])
             self.assertEqual(
-                tile.resources(),
-                {"content": "file://" + temp_dir + "/LOD-0/Mesh-XR-YR.b3dm"},
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-0/Mesh-XR-YR.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 0)
             self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
@@ -1226,8 +1209,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[5])
             self.assertEqual(
-                tile.resources(),
-                {"content": "file://" + temp_dir + "/LOD-2/Mesh-XL-YR.b3dm"},
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-2/Mesh-XL-YR.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 9.1)
             self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
@@ -1254,8 +1236,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[4])
             self.assertEqual(
-                tile.resources(),
-                {"content": "file://" + temp_dir + "/LOD-1/Mesh-XL-YR.b3dm"},
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-1/Mesh-XL-YR.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 3)
             self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
@@ -1282,8 +1263,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[3])
             self.assertEqual(
-                tile.resources(),
-                {"content": "file://" + temp_dir + "/LOD-0/Mesh-XL-YR.b3dm"},
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-0/Mesh-XL-YR.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 0)
             self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
@@ -1310,8 +1290,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[8])
             self.assertEqual(
-                tile.resources(),
-                {"content": "file://" + temp_dir + "/LOD-2/Mesh-XR-YL.b3dm"},
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-2/Mesh-XR-YL.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 9.0)
             self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
@@ -1338,8 +1317,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[7])
             self.assertEqual(
-                tile.resources(),
-                {"content": "file://" + temp_dir + "/LOD-1/Mesh-XR-YL.b3dm"},
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-1/Mesh-XR-YL.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 3)
             self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
@@ -1366,8 +1344,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[6])
             self.assertEqual(
-                tile.resources(),
-                {"content": "file://" + temp_dir + "/LOD-0/Mesh-XR-YL.b3dm"},
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-0/Mesh-XR-YL.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 0)
             self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
@@ -1394,8 +1371,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[10])
             self.assertEqual(
-                tile.resources(),
-                {"content": "file://" + temp_dir + "/LOD-2/Mesh-XL-YL.b3dm"},
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-2/Mesh-XL-YL.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 9.1)
             self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
@@ -1424,8 +1400,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[9])
             self.assertEqual(
-                tile.resources(),
-                {"content": "file://" + temp_dir + "/LOD-0/Mesh-XL-YL.b3dm"},
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-0/Mesh-XL-YL.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 0)
             self.assertEqual(tile.baseUrl(), QUrl("file://" + tmp_file))
@@ -1483,8 +1458,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             tile = index.getTile(tile_ids[0])
             parent_id = tile_ids[0]
             self.assertEqual(
-                tile.resources(),
-                {"content": "file://" + temp_dir + "/LOD-2/Mesh-XR-YR.b3dm"},
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-2/Mesh-XR-YR.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 9.1)
             self.assertEqual(
@@ -1510,8 +1484,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[1])
             self.assertEqual(
-                tile.resources(),
-                {"content": "file://" + temp_dir + "/LOD-2/Mesh-XL-YR.b3dm"},
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-2/Mesh-XL-YR.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 9.1)
             self.assertEqual(
@@ -1537,8 +1510,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[2])
             self.assertEqual(
-                tile.resources(),
-                {"content": "file://" + temp_dir + "/LOD-2/Mesh-XR-YL.b3dm"},
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-2/Mesh-XR-YL.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 9.0)
             self.assertEqual(
@@ -1564,8 +1536,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
 
             tile = index.getTile(tile_ids[3])
             self.assertEqual(
-                tile.resources(),
-                {"content": "file://" + temp_dir + "/LOD-2/Mesh-XL-YL.b3dm"},
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-2/Mesh-XL-YL.b3dm"}
             )
             self.assertEqual(tile.geometricError(), 9.1)
             self.assertEqual(
@@ -1595,14 +1566,13 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
             self.assertEqual(len(tile_ids), 1)
             tile = index.getTile(tile_ids[0])
             self.assertEqual(
-                tile.resources(),
-                {"content": "file://" + temp_dir + "/LOD-2/Mesh-XR-YR.b3dm"},
+                tile.resources(), {"content": "file://" + temp_dir + "/LOD-2/Mesh-XR-YR.b3dm"}
             )
 
     def test_gltf_up_axis(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             tmp_file = os.path.join(temp_dir, "tileset.json")
-            with open(tmp_file, "w", encoding="utf-8") as f:
+            with open(tmp_file, "wt", encoding="utf-8") as f:
                 f.write(
                     """
         {
@@ -1654,7 +1624,7 @@ class TestQgsCesium3dTilesLayer(unittest.TestCase):
         """
         with tempfile.TemporaryDirectory() as temp_dir:
             tmp_file = os.path.join(temp_dir, "tileset.json")
-            with open(tmp_file, "w", encoding="utf-8") as f:
+            with open(tmp_file, "wt", encoding="utf-8") as f:
                 f.write(
                     """{
   "asset": {

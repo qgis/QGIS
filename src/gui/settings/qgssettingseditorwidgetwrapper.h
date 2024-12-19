@@ -36,7 +36,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
     Q_OBJECT
   public:
     //! Creates a wrapper from the definition stored in a \a widget created by createEditor()
-    static QgsSettingsEditorWidgetWrapper *fromWidget( const QWidget *widget );
+    static QgsSettingsEditorWidgetWrapper *fromWidget( const QWidget *widget ) SIP_FACTORY;
 
     //! Constructor
     QgsSettingsEditorWidgetWrapper( QObject *parent = nullptr );
@@ -50,10 +50,10 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
     virtual QString id() const = 0;
 
     //! Creates a new instance of the editor wrapper so it can be configured for a widget and a setting
-    virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const = 0 SIP_FACTORY;
+    virtual QgsSettingsEditorWidgetWrapper *createWrapper( QObject *parent = nullptr ) const = 0;
 
     //! Creates the editor widget for the given \a setting
-    QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList(), QWidget *parent = nullptr ) SIP_TRANSFERBACK;
+    QWidget *createEditor( const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList(), QWidget *parent = nullptr );
 
     //! Configures the \a editor according the setting
     bool configureEditor( QWidget *editor, const QgsSettingsEntryBase *setting, const QStringList &dynamicKeyPartList = QStringList() );
@@ -80,7 +80,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
      * Sets the \a value of the widget
      * The wrapper must be configured before calling this medthod
      */
-    virtual bool setWidgetFromVariant( const QVariant &value ) const = 0;
+    virtual void setWidgetFromVariant( const QVariant &value ) const = 0;
 
     /**
      * Configure the settings update behavior when a widget value is changed.
@@ -98,15 +98,15 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
      * Returns the dynamic key parts
      * \since QGIS 3.40
      */
-    QStringList dynamicKeyPartList() const { return mDynamicKeyPartList; }
+    QStringList dynamicKeyPartList() const {return mDynamicKeyPartList;}
 
 
   protected:
     //! Creates the widgets
-    virtual QWidget *createEditorPrivate( QWidget *parent = nullptr ) const = 0 SIP_TRANSFERBACK;
+    virtual QWidget *createEditorPrivate( QWidget *parent = nullptr ) const = 0;
 
     //! Configures an existing \a editor widget
-    virtual bool configureEditorPrivate( QWidget *editor SIP_TRANSFERBACK, const QgsSettingsEntryBase *setting SIP_KEEPREFERENCE ) = 0;
+    virtual bool configureEditorPrivate( QWidget *editor, const QgsSettingsEntryBase *setting ) = 0;
 
     /**
      * Enables automatic update, which causes the setting to be updated immediately when the widget
@@ -117,6 +117,7 @@ class GUI_EXPORT QgsSettingsEditorWidgetWrapper : public QObject
 
     QStringList mDynamicKeyPartList;
 };
+
 
 
 #endif // QGSSETTINGSEDITORWIDGETWRAPPER_H

@@ -22,6 +22,7 @@ panel widget) when clicked.
 #include "qgssymbolbutton.h"
 %End
   public:
+
     QgsSymbolButton( QWidget *parent /TransferThis/ = 0, const QString &dialogTitle = QString() );
 %Docstring
 Construct a new symbol button.
@@ -277,6 +278,7 @@ Emitted when the symbol's settings are changed.
 %End
 
   protected:
+
     virtual void changeEvent( QEvent *e );
 
     virtual void showEvent( QShowEvent *e );

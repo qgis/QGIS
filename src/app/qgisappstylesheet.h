@@ -27,7 +27,7 @@
  * \class QgisAppStyleSheet
  * \brief Adjustable stylesheet for the QGIS application
  */
-class APP_EXPORT QgisAppStyleSheet : public QObject
+class APP_EXPORT QgisAppStyleSheet: public QObject
 {
     Q_OBJECT
 
@@ -101,7 +101,7 @@ class APP_EXPORT QgisAppStyleSheet : public QObject
     void setActiveValues();
 
     // qt styles
-    QString mStyle;         // active style name (lowercase)
+    QString mStyle; // active style name (lowercase)
     bool mMacStyle = false; // macintosh (aqua)
     bool mOxyStyle = false; // oxygen
 

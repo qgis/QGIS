@@ -403,7 +403,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      * \note Not available in Python bindings.
      * \since QGIS 3.24
      */
-    QgsLabelSink *labelSink() const SIP_SKIP { return mLabelSink; }
+    QgsLabelSink *labelSink() const { return mLabelSink; } SIP_SKIP
 
     /**
      * Assigns the label sink which will take over responsibility for handling labels
@@ -412,7 +412,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject SIP_ABSTRACT
      * \note Not available in Python bindings.
      * \since QGIS 3.24
      */
-    void setLabelSink( QgsLabelSink *sink ) SIP_SKIP { mLabelSink = sink; }
+    void setLabelSink( QgsLabelSink *sink ) { mLabelSink = sink; } SIP_SKIP
 
     /**
      * Returns the associated labeling engine feedback object.

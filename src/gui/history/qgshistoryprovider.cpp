@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgshistoryprovider.h"
-#include "moc_qgshistoryprovider.cpp"
 
 QgsAbstractHistoryProvider::~QgsAbstractHistoryProvider() = default;
 
@@ -26,4 +25,5 @@ QgsHistoryEntryNode *QgsAbstractHistoryProvider::createNodeForEntry( const QgsHi
 
 void QgsAbstractHistoryProvider::updateNodeForEntry( QgsHistoryEntryNode *, const QgsHistoryEntry &, const QgsHistoryWidgetContext & )
 {
+
 }

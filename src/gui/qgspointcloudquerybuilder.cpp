@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspointcloudquerybuilder.h"
-#include "moc_qgspointcloudquerybuilder.cpp"
 #include "qgssettings.h"
 #include "qgspointcloudlayer.h"
 #include "qgspointcloudexpression.h"
@@ -30,7 +29,8 @@
 #include <QTextStream>
 
 
-QgsPointCloudQueryBuilder::QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer, QWidget *parent, Qt::WindowFlags fl )
+QgsPointCloudQueryBuilder::QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer,
+    QWidget *parent, Qt::WindowFlags fl )
   : QgsSubsetStringEditorInterface( parent, fl )
   , mLayer( layer )
 {
@@ -269,7 +269,9 @@ void QgsPointCloudQueryBuilder::test()
   QgsPointCloudExpression expression( mTxtSql->text() );
   if ( !expression.isValid() && !mTxtSql->text().isEmpty() )
   {
-    QMessageBox::warning( this, tr( "Query Result" ), tr( "An error occurred while parsing the expression:\n%1" ).arg( expression.parserErrorString() ) );
+    QMessageBox::warning( this,
+                          tr( "Query Result" ),
+                          tr( "An error occurred while parsing the expression:\n%1" ).arg( expression.parserErrorString() ) );
   }
   else
   {
@@ -277,14 +279,19 @@ void QgsPointCloudQueryBuilder::test()
     int offset;
     for ( const auto &attribute : attributes )
     {
-      if ( mLayer->dataProvider() && !mLayer->dataProvider()->attributes().find( attribute, offset ) )
+      if ( mLayer->dataProvider() &&
+           !mLayer->dataProvider()->attributes().find( attribute, offset ) )
       {
-        QMessageBox::warning( this, tr( "Query Result" ), tr( "\"%1\" not recognized as an available attribute." ).arg( attribute ) );
+        QMessageBox::warning( this,
+                              tr( "Query Result" ),
+                              tr( "\"%1\" not recognized as an available attribute." ).arg( attribute ) );
         return;
       }
     }
     mLayer->setSubsetString( mTxtSql->text() );
-    QMessageBox::information( this, tr( "Query Result" ), tr( "The expression was successfully parsed." ) );
+    QMessageBox::information( this,
+                              tr( "Query Result" ),
+                              tr( "The expression was successfully parsed." ) );
   }
 }
 

@@ -46,7 +46,7 @@ Associates overview canvas with the bridge, so the overview will be updated when
 %End
 
 
-    void setOvervewCanvas( QgsMapOverviewCanvas *overviewCanvas ) /Deprecated="Since 3.40. Use setOverviewCanvas() instead."/; // TODO QGIS 4.0 remove
+    void setOvervewCanvas( QgsMapOverviewCanvas *overviewCanvas ) /Deprecated/; // TODO QGIS 4.0 remove
 %MethodCode
     sipCpp->setOverviewCanvas( a0 );
 %End
@@ -70,7 +70,7 @@ force update of canvas layers from the layer tree. Normally this should not be n
 
   signals:
 
-    void canvasLayersChanged( const QList<QgsMapLayer *> &layers );
+    void canvasLayersChanged( const QList< QgsMapLayer * > &layers );
 %Docstring
 Emitted when the set of layers (or order of layers) visible in the
 canvas changes.

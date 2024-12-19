@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgslayoutaddpagesdialog.h"
-#include "moc_qgslayoutaddpagesdialog.cpp"
 #include "qgspagesizeregistry.h"
 #include "qgssettings.h"
 #include "qgslayout.h"
@@ -54,8 +53,8 @@ QgsLayoutAddPagesDialog::QgsLayoutAddPagesDialog( QWidget *parent, Qt::WindowFla
   connect( mPageSizeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutAddPagesDialog::pageSizeChanged );
   connect( mPageOrientationComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutAddPagesDialog::orientationChanged );
 
-  connect( mWidthSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutAddPagesDialog::setToCustomSize );
-  connect( mHeightSpin, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutAddPagesDialog::setToCustomSize );
+  connect( mWidthSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutAddPagesDialog::setToCustomSize );
+  connect( mHeightSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutAddPagesDialog::setToCustomSize );
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutAddPagesDialog::showHelp );
 }
@@ -75,7 +74,7 @@ int QgsLayoutAddPagesDialog::numberPages() const
 
 QgsLayoutAddPagesDialog::PagePosition QgsLayoutAddPagesDialog::pagePosition() const
 {
-  return static_cast<PagePosition>( mPositionComboBox->currentIndex() );
+  return static_cast< PagePosition >( mPositionComboBox->currentIndex() );
 }
 
 int QgsLayoutAddPagesDialog::beforePage() const

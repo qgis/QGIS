@@ -20,6 +20,7 @@ class QgsFeatureListModel : QSortFilterProxyModel, QgsFeatureModel
     struct FeatureInfo
     {
       public:
+
         FeatureInfo();
 
         bool isNew;
@@ -34,6 +35,7 @@ class QgsFeatureListModel : QSortFilterProxyModel, QgsFeatureModel
     };
 
   public:
+
     explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFeatureListModel

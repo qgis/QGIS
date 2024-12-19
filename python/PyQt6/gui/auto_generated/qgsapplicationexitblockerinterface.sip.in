@@ -47,6 +47,7 @@ Example
 #include "qgsapplicationexitblockerinterface.h"
 %End
   public:
+
     virtual ~QgsApplicationExitBlockerInterface();
 
     virtual bool allowExit() = 0;

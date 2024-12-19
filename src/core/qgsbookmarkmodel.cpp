@@ -15,7 +15,6 @@
 
 #include "qgsapplication.h"
 #include "qgsbookmarkmodel.h"
-#include "moc_qgsbookmarkmodel.cpp"
 #include "qgsbookmarkmanager.h"
 
 #include <QIcon>

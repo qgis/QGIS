@@ -21,6 +21,7 @@ A widget for definition a custom coordinate reference system.
 #include "qgscrsdefinitionwidget.h"
 %End
   public:
+
     QgsCrsDefinitionWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCrsDefinitionWidget, with the specified ``parent`` widget.

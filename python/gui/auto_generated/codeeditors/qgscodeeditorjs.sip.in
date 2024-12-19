@@ -23,6 +23,7 @@ code autocompletion.
 #include "qgscodeeditorjs.h"
 %End
   public:
+
     QgsCodeEditorJavascript( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCodeEditorJavascript

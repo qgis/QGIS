@@ -15,7 +15,6 @@
 
 
 #include "qgslayoutviewrubberband.h"
-#include "moc_qgslayoutviewrubberband.cpp"
 #include "qgslayout.h"
 #include "qgslayoutview.h"
 #include "qgsunittypes.h"
@@ -26,6 +25,7 @@
 QgsLayoutViewRubberBand::QgsLayoutViewRubberBand( QgsLayoutView *view )
   : mView( view )
 {
+
 }
 
 QgsLayoutView *QgsLayoutViewRubberBand::view() const
@@ -191,6 +191,7 @@ QRectF QgsLayoutViewRectangularRubberBand::finish( QPointF position, Qt::Keyboar
 QgsLayoutViewEllipticalRubberBand::QgsLayoutViewEllipticalRubberBand( QgsLayoutView *view )
   : QgsLayoutViewRubberBand( view )
 {
+
 }
 
 QgsLayoutViewEllipticalRubberBand *QgsLayoutViewEllipticalRubberBand::create( QgsLayoutView *view ) const
@@ -261,6 +262,7 @@ QRectF QgsLayoutViewEllipticalRubberBand::finish( QPointF position, Qt::Keyboard
 QgsLayoutViewTriangleRubberBand::QgsLayoutViewTriangleRubberBand( QgsLayoutView *view )
   : QgsLayoutViewRubberBand( view )
 {
+
 }
 
 QgsLayoutViewTriangleRubberBand *QgsLayoutViewTriangleRubberBand::create( QgsLayoutView *view ) const
@@ -304,9 +306,9 @@ void QgsLayoutViewTriangleRubberBand::update( QPointF position, Qt::KeyboardModi
   const QRectF newRect = updateRect( mRubberBandStartPos, position, constrainSquare, fromCenter );
 
   const QPolygonF shapePolygon = QPolygonF() << QPointF( 0, newRect.height() )
-                                             << QPointF( newRect.width(), newRect.height() )
-                                             << QPointF( newRect.width() / 2.0, 0 )
-                                             << QPointF( 0, newRect.height() );
+                                 << QPointF( newRect.width(), newRect.height() )
+                                 << QPointF( newRect.width() / 2.0, 0 )
+                                 << QPointF( 0, newRect.height() );
 
   mRubberBandItem->setPolygon( shapePolygon );
   QTransform t;

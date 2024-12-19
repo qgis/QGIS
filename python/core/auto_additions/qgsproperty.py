@@ -5,5 +5,5 @@ try:
     QgsProperty.fromExpression = staticmethod(QgsProperty.fromExpression)
     QgsProperty.fromField = staticmethod(QgsProperty.fromField)
     QgsProperty.fromValue = staticmethod(QgsProperty.fromValue)
-except (NameError, AttributeError):
+except NameError:
     pass

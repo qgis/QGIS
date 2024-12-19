@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmaplayerlegend.h"
-#include "moc_qgsmaplayerlegend.cpp"
 #include "qgsiconutils.h"
 #include "qgsimagecache.h"
 #include "qgssettings.h"

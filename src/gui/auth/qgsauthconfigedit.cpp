@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsauthconfigedit.h"
-#include "moc_qgsauthconfigedit.cpp"
 
 #include <QPushButton>
 
@@ -69,8 +68,10 @@ QgsAuthConfigEdit::QgsAuthConfigEdit( QWidget *parent, const QString &authcfg, c
 
     populateAuthMethods();
 
-    connect( cmbAuthMethods, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), stkwAuthMethods, &QStackedWidget::setCurrentIndex );
-    connect( cmbAuthMethods, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, [=] { validateAuth(); } );
+    connect( cmbAuthMethods, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+             stkwAuthMethods, &QStackedWidget::setCurrentIndex );
+    connect( cmbAuthMethods, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+             this, [ = ] { validateAuth(); } );
 
     connect( authCfgEdit, &QgsAuthConfigIdEdit::validityChanged, this, &QgsAuthConfigEdit::validateAuth );
 
@@ -118,8 +119,7 @@ void QgsAuthConfigEdit::populateAuthMethods()
   for ( it = descmap.begin(); it != descmap.end(); ++it )
   {
     QgsAuthMethodEdit *editWidget = qobject_cast<QgsAuthMethodEdit *>(
-      QgsApplication::authManager()->authMethodEditWidget( it.value()->key(), this )
-    );
+                                      QgsApplication::authManager()->authMethodEditWidget( it.value()->key(), this ) );
     if ( !editWidget )
     {
       QgsDebugError( QStringLiteral( "Load auth method edit widget FAILED for auth method key (%1)" ).arg( it.value()->key() ) );
@@ -187,7 +187,7 @@ void QgsAuthConfigEdit::loadConfig()
   if ( indx == -1 )
   {
     QgsDebugError( QStringLiteral( "Loading FAILED for authcfg (%1): no edit widget loaded for auth method '%2'" )
-                     .arg( mAuthCfg, authMethodKey ) );
+                   .arg( mAuthCfg, authMethodKey ) );
     if ( cmbAuthMethods->count() > 0 )
     {
       cmbAuthMethods->setCurrentIndex( 0 );
@@ -203,7 +203,7 @@ void QgsAuthConfigEdit::loadConfig()
   if ( !editWidget )
   {
     QgsDebugError( QStringLiteral( "Cast to edit widget FAILED for authcfg (%1) and auth method key (%2)" )
-                     .arg( mAuthCfg, authMethodKey ) );
+                   .arg( mAuthCfg, authMethodKey ) );
     return;
   }
 

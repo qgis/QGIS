@@ -38,6 +38,7 @@ class APP_EXPORT QgsAppLayerHandling
     Q_GADGET
 
   public:
+
     enum class SublayerHandling
     {
       AskUser,
@@ -58,7 +59,11 @@ class APP_EXPORT QgsAppLayerHandling
      * If \a showWarningOnInvalid layers is TRUE then a user facing warning will be raised
      * if a uri does not result in a valid layer.
      */
-    template<typename L> static L *addLayer( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend = true, bool showWarningOnInvalid = true );
+    template< typename L> static L *addLayer( const QString &uri,
+        const QString &baseName,
+        const QString &provider,
+        bool addToLegend = true,
+        bool showWarningOnInvalid = true );
 
     /**
      * Adds a vector layer from a given \a uri and \a provider.
@@ -71,7 +76,7 @@ class APP_EXPORT QgsAppLayerHandling
      * \note This may trigger a dialog asking users to select from available sublayers in the datasource,
      * depending on the contents of the datasource and the user's current QGIS settings.
      */
-    static QList<QgsVectorLayer *> addVectorLayer( const QString &uri, const QString &baseName, const QString &provider = QLatin1String( "ogr" ), bool addToLegend = true );
+    static QList< QgsVectorLayer * >addVectorLayer( const QString &uri, const QString &baseName, const QString &provider = QLatin1String( "ogr" ), bool addToLegend = true );
 
     /**
      * Adds a list of vector layers from a list of layer \a uris supported by the OGR provider.
@@ -82,7 +87,7 @@ class APP_EXPORT QgsAppLayerHandling
      * If \a showWarningOnInvalid layers is TRUE then a user facing warning will be raised
      * if a uri does not result in a valid vector layer.
      */
-    static QList<QgsMapLayer *> addOgrVectorLayers( const QStringList &uris, const QString &encoding, const QString &dataSourceType, bool &ok, bool showWarningOnInvalid = true );
+    static QList< QgsMapLayer * > addOgrVectorLayers( const QStringList &uris, const QString &encoding, const QString &dataSourceType, bool &ok, bool showWarningOnInvalid = true );
 
     /**
      * Adds a raster layer from a given \a uri and \a provider.
@@ -95,7 +100,7 @@ class APP_EXPORT QgsAppLayerHandling
      * \note This may trigger a dialog asking users to select from available sublayers in the datasource,
      * depending on the contents of the datasource and the user's current QGIS settings.
      */
-    static QList<QgsRasterLayer *> addRasterLayer( QString const &uri, const QString &baseName, const QString &provider = QLatin1String( "gdal" ), bool addToLegend = true );
+    static QList<QgsRasterLayer * >addRasterLayer( QString const &uri, const QString &baseName, const QString &provider = QLatin1String( "gdal" ), bool addToLegend = true );
 
     /**
      * Adds a list of raster layers from a list of layer \a uris supported by the GDAL provider.
@@ -106,7 +111,7 @@ class APP_EXPORT QgsAppLayerHandling
      * If \a showWarningOnInvalid layers is TRUE then a user facing warning will be raised
      * if a uri does not result in a valid vector layer.
      */
-    static QList<QgsMapLayer *> addGdalRasterLayers( const QStringList &uris, bool &ok, bool showWarningOnInvalid = true );
+    static QList< QgsMapLayer * > addGdalRasterLayers( const QStringList &uris, bool &ok, bool showWarningOnInvalid = true );
 
     /**
      * Adds a mesh layer from a given \a uri and \a provider.
@@ -119,7 +124,7 @@ class APP_EXPORT QgsAppLayerHandling
      * \note This may trigger a dialog asking users to select from available sublayers in the datasource,
      * depending on the contents of the datasource and the user's current QGIS settings.
      */
-    static QList<QgsMeshLayer *> addMeshLayer( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend = true );
+    static QList< QgsMeshLayer *>addMeshLayer( const QString &uri, const QString &baseName, const QString &provider, bool addToLegend = true );
 
     /**
      * Post processes an entire group of added \a layers.
@@ -128,9 +133,9 @@ class APP_EXPORT QgsAppLayerHandling
      * method has been called for each layer in turn. All added layers will already
      * have been added to the project.
      */
-    static void postProcessAddedLayers( const QList<QgsMapLayer *> &layers );
+    static void postProcessAddedLayers( const QList< QgsMapLayer * > &layers );
 
-    static void addSortedLayersToLegend( QList<QgsMapLayer *> &layers );
+    static void addSortedLayersToLegend( QList< QgsMapLayer * > &layers );
 
     /**
      * Open a map layer from a file.
@@ -140,7 +145,7 @@ class APP_EXPORT QgsAppLayerHandling
      *
      * \returns a list of added map layers if the file is successfully opened
      */
-    static QList<QgsMapLayer *> openLayer( const QString &fileName, bool &ok, bool allowInteractive = false, bool suppressBulkLayerPostProcessing = false, bool addToLegend = true );
+    static QList< QgsMapLayer * > openLayer( const QString &fileName, bool &ok, bool allowInteractive = false, bool suppressBulkLayerPostProcessing = false, bool addToLegend = true );
 
     //! Add a 'pre-made' map layer to the project
     static void addMapLayer( QgsMapLayer *mapLayer, bool addToLegend = true );
@@ -159,7 +164,7 @@ class APP_EXPORT QgsAppLayerHandling
     static void addLayerDefinition( const QgsLayerTreeRegistryBridge::InsertionPoint *insertPoint );
 
     //! Add a list of database layers to the map
-    static QList<QgsMapLayer *> addDatabaseLayers( const QStringList &layerPathList, const QString &providerKey, bool &ok );
+    static QList< QgsMapLayer * > addDatabaseLayers( const QStringList &layerPathList, const QString &providerKey, bool &ok );
 
     /**
      * Flags which control the behavior of loading layer dependencies.
@@ -167,7 +172,7 @@ class APP_EXPORT QgsAppLayerHandling
     enum class DependencyFlag : int
     {
       LoadAllRelationships = 1 << 1, //!< Causes all relationships to be loaded, regardless of whether the originating table is the referenced or referencing table. By default relationships are only loaded when the originating table is the referencing table.
-      SilentLoad = 1 << 2,           //!< Dependencies are loaded without any user-visible notifications.
+      SilentLoad = 1 << 2, //!< Dependencies are loaded without any user-visible notifications.
     };
     Q_ENUM( DependencyFlag )
     Q_DECLARE_FLAGS( DependencyFlags, DependencyFlag )
@@ -180,7 +185,10 @@ class APP_EXPORT QgsAppLayerHandling
      * categories ("Forms" for the form widgets and "Relations" for layer weak relations).
      * \return a list of weak references to broken layer dependencies
      */
-    static const QList<QgsVectorLayerRef> findBrokenLayerDependencies( QgsVectorLayer *vectorLayer, QgsMapLayer::StyleCategories categories = QgsMapLayer::StyleCategory::AllStyleCategories, QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::Name, DependencyFlags dependencyFlags = DependencyFlags() );
+    static const QList< QgsVectorLayerRef > findBrokenLayerDependencies( QgsVectorLayer *vectorLayer,
+        QgsMapLayer::StyleCategories categories = QgsMapLayer::StyleCategory::AllStyleCategories,
+        QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::Name,
+        DependencyFlags dependencyFlags = DependencyFlags() );
 
     /**
      * Scans the \a vectorLayer for broken dependencies and automatically
@@ -189,7 +197,10 @@ class APP_EXPORT QgsAppLayerHandling
      * used to exclude one of the currently implemented search categories
      * ("Forms" for the form widgets and "Relations" for layer weak relations).
      */
-    static void resolveVectorLayerDependencies( QgsVectorLayer *vectorLayer, QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories, QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::Name, DependencyFlags dependencyFlags = DependencyFlags() );
+    static void resolveVectorLayerDependencies( QgsVectorLayer *vectorLayer,
+        QgsMapLayer::StyleCategories categories = QgsMapLayer::AllStyleCategories,
+        QgsVectorLayerRef::MatchType matchType = QgsVectorLayerRef::MatchType::Name,
+        DependencyFlags dependencyFlags = DependencyFlags() );
 
     /**
      * Scans the \a vectorLayer for weak relations and automatically
@@ -210,7 +221,8 @@ class APP_EXPORT QgsAppLayerHandling
     static void onVectorLayerStyleLoaded( QgsVectorLayer *vl, const QgsMapLayer::StyleCategories categories );
 
   private:
-    template<typename T> static QList<T *> addLayerPrivate( Qgis::LayerType type, const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarnings = true, bool addToLegend = true );
+
+    template<typename T> static QList<T *>addLayerPrivate( Qgis::LayerType type, const QString &uri, const QString &baseName, const QString &providerKey, bool guiWarnings = true, bool addToLegend = true );
 
     /**
      * Post processes a single added \a layer, applying any default behavior which should
@@ -226,11 +238,12 @@ class APP_EXPORT QgsAppLayerHandling
      * This method will open a dialog so the user can select GDAL sublayers to load
      * \returns TRUE if any items were loaded
      */
-    static bool askUserForZipItemLayers( const QString &path, const QList<Qgis::LayerType> &acceptableTypes );
+    static bool askUserForZipItemLayers( const QString &path, const QList< Qgis::LayerType > &acceptableTypes );
 
-    static SublayerHandling shouldAskUserForSublayers( const QList<QgsProviderSublayerDetails> &layers, bool hasNonLayerItems = false );
+    static SublayerHandling shouldAskUserForSublayers( const QList< QgsProviderSublayerDetails > &layers, bool hasNonLayerItems = false );
 
-    static QList<QgsMapLayer *> addSublayers( const QList<QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName, bool addToLegend = true );
+    static QList< QgsMapLayer * > addSublayers( const QList< QgsProviderSublayerDetails> &layers, const QString &baseName, const QString &groupName, bool addToLegend = true );
+
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAppLayerHandling::DependencyFlags );
 

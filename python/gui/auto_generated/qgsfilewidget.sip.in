@@ -27,6 +27,7 @@ The :py:class:`QgsFileWidget` class creates a widget for selecting a file or a f
       sipType = NULL;
 %End
   public:
+
     enum StorageMode
     {
       GetFile,
@@ -259,6 +260,7 @@ Emitted whenever the current file or directory ``path`` is changed.
 %End
 
   protected:
+
     virtual void updateLayout();
 %Docstring
 Update buttons visibility
@@ -296,6 +298,7 @@ Returns a filePath with relative path options applied (or not) !
 
 
 };
+
 
 
 

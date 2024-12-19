@@ -16,13 +16,13 @@ QgsRendererAbstractMetadata.LayerType.__and__ = lambda flag1, flag2: _force_int(
 QgsRendererAbstractMetadata.LayerType.__or__ = lambda flag1, flag2: QgsRendererAbstractMetadata.LayerType(_force_int(flag1) | _force_int(flag2))
 try:
     QgsRendererAbstractMetadata.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsRendererMetadata.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsRendererRegistry.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

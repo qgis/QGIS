@@ -30,7 +30,9 @@
  */
 class QgsOffsetLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
+
   public:
+
     QgsOffsetLinesAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -49,9 +51,10 @@ class QgsOffsetLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   protected:
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
+
     double mOffset = 0.0;
     bool mDynamicOffset = false;
     QgsProperty mOffsetProperty;
@@ -59,9 +62,13 @@ class QgsOffsetLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     int mSegments = 8;
     Qgis::JoinStyle mJoinStyle = Qgis::JoinStyle::Round;
     double mMiterLimit = 2;
+
+
 };
 
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMOFFSETLINES_H
+
+

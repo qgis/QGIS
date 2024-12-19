@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "August 2012"
-__copyright__ = "(C) 2012, Victor Olaya"
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 from processing.tools.system import userFolder, mkdir
@@ -25,11 +25,11 @@ from processing.core.ProcessingConfig import ProcessingConfig
 
 
 class ModelerUtils:
-    MODELS_FOLDER = "MODELS_FOLDER"
+    MODELS_FOLDER = 'MODELS_FOLDER'
 
     @staticmethod
     def defaultModelsFolder():
-        folder = str(os.path.join(userFolder(), "models"))
+        folder = str(os.path.join(userFolder(), 'models'))
         mkdir(folder)
         return os.path.abspath(folder)
 
@@ -37,6 +37,6 @@ class ModelerUtils:
     def modelsFolders():
         folder = ProcessingConfig.getSetting(ModelerUtils.MODELS_FOLDER)
         if folder is not None:
-            return folder.split(";")
+            return folder.split(';')
         else:
             return [ModelerUtils.defaultModelsFolder()]

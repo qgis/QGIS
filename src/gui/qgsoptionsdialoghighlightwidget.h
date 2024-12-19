@@ -42,9 +42,9 @@ class QgsOptionsDialogHighlightWidgetEventFilter : public QObject
     //! Constructor
     QgsOptionsDialogHighlightWidgetEventFilter( QgsOptionsDialogHighlightWidget *highlightWidget );
     bool eventFilter( QObject *obj, QEvent *event ) override;
-
   private:
     QgsOptionsDialogHighlightWidget *mHighlightWidget;
+
 };
 
 ///@endcond
@@ -62,6 +62,7 @@ class QgsOptionsDialogHighlightWidgetEventFilter : public QObject
 class GUI_EXPORT QgsOptionsDialogHighlightWidget
 {
   public:
+
     /**
      * create a highlight widget implementation for the proper widget type.
      * For instance a QgsOptionsDialogHighlightButton for button.
@@ -86,9 +87,10 @@ class GUI_EXPORT QgsOptionsDialogHighlightWidget
     /**
      * Returns the widget
      */
-    QWidget *widget() { return mWidget; }
+    QWidget *widget() {return mWidget;}
 
   protected:
+
     /**
      * Search for the \a text in the widget and return TRUE if it was found
      */
@@ -112,7 +114,7 @@ class GUI_EXPORT QgsOptionsDialogHighlightWidget
     explicit QgsOptionsDialogHighlightWidget( QWidget *widget = nullptr );
 
     //! Pointer to the widget
-    QPointer<QWidget> mWidget;
+    QPointer< QWidget > mWidget;
 
   private:
     friend class QgsOptionsDialogHighlightWidgetEventFilter;

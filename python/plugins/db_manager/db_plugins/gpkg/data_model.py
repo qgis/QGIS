@@ -20,12 +20,10 @@ email                : brush.tyler@gmail.com
 
 from qgis.core import QgsMessageLog
 
-from ..data_model import (
-    TableDataModel,
-    SqlResultModel,
-    SqlResultModelAsync,
-    SqlResultModelTask,
-)
+from ..data_model import (TableDataModel,
+                          SqlResultModel,
+                          SqlResultModelAsync,
+                          SqlResultModelTask)
 from ..plugin import BaseError
 
 

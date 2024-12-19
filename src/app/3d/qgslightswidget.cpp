@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgslightswidget.h"
-#include "moc_qgslightswidget.cpp"
 
 #include "qgs3dmapsettings.h"
 #include "qgsapplication.h"
@@ -72,7 +71,7 @@ QgsLightsWidget::QgsLightsWidget( QWidget *parent )
   connect( spinDirectionalIntensity, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
   connect( btnDirectionalColor, &QgsColorButton::colorChanged, this, &QgsLightsWidget::updateCurrentDirectionalLightParameters );
 
-  connect( dialAzimuth, &QSlider::valueChanged, this, [this]( int value ) { spinBoxAzimuth->setValue( ( value + 180 ) % 360 ); } );
+  connect( dialAzimuth, &QSlider::valueChanged, this, [this]( int value ) {spinBoxAzimuth->setValue( ( value + 180 ) % 360 );} );
   connect( sliderAltitude, &QSlider::valueChanged, spinBoxAltitude, &QgsDoubleSpinBox::setValue );
   connect( spinBoxAzimuth, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::onDirectionChange );
   connect( spinBoxAltitude, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsLightsWidget::onDirectionChange );
@@ -83,17 +82,17 @@ QgsLightsWidget::QgsLightsWidget( QWidget *parent )
 
 void QgsLightsWidget::setLights( const QList<QgsLightSource *> sources )
 {
-  QList<QgsPointLightSettings> pointLights;
-  QList<QgsDirectionalLightSettings> directionalLights;
+  QList< QgsPointLightSettings > pointLights;
+  QList< QgsDirectionalLightSettings > directionalLights;
   for ( const QgsLightSource *source : sources )
   {
     switch ( source->type() )
     {
       case Qgis::LightSourceType::Point:
-        pointLights.append( *qgis::down_cast<const QgsPointLightSettings *>( source ) );
+        pointLights.append( *qgis::down_cast< const QgsPointLightSettings *>( source ) );
         break;
       case Qgis::LightSourceType::Directional:
-        directionalLights.append( *qgis::down_cast<const QgsDirectionalLightSettings *>( source ) );
+        directionalLights.append( *qgis::down_cast< const QgsDirectionalLightSettings *>( source ) );
         break;
     }
   }
@@ -138,7 +137,7 @@ void QgsLightsWidget::selectedLightChanged( const QItemSelection &selected, cons
     return;
   }
 
-  const QgsLightsModel::LightType lightType = static_cast<QgsLightsModel::LightType>( mLightsModel->data( selected.indexes().at( 0 ), QgsLightsModel::LightTypeRole ).toInt() );
+  const QgsLightsModel::LightType lightType = static_cast< QgsLightsModel::LightType >( mLightsModel->data( selected.indexes().at( 0 ), QgsLightsModel::LightTypeRole ).toInt() );
   const int listIndex = mLightsModel->data( selected.indexes().at( 0 ), QgsLightsModel::LightListIndex ).toInt();
 
   switch ( lightType )
@@ -261,14 +260,14 @@ void QgsLightsWidget::setAzimuthAltitude()
   double azimuthAngle;
   double altitudeAngle;
 
-  const double horizontalVectorMagnitude = sqrt( mDirectionX * mDirectionX + mDirectionY * mDirectionY );
+  const double horizontalVectorMagnitude = sqrt( mDirectionX * mDirectionX + mDirectionZ * mDirectionZ );
 
   if ( horizontalVectorMagnitude == 0 )
     azimuthAngle = 0;
   else
   {
     azimuthAngle = ( asin( -mDirectionX / horizontalVectorMagnitude ) ) / M_PI * 180;
-    if ( mDirectionY > 0 )
+    if ( mDirectionZ < 0 )
       azimuthAngle = 180 - azimuthAngle;
     azimuthAngle = std::fmod( azimuthAngle + 360.0, 360.0 );
   }
@@ -279,7 +278,7 @@ void QgsLightsWidget::setAzimuthAltitude()
   if ( horizontalVectorMagnitude == 0 )
     altitudeAngle = 90;
   else
-    altitudeAngle = -atan( mDirectionZ / horizontalVectorMagnitude ) / M_PI * 180;
+    altitudeAngle = -atan( mDirectionY / horizontalVectorMagnitude ) / M_PI * 180;
 
   whileBlocking( spinBoxAltitude )->setValue( altitudeAngle );
   whileBlocking( sliderAltitude )->setValue( altitudeAngle );
@@ -294,12 +293,13 @@ void QgsLightsWidget::onDirectionChange()
 
   const double horizontalVectorMagnitude = cos( altitudeValue / 180 * M_PI );
   mDirectionX = -horizontalVectorMagnitude * sin( azimuthValue / 180 * M_PI );
-  mDirectionY = -horizontalVectorMagnitude * cos( azimuthValue / 180 * M_PI );
-  mDirectionZ = -sin( altitudeValue / 180 * M_PI );
+  mDirectionZ = horizontalVectorMagnitude * cos( azimuthValue / 180 * M_PI );
+  mDirectionY = -sin( altitudeValue / 180 * M_PI );
 
   whileBlocking( sliderAltitude )->setValue( altitudeValue );
   updateCurrentDirectionalLightParameters();
 }
+
 
 
 //
@@ -308,6 +308,7 @@ void QgsLightsWidget::onDirectionChange()
 QgsLightsModel::QgsLightsModel( QObject *parent )
   : QAbstractListModel( parent )
 {
+
 }
 
 int QgsLightsModel::rowCount( const QModelIndex &parent ) const
@@ -423,12 +424,12 @@ QList<QgsDirectionalLightSettings> QgsLightsModel::directionalLights() const
 
 void QgsLightsModel::setPointLightSettings( int index, const QgsPointLightSettings &light )
 {
-  mPointLights[index] = light;
+  mPointLights[ index ] = light;
 }
 
 void QgsLightsModel::setDirectionalLightSettings( int index, const QgsDirectionalLightSettings &light )
 {
-  mDirectionalLights[index] = light;
+  mDirectionalLights[ index ] = light;
 }
 
 QModelIndex QgsLightsModel::addPointLight( const QgsPointLightSettings &light )

@@ -14,14 +14,13 @@
  ***************************************************************************/
 
 #include "qgs3dsceneexporter.h"
-#include "moc_qgs3dsceneexporter.cpp"
 
 #include <QVector>
 #include <Qt3DCore/QEntity>
 #include <Qt3DCore/QComponent>
 #include <Qt3DCore/QNode>
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
@@ -166,10 +165,8 @@ Qt3DQAttribute *findAttribute( Qt3DQGeometry *geometry, const QString &name, Qt3
   QVector<Qt3DQAttribute *> attributes = geometry->attributes();
   for ( Qt3DQAttribute *attribute : attributes )
   {
-    if ( attribute->attributeType() != type )
-      continue;
-    if ( name.isEmpty() || attribute->name() == name )
-      return attribute;
+    if ( attribute->attributeType() != type ) continue;
+    if ( name.isEmpty() || attribute->name() == name ) return attribute;
   }
   return nullptr;
 }
@@ -191,7 +188,7 @@ Component *findTypedComponent( Qt3DCore::QEntity *entity )
 
 bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsVectorLayer *layer )
 {
-  QgsAbstract3DRenderer *abstractRenderer = layer->renderer3D();
+  QgsAbstract3DRenderer *abstractRenderer =  layer->renderer3D();
   const QString rendererType = abstractRenderer->type();
 
   if ( rendererType == "rulebased" )
@@ -216,7 +213,7 @@ bool Qgs3DSceneExporter::parseVectorLayerEntity( Qt3DCore::QEntity *entity, QgsV
 
   else if ( rendererType == "vector" )
   {
-    QgsVectorLayer3DRenderer *vectorLayerRenderer = dynamic_cast<QgsVectorLayer3DRenderer *>( abstractRenderer );
+    QgsVectorLayer3DRenderer *vectorLayerRenderer = dynamic_cast< QgsVectorLayer3DRenderer *>( abstractRenderer );
     if ( vectorLayerRenderer )
     {
       const QgsAbstract3DSymbol *symbol = vectorLayerRenderer->symbol();
@@ -248,7 +245,7 @@ void Qgs3DSceneExporter::processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3D
   Qt3DExtras::QDiffuseSpecularMaterial *diffuseMapMaterial = findTypedComponent<Qt3DExtras::QDiffuseSpecularMaterial>( entity );
   if ( diffuseMapMaterial )
   {
-    const Qt3DRender::QTexture2D *diffuseTexture = diffuseMapMaterial->diffuse().value<Qt3DRender::QTexture2D *>();
+    const Qt3DRender::QTexture2D *diffuseTexture = diffuseMapMaterial->diffuse().value< Qt3DRender::QTexture2D * >();
     if ( diffuseTexture )
     {
       const QVector<Qt3DRender::QAbstractTextureImage *> textureImages = diffuseTexture->textureImages();
@@ -266,7 +263,7 @@ void Qgs3DSceneExporter::processEntityMaterial( Qt3DCore::QEntity *entity, Qgs3D
   }
 }
 
-void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain, const QString &layerName )
+void Qgs3DSceneExporter::parseTerrain( QgsTerrainEntity *terrain, const  QString &layerName )
 {
   Qgs3DMapSettings *settings = terrain->mapSettings();
   if ( !settings->terrainRenderingEnabled() )
@@ -353,6 +350,9 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
     return;
   }
 
+  const float scale = transform->scale();
+  const QVector3D translation = transform->translation();
+
   // Generate vertice data
   Qt3DQAttribute *positionAttribute = tileGeometry->positionAttribute();
   if ( !positionAttribute )
@@ -381,26 +381,24 @@ void Qgs3DSceneExporter::parseFlatTile( QgsTerrainTileEntity *tileEntity, const 
     QgsDebugError( QString( "Geometry for '%1' has index attribute with empty data!" ).arg( layerName ) );
     return;
   }
-  const QVector<uint> indexesBuffer = getIndexData( indexAttribute, indexBytes );
+  const QVector<uint> indexesBuffer = getIndexData( indexAttribute,  indexBytes );
 
   QString objectNamePrefix = layerName;
-  if ( objectNamePrefix != QString() )
-    objectNamePrefix += QString();
+  if ( objectNamePrefix != QString() ) objectNamePrefix += QString();
 
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "Flat_tile" ) ) );
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
-  object->setupPositionCoordinates( positionBuffer, transform->matrix() );
+  object->setupPositionCoordinates( positionBuffer, scale, translation );
   object->setupFaces( indexesBuffer );
 
   if ( mExportNormals )
   {
     // Everts
     QVector<float> normalsBuffer;
-    for ( int i = 0; i < positionBuffer.size(); i += 3 )
-      normalsBuffer << 0.0f << 1.0f << 0.0f;
-    object->setupNormalCoordinates( normalsBuffer, transform->matrix() );
+    for ( int i = 0; i < positionBuffer.size(); i += 3 ) normalsBuffer << 0.0f << 1.0f << 0.0f;
+    object->setupNormalCoordinates( normalsBuffer );
   }
 
   Qt3DQAttribute *texCoordsAttribute = tileGeometry->texCoordAttribute();
@@ -429,6 +427,9 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, const Q
     return;
   }
 
+  const float scale = transform->scale();
+  const QVector3D translation = transform->translation();
+
   Qt3DQAttribute *positionAttribute = tileGeometry->positionAttribute();
   const QByteArray positionBytes = positionAttribute->buffer()->data();
   const QVector<float> positionBuffer = getAttributeData<float>( positionAttribute, positionBytes );
@@ -441,7 +442,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, const Q
   mObjects.push_back( object );
 
   object->setSmoothEdges( mSmoothEdges );
-  object->setupPositionCoordinates( positionBuffer, transform->matrix() );
+  object->setupPositionCoordinates( positionBuffer, scale, translation );
   object->setupFaces( indexBuffer );
 
   Qt3DQAttribute *normalsAttributes = tileGeometry->normalAttribute();
@@ -449,7 +450,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, const Q
   {
     const QByteArray normalsBytes = normalsAttributes->buffer()->data();
     const QVector<float> normalsBuffer = getAttributeData<float>( normalsAttributes, normalsBytes );
-    object->setupNormalCoordinates( normalsBuffer, transform->matrix() );
+    object->setupNormalCoordinates( normalsBuffer );
   }
 
   Qt3DQAttribute *texCoordsAttribute = tileGeometry->texCoordsAttribute();
@@ -468,8 +469,7 @@ void Qgs3DSceneExporter::parseDemTile( QgsTerrainTileEntity *tileEntity, const Q
 void Qgs3DSceneExporter::parseMeshTile( QgsTerrainTileEntity *tileEntity, const QString &layerName )
 {
   QString objectNamePrefix = layerName;
-  if ( objectNamePrefix != QString() )
-    objectNamePrefix += QStringLiteral( "_" );
+  if ( objectNamePrefix != QString() ) objectNamePrefix += QStringLiteral( "_" );
 
   const QList<Qt3DRender::QGeometryRenderer *> renderers = tileEntity->findChildren<Qt3DRender::QGeometryRenderer *>();
   for ( Qt3DRender::QGeometryRenderer *renderer : renderers )
@@ -484,7 +484,7 @@ void Qgs3DSceneExporter::parseMeshTile( QgsTerrainTileEntity *tileEntity, const 
 QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( Qt3DCore::QEntity *entity, const QString &objectNamePrefix )
 {
   QVector<Qgs3DExportObject *> objects;
-  const QList<Qt3DQGeometry *> geometriesList = entity->findChildren<Qt3DQGeometry *>();
+  const QList<Qt3DQGeometry *> geometriesList =  entity->findChildren<Qt3DQGeometry *>();
   for ( Qt3DQGeometry *geometry : geometriesList )
   {
     Qt3DQAttribute *positionAttribute = findAttribute( geometry, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
@@ -506,7 +506,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
     const QVector<float> positionData = getAttributeData<float>( positionAttribute, vertexBytes );
     const QVector<uint> indexData = getIndexData( indexAttribute, indexBytes );
 
-    Qt3DQAttribute *instanceDataAttribute = findAttribute( geometry, QStringLiteral( "pos" ), Qt3DQAttribute::VertexAttribute );
+    Qt3DQAttribute *instanceDataAttribute = findAttribute( geometry,  QStringLiteral( "pos" ), Qt3DQAttribute::VertexAttribute );
     if ( !instanceDataAttribute )
     {
       QgsDebugError( QString( "Cannot export '%1' - geometry has no instanceData attribute!" ).arg( objectNamePrefix ) );
@@ -524,9 +524,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
     {
       Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "instance_point" ) ) );
       objects.push_back( object );
-      QMatrix4x4 instanceTransform;
-      instanceTransform.translate( instancePosition[i], instancePosition[i + 1], instancePosition[i + 2] );
-      object->setupPositionCoordinates( positionData, instanceTransform );
+      object->setupPositionCoordinates( positionData, 1.0f, QVector3D( instancePosition[i], instancePosition[i + 1], instancePosition[i + 2] ) );
       object->setupFaces( indexData );
 
       object->setSmoothEdges( mSmoothEdges );
@@ -536,7 +534,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processInstancedPointGeometry( 
       {
         // Reuse vertex bytes
         const QVector<float> normalsData = getAttributeData<float>( normalsAttribute, vertexBytes );
-        object->setupNormalCoordinates( normalsData, instanceTransform );
+        object->setupNormalCoordinates( normalsData );
       }
     }
   }
@@ -549,16 +547,18 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processSceneLoaderGeometries( Q
   QVector<Qgs3DExportObject *> objects;
   Qt3DCore::QEntity *sceneLoaderParent = qobject_cast<Qt3DCore::QEntity *>( sceneLoader->parent() );
   Qt3DCore::QTransform *entityTransform = findTypedComponent<Qt3DCore::QTransform>( sceneLoaderParent );
-  QMatrix4x4 sceneTransform;
+  float sceneScale = 1.0f;
+  QVector3D sceneTranslation( 0.0f, 0.0f, 0.0f );
   if ( entityTransform )
   {
-    sceneTransform = entityTransform->matrix();
+    sceneScale = entityTransform->scale();
+    sceneTranslation = entityTransform->translation();
   }
   QStringList entityNames = sceneLoader->entityNames();
   for ( const QString &entityName : entityNames )
   {
     Qt3DRender::QGeometryRenderer *mesh = qobject_cast<Qt3DRender::QGeometryRenderer *>( sceneLoader->component( entityName, Qt3DRender::QSceneLoader::GeometryRendererComponent ) );
-    Qgs3DExportObject *object = processGeometryRenderer( mesh, objectNamePrefix, sceneTransform );
+    Qgs3DExportObject *object = processGeometryRenderer( mesh, objectNamePrefix, sceneScale, sceneTranslation );
     if ( !object )
       continue;
     objects.push_back( object );
@@ -566,14 +566,14 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processSceneLoaderGeometries( Q
   return objects;
 }
 
-Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeometryRenderer *geomRenderer, const QString &objectNamePrefix, const QMatrix4x4 &sceneTransform )
+Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeometryRenderer *geomRenderer, const QString &objectNamePrefix, float sceneScale, QVector3D sceneTranslation )
 {
   // We only export triangles for now
   if ( geomRenderer->primitiveType() != Qt3DRender::QGeometryRenderer::Triangles )
     return nullptr;
 
   Qt3DQGeometry *geometry = geomRenderer->geometry();
-  if ( !geometry )
+  if ( ! geometry )
     return nullptr;
 
   // === Compute triangleIndexStartingIndiceToKeep according to duplicated features
@@ -596,7 +596,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     for ( int idx = 0; idx < featureIds.size(); idx++ )
     {
       const QgsFeatureId feat = featureIds[idx];
-      if ( !mExportedFeatureIds.contains( feat ) )
+      if ( ! mExportedFeatureIds.contains( feat ) )
       {
         // add the feature (as it was unknown) to temp set and not to the mExportedFeatureIds (as featureIds can have the same id multiple times)
         tempFeatToAdd += feat;
@@ -618,7 +618,8 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   }
 
   // === Compute inherited scale and translation from child entity to parent
-  QMatrix4x4 transformMatrix = sceneTransform;
+  float scale = 1.0f;
+  QVector3D translation( 0.0f, 0.0f, 0.0f );
   QObject *parent = geomRenderer->parent();
   while ( parent )
   {
@@ -626,7 +627,8 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
     Qt3DCore::QTransform *transform = findTypedComponent<Qt3DCore::QTransform>( entity );
     if ( transform )
     {
-      transformMatrix = transform->matrix() * transformMatrix;
+      scale *= transform->scale();
+      translation += transform->translation();
     }
     parent = parent->parent();
   }
@@ -719,7 +721,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
 
   // === Create Qgs3DExportObject
   Qgs3DExportObject *object = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "mesh_geometry" ) ) );
-  object->setupPositionCoordinates( positionData, transformMatrix );
+  object->setupPositionCoordinates( positionData, scale * sceneScale, translation + sceneTranslation );
   object->setupFaces( indexData );
 
   Qt3DQAttribute *normalsAttribute = findAttribute( geometry, Qt3DQAttribute::defaultNormalAttributeName(), Qt3DQAttribute::VertexAttribute );
@@ -727,7 +729,7 @@ Qgs3DExportObject *Qgs3DSceneExporter::processGeometryRenderer( Qt3DRender::QGeo
   {
     // Reuse vertex bytes
     const QVector<float> normalsData = getAttributeData<float>( normalsAttribute, vertexBytes );
-    object->setupNormalCoordinates( normalsData, transformMatrix );
+    object->setupNormalCoordinates( normalsData );
   }
 
   Qt3DQAttribute *texCoordsAttribute = findAttribute( geometry, Qt3DQAttribute::defaultTextureCoordinateAttributeName(), Qt3DQAttribute::VertexAttribute );
@@ -747,8 +749,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processLines( Qt3DCore::QEntity
   const QList<Qt3DRender::QGeometryRenderer *> renderers = entity->findChildren<Qt3DRender::QGeometryRenderer *>();
   for ( Qt3DRender::QGeometryRenderer *renderer : renderers )
   {
-    if ( renderer->primitiveType() != Qt3DRender::QGeometryRenderer::LineStripAdjacency )
-      continue;
+    if ( renderer->primitiveType() != Qt3DRender::QGeometryRenderer::LineStripAdjacency ) continue;
     Qt3DQGeometry *geom = renderer->geometry();
     Qt3DQAttribute *positionAttribute = findAttribute( geom, Qt3DQAttribute::defaultPositionAttributeName(), Qt3DQAttribute::VertexAttribute );
     Qt3DQAttribute *indexAttribute = findAttribute( geom, QString(), Qt3DQAttribute::IndexAttribute );
@@ -770,7 +771,7 @@ QVector<Qgs3DExportObject *> Qgs3DSceneExporter::processLines( Qt3DCore::QEntity
 
     Qgs3DExportObject *exportObject = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "line" ) ) );
     exportObject->setType( Qgs3DExportObject::LineStrip );
-    exportObject->setupPositionCoordinates( positionData, QMatrix4x4() );
+    exportObject->setupPositionCoordinates( positionData );
     exportObject->setupLine( indexData );
 
     objs.push_back( exportObject );
@@ -804,17 +805,12 @@ Qgs3DExportObject *Qgs3DSceneExporter::processPoints( Qt3DCore::QEntity *entity,
   }
   Qgs3DExportObject *obj = new Qgs3DExportObject( getObjectName( objectNamePrefix + QStringLiteral( "points" ) ) );
   obj->setType( Qgs3DExportObject::Points );
-  obj->setupPositionCoordinates( points, QMatrix4x4() );
+  obj->setupPositionCoordinates( points );
   return obj;
 }
 
-bool Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath, int precision )
+void Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFolderPath, int precision )
 {
-  if ( mObjects.isEmpty() )
-  {
-    return false;
-  }
-
   const QString objFilePath = QDir( sceneFolderPath ).filePath( sceneName + QStringLiteral( ".obj" ) );
   const QString mtlFilePath = QDir( sceneFolderPath ).filePath( sceneName + QStringLiteral( ".mtl" ) );
 
@@ -822,13 +818,13 @@ bool Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
   if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
     QgsDebugError( QStringLiteral( "Scene can not be exported to '%1'. File access error." ).arg( objFilePath ) );
-    return false;
+    return;
   }
   QFile mtlFile( mtlFilePath );
   if ( !mtlFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
   {
     QgsDebugError( QStringLiteral( "Scene can not be exported to '%1'. File access error." ).arg( mtlFilePath ) );
-    return false;
+    return;
   }
 
   float maxfloat = std::numeric_limits<float>::max(), minFloat = std::numeric_limits<float>::lowest();
@@ -868,7 +864,6 @@ bool Qgs3DSceneExporter::save( const QString &sceneName, const QString &sceneFol
   }
 
   QgsDebugMsgLevel( QStringLiteral( "Scene exported to '%1'" ).arg( objFilePath ), 2 );
-  return true;
 }
 
 QString Qgs3DSceneExporter::getObjectName( const QString &name )

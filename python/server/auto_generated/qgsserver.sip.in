@@ -21,6 +21,7 @@ The :py:class:`QgsServer` class provides OGC web services.
 #include "qgsserver.h"
 %End
   public:
+
     QgsServer();
 %Docstring
 Creates the server instance
@@ -49,7 +50,7 @@ variable
 %End
 
 
-    QgsServerInterface  * serverInterface();
+    QgsServerInterface  *serverInterface();
 %Docstring
 Returns a pointer to the server interface
 %End

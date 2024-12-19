@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 ***************************************************************************
     runtimeprofiler.py
@@ -15,10 +17,11 @@
 ***************************************************************************
 """
 
+
 from qgis._core import QgsScopedRuntimeProfile
 
 
-class ScopedRuntimeProfileContextManager:
+class ScopedRuntimeProfileContextManager():
     """
     Context manager used to profile blocks of code in the QgsApplication.profiler() registry.
 

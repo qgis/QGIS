@@ -38,6 +38,7 @@ class GUI_EXPORT QgsLegendPatchShapeButton : public QToolButton
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new patch shape button with the specified \a parent widget.
      * Use \a dialogTitle string to define the title to show in the legend patch shape widget.
@@ -128,6 +129,7 @@ class GUI_EXPORT QgsLegendPatchShapeButton : public QToolButton
     void changed();
 
   protected:
+
     void changeEvent( QEvent *e ) override;
     void showEvent( QShowEvent *e ) override;
     void resizeEvent( QResizeEvent *event ) override;
@@ -147,6 +149,7 @@ class GUI_EXPORT QgsLegendPatchShapeButton : public QToolButton
     void loadPatchFromStyle( const QString &name );
 
   private:
+
     QgsLegendPatchShape mShape;
 
     QSize mSizeHint;
@@ -155,7 +158,7 @@ class GUI_EXPORT QgsLegendPatchShapeButton : public QToolButton
 
     Qgis::SymbolType mType = Qgis::SymbolType::Fill;
 
-    std::unique_ptr<QgsSymbol> mPreviewSymbol;
+    std::unique_ptr< QgsSymbol > mPreviewSymbol;
 
     QgsMessageBar *mMessageBar = nullptr;
 
@@ -169,6 +172,7 @@ class GUI_EXPORT QgsLegendPatchShapeButton : public QToolButton
      * Regenerates the shape preview.
      */
     void updatePreview();
+
 };
 
 #endif // QGSLEGENDPATCHSHAPEBUTTON_H

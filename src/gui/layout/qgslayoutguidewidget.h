@@ -37,7 +37,7 @@ class QgsLayoutGuideProxyModel;
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutGuideWidget : public QgsPanelWidget, private Ui::QgsLayoutGuideWidgetBase
+class GUI_EXPORT QgsLayoutGuideWidget: public QgsPanelWidget, private Ui::QgsLayoutGuideWidgetBase
 {
     Q_OBJECT
   public:
@@ -66,10 +66,12 @@ class GUI_EXPORT QgsLayoutGuideWidget : public QgsPanelWidget, private Ui::QgsLa
     void updatePageCount();
 
   private:
+
     QgsLayout *mLayout = nullptr;
     QgsLayoutGuideProxyModel *mHozProxyModel = nullptr;
     QgsLayoutGuideProxyModel *mVertProxyModel = nullptr;
     int mPage = 0;
+
 };
 
 /**
@@ -84,12 +86,14 @@ class GUI_EXPORT QgsLayoutGuidePositionDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
+
     //! constructor
     QgsLayoutGuidePositionDelegate( QObject *parent );
 
   protected:
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+
 };
 
 /**
@@ -104,12 +108,14 @@ class GUI_EXPORT QgsLayoutGuideUnitDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
+
     //! constructor
     QgsLayoutGuideUnitDelegate( QObject *parent );
 
   protected:
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+
 };
 
 #endif // QGSLAYOUTGUIDEWIDGET_H

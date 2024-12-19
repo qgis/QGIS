@@ -60,12 +60,19 @@ namespace pal
     public:
 
       /**
-       * \brief Label directions in relation to line or polygon ring directions
+       * \brief Position of label candidate relative to feature.
        */
-      enum class LabelDirectionToLine
+      enum Quadrant
       {
-        SameDirection,
-        Reversed
+        QuadrantAboveLeft,
+        QuadrantAbove,
+        QuadrantAboveRight,
+        QuadrantLeft,
+        QuadrantOver,
+        QuadrantRight,
+        QuadrantBelowLeft,
+        QuadrantBelow,
+        QuadrantBelowRight
       };
 
       /**
@@ -79,15 +86,13 @@ namespace pal
        * \param alpha rotation in radians
        * \param cost geographic cost
        * \param feature labelpos owners
-       * \param directionToLine whether the label direction is reversed from the line or polygon ring direction
+       * \param isReversed label is reversed
        * \param quadrant relative position of label to feature
        */
       LabelPosition( int id, double x1, double y1,
                      double w, double h,
                      double alpha, double cost,
-                     FeaturePart *feature,
-                     LabelDirectionToLine directionToLine = LabelDirectionToLine::SameDirection,
-                     Qgis::LabelQuadrantPosition quadrant = Qgis::LabelQuadrantPosition::Over );
+                     FeaturePart *feature, bool isReversed = false, Quadrant quadrant = QuadrantOver );
 
       LabelPosition( const LabelPosition &other );
 
@@ -283,17 +288,10 @@ namespace pal
        */
       double getAlpha() const;
 
-      /**
-       * Returns TRUE if the label direction is the reversed from the line or polygon ring direction.
-       */
-      bool isReversedFromLineDirection() const { return mDirectionToLine == LabelDirectionToLine::Reversed; }
-
+      bool getReversed() const { return reversed; }
       bool getUpsideDown() const { return upsideDown; }
 
-      /**
-       * Returns the quadrant associated with this label position.
-       */
-      Qgis::LabelQuadrantPosition quadrant() const { return mQuadrant; }
+      Quadrant getQuadrant() const { return quadrant; }
 
       /**
        * Returns the next part of this label position (i.e. the next character for a curved label).
@@ -400,14 +398,16 @@ namespace pal
 
       int partId;
 
+      //True if label direction is the same as line / polygon ring direction.
+      //Could be used by the application to draw a directional arrow ('<' or '>')
+      //if the layer arrangement is P_LINE
+      bool reversed;
 
       bool upsideDown;
 
+      LabelPosition::Quadrant quadrant;
+
     private:
-
-      Qgis::LabelQuadrantPosition mQuadrant = Qgis::LabelQuadrantPosition::AboveLeft;
-
-      LabelDirectionToLine mDirectionToLine = LabelDirectionToLine::SameDirection;
 
       unsigned int mGlobalId = 0;
       std::unique_ptr< LabelPosition > mNextPart;

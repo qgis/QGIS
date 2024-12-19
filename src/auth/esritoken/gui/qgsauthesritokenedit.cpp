@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsauthesritokenedit.h"
-#include "moc_qgsauthesritokenedit.cpp"
 #include "ui_qgsauthesritokenedit.h"
 
 

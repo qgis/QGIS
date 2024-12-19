@@ -16,7 +16,6 @@
 
 #include "qgsgdalutils.h"
 #include "qgsmeshcalculatordialog.h"
-#include "moc_qgsmeshcalculatordialog.cpp"
 #include "qgsproject.h"
 #include "qgsmeshcalcnode.h"
 #include "qgsmeshdataprovider.h"
@@ -41,7 +40,8 @@
 #include <QMap>
 
 QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QWidget *parent, Qt::WindowFlags f )
-  : QDialog( parent, f ), mLayer( meshLayer )
+  : QDialog( parent, f ),
+    mLayer( meshLayer )
 {
   setupUi( this );
   QgsGui::enableAutoGeometryRestore( this );
@@ -54,7 +54,7 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QWidg
   mVariableNames = model->variableNames();
 
   getMeshDrivers();
-  populateDriversComboBox();
+  populateDriversComboBox( );
   connect( mOutputFormatComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsMeshCalculatorDialog::updateInfoMessage );
   connect( mOutputFormatComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsMeshCalculatorDialog::onOutputFormatChange );
   connect( mOutputGroupNameLineEdit, &QLineEdit::textChanged, this, &QgsMeshCalculatorDialog::updateInfoMessage );
@@ -104,7 +104,8 @@ QgsMeshCalculatorDialog::QgsMeshCalculatorDialog( QgsMeshLayer *meshLayer, QWidg
   useFullLayerExtent();
   repopulateTimeCombos();
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [=] {
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, [ = ]
+  {
     QgsHelp::openHelp( QStringLiteral( "working_with_mesh/mesh_properties.html#mesh-calculator" ) );
   } );
 
@@ -151,7 +152,7 @@ QgsRectangle QgsMeshCalculatorDialog::outputExtent() const
 
 QgsGeometry QgsMeshCalculatorDialog::maskGeometry() const
 {
-  QgsVectorLayer *mask_layer = qobject_cast<QgsVectorLayer *>( cboLayerMask->currentLayer() );
+  QgsVectorLayer *mask_layer = qobject_cast<QgsVectorLayer *> ( cboLayerMask->currentLayer() );
   if ( mask_layer )
   {
     return maskGeometry( mask_layer );
@@ -178,7 +179,7 @@ QgsGeometry QgsMeshCalculatorDialog::maskGeometry( QgsVectorLayer *layer ) const
   {
     geometries.push_back( feat.geometry() );
   }
-  const QgsGeometry ret = QgsGeometry::unaryUnion( geometries );
+  const QgsGeometry ret = QgsGeometry::unaryUnion( geometries ) ;
   return ret;
 }
 
@@ -296,10 +297,10 @@ void QgsMeshCalculatorDialog::updateInfoMessage()
 
   // expression is valid
   const QgsMeshCalculator::Result result = QgsMeshCalculator::expressionIsValid(
-    formulaString(),
-    meshLayer(),
-    requiredCapability
-  );
+        formulaString(),
+        meshLayer(),
+        requiredCapability
+      );
   const bool expressionValid = result == QgsMeshCalculator::Success;
 
   // selected driver is appropriate
@@ -332,7 +333,9 @@ void QgsMeshCalculatorDialog::updateInfoMessage()
   // group name
   const bool groupNameValid = !groupName().isEmpty() && !mVariableNames.contains( groupName() );
 
-  if ( expressionValid && ( notInFile || ( driverValid && filePathValid ) ) && groupNameValid )
+  if ( expressionValid &&
+       ( notInFile || ( driverValid && filePathValid ) )  &&
+       groupNameValid )
   {
     mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( true );
     mExpressionValidLabel->setText( tr( "Expression valid" ) );
@@ -573,17 +576,20 @@ void QgsMeshCalculatorDialog::getMeshDrivers()
     const QList<QgsMeshDriverMetadata> allDrivers = providerMetadata->meshDriversMetadata();
     for ( const QgsMeshDriverMetadata &meta : allDrivers )
     {
-      if ( meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteFaceDatasets ) || meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteEdgeDatasets ) || meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets ) )
+      if ( meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteFaceDatasets ) ||
+           meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteEdgeDatasets ) ||
+           meta.capabilities().testFlag( QgsMeshDriverMetadata::MeshDriverCapability::CanWriteVertexDatasets ) )
         mMeshDrivers[meta.name()] = meta;
     }
   }
 }
 
-void QgsMeshCalculatorDialog::populateDriversComboBox()
+void QgsMeshCalculatorDialog::populateDriversComboBox( )
 {
+
   whileBlocking( mOutputFormatComboBox )->clear();
 
-  const QList<QgsMeshDriverMetadata> vals = mMeshDrivers.values();
+  const QList< QgsMeshDriverMetadata > vals = mMeshDrivers.values();
   for ( const QgsMeshDriverMetadata &meta : vals )
   {
     whileBlocking( mOutputFormatComboBox )->addItem( meta.description(), meta.name() );

@@ -25,6 +25,7 @@ Class defining cache interface for QGIS Server plugins.
 #include "qgsservercachefilter.h"
 %End
   public:
+
     QgsServerCacheFilter( const QgsServerInterface *serverInterface );
 %Docstring
 Constructor
@@ -119,6 +120,7 @@ Deletes all cached images for a QGIS project
 
 :return: ``True`` if the images have been deleted
 %End
+
 };
 
 typedef QMultiMap<int, QgsServerCacheFilter *> QgsServerCacheFilterMap;

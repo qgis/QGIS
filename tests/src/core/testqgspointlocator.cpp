@@ -28,29 +28,28 @@
 
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
-    explicit FilterExcludePoint( const QgsPointXY &p )
-      : mPoint( p ) {}
+  explicit FilterExcludePoint( const QgsPointXY &p ) : mPoint( p ) {}
 
-    bool acceptMatch( const QgsPointLocator::Match &match ) override { return match.point() != mPoint; }
+  bool acceptMatch( const QgsPointLocator::Match &match ) override { return match.point() != mPoint; }
 
-    QgsPointXY mPoint;
+  QgsPointXY mPoint;
 };
 
 struct FilterExcludeEdge : public QgsPointLocator::MatchFilter
 {
-    FilterExcludeEdge( const QgsPointXY &p1, const QgsPointXY &p2 )
-      : mP1( p1 )
-      , mP2( p2 )
-    {}
+  FilterExcludeEdge( const QgsPointXY &p1, const QgsPointXY &p2 )
+    : mP1( p1 )
+    , mP2( p2 )
+  {}
 
-    bool acceptMatch( const QgsPointLocator::Match &match ) override
-    {
-      QgsPointXY p1, p2;
-      match.edgePoints( p1, p2 );
-      return !( p1 == mP1 && p2 == mP2 ) && !( p1 == mP2 && p2 == mP1 );
-    }
+  bool acceptMatch( const QgsPointLocator::Match &match ) override
+  {
+    QgsPointXY p1, p2;
+    match.edgePoints( p1, p2 );
+    return !( p1 == mP1 && p2 == mP2 ) && !( p1 == mP2 && p2 == mP1 );
+  }
 
-    QgsPointXY mP1, mP2;
+  QgsPointXY mP1, mP2;
 };
 
 
@@ -107,7 +106,7 @@ class TestQgsPointLocator : public QObject
       QVERIFY( m.isValid() );
       QVERIFY( m.hasVertex() );
       QCOMPARE( m.layer(), mVL );
-      QCOMPARE( m.featureId(), ( QgsFeatureId ) 1 );
+      QCOMPARE( m.featureId(), ( QgsFeatureId )1 );
       QCOMPARE( m.point(), QgsPointXY( 1, 1 ) );
       QCOMPARE( m.distance(), std::sqrt( 2.0 ) );
       QCOMPARE( m.vertexIndex(), 2 );
@@ -121,7 +120,7 @@ class TestQgsPointLocator : public QObject
       QVERIFY( m.isValid() );
       QVERIFY( m.hasEdge() );
       QCOMPARE( m.layer(), mVL );
-      QCOMPARE( m.featureId(), ( QgsFeatureId ) 1 );
+      QCOMPARE( m.featureId(), ( QgsFeatureId )1 );
       QCOMPARE( m.point(), QgsPointXY( 1, 0.5 ) );
       QCOMPARE( m.distance(), 0.1 );
       QCOMPARE( m.vertexIndex(), 1 );
@@ -143,7 +142,7 @@ class TestQgsPointLocator : public QObject
       QVERIFY( m2.isValid() );
       QVERIFY( m2.hasArea() );
       QCOMPARE( m2.layer(), mVL );
-      QCOMPARE( m2.featureId(), ( QgsFeatureId ) 1 );
+      QCOMPARE( m2.featureId(), ( QgsFeatureId )1 );
       QCOMPARE( m2.point(), QgsPointXY( 0.9, 0.9 ) );
       QCOMPARE( m2.distance(), 0.0 );
 
@@ -152,7 +151,7 @@ class TestQgsPointLocator : public QObject
       QVERIFY( m3.isValid() );
       QVERIFY( m3.hasArea() );
       QCOMPARE( m3.layer(), mVL );
-      QCOMPARE( m3.featureId(), ( QgsFeatureId ) 1 );
+      QCOMPARE( m3.featureId(), ( QgsFeatureId )1 );
       QCOMPARE( m3.point(), QgsPointXY( 1.0, 1.0 ) );
       QCOMPARE( m3.distance(), .1 * std::sqrt( 2 ) );
     }
@@ -166,7 +165,7 @@ class TestQgsPointLocator : public QObject
       QVERIFY( m.isValid() );
       QVERIFY( m.hasArea() );
       QCOMPARE( m.layer(), mVL );
-      QCOMPARE( m.featureId(), ( QgsFeatureId ) 1 );
+      QCOMPARE( m.featureId(), ( QgsFeatureId )1 );
 
       const QgsPointLocator::MatchList mInvalid = loc.pointInPolygon( QgsPointXY( 0, 0 ) );
       QCOMPARE( mInvalid.count(), 0 );
@@ -218,7 +217,7 @@ class TestQgsPointLocator : public QObject
       QCOMPARE( lst.count(), 0 );
 
       QgsPointLocator::MatchList lst2 = loc.verticesInRect( QgsPointXY( 0, 1.5 ), 0.5 );
-      QCOMPARE( lst2.count(), 2 ); // one matching point, but it is the first point in ring, so it is duplicated
+      QCOMPARE( lst2.count(), 2 );  // one matching point, but it is the first point in ring, so it is duplicated
       QCOMPARE( lst2[0].vertexIndex(), 0 );
       QCOMPARE( lst2[1].vertexIndex(), 3 );
 
@@ -231,6 +230,7 @@ class TestQgsPointLocator : public QObject
 
     void testLayerUpdates()
     {
+
       QgsPointLocator loc( mVL );
 
       const QgsPointLocator::Match mAddV0 = loc.nearestVertex( QgsPointXY( 12, 12 ), 999 );
@@ -245,7 +245,7 @@ class TestQgsPointLocator : public QObject
       QgsPolylineXY polyline;
       polyline << QgsPointXY( 10, 11 ) << QgsPointXY( 11, 10 ) << QgsPointXY( 11, 11 ) << QgsPointXY( 10, 11 );
       polygon << polyline;
-      const QgsGeometry ffGeom = QgsGeometry::fromPolygonXY( polygon );
+      const QgsGeometry ffGeom = QgsGeometry::fromPolygonXY( polygon ) ;
       ff.setGeometry( ffGeom );
       QgsFeatureList flist;
       flist << ff;
@@ -369,7 +369,7 @@ class TestQgsPointLocator : public QObject
       QVERIFY( m.isValid() );
       QVERIFY( m.hasVertex() );
       QCOMPARE( m.layer(), mVL );
-      QCOMPARE( m.featureId(), ( QgsFeatureId ) 1 );
+      QCOMPARE( m.featureId(), ( QgsFeatureId )1 );
       QCOMPARE( m.point(), QgsPointXY( 1, 1 ) );
       QCOMPARE( m.distance(), std::sqrt( 2.0 ) );
       QCOMPARE( m.vertexIndex(), 2 );
@@ -377,6 +377,7 @@ class TestQgsPointLocator : public QObject
 
     void testLayerUpdatesAsynchronous()
     {
+
       QgsPointLocator loc( mVL );
 
       QEventLoop loop;
@@ -397,7 +398,7 @@ class TestQgsPointLocator : public QObject
       QgsPolylineXY polyline;
       polyline << QgsPointXY( 10, 11 ) << QgsPointXY( 11, 10 ) << QgsPointXY( 11, 11 ) << QgsPointXY( 10, 11 );
       polygon << polyline;
-      const QgsGeometry ffGeom = QgsGeometry::fromPolygonXY( polygon );
+      const QgsGeometry ffGeom = QgsGeometry::fromPolygonXY( polygon ) ;
       ff.setGeometry( ffGeom );
       QgsFeatureList flist;
       flist << ff;
@@ -456,7 +457,7 @@ class TestQgsPointLocator : public QObject
       QVERIFY( m.isValid() );
       QVERIFY( m.hasVertex() );
       QCOMPARE( m.layer(), mVL );
-      QCOMPARE( m.featureId(), ( QgsFeatureId ) 1 );
+      QCOMPARE( m.featureId(), ( QgsFeatureId )1 );
       QCOMPARE( m.point(), QgsPointXY( 1, 1 ) );
       QCOMPARE( m.distance(), std::sqrt( 2.0 ) );
       QCOMPARE( m.vertexIndex(), 2 );
@@ -517,7 +518,7 @@ class TestQgsPointLocator : public QObject
     {
       std::unique_ptr<QgsVectorLayer> curveLayer( new QgsVectorLayer( QStringLiteral( "CircularStringZ" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) ) );
       QgsFeature f1;
-      const QgsGeometry f1g = QgsGeometry::fromWkt( "CircularStringZ (0 0 0, 5 5 5, 0 10 10)" );
+      const QgsGeometry f1g = QgsGeometry::fromWkt( "CircularStringZ (0 0 0, 5 5 5, 0 10 10)" ) ;
       f1.setGeometry( f1g );
       QgsFeatureList f1list;
       f1list << f1;
@@ -529,7 +530,7 @@ class TestQgsPointLocator : public QObject
       QVERIFY( m1.isValid() );
       QVERIFY( m1.hasEdge() );
       QCOMPARE( m1.layer(), curveLayer.get() );
-      QCOMPARE( m1.featureId(), ( QgsFeatureId ) 1 );
+      QCOMPARE( m1.featureId(), ( QgsFeatureId )1 );
       QCOMPARE( m1.point(), QgsPointXY( 3.53553390593273775, 8.53553390593273775 ) );
       QCOMPARE( m1.distance(), 0.757359312881 );
       QCOMPARE( m1.vertexIndex(), 1 );
@@ -541,7 +542,7 @@ class TestQgsPointLocator : public QObject
 
       std::unique_ptr<QgsVectorLayer> lineLayer( new QgsVectorLayer( QStringLiteral( "LineStringZ" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) ) );
       QgsFeature f2;
-      const QgsGeometry f2g = QgsGeometry::fromWkt( "LineStringZ (0 0 0, 5 5 5, 0 10 10)" );
+      const QgsGeometry f2g = QgsGeometry::fromWkt( "LineStringZ (0 0 0, 5 5 5, 0 10 10)" ) ;
       f2.setGeometry( f2g );
       QgsFeatureList f2list;
       f2list << f2;
@@ -553,7 +554,7 @@ class TestQgsPointLocator : public QObject
       QVERIFY( m2.isValid() );
       QVERIFY( m2.hasEdge() );
       QCOMPARE( m2.layer(), lineLayer.get() );
-      QCOMPARE( m2.featureId(), ( QgsFeatureId ) 1 );
+      QCOMPARE( m2.featureId(), ( QgsFeatureId )1 );
       QCOMPARE( m2.point(), QgsPointXY( 2.5, 7.5 ) );
       QCOMPARE( m2.distance(), 0.707106781187 );
       QCOMPARE( m2.vertexIndex(), 1 );

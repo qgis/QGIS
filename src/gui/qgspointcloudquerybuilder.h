@@ -42,6 +42,7 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
 {
     Q_OBJECT
   public:
+
     /**
      * This constructor is used when the query builder is called from the
      * layer properties dialog
@@ -49,7 +50,8 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
      * \param parent Parent widget
      * \param fl dialog flags
      */
-    QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsPointCloudQueryBuilder( QgsPointCloudLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                               Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     void showEvent( QShowEvent *event ) override;
 
@@ -98,6 +100,7 @@ class GUI_EXPORT QgsPointCloudQueryBuilder : public QgsSubsetStringEditorInterfa
     void btnOr_clicked();
 
   private:
+
     //! Populate the attribute list for the selected layer
     void populateAttributes();
 

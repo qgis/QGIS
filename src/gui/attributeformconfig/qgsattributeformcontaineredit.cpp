@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsattributeformcontaineredit.h"
-#include "moc_qgsattributeformcontaineredit.cpp"
 #include "ui_qgsattributeformcontaineredit.h"
 #include "qgsattributesformproperties.h"
 #include "qgsvectorlayer.h"
@@ -28,7 +27,7 @@ QgsAttributeFormContainerEdit::QgsAttributeFormContainerEdit( QTreeWidgetItem *i
   const QgsAttributesFormProperties::DnDTreeItemData itemData = mTreeItem->data( 0, QgsAttributesFormProperties::DnDTreeRole ).value<QgsAttributesFormProperties::DnDTreeItemData>();
   Q_ASSERT( itemData.type() == QgsAttributesFormProperties::DnDTreeItemData::Container );
 
-  if ( !item->parent() )
+  if ( ! item->parent() )
   {
     // only top level items can be tabs
     mTypeCombo->addItem( tr( "Tab" ), QVariant::fromValue( Qgis::AttributeEditorContainerType::Tab ) );
@@ -75,7 +74,7 @@ void QgsAttributeFormContainerEdit::updateItemData()
   QgsAttributesFormProperties::DnDTreeItemData itemData = mTreeItem->data( 0, QgsAttributesFormProperties::DnDTreeRole ).value<QgsAttributesFormProperties::DnDTreeItemData>();
 
   itemData.setColumnCount( mColumnCountSpinBox->value() );
-  itemData.setContainerType( mTypeCombo->currentData().value<Qgis::AttributeEditorContainerType>() );
+  itemData.setContainerType( mTypeCombo->currentData().value< Qgis::AttributeEditorContainerType >() );
   itemData.setName( mTitleLineEdit->text() );
   itemData.setShowLabel( mShowLabelCheckBox->isChecked() );
   itemData.setBackgroundColor( mBackgroundColorButton->color() );
@@ -101,7 +100,7 @@ void QgsAttributeFormContainerEdit::updateItemData()
 void QgsAttributeFormContainerEdit::containerTypeChanged()
 {
   // show label makes sense for group box, not for tabs
-  const Qgis::AttributeEditorContainerType type = mTypeCombo->currentData().value<Qgis::AttributeEditorContainerType>();
+  const Qgis::AttributeEditorContainerType type = mTypeCombo->currentData().value< Qgis::AttributeEditorContainerType >();
   switch ( type )
   {
     case Qgis::AttributeEditorContainerType::GroupBox:

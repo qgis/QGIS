@@ -26,6 +26,7 @@
 class QgsMssqlSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
+
     QString providerKey() const override { return QStringLiteral( "mssql" ); }
     QString text() const override { return QObject::tr( "MS SQL Server" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 30; }
@@ -37,7 +38,7 @@ class QgsMssqlSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 
-class QgsMssqlProviderGuiMetadata : public QgsProviderGuiMetadata
+class QgsMssqlProviderGuiMetadata: public QgsProviderGuiMetadata
 {
   public:
     QgsMssqlProviderGuiMetadata()

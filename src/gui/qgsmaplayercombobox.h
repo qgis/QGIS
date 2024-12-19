@@ -39,6 +39,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     Q_PROPERTY( QStringList excludedProviders READ excludedProviders WRITE setExcludedProviders )
 
   public:
+
     /**
      * \brief QgsMapLayerComboBox creates a combo box to display the list of layers (currently in the registry).
      * The layers can be filtered and/or ordered.
@@ -74,14 +75,14 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      *
      * \see exceptedLayerList()
      */
-    void setExceptedLayerList( const QList<QgsMapLayer *> &layerList ) { mProxyModel->setExceptedLayerList( layerList ); }
+    void setExceptedLayerList( const QList<QgsMapLayer *> &layerList ) { mProxyModel->setExceptedLayerList( layerList );}
 
     /**
      * Returns a list of layers which should be excluded from the combo box.
      *
      * \see setExceptedLayerList()
      */
-    QList<QgsMapLayer *> exceptedLayerList() const { return mProxyModel->exceptedLayerList(); }
+    QList<QgsMapLayer *> exceptedLayerList() const {return mProxyModel->exceptedLayerList();}
 
     /**
      * Sets a list of data providers which should be excluded from the combobox.
@@ -163,7 +164,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
      * \see setAdditionalLayers()
      * \since QGIS 3.22
      */
-    QList<QgsMapLayer *> additionalLayers() const;
+    QList< QgsMapLayer * > additionalLayers() const;
 
     /**
      * Returns the current layer selected in the combo box.
@@ -190,6 +191,7 @@ class GUI_EXPORT QgsMapLayerComboBox : public QComboBox
     void layerChanged( QgsMapLayer *layer );
 
   protected:
+
     void dragEnterEvent( QDragEnterEvent *event ) override;
     void dragLeaveEvent( QDragLeaveEvent *event ) override;
     void dropEvent( QDropEvent *event ) override;

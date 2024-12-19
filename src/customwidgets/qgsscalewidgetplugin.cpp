@@ -15,7 +15,6 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsscalewidgetplugin.h"
-#include "moc_qgsscalewidgetplugin.cpp"
 #include "qgsscalewidget.h"
 
 
@@ -97,5 +96,5 @@ QString QgsScaleWidgetPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-    .arg( name() );
+         .arg( name() );
 }

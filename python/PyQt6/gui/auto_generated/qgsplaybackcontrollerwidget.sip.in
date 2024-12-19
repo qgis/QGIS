@@ -20,6 +20,7 @@ A compound widget containing a set of buttons for controlling media playback.
 #include "qgsplaybackcontrollerwidget.h"
 %End
   public:
+
     explicit QgsPlaybackControllerWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsPlaybackControllerWidget, with the specified ``parent`` widget.

@@ -17,7 +17,6 @@
 
 #include "qgsmessagelog.h"
 #include "qgslayoutitemmapgrid.h"
-#include "moc_qgslayoutitemmapgrid.cpp"
 #include "qgslayoututils.h"
 #include "qgsgeometry.h"
 #include "qgslayoutitemmap.h"

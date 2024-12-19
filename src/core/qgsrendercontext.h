@@ -416,14 +416,14 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Gets access to new labeling engine (may be NULLPTR).
      * \note Not available in Python bindings.
      */
-    QgsLabelingEngine *labelingEngine() const SIP_SKIP { return mLabelingEngine; }
+    QgsLabelingEngine *labelingEngine() const { return mLabelingEngine; } SIP_SKIP
 
     /**
      * Returns the associated label sink, or NULLPTR if not set.
      * \note Not available in Python bindings.
      * \since QGIS 3.24
      */
-    QgsLabelSink *labelSink() const SIP_SKIP { return mLabelSink; }
+    QgsLabelSink *labelSink() const { return mLabelSink; } SIP_SKIP
 
     /**
      * Returns the color to use when rendering selected features.
@@ -594,7 +594,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * Assigns the labeling engine
      * \note Not available in Python bindings.
      */
-    void setLabelingEngine( QgsLabelingEngine *engine ) SIP_SKIP { mLabelingEngine = engine; }
+    void setLabelingEngine( QgsLabelingEngine *engine ) { mLabelingEngine = engine; } SIP_SKIP
 
     /**
      * Assigns the label sink which will take over responsibility for handling labels.
@@ -602,7 +602,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \note Not available in Python bindings.
      * \since QGIS 3.24
      */
-    void setLabelSink( QgsLabelSink *sink ) SIP_SKIP { mLabelSink = sink; }
+    void setLabelSink( QgsLabelSink *sink ) { mLabelSink = sink; } SIP_SKIP
 
     /**
      * Sets the \a color to use when rendering selected features.
@@ -686,7 +686,7 @@ class CORE_EXPORT QgsRenderContext : public QgsTemporalRangeObject
      * \see setExpressionContext()
      * \note not available in Python bindings
      */
-    const QgsExpressionContext &expressionContext() const SIP_SKIP { return mExpressionContext; }
+    const QgsExpressionContext &expressionContext() const { return mExpressionContext; } SIP_SKIP
 
     //! Returns pointer to the unsegmentized geometry
     const QgsAbstractGeometry *geometry() const { return mGeometry; }

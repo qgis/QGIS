@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgswfsgetfeature.h"
-#include "moc_qgswfsgetfeature.cpp"
 #include "qgsmessagelog.h"
 #include <QUrlQuery>
 
@@ -23,7 +22,8 @@ QgsWFSGetFeature::QgsWFSGetFeature( QgsWFSDataSourceURI &uri )
 {
 }
 
-bool QgsWFSGetFeature::request( bool synchronous, const QString &WFSVersion, const QString &typeName, const QString &filter, bool hitsOnly, const QgsWfsCapabilities::Capabilities &caps )
+bool QgsWFSGetFeature::request( bool synchronous, const QString &WFSVersion,
+                                const QString &typeName, const QString &filter, bool hitsOnly, const QgsWfsCapabilities::Capabilities &caps )
 {
   QUrl url( mUri.requestUrl( QStringLiteral( "GetFeature" ) ) );
   QUrlQuery query( url );
@@ -60,7 +60,7 @@ bool QgsWFSGetFeature::request( bool synchronous, const QString &WFSVersion, con
   }
 
   url.setQuery( query );
-  return sendGET( url, QString(), synchronous, /*forceRefresh=*/true, /* cache=*/false );
+  return sendGET( url, QString(), synchronous, /*forceRefresh=*/ true, /* cache=*/ false );
 }
 
 QString QgsWFSGetFeature::errorMessageWithReason( const QString &reason )

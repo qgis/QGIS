@@ -4,5 +4,5 @@ QgsVectorLayerDirector.DirectionBackward = QgsVectorLayerDirector.Direction.Dire
 QgsVectorLayerDirector.DirectionBoth = QgsVectorLayerDirector.Direction.DirectionBoth
 try:
     QgsVectorLayerDirector.__group__ = ['network']
-except (NameError, AttributeError):
+except NameError:
     pass

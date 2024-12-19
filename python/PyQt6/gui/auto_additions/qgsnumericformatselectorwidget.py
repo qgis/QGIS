@@ -2,9 +2,9 @@
 try:
     QgsNumericFormatSelectorWidget.__attribute_docs__ = {'changed': 'Emitted whenever the format configured55 in the widget is changed.\n'}
     QgsNumericFormatSelectorWidget.__group__ = ['numericformats']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsNumericFormatSelectorDialog.__group__ = ['numericformats']
-except (NameError, AttributeError):
+except NameError:
     pass

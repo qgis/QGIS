@@ -76,7 +76,10 @@ QStringList QgsPdalConvertFormatAlgorithm::createArgumentLists( const QVariantMa
   checkOutputFormat( layer->source(), outputFile );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
-  QStringList args = { QStringLiteral( "translate" ), QStringLiteral( "--input=%1" ).arg( layer->source() ), QStringLiteral( "--output=%1" ).arg( outputFile ) };
+  QStringList args = { QStringLiteral( "translate" ),
+                       QStringLiteral( "--input=%1" ).arg( layer->source() ),
+                       QStringLiteral( "--output=%1" ).arg( outputFile )
+                     };
 
   applyThreadsParameter( args, context );
   return args;

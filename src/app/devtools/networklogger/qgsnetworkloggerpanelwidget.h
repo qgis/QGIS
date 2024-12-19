@@ -29,10 +29,11 @@ class QgsNetworkLoggerProxyModel;
  *
  * \since QGIS 3.14
  */
-class QgsNetworkLoggerTreeView : public QTreeView
+class QgsNetworkLoggerTreeView: public QTreeView
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsNetworkLoggerTreeView, attached to the specified \a logger.
      */
@@ -65,6 +66,7 @@ class QgsNetworkLoggerTreeView : public QTreeView
     void contextMenu( QPoint point );
 
   private:
+
     void expandChildren( const QModelIndex &index );
     QMenu *mMenu = nullptr;
     QgsNetworkLogger *mLogger = nullptr;
@@ -85,12 +87,14 @@ class QgsNetworkLoggerPanelWidget : public QgsDevToolWidget, private Ui::QgsNetw
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsNetworkLoggerPanelWidget, linked with the specified \a logger.
      */
     QgsNetworkLoggerPanelWidget( QgsNetworkLogger *logger, QWidget *parent );
 
   private:
+
     QgsNetworkLoggerTreeView *mTreeView = nullptr;
     QgsNetworkLogger *mLogger = nullptr;
 };

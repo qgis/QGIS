@@ -30,7 +30,9 @@
  */
 class QgsLayoutToImageAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
+
     QgsLayoutToImageAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     Qgis::ProcessingAlgorithmFlags flags() const override;
@@ -44,9 +46,15 @@ class QgsLayoutToImageAlgorithm : public QgsProcessingAlgorithm
     QgsLayoutToImageAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMLAYOUTTOIMAGE_H
+
+

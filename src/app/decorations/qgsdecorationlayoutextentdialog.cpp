@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsdecorationlayoutextentdialog.h"
-#include "moc_qgsdecorationlayoutextentdialog.cpp"
 
 #include "qgsdecorationlayoutextent.h"
 
@@ -64,7 +63,7 @@ void QgsDecorationLayoutExtentDialog::updateGuiElements()
 void QgsDecorationLayoutExtentDialog::updateDecoFromGui()
 {
   mDeco.setEnabled( grpEnable->isChecked() );
-  mDeco.setSymbol( mSymbolButton->clonedSymbol<QgsFillSymbol>() );
+  mDeco.setSymbol( mSymbolButton->clonedSymbol< QgsFillSymbol >() );
   mDeco.setTextFormat( mButtonFontStyle->textFormat() );
   mDeco.setLabelExtents( mCheckBoxLabelExtents->isChecked() );
 }

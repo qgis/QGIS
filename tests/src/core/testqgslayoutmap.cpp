@@ -46,25 +46,24 @@ class TestQgsLayoutMap : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLayoutMap()
-      : QgsTest( QStringLiteral( "Layout Map Tests" ), QStringLiteral( "composer_map" ) ) {}
+    TestQgsLayoutMap() : QgsTest( QStringLiteral( "Layout Map Tests" ), QStringLiteral( "composer_map" ) ) {}
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init();// will be called before each testfunction is executed.
 
     void construct(); //test constructor of QgsLayoutItemMap
     void id();
     void render();
-    void uniqueId();            //test if map id is adapted when doing copy paste
+    void uniqueId(); //test if map id is adapted when doing copy paste
     void worldFileGeneration(); // test world file generation
-    void zoomToExtent();        // test zoomToExtent method
+    void zoomToExtent(); // test zoomToExtent method
 
-    void mapPolygonVertices();       // test mapPolygon function with no map rotation
-    void dataDefinedLayers();        //test data defined layer string
-    void dataDefinedStyles();        //test data defined styles
-    void dataDefinedCrs();           //test data defined crs
+    void mapPolygonVertices(); // test mapPolygon function with no map rotation
+    void dataDefinedLayers(); //test data defined layer string
+    void dataDefinedStyles(); //test data defined styles
+    void dataDefinedCrs(); //test data defined crs
     void dataDefinedTemporalRange(); //test data defined temporal range's start and end values
     void rasterized();
     void layersToRender();
@@ -98,18 +97,22 @@ void TestQgsLayoutMap::initTestCase()
 
   //create maplayers from testdata and add to layer registry
   const QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/landsat.tif" );
-  mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(), rasterFileInfo.completeBaseName() );
+  mRasterLayer = new QgsRasterLayer( rasterFileInfo.filePath(),
+                                     rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 2, 3, 4 );
   mRasterLayer->setRenderer( rasterRenderer );
 
   const QFileInfo pointFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/points.shp" );
-  mPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
+                                     pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   const QFileInfo polyFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/polys.shp" );
-  mPolysLayer = new QgsVectorLayer( polyFileInfo.filePath(), polyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mPolysLayer = new QgsVectorLayer( polyFileInfo.filePath(),
+                                    polyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   const QFileInfo lineFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/lines.shp" );
-  mLinesLayer = new QgsVectorLayer( lineFileInfo.filePath(), lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mLinesLayer = new QgsVectorLayer( lineFileInfo.filePath(),
+                                    lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // some layers need to be in project for data-defined layers functionality
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << mRasterLayer << mPointsLayer << mPolysLayer << mLinesLayer );
@@ -135,7 +138,7 @@ void TestQgsLayoutMap::init()
 
 void TestQgsLayoutMap::construct()
 {
-  QgsLayout l( QgsProject::instance() );
+  QgsLayout l( QgsProject::instance( ) );
   QgsLayoutItemMap mi( &l );
   QCOMPARE( mi.type(), QgsLayoutItemRegistry::LayoutMap );
   QVERIFY( mi.extent().isNull() ); // is this correct to expect ?
@@ -150,7 +153,7 @@ void TestQgsLayoutMap::construct()
 
 void TestQgsLayoutMap::id()
 {
-  QgsLayout l( QgsProject::instance() );
+  QgsLayout l( QgsProject::instance( ) );
   QgsLayoutItemMap *map1 = new QgsLayoutItemMap( &l );
   QCOMPARE( map1->displayName(), QStringLiteral( "Map 1" ) );
   l.addLayoutItem( map1 );
@@ -199,7 +202,7 @@ void TestQgsLayoutMap::uniqueId()
   QgsLayoutItemMap *newMap = nullptr;
   QList<QgsLayoutItemMap *> mapList;
   l.layoutItems( mapList );
-  for ( auto mapIt = mapList.constBegin(); mapIt != mapList.constEnd(); ++mapIt )
+  for ( auto mapIt = mapList.constBegin() ; mapIt != mapList.constEnd(); ++mapIt )
   {
     if ( *mapIt != map )
     {
@@ -272,7 +275,7 @@ void TestQgsLayoutMap::worldFileGeneration()
 
 void TestQgsLayoutMap::zoomToExtent()
 {
-  QgsLayout l( QgsProject::instance() );
+  QgsLayout l( QgsProject::instance( ) );
   QgsLayoutItemMap mi( &l );
   QVERIFY( mi.extent().isEmpty() );
 
@@ -334,6 +337,7 @@ void TestQgsLayoutMap::mapPolygonVertices()
   QVERIFY( visibleExtent.isClosed() );
 
   map->setMapRotation( 0 );
+
 }
 
 void TestQgsLayoutMap::dataDefinedLayers()
@@ -357,21 +361,24 @@ void TestQgsLayoutMap::dataDefinedLayers()
   QVERIFY( result.isEmpty() );
 
   //test subset of valid layers
-  map->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::MapLayers, QgsProperty::fromExpression( QStringLiteral( "'%1|%2'" ).arg( mPolysLayer->name(), mRasterLayer->name() ) ) );
+  map->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::MapLayers, QgsProperty::fromExpression(
+        QStringLiteral( "'%1|%2'" ).arg( mPolysLayer->name(), mRasterLayer->name() ) ) );
   result = map->layersToRender();
   QCOMPARE( result.count(), 2 );
   QVERIFY( result.contains( mPolysLayer ) );
   QVERIFY( result.contains( mRasterLayer ) );
 
   //test non-existent layer
-  map->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::MapLayers, QgsProperty::fromExpression( QStringLiteral( "'x|%1|%2'" ).arg( mLinesLayer->name(), mPointsLayer->name() ) ) );
+  map->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::MapLayers, QgsProperty::fromExpression(
+        QStringLiteral( "'x|%1|%2'" ).arg( mLinesLayer->name(), mPointsLayer->name() ) ) );
   result = map->layersToRender();
   QCOMPARE( result.count(), 2 );
   QVERIFY( result.contains( mLinesLayer ) );
   QVERIFY( result.contains( mPointsLayer ) );
 
   //test no layers
-  map->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::MapLayers, QgsProperty::fromExpression( QStringLiteral( "''" ) ) );
+  map->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::MapLayers, QgsProperty::fromExpression(
+        QStringLiteral( "''" ) ) );
   result = map->layersToRender();
   QVERIFY( result.isEmpty() );
 
@@ -405,7 +412,8 @@ void TestQgsLayoutMap::dataDefinedLayers()
   delete atlasLayer;
 
   //render test
-  map->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::MapLayers, QgsProperty::fromExpression( QStringLiteral( "'%1|%2'" ).arg( mPolysLayer->name(), mPointsLayer->name() ) ) );
+  map->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::MapLayers, QgsProperty::fromExpression(
+        QStringLiteral( "'%1|%2'" ).arg( mPolysLayer->name(), mPointsLayer->name() ) ) );
   map->setExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
 
   QGSVERIFYLAYOUTCHECK( QStringLiteral( "composermap_ddlayers" ), &l );
@@ -426,7 +434,10 @@ void TestQgsLayoutMap::dataDefinedStyles()
   l.addLayoutItem( map );
 
   QgsMapThemeCollection::MapThemeRecord rec;
-  rec.setLayerRecords( QList<QgsMapThemeCollection::MapThemeLayerRecord>() << QgsMapThemeCollection::MapThemeLayerRecord( mPointsLayer ) << QgsMapThemeCollection::MapThemeLayerRecord( mLinesLayer ) );
+  rec.setLayerRecords( QList<QgsMapThemeCollection::MapThemeLayerRecord>()
+                       << QgsMapThemeCollection::MapThemeLayerRecord( mPointsLayer )
+                       << QgsMapThemeCollection::MapThemeLayerRecord( mLinesLayer )
+                     );
 
   QgsProject::instance()->mapThemeCollection()->insert( QStringLiteral( "test preset" ), rec );
 
@@ -456,7 +467,8 @@ void TestQgsLayoutMap::dataDefinedStyles()
 
   //test that dd layer set overrides style layers
   map->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::MapStylePreset, QgsProperty::fromExpression( QStringLiteral( "'test preset'" ) ) );
-  map->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::MapLayers, QgsProperty::fromExpression( QStringLiteral( "'%1'" ).arg( mPolysLayer->name() ) ) );
+  map->dataDefinedProperties().setProperty( QgsLayoutObject::DataDefinedProperty::MapLayers, QgsProperty::fromExpression(
+        QStringLiteral( "'%1'" ).arg( mPolysLayer->name() ) ) );
   result = qgis::listToSet( map->layersToRender() );
   QCOMPARE( result.count(), 1 );
   QVERIFY( result.contains( mPolysLayer ) );
@@ -606,7 +618,8 @@ void TestQgsLayoutMap::mapRotation()
 {
   QgsProject p;
   const QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/rgb256x256.png" );
-  QgsRasterLayer *layer = new QgsRasterLayer( rasterFileInfo.filePath(), rasterFileInfo.completeBaseName() );
+  QgsRasterLayer *layer = new QgsRasterLayer( rasterFileInfo.filePath(),
+      rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
   layer->setRenderer( rasterRenderer );
   p.addMapLayer( layer );
@@ -641,7 +654,8 @@ void TestQgsLayoutMap::mapItemRotation()
 {
   QgsProject p;
   const QFileInfo rasterFileInfo( QStringLiteral( TEST_DATA_DIR ) + "/rgb256x256.png" );
-  QgsRasterLayer *layer = new QgsRasterLayer( rasterFileInfo.filePath(), rasterFileInfo.completeBaseName() );
+  QgsRasterLayer *layer = new QgsRasterLayer( rasterFileInfo.filePath(),
+      rasterFileInfo.completeBaseName() );
   QgsMultiBandColorRenderer *rasterRenderer = new QgsMultiBandColorRenderer( mRasterLayer->dataProvider(), 1, 2, 3 );
   layer->setRenderer( rasterRenderer );
   p.addMapLayer( layer );
@@ -907,7 +921,8 @@ void TestQgsLayoutMap::testMaskSettings()
 class TestHandler : public QgsRenderedFeatureHandlerInterface
 {
   public:
-    TestHandler( QList<QgsFeature> &features, QList<QgsGeometry> &geometries )
+
+    TestHandler( QList< QgsFeature > &features, QList< QgsGeometry > &geometries )
       : features( features )
       , geometries( geometries )
     {}
@@ -918,14 +933,16 @@ class TestHandler : public QgsRenderedFeatureHandlerInterface
       geometries.append( geom );
     }
 
-    QList<QgsFeature> &features;
-    QList<QgsGeometry> &geometries;
+    QList< QgsFeature > &features;
+    QList< QgsGeometry > &geometries;
+
 };
 
 
 void TestQgsLayoutMap::testRenderedFeatureHandler()
 {
-  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ),
+      QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( linesLayer->isValid() );
 
   QgsProject p;
@@ -942,8 +959,8 @@ void TestQgsLayoutMap::testRenderedFeatureHandler()
   l.addLayoutItem( map );
 
   // register a handler
-  QList<QgsFeature> features1;
-  QList<QgsGeometry> geometries1;
+  QList< QgsFeature > features1;
+  QList< QgsGeometry > geometries1;
   TestHandler handler1( features1, geometries1 );
   // not added yet, no crash
   map->removeRenderedFeatureHandler( nullptr );
@@ -970,9 +987,11 @@ void TestQgsLayoutMap::testRenderedFeatureHandler()
 
 void TestQgsLayoutMap::testLayeredExport()
 {
-  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ),
+      QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( linesLayer->isValid() );
-  QgsVectorLayer *pointsLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/points.shp" ), QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *pointsLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/points.shp" ),
+      QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( pointsLayer->isValid() );
 
   QgsProject p;
@@ -1390,12 +1409,19 @@ void TestQgsLayoutMap::testLayeredExport()
 
   // exporting by theme
   QgsMapThemeCollection::MapThemeRecord rec;
-  rec.setLayerRecords( QList<QgsMapThemeCollection::MapThemeLayerRecord>() << QgsMapThemeCollection::MapThemeLayerRecord( linesLayer ) );
+  rec.setLayerRecords( QList<QgsMapThemeCollection::MapThemeLayerRecord>()
+                       << QgsMapThemeCollection::MapThemeLayerRecord( linesLayer )
+                     );
 
   p.mapThemeCollection()->insert( QStringLiteral( "test preset" ), rec );
-  rec.setLayerRecords( QList<QgsMapThemeCollection::MapThemeLayerRecord>() << QgsMapThemeCollection::MapThemeLayerRecord( linesLayer ) << QgsMapThemeCollection::MapThemeLayerRecord( pointsLayer ) );
+  rec.setLayerRecords( QList<QgsMapThemeCollection::MapThemeLayerRecord>()
+                       << QgsMapThemeCollection::MapThemeLayerRecord( linesLayer )
+                       << QgsMapThemeCollection::MapThemeLayerRecord( pointsLayer )
+                     );
   p.mapThemeCollection()->insert( QStringLiteral( "test preset2" ), rec );
-  rec.setLayerRecords( QList<QgsMapThemeCollection::MapThemeLayerRecord>() << QgsMapThemeCollection::MapThemeLayerRecord( pointsLayer ) );
+  rec.setLayerRecords( QList<QgsMapThemeCollection::MapThemeLayerRecord>()
+                       << QgsMapThemeCollection::MapThemeLayerRecord( pointsLayer )
+                     );
   p.mapThemeCollection()->insert( QStringLiteral( "test preset3" ), rec );
 
   l.renderContext().setExportThemes( QStringList() << QStringLiteral( "test preset2" ) << QStringLiteral( "test preset" ) << QStringLiteral( "test preset3" ) );
@@ -1734,9 +1760,11 @@ void TestQgsLayoutMap::testLayeredExport()
 
 void TestQgsLayoutMap::testLayeredExportLabelsByLayer()
 {
-  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ), QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *linesLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/lines.shp" ),
+      QStringLiteral( "lines" ), QStringLiteral( "ogr" ) );
   QVERIFY( linesLayer->isValid() );
-  QgsVectorLayer *pointsLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/points.shp" ), QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *pointsLayer = new QgsVectorLayer( TEST_DATA_DIR + QStringLiteral( "/points.shp" ),
+      QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( pointsLayer->isValid() );
 
   QgsProject p;
@@ -1926,8 +1954,8 @@ void TestQgsLayoutMap::testLayeredExportLabelsByLayer()
 
 void TestQgsLayoutMap::testTemporal()
 {
-  QgsLayout l( QgsProject::instance() );
-  std::unique_ptr<QgsLayoutItemMap> map = std::make_unique<QgsLayoutItemMap>( &l );
+  QgsLayout l( QgsProject::instance( ) );
+  std::unique_ptr< QgsLayoutItemMap > map = std::make_unique< QgsLayoutItemMap >( &l );
   const QDateTime begin( QDate( 2020, 01, 01 ), QTime( 10, 0, 0 ), Qt::UTC );
   const QDateTime end = begin.addSecs( 3600 );
 
@@ -1995,11 +2023,12 @@ void TestQgsLayoutMap::testLabelResults()
   painter.end();
 
   // retrieve label results
-  std::unique_ptr<QgsLabelingResults> results = std::move( map->mExportLabelingResults );
+  std::unique_ptr< QgsLabelingResults > results = std::move( map->mExportLabelingResults );
   QVERIFY( results );
   QList<QgsLabelPosition> labels = results->allLabels();
   QCOMPARE( labels.count(), 3 );
-  std::sort( labels.begin(), labels.end(), []( const QgsLabelPosition &a, const QgsLabelPosition &b ) {
+  std::sort( labels.begin(), labels.end(), []( const QgsLabelPosition & a, const QgsLabelPosition & b )
+  {
     return a.labelText.compare( b.labelText ) < 0;
   } );
   QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "1" ) );
@@ -2029,7 +2058,8 @@ void TestQgsLayoutMap::testLabelResults()
   QVERIFY( results );
   labels = results->allLabels();
   QCOMPARE( labels.count(), 6 );
-  std::sort( labels.begin(), labels.end(), []( const QgsLabelPosition &a, const QgsLabelPosition &b ) {
+  std::sort( labels.begin(), labels.end(), []( const QgsLabelPosition & a, const QgsLabelPosition & b )
+  {
     return a.isUnplaced == b.isUnplaced ? a.labelText.compare( b.labelText ) < 0 : a.isUnplaced < b.isUnplaced;
   } );
   QCOMPARE( labels.at( 0 ).labelText, QStringLiteral( "1" ) );
@@ -2044,12 +2074,13 @@ void TestQgsLayoutMap::testLabelResults()
   QVERIFY( labels.at( 4 ).isUnplaced );
   QCOMPARE( labels.at( 5 ).labelText, QStringLiteral( "8888" ) );
   QVERIFY( labels.at( 5 ).isUnplaced );
+
 }
 
 void TestQgsLayoutMap::testZRange()
 {
-  QgsLayout l( QgsProject::instance() );
-  std::unique_ptr<QgsLayoutItemMap> map = std::make_unique<QgsLayoutItemMap>( &l );
+  QgsLayout l( QgsProject::instance( ) );
+  std::unique_ptr< QgsLayoutItemMap > map = std::make_unique< QgsLayoutItemMap >( &l );
 
   QgsMapSettings settings = map->mapSettings( map->extent(), QSize( 512, 512 ), 72, false );
   QVERIFY( settings.zRange().isInfinite() );

@@ -26,6 +26,7 @@ and millimeters. This widget is designed to allow users to edit the properties o
 #include "qgsunitselectionwidget.h"
 %End
   public:
+
     QgsMapUnitScaleWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsMapUnitScaleWidget.
@@ -90,6 +91,7 @@ and millimeters. This dialog is designed to allow users to edit the properties o
 #include "qgsunitselectionwidget.h"
 %End
   public:
+
     QgsMapUnitScaleDialog( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsMapUnitScaleDialog.
@@ -142,6 +144,7 @@ If the user chooses map units, a button appears allowing adjustment of minimum a
 #include "qgsunitselectionwidget.h"
 %End
   public:
+
     QgsUnitSelectionWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsUnitSelectionWidget.

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsjsoneditconfigdlg.h"
-#include "moc_qgsjsoneditconfigdlg.cpp"
 
 QgsJsonEditConfigDlg::QgsJsonEditConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

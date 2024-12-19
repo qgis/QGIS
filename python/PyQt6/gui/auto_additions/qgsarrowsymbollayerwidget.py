@@ -2,5 +2,5 @@
 try:
     QgsArrowSymbolLayerWidget.create = staticmethod(QgsArrowSymbolLayerWidget.create)
     QgsArrowSymbolLayerWidget.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

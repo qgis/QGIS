@@ -1,3 +1,4 @@
+# -*- coding:utf-8 -*-
 """
 /***************************************************************************
                            qgsplugininstallerinstallingdialog.py
@@ -22,6 +23,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+from builtins import str
 
 from pathlib import Path
 
@@ -30,24 +32,16 @@ from qgis.PyQt.QtCore import QDir, QUrl, QFile, QCoreApplication
 from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
-from qgis.core import (
-    QgsNetworkAccessManager,
-    QgsApplication,
-    QgsNetworkRequestParameters,
-)
+from qgis.core import QgsNetworkAccessManager, QgsApplication, QgsNetworkRequestParameters
 from qgis.utils import HOME_PLUGIN_PATH
 
 from .installer_data import removeDir, repositories
 from .unzip import unzip
 
-Ui_QgsPluginInstallerInstallingDialogBase, _ = uic.loadUiType(
-    Path(__file__).parent / "qgsplugininstallerinstallingbase.ui"
-)
+Ui_QgsPluginInstallerInstallingDialogBase, _ = uic.loadUiType(Path(__file__).parent / 'qgsplugininstallerinstallingbase.ui')
 
 
-class QgsPluginInstallerInstallingDialog(
-    QDialog, Ui_QgsPluginInstallerInstallingDialogBase
-):
+class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallingDialogBase):
     # ----------------------------------------- #
 
     def __init__(self, parent, plugin, stable=True):
@@ -60,11 +54,7 @@ class QgsPluginInstallerInstallingDialog(
         self.labelName.setText(plugin["name"])
         self.buttonBox.clicked.connect(self.abort)
 
-        self.url = QUrl(
-            plugin["download_url_stable"]
-            if stable
-            else plugin["download_url_experimental"]
-        )
+        self.url = QUrl(plugin["download_url_stable"] if stable else plugin["download_url_experimental"])
         self.redirectionCounter = 0
 
         fileName = plugin["filename"]
@@ -76,21 +66,14 @@ class QgsPluginInstallerInstallingDialog(
 
     def requestDownloading(self):
         self.request = QNetworkRequest(self.url)
-        self.request.setAttribute(
-            QNetworkRequest.Attribute(
-                QgsNetworkRequestParameters.RequestAttributes.AttributeInitiatorClass
-            ),
-            "QgsPluginInstallerInstallingDialog",
-        )
+        self.request.setAttribute(QNetworkRequest.Attribute(QgsNetworkRequestParameters.RequestAttributes.AttributeInitiatorClass), "QgsPluginInstallerInstallingDialog")
         authcfg = repositories.all()[self.plugin["zip_repository"]]["authcfg"]
         if authcfg and isinstance(authcfg, str):
             if not QgsApplication.authManager().updateNetworkRequest(
-                self.request, authcfg.strip()
-            ):
+                    self.request, authcfg.strip()):
                 self.mResult = self.tr(
                     "Update of network request with authentication "
-                    "credentials FAILED for configuration '{0}'"
-                ).format(authcfg)
+                    "credentials FAILED for configuration '{0}'").format(authcfg)
                 self.request = None
 
         if self.request is not None:
@@ -113,26 +96,14 @@ class QgsPluginInstallerInstallingDialog(
     # ----------------------------------------- #
     def stateChanged(self, state):
         messages = [
-            QCoreApplication.translate(
-                "QgsPluginInstallerInstallingDialog", "Installing…"
-            ),
-            QCoreApplication.translate(
-                "QgsPluginInstallerInstallingDialog", "Resolving host name…"
-            ),
-            QCoreApplication.translate(
-                "QgsPluginInstallerInstallingDialog", "Connecting…"
-            ),
-            QCoreApplication.translate(
-                "QgsPluginInstallerInstallingDialog", "Host connected. Sending request…"
-            ),
-            QCoreApplication.translate(
-                "QgsPluginInstallerInstallingDialog", "Downloading data…"
-            ),
+            QCoreApplication.translate('QgsPluginInstallerInstallingDialog', "Installing…"),
+            QCoreApplication.translate('QgsPluginInstallerInstallingDialog', "Resolving host name…"),
+            QCoreApplication.translate('QgsPluginInstallerInstallingDialog', "Connecting…"),
+            QCoreApplication.translate('QgsPluginInstallerInstallingDialog', "Host connected. Sending request…"),
+            QCoreApplication.translate('QgsPluginInstallerInstallingDialog', "Downloading data…"),
             self.tr("Idle"),
-            QCoreApplication.translate(
-                "QgsPluginInstallerInstallingDialog", "Closing connection…"
-            ),
-            self.tr("Error"),
+            QCoreApplication.translate('QgsPluginInstallerInstallingDialog', "Closing connection…"),
+            self.tr("Error")
         ]
         self.labelState.setText(messages[state])
 
@@ -149,25 +120,15 @@ class QgsPluginInstallerInstallingDialog(
         if reply.error() != QNetworkReply.NetworkError.NoError:
             self.mResult = reply.errorString()
             if reply.error() == QNetworkReply.NetworkError.OperationCanceledError:
-                self.mResult += "<br/><br/>" + QCoreApplication.translate(
-                    "QgsPluginInstaller",
-                    "If you haven't canceled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.",
-                )
+                self.mResult += "<br/><br/>" + QCoreApplication.translate("QgsPluginInstaller", "If you haven't canceled the download manually, it might be caused by a timeout. In this case consider increasing the connection timeout value in QGIS options.")
             self.reject()
             reply.deleteLater()
             return
-        elif reply.attribute(QNetworkRequest.Attribute.HttpStatusCodeAttribute) in (
-            301,
-            302,
-        ):
-            redirectionUrl = reply.attribute(
-                QNetworkRequest.Attribute.RedirectionTargetAttribute
-            )
+        elif reply.attribute(QNetworkRequest.Attribute.HttpStatusCodeAttribute) in (301, 302):
+            redirectionUrl = reply.attribute(QNetworkRequest.Attribute.RedirectionTargetAttribute)
             self.redirectionCounter += 1
             if self.redirectionCounter > 4:
-                self.mResult = QCoreApplication.translate(
-                    "QgsPluginInstaller", "Too many redirections"
-                )
+                self.mResult = QCoreApplication.translate("QgsPluginInstaller", "Too many redirections")
                 self.reject()
                 reply.deleteLater()
                 return
@@ -193,22 +154,12 @@ class QgsPluginInstallerInstallingDialog(
         # if the target directory already exists as a link, remove the link without resolving:
         QFile(pluginDir + str(QDir.separator()) + self.plugin["id"]).remove()
         try:
-            unzip(
-                str(tmpPath), str(pluginDir)
-            )  # test extract. If fails, then exception will be raised and no removing occurs
+            unzip(str(tmpPath), str(pluginDir))  # test extract. If fails, then exception will be raised and no removing occurs
             # removing old plugin files if exist
-            removeDir(
-                QDir.cleanPath(pluginDir + "/" + self.plugin["id"])
-            )  # remove old plugin if exists
+            removeDir(QDir.cleanPath(pluginDir + "/" + self.plugin["id"]))  # remove old plugin if exists
             unzip(str(tmpPath), str(pluginDir))  # final extract.
         except:
-            self.mResult = (
-                self.tr(
-                    "Failed to unzip the plugin package. Probably it's broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:"
-                )
-                + "\n"
-                + pluginDir
-            )
+            self.mResult = self.tr("Failed to unzip the plugin package. Probably it's broken or missing from the repository. You may also want to make sure that you have write permission to the plugin directory:") + "\n" + pluginDir
             self.reject()
             return
         try:

@@ -16,6 +16,7 @@ class QgsPluginManagerInterface : QObject
 #include "qgspluginmanagerinterface.h"
 %End
   public:
+
     QgsPluginManagerInterface();
 
     virtual void clearPythonPluginMetadata() = 0;

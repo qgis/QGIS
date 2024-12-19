@@ -52,8 +52,7 @@ class QgsPostgresConnPoolGroup : public QObject, public QgsConnectionPoolGroup<Q
     Q_OBJECT
 
   public:
-    explicit QgsPostgresConnPoolGroup( const QString &name )
-      : QgsConnectionPoolGroup<QgsPostgresConn *>( name ) { initTimer( this ); }
+    explicit QgsPostgresConnPoolGroup( const QString &name ) : QgsConnectionPoolGroup<QgsPostgresConn*>( name ) { initTimer( this ); }
 
   protected slots:
     void handleConnectionExpired() { onConnectionExpired(); }
@@ -62,6 +61,7 @@ class QgsPostgresConnPoolGroup : public QObject, public QgsConnectionPoolGroup<Q
 
   protected:
     Q_DISABLE_COPY( QgsPostgresConnPoolGroup )
+
 };
 
 //! PostgreSQL connection pool - singleton

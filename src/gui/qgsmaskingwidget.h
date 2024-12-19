@@ -37,7 +37,7 @@ class QgsMessageBarItem;
  * \note This class is not a part of public API
  * \since QGIS 3.14
  */
-class GUI_EXPORT QgsMaskingWidget : public QgsPanelWidget, private Ui::QgsMaskingWidgetBase
+class GUI_EXPORT QgsMaskingWidget: public QgsPanelWidget, private Ui::QgsMaskingWidgetBase
 {
     Q_OBJECT
   public:

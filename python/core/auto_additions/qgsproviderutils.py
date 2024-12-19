@@ -13,5 +13,5 @@ try:
     QgsProviderUtils.sublayerDetailsAreIncomplete = staticmethod(QgsProviderUtils.sublayerDetailsAreIncomplete)
     QgsProviderUtils.suggestLayerNameFromFilePath = staticmethod(QgsProviderUtils.suggestLayerNameFromFilePath)
     QgsProviderUtils.__group__ = ['providers']
-except (NameError, AttributeError):
+except NameError:
     pass

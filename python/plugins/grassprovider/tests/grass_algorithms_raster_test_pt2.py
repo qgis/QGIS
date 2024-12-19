@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Médéric Ribreux"
-__date__ = "May 2016"
-__copyright__ = "(C) 2016, Médéric Ribreux"
+__author__ = 'Médéric Ribreux'
+__date__ = 'May 2016'
+__copyright__ = '(C) 2016, Médéric Ribreux'
 
 import AlgorithmsTestBase
 
@@ -26,13 +26,20 @@ import shutil
 import os
 import tempfile
 
-from qgis.core import QgsApplication, QgsProcessingContext, QgsProcessingFeedback
-from qgis.testing import QgisTestCase, start_app
+from qgis.core import (
+    QgsApplication,
+    QgsProcessingContext,
+    QgsProcessingFeedback
+)
+from qgis.testing import (
+    QgisTestCase,
+    start_app
+)
 from grassprovider.grass_provider import GrassProvider
 from grassprovider.grass_utils import GrassUtils
 
 
-testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
+testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
 class TestGrassAlgorithmsRasterTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
@@ -56,42 +63,36 @@ class TestGrassAlgorithmsRasterTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsT
             shutil.rmtree(path)
 
     def definition_file(self):
-        return "grass_algorithms_raster_tests2.yaml"
+        return 'grass_algorithms_raster_tests2.yaml'
 
     def testNeighbors(self):
         context = QgsProcessingContext()
-        input_raster = os.path.join(
-            testDataPath, "custom", "grass7", "float_raster.tif"
-        )
+        input_raster = os.path.join(testDataPath, 'custom', 'grass7', 'float_raster.tif')
 
-        alg = QgsApplication.processingRegistry().createAlgorithmById(
-            "grass:r.neighbors"
-        )
+        alg = QgsApplication.processingRegistry().createAlgorithmById('grass:r.neighbors')
         self.assertIsNotNone(alg)
 
-        temp_file = os.path.join(self.temp_dir, "grass_output.tif")
+        temp_file = os.path.join(self.temp_dir, 'grass_output.tif')
 
         # Test an even integer for neighborhood size
-        parameters = {
-            "input": input_raster,
-            "selection": None,
-            "method": 0,
-            "size": 4,
-            "gauss": None,
-            "quantile": "",
-            "-c": False,
-            "-a": False,
-            "weight": "",
-            "output": temp_file,
-            "GRASS_REGION_PARAMETER": None,
-            "GRASS_REGION_CELLSIZE_PARAMETER": 0,
-            "GRASS_RASTER_FORMAT_OPT": "",
-            "GRASS_RASTER_FORMAT_META": "",
-        }
+        parameters = {'input': input_raster,
+                      'selection': None,
+                      'method': 0,
+                      'size': 4,
+                      'gauss': None,
+                      'quantile': '',
+                      '-c': False,
+                      '-a': False,
+                      'weight': '',
+                      'output': temp_file,
+                      'GRASS_REGION_PARAMETER': None,
+                      'GRASS_REGION_CELLSIZE_PARAMETER': 0,
+                      'GRASS_RASTER_FORMAT_OPT': '',
+                      'GRASS_RASTER_FORMAT_META': ''}
 
         ok, msg = alg.checkParameterValues(parameters, context)
         self.assertFalse(ok)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     nose2.main()

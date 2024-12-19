@@ -78,7 +78,7 @@ Constructor for QgsSettingsEntryBase.
                           QgsSettingsTreeNode *parent,
                           const QVariant &defaultValue = QVariant(),
                           const QString &description = QString(),
-                          Qgis::SettingsOptions options = Qgis::SettingsOptions() );
+                          Qgis::SettingsOptions options = Qgis::SettingsOptions() ) throw( QgsSettingsException );
 %Docstring
 Constructor for QgsSettingsEntryBase.
 
@@ -246,22 +246,22 @@ Returns settings value.
 .. versionadded:: 3.26
 %End
 
- QVariant valueAsVariant( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const /Deprecated="Since 3.26. Use valueAsVariantWithDefaultOverride() instead."/;
+ QVariant valueAsVariant( const QString &dynamicKeyPart, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const /Deprecated/;
 %Docstring
 Returns settings value with an optional default value override
 
 .. deprecated:: 3.26
 
-   Use :py:func:`~QgsSettingsEntryBase.valueAsVariantWithDefaultOverride` instead.
+   Use valueAsVariantWithDefaultOverride instead.
 %End
 
- QVariant valueAsVariant( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const /Deprecated="Since 3.26. Use valueAsVariantWithDefaultOverride() instead."/;
+ QVariant valueAsVariant( const QStringList &dynamicKeyPartList, bool useDefaultValueOverride, const QVariant &defaultValueOverride ) const /Deprecated/;
 %Docstring
 Returns settings value with an optional default value override
 
 .. deprecated:: 3.26
 
-   Use :py:func:`~QgsSettingsEntryBase.valueAsVariantWithDefaultOverride` instead.
+   Use valueAsVariantWithDefaultOverride instead.
 %End
 
 

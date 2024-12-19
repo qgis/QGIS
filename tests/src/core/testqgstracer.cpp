@@ -46,6 +46,7 @@ class TestQgsTracer : public QObject
     void testInvisible();
 
   private:
+
 };
 
 namespace QTest
@@ -53,15 +54,16 @@ namespace QTest
   template<>
   char *toString( const QgsPointXY &point )
   {
-    QByteArray ba = "QgsPointXY(" + QByteArray::number( point.x() ) + ", " + QByteArray::number( point.y() ) + ")";
+    QByteArray ba = "QgsPointXY(" + QByteArray::number( point.x() ) +
+                    ", " + QByteArray::number( point.y() ) + ")";
     return qstrdup( ba.data() );
   }
-} // namespace QTest
+}
 
 static QgsFeature make_feature( const QString &wkt )
 {
   QgsFeature f;
-  const QgsGeometry g = QgsGeometry::fromWkt( wkt );
+  const QgsGeometry g = QgsGeometry::fromWkt( wkt ) ;
   f.setGeometry( g );
   return f;
 }
@@ -95,10 +97,12 @@ void print_shortest_path( QgsTracer &tracer, const QgsPointXY &p1, const QgsPoin
 }
 
 
+
 void TestQgsTracer::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+
 }
 
 void TestQgsTracer::cleanupTestCase()
@@ -109,10 +113,10 @@ void TestQgsTracer::cleanupTestCase()
 void TestQgsTracer::testSimple()
 {
   QStringList wkts;
-  wkts << QStringLiteral( "LINESTRING(0 0, 0 10)" )
-       << QStringLiteral( "LINESTRING(0 0, 10 0)" )
-       << QStringLiteral( "LINESTRING(0 10, 20 10)" )
-       << QStringLiteral( "LINESTRING(10 0, 20 10)" );
+  wkts  << QStringLiteral( "LINESTRING(0 0, 0 10)" )
+        << QStringLiteral( "LINESTRING(0 0, 10 0)" )
+        << QStringLiteral( "LINESTRING(0 10, 20 10)" )
+        << QStringLiteral( "LINESTRING(10 0, 20 10)" );
 
   /* This shape - nearly a square (one side is shifted to have exactly one shortest
    * path between corners):
@@ -212,8 +216,8 @@ void TestQgsTracer::testInvisible()
   const QList<QgsLayerTreeModelLegendNode *> nodes = m->layerLegendNodes( n );
   QCOMPARE( nodes.length(), 1 );
   //uncheck all and test that all nodes are unchecked
-  static_cast<QgsSymbolLegendNode *>( nodes.at( 0 ) )->uncheckAllItems();
-  for ( QgsLayerTreeModelLegendNode *ln : nodes )
+  static_cast< QgsSymbolLegendNode * >( nodes.at( 0 ) )->uncheckAllItems();
+  for ( QgsLayerTreeModelLegendNode *ln :  nodes )
   {
     QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Unchecked );
   }
@@ -248,6 +252,7 @@ void TestQgsTracer::testInvisible()
   tracer.setRenderContext( &renderContext );
   points1 = tracer.findShortestPath( QgsPointXY( 10, 0 ), QgsPointXY( 0, 10 ) );
   QCOMPARE( points1.count(), 0 );
+
 }
 
 void TestQgsTracer::testPolygon()
@@ -352,10 +357,10 @@ void TestQgsTracer::testLayerUpdates()
 
   // same shape as in testSimple()
   QStringList wkts;
-  wkts << QStringLiteral( "LINESTRING(0 0, 0 10)" )
-       << QStringLiteral( "LINESTRING(0 0, 10 0)" )
-       << QStringLiteral( "LINESTRING(0 10, 20 10)" )
-       << QStringLiteral( "LINESTRING(10 0, 20 10)" );
+  wkts  << QStringLiteral( "LINESTRING(0 0, 0 10)" )
+        << QStringLiteral( "LINESTRING(0 0, 10 0)" )
+        << QStringLiteral( "LINESTRING(0 10, 20 10)" )
+        << QStringLiteral( "LINESTRING(10 0, 20 10)" );
 
   QgsVectorLayer *vl = make_layer( wkts );
 
@@ -391,7 +396,7 @@ void TestQgsTracer::testLayerUpdates()
 
   // make the shortcut again from a different feature
   QgsGeometry g = QgsGeometry::fromWkt( QStringLiteral( "LINESTRING(10 0, 10 10)" ) );
-  vl->changeGeometry( 2, g ); // change bottom line (second item in wkts)
+  vl->changeGeometry( 2, g );  // change bottom line (second item in wkts)
 
   QgsPolylineXY points4 = tracer.findShortestPath( QgsPointXY( 10, 0 ), QgsPointXY( 10, 10 ) );
   QCOMPARE( points4.count(), 2 );
@@ -416,10 +421,10 @@ void TestQgsTracer::testExtent()
 
   // same shape as in testSimple()
   QStringList wkts;
-  wkts << QStringLiteral( "LINESTRING(0 0, 0 10)" )
-       << QStringLiteral( "LINESTRING(0 0, 10 0)" )
-       << QStringLiteral( "LINESTRING(0 10, 20 10)" )
-       << QStringLiteral( "LINESTRING(10 0, 20 10)" );
+  wkts  << QStringLiteral( "LINESTRING(0 0, 0 10)" )
+        << QStringLiteral( "LINESTRING(0 0, 10 0)" )
+        << QStringLiteral( "LINESTRING(0 10, 20 10)" )
+        << QStringLiteral( "LINESTRING(10 0, 20 10)" );
 
   QgsVectorLayer *vl = make_layer( wkts );
 
@@ -440,7 +445,7 @@ void TestQgsTracer::testExtent()
 void TestQgsTracer::testReprojection()
 {
   QStringList wkts;
-  wkts << QStringLiteral( "LINESTRING(1 0, 2 0)" );
+  wkts  << QStringLiteral( "LINESTRING(1 0, 2 0)" );
 
   QgsVectorLayer *vl = make_layer( wkts );
 
@@ -462,7 +467,7 @@ void TestQgsTracer::testReprojection()
 void TestQgsTracer::testCurved()
 {
   QStringList wkts;
-  wkts << QStringLiteral( "CIRCULARSTRING(0 0, 10 10, 20 0)" );
+  wkts  << QStringLiteral( "CIRCULARSTRING(0 0, 10 10, 20 0)" );
 
   /* This shape - half of a circle (r = 10)
    * 10,10  _
@@ -495,10 +500,10 @@ void TestQgsTracer::testCurved()
 void TestQgsTracer::testOffset()
 {
   QStringList wkts;
-  wkts << QStringLiteral( "LINESTRING(0 0, 0 10)" )
-       << QStringLiteral( "LINESTRING(0 0, 10 0)" )
-       << QStringLiteral( "LINESTRING(0 10, 20 10)" )
-       << QStringLiteral( "LINESTRING(10 0, 20 10)" );
+  wkts  << QStringLiteral( "LINESTRING(0 0, 0 10)" )
+        << QStringLiteral( "LINESTRING(0 0, 10 0)" )
+        << QStringLiteral( "LINESTRING(0 10, 20 10)" )
+        << QStringLiteral( "LINESTRING(10 0, 20 10)" );
 
   /* This shape - nearly a square (one side is shifted to have exactly one shortest
    * path between corners):

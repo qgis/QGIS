@@ -37,13 +37,12 @@ class APP_EXPORT QgsMapToolShapeCircle3TangentsMetadata : public QgsMapToolShape
     QgsMapToolShapeAbstract *factory( QgsMapToolCapture *parentTool ) const override;
 };
 
-class QgsMapToolShapeCircle3Tangents : public QgsMapToolShapeCircleAbstract
+class QgsMapToolShapeCircle3Tangents: public QgsMapToolShapeCircleAbstract
 {
     Q_OBJECT
 
   public:
-    QgsMapToolShapeCircle3Tangents( QgsMapToolCapture *parentTool )
-      : QgsMapToolShapeCircleAbstract( QgsMapToolShapeCircle3TangentsMetadata::TOOL_ID, parentTool ) {}
+    QgsMapToolShapeCircle3Tangents( QgsMapToolCapture *parentTool ) : QgsMapToolShapeCircleAbstract( QgsMapToolShapeCircle3TangentsMetadata::TOOL_ID, parentTool ) {}
 
     bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;

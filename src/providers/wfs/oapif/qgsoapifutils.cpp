@@ -27,7 +27,9 @@ std::vector<QgsOAPIFJson::Link> QgsOAPIFJson::parseLinks( const json &jParent )
     {
       for ( const auto &jLink : jLinks )
       {
-        if ( jLink.is_object() && jLink.contains( "href" ) && jLink.contains( "rel" ) )
+        if ( jLink.is_object() &&
+             jLink.contains( "href" ) &&
+             jLink.contains( "rel" ) )
         {
           const auto href = jLink["href"];
           const auto rel = jLink["rel"];
@@ -69,7 +71,9 @@ std::vector<QgsOAPIFJson::Link> QgsOAPIFJson::parseLinks( const json &jParent )
   return links;
 }
 
-QString QgsOAPIFJson::findLink( const std::vector<QgsOAPIFJson::Link> &links, const QString &rel, const QStringList &preferableTypes )
+QString QgsOAPIFJson::findLink( const std::vector<QgsOAPIFJson::Link> &links,
+                                const QString &rel,
+                                const QStringList &preferableTypes )
 {
   QString resultHref;
   int resultPriority = std::numeric_limits<int>::max();

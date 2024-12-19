@@ -30,7 +30,7 @@
 
 QMutex QgsNominatimGeocoder::sMutex;
 typedef QMap< QUrl, QList< QgsGeocoderResult > > CachedGeocodeResult;
-Q_GLOBAL_STATIC( CachedGeocodeResult, sCachedResultsNominatim )
+Q_GLOBAL_STATIC( CachedGeocodeResult, sCachedResults )
 qint64 QgsNominatimGeocoder::sLastRequestTimestamp = 0;
 
 QgsNominatimGeocoder::QgsNominatimGeocoder( const QString &countryCodes, const QString &endpoint )
@@ -92,8 +92,8 @@ QList<QgsGeocoderResult> QgsNominatimGeocoder::geocodeString( const QString &str
   const QUrl url = requestUrl( string, bounds );
 
   const QMutexLocker locker( &sMutex );
-  const auto it = sCachedResultsNominatim()->constFind( url );
-  if ( it != sCachedResultsNominatim()->constEnd() )
+  const auto it = sCachedResults()->constFind( url );
+  if ( it != sCachedResults()->constEnd() )
   {
     return *it;
   }
@@ -129,7 +129,7 @@ QList<QgsGeocoderResult> QgsNominatimGeocoder::geocodeString( const QString &str
   const QVariantList results = doc.array().toVariantList();
   if ( results.isEmpty() )
   {
-    sCachedResultsNominatim()->insert( url, QList<QgsGeocoderResult>() );
+    sCachedResults()->insert( url, QList<QgsGeocoderResult>() );
     return QList<QgsGeocoderResult>();
   }
 
@@ -140,7 +140,7 @@ QList<QgsGeocoderResult> QgsNominatimGeocoder::geocodeString( const QString &str
     matches << jsonToResult( result.toMap() );
   }
 
-  sCachedResultsNominatim()->insert( url, matches );
+  sCachedResults()->insert( url, matches );
 
   return matches;
 }

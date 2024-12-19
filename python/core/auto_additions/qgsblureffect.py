@@ -2,5 +2,5 @@
 try:
     QgsBlurEffect.create = staticmethod(QgsBlurEffect.create)
     QgsBlurEffect.__group__ = ['effects']
-except (NameError, AttributeError):
+except NameError:
     pass

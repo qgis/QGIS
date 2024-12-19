@@ -64,13 +64,13 @@ class GRASS_LIB_EXPORT QgsGrassRasterValue
     // returns raster value, NaN for no data
     // OK is set to true if OK or false on error
     double value( double x, double y, bool *ok );
-
   private:
+
     void start();
-    QString mGisdbase; // map gisdabase
-    QString mLocation; // map location name (not path!)
-    QString mMapset;   // map mapset
-    QString mMapName;  // map name
+    QString mGisdbase;      // map gisdabase
+    QString mLocation;      // map location name (not path!)
+    QString mMapset;        // map mapset
+    QString mMapName;       // map name
     QTemporaryFile mGisrcFile;
     QProcess *mProcess = nullptr;
 };
@@ -89,6 +89,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for the provider.
      *
@@ -182,11 +183,14 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
     int ySize() const override;
 
     bool readBlock( int bandNo, int xBlock, int yBlock, void *data ) override;
-    bool readBlock( int bandNo, QgsRectangle const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    bool readBlock( int bandNo, QgsRectangle  const &viewExtent, int width, int height, void *data, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    QgsRasterBandStats bandStatistics( int bandNo, Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All, const QgsRectangle &boundingBox = QgsRectangle(), int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBandStats bandStatistics( int bandNo,
+                                       Qgis::RasterBandStatistics stats = Qgis::RasterBandStatistic::All,
+                                       const QgsRectangle &boundingBox = QgsRectangle(),
+                                       int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
-    QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo ) const override;
+    QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const override;
 
     // void buildSupportedRasterFileFilter( QString & fileFiltersString );
 
@@ -208,10 +212,10 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
      */
     bool mValid = false;
 
-    QString mGisdbase; // map gisdabase
-    QString mLocation; // map location name (not path!)
-    QString mMapset;   // map mapset
-    QString mMapName;  // map name
+    QString mGisdbase;      // map gisdabase
+    QString mLocation;      // map location name (not path!)
+    QString mMapset;        // map mapset
+    QString mMapName;       // map name
 
     RASTER_MAP_TYPE mGrassDataType = 0; // CELL_TYPE, DCELL_TYPE, FCELL_TYPE
 

@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsbox3d.h"
-#include "moc_qgsbox3d.cpp"
 #include "qgspoint.h"
 #include "qgslogger.h"
 #include "qgsvector3d.h"
@@ -47,17 +46,6 @@ QgsBox3D::QgsBox3D( const QgsRectangle &rect, double zMin, double zMax, bool nor
   : mBounds2d( rect )
   , mZmin( zMin )
   , mZmax( zMax )
-{
-  if ( normalize )
-  {
-    QgsBox3D::normalize();
-  }
-}
-
-QgsBox3D::QgsBox3D( const QgsVector3D &corner1, const QgsVector3D &corner2, bool normalize )
-  : mBounds2d( corner1.x(), corner1.y(), corner2.x(), corner2.y(), false )
-  , mZmin( corner1.z() )
-  , mZmax( corner2.z() )
 {
   if ( normalize )
   {
@@ -296,15 +284,6 @@ void QgsBox3D::scale( double scaleFactor, double centerX, double centerY, double
 
   setZMinimum( centerZ + ( zMinimum() - centerZ ) * scaleFactor );
   setZMaximum( centerZ + ( zMaximum() - centerZ ) * scaleFactor );
-}
-
-void QgsBox3D::grow( double delta )
-{
-  if ( isNull() )
-    return;
-  mBounds2d.grow( delta );
-  mZmin -= delta;
-  mZmax += delta;
 }
 
 bool QgsBox3D::isNull() const

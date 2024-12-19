@@ -441,7 +441,7 @@ Returns the behavior of this item during exporting to layered exports (e.g. SVG 
 .. versionadded:: 3.10
 %End
 
- virtual int numberExportLayers() const /Deprecated="Since 3.40. Use nextExportPart() and exportLayerBehavior() instead."/;
+ virtual int numberExportLayers() const /Deprecated/;
 %Docstring
 Returns the number of layers that this item requires for exporting during layered exports (e.g. SVG).
 Returns 0 if this item is to be placed on the same layer as the previous item,

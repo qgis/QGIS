@@ -32,10 +32,11 @@ class QgsSymbolAnimationSettings;
  * \brief A widget for customising animation settings for a symbol.
  * \since QGIS 3.26
 */
-class GUI_EXPORT QgsSymbolAnimationSettingsWidget : public QgsPanelWidget, private Ui::QgsSymbolAnimationSettingsWidgetBase
+class GUI_EXPORT QgsSymbolAnimationSettingsWidget: public QgsPanelWidget, private Ui::QgsSymbolAnimationSettingsWidgetBase
 {
     Q_OBJECT
   public:
+
     //! Constructor for QgsSymbolAnimationSettingsWidget
     QgsSymbolAnimationSettingsWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -54,7 +55,9 @@ class GUI_EXPORT QgsSymbolAnimationSettingsWidget : public QgsPanelWidget, priva
     QgsSymbolAnimationSettings animationSettings() const;
 
   private:
+
     bool mBlockUpdates = false;
+
 };
 
 /**
@@ -66,6 +69,7 @@ class GUI_EXPORT QgsSymbolAnimationSettingsDialog : public QDialog
 {
     Q_OBJECT
   public:
+
     //! Constructor for QgsSymbolAnimationSettingsDialog
     QgsSymbolAnimationSettingsDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
@@ -84,7 +88,9 @@ class GUI_EXPORT QgsSymbolAnimationSettingsDialog : public QDialog
     QgsSymbolAnimationSettings animationSettings() const;
 
   private:
+
     QgsSymbolAnimationSettingsWidget *mWidget = nullptr;
+
 };
 
 #endif // QGSSYMBOLANIMATIONSETTINGSWIDGET_H

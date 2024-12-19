@@ -20,7 +20,12 @@ Widget for reporting SSL errors and offering an option to store an SSL server ex
 #include "qgsauthsslerrorsdialog.h"
 %End
   public:
-    QgsAuthSslErrorsDialog( QNetworkReply *reply, const QList<QSslError> &sslErrors, QWidget *parent /TransferThis/ = 0, const QString &digest = QString(), const QString &hostport = QString() );
+
+    QgsAuthSslErrorsDialog( QNetworkReply *reply,
+                            const QList<QSslError> &sslErrors,
+                            QWidget *parent /TransferThis/ = 0,
+                            const QString &digest = QString(),
+                            const QString &hostport = QString() );
 %Docstring
 Construct a dialog to handle SSL errors and saving SSL server certificate exceptions
 

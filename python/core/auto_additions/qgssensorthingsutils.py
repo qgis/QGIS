@@ -18,11 +18,11 @@ try:
     QgsSensorThingsUtils.relationshipCardinality = staticmethod(QgsSensorThingsUtils.relationshipCardinality)
     QgsSensorThingsUtils.asQueryString = staticmethod(QgsSensorThingsUtils.asQueryString)
     QgsSensorThingsUtils.__group__ = ['providers', 'sensorthings']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsSensorThingsExpansionDefinition.defaultDefinitionForEntity = staticmethod(QgsSensorThingsExpansionDefinition.defaultDefinitionForEntity)
     QgsSensorThingsExpansionDefinition.fromString = staticmethod(QgsSensorThingsExpansionDefinition.fromString)
     QgsSensorThingsExpansionDefinition.__group__ = ['providers', 'sensorthings']
-except (NameError, AttributeError):
+except NameError:
     pass

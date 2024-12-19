@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgslayoutguidewidget.h"
-#include "moc_qgslayoutguidewidget.cpp"
 #include "qgslayout.h"
 #include "qgslayoutview.h"
 #include "qgsdoublespinbox.h"
@@ -58,7 +57,8 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
 
   connect( mLayout->pageCollection(), &QgsLayoutPageCollection::changed, this, &QgsLayoutGuideWidget::updatePageCount );
   updatePageCount();
-  connect( mPageNumberComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mPageNumberComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
     setCurrentPage( mPageNumberComboBox->currentData().toInt() );
   } );
 
@@ -68,13 +68,13 @@ QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, 
 
 void QgsLayoutGuideWidget::addHorizontalGuide()
 {
-  std::unique_ptr<QgsLayoutGuide> newGuide( new QgsLayoutGuide( Qt::Horizontal, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) ) );
+  std::unique_ptr< QgsLayoutGuide > newGuide( new QgsLayoutGuide( Qt::Horizontal, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) ) );
   mLayout->guides().addGuide( newGuide.release() );
 }
 
 void QgsLayoutGuideWidget::addVerticalGuide()
 {
-  std::unique_ptr<QgsLayoutGuide> newGuide( new QgsLayoutGuide( Qt::Vertical, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) ) );
+  std::unique_ptr< QgsLayoutGuide > newGuide( new QgsLayoutGuide( Qt::Vertical, QgsLayoutMeasurement( 0 ), mLayout->pageCollection()->page( mPage ) ) );
   mLayout->guides().addGuide( newGuide.release() );
 }
 
@@ -157,7 +157,7 @@ void QgsLayoutGuideWidget::updatePageCount()
 {
   const int prevPage = mPageNumberComboBox->currentIndex();
   mPageNumberComboBox->clear();
-  for ( int i = 0; i < mLayout->pageCollection()->pageCount(); ++i )
+  for ( int i = 0; i < mLayout->pageCollection()->pageCount(); ++ i )
     mPageNumberComboBox->addItem( QString::number( i + 1 ), i );
 
   if ( mPageNumberComboBox->count() > prevPage )
@@ -168,6 +168,7 @@ void QgsLayoutGuideWidget::updatePageCount()
 QgsLayoutGuidePositionDelegate::QgsLayoutGuidePositionDelegate( QObject *parent )
   : QStyledItemDelegate( parent )
 {
+
 }
 
 QWidget *QgsLayoutGuidePositionDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
@@ -177,17 +178,18 @@ QWidget *QgsLayoutGuidePositionDelegate::createEditor( QWidget *parent, const QS
   spin->setMaximum( 1000000 );
   spin->setDecimals( 2 );
   spin->setShowClearButton( false );
-  connect( spin, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [=]( double ) {
+  connect( spin, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double )
+  {
     // we want to update on every spin change, not just the final
-    const_cast<QgsLayoutGuidePositionDelegate *>( this )->emit commitData( spin );
+    const_cast< QgsLayoutGuidePositionDelegate * >( this )->emit commitData( spin );
   } );
   return spin;
 }
 
 void QgsLayoutGuidePositionDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  QgsDoubleSpinBox *spin = qobject_cast<QgsDoubleSpinBox *>( editor );
-  model->setData( index, spin->value(), static_cast<int>( QgsLayoutGuideCollection::CustomRole::Position ) );
+  QgsDoubleSpinBox *spin = qobject_cast< QgsDoubleSpinBox * >( editor );
+  model->setData( index, spin->value(), static_cast< int >( QgsLayoutGuideCollection::CustomRole::Position ) );
 }
 
 QgsLayoutGuideUnitDelegate::QgsLayoutGuideUnitDelegate( QObject *parent )
@@ -198,15 +200,17 @@ QgsLayoutGuideUnitDelegate::QgsLayoutGuideUnitDelegate( QObject *parent )
 QWidget *QgsLayoutGuideUnitDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
 {
   QgsLayoutUnitsComboBox *unitsCb = new QgsLayoutUnitsComboBox( parent );
-  connect( unitsCb, &QgsLayoutUnitsComboBox::unitChanged, this, [=]( Qgis::LayoutUnit ) {
+  connect( unitsCb, &QgsLayoutUnitsComboBox::unitChanged, this, [ = ]( Qgis::LayoutUnit )
+  {
     // we want to update on every unit change, not just the final
-    const_cast<QgsLayoutGuideUnitDelegate *>( this )->emit commitData( unitsCb );
+    const_cast< QgsLayoutGuideUnitDelegate * >( this )->emit commitData( unitsCb );
   } );
   return unitsCb;
 }
 
 void QgsLayoutGuideUnitDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
-  QgsLayoutUnitsComboBox *cb = qobject_cast<QgsLayoutUnitsComboBox *>( editor );
-  model->setData( index, static_cast<int>( cb->unit() ), static_cast<int>( QgsLayoutGuideCollection::CustomRole::Units ) );
+  QgsLayoutUnitsComboBox *cb = qobject_cast< QgsLayoutUnitsComboBox *>( editor );
+  model->setData( index, static_cast< int >( cb->unit() ), static_cast< int >( QgsLayoutGuideCollection::CustomRole::Units ) );
 }
+

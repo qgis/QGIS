@@ -15,7 +15,6 @@
 
 #include "qgscolorutils.h"
 #include "qgsprojectstylesettings.h"
-#include "moc_qgsprojectstylesettings.cpp"
 #include "qgis.h"
 #include "qgsproject.h"
 #include "qgssymbol.h"

@@ -3,5 +3,5 @@ try:
     QgsNullSymbolRenderer.create = staticmethod(QgsNullSymbolRenderer.create)
     QgsNullSymbolRenderer.convertFromRenderer = staticmethod(QgsNullSymbolRenderer.convertFromRenderer)
     QgsNullSymbolRenderer.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

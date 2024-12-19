@@ -22,6 +22,7 @@ A dialog which allows users to modify the properties of a :py:class:`QgsCptCityC
 #include "qgscptcitycolorrampdialog.h"
 %End
   public:
+
     QgsCptCityColorRampDialog( const QgsCptCityColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCptCityColorRampDialog.

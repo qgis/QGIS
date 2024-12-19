@@ -17,33 +17,15 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
-
 from __future__ import annotations
 
 import sys
-from functools import partial
 from typing import TYPE_CHECKING
 
 from qgis.PyQt import sip
-from qgis.PyQt.QtCore import (
-    Qt,
-    QCoreApplication,
-    QThread,
-    QMetaObject,
-    Q_ARG,
-    QObject,
-    pyqtSlot,
-)
+from qgis.PyQt.QtCore import Qt, QCoreApplication, QThread, QMetaObject, Q_ARG, QObject, pyqtSlot
 from qgis.PyQt.QtGui import QColor, QKeySequence
-from qgis.PyQt.QtWidgets import (
-    QAction,
-    QGridLayout,
-    QSpacerItem,
-    QSizePolicy,
-    QShortcut,
-    QMenu,
-    QApplication,
-)
+from qgis.PyQt.QtWidgets import QAction, QGridLayout, QSpacerItem, QSizePolicy, QShortcut, QMenu, QApplication
 from qgis.PyQt.Qsci import QsciScintilla
 from qgis.core import Qgis, QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar, QgsCodeEditorPython
@@ -75,33 +57,19 @@ class writeOut(QObject):
 
         # This manage the case when console is called from another thread
         if QThread.currentThread() != QCoreApplication.instance().thread():
-            QMetaObject.invokeMethod(
-                self, "write", Qt.ConnectionType.QueuedConnection, Q_ARG(str, m)
-            )
+            QMetaObject.invokeMethod(self, "write", Qt.ConnectionType.QueuedConnection, Q_ARG(str, m))
             return
 
         if self.style == "_traceback":
             # Show errors in red
-            stderrColor = QColor(
-                QgsSettings().value(
-                    "pythonConsole/stderrFontColor", QColor(self.ERROR_COLOR)
-                )
-            )
-            self.sO.SendScintilla(
-                QsciScintilla.SCI_STYLESETFORE, self.ERROR_STYLE_INDEX, stderrColor
-            )
-            self.sO.SendScintilla(
-                QsciScintilla.SCI_STYLESETITALIC, self.ERROR_STYLE_INDEX, True
-            )
-            self.sO.SendScintilla(
-                QsciScintilla.SCI_STYLESETBOLD, self.ERROR_STYLE_INDEX, True
-            )
+            stderrColor = QColor(QgsSettings().value("pythonConsole/stderrFontColor", QColor(self.ERROR_COLOR)))
+            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETFORE, self.ERROR_STYLE_INDEX, stderrColor)
+            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETITALIC, self.ERROR_STYLE_INDEX, True)
+            self.sO.SendScintilla(QsciScintilla.SCI_STYLESETBOLD, self.ERROR_STYLE_INDEX, True)
             pos = self.sO.linearPosition()
             self.sO.SendScintilla(QsciScintilla.SCI_STARTSTYLING, pos, 0)
             self.sO.append(m)
-            self.sO.SendScintilla(
-                QsciScintilla.SCI_SETSTYLING, len(m), self.ERROR_STYLE_INDEX
-            )
+            self.sO.SendScintilla(QsciScintilla.SCI_SETSTYLING, len(m), self.ERROR_STYLE_INDEX)
 
         else:
             self.sO.append(m)
@@ -125,9 +93,7 @@ class writeOut(QObject):
         return False
 
 
-FULL_HELP_TEXT = QCoreApplication.translate(
-    "PythonConsole",
-    """QGIS Python Console
+FULL_HELP_TEXT = QCoreApplication.translate("PythonConsole", """QGIS Python Console
 ======================================
 
 The console is a Python interpreter that allows you to execute python commands.
@@ -155,15 +121,14 @@ From the console, you can type the following special commands:
         !ping www.qgis.org: Ping the QGIS website
         !pip install black: install black python formatter using pip (if available)
     - ?: Show this help
-""",
-)
+""")
 
 
 class ShellOutputScintilla(QgsCodeEditorPython):
 
-    def __init__(
-        self, console_widget: PythonConsoleWidget, shell_editor: ShellScintilla
-    ):
+    def __init__(self,
+                 console_widget: PythonConsoleWidget,
+                 shell_editor: ShellScintilla):
         super().__init__(console_widget)
         self.console_widget: PythonConsoleWidget = console_widget
         self.shell_editor: ShellScintilla = shell_editor
@@ -171,9 +136,7 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         # Creates layout for message bar
         self.layout = QGridLayout(self)
         self.layout.setContentsMargins(0, 0, 0, 0)
-        spacerItem = QSpacerItem(
-            20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding
-        )
+        spacerItem = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         self.layout.addItem(spacerItem, 1, 0, 1, 1)
         # messageBar instance
         self.infoBar = QgsMessageBar()
@@ -216,22 +179,20 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         sys.stderr = self._old_stderr
 
     def insertInitText(self):
-        txtInit = QCoreApplication.translate(
-            "PythonConsole",
-            "Python Console\n"
-            "Use iface to access QGIS API interface or type '?' for more info\n"
-            "Security warning: typing commands from an untrusted source can harm your computer",
-        )
+        txtInit = QCoreApplication.translate("PythonConsole",
+                                             "Python Console\n"
+                                             "Use iface to access QGIS API interface or type '?' for more info\n"
+                                             "Security warning: typing commands from an untrusted source can harm your computer")
 
-        txtInit = "\n".join(["# " + line for line in txtInit.split("\n")])
+        txtInit = '\n'.join(['# ' + line for line in txtInit.split('\n')])
 
         # some translation string for the console header ends without '\n'
         # and the first command in console will be appended at the header text.
         # The following code add a '\n' at the end of the string if not present.
-        if txtInit.endswith("\n"):
+        if txtInit.endswith('\n'):
             self.setText(txtInit)
         else:
-            self.setText(txtInit + "\n")
+            self.setText(txtInit + '\n')
 
     def insertHelp(self):
         self.append(FULL_HELP_TEXT)
@@ -250,89 +211,74 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         self.setCaretWidth(0)  # NO (blinking) caret in the output
 
     def clearConsole(self):
-        self.setText("")
+        self.setText('')
         self.insertInitText()
         self.shell_editor.setFocus()
 
     def contextMenuEvent(self, e):
         menu = QMenu(self)
-        menu.addAction(
-            QgsApplication.getThemeIcon("console/iconHideToolConsole.svg"),
-            QCoreApplication.translate("PythonConsole", "Hide/Show Toolbar"),
-            self.hideToolBar,
-        )
+        menu.addAction(QgsApplication.getThemeIcon("console/iconHideToolConsole.svg"),
+                       QCoreApplication.translate("PythonConsole", "Hide/Show Toolbar"),
+                       self.hideToolBar)
         menu.addSeparator()
         showEditorAction = menu.addAction(
             QgsApplication.getThemeIcon("console/iconShowEditorConsole.svg"),
             QCoreApplication.translate("PythonConsole", "Show Editor"),
-            self.showEditor,
-        )
+            self.showEditor)
         menu.addSeparator()
-        runAction = QAction(
-            QgsApplication.getThemeIcon("console/mIconRunConsole.svg"),
-            QCoreApplication.translate("PythonConsole", "Enter Selected"),
-            menu,
-        )
+        runAction = QAction(QgsApplication.getThemeIcon("console/mIconRunConsole.svg"),
+                            QCoreApplication.translate("PythonConsole", "Enter Selected"),
+                            menu)
         runAction.triggered.connect(self.enteredSelected)
         runAction.setShortcut(QKeySequence(Qt.Modifier.CTRL | Qt.Key.Key_E))
         menu.addAction(runAction)
 
-        clearAction = QAction(
-            QgsApplication.getThemeIcon("console/iconClearConsole.svg"),
-            QCoreApplication.translate("PythonConsole", "Clear Console"),
-            menu,
-        )
+        clearAction = QAction(QgsApplication.getThemeIcon("console/iconClearConsole.svg"),
+                              QCoreApplication.translate("PythonConsole", "Clear Console"),
+                              menu)
         clearAction.triggered.connect(self.clearConsole)
         menu.addAction(clearAction)
 
-        word = self.selectedText() or self.wordAtPoint(e.pos())
-        if word:
-            context_help_action = QAction(
-                QgsApplication.getThemeIcon("mActionHelpContents.svg"),
-                QCoreApplication.translate("PythonConsole", "Context Help"),
-                menu,
-            )
-            context_help_action.triggered.connect(
-                partial(self.shell_editor.showApiDocumentation, word, force_search=True)
-            )
-            context_help_action.setShortcut("F1")
-            menu.addAction(context_help_action)
+        pyQGISHelpAction = QAction(QgsApplication.getThemeIcon("console/iconHelpConsole.svg"),
+                                   QCoreApplication.translate("PythonConsole", "Search Selection in PyQGIS Documentation"),
+                                   menu)
+        pyQGISHelpAction.triggered.connect(self.searchSelectedTextInPyQGISDocs)
+        menu.addAction(pyQGISHelpAction)
 
         menu.addSeparator()
         copyAction = QAction(
             QgsApplication.getThemeIcon("mActionEditCopy.svg"),
             QCoreApplication.translate("PythonConsole", "Copy"),
-            menu,
-        )
+            menu)
         copyAction.triggered.connect(self.copy)
         copyAction.setShortcut(QKeySequence.StandardKey.Copy)
         menu.addAction(copyAction)
 
         selectAllAction = QAction(
-            QCoreApplication.translate("PythonConsole", "Select All"), menu
-        )
+            QCoreApplication.translate("PythonConsole", "Select All"),
+            menu)
         selectAllAction.triggered.connect(self.selectAll)
         selectAllAction.setShortcut(QKeySequence.StandardKey.SelectAll)
         menu.addAction(selectAllAction)
 
         menu.addSeparator()
-        settings_action = QAction(
-            QgsApplication.getThemeIcon("console/iconSettingsConsole.svg"),
-            QCoreApplication.translate("PythonConsole", "Options…"),
-            menu,
-        )
+        settings_action = QAction(QgsApplication.getThemeIcon("console/iconSettingsConsole.svg"),
+                                  QCoreApplication.translate("PythonConsole", "Options…"),
+                                  menu)
         settings_action.triggered.connect(self.console_widget.openSettings)
         menu.addAction(settings_action)
 
         runAction.setEnabled(False)
         clearAction.setEnabled(False)
         copyAction.setEnabled(False)
+        pyQGISHelpAction.setEnabled(False)
         selectAllAction.setEnabled(False)
         showEditorAction.setEnabled(True)
         if self.hasSelectedText():
             runAction.setEnabled(True)
             copyAction.setEnabled(True)
-        if not self.text(3) == "":
+            pyQGISHelpAction.setEnabled(True)
+        if not self.text(3) == '':
             selectAllAction.setEnabled(True)
             clearAction.setEnabled(True)
         if self.console_widget.tabEditorWidget.isVisible():
@@ -355,9 +301,7 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         """Copy text to clipboard... or keyboard interrupt"""
         if self.hasSelectedText():
             text = self.selectedText()
-            text = (
-                text.replace(">>> ", "").replace("... ", "").strip()
-            )  # removing prompts
+            text = text.replace('>>> ', '').replace('... ', '').strip()  # removing prompts
             QApplication.clipboard().setText(text)
         else:
             raise KeyboardInterrupt
@@ -367,8 +311,17 @@ class ShellOutputScintilla(QgsCodeEditorPython):
         self.shell_editor.insertFromDropPaste(cmd)
         self.shell_editor.entered()
 
+    def keyPressEvent(self, e):
+        # empty text indicates possible shortcut key sequence so stay in output
+        txt = e.text()
+        if len(txt) and txt >= " ":
+            self.shell_editor.append(txt)
+            self.shell_editor.moveCursorToEnd()
+            self.shell_editor.setFocus()
+            e.ignore()
+        else:
+            # possible shortcut key sequence, accept it
+            e.accept()
+
     def widgetMessageBar(self, text: str):
         self.infoBar.pushMessage(text, Qgis.MessageLevel.Info)
-
-    def showApiDocumentation(self, text):
-        self.shell_editor.showApiDocumentation(text)

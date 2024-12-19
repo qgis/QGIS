@@ -17,7 +17,7 @@
 #include <QObject>
 #include "qgsgeometryutils_base.h"
 
-class TestQgsGeometryUtilsBase : public QObject
+class TestQgsGeometryUtilsBase: public QObject
 {
     Q_OBJECT
 

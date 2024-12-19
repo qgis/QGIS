@@ -1,10 +1,7 @@
+from libfuturize.fixes.fix_print_with_import import FixPrintWithImport as FixPrintWithImportOrig
+from lib2to3.fixer_util import Node, Leaf, syms, find_indentation
+
 import re
-
-from lib2to3.fixer_util import Leaf, Node, find_indentation, syms
-
-from libfuturize.fixes.fix_print_with_import import (
-    FixPrintWithImport as FixPrintWithImportOrig,
-)
 
 
 class FixPrintWithImport(FixPrintWithImportOrig):
@@ -22,6 +19,6 @@ class FixPrintWithImport(FixPrintWithImportOrig):
             indentation = find_indentation(node)
             r.prefix = "# fix_print_with_import\n" + indentation
         else:
-            r.prefix = re.sub("([ \t]*$)", r"\1# fix_print_with_import\n\1", r.prefix)
+            r.prefix = re.sub('([ \t]*$)', r'\1# fix_print_with_import\n\1', r.prefix)
 
         return r

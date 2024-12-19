@@ -21,15 +21,15 @@
 #include "qgsrelation.h"
 #include "qgsrelationmanager.h"
 
-class TestQgsWeakRelation : public QObject
+class TestQgsWeakRelation: public QObject
 {
     Q_OBJECT
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init();// will be called before each testfunction is executed.
+    void cleanup();// will be called after every testfunction.
 
     void testSetters();
 
@@ -91,20 +91,31 @@ void TestQgsWeakRelation::testSetters()
 
 void TestQgsWeakRelation::testResolved()
 {
-  QgsWeakRelation weakRel( QStringLiteral( "my_relation_id" ), QStringLiteral( "my_relation_name" ), Qgis::RelationshipStrength::Association, QStringLiteral( "referencingLayerId" ), QStringLiteral( "referencingLayerName" ), QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int" ), QStringLiteral( "memory" ), QStringLiteral( "referencedLayerId" ), QStringLiteral( "referencedLayerName" ), QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ), QStringLiteral( "memory" ) );
+  QgsWeakRelation weakRel( QStringLiteral( "my_relation_id" ),
+                           QStringLiteral( "my_relation_name" ),
+                           Qgis::RelationshipStrength::Association,
+                           QStringLiteral( "referencingLayerId" ),
+                           QStringLiteral( "referencingLayerName" ),
+                           QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int" ),
+                           QStringLiteral( "memory" ),
+                           QStringLiteral( "referencedLayerId" ),
+                           QStringLiteral( "referencedLayerName" ),
+                           QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ),
+                           QStringLiteral( "memory" )
+                         );
   weakRel.setReferencingLayerFields( { "fk_province" } );
   weakRel.setReferencedLayerFields( { "pk" } );
 
-  QList<QgsRelation> res = weakRel.resolvedRelations( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name );
+  QList< QgsRelation > res = weakRel.resolvedRelations( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name );
   QCOMPARE( res.size(), 1 );
-  QVERIFY( !res.at( 0 ).isValid() );
+  QVERIFY( ! res.at( 0 ).isValid() );
 
   // create a vector layer
   QgsVectorLayer referencedLayer( QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ), QStringLiteral( "referencedLayerName" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( &referencedLayer, false, false );
   res = weakRel.resolvedRelations( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name );
   QCOMPARE( res.size(), 1 );
-  QVERIFY( !res.at( 0 ).isValid() );
+  QVERIFY( ! res.at( 0 ).isValid() );
 
   QgsVectorLayer referencingLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int" ), QStringLiteral( "referencingLayerName" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( &referencingLayer, false, false );
@@ -136,7 +147,18 @@ void TestQgsWeakRelation::testResolved()
 
 void TestQgsWeakRelation::testResolvedManyToMany()
 {
-  QgsWeakRelation weakRel( QStringLiteral( "my_relation_id" ), QStringLiteral( "my_relation_name" ), Qgis::RelationshipStrength::Association, QStringLiteral( "referencingLayerId" ), QStringLiteral( "referencingLayerName" ), QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int" ), QStringLiteral( "memory" ), QStringLiteral( "referencedLayerId" ), QStringLiteral( "referencedLayerName" ), QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ), QStringLiteral( "memory" ) );
+  QgsWeakRelation weakRel( QStringLiteral( "my_relation_id" ),
+                           QStringLiteral( "my_relation_name" ),
+                           Qgis::RelationshipStrength::Association,
+                           QStringLiteral( "referencingLayerId" ),
+                           QStringLiteral( "referencingLayerName" ),
+                           QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int" ),
+                           QStringLiteral( "memory" ),
+                           QStringLiteral( "referencedLayerId" ),
+                           QStringLiteral( "referencedLayerName" ),
+                           QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ),
+                           QStringLiteral( "memory" )
+                         );
   weakRel.setCardinality( Qgis::RelationshipCardinality::ManyToMany );
   weakRel.setMappingTable( QgsVectorLayerRef( QStringLiteral( "mappingTableId" ), QStringLiteral( "mappingTableName" ), QStringLiteral( "None?field=origin_key:int&field=destination_key:int" ), QStringLiteral( "memory" ) ) );
 
@@ -145,25 +167,25 @@ void TestQgsWeakRelation::testResolvedManyToMany()
   weakRel.setReferencedLayerFields( { "pk" } );
   weakRel.setMappingReferencedLayerFields( { "origin_key" } );
 
-  QList<QgsRelation> res = weakRel.resolvedRelations( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name );
+  QList< QgsRelation > res = weakRel.resolvedRelations( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name );
   QCOMPARE( res.size(), 2 );
-  QVERIFY( !res.at( 0 ).isValid() );
-  QVERIFY( !res.at( 1 ).isValid() );
+  QVERIFY( ! res.at( 0 ).isValid() );
+  QVERIFY( ! res.at( 1 ).isValid() );
 
   // create a vector layer
   QgsVectorLayer referencedLayer( QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ), QStringLiteral( "referencedLayerName" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( &referencedLayer, false, false );
   res = weakRel.resolvedRelations( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name );
   QCOMPARE( res.size(), 2 );
-  QVERIFY( !res.at( 0 ).isValid() );
-  QVERIFY( !res.at( 1 ).isValid() );
+  QVERIFY( ! res.at( 0 ).isValid() );
+  QVERIFY( ! res.at( 1 ).isValid() );
 
   QgsVectorLayer referencingLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int" ), QStringLiteral( "referencingLayerName" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( &referencingLayer, false, false );
   res = weakRel.resolvedRelations( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name );
   QCOMPARE( res.size(), 2 );
-  QVERIFY( !res.at( 0 ).isValid() );
-  QVERIFY( !res.at( 1 ).isValid() );
+  QVERIFY( ! res.at( 0 ).isValid() );
+  QVERIFY( ! res.at( 1 ).isValid() );
 
   QgsVectorLayer mappingTable( QStringLiteral( "None?field=origin_key:int&field=destination_key:int" ), QStringLiteral( "mappingTableName" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( &mappingTable, false, false );
@@ -174,13 +196,13 @@ void TestQgsWeakRelation::testResolvedManyToMany()
 
   QCOMPARE( res.at( 0 ).referencedLayerId(), referencedLayer.id() );
   QCOMPARE( res.at( 0 ).referencingLayerId(), mappingTable.id() );
-  QCOMPARE( res.at( 0 ).referencingFields(), { 0 } );
-  QCOMPARE( res.at( 0 ).referencedFields(), { 0 } );
+  QCOMPARE( res.at( 0 ).referencingFields(), {0} );
+  QCOMPARE( res.at( 0 ).referencedFields(), {0} );
 
   QCOMPARE( res.at( 1 ).referencedLayerId(), referencingLayer.id() );
   QCOMPARE( res.at( 1 ).referencingLayerId(), mappingTable.id() );
-  QCOMPARE( res.at( 1 ).referencingFields(), { 1 } );
-  QCOMPARE( res.at( 1 ).referencedFields(), { 1 } );
+  QCOMPARE( res.at( 1 ).referencingFields(), {1} );
+  QCOMPARE( res.at( 1 ).referencedFields(), {1} );
 
   res = weakRel.resolvedRelations( QgsProject::instance(), static_cast<QgsVectorLayerRef::MatchType>( QgsVectorLayerRef::MatchType::Name | QgsVectorLayerRef::MatchType::Provider ) );
   QCOMPARE( res.size(), 2 );
@@ -211,9 +233,20 @@ void TestQgsWeakRelation::testResolvedManyToMany()
 
 void TestQgsWeakRelation::testReadWrite()
 {
-  QgsWeakRelation weakRel( QStringLiteral( "my_relation_id" ), QStringLiteral( "my_relation_name" ), Qgis::RelationshipStrength::Association, QStringLiteral( "referencingLayerId" ), QStringLiteral( "referencingLayerName" ), QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int" ), QStringLiteral( "memory" ), QStringLiteral( "referencedLayerId" ), QStringLiteral( "referencedLayerName" ), QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ), QStringLiteral( "memory" ) );
-  weakRel.setReferencingLayerFields( { "fk_province" } );
-  weakRel.setReferencedLayerFields( { "pk" } );
+  QgsWeakRelation weakRel( QStringLiteral( "my_relation_id" ),
+                           QStringLiteral( "my_relation_name" ),
+                           Qgis::RelationshipStrength::Association,
+                           QStringLiteral( "referencingLayerId" ),
+                           QStringLiteral( "referencingLayerName" ),
+                           QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int" ),
+                           QStringLiteral( "memory" ),
+                           QStringLiteral( "referencedLayerId" ),
+                           QStringLiteral( "referencedLayerName" ),
+                           QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ),
+                           QStringLiteral( "memory" )
+                         );
+  weakRel.setReferencingLayerFields( {"fk_province" } );
+  weakRel.setReferencedLayerFields( {"pk" } );
 
   QgsVectorLayer referencedLayer( QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=province:int&field=municipality:string" ), QStringLiteral( "referencedLayerName" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( &referencedLayer, false, false );
@@ -221,31 +254,31 @@ void TestQgsWeakRelation::testReadWrite()
   QgsVectorLayer referencingLayer( QStringLiteral( "Point?crs=epsg:4326&field=pk:int&field=fk_province:int&field=fk_municipality:int" ), QStringLiteral( "referencingLayerName" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( &referencingLayer, false, false );
 
-  const QList<QgsRelation> relations( weakRel.resolvedRelations( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) );
+  const QList< QgsRelation > relations( weakRel.resolvedRelations( QgsProject::instance(), QgsVectorLayerRef::MatchType::Name ) );
   QCOMPARE( relations.size(), 1 );
   QVERIFY( relations.at( 0 ).isValid() );
 
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
-  );
+  const QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
 
   // Check the XML is written for the referenced layer
   QDomElement node = doc.createElement( QStringLiteral( "relation" ) );
   QgsWeakRelation::writeXml( &referencedLayer, QgsWeakRelation::Referenced, relations.at( 0 ), node, doc );
-  const QgsWeakRelation weakRelReferenced( QgsWeakRelation::readXml( &referencedLayer, QgsWeakRelation::Referenced, node, QgsProject::instance()->pathResolver() ) );
-  QCOMPARE( weakRelReferenced.referencingLayerFields(), { "fk_province" } );
-  QCOMPARE( weakRelReferenced.referencedLayerFields(), { "pk" } );
+  const QgsWeakRelation weakRelReferenced( QgsWeakRelation::readXml( &referencedLayer, QgsWeakRelation::Referenced, node,  QgsProject::instance()->pathResolver() ) );
+  QCOMPARE( weakRelReferenced.referencingLayerFields(), {"fk_province" } );
+  QCOMPARE( weakRelReferenced.referencedLayerFields(), {"pk" } );
   QCOMPARE( weakRelReferenced.strength(), Qgis::RelationshipStrength::Association );
   QCOMPARE( weakRelReferenced.referencedLayer().resolve( QgsProject::instance() ), &referencedLayer );
 
   // Check the XML is written for the referencing layer
   node = doc.createElement( QStringLiteral( "relation" ) );
   QgsWeakRelation::writeXml( &referencingLayer, QgsWeakRelation::Referencing, relations.at( 0 ), node, doc );
-  const QgsWeakRelation weakRelReferencing( QgsWeakRelation::readXml( &referencingLayer, QgsWeakRelation::Referencing, node, QgsProject::instance()->pathResolver() ) );
-  QCOMPARE( weakRelReferencing.referencingLayerFields(), { "fk_province" } );
-  QCOMPARE( weakRelReferencing.referencedLayerFields(), { "pk" } );
+  const QgsWeakRelation weakRelReferencing( QgsWeakRelation::readXml( &referencingLayer, QgsWeakRelation::Referencing, node,  QgsProject::instance()->pathResolver() ) );
+  QCOMPARE( weakRelReferencing.referencingLayerFields(), {"fk_province" } );
+  QCOMPARE( weakRelReferencing.referencedLayerFields(), {"pk" } );
   QCOMPARE( weakRelReferencing.strength(), Qgis::RelationshipStrength::Association );
   QCOMPARE( weakRelReferencing.referencingLayer().resolve( QgsProject::instance() ), &referencingLayer );
 }
@@ -284,9 +317,9 @@ void TestQgsWeakRelation::testWriteStyleCategoryRelations()
 
   // Write to XML
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
-  );
+  const QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
   QDomElement node = doc.createElement( QStringLiteral( "style_categories_relations" ) );
   QString errorMessage;
@@ -311,10 +344,10 @@ void TestQgsWeakRelation::testWriteStyleCategoryRelations()
     Q_ASSERT( relationElement.hasAttribute( QStringLiteral( "name" ) ) );
     Q_ASSERT( relationElement.hasAttribute( QStringLiteral( "referencingLayer" ) ) );
     Q_ASSERT( relationElement.hasAttribute( QStringLiteral( "referencedLayer" ) ) );
-    Q_ASSERT( relationElement.hasAttribute( QStringLiteral( "layerId" ) ) );     // Weak relation attribute
-    Q_ASSERT( relationElement.hasAttribute( QStringLiteral( "layerName" ) ) );   // Weak relation attribute
+    Q_ASSERT( relationElement.hasAttribute( QStringLiteral( "layerId" ) ) );  // Weak relation attribute
+    Q_ASSERT( relationElement.hasAttribute( QStringLiteral( "layerName" ) ) );  // Weak relation attribute
     Q_ASSERT( relationElement.hasAttribute( QStringLiteral( "dataSource" ) ) );  // Weak relation attribute
-    Q_ASSERT( relationElement.hasAttribute( QStringLiteral( "providerKey" ) ) ); // Weak relation attribute
+    Q_ASSERT( relationElement.hasAttribute( QStringLiteral( "providerKey" ) ) );  // Weak relation attribute
 
     QCOMPARE( relationElement.attribute( QStringLiteral( "providerKey" ) ), QStringLiteral( "memory" ) );
     QCOMPARE( relationElement.attribute( QStringLiteral( "referencingLayer" ) ), layer1->id() );

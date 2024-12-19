@@ -6,9 +6,9 @@ QgsLayoutItemMapItem.StackBelowMapLabels = QgsLayoutItemMapItem.StackingPosition
 QgsLayoutItemMapItem.StackAboveMapLabels = QgsLayoutItemMapItem.StackingPosition.StackAboveMapLabels
 try:
     QgsLayoutItemMapItem.__group__ = ['layout']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsLayoutItemMapItemStack.__group__ = ['layout']
-except (NameError, AttributeError):
+except NameError:
     pass

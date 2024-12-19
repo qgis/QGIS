@@ -2,21 +2,21 @@
 try:
     QgsRendererWidget.__attribute_docs__ = {'layerVariablesChanged': 'Emitted when expression context variables on the associated\nvector layers have been changed. Will request the parent dialog\nto re-synchronize with the variables.\n', 'symbolLevelsChanged': 'Emitted when the symbol levels settings have been changed.\n\n.. deprecated:: 3.20\n\n   No longer emitted.\n'}
     QgsRendererWidget.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsDataDefinedValueDialog.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsDataDefinedSizeDialog.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsDataDefinedRotationDialog.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsDataDefinedWidthDialog.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsvectorlayertemporalproperties.h"
-#include "moc_qgsvectorlayertemporalproperties.cpp"
 #include "qgsvectordataprovidertemporalcapabilities.h"
 #include "qgsexpression.h"
 #include "qgsvectorlayer.h"

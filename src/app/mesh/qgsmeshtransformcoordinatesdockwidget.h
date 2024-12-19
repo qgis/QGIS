@@ -30,10 +30,11 @@ class QgsMeshLayer;
  *
  * \since QGIS 3.22
  */
-class APP_EXPORT QgsMeshTransformCoordinatesDockWidget : public QgsDockWidget, public QgsExpressionContextGenerator, private Ui::QgsMeshTransformCoordinatesDockWidgetBase
+class APP_EXPORT QgsMeshTransformCoordinatesDockWidget: public QgsDockWidget, public QgsExpressionContextGenerator, private Ui::QgsMeshTransformCoordinatesDockWidgetBase
 {
     Q_OBJECT
   public:
+
     //! Constructor
     QgsMeshTransformCoordinatesDockWidget( QWidget *parent );
 
@@ -47,13 +48,6 @@ class APP_EXPORT QgsMeshTransformCoordinatesDockWidget : public QgsDockWidget, p
 
     //! Returns whether the calculation has been done
     bool isCalculated() const;
-
-    /**
-     * Updates Z values of selected vertices from QGIS project terrain provider
-     *
-     * \since QGIS 3.42
-     */
-    void updateZValuesFromTerrain();
 
   signals:
     //! Emitted when the calculation of the transform is done
@@ -77,7 +71,7 @@ class APP_EXPORT QgsMeshTransformCoordinatesDockWidget : public QgsDockWidget, p
 
   private:
     QgsMeshTransformVerticesByExpression mTransformVertices;
-    QgsMeshLayer *mInputLayer = nullptr;
+    QgsMeshLayer *mInputLayer;
     QList<int> mInputVertices;
     bool mIsCalculated = false;
     bool mIsResultValid = false;
@@ -86,6 +80,7 @@ class APP_EXPORT QgsMeshTransformCoordinatesDockWidget : public QgsDockWidget, p
 
     QString displayCoordinateText( const QgsCoordinateReferenceSystem &crs, double value );
     void importVertexCoordinates();
+
 };
 
 #endif // QGSMESHTRANSFORMCOORDINATESDOCKWIDGET_H

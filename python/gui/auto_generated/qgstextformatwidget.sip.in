@@ -31,7 +31,9 @@ of Labeling.
 #include "qgstextformatwidget.h"
 %End
   public:
-    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, QgsMapLayer *layer = 0 );
+
+    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0,
+                         QgsMapLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatWidget.
 
@@ -108,6 +110,7 @@ Emitted when an auxiliary field is created in the widget.
 %End
 
   protected:
+
     enum Mode
     {
       Text,
@@ -138,7 +141,7 @@ Sets the background color for the text preview widget.
 :param color: background color
 %End
 
- void enableDataDefinedAlignment( bool enable ) /Deprecated="Since 3.24. "/;
+ void enableDataDefinedAlignment( bool enable ) /Deprecated/;
 %Docstring
 Update the enabled state of the data defined alignment buttons.
 
@@ -155,15 +158,6 @@ when registering labels for the labeling settings currently defined by the widge
 
 .. versionadded:: 3.16
 %End
-
-    void setPropertyOverrideButtonsVisible( bool visible );
-%Docstring
-Toggles whether data defined buttons should be shown in the widget.
-
-.. versionadded:: 3.42
-%End
-
-
 
 
 
@@ -222,6 +216,7 @@ a :py:class:`QgsTextFormat`, including shadow, background and buffer.
 #include "qgstextformatwidget.h"
 %End
   public:
+
     QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsMapLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatDialog.
@@ -269,6 +264,7 @@ a :py:class:`QgsTextFormat`, including shadow, background and buffer.
 #include "qgstextformatwidget.h"
 %End
   public:
+
     QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, QgsMapLayer *layer = 0 );
 %Docstring
 Constructor for QgsTextFormatPanelWidget.

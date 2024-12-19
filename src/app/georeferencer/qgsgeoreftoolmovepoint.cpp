@@ -16,7 +16,6 @@
 #include "qgsmapcanvas.h"
 #include "qgsmapmouseevent.h"
 #include "qgsgeoreftoolmovepoint.h"
-#include "moc_qgsgeoreftoolmovepoint.cpp"
 
 QgsGeorefToolMovePoint::QgsGeorefToolMovePoint( QgsMapCanvas *canvas )
   : QgsMapTool( canvas )

@@ -24,20 +24,21 @@
 const QString TEST_ENCODED_DATA( "raster:wms:A Fancy WMS From Ciriè City:crs=EPSG\\:2036&dpiMode=7&format=image/png&layers=lidar&styles=default"
                                  "&url=https\\://geoegl.msp.gouv.qc.:EPSG\\\\:2036\\:EPSG\\\\:3857:image/tiff\\:image/jpeg:::PointZ:/home/me/my data.jpg" );
 
-class TestQgsMimeDataUtils : public QObject
+class TestQgsMimeDataUtils: public QObject
 {
     Q_OBJECT
   public:
     TestQgsMimeDataUtils() = default;
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
+    void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void init(); // will be called before each testfunction is executed.
+    void cleanup(); // will be called after every testfunction.
 
     void testEncodeDecode();
     void testLayerFromProject();
+
 };
 
 
@@ -45,6 +46,7 @@ void TestQgsMimeDataUtils::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+
 }
 
 void TestQgsMimeDataUtils::cleanupTestCase()
@@ -63,11 +65,12 @@ void TestQgsMimeDataUtils::cleanup()
 
 void TestQgsMimeDataUtils::testEncodeDecode()
 {
+
   QgsMimeDataUtils::Uri uri;
   uri.layerType = QStringLiteral( "raster" );
   uri.name = QStringLiteral( "A Fancy WMS From Ciriè City" );
   uri.providerKey = QStringLiteral( "wms" );
-  uri.supportedCrs << QStringLiteral( "EPSG:2036" ) << QStringLiteral( "EPSG:3857" );
+  uri.supportedCrs << QStringLiteral( "EPSG:2036" ) <<  QStringLiteral( "EPSG:3857" ) ;
   uri.supportedFormats << QStringLiteral( "image/tiff" ) << QStringLiteral( "image/jpeg" );
   uri.uri = QStringLiteral( "crs=EPSG:2036&dpiMode=7&format=image/png&layers=lidar&styles=default&url=https://geoegl.msp.gouv.qc." );
   uri.wkbType = Qgis::WkbType::PointZ;
@@ -78,7 +81,7 @@ void TestQgsMimeDataUtils::testEncodeDecode()
   QgsMimeDataUtils::UriList uriList;
   uriList << uri;
 
-  QMimeData *mimeData = QgsMimeDataUtils::encodeUriList( uriList );
+  QMimeData *mimeData =  QgsMimeDataUtils::encodeUriList( uriList );
 
   const QgsMimeDataUtils::Uri uriDecoded( QgsMimeDataUtils::decodeUriList( mimeData ).at( 0 ) );
 
@@ -183,3 +186,5 @@ void TestQgsMimeDataUtils::testLayerFromProject()
 
 QGSTEST_MAIN( TestQgsMimeDataUtils )
 #include "testqgsmimedatautils.moc"
+
+

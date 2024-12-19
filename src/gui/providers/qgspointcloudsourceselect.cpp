@@ -18,15 +18,14 @@
 #include <QMessageBox>
 
 #include "qgspointcloudsourceselect.h"
-#include "moc_qgspointcloudsourceselect.cpp"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgshelp.h"
 
 ///@cond PRIVATE
 
-QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
-  : QgsAbstractDataSourceWidget( parent, fl, widgetMode )
+QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode ):
+  QgsAbstractDataSourceWidget( parent, fl, widgetMode )
 {
   setupUi( this );
   setupButtons( buttonBox );
@@ -42,14 +41,16 @@ QgsPointCloudSourceSelect::QgsPointCloudSourceSelect( QWidget *parent, Qt::Windo
   mFileWidget->setDialogTitle( tr( "Open Point Cloud Dataset" ) );
   mFileWidget->setFilter( QgsProviderRegistry::instance()->filePointCloudFilters() );
   mFileWidget->setStorageMode( QgsFileWidget::GetMultipleFiles );
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [=]( const QString &path ) {
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
+  {
     mPath = path;
-    emit enableButtons( !mPath.isEmpty() );
+    emit enableButtons( ! mPath.isEmpty() );
   } );
 
-  connect( protocolURI, &QLineEdit::textChanged, this, [=]( const QString &path ) {
+  connect( protocolURI, &QLineEdit::textChanged, this, [ = ]( const QString & path )
+  {
     mPath = path;
-    emit enableButtons( !mPath.isEmpty() );
+    emit enableButtons( ! mPath.isEmpty() );
   } );
 
 
@@ -68,18 +69,20 @@ void QgsPointCloudSourceSelect::addButtonClicked()
   {
     if ( mPath.isEmpty() )
     {
-      QMessageBox::information( this, tr( "Add Point Cloud Layers" ), tr( "No layers selected." ) );
+      QMessageBox::information( this,
+                                tr( "Add Point Cloud Layers" ),
+                                tr( "No layers selected." ) );
       return;
     }
 
     for ( const QString &path : QgsFileWidget::splitFilePaths( mPath ) )
     {
       // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
-      const QList<QgsProviderRegistry::ProviderCandidateDetails> preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( path );
+      const QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( path );
       // if no preferred providers we can still give pdal a try
       const QString providerKey = preferredProviders.empty() ? QStringLiteral( "pdal" ) : preferredProviders.first().metadata()->key();
       Q_NOWARN_DEPRECATED_PUSH
-      emit addPointCloudLayer( path, QFileInfo( path ).baseName(), providerKey );
+      emit addPointCloudLayer( path, QFileInfo( path ).baseName(), providerKey ) ;
       Q_NOWARN_DEPRECATED_POP
       emit addLayer( Qgis::LayerType::PointCloud, path, QFileInfo( path ).baseName(), providerKey );
     }
@@ -88,7 +91,9 @@ void QgsPointCloudSourceSelect::addButtonClicked()
   {
     if ( mPath.isEmpty() )
     {
-      QMessageBox::information( this, tr( "Add Point Cloud Layers" ), tr( "No layers selected." ) );
+      QMessageBox::information( this,
+                                tr( "Add Point Cloud Layers" ),
+                                tr( "No layers selected." ) );
       return;
     }
 
@@ -97,12 +102,14 @@ void QgsPointCloudSourceSelect::addButtonClicked()
 
     if ( fileName.compare( QLatin1String( "ept.json" ), Qt::CaseInsensitive ) != 0 && !fileName.endsWith( QLatin1String( ".copc.laz" ), Qt::CaseInsensitive ) )
     {
-      QMessageBox::information( this, tr( "Add Point Cloud Layers" ), tr( "Invalid point cloud URL \"%1\", please make sure your URL ends with /ept.json or .copc.laz" ).arg( mPath ) );
+      QMessageBox::information( this,
+                                tr( "Add Point Cloud Layers" ),
+                                tr( "Invalid point cloud URL \"%1\", please make sure your URL ends with /ept.json or .copc.laz" ).arg( mPath ) );
       return;
     }
 
     // auto determine preferred provider for each path
-    const QList<QgsProviderRegistry::ProviderCandidateDetails> preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( mPath );
+    const QList< QgsProviderRegistry::ProviderCandidateDetails > preferredProviders = QgsProviderRegistry::instance()->preferredProvidersForUri( mPath );
     // maybe we should raise an assert if preferredProviders size is 0 or >1? Play it safe for now...
     if ( !preferredProviders.empty() )
     {
@@ -111,14 +118,14 @@ void QgsPointCloudSourceSelect::addButtonClicked()
       {
         QStringList separatedPath = mPath.split( '/' );
         if ( separatedPath.size() >= 2 )
-          baseName = separatedPath[separatedPath.size() - 2];
+          baseName = separatedPath[ separatedPath.size() - 2 ];
       }
       if ( mPath.endsWith( QLatin1String( ".copc.laz" ), Qt::CaseInsensitive ) )
       {
         baseName = QFileInfo( mPath ).baseName();
       }
       Q_NOWARN_DEPRECATED_PUSH
-      emit addPointCloudLayer( mPath, baseName, preferredProviders.at( 0 ).metadata()->key() );
+      emit addPointCloudLayer( mPath, baseName, preferredProviders.at( 0 ).metadata()->key() ) ;
       Q_NOWARN_DEPRECATED_POP
       emit addLayer( Qgis::LayerType::PointCloud, mPath, baseName, preferredProviders.at( 0 ).metadata()->key() );
     }
@@ -138,7 +145,7 @@ void QgsPointCloudSourceSelect::radioSrcFile_toggled( bool checked )
 
     mDataSourceType = QStringLiteral( "file" );
 
-    emit enableButtons( !mFileWidget->filePath().isEmpty() );
+    emit enableButtons( ! mFileWidget->filePath().isEmpty() );
   }
 }
 
@@ -153,7 +160,7 @@ void QgsPointCloudSourceSelect::radioSrcProtocol_toggled( bool checked )
 
     setProtocolWidgetsVisibility();
 
-    emit enableButtons( !protocolURI->text().isEmpty() );
+    emit enableButtons( ! protocolURI->text().isEmpty() );
   }
 }
 

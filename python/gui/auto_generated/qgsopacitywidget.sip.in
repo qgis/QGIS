@@ -19,6 +19,7 @@ A widget for setting an opacity value.
 #include "qgsopacitywidget.h"
 %End
   public:
+
     explicit QgsOpacityWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsOpacityWidget.

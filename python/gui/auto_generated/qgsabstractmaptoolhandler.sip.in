@@ -51,9 +51,10 @@ to, etc).
 #include "qgsabstractmaptoolhandler.h"
 %End
   public:
+
     struct Context
     {
-        bool dummy;
+      bool dummy;
     };
 
     QgsAbstractMapToolHandler( QgsMapTool *tool, QAction *action );

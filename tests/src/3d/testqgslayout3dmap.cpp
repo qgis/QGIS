@@ -31,14 +31,13 @@ class TestQgsLayout3DMap : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLayout3DMap()
-      : QgsTest( QStringLiteral( "Layout 3D Map Tests" ), QStringLiteral( "composer_3d" ) ) {}
+    TestQgsLayout3DMap() : QgsTest( QStringLiteral( "Layout 3D Map Tests" ), QStringLiteral( "composer_3d" ) ) {}
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init();// will be called before each testfunction is executed.
+    void cleanup();// will be called after every testfunction.
 
     void testBasic();
 
@@ -70,10 +69,12 @@ void TestQgsLayout3DMap::cleanupTestCase()
 
 void TestQgsLayout3DMap::init()
 {
+
 }
 
 void TestQgsLayout3DMap::cleanup()
 {
+
 }
 
 void TestQgsLayout3DMap::testBasic()
@@ -86,7 +87,7 @@ void TestQgsLayout3DMap::testBasic()
   map->setLayers( QList<QgsMapLayer *>() << mLayerDtm );
 
   QgsFlatTerrainGenerator *flatTerrain = new QgsFlatTerrainGenerator;
-  flatTerrain->setCrs( map->crs(), mProject->transformContext() );
+  flatTerrain->setCrs( map->crs() );
   map->setTerrainGenerator( flatTerrain );
 
   QgsCameraPose cam;
@@ -102,7 +103,7 @@ void TestQgsLayout3DMap::testBasic()
   map3dItem->setMapSettings( map );
   l.addLayoutItem( map3dItem );
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   QGSVERIFYLAYOUTCHECK( QStringLiteral( "composer3d_basic_qt5" ), &l, 0, 100 );
 #else
   QGSVERIFYLAYOUTCHECK( QStringLiteral( "composer3d_basic_qt6" ), &l, 0, 100 );
@@ -116,7 +117,7 @@ void TestQgsLayout3DMap::testBasic()
 
   map3dItem->refresh();
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   QGSVERIFYLAYOUTCHECK( QStringLiteral( "composer3d_basic_qt5" ), &l, 0, 100 );
 #else
   QGSVERIFYLAYOUTCHECK( QStringLiteral( "composer3d_basic_qt6" ), &l, 0, 100 );
@@ -125,6 +126,7 @@ void TestQgsLayout3DMap::testBasic()
   QVERIFY( map->isTemporal() );
   QCOMPARE( map->temporalRange(), QgsDateTimeRange( begin, end ) );
 }
+
 
 
 QGSTEST_MAIN( TestQgsLayout3DMap )

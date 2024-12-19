@@ -2,5 +2,5 @@
 try:
     QgsMultiBandColorRenderer.create = staticmethod(QgsMultiBandColorRenderer.create)
     QgsMultiBandColorRenderer.__group__ = ['raster']
-except (NameError, AttributeError):
+except NameError:
     pass

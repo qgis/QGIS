@@ -24,10 +24,10 @@ class TestQgsStringUtils : public QObject
     Q_OBJECT
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init();// will be called before each testfunction is executed.
+    void cleanup();// will be called after every testfunction.
 
     void levenshtein();
     void longestCommonSubstring();
@@ -43,14 +43,17 @@ class TestQgsStringUtils : public QObject
     void wordWrap_data();
     void wordWrap();
     void testIsUrl();
+
 };
 
 void TestQgsStringUtils::initTestCase()
 {
+
 }
 
 void TestQgsStringUtils::cleanupTestCase()
 {
+
 }
 
 void TestQgsStringUtils::init()
@@ -65,16 +68,16 @@ void TestQgsStringUtils::levenshtein()
 {
   QCOMPARE( QgsStringUtils::levenshteinDistance( QString(), QString() ), 0 );
   QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "abc" ), QString() ), 3 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( QString(), QStringLiteral( "abc" ) ), 3 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "abc" ), QStringLiteral( "abc" ) ), 0 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "abc" ), QStringLiteral( "aBc" ), true ), 1 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "abc" ), QStringLiteral( "xec" ) ), 2 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "abc" ), QStringLiteral( "abd" ) ), 1 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "abc" ), QStringLiteral( "ebg" ) ), 2 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "kitten" ), QStringLiteral( "sitting" ) ), 3 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "kItten" ), QStringLiteral( "sitting" ) ), 3 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "kitten" ), QStringLiteral( "sitTing" ), true ), 4 );
-  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "kitten" ), QStringLiteral( "xkitte" ) ), 2 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QString(),  QStringLiteral( "abc" ) ), 3 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "abc" ),  QStringLiteral( "abc" ) ), 0 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "abc" ),  QStringLiteral( "aBc" ), true ), 1 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "abc" ),  QStringLiteral( "xec" ) ), 2 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "abc" ),  QStringLiteral( "abd" ) ), 1 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "abc" ),  QStringLiteral( "ebg" ) ), 2 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "kitten" ),  QStringLiteral( "sitting" ) ), 3 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "kItten" ),  QStringLiteral( "sitting" ) ), 3 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "kitten" ),  QStringLiteral( "sitTing" ), true ), 4 );
+  QCOMPARE( QgsStringUtils::levenshteinDistance( QStringLiteral( "kitten" ),  QStringLiteral( "xkitte" ) ), 2 );
 }
 
 void TestQgsStringUtils::longestCommonSubstring()
@@ -82,12 +85,12 @@ void TestQgsStringUtils::longestCommonSubstring()
   QCOMPARE( QgsStringUtils::longestCommonSubstring( QString(), QString() ), QString() );
   QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "abc" ), QString() ), QString() );
   QCOMPARE( QgsStringUtils::longestCommonSubstring( QString(), QStringLiteral( "abc" ) ), QString() );
-  QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "abc" ), QStringLiteral( "def" ) ), QString() );
-  QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "abc" ), QStringLiteral( "abd" ) ), QStringLiteral( "ab" ) );
-  QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "abc" ), QStringLiteral( "xbc" ) ), QStringLiteral( "bc" ) );
-  QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "abc" ), QStringLiteral( "xbd" ) ), QStringLiteral( "b" ) );
-  QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "longer test" ), QStringLiteral( "inger task" ) ), QStringLiteral( "nger t" ) );
-  QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "lonGer test" ), QStringLiteral( "inger task" ), true ), QStringLiteral( "er t" ) );
+  QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "abc" ),  QStringLiteral( "def" ) ), QString() );
+  QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "abc" ),  QStringLiteral( "abd" ) ), QStringLiteral( "ab" ) );
+  QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "abc" ),  QStringLiteral( "xbc" ) ), QStringLiteral( "bc" ) );
+  QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "abc" ),  QStringLiteral( "xbd" ) ), QStringLiteral( "b" ) );
+  QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "longer test" ),  QStringLiteral( "inger task" ) ), QStringLiteral( "nger t" ) );
+  QCOMPARE( QgsStringUtils::longestCommonSubstring( QStringLiteral( "lonGer test" ),  QStringLiteral( "inger task" ), true ), QStringLiteral( "er t" ) );
 }
 
 void TestQgsStringUtils::hammingDistance()
@@ -162,6 +165,7 @@ void TestQgsStringUtils::insertLinks()
   QVERIFY( found );
   QCOMPARE( QgsStringUtils::insertLinks( QStringLiteral( "Load https://iot.comune.fe.it/FROST-Server/v1.1/Observations('b1d12280-ac1f-11ee-94c7-cf46c7a21b9f')" ), &found ), QStringLiteral( "Load <a href=\"https://iot.comune.fe.it/FROST-Server/v1.1/Observations('b1d12280-ac1f-11ee-94c7-cf46c7a21b9f')\">https://iot.comune.fe.it/FROST-Server/v1.1/Observations('b1d12280-ac1f-11ee-94c7-cf46c7a21b9f')</a>" ) );
   QVERIFY( found );
+
 }
 
 void TestQgsStringUtils::titleCase_data()
@@ -229,6 +233,7 @@ void TestQgsStringUtils::ampersandEncode()
   QFETCH( QString, input );
   QFETCH( QString, expected );
   QCOMPARE( QgsStringUtils::ampersandEncode( input ), expected );
+
 }
 
 void TestQgsStringUtils::wordWrap_data()

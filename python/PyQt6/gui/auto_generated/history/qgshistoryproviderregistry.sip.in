@@ -25,6 +25,7 @@ The :py:class:`QgsHistoryProviderRegistry` is a registry for objects which track
 #include "qgshistoryproviderregistry.h"
 %End
   public:
+
     QgsHistoryProviderRegistry( QObject *parent = 0, bool useMemoryDatabase = false );
 %Docstring
 Creates a new empty history provider registry.
@@ -76,6 +77,7 @@ Contains options for storing history entries.
 #include "qgshistoryproviderregistry.h"
 %End
       public:
+
         HistoryEntryOptions();
 %Docstring
 Constructor for HistoryEntryOptions.
@@ -114,7 +116,7 @@ Adds an ``entry`` to the history logs.
 .. seealso:: :py:func:`entryAdded`
 %End
 
-    bool addEntries( const QList<QgsHistoryEntry> &entries, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
+    bool addEntries( const QList< QgsHistoryEntry > &entries, QgsHistoryProviderRegistry::HistoryEntryOptions options = QgsHistoryProviderRegistry::HistoryEntryOptions() );
 %Docstring
 Adds a list of ``entries`` to the history logs.
 
@@ -142,7 +144,8 @@ This method allows the content of an entry to be updated, e.g. to add additional
 to the content. (Such as recording the results of after a long-running operation completes).
 %End
 
-    QList<QgsHistoryEntry> queryEntries( const QDateTime &start = QDateTime(), const QDateTime &end = QDateTime(), const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile ) const;
+    QList< QgsHistoryEntry > queryEntries( const QDateTime &start = QDateTime(), const QDateTime &end = QDateTime(),
+                                           const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile ) const;
 %Docstring
 Queries history entries which occurred between the specified ``start`` and ``end`` times.
 

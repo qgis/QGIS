@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstransaction.h"
-#include "moc_qgstransaction.cpp"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsproviderregistry.h"

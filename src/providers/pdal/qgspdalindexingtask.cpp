@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgspdalindexingtask.h"
-#include "moc_qgspdalindexingtask.cpp"
 
 #include <vector>
 #include <string>
@@ -86,7 +85,7 @@ bool QgsPdalIndexingTask::runUntwine()
   // By default Untwine will generate an ept dataset, we use single_file flag to generate COPC files
   options.push_back( { "single_file", std::string() } );
 
-  const std::vector<std::string> files = { mFile.toStdString() };
+  const std::vector<std::string> files = {mFile.toStdString()};
   untwineProcess.start( files, mOutputPath.toStdString(), options );
   const int lastPercent = 0;
   while ( true )
@@ -143,7 +142,7 @@ QString QgsPdalIndexingTask::guessUntwineExecutableBinary() const
   QString untwineExecutable = QProcessEnvironment::systemEnvironment().value( QStringLiteral( "QGIS_UNTWINE_EXECUTABLE" ) );
   if ( untwineExecutable.isEmpty() )
   {
-#if defined( Q_OS_WIN )
+#if defined(Q_OS_WIN)
     untwineExecutable = QgsApplication::libexecPath() + "untwine.exe";
 #else
     untwineExecutable = QgsApplication::libexecPath() + "untwine";
@@ -173,3 +172,4 @@ bool QgsPdalIndexingTask::prepareOutputPath()
   }
   return true;
 }
+

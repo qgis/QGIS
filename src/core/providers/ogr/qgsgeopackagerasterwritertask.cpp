@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgeopackagerasterwritertask.h"
-#include "moc_qgsgeopackagerasterwritertask.cpp"
 
 
 ///@cond PRIVATE

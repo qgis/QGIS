@@ -44,6 +44,7 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     struct FeatureInfo
     {
       public:
+
         FeatureInfo() = default;
 
         //! True if feature is a newly added feature.
@@ -60,6 +61,7 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     };
 
   public:
+
     //! Constructor for QgsFeatureListModel
     explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -197,9 +199,9 @@ class GUI_EXPORT QgsFeatureListModel : public QSortFilterProxyModel, public QgsF
     QString mParserErrorString;
     bool mInjectNull = false;
     mutable QgsExpressionContext mExpressionContext;
-    mutable QMap<QgsFeatureId, QList<QgsConditionalStyle>> mRowStylesMap;
+    mutable QMap< QgsFeatureId, QList<QgsConditionalStyle> > mRowStylesMap;
     bool mSortByDisplayExpression = false;
-    QPointer<QgsVectorLayer> mSourceLayer;
+    QPointer< QgsVectorLayer > mSourceLayer;
 };
 
 Q_DECLARE_METATYPE( QgsFeatureListModel::FeatureInfo )

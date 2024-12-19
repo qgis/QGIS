@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #ifndef QGSXYZCONNECTION_H
-#define QGSXYZCONNECTION_H
 
 #include <QStringList>
 
@@ -23,26 +22,26 @@
 
 struct QgsXyzConnection
 {
-    QString name;
-    QString url;
-    int zMin = -1;
-    int zMax = -1;
-    // Authentication configuration id
-    QString authCfg;
-    // HTTP Basic username
-    QString username;
-    // HTTP Basic password
-    QString password;
-    // http headers
-    QgsHttpHeaders httpHeaders;
-    // tile pixel ratio (0 = unknown (not scaled), 1.0 = 256x256, 2.0 = 512x512)
-    double tilePixelRatio = 0;
-    bool hidden = false;
+  QString name;
+  QString url;
+  int zMin = -1;
+  int zMax = -1;
+  // Authentication configuration id
+  QString authCfg;
+  // HTTP Basic username
+  QString username;
+  // HTTP Basic password
+  QString password;
+  // http headers
+  QgsHttpHeaders httpHeaders;
+  // tile pixel ratio (0 = unknown (not scaled), 1.0 = 256x256, 2.0 = 512x512)
+  double tilePixelRatio = 0;
+  bool hidden = false;
 
-    // Interpretation key related to the converter from color to value, empty if none
-    QString interpretation;
+  // Interpretation key related to the converter from color to value, empty if none
+  QString interpretation;
 
-    QString encodedUri() const;
+  QString encodedUri() const;
 };
 
 //! Utility class for handling list of connections to XYZ tile layers

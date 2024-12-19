@@ -68,7 +68,7 @@ QStringList QgsPdalMergeAlgorithm::createArgumentLists( const QVariantMap &param
 {
   Q_UNUSED( feedback );
 
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( layers.empty() )
   {
     feedback->reportError( QObject::tr( "No layers selected" ), true );
@@ -80,14 +80,12 @@ QStringList QgsPdalMergeAlgorithm::createArgumentLists( const QVariantMap &param
     throw QgsProcessingException(
       QObject::tr( "This algorithm does not support output to COPC. Please use LAS or LAZ as the output format. "
                    "LAS/LAZ files get automatically converted to COPC when loaded in QGIS, alternatively you can use "
-                   "\"Create COPC\" algorithm." )
-    );
+                   "\"Create COPC\" algorithm." ) );
 
   if ( outputFile.endsWith( QStringLiteral( ".vpc" ), Qt::CaseInsensitive ) )
     throw QgsProcessingException(
       QObject::tr( "This algorithm does not support output to VPC. Please use LAS or LAZ as the output format. "
-                   "To create a VPC please use \"Build virtual point cloud (VPC)\" algorithm." )
-    );
+                   "To create a VPC please use \"Build virtual point cloud (VPC)\" algorithm." ) );
 
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
@@ -108,7 +106,7 @@ QStringList QgsPdalMergeAlgorithm::createArgumentLists( const QVariantMap &param
   }
 
   QTextStream out( &listFile );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   out.setCodec( "UTF-8" );
 #endif
   for ( const QgsMapLayer *layer : std::as_const( layers ) )

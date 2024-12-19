@@ -15,33 +15,30 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "August 2012"
-__copyright__ = "(C) 2012, Victor Olaya"
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 
-from qgis.core import (
-    Qgis,
-    QgsApplication,
-    QgsProcessingProvider,
-    QgsMessageLog,
-    QgsProcessingModelAlgorithm,
-    QgsRuntimeProfiler,
-)
+from qgis.core import (Qgis,
+                       QgsApplication,
+                       QgsProcessingProvider,
+                       QgsMessageLog,
+                       QgsProcessingModelAlgorithm,
+                       QgsRuntimeProfiler)
 
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
 
 from processing.gui.ContextAction import ContextAction
-from processing.gui.ProviderActions import ProviderActions, ProviderContextMenuActions
+from processing.gui.ProviderActions import (ProviderActions,
+                                            ProviderContextMenuActions)
 
 from processing.modeler.AddModelFromFileAction import AddModelFromFileAction
 from processing.modeler.CreateNewModelAction import CreateNewModelAction
 from processing.modeler.DeleteModelAction import DeleteModelAction
 from processing.modeler.EditModelAction import EditModelAction
-from processing.modeler.ExportModelAsPythonScriptAction import (
-    ExportModelAsPythonScriptAction,
-)
+from processing.modeler.ExportModelAsPythonScriptAction import ExportModelAsPythonScriptAction
 from processing.modeler.OpenModelFromFileAction import OpenModelFromFileAction
 from processing.modeler.ModelerUtils import ModelerUtils
 
@@ -52,19 +49,10 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
         super().__init__()
-        self.actions = [
-            CreateNewModelAction(),
-            OpenModelFromFileAction(),
-            AddModelFromFileAction(),
-        ]
+        self.actions = [CreateNewModelAction(), OpenModelFromFileAction(), AddModelFromFileAction()]
         sep_action = ContextAction()
         sep_action.is_separator = True
-        self.contextMenuActions = [
-            EditModelAction(),
-            DeleteModelAction(),
-            sep_action,
-            ExportModelAsPythonScriptAction(),
-        ]
+        self.contextMenuActions = [EditModelAction(), DeleteModelAction(), sep_action, ExportModelAsPythonScriptAction()]
         self.algs = []
         self.isLoading = False
 
@@ -79,21 +67,13 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
         self.refreshAlgorithms()
 
     def load(self):
-        with QgsRuntimeProfiler.profile("Model Provider"):
+        with QgsRuntimeProfiler.profile('Model Provider'):
             ProcessingConfig.settingIcons[self.name()] = self.icon()
-            ProcessingConfig.addSetting(
-                Setting(
-                    self.name(),
-                    ModelerUtils.MODELS_FOLDER,
-                    self.tr("Models folder", "ModelerAlgorithmProvider"),
-                    ModelerUtils.defaultModelsFolder(),
-                    valuetype=Setting.MULTIPLE_FOLDERS,
-                )
-            )
+            ProcessingConfig.addSetting(Setting(self.name(),
+                                                ModelerUtils.MODELS_FOLDER, self.tr('Models folder', 'ModelerAlgorithmProvider'),
+                                                ModelerUtils.defaultModelsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
             ProviderActions.registerProviderActions(self, self.actions)
-            ProviderContextMenuActions.registerProviderContextMenuActions(
-                self.contextMenuActions
-            )
+            ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
             ProcessingConfig.readSettings()
             self.refreshAlgorithms()
 
@@ -101,18 +81,16 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
 
     def unload(self):
         ProviderActions.deregisterProviderActions(self)
-        ProviderContextMenuActions.deregisterProviderContextMenuActions(
-            self.contextMenuActions
-        )
+        ProviderContextMenuActions.deregisterProviderContextMenuActions(self.contextMenuActions)
 
     def modelsFolder(self):
         return ModelerUtils.modelsFolders()[0]
 
     def name(self):
-        return self.tr("Models", "ModelerAlgorithmProvider")
+        return self.tr('Models', 'ModelerAlgorithmProvider')
 
     def id(self):
-        return "model"
+        return 'model'
 
     def icon(self):
         return QgsApplication.getThemeIcon("/processingModel.svg")
@@ -124,7 +102,7 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
         return True
 
     def loadAlgorithms(self):
-        with QgsRuntimeProfiler.profile("Load model algorithms"):
+        with QgsRuntimeProfiler.profile('Load model algorithms'):
             if self.isLoading:
                 return
             self.isLoading = True
@@ -141,7 +119,7 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
             return
         for path, subdirs, files in os.walk(folder):
             for descriptionFile in files:
-                if descriptionFile.endswith("model3"):
+                if descriptionFile.endswith('model3'):
                     fullpath = os.path.join(path, descriptionFile)
 
                     alg = QgsProcessingModelAlgorithm()
@@ -150,10 +128,5 @@ class ModelerAlgorithmProvider(QgsProcessingProvider):
                             alg.setSourceFilePath(fullpath)
                             self.algs.append(alg)
                     else:
-                        QgsMessageLog.logMessage(
-                            self.tr(
-                                "Could not load model {0}", "ModelerAlgorithmProvider"
-                            ).format(descriptionFile),
-                            self.tr("Processing"),
-                            Qgis.MessageLevel.Critical,
-                        )
+                        QgsMessageLog.logMessage(self.tr('Could not load model {0}', 'ModelerAlgorithmProvider').format(descriptionFile),
+                                                 self.tr('Processing'), Qgis.MessageLevel.Critical)

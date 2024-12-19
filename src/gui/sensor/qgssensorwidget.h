@@ -35,9 +35,11 @@
  */
 class GUI_EXPORT QgsAbstractSensorWidget : public QWidget
 {
+
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAbstractSensorWidget.
      * \param parent parent widget
@@ -87,9 +89,11 @@ class GUI_EXPORT QgsAbstractSensorWidget : public QWidget
  */
 class GUI_EXPORT QgsTcpSocketSensorWidget : public QgsAbstractSensorWidget, private Ui::WidgetTcpSocketSensor
 {
+
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsTcpSocketSensorWidget.
      * \param parent parent widget
@@ -109,9 +113,11 @@ class GUI_EXPORT QgsTcpSocketSensorWidget : public QgsAbstractSensorWidget, priv
  */
 class GUI_EXPORT QgsUdpSocketSensorWidget : public QgsAbstractSensorWidget, private Ui::WidgetUdpSocketSensor
 {
+
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsUdpSocketSensorWidget.
      * \param parent parent widget
@@ -133,9 +139,11 @@ class GUI_EXPORT QgsUdpSocketSensorWidget : public QgsAbstractSensorWidget, priv
  */
 class GUI_EXPORT QgsSerialPortSensorWidget : public QgsAbstractSensorWidget, private Ui::WidgetSerialPortSensor
 {
+
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsSerialPortSensorWidget.
      * \param parent parent widget
@@ -147,6 +155,7 @@ class GUI_EXPORT QgsSerialPortSensorWidget : public QgsAbstractSensorWidget, pri
     bool setSensor( QgsAbstractSensor *sensor ) override;
 
   private:
+
     void updateSerialPortDetails();
 };
 #endif

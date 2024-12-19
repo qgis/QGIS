@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Nyall Dawson"
-__date__ = "January 2021"
-__copyright__ = "(C) 2021, Nyall Dawson"
+__author__ = 'Nyall Dawson'
+__date__ = 'January 2021'
+__copyright__ = '(C) 2021, Nyall Dawson'
 
 import os
 import tempfile
@@ -38,62 +38,45 @@ class TestQgsBlockingProcess(QgisTestCase):
 
     def test_process_ok(self):
         def std_out(ba):
-            std_out.val += ba.data().decode("UTF-8")
+            std_out.val += ba.data().decode('UTF-8')
 
-        std_out.val = ""
+        std_out.val = ''
 
         def std_err(ba):
-            std_err.val += ba.data().decode("UTF-8")
+            std_err.val += ba.data().decode('UTF-8')
 
-        std_err.val = ""
+        std_err.val = ''
 
-        p = QgsBlockingProcess("ogrinfo", ["--version"])
+        p = QgsBlockingProcess('ogrinfo', ['--version'])
         p.setStdOutHandler(std_out)
         p.setStdErrHandler(std_err)
 
         f = QgsFeedback()
         self.assertEqual(p.run(f), 0)
         self.assertEqual(p.exitStatus(), QProcess.ExitStatus.NormalExit)
-        self.assertIn("GDAL", std_out.val)
-        self.assertEqual(QgisTestCase.strip_std_ignorable_errors(std_err.val), "")
+        self.assertIn('GDAL', std_out.val)
+        self.assertEqual(std_err.val, '')
 
     def test_process_err(self):
-        temp_folder = tempfile.mkdtemp()
-
-        script_file = os.path.join(temp_folder, "stderr_process.sh")
-        with open(script_file, "w") as f:
-            f.write(
-                """#!/bin/bash
-echo "This goes to stdout"
-echo "This goes to stderr" >&2
-exit 1"""
-            )
-
-        os.chmod(script_file, 0o775)
-
         def std_out(ba):
-            std_out.val += ba.data().decode("UTF-8")
+            std_out.val += ba.data().decode('UTF-8')
 
-        std_out.val = ""
+        std_out.val = ''
 
         def std_err(ba):
-            std_err.val += ba.data().decode("UTF-8")
+            std_err.val += ba.data().decode('UTF-8')
 
-        std_err.val = ""
+        std_err.val = ''
 
-        p = QgsBlockingProcess("sh", [script_file])
+        p = QgsBlockingProcess('ogrinfo', [])
         p.setStdOutHandler(std_out)
         p.setStdErrHandler(std_err)
 
         f = QgsFeedback()
         self.assertEqual(p.run(f), 1)
         self.assertEqual(p.exitStatus(), QProcess.ExitStatus.NormalExit)
-        self.assertIn(
-            "This goes to stdout", QgisTestCase.strip_std_ignorable_errors(std_out.val)
-        )
-        self.assertIn(
-            "This goes to stderr", QgisTestCase.strip_std_ignorable_errors(std_err.val)
-        )
+        self.assertIn('Usage', std_out.val)
+        self.assertIn('FAILURE', std_err.val)
 
     def test_process_crash(self):
         """
@@ -101,23 +84,23 @@ exit 1"""
         """
         temp_folder = tempfile.mkdtemp()
 
-        script_file = os.path.join(temp_folder, "crash_process.sh")
-        with open(script_file, "w") as f:
-            f.write("kill $$")
+        script_file = os.path.join(temp_folder, 'crash_process.sh')
+        with open(script_file, 'w') as f:
+            f.write('kill $$')
 
         os.chmod(script_file, 0o775)
 
         def std_out(ba):
-            std_out.val += ba.data().decode("UTF-8")
+            std_out.val += ba.data().decode('UTF-8')
 
-        std_out.val = ""
+        std_out.val = ''
 
         def std_err(ba):
-            std_err.val += ba.data().decode("UTF-8")
+            std_err.val += ba.data().decode('UTF-8')
 
-        std_err.val = ""
+        std_err.val = ''
 
-        p = QgsBlockingProcess("sh", [script_file])
+        p = QgsBlockingProcess('sh', [script_file])
         p.setStdOutHandler(std_out)
         p.setStdErrHandler(std_err)
 
@@ -131,17 +114,17 @@ exit 1"""
         """
 
         def std_out(ba):
-            std_out.val += ba.data().decode("UTF-8")
+            std_out.val += ba.data().decode('UTF-8')
 
-        std_out.val = ""
+        std_out.val = ''
 
         def std_err(ba):
-            std_err.val += ba.data().decode("UTF-8")
+            std_err.val += ba.data().decode('UTF-8')
 
-        std_err.val = ""
+        std_err.val = ''
 
         # this program definitely doesn't exist!
-        p = QgsBlockingProcess("qgis_sucks", ["--version"])
+        p = QgsBlockingProcess('qgis_sucks', ['--version'])
         p.setStdOutHandler(std_out)
         p.setStdErrHandler(std_err)
 
@@ -156,74 +139,69 @@ exit 1"""
         """
         temp_folder = tempfile.mkdtemp()
 
-        script_file = os.path.join(temp_folder, "process_env.sh")
-        with open(script_file, "w") as f:
-            f.write("echo $my_var")
+        script_file = os.path.join(temp_folder, 'process_env.sh')
+        with open(script_file, 'w') as f:
+            f.write('echo $my_var')
 
         os.chmod(script_file, 0o775)
 
         def std_out(ba):
-            std_out.val += ba.data().decode("UTF-8")
+            std_out.val += ba.data().decode('UTF-8')
 
-        std_out.val = ""
+        std_out.val = ''
 
         def std_err(ba):
-            std_err.val += ba.data().decode("UTF-8")
+            std_err.val += ba.data().decode('UTF-8')
 
-        std_err.val = ""
+        std_err.val = ''
 
         # environment variable not set:
-        p = QgsBlockingProcess("sh", [script_file])
+        p = QgsBlockingProcess('sh', [script_file])
         p.setStdOutHandler(std_out)
         p.setStdErrHandler(std_err)
 
         f = QgsFeedback()
         self.assertEqual(p.run(f), 0)
         self.assertEqual(p.exitStatus(), QProcess.ExitStatus.NormalExit)
-        self.assertFalse(QgisTestCase.strip_std_ignorable_errors(std_out.val).strip())
-        self.assertFalse(QgisTestCase.strip_std_ignorable_errors(std_err.val).strip())
+        self.assertFalse(std_out.val.strip())
+        self.assertFalse(std_err.val.strip())
 
         # set environment variable
-        os.environ["my_var"] = "my test variable"
-        std_out.val = ""
-        std_err.val = ""
-        p = QgsBlockingProcess("sh", [script_file])
+        os.environ['my_var'] = 'my test variable'
+        std_out.val = ''
+        std_err.val = ''
+        p = QgsBlockingProcess('sh', [script_file])
         p.setStdOutHandler(std_out)
         p.setStdErrHandler(std_err)
 
         f = QgsFeedback()
         self.assertEqual(p.run(f), 0)
         self.assertEqual(p.exitStatus(), QProcess.ExitStatus.NormalExit)
-        self.assertEqual(
-            QgisTestCase.strip_std_ignorable_errors(std_out.val).strip(),
-            "my test variable",
-        )
-        self.assertFalse(QgisTestCase.strip_std_ignorable_errors(std_err.val).strip())
+        self.assertEqual(std_out.val.strip(), 'my test variable')
+        self.assertFalse(std_err.val.strip())
 
         # test python changing path
 
-        script_file = os.path.join(temp_folder, "process_env_path.sh")
-        with open(script_file, "w") as f:
-            f.write("echo $PATH")
+        script_file = os.path.join(temp_folder, 'process_env_path.sh')
+        with open(script_file, 'w') as f:
+            f.write('echo $PATH')
 
-        prev_path_val = os.getenv("PATH")
+        prev_path_val = os.getenv('PATH')
         new_path = f"/my_test/folder{os.pathsep}{prev_path_val}"
-        os.environ["PATH"] = new_path
+        os.environ['PATH'] = new_path
 
-        std_out.val = ""
-        std_err.val = ""
-        p = QgsBlockingProcess("sh", [script_file])
+        std_out.val = ''
+        std_err.val = ''
+        p = QgsBlockingProcess('sh', [script_file])
         p.setStdOutHandler(std_out)
         p.setStdErrHandler(std_err)
 
         f = QgsFeedback()
         self.assertEqual(p.run(f), 0)
         self.assertEqual(p.exitStatus(), QProcess.ExitStatus.NormalExit)
-        self.assertEqual(
-            QgisTestCase.strip_std_ignorable_errors(std_out.val).strip(), new_path
-        )
-        self.assertFalse(QgisTestCase.strip_std_ignorable_errors(std_err.val).strip())
+        self.assertEqual(std_out.val.strip(), new_path)
+        self.assertFalse(std_err.val.strip())
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

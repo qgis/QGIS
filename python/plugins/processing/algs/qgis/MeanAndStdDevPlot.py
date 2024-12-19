@@ -15,18 +15,16 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "January 2013"
-__copyright__ = "(C) 2013, Victor Olaya"
+__author__ = 'Victor Olaya'
+__date__ = 'January 2013'
+__copyright__ = '(C) 2013, Victor Olaya'
 
 import warnings
 
-from qgis.core import (
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterField,
-    QgsProcessingException,
-    QgsProcessingParameterFileDestination,
-)
+from qgis.core import (QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingException,
+                       QgsProcessingParameterFileDestination)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 from processing.tools import vector
@@ -35,52 +33,36 @@ from qgis.PyQt.QtCore import QCoreApplication
 
 
 class MeanAndStdDevPlot(QgisAlgorithm):
-    INPUT = "INPUT"
-    OUTPUT = "OUTPUT"
-    NAME_FIELD = "NAME_FIELD"
-    VALUE_FIELD = "VALUE_FIELD"
+    INPUT = 'INPUT'
+    OUTPUT = 'OUTPUT'
+    NAME_FIELD = 'NAME_FIELD'
+    VALUE_FIELD = 'VALUE_FIELD'
 
     def group(self):
-        return self.tr("Plots")
+        return self.tr('Plots')
 
     def groupId(self):
-        return "plots"
+        return 'plots'
 
     def __init__(self):
         super().__init__()
 
     def initAlgorithm(self, config=None):
-        self.addParameter(
-            QgsProcessingParameterFeatureSource(self.INPUT, self.tr("Input table"))
-        )
-        self.addParameter(
-            QgsProcessingParameterField(
-                self.NAME_FIELD,
-                self.tr("Category name field"),
-                parentLayerParameterName=self.INPUT,
-                type=QgsProcessingParameterField.DataType.Any,
-            )
-        )
-        self.addParameter(
-            QgsProcessingParameterField(
-                self.VALUE_FIELD,
-                self.tr("Value field"),
-                parentLayerParameterName=self.INPUT,
-                type=QgsProcessingParameterField.DataType.Numeric,
-            )
-        )
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input table')))
+        self.addParameter(QgsProcessingParameterField(self.NAME_FIELD,
+                                                      self.tr('Category name field'), parentLayerParameterName=self.INPUT,
+                                                      type=QgsProcessingParameterField.DataType.Any))
+        self.addParameter(QgsProcessingParameterField(self.VALUE_FIELD,
+                                                      self.tr('Value field'), parentLayerParameterName=self.INPUT))
 
-        self.addParameter(
-            QgsProcessingParameterFileDestination(
-                self.OUTPUT, self.tr("Plot"), self.tr("HTML files (*.html)")
-            )
-        )
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Plot'), self.tr('HTML files (*.html)')))
 
     def name(self):
-        return "meanandstandarddeviationplot"
+        return 'meanandstandarddeviationplot'
 
     def displayName(self):
-        return self.tr("Mean and standard deviation plot")
+        return self.tr('Mean and standard deviation plot')
 
     def processAlgorithm(self, parameters, context, feedback):
         try:
@@ -91,18 +73,11 @@ class MeanAndStdDevPlot(QgisAlgorithm):
                 import plotly as plt
                 import plotly.graph_objs as go
         except ImportError:
-            raise QgsProcessingException(
-                QCoreApplication.translate(
-                    "MeanAndStdDevPlot",
-                    "This algorithm requires the Python “plotly” library. Please install this library and try again.",
-                )
-            )
+            raise QgsProcessingException(QCoreApplication.translate('MeanAndStdDevPlot', 'This algorithm requires the Python “plotly” library. Please install this library and try again.'))
 
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
-            raise QgsProcessingException(
-                self.invalidSourceError(parameters, self.INPUT)
-            )
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
 
         namefieldname = self.parameterAsString(parameters, self.NAME_FIELD, context)
         valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
@@ -119,7 +94,12 @@ class MeanAndStdDevPlot(QgisAlgorithm):
             else:
                 d[v].append(values[valuefieldname][i])
 
-        data = [go.Box(y=list(v), boxmean="sd", name=k) for k, v in d.items()]
+        data = [
+            go.Box(y=list(v),
+                   boxmean='sd',
+                   name=k)
+            for k, v in d.items()
+        ]
         plt.offline.plot(data, filename=output, auto_open=False)
 
         return {self.OUTPUT: output}

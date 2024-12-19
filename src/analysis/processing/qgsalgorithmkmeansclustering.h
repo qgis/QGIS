@@ -32,7 +32,9 @@
  */
 class ANALYSIS_EXPORT QgsKMeansClusteringAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
+
     QgsKMeansClusteringAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -44,23 +46,26 @@ class ANALYSIS_EXPORT QgsKMeansClusteringAlgorithm : public QgsProcessingAlgorit
     QgsKMeansClusteringAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
+
     struct Feature
     {
-        Feature( QgsPointXY point )
-          : point( point )
-        {}
+      Feature( QgsPointXY point )
+        : point( point )
+      {}
 
-        QgsPointXY point;
-        int cluster = -1;
+      QgsPointXY point;
+      int cluster = -1;
     };
 
-    static void initClusters( std::vector<Feature> &points, std::vector<QgsPointXY> &centers, int k, QgsProcessingFeedback *feedback );
-    static void calculateKMeans( std::vector<Feature> &points, std::vector<QgsPointXY> &centers, int k, QgsProcessingFeedback *feedback );
-    static void findNearest( std::vector<Feature> &points, const std::vector<QgsPointXY> &centers, int k, bool &changed );
-    static void updateMeans( const std::vector<Feature> &points, std::vector<QgsPointXY> &centers, std::vector<uint> &weights, int k );
+    static void initClusters( std::vector< Feature > &points, std::vector< QgsPointXY > &centers, int k, QgsProcessingFeedback *feedback );
+    static void calculateKMeans( std::vector< Feature > &points, std::vector< QgsPointXY > &centers, int k, QgsProcessingFeedback *feedback );
+    static void findNearest( std::vector< Feature > &points, const std::vector< QgsPointXY > &centers, int k, bool &changed );
+    static void updateMeans( const std::vector< Feature > &points, std::vector< QgsPointXY > &centers, std::vector< uint > &weights, int k );
 
     friend class TestQgsProcessingAlgsPt1;
 };
@@ -68,3 +73,5 @@ class ANALYSIS_EXPORT QgsKMeansClusteringAlgorithm : public QgsProcessingAlgorit
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMKMEANSCLUSTERING_H
+
+

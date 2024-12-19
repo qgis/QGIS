@@ -23,7 +23,6 @@
 #include "qgsfeaturelistmodel.h"
 #include "qgsfeaturelistviewdelegate.h"
 #include "qgsfeaturelistview.h"
-#include "moc_qgsfeaturelistview.cpp"
 #include "qgsfeatureselectionmodel.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
@@ -37,14 +36,16 @@ QgsFeatureListView::QgsFeatureListView( QWidget *parent )
   setSelectionMode( QAbstractItemView::ExtendedSelection );
 
   mUpdateEditSelectionTimerWithSelection.setSingleShot( true );
-  connect( &mUpdateEditSelectionTimerWithSelection, &QTimer::timeout, this, [this]() {
+  connect( &mUpdateEditSelectionTimerWithSelection, &QTimer::timeout, this, [ this ]()
+  {
     updateEditSelection( true );
   } );
 
   mUpdateEditSelectionTimerWithSelection.setInterval( 0 );
 
   mUpdateEditSelectionTimerWithoutSelection.setSingleShot( true );
-  connect( &mUpdateEditSelectionTimerWithoutSelection, &QTimer::timeout, this, [this]() {
+  connect( &mUpdateEditSelectionTimerWithoutSelection, &QTimer::timeout, this, [ this ]()
+  {
     updateEditSelection( false );
   } );
 
@@ -73,7 +74,8 @@ void QgsFeatureListView::setModel( QgsFeatureListModel *featureListModel )
 
   mFeatureSelectionModel = new QgsFeatureSelectionModel( featureListModel, featureListModel, mFeatureSelectionManager, this );
   setSelectionModel( mFeatureSelectionModel );
-  connect( featureListModel->layerCache()->layer(), &QgsVectorLayer::selectionChanged, this, [this]() {
+  connect( featureListModel->layerCache()->layer(), &QgsVectorLayer::selectionChanged, this, [ this ]()
+  {
     ensureEditSelection( true );
   } );
 
@@ -87,13 +89,15 @@ void QgsFeatureListView::setModel( QgsFeatureListModel *featureListModel )
   setItemDelegate( mItemDelegate );
 
   mItemDelegate->setFeatureSelectionModel( mFeatureSelectionModel );
-  connect( mFeatureSelectionModel, static_cast<void ( QgsFeatureSelectionModel::* )( const QModelIndexList &indexes )>( &QgsFeatureSelectionModel::requestRepaint ), this, static_cast<void ( QgsFeatureListView::* )( const QModelIndexList &indexes )>( &QgsFeatureListView::repaintRequested ) );
-  connect( mFeatureSelectionModel, static_cast<void ( QgsFeatureSelectionModel::* )()>( &QgsFeatureSelectionModel::requestRepaint ), this, static_cast<void ( QgsFeatureListView::* )()>( &QgsFeatureListView::repaintRequested ) );
+  connect( mFeatureSelectionModel, static_cast<void ( QgsFeatureSelectionModel::* )( const QModelIndexList &indexes )>( &QgsFeatureSelectionModel::requestRepaint ),
+           this, static_cast<void ( QgsFeatureListView::* )( const QModelIndexList &indexes )>( &QgsFeatureListView::repaintRequested ) );
+  connect( mFeatureSelectionModel, static_cast<void ( QgsFeatureSelectionModel::* )()>( &QgsFeatureSelectionModel::requestRepaint ),
+           this, static_cast<void ( QgsFeatureListView::* )()>( &QgsFeatureListView::repaintRequested ) );
   connect( mCurrentEditSelectionModel, &QItemSelectionModel::selectionChanged, this, &QgsFeatureListView::editSelectionChanged );
-  connect( mModel->layerCache()->layer(), &QgsVectorLayer::attributeValueChanged, this, [=] { repaintRequested(); } );
-  connect( featureListModel, &QgsFeatureListModel::rowsRemoved, this, [this]() { ensureEditSelection(); } );
-  connect( featureListModel, &QgsFeatureListModel::rowsInserted, this, [this]() { ensureEditSelection(); } );
-  connect( featureListModel, &QgsFeatureListModel::modelReset, this, [this]() { ensureEditSelection(); } );
+  connect( mModel->layerCache()->layer(), &QgsVectorLayer::attributeValueChanged, this, [ = ] { repaintRequested(); } );
+  connect( featureListModel, &QgsFeatureListModel::rowsRemoved, this, [ this ]() { ensureEditSelection(); } );
+  connect( featureListModel, &QgsFeatureListModel::rowsInserted, this, [ this ]() { ensureEditSelection(); } );
+  connect( featureListModel, &QgsFeatureListModel::modelReset, this, [ this ]() { ensureEditSelection(); } );
 }
 
 bool QgsFeatureListView::setDisplayExpression( const QString &expression )
@@ -125,7 +129,7 @@ QgsFeatureIds QgsFeatureListView::currentEditSelection()
   const QModelIndexList selectedIndexes = mCurrentEditSelectionModel->selectedIndexes();
   for ( const QModelIndex &idx : selectedIndexes )
   {
-    selection << idx.data( static_cast<int>( QgsAttributeTableModel::CustomRole::FeatureId ) ).value<QgsFeatureId>();
+    selection << idx.data( static_cast< int >( QgsAttributeTableModel::CustomRole::FeatureId ) ).value<QgsFeatureId>();
   }
   return selection;
 }
@@ -228,7 +232,7 @@ void QgsFeatureListView::setEditSelection( const QgsFeatureIds &fids )
   {
     const QModelIndex modelIdx = mModel->fidToIdx( fid );
 
-    if ( !firstModelIdx.isValid() )
+    if ( ! firstModelIdx.isValid() )
       firstModelIdx = modelIdx;
 
     selection.append( QItemSelectionRange( mModel->mapToMaster( modelIdx ) ) );
@@ -416,8 +420,7 @@ void QgsFeatureListView::selectRow( const QModelIndex &index, bool anchor )
   {
     if ( anchor )
       mCtrlDragSelectionFlag = mFeatureSelectionModel->isSelected( index )
-                                 ? QItemSelectionModel::Deselect
-                                 : QItemSelectionModel::Select;
+                               ? QItemSelectionModel::Deselect : QItemSelectionModel::Select;
     command &= ~QItemSelectionModel::Toggle;
     command |= mCtrlDragSelectionFlag;
     if ( !anchor )
@@ -432,6 +435,7 @@ void QgsFeatureListView::selectRow( const QModelIndex &index, bool anchor )
 
 void QgsFeatureListView::ensureEditSelection( bool inSelection )
 {
+
   if ( inSelection )
   {
     mUpdateEditSelectionTimerWithSelection.start();

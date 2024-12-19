@@ -47,9 +47,6 @@ else
   modules=(core gui analysis server 3d)
 fi
 
-pids=()
-iPid=0
-
 for root_dir in python python/PyQt6; do
 
   if [[ $root_dir == "python/PyQt6" ]]; then
@@ -87,18 +84,12 @@ It is not aimed to be manually edited
           CLASS_MAP_CALL="-c ${module_dir}/class_map.yaml"
         fi
         ./scripts/sipify.py $IS_QT6 -s ${root_dir}/${sipfile}.in -p ${module_dir}/auto_additions/${pyfile} ${CLASS_MAP_CALL} ${header} &
-        pids[iPid]=$!
-        iPid=$((iPid+1))
-
       fi
       count=$((count+1))
     done < <( ${GP}sed -n -r "s@^%Include auto_generated/(.*\.sip)@${module}/auto_generated/\1@p" python/${module}/${module}_auto.sip )
   done
 done
-
-for pid in "${pids[@]}"; do
-    wait $pid || ( echo "Errors while calling sipify!!!" && exit 1 )
-done
+wait # wait for sipify processes to finish
 
 if [[ ${CLASS_MAP} -eq 1 ]]; then
   for root_dir in python python/PyQt6; do

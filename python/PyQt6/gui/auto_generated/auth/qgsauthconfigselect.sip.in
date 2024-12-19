@@ -20,6 +20,7 @@ Selector widget for authentication configs
 #include "qgsauthconfigselect.h"
 %End
   public:
+
     explicit QgsAuthConfigSelect( QWidget *parent /TransferThis/ = 0, const QString &dataprovider = QString() );
 %Docstring
 Create a dialog for setting an associated authentication config, either
@@ -82,7 +83,10 @@ Dialog wrapper of select widget to edit an authcfg in a data source URI
 #include "qgsauthconfigselect.h"
 %End
   public:
-    explicit QgsAuthConfigUriEdit( QWidget *parent /TransferThis/ = 0, const QString &datauri = QString(), const QString &dataprovider = QString() );
+
+    explicit QgsAuthConfigUriEdit( QWidget *parent /TransferThis/ = 0,
+                                   const QString &datauri = QString(),
+                                   const QString &dataprovider = QString() );
 %Docstring
 Construct wrapper dialog for select widget to edit an authcfg in a data source URI
 

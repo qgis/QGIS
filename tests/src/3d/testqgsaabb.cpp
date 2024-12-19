@@ -24,12 +24,11 @@ class TestQgsAABB : public QgsTest
 {
     Q_OBJECT
   public:
-    TestQgsAABB()
-      : QgsTest( QStringLiteral( "QgsAABB tests" ) ) {};
+    TestQgsAABB() : QgsTest( QStringLiteral( "QgsAABB tests" ) ) {};
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void testIsEmpty();
 

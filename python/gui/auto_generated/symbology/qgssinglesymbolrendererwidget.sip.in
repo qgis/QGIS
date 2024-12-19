@@ -30,7 +30,7 @@ class QgsSingleSymbolRendererWidget : QgsRendererWidget
 
 
   protected:
-    virtual void setSymbolLevels( const QList<QgsLegendSymbolItem> &levels, bool enabled );
+    virtual void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled );
 
 
 };

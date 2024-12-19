@@ -53,7 +53,9 @@ typedef QMap<QString, QString> QgsStringMap;
  */
 class CORE_EXPORT QgsSymbolLayer
 {
-    //SIP_TYPEHEADER_INCLUDE( "qgslinesymbollayer.h" );
+#ifdef SIP_RUN
+#include <qgslinesymbollayer.h>
+#endif
 
 
 #ifdef SIP_RUN
@@ -226,6 +228,7 @@ class CORE_EXPORT QgsSymbolLayer
 
     virtual ~QgsSymbolLayer();
 
+    QgsSymbolLayer( const QgsSymbolLayer &other ) = delete;
     QgsSymbolLayer &operator=( const QgsSymbolLayer &other ) = delete;
 
     /**
@@ -607,7 +610,7 @@ class CORE_EXPORT QgsSymbolLayer
      * Returns a reference to the symbol layer's property collection, used for data defined overrides.
      * \see setDataDefinedProperties()
      */
-    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
 
     /**
      * Sets the symbol layer's property collection, used for data defined overrides.
@@ -671,7 +674,6 @@ class CORE_EXPORT QgsSymbolLayer
     bool installMasks( QgsRenderContext &context, bool recursive, const QRectF &rect = QRectF() );
 
   protected:
-    QgsSymbolLayer( const QgsSymbolLayer &other ) SIP_SKIP;
 
     /**
      * Constructor for QgsSymbolLayer.
@@ -781,6 +783,7 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
       Bottom, //!< Align to bottom of symbol
     };
 
+    QgsMarkerSymbolLayer( const QgsMarkerSymbolLayer &other ) = delete;
     QgsMarkerSymbolLayer &operator=( const QgsMarkerSymbolLayer &other ) = delete;
 
     void startRender( QgsSymbolRenderContext &context ) override;
@@ -998,8 +1001,6 @@ class CORE_EXPORT QgsMarkerSymbolLayer : public QgsSymbolLayer
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) = 0;
 
   protected:
-
-    QgsMarkerSymbolLayer( const QgsMarkerSymbolLayer &other ) SIP_SKIP;
 
     /**
      * Constructor for QgsMarkerSymbolLayer.

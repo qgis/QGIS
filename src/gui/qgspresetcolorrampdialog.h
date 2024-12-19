@@ -36,6 +36,7 @@ class GUI_EXPORT QgsPresetColorRampWidget : public QgsPanelWidget, private Ui::Q
     Q_PROPERTY( QgsPresetSchemeColorRamp ramp READ ramp WRITE setRamp )
 
   public:
+
     /**
      * Constructor for QgsPresetColorRampWidget.
      * \param ramp initial ramp to show in dialog
@@ -70,6 +71,7 @@ class GUI_EXPORT QgsPresetColorRampWidget : public QgsPanelWidget, private Ui::Q
     void schemeChanged();
 
   private:
+
     void updatePreview();
     QgsPresetSchemeColorRamp mRamp;
 };
@@ -85,6 +87,7 @@ class GUI_EXPORT QgsPresetColorRampDialog : public QDialog
     Q_PROPERTY( QgsPresetSchemeColorRamp ramp READ ramp WRITE setRamp )
 
   public:
+
     /**
      * Constructor for QgsPresetColorRampDialog.
      * \param ramp initial ramp to show in dialog
@@ -117,12 +120,14 @@ class GUI_EXPORT QgsPresetColorRampDialog : public QDialog
     void changed();
 
   private:
+
     QgsPresetColorRampWidget *mWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
 
   private slots:
 
     void showHelp();
+
 };
 
 #endif //QGSPRESETCOLORRAMPDIALOG_H

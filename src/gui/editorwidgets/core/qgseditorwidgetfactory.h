@@ -42,6 +42,7 @@ class QgsSearchWidgetWrapper;
 class GUI_EXPORT QgsEditorWidgetFactory
 {
   public:
+
     /**
      * Constructor
      *
@@ -105,10 +106,7 @@ class GUI_EXPORT QgsEditorWidgetFactory
      * \returns A map of widget type names and weight values
      * \note not available in Python bindings
      */
-    virtual QHash<const char *, int> supportedWidgetTypes() SIP_SKIP
-    {
-      return QHash<const char *, int>();
-    }
+    virtual QHash<const char *, int> supportedWidgetTypes() { return QHash<const char *, int>(); } SIP_SKIP
 
     /**
      * This method allows disabling this editor widget type for a certain field.

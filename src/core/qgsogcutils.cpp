@@ -1955,7 +1955,6 @@ QDomElement QgsOgcUtils::expressionToOgcExpression( const QgsExpression &express
     case QgsExpressionNode::ntFunction:
     case QgsExpressionNode::ntLiteral:
     case QgsExpressionNode::ntColumnRef:
-    case QgsExpressionNode::ntUnaryOperator:
     {
       QgsOgcUtilsExprToFilter utils( doc, gmlVersion, filterVersion, QString(), QString(), geometryName, srsName, honourAxisOrientation, invertAxisOrientation, fieldNameToXPathMap, namespacePrefixToUriMap );
       const QDomElement exprRootElem = utils.expressionNodeToOgcFilter( node, &exp, &context );

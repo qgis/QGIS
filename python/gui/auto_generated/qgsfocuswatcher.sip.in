@@ -22,6 +22,7 @@ caught using the emitted signals.
 #include "qgsfocuswatcher.h"
 %End
   public:
+
     explicit QgsFocusWatcher( QObject *parent /TransferThis/ );
 %Docstring
 Constructor for QgsFocusWatcher.
@@ -51,6 +52,7 @@ Emitted when parent object gains focus.
 %Docstring
 Emitted when parent object loses focus.
 %End
+
 };
 
 /************************************************************************

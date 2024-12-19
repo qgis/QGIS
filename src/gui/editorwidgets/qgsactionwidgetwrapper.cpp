@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsactionwidgetwrapper.h"
-#include "moc_qgsactionwidgetwrapper.cpp"
 #include "qgsexpressioncontextutils.h"
 #include "qgsattributeform.h"
 
@@ -23,10 +22,11 @@
 QgsActionWidgetWrapper::QgsActionWidgetWrapper( QgsVectorLayer *layer, QWidget *editor, QWidget *parent )
   : QgsWidgetWrapper( layer, editor, parent )
 {
-  connect( this, &QgsWidgetWrapper::contextChanged, [=] {
+  connect( this, &QgsWidgetWrapper::contextChanged, [ = ]
+  {
     const bool actionIsVisible {
-      ( context().attributeFormMode() == QgsAttributeEditorContext::Mode::SingleEditMode ) || ( context().attributeFormMode() == QgsAttributeEditorContext::Mode::AddFeatureMode )
-    };
+      ( context().attributeFormMode() == QgsAttributeEditorContext::Mode::SingleEditMode ) ||
+      ( context().attributeFormMode() == QgsAttributeEditorContext::Mode::AddFeatureMode ) };
     if ( mActionButton )
     {
       mActionButton->setVisible( actionIsVisible );
@@ -64,6 +64,7 @@ QWidget *QgsActionWidgetWrapper::createWidget( QWidget *parent )
 
 void QgsActionWidgetWrapper::initWidget( QWidget *editor )
 {
+
   mActionButton = qobject_cast<QPushButton *>( editor );
 
   if ( !mActionButton )
@@ -72,11 +73,11 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
   if ( valid() && layer() )
   {
     const QString shortTitle { mAction.shortTitle() }; // might be empty
-    const QString description { mAction.name() };      // mandatory
-    const QIcon icon { mAction.icon() };               // might be invalid
+    const QString description { mAction.name() };  // mandatory
+    const QIcon icon { mAction.icon() };  // might be invalid
 
     // Configure push button
-    if ( !icon.isNull() )
+    if ( ! icon.isNull() )
     {
       mActionButton->setIcon( icon );
       mActionButton->setToolTip( description );
@@ -84,7 +85,7 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
     else
     {
       mActionButton->setText( shortTitle.isEmpty() ? description : shortTitle );
-      if ( !shortTitle.isEmpty() )
+      if ( ! shortTitle.isEmpty() )
       {
         mActionButton->setToolTip( description );
       }
@@ -96,7 +97,8 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
     }
 
     // Always connect
-    connect( mActionButton, &QPushButton::clicked, this, [&] {
+    connect( mActionButton, &QPushButton::clicked, this, [ & ]
+    {
       const QgsAttributeEditorContext attributecontext = context();
       QgsExpressionContext expressionContext = layer()->createExpressionContext();
       expressionContext << QgsExpressionContextUtils::formScope( mFeature, attributecontext.attributeFormModeString() );
@@ -106,7 +108,7 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
         if ( QgsAttributeForm *form = qobject_cast<QgsAttributeForm *>( parent() ) )
         {
           const QString formCode = QStringLiteral( "locals()[\"form\"] = sip.wrapinstance( %1, qgis.gui.QgsAttributeForm )\n" )
-                                     .arg( ( quint64 ) form );
+          .arg( ( quint64 ) form );
           QgsAction action { mAction };
           action.setCommand( formCode + mAction.command() );
           action.run( layer(), mFeature, expressionContext );
@@ -117,5 +119,8 @@ void QgsActionWidgetWrapper::initWidget( QWidget *editor )
         mAction.run( layer(), mFeature, expressionContext );
       }
     } );
+
   }
+
 }
+

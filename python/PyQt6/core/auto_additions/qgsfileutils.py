@@ -15,5 +15,5 @@ try:
     QgsFileUtils.renameDataset = staticmethod(QgsFileUtils.renameDataset)
     QgsFileUtils.splitPathToComponents = staticmethod(QgsFileUtils.splitPathToComponents)
     QgsFileUtils.uniquePath = staticmethod(QgsFileUtils.uniquePath)
-except (NameError, AttributeError):
+except NameError:
     pass

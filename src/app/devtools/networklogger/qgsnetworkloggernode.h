@@ -36,6 +36,7 @@ class QAction;
 class QgsNetworkLoggerRootNode final : public QgsDevToolsModelGroup
 {
   public:
+
     QgsNetworkLoggerRootNode();
     QVariant data( int role = Qt::DisplayRole ) const override final;
 
@@ -80,13 +81,14 @@ class QgsNetworkLoggerSslErrorGroup;
 class QgsNetworkLoggerRequestGroup final : public QgsDevToolsModelGroup
 {
   public:
+
     //! Request statu
     enum class Status
     {
-      Pending,  //!< Request underway
+      Pending, //!< Request underway
       Complete, //!< Request was successfully completed
-      Error,    //!< Request encountered an error
-      TimeOut,  //!< Request timed out
+      Error, //!< Request encountered an error
+      TimeOut, //!< Request timed out
       Canceled, //!< Request was manually canceled
     };
 
@@ -96,7 +98,7 @@ class QgsNetworkLoggerRequestGroup final : public QgsDevToolsModelGroup
      */
     QgsNetworkLoggerRequestGroup( const QgsNetworkRequestParameters &request );
     QVariant data( int role = Qt::DisplayRole ) const override;
-    QList<QAction *> actions( QObject *parent ) override final;
+    QList< QAction * > actions( QObject *parent ) override final;
     QVariant toVariant() const override;
 
     /**
@@ -124,7 +126,7 @@ class QgsNetworkLoggerRequestGroup final : public QgsDevToolsModelGroup
      *
      * Will automatically create children encapsulating the reply details.
      */
-    void setReply( const QgsNetworkReplyContent &reply );
+    void setReply( const  QgsNetworkReplyContent &reply );
 
     /**
      * Flags the reply as having timed out.
@@ -157,6 +159,7 @@ class QgsNetworkLoggerRequestGroup final : public QgsDevToolsModelGroup
     static QString cacheControlToString( QNetworkRequest::CacheLoadControl control );
 
   private:
+
     QUrl mUrl;
     int mRequestId = 0;
     QNetworkAccessManager::Operation mOperation;
@@ -172,7 +175,7 @@ class QgsNetworkLoggerRequestGroup final : public QgsDevToolsModelGroup
     Status mStatus = Status::Pending;
     bool mHasSslErrors = false;
     bool mReplyFromCache = false;
-    QList<QPair<QString, QString>> mHeaders;
+    QList< QPair< QString, QString > > mHeaders;
     QgsNetworkLoggerRequestDetailsGroup *mDetailsGroup = nullptr;
     QgsNetworkLoggerReplyGroup *mReplyGroup = nullptr;
     QgsNetworkLoggerSslErrorGroup *mSslErrorsGroup = nullptr;
@@ -210,6 +213,7 @@ class QgsNetworkLoggerPostContentGroup;
 class QgsNetworkLoggerRequestDetailsGroup final : public QgsDevToolsModelGroup
 {
   public:
+
     /**
      * Constructor for QgsNetworkLoggerRequestDetailsGroup, populated from the
      * specified \a request details.
@@ -218,6 +222,7 @@ class QgsNetworkLoggerRequestDetailsGroup final : public QgsDevToolsModelGroup
     QVariant toVariant() const override;
 
   private:
+
     QgsNetworkLoggerRequestQueryGroup *mQueryGroup = nullptr;
     QgsNetworkLoggerRequestHeadersGroup *mRequestHeaders = nullptr;
     QgsNetworkLoggerPostContentGroup *mPostContent = nullptr;
@@ -240,11 +245,13 @@ class QgsNetworkLoggerRequestDetailsGroup final : public QgsDevToolsModelGroup
 class QgsNetworkLoggerRequestHeadersGroup final : public QgsDevToolsModelGroup
 {
   public:
+
     /**
      * Constructor for QgsNetworkLoggerRequestHeadersGroup, populated from the
      * specified \a request details.
      */
     QgsNetworkLoggerRequestHeadersGroup( const QgsNetworkRequestParameters &request );
+
 };
 
 
@@ -264,11 +271,13 @@ class QgsNetworkLoggerRequestHeadersGroup final : public QgsDevToolsModelGroup
 class QgsNetworkLoggerRequestQueryGroup final : public QgsDevToolsModelGroup
 {
   public:
+
     /**
      * Constructor for QgsNetworkLoggerRequestQueryGroup, populated from the
      * specified \a url.
      */
     QgsNetworkLoggerRequestQueryGroup( const QUrl &url );
+
 };
 
 /**
@@ -286,6 +295,7 @@ class QgsNetworkLoggerRequestQueryGroup final : public QgsDevToolsModelGroup
 class QgsNetworkLoggerPostContentGroup final : public QgsDevToolsModelGroup
 {
   public:
+
     /**
      * Constructor for QgsNetworkLoggerPostContentGroup, populated from the
      * specified \a request details.
@@ -314,6 +324,7 @@ class QgsNetworkLoggerReplyHeadersGroup;
 class QgsNetworkLoggerReplyGroup final : public QgsDevToolsModelGroup
 {
   public:
+
     /**
      * Constructor for QgsNetworkLoggerReplyGroup, populated from the
      * specified \a reply details.
@@ -322,7 +333,9 @@ class QgsNetworkLoggerReplyGroup final : public QgsDevToolsModelGroup
     QVariant toVariant() const override;
 
   private:
+
     QgsNetworkLoggerReplyHeadersGroup *mReplyHeaders = nullptr;
+
 };
 
 /**
@@ -342,11 +355,13 @@ class QgsNetworkLoggerReplyGroup final : public QgsDevToolsModelGroup
 class QgsNetworkLoggerReplyHeadersGroup final : public QgsDevToolsModelGroup
 {
   public:
+
     /**
      * Constructor for QgsNetworkLoggerReplyHeadersGroup, populated from the
      * specified \a reply details.
      */
     QgsNetworkLoggerReplyHeadersGroup( const QgsNetworkReplyContent &reply );
+
 };
 
 /**
@@ -366,6 +381,7 @@ class QgsNetworkLoggerReplyHeadersGroup final : public QgsDevToolsModelGroup
 class QgsNetworkLoggerSslErrorGroup final : public QgsDevToolsModelGroup
 {
   public:
+
     /**
      * Constructor for QgsNetworkLoggerSslErrorGroup, populated from the
      * specified \a errors.
@@ -373,6 +389,7 @@ class QgsNetworkLoggerSslErrorGroup final : public QgsDevToolsModelGroup
     QgsNetworkLoggerSslErrorGroup( const QList<QSslError> &errors );
     QVariant data( int role = Qt::DisplayRole ) const override;
 };
+
 
 
 #endif // QGSNETWORKLOGGERNODE_H

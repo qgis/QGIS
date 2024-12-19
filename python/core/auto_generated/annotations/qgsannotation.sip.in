@@ -144,7 +144,7 @@ the relative percentage for the position compared to the map width and height.
 .. seealso:: :py:func:`relativePosition`
 %End
 
- void setFrameOffsetFromReferencePoint( QPointF offset ) /Deprecated="Since 3.40. Use setFrameOffsetFromReferencePointMm() instead."/;
+ void setFrameOffsetFromReferencePoint( QPointF offset ) /Deprecated/;
 %Docstring
 Sets the annotation's frame's offset (in pixels) from the :py:func:`~QgsAnnotation.mapPosition` reference point.
 
@@ -155,7 +155,7 @@ Sets the annotation's frame's offset (in pixels) from the :py:func:`~QgsAnnotati
    Use :py:func:`~QgsAnnotation.setFrameOffsetFromReferencePointMm` instead.
 %End
 
- QPointF frameOffsetFromReferencePoint() const /Deprecated="Since 3.40. Use frameOffsetFromReferencePointMm() instead."/;
+ QPointF frameOffsetFromReferencePoint() const /Deprecated/;
 %Docstring
 Returns the annotation's frame's offset (in pixels) from the :py:func:`~QgsAnnotation.mapPosition` reference point.
 
@@ -184,7 +184,7 @@ Returns the annotation's frame's offset (in millimeters) from the :py:func:`~Qgs
 .. versionadded:: 3.4.8
 %End
 
- void setFrameSize( QSizeF size ) /Deprecated="Since 3.40. Use setFrameSizeMm() instead."/;
+ void setFrameSize( QSizeF size ) /Deprecated/;
 %Docstring
 Sets the size (in pixels) of the annotation's frame (the main area in which
 the annotation's content is drawn).
@@ -196,7 +196,7 @@ the annotation's content is drawn).
    Use :py:func:`~QgsAnnotation.setFrameSizeMm` instead.
 %End
 
- QSizeF frameSize() const /Deprecated="Since 3.40. Use frameSizeMm() instead."/;
+ QSizeF frameSize() const /Deprecated/;
 %Docstring
 Returns the size (in pixels) of the annotation's frame (the main area in which
 the annotation's content is drawn).

@@ -24,7 +24,7 @@
 #include "qgsdataprovider.h"
 #include "qgsprovidermetadata.h"
 
-class QgsWfsProviderMetadata final : public QgsProviderMetadata
+class QgsWfsProviderMetadata final: public QgsProviderMetadata
 {
     Q_OBJECT
   public:
@@ -32,9 +32,9 @@ class QgsWfsProviderMetadata final : public QgsProviderMetadata
     QIcon icon() const override;
     QList<QgsDataItemProvider *> dataItemProviders() const override;
     QgsDataProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QList<Qgis::LayerType> supportedLayerTypes() const override;
+    QList< Qgis::LayerType > supportedLayerTypes() const override;
     QgsProviderMetadata::ProviderMetadataCapabilities capabilities() const override;
-    QList<QgsProviderSublayerDetails> querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
+    QList< QgsProviderSublayerDetails > querySublayers( const QString &uri, Qgis::SublayerQueryFlags flags = Qgis::SublayerQueryFlags(), QgsFeedback *feedback = nullptr ) const override;
     QString suggestGroupNameForUri( const QString &uri ) const override;
 };
 

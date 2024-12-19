@@ -13,9 +13,9 @@ QgsSettingsTreeModel.Column.__doc__ = """Columns
 # --
 try:
     QgsSettingsTreeModel.__group__ = ['settings']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsSettingsTreeProxyModel.__group__ = ['settings']
-except (NameError, AttributeError):
+except NameError:
     pass

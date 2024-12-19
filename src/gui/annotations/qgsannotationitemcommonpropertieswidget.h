@@ -32,11 +32,12 @@ class QgsCallout;
  *
  * \since QGIS 3.22
 */
-class GUI_EXPORT QgsAnnotationItemCommonPropertiesWidget : public QWidget, private Ui::QgsAnnotationCommonPropertiesWidgetBase
+class GUI_EXPORT QgsAnnotationItemCommonPropertiesWidget: public QWidget, private Ui::QgsAnnotationCommonPropertiesWidgetBase
 {
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAnnotationItemCommonPropertiesWidget.
      */
@@ -77,12 +78,13 @@ class GUI_EXPORT QgsAnnotationItemCommonPropertiesWidget : public QWidget, priva
     void openCalloutProperties();
 
   private:
+
     bool mBlockChangedSignal = false;
 
     //! Context in which widget is shown
     QgsSymbolWidgetContext mContext;
 
-    std::unique_ptr<QgsCallout> mCallout;
+    std::unique_ptr< QgsCallout > mCallout;
 };
 
 #endif // QGSANNOTATIONITEMCOMMONPROPERTIESWIDGET_H

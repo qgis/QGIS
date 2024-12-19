@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Tim Sutton"
-__date__ = "20/08/2012"
-__copyright__ = "Copyright 2012, The QGIS Project"
+__author__ = 'Tim Sutton'
+__date__ = '20/08/2012'
+__copyright__ = 'Copyright 2012, The QGIS Project'
 
 from qgis.core import QgsPointXY, QgsRectangle, QgsVector
 import unittest
@@ -113,47 +112,46 @@ class TestQgsRectangle(QgisTestCase):
     def testAsWktCoordinates(self):
         """Test that we can get a proper wkt representation fo the rect"""
         rect1 = QgsRectangle(0.0, 0.0, 5.0, 5.0)
-        myExpectedWkt = "0 0, " "5 5"
+        myExpectedWkt = ('0 0, '
+                         '5 5')
         myWkt = rect1.asWktCoordinates()
-        myMessage = f"Expected: {myExpectedWkt}\nGot: {myWkt}\n"
+        myMessage = f'Expected: {myExpectedWkt}\nGot: {myWkt}\n'
         self.assertTrue(compareWkt(myWkt, myExpectedWkt), myMessage)
 
     def testAsWktPolygon(self):
         """Test that we can get a proper rect wkt polygon representation for rect"""
         rect1 = QgsRectangle(0.0, 0.0, 5.0, 5.0)
-        myExpectedWkt = "Polygon ((0 0, " "5 0, " "5 5, " "0 5, " "0 0))"
+        myExpectedWkt = ('Polygon ((0 0, '
+                         '5 0, '
+                         '5 5, '
+                         '0 5, '
+                         '0 0))')
         myWkt = rect1.asWktPolygon()
-        myMessage = f"Expected: {myExpectedWkt}\nGot: {myWkt}\n"
+        myMessage = f'Expected: {myExpectedWkt}\nGot: {myWkt}\n'
         self.assertTrue(compareWkt(myWkt, myExpectedWkt), myMessage)
 
     def testToString(self):
         """Test the different string representations"""
-        self.assertEqual(QgsRectangle().toString(), "Null")
+        self.assertEqual(QgsRectangle().toString(), 'Null')
         rect = QgsRectangle(0, 0.1, 0.2, 0.3)
-        self.assertEqual(
-            rect.toString(),
-            "0.0000000000000000,0.1000000000000000 : 0.2000000000000000,0.3000000000000000",
-        )
+        self.assertEqual(rect.toString(), '0.0000000000000000,0.1000000000000000 : 0.2000000000000000,0.3000000000000000')
 
         # can't test the actual result here, because floating point inaccuracies mean the result is unpredictable
         # at this precision
         self.assertEqual(len(rect.toString(20)), 93)
 
-        self.assertEqual(rect.toString(0), "0,0 : 0,0")
-        self.assertEqual(rect.toString(2), "0.00,0.10 : 0.20,0.30")
-        self.assertEqual(rect.toString(1), "0.0,0.1 : 0.2,0.3")
-        self.assertEqual(rect.toString(-1), "0.00,0.10 : 0.20,0.30")
+        self.assertEqual(rect.toString(0), '0,0 : 0,0')
+        self.assertEqual(rect.toString(2), '0.00,0.10 : 0.20,0.30')
+        self.assertEqual(rect.toString(1), '0.0,0.1 : 0.2,0.3')
+        self.assertEqual(rect.toString(-1), '0.00,0.10 : 0.20,0.30')
 
         rect = QgsRectangle(5000000.01111, -0.3, 5000000.44111, 99.8)
-        self.assertEqual(rect.toString(-1), "5000000.01,-0.30 : 5000000.44,99.80")
+        self.assertEqual(rect.toString(-1), '5000000.01,-0.30 : 5000000.44,99.80')
 
     def testAsPolygon(self):
         """Test string representation as polygon"""
-        self.assertEqual(QgsRectangle().asPolygon(), "EMPTY")
-        self.assertEqual(
-            QgsRectangle(0, 0.1, 0.2, 0.3).asPolygon(),
-            "0.00000000 0.10000000, 0.00000000 0.30000000, 0.20000000 0.30000000, 0.20000000 0.10000000, 0.00000000 0.10000000",
-        )
+        self.assertEqual(QgsRectangle().asPolygon(), 'EMPTY')
+        self.assertEqual(QgsRectangle(0, 0.1, 0.2, 0.3).asPolygon(), '0.00000000 0.10000000, 0.00000000 0.30000000, 0.20000000 0.30000000, 0.20000000 0.10000000, 0.00000000 0.10000000')
 
     def testToBox3d(self):
         rect = QgsRectangle(0, 0.1, 0.2, 0.3)
@@ -183,5 +181,5 @@ class TestQgsRectangle(QgisTestCase):
         self.assertEqual(rect.yMaximum(), 0.2)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

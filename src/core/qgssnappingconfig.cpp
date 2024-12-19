@@ -14,8 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgssnappingconfig.h"
-#include "qgsproject.h"
-#include "moc_qgssnappingconfig.cpp"
 
 #include <QDomElement>
 #include <QHeaderView>
@@ -24,6 +22,7 @@
 #include "qgssettingsregistrycore.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
 #include "qgsapplication.h"
 #include "qgssettingsentryenumflag.h"
 

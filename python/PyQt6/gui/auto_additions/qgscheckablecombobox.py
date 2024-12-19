@@ -2,5 +2,5 @@
 try:
     QgsCheckableComboBox.__attribute_docs__ = {'checkedItemsChanged': 'Emitted whenever the checked items list changed.\n'}
     QgsCheckableComboBox.__signal_arguments__ = {'checkedItemsChanged': ['items: List[str]']}
-except (NameError, AttributeError):
+except NameError:
     pass

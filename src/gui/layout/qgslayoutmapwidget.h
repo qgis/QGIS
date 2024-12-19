@@ -42,7 +42,7 @@ class QgsBookmarkManagerProxyModel;
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutMapWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapWidgetBase
+class GUI_EXPORT QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapWidgetBase
 {
     Q_OBJECT
 
@@ -147,12 +147,12 @@ class GUI_EXPORT QgsLayoutMapWidget : public QgsLayoutItemBaseWidget, private Ui
     void aboutToShowBookmarkMenu();
 
   private:
-    QPointer<QgsLayoutItemMap> mMapItem;
+    QPointer< QgsLayoutItemMap > mMapItem;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
     QgsLayoutDesignerInterface *mInterface = nullptr;
-    QPointer<QgsLayoutMapLabelingWidget> mLabelWidget;
-    QPointer<QgsLayoutMapClippingWidget> mClipWidget;
+    QPointer< QgsLayoutMapLabelingWidget > mLabelWidget;
+    QPointer< QgsLayoutMapClippingWidget > mClipWidget;
     QMenu *mBookmarkMenu = nullptr;
     QgsBookmarkManagerProxyModel *mBookmarkModel = nullptr;
     QString mReportTypeString;
@@ -190,6 +190,7 @@ class GUI_EXPORT QgsLayoutMapWidget : public QgsLayoutItemBaseWidget, private Ui
      * The order will match the layer order from the map canvas
      */
     QList<QgsMapLayer *> orderedPresetVisibleLayers( const QString &name ) const;
+
 };
 
 /**
@@ -213,11 +214,13 @@ class GUI_EXPORT QgsLayoutMapItemBlocksLabelsModel : public QSortFilterProxyMode
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
   protected:
+
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
     QgsLayoutModel *mLayoutModel = nullptr;
-    QPointer<QgsLayoutItemMap> mMapItem;
+    QPointer< QgsLayoutItemMap > mMapItem;
+
 };
 
 /**
@@ -227,7 +230,7 @@ class GUI_EXPORT QgsLayoutMapItemBlocksLabelsModel : public QSortFilterProxyMode
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutMapLabelingWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapLabelingWidgetBase
+class GUI_EXPORT QgsLayoutMapLabelingWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapLabelingWidgetBase
 {
     Q_OBJECT
 
@@ -246,7 +249,7 @@ class GUI_EXPORT QgsLayoutMapLabelingWidget : public QgsLayoutItemBaseWidget, pr
     void showUnplacedToggled( bool checked );
 
   private:
-    QPointer<QgsLayoutItemMap> mMapItem;
+    QPointer< QgsLayoutItemMap > mMapItem;
 };
 
 /**
@@ -256,7 +259,7 @@ class GUI_EXPORT QgsLayoutMapLabelingWidget : public QgsLayoutItemBaseWidget, pr
  * \note This class is not a part of public API
  * \since QGIS 3.16
  */
-class GUI_EXPORT QgsLayoutMapClippingWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapClippingWidgetBase
+class GUI_EXPORT QgsLayoutMapClippingWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutMapClippingWidgetBase
 {
     Q_OBJECT
 
@@ -279,7 +282,7 @@ class GUI_EXPORT QgsLayoutMapClippingWidget : public QgsLayoutItemBaseWidget, pr
     void toggleLayersSelectionGui( bool toggled );
 
   private:
-    QPointer<QgsLayoutItemMap> mMapItem;
+    QPointer< QgsLayoutItemMap > mMapItem;
     QgsMapLayerModel *mLayerModel = nullptr;
 
     bool mBlockUpdates = false;

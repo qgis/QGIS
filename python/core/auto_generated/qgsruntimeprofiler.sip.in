@@ -38,7 +38,7 @@ Constructor to create a new runtime profiler.
 %End
     ~QgsRuntimeProfiler();
 
- void beginGroup( const QString &name ) /Deprecated="Since 3.40. Use start() instead."/;
+ void beginGroup( const QString &name ) /Deprecated/;
 %Docstring
 Begin the group for the profiler. Groups will append {GroupName}/ to the
 front of the profile tag set using start.
@@ -50,7 +50,7 @@ front of the profile tag set using start.
    Use :py:func:`~QgsRuntimeProfiler.start` instead.
 %End
 
- void endGroup() /Deprecated="Since 3.40. Use end() instead."/;
+ void endGroup() /Deprecated/;
 %Docstring
 End the current active group.
 

@@ -23,6 +23,7 @@ A model for display of recently used coordinate reference systems.
 %End
   public:
 
+
     enum class CustomRole
     {
       Crs,
@@ -57,7 +58,7 @@ Returns an invalid CRS if the index is not valid.
 };
 
 
-class QgsRecentCoordinateReferenceSystemsProxyModel : QSortFilterProxyModel
+class QgsRecentCoordinateReferenceSystemsProxyModel: QSortFilterProxyModel
 {
 %Docstring(signature="appended")
 A sort/filter proxy model for recent coordinate reference systems.
@@ -69,6 +70,7 @@ A sort/filter proxy model for recent coordinate reference systems.
 #include "qgsrecentcoordinatereferencesystemsmodel.h"
 %End
   public:
+
     explicit QgsRecentCoordinateReferenceSystemsProxyModel( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRecentCoordinateReferenceSystemsProxyModel, with the given ``parent`` object.

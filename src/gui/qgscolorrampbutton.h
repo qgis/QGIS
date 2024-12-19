@@ -42,6 +42,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     Q_PROPERTY( QString context READ context WRITE setContext )
 
   public:
+
     /**
      * Construct a new color ramp button.
      * Use \a parent to attach a parent QWidget to the dialog.
@@ -272,6 +273,7 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     void rampWidgetUpdated();
 
   protected:
+
     bool event( QEvent *e ) override;
     void changeEvent( QEvent *e ) override;
     void showEvent( QShowEvent *e ) override;
@@ -283,13 +285,14 @@ class GUI_EXPORT QgsColorRampButton : public QToolButton
     void mousePressEvent( QMouseEvent *e ) override;
 
   private:
+
     QString mColorRampDialogTitle;
     bool mShowGradientOnly = false;
-    std::unique_ptr<QgsColorRamp> mColorRamp;
+    std::unique_ptr< QgsColorRamp > mColorRamp;
     QString mColorRampName;
     QgsStyle *mStyle = nullptr;
 
-    std::unique_ptr<QgsColorRamp> mDefaultColorRamp;
+    std::unique_ptr< QgsColorRamp > mDefaultColorRamp;
     QString mContext;
     bool mAcceptLiveUpdates = true;
     bool mShowRandomColorRamp = false;

@@ -17,7 +17,6 @@
  ***************************************************************************/
 
 #include "qgsgdalprovider.h"
-#include "moc_qgsgdalprovider.cpp"
 ///@cond PRIVATE
 
 #include "qgis.h"
@@ -755,18 +754,18 @@ bool QgsGdalProvider::canDoResampling(
   if ( resamplingFactor < 1 )
   {
     // upsampling
-    return mZoomedInResamplingMethod != Qgis::RasterResamplingMethod::Nearest;
+    return mZoomedInResamplingMethod != QgsRasterDataProvider::ResamplingMethod::Nearest;
   }
 
   if ( resamplingFactor < 1.1 )
   {
     // very close to nominal resolution ==> check compatibility of zoom-in or zoom-out resampler with what GDAL can do
-    return mZoomedInResamplingMethod != Qgis::RasterResamplingMethod::Nearest ||
-           mZoomedOutResamplingMethod != Qgis::RasterResamplingMethod::Nearest;
+    return mZoomedInResamplingMethod != QgsRasterDataProvider::ResamplingMethod::Nearest ||
+           mZoomedOutResamplingMethod != QgsRasterDataProvider::ResamplingMethod::Nearest;
   }
 
   // if no zoom out resampling, exit now
-  if ( mZoomedOutResamplingMethod == Qgis::RasterResamplingMethod::Nearest )
+  if ( mZoomedOutResamplingMethod == QgsRasterDataProvider::ResamplingMethod::Nearest )
   {
     return false;
   }
@@ -795,40 +794,40 @@ bool QgsGdalProvider::canDoResampling(
   return false;
 }
 
-static GDALRIOResampleAlg getGDALResamplingAlg( Qgis::RasterResamplingMethod method )
+static GDALRIOResampleAlg getGDALResamplingAlg( QgsGdalProvider::ResamplingMethod method )
 {
   GDALRIOResampleAlg eResampleAlg = GRIORA_NearestNeighbour;
   switch ( method )
   {
-    case Qgis::RasterResamplingMethod::Nearest:
+    case QgsGdalProvider::ResamplingMethod::Nearest:
       eResampleAlg = GRIORA_NearestNeighbour;
       break;
 
-    case Qgis::RasterResamplingMethod::Bilinear:
+    case QgsGdalProvider::ResamplingMethod::Bilinear:
       eResampleAlg = GRIORA_Bilinear;
       break;
 
-    case Qgis::RasterResamplingMethod::Cubic:
+    case QgsGdalProvider::ResamplingMethod::Cubic:
       eResampleAlg = GRIORA_Cubic;
       break;
 
-    case Qgis::RasterResamplingMethod::CubicSpline:
+    case QgsRasterDataProvider::ResamplingMethod::CubicSpline:
       eResampleAlg = GRIORA_CubicSpline;
       break;
 
-    case Qgis::RasterResamplingMethod::Lanczos:
+    case QgsRasterDataProvider::ResamplingMethod::Lanczos:
       eResampleAlg = GRIORA_Lanczos;
       break;
 
-    case Qgis::RasterResamplingMethod::Average:
+    case QgsRasterDataProvider::ResamplingMethod::Average:
       eResampleAlg = GRIORA_Average;
       break;
 
-    case Qgis::RasterResamplingMethod::Mode:
+    case QgsRasterDataProvider::ResamplingMethod::Mode:
       eResampleAlg = GRIORA_Mode;
       break;
 
-    case Qgis::RasterResamplingMethod::Gauss:
+    case QgsRasterDataProvider::ResamplingMethod::Gauss:
       eResampleAlg = GRIORA_Gauss;
       break;
   }
@@ -981,7 +980,7 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
       GDALRasterIOExtraArg sExtraArg;
       INIT_RASTERIO_EXTRA_ARG( sExtraArg );
 
-      Qgis::RasterResamplingMethod method;
+      ResamplingMethod method;
       if ( resamplingFactor < 1 )
       {
         method = mZoomedInResamplingMethod;
@@ -989,7 +988,7 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
       else if ( resamplingFactor < 1.1 )
       {
         // very close to nominal resolution ==> use either zoomed out resampler or zoomed in resampler
-        if ( mZoomedOutResamplingMethod != Qgis::RasterResamplingMethod::Nearest )
+        if ( mZoomedOutResamplingMethod != ResamplingMethod::Nearest )
           method = mZoomedOutResamplingMethod;
         else
           method = mZoomedInResamplingMethod;
@@ -1037,7 +1036,7 @@ bool QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &reqExtent, int
   // (too much downsampling compared to the allowed maximum resampling factor),
   // so fallback to something replicating QgsRasterResampleFilter behavior
   else if ( mProviderResamplingEnabled &&
-            mZoomedOutResamplingMethod != Qgis::RasterResamplingMethod::Nearest &&
+            mZoomedOutResamplingMethod != QgsRasterDataProvider::ResamplingMethod::Nearest &&
             resamplingFactor > 1 )
   {
     // Do the resampling in two steps:

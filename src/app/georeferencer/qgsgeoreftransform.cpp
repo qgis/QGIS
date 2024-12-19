@@ -66,7 +66,9 @@ QgsPointXY QgsGeorefTransform::toSourceCoordinate( const QgsPointXY &pixel ) con
 
 bool QgsGeorefTransform::providesAccurateInverseTransformation() const
 {
-  return ( mTransformParametrisation == TransformMethod::Linear || mTransformParametrisation == TransformMethod::Helmert || mTransformParametrisation == TransformMethod::PolynomialOrder1 );
+  return ( mTransformParametrisation == TransformMethod::Linear
+           || mTransformParametrisation == TransformMethod::Helmert
+           || mTransformParametrisation == TransformMethod::PolynomialOrder1 );
 }
 
 bool QgsGeorefTransform::parametersInitialized() const
@@ -76,7 +78,7 @@ bool QgsGeorefTransform::parametersInitialized() const
 
 QgsGcpTransformerInterface *QgsGeorefTransform::clone() const
 {
-  std::unique_ptr<QgsGeorefTransform> res( new QgsGeorefTransform( *this ) );
+  std::unique_ptr< QgsGeorefTransform > res( new QgsGeorefTransform( *this ) );
   res->updateParametersFromGcps( mSourceCoordinates, mDestinationCoordinates, mInvertYAxis );
   return res.release();
 }
@@ -93,7 +95,7 @@ bool QgsGeorefTransform::updateParametersFromGcps( const QVector<QgsPointXY> &so
   }
   if ( sourceCoordinates.size() != destinationCoordinates.size() ) // Defensive sanity check
   {
-    throw( std::domain_error( "Internal error: GCP mapping is not one-to-one" ) );
+    throw ( std::domain_error( "Internal error: GCP mapping is not one-to-one" ) );
   }
   if ( sourceCoordinates.size() < minimumGcpCount() )
   {
@@ -167,6 +169,7 @@ bool QgsGeorefTransform::getLinearOriginScale( QgsPointXY &origin, double &scale
 
 bool QgsGeorefTransform::getOriginScaleRotation( QgsPointXY &origin, double &scaleX, double &scaleY, double &rotation ) const
 {
+
   if ( mTransformParametrisation == TransformMethod::Linear )
   {
     rotation = 0.0;
@@ -177,7 +180,7 @@ bool QgsGeorefTransform::getOriginScaleRotation( QgsPointXY &origin, double &sca
   {
     double scale;
     QgsHelmertGeorefTransform *transform = dynamic_cast<QgsHelmertGeorefTransform *>( mGeorefTransformImplementation.get() );
-    if ( !transform || !transform->getOriginScaleRotation( origin, scale, rotation ) )
+    if ( !transform || ! transform->getOriginScaleRotation( origin, scale, rotation ) )
     {
       return false;
     }
@@ -202,3 +205,5 @@ bool QgsGeorefTransform::transformPrivate( const QgsPointXY &src, QgsPointXY &ds
   dst.setY( y );
   return true;
 }
+
+

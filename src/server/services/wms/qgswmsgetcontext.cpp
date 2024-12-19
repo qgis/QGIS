@@ -40,12 +40,23 @@ namespace QgsWms
   {
     void appendOwsLayerStyles( QDomDocument &doc, QDomElement &layerElem, QgsMapLayer *currentLayer );
 
-    void appendOwsLayersFromTreeGroup( QDomDocument &doc, QDomElement &parentLayer, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, const QgsLayerTreeGroup *layerTreeGroup, QgsRectangle &combinedBBox, const QString &strGroup );
+    void appendOwsLayersFromTreeGroup( QDomDocument &doc,
+                                       QDomElement &parentLayer,
+                                       QgsServerInterface *serverIface,
+                                       const QgsProject *project,
+                                       const QgsWmsRequest &request,
+                                       const QgsLayerTreeGroup *layerTreeGroup,
+                                       QgsRectangle &combinedBBox,
+                                       const QString &strGroup );
 
-    void appendOwsGeneralAndResourceList( QDomDocument &doc, QDomElement &parentElement, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request );
-  } // namespace
+    void appendOwsGeneralAndResourceList( QDomDocument &doc, QDomElement &parentElement,
+                                          QgsServerInterface *serverIface, const QgsProject *project,
+                                          const QgsWmsRequest &request );
+  }
 
-  void writeGetContext( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response )
+  void writeGetContext( QgsServerInterface *serverIface, const QgsProject *project,
+                        const QgsWmsRequest &request,
+                        QgsServerResponse &response )
   {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
@@ -79,10 +90,13 @@ namespace QgsWms
   }
 
 
-  QDomDocument getContext( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request )
+  QDomDocument getContext( QgsServerInterface *serverIface,
+                           const QgsProject *project,
+                           const QgsWmsRequest &request )
   {
     QDomDocument doc;
-    const QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( QStringLiteral( "xml" ), QStringLiteral( "version=\"1.0\" encoding=\"utf-8\"" ) );
+    const QDomProcessingInstruction xmlDeclaration = doc.createProcessingInstruction( QStringLiteral( "xml" ),
+        QStringLiteral( "version=\"1.0\" encoding=\"utf-8\"" ) );
 
     doc.appendChild( xmlDeclaration );
 
@@ -108,7 +122,9 @@ namespace QgsWms
   }
   namespace
   {
-    void appendOwsGeneralAndResourceList( QDomDocument &doc, QDomElement &parentElement, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request )
+    void appendOwsGeneralAndResourceList( QDomDocument &doc, QDomElement &parentElement,
+                                          QgsServerInterface *serverIface, const QgsProject *project,
+                                          const QgsWmsRequest &request )
     {
       parentElement.setAttribute( QStringLiteral( "id" ), "ows-context-" + project->baseName() );
 
@@ -188,21 +204,28 @@ namespace QgsWms
         mapRect.invert();
       }
       QDomElement lowerCornerElem = doc.createElement( QStringLiteral( "ows:LowerCorner" ) );
-      const QDomText lowerCornerText = doc.createTextNode( QString::number( mapRect.xMinimum() ) + " " + QString::number( mapRect.yMinimum() ) );
+      const QDomText lowerCornerText = doc.createTextNode( QString::number( mapRect.xMinimum() ) + " " +  QString::number( mapRect.yMinimum() ) );
       lowerCornerElem.appendChild( lowerCornerText );
       bboxElem.appendChild( lowerCornerElem );
       QDomElement upperCornerElem = doc.createElement( QStringLiteral( "ows:UpperCorner" ) );
-      const QDomText upperCornerText = doc.createTextNode( QString::number( mapRect.xMaximum() ) + " " + QString::number( mapRect.yMaximum() ) );
+      const QDomText upperCornerText = doc.createTextNode( QString::number( mapRect.xMaximum() ) + " " +  QString::number( mapRect.yMaximum() ) );
       upperCornerElem.appendChild( upperCornerText );
       bboxElem.appendChild( upperCornerElem );
       generalElem.appendChild( bboxElem );
     }
 
-    void appendOwsLayersFromTreeGroup( QDomDocument &doc, QDomElement &parentLayer, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, const QgsLayerTreeGroup *layerTreeGroup, QgsRectangle &combinedBBox, const QString &strGroup )
+    void appendOwsLayersFromTreeGroup( QDomDocument &doc,
+                                       QDomElement &parentLayer,
+                                       QgsServerInterface *serverIface,
+                                       const QgsProject *project,
+                                       const QgsWmsRequest &request,
+                                       const QgsLayerTreeGroup *layerTreeGroup,
+                                       QgsRectangle &combinedBBox,
+                                       const QString &strGroup )
     {
       const QStringList restrictedLayers = QgsServerProjectUtils::wmsRestrictedLayers( *project );
 
-      const QList<QgsLayerTreeNode *> layerTreeGroupChildren = layerTreeGroup->children();
+      const QList< QgsLayerTreeNode * > layerTreeGroupChildren = layerTreeGroup->children();
       for ( int i = 0; i < layerTreeGroupChildren.size(); ++i )
       {
         QgsLayerTreeNode *treeNode = layerTreeGroupChildren.at( i );
@@ -429,8 +452,8 @@ namespace QgsWms
           {
             parentLayer.appendChild( layerElem );
           }
-        } // end of treeNode type
-      } // end of for
+        }// end of treeNode type
+      }// end of for
     }
 
     void appendOwsLayerStyles( QDomDocument &doc, QDomElement &layerElem, QgsMapLayer *currentLayer )
@@ -453,6 +476,6 @@ namespace QgsWms
         layerElem.appendChild( styleListElem );
       }
     }
-  } // namespace
+  }
 
 } // namespace QgsWms

@@ -18,7 +18,6 @@
 
 
 #include "qgsscalevisibilitydialog.h"
-#include "moc_qgsscalevisibilitydialog.cpp"
 #include "qgsscalerangewidget.h"
 
 

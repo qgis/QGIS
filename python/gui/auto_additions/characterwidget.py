@@ -3,5 +3,5 @@ try:
     CharacterWidget.__attribute_docs__ = {'characterSelected': 'Emitted when a character is selected in the widget.\n'}
     CharacterWidget.__signal_arguments__ = {'characterSelected': ['character: QChar']}
     CharacterWidget.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

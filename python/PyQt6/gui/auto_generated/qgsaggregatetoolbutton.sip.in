@@ -21,6 +21,7 @@ Functions are filtered based on the type.
 #include "qgsaggregatetoolbutton.h"
 %End
   public:
+
     QgsAggregateToolButton();
 %Docstring
 Constructor
@@ -31,7 +32,7 @@ Constructor
 Based on the ``type`` of underlying data, some aggregates will be available or not.
 %End
 
- void setType( QVariant::Type type ) /Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
+ void setType( QVariant::Type type ) /Deprecated/;
 %Docstring
 Based on the ``type`` of underlying data, some aggregates will be available or not.
 

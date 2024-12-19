@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsprocessingalgrunnertask.h"
-#include "moc_qgsprocessingalgrunnertask.cpp"
 #include "qgsprocessingfeedback.h"
 #include "qgsprocessingcontext.h"
 #include "qgsprocessingalgorithm.h"

@@ -50,7 +50,7 @@ Create the instance that synchronizes given project with a layer tree root
     void setNewLayersVisible( bool enabled );
     bool newLayersVisible() const;
 
- void setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index ) /Deprecated="Since 3.10. Use setLayerInsertionPoint( const InsertionPoint &insertionPoint ) instead."/;
+ void setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index ) /Deprecated/;
 %Docstring
 Set where the new layers should be inserted - can be used to follow current selection.
 By default it is root group with zero index.

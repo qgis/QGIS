@@ -32,11 +32,12 @@ class QgsVertexEntry;
 /**
  * Class that keeps the selected feature
  */
-class APP_EXPORT QgsLockedFeature : public QObject
+class APP_EXPORT QgsLockedFeature: public QObject
 {
     Q_OBJECT
 
   public:
+
     /**
      * Creates a locked feature
      * \param featureId id of feature which was selected
@@ -145,6 +146,7 @@ class APP_EXPORT QgsLockedFeature : public QObject
     void beforeRollBack();
 
   private:
+
     /**
      * Deletes whole vertex map.
      */
@@ -175,8 +177,8 @@ class APP_EXPORT QgsLockedFeature : public QObject
 
     QgsGeometryValidator *mValidator = nullptr;
     QString mTip;
-    QList<QgsGeometry::Error> mGeomErrors;
-    QList<QgsVertexMarker *> mGeomErrorMarkers;
+    QList< QgsGeometry::Error > mGeomErrors;
+    QList< QgsVertexMarker * > mGeomErrorMarkers;
 };
 
 #endif

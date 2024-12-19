@@ -2,9 +2,9 @@
 try:
     QgsGeometrySnapper.__attribute_docs__ = {'featureSnapped': 'Emitted each time a feature has been processed when calling :py:func:`~QgsGeometrySnapper.snapFeatures`\n'}
     QgsGeometrySnapper.__group__ = ['vector']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsInternalGeometrySnapper.__group__ = ['vector']
-except (NameError, AttributeError):
+except NameError:
     pass

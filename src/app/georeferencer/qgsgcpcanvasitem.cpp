@@ -94,7 +94,8 @@ void QgsGCPCanvasItem::paint( QPainter *p )
     textFont.setPixelSize( fontSizePainterUnits( 12, context ) );
     p->setFont( textFont );
     const QRectF textBounds = p->boundingRect( 3 * context.scaleFactor(), 3 * context.scaleFactor(), 5 * context.scaleFactor(), 5 * context.scaleFactor(), Qt::AlignLeft, msg );
-    mTextBoxRect = QRectF( textBounds.x() - context.scaleFactor() * 1, textBounds.y() - context.scaleFactor() * 1, textBounds.width() + 2 * context.scaleFactor(), textBounds.height() + 2 * context.scaleFactor() );
+    mTextBoxRect = QRectF( textBounds.x() - context.scaleFactor() * 1, textBounds.y() - context.scaleFactor() * 1,
+                           textBounds.width() + 2 * context.scaleFactor(), textBounds.height() + 2 * context.scaleFactor() );
     p->drawRect( mTextBoxRect );
     p->drawText( textBounds, Qt::AlignLeft, msg );
   }
@@ -197,6 +198,7 @@ void QgsGCPCanvasItem::drawResidualArrow( QPainter *p, const QgsRenderContext &c
   const double rf = residualToScreenFactor();
   p->setPen( mResidualPen );
   p->drawLine( QPointF( 0, 0 ), QPointF( residual.rx() * rf, residual.ry() * rf ) );
+
 }
 
 double QgsGCPCanvasItem::residualToScreenFactor() const
@@ -240,3 +242,4 @@ double QgsGCPCanvasItem::fontSizePainterUnits( double points, const QgsRenderCon
 {
   return points * 0.3527 * c.scaleFactor();
 }
+

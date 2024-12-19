@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsauthconfigurationstoragedb.h"
-#include "moc_qgsauthconfigurationstoragedb.cpp"
 
 #include "qgslogger.h"
 #include "qgsauthcertutils.h"

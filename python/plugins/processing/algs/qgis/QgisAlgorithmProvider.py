@@ -15,13 +15,15 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "December 2012"
-__copyright__ = "(C) 2012, Victor Olaya"
+__author__ = 'Victor Olaya'
+__date__ = 'December 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 
-from qgis.core import QgsApplication, QgsProcessingProvider, QgsRuntimeProfiler
+from qgis.core import (QgsApplication,
+                       QgsProcessingProvider,
+                       QgsRuntimeProfiler)
 
 from qgis.PyQt.QtCore import QCoreApplication
 
@@ -78,80 +80,75 @@ from .VectorLayerScatterplot3D import VectorLayerScatterplot3D
 
 
 class QgisAlgorithmProvider(QgsProcessingProvider):
-    fieldMappingParameterName = QCoreApplication.translate(
-        "Processing", "Fields Mapper"
-    )
+    fieldMappingParameterName = QCoreApplication.translate('Processing', 'Fields Mapper')
 
     def __init__(self):
         super().__init__()
-        QgsApplication.processingRegistry().addAlgorithmAlias(
-            "qgis:rectanglesovalsdiamondsfixed", "native:rectanglesovalsdiamonds"
-        )
+        QgsApplication.processingRegistry().addAlgorithmAlias('qgis:rectanglesovalsdiamondsfixed', 'native:rectanglesovalsdiamonds')
 
     def getAlgs(self):
-        algs = [
-            BarPlot(),
-            BoxPlot(),
-            CheckValidity(),
-            Climb(),
-            DefineProjection(),
-            EliminateSelection(),
-            ExecuteSQL(),
-            ExportGeometryInfo(),
-            FieldsPyculator(),
-            FindProjection(),
-            GeometryConvert(),
-            Heatmap(),
-            HubDistanceLines(),
-            HubDistancePoints(),
-            HypsometricCurves(),
-            IdwInterpolation(),
-            ImportIntoSpatialite(),
-            KNearestConcaveHull(),
-            LinesToPolygons(),
-            MeanAndStdDevPlot(),
-            MinimumBoundingGeometry(),
-            PointDistance(),
-            PointsDisplacement(),
-            PointsFromLines(),
-            PolarPlot(),
-            PostGISExecuteAndLoadSQL(),
-            RandomExtractWithinSubsets(),
-            RandomPointsAlongLines(),
-            RandomPointsLayer(),
-            RandomPointsPolygons(),
-            RandomSelection(),
-            RandomSelectionWithinSubsets(),
-            RasterCalculator(),
-            RasterLayerHistogram(),
-            RectanglesOvalsDiamondsVariable(),
-            RegularPoints(),
-            Relief(),
-            SelectByAttribute(),
-            SelectByExpression(),
-            SetRasterStyle(),
-            SetVectorStyle(),
-            StatisticsByCategories(),
-            TextToFloat(),
-            TinInterpolation(),
-            TopoColor(),
-            UniqueValues(),
-            VariableDistanceBuffer(),
-            VectorLayerHistogram(),
-            VectorLayerScatterplot(),
-            VectorLayerScatterplot3D(),
-        ]
+        algs = [BarPlot(),
+                BoxPlot(),
+                CheckValidity(),
+                Climb(),
+                DefineProjection(),
+                EliminateSelection(),
+                ExecuteSQL(),
+                ExportGeometryInfo(),
+                FieldsPyculator(),
+                FindProjection(),
+                GeometryConvert(),
+                Heatmap(),
+                HubDistanceLines(),
+                HubDistancePoints(),
+                HypsometricCurves(),
+                IdwInterpolation(),
+                ImportIntoSpatialite(),
+                KNearestConcaveHull(),
+                LinesToPolygons(),
+                MeanAndStdDevPlot(),
+                MinimumBoundingGeometry(),
+                PointDistance(),
+                PointsDisplacement(),
+                PointsFromLines(),
+                PolarPlot(),
+                PostGISExecuteAndLoadSQL(),
+                RandomExtractWithinSubsets(),
+                RandomPointsAlongLines(),
+                RandomPointsLayer(),
+                RandomPointsPolygons(),
+                RandomSelection(),
+                RandomSelectionWithinSubsets(),
+                RasterCalculator(),
+                RasterLayerHistogram(),
+                RectanglesOvalsDiamondsVariable(),
+                RegularPoints(),
+                Relief(),
+                SelectByAttribute(),
+                SelectByExpression(),
+                SetRasterStyle(),
+                SetVectorStyle(),
+                StatisticsByCategories(),
+                TextToFloat(),
+                TinInterpolation(),
+                TopoColor(),
+                UniqueValues(),
+                VariableDistanceBuffer(),
+                VectorLayerHistogram(),
+                VectorLayerScatterplot(),
+                VectorLayerScatterplot3D(),
+                ]
 
         return algs
 
     def id(self):
-        return "qgis"
+        return 'qgis'
 
     def helpId(self):
-        return "qgis"
+        return 'qgis'
 
     def name(self):
-        return "QGIS"
+        return 'QGIS'
 
     def icon(self):
         return QgsApplication.getThemeIcon("/providerQgis.svg")
@@ -164,7 +161,7 @@ class QgisAlgorithmProvider(QgsProcessingProvider):
             self.addAlgorithm(a)
 
     def load(self):
-        with QgsRuntimeProfiler.profile("QGIS Python Provider"):
+        with QgsRuntimeProfiler.profile('QGIS Python Provider'):
             success = super().load()
 
         return success

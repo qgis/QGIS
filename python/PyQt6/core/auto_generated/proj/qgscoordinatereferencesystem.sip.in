@@ -203,16 +203,11 @@ If no prefix is specified, WKT definition is assumed.
 
 :param definition: A String containing a coordinate reference system definition.
 
-.. note::
-
-   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
-   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
-
 .. seealso:: :py:func:`createFromString`
 %End
 
 
- explicit QgsCoordinateReferenceSystem( long id, CrsType type = PostgisCrsId ) /Deprecated="Since 3.10. We encourage you to use EPSG codes or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format."/;
+ explicit QgsCoordinateReferenceSystem( long id, CrsType type = PostgisCrsId ) /Deprecated/;
 %Docstring
 Constructor
 
@@ -250,11 +245,6 @@ QgsCoordinateReferenceSystem object.
 %Docstring
 Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
 
-.. note::
-
-   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
-   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
-
 :param ogcCrs: OGR compliant CRS definition, e.g., "EPSG:4326"
 
 :return: matching CRS, or an invalid CRS if string could not be matched
@@ -266,24 +256,14 @@ Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
 %Docstring
 Creates a CRS from a given EPSG ID.
 
-.. note::
-
-   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
-   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
-
 :param epsg: epsg CRS ID
 
 :return: matching CRS, or an invalid CRS if string could not be matched
 %End
 
- static QgsCoordinateReferenceSystem fromProj4( const QString &proj4 ) /Deprecated="Since 3.10. Use fromProj() instead."/;
+ static QgsCoordinateReferenceSystem fromProj4( const QString &proj4 ) /Deprecated/;
 %Docstring
 Creates a CRS from a proj style formatted string.
-
-.. note::
-
-   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
-   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 :return: matching CRS, or an invalid CRS if string could not be matched
 
@@ -311,11 +291,6 @@ Creates a CRS from a proj style formatted string.
 %Docstring
 Creates a CRS from a WKT spatial ref sys definition string.
 
-.. note::
-
-   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
-   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
-
 :param wkt: WKT for the desired spatial reference system.
 
 :return: matching CRS, or an invalid CRS if string could not be matched
@@ -326,11 +301,6 @@ Creates a CRS from a WKT spatial ref sys definition string.
     static QgsCoordinateReferenceSystem fromSrsId( long srsId );
 %Docstring
 Creates a CRS from a specified QGIS SRS ID.
-
-.. note::
-
-   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
-   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 :param srsId: internal QGIS SRS ID
 
@@ -360,7 +330,7 @@ or the compound CRS could not be created for the combination.
 
 
 
- bool createFromId( long id, CrsType type = PostgisCrsId ) /Deprecated="Since 3.10. We encourage you to use EPSG code or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format."/;
+ bool createFromId( long id, CrsType type = PostgisCrsId ) /Deprecated/;
 %Docstring
 Sets this CRS by lookup of the given ID in the CRS database.
 
@@ -384,14 +354,13 @@ and refer to QGIS internal CRS IDs.
 
 .. note::
 
-   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
-   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
+   this method uses an internal cache. Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 .. seealso:: :py:func:`fromOgcWmsCrs`
 %End
 
 
- bool createFromSrid( long srid ) /Deprecated="Since 3.10. Use alternative methods for SRS construction instead -- this method was specifically created for use by the postgres provider alone, and using it elsewhere will lead to subtle bugs."/;
+ bool createFromSrid( long srid ) /Deprecated/;
 %Docstring
 Sets this CRS by lookup of the given PostGIS SRID in the CRS database.
 
@@ -421,8 +390,7 @@ and :py:func:`~QgsCoordinateReferenceSystem.createFromOgcWmsCrs` is used to init
 
 .. note::
 
-   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
-   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
+   this method uses an internal cache. Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 .. seealso:: :py:func:`fromWkt`
 %End
@@ -440,8 +408,7 @@ user's local CRS database from home directory is used.
 
 .. note::
 
-   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
-   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
+   this method uses an internal cache. Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 .. seealso:: :py:func:`fromSrsId`
 
@@ -451,7 +418,7 @@ user's local CRS database from home directory is used.
    using auth:id codes or WKT strings
 %End
 
- bool createFromProj4( const QString &projString ) /Deprecated="Since 3.10. Use createFromProj() instead."/;
+ bool createFromProj4( const QString &projString ) /Deprecated/;
 %Docstring
 Sets this CRS by passing it a PROJ style formatted string.
 
@@ -478,8 +445,7 @@ We try to match the Proj string to internal QGIS CRS ID using the following logi
 
 .. note::
 
-   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
-   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
+   This method uses an internal cache. Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 .. seealso:: :py:func:`fromProj`
 
@@ -518,8 +484,7 @@ We try to match the Proj string to internal QGIS CRS ID using the following logi
 
 .. note::
 
-   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
-   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
+   This method uses an internal cache. Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 .. seealso:: :py:func:`fromProj`
 
@@ -541,11 +506,6 @@ It supports the following formats:
 If no prefix is specified, WKT definition is assumed.
 
 :param definition: A String containing a coordinate reference system definition.
-
-.. note::
-
-   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
-   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 
 :return: ``True`` on success else ``False``
 %End
@@ -571,14 +531,9 @@ For more details on supported formats see OGRSpatialReference.SetFromUserInput()
 
    this function generates a WKT string using OSRSetFromUserInput() and
    passes it to :py:func:`~QgsCoordinateReferenceSystem.createFromWkt` function.
-
-.. note::
-
-   This method uses an internal cache to speed up creation of multiple CRS with the same definition.
-   Call :py:func:`~QgsCoordinateReferenceSystem.invalidateCache` to clear the cache.
 %End
 
- static void setupESRIWktFix() /Deprecated="Since 3.10. Not used on builds based on Proj version 6 or later."/;
+ static void setupESRIWktFix() /Deprecated/;
 %Docstring
 Make sure that ESRI WKT import is done properly.
 This is required for proper shapefile CRS import when using gdal>= 1.9.
@@ -623,7 +578,7 @@ if that involves resorting to a hard coded default of geocs:wgs84.
 %End
 
 
- long findMatchingProj() /Deprecated="Since 3.10. Not used in Proj >= 6 based builds."/;
+ long findMatchingProj() /Deprecated/;
 %Docstring
 Walks the CRS databases (both system and user database) trying to match
 stored PROJ string to a database entry in order to fill in further
@@ -766,7 +721,7 @@ This is only used on builds based on Proj >= 6.
 .. seealso:: :py:func:`toProj`
 %End
 
- QString toProj4() const /Deprecated="Since 3.10. Use toProj() instead."/;
+ QString toProj4() const /Deprecated/;
 %Docstring
 Returns a Proj string representation of this CRS.
 
@@ -839,7 +794,7 @@ plate-fixed.
 .. versionadded:: 3.20
 %End
 
-    QgsDatumEnsemble datumEnsemble() const;
+    QgsDatumEnsemble datumEnsemble() const throw( QgsNotSupportedException );
 %Docstring
 Attempts to retrieve datum ensemble details from the CRS.
 
@@ -859,7 +814,7 @@ be returned.
 .. versionadded:: 3.20
 %End
 
-    QString celestialBodyName() const;
+    QString celestialBodyName() const throw( QgsNotSupportedException );
 %Docstring
 Attempts to retrieve the name of the celestial body associated with the CRS (e.g. "Earth").
 
@@ -1185,7 +1140,7 @@ Returns auth id of related geographic CRS
 %End
 
 
- static QStringList recentProjections() /Deprecated="Since 3.10. Use QgsApplication.coordinateReferenceSystemRegistry()->recentCrs() instead."/;
+ static QStringList recentProjections() /Deprecated/;
 %Docstring
 Returns a list of recently used projections
 
@@ -1196,7 +1151,7 @@ Returns a list of recently used projections
    Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.recentCrs` instead.
 %End
 
- static QList< QgsCoordinateReferenceSystem > recentCoordinateReferenceSystems() /Deprecated="Since 3.36. Use QgsApplication.coordinateReferenceSystemRegistry()->recentCrs() instead."/;
+ static QList< QgsCoordinateReferenceSystem > recentCoordinateReferenceSystems() /Deprecated/;
 %Docstring
 Returns a list of recently used CRS.
 
@@ -1205,7 +1160,7 @@ Returns a list of recently used CRS.
    Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.recentCrs` instead.
 %End
 
- static void pushRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs ) /Deprecated="Since 3.36. Use QgsApplication.coordinateReferenceSystemRegistry()->pushRecent() instead."/;
+ static void pushRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs ) /Deprecated/;
 %Docstring
 Pushes a recently used CRS to the top of the recent CRS list.
 
@@ -1214,7 +1169,7 @@ Pushes a recently used CRS to the top of the recent CRS list.
    Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.pushRecent` instead.
 %End
 
- static void removeRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs ) /Deprecated="Since 3.36. Use QgsApplication.coordinateReferenceSystemRegistry()->removeRecent() instead."/;
+ static void removeRecentCoordinateReferenceSystem( const QgsCoordinateReferenceSystem &crs ) /Deprecated/;
 %Docstring
 Removes a CRS from the list of recently used CRS.
 
@@ -1223,7 +1178,7 @@ Removes a CRS from the list of recently used CRS.
    Use :py:func:`QgsApplication.coordinateReferenceSystemRegistry()`->:py:func:`~QgsCoordinateReferenceSystem.removeRecent` instead.
 %End
 
- static void clearRecentCoordinateReferenceSystems() /Deprecated="Since 3.36. Use QgsApplication.coordinateReferenceSystemRegistry()->clearRecent() instead."/;
+ static void clearRecentCoordinateReferenceSystems() /Deprecated/;
 %Docstring
 Cleans the list of recently used CRS.
 

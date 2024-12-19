@@ -21,58 +21,12 @@
 #include <QEventLoop>
 #include <QTimer>
 #include <QMutex>
-#include <QReadWriteLock>
-#include <QThread>
 
 #include "qgsauthmethod.h"
 #include "qgsauthmethodmetadata.h"
 
+
 class QgsO2;
-class QgsAuthOAuth2Config;
-
-/**
- * A long-running thread on which all QgsO2 objects run.
- *
- * We have to take care that we don't directly create QgsO2 objects on the thread
- * where the authentication request is occurring, as QgsO2 objects are long running
- * but the thread requesting authentication may be short-lived.
- *
- * Accordingly, all QgsO2 objects run on an instance of QgsOAuth2Factory
- * (see QgsOAuth2Factory::instance()). This ensures that they will run
- * on a thread with an application-long lifetime.
- *
- * \ingroup auth_plugins
- * \since QGIS 3.42
- */
-class QgsOAuth2Factory : public QThread
-{
-    Q_OBJECT
-
-  public:
-    /**
-     * Creates a new QgsO2 object, ensuring that it is correctly created on the
-     * QgsOAuth2Factory thread instance.
-     *
-     * The \a oauth2config object will be re-parented to the new QgsO2 object.
-     */
-    static QgsO2 *createO2( const QString &authcfg, QgsAuthOAuth2Config *oauth2config );
-
-    /**
-     * Request linking a \a o2 object. This ensures that the link is done
-     * in a thread-safe manner.
-     */
-    static void requestLink( QgsO2 *o2 );
-
-  private:
-    static QgsOAuth2Factory *instance();
-
-    QgsOAuth2Factory( QObject *parent = nullptr );
-
-    QgsO2 *createO2Private( const QString &authcfg, QgsAuthOAuth2Config *oauth2config );
-
-    static QgsOAuth2Factory *sInstance;
-};
-
 
 /**
  * The QgsAuthOAuth2Method class handles all network connection operation for the OAuth2 authentication plugin
@@ -84,6 +38,7 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     Q_OBJECT
 
   public:
+
     static const QString AUTH_METHOD_KEY;
     static const QString AUTH_METHOD_DESCRIPTION;
     static const QString AUTH_METHOD_DISPLAY_DESCRIPTION;
@@ -100,13 +55,16 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     QString displayDescription() const override;
 
     //! Update network \a request with given \a authcfg and optional \a dataprovider
-    bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider = QString() ) override;
+    bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
+                               const QString &dataprovider = QString() ) override;
 
     //! Update network \a reply with given \a authcfg and optional \a dataprovider
-    bool updateNetworkReply( QNetworkReply *reply, const QString &authcfg, const QString &dataprovider ) override;
+    bool updateNetworkReply( QNetworkReply *reply, const QString &authcfg,
+                             const QString &dataprovider ) override;
 
     //! Update data source \a connectionItems with given \a authcfg and optional \a dataprovider
-    bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg, const QString &dataprovider = QString() ) override;
+    bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
+                                   const QString &dataprovider = QString() ) override;
 
     //! Clear cached configuration for given \a authcfg
     void clearCachedConfig( const QString &authcfg ) override;
@@ -138,7 +96,7 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     void onAuthCode();
 
 #ifdef HAVE_GUI
-    QWidget *editWidget( QWidget *parent ) const override;
+    QWidget *editWidget( QWidget *parent )const override;
 #endif
 
   signals:
@@ -147,18 +105,18 @@ class QgsAuthOAuth2Method : public QgsAuthMethod
     void setAuthCode( const QString code );
 
   private:
+    QString mTempStorePath;
+
     QgsO2 *getOAuth2Bundle( const QString &authcfg, bool fullconfig = true );
 
     void putOAuth2Bundle( const QString &authcfg, QgsO2 *bundle );
 
     void removeOAuth2Bundle( const QString &authcfg );
 
-    QReadWriteLock mO2CacheLock;
-    QMap<QString, QgsO2 *> mOAuth2ConfigCache;
+    static QMap<QString, QgsO2 *> sOAuth2ConfigCache;
 
     QgsO2 *authO2( const QString &authcfg );
 
-    // TODO: This mutex does not appear to be protecting anything which is thread-unsafe?
     QRecursiveMutex mNetworkRequestMutex;
 };
 
@@ -169,7 +127,7 @@ class QgsAuthOAuth2MethodMetadata : public QgsAuthMethodMetadata
     QgsAuthOAuth2MethodMetadata()
       : QgsAuthMethodMetadata( QgsAuthOAuth2Method::AUTH_METHOD_KEY, QgsAuthOAuth2Method::AUTH_METHOD_DESCRIPTION )
     {}
-    QgsAuthOAuth2Method *createAuthMethod() const override { return new QgsAuthOAuth2Method; }
+    QgsAuthOAuth2Method *createAuthMethod() const override {return new QgsAuthOAuth2Method;}
     //QStringList supportedDataProviders() const override;
 };
 

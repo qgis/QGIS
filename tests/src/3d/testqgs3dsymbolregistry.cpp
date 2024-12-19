@@ -33,6 +33,7 @@ class Dummy3DSymbol : public QgsAbstract3DSymbol
     void readXml( const QDomElement &, const QgsReadWriteContext & ) override {}
 
     static QgsAbstract3DSymbol *create() { return new Dummy3DSymbol(); }
+
 };
 
 class TestQgs3DSymbolRegistry : public QgsTest
@@ -57,6 +58,7 @@ class TestQgs3DSymbolRegistry : public QgsTest
     void defaultSymbolForGeometryType();
 
   private:
+
 };
 
 void TestQgs3DSymbolRegistry::initTestCase()
@@ -72,10 +74,12 @@ void TestQgs3DSymbolRegistry::cleanupTestCase()
 
 void TestQgs3DSymbolRegistry::init()
 {
+
 }
 
 void TestQgs3DSymbolRegistry::cleanup()
 {
+
 }
 
 void TestQgs3DSymbolRegistry::metadata()
@@ -85,7 +89,7 @@ void TestQgs3DSymbolRegistry::metadata()
   QCOMPARE( metadata.visibleName(), QString( "display name" ) );
 
   //test creating symbol from metadata
-  const std::unique_ptr<QgsAbstract3DSymbol> symbol( metadata.create() );
+  const std::unique_ptr< QgsAbstract3DSymbol > symbol( metadata.create() );
   QVERIFY( symbol );
   Dummy3DSymbol *dummySymbol = dynamic_cast<Dummy3DSymbol *>( symbol.get() );
   QVERIFY( dummySymbol );
@@ -118,7 +122,7 @@ void TestQgs3DSymbolRegistry::addSymbol()
   QCOMPARE( registry->symbolTypes().length(), previousCount + 1 );
   //try adding again, should have no effect
   Qgs3DSymbolMetadata *dupe = new Qgs3DSymbolMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy symbol" ), Dummy3DSymbol::create );
-  QVERIFY( !registry->addSymbolType( dupe ) );
+  QVERIFY( ! registry->addSymbolType( dupe ) );
   QCOMPARE( registry->symbolTypes().length(), previousCount + 1 );
   delete dupe;
 
@@ -145,7 +149,7 @@ void TestQgs3DSymbolRegistry::fetchTypes()
 void TestQgs3DSymbolRegistry::createSymbol()
 {
   Qgs3DSymbolRegistry *registry = QgsApplication::symbol3DRegistry();
-  std::unique_ptr<QgsAbstract3DSymbol> symbol( registry->createSymbol( QStringLiteral( "Dummy" ) ) );
+  std::unique_ptr< QgsAbstract3DSymbol > symbol( registry->createSymbol( QStringLiteral( "Dummy" ) ) );
 
   QVERIFY( symbol.get() );
   Dummy3DSymbol *dummySymbol = dynamic_cast<Dummy3DSymbol *>( symbol.get() );
@@ -159,7 +163,7 @@ void TestQgs3DSymbolRegistry::createSymbol()
 void TestQgs3DSymbolRegistry::defaultSymbolForGeometryType()
 {
   Qgs3DSymbolRegistry *registry = QgsApplication::symbol3DRegistry();
-  std::unique_ptr<QgsAbstract3DSymbol> symbol( registry->defaultSymbolForGeometryType( Qgis::GeometryType::Point ) );
+  std::unique_ptr< QgsAbstract3DSymbol > symbol( registry->defaultSymbolForGeometryType( Qgis::GeometryType::Point ) );
   QCOMPARE( symbol->type(), QStringLiteral( "point" ) );
   symbol.reset( registry->defaultSymbolForGeometryType( Qgis::GeometryType::Line ) );
   QCOMPARE( symbol->type(), QStringLiteral( "line" ) );

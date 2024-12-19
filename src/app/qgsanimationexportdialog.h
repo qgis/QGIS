@@ -35,15 +35,18 @@ class QgsMapCanvas;
  * \brief A dialog for specifying map animation export settings.
  * \since QGIS 3.14
 */
-class APP_EXPORT QgsAnimationExportDialog : public QDialog, private Ui::QgsAnimationExportDialogBase
+class APP_EXPORT QgsAnimationExportDialog: public QDialog, private Ui::QgsAnimationExportDialogBase
 {
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAnimationExportDialog
      */
-    QgsAnimationExportDialog( QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr, const QList<QgsMapDecoration *> &decorations = QList<QgsMapDecoration *>() );
+    QgsAnimationExportDialog( QWidget *parent = nullptr,
+                              QgsMapCanvas *mapCanvas = nullptr,
+                              const QList< QgsMapDecoration * > &decorations = QList< QgsMapDecoration * >() );
 
     //! Returns extent rectangle
     QgsRectangle extent() const;
@@ -52,10 +55,10 @@ class APP_EXPORT QgsAnimationExportDialog : public QDialog, private Ui::QgsAnima
     QSize size() const;
 
     //! Returns output directory for frames
-    QString outputDirectory() const;
+    QString outputDirectory( ) const;
 
     //! Returns filename template for frames
-    QString fileNameExpression() const;
+    QString fileNameExpression( ) const;
 
     //! Returns the overall animation range
     QgsDateTimeRange animationRange() const;
@@ -78,6 +81,7 @@ class APP_EXPORT QgsAnimationExportDialog : public QDialog, private Ui::QgsAnima
     void setToProjectTime();
 
   private:
+
     void lockChanged( bool locked );
 
     void updateOutputWidth( int width );
@@ -91,6 +95,7 @@ class APP_EXPORT QgsAnimationExportDialog : public QDialog, private Ui::QgsAnima
     QSize mSize;
 
     QString mInfoDetails;
+
 };
 
 #endif // QGSANIMATIONEXPORTDIALOG_H

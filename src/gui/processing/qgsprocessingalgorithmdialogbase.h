@@ -49,6 +49,7 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingAlgorithmDialogFeedback.
      */
@@ -75,6 +76,7 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
     void pushDebugInfo( const QString &info ) override;
     void pushConsoleInfo( const QString &info ) override;
     void pushFormattedMessage( const QString &html, const QString &text ) override;
+
 };
 #endif
 
@@ -88,6 +90,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     Q_OBJECT
 
   public:
+
     /**
      * Log format options.
      * \since QGIS 3.2
@@ -95,7 +98,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     enum LogFormat
     {
       FormatPlainText, //!< Plain text file (.txt)
-      FormatHtml,      //!< HTML file (.html)
+      FormatHtml, //!< HTML file (.html)
     };
 
     /**
@@ -106,7 +109,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     enum class DialogMode : int
     {
       Single, //!< Single algorithm execution mode
-      Batch,  //!< Batch processing mode
+      Batch, //!< Batch processing mode
     };
     Q_ENUM( QgsProcessingAlgorithmDialogBase::DialogMode )
 
@@ -285,6 +288,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     void reject() override;
 
   protected:
+
     void closeEvent( QCloseEvent *e ) override;
 
     /**
@@ -457,6 +461,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     void urlClicked( const QUrl &url );
 
   private:
+
     DialogMode mMode = DialogMode::Single;
 
     QPushButton *mButtonRun = nullptr;
@@ -475,7 +480,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     bool mExecutedAnyResult = false;
     QVariantMap mResults;
     QgsPanelWidget *mMainWidget = nullptr;
-    std::unique_ptr<QgsProcessingAlgorithm> mAlgorithm;
+    std::unique_ptr< QgsProcessingAlgorithm > mAlgorithm;
     QgsProcessingAlgRunnerTask *mAlgorithmTask = nullptr;
 
     bool mHelpCollapsed = false;
@@ -484,7 +489,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
 
     Qgis::ProcessingLogLevel mLogLevel = Qgis::ProcessingLogLevel::DefaultLevel;
 
-    QPointer<QgsProcessingContextOptionsWidget> mContextOptionsWidget;
+    QPointer< QgsProcessingContextOptionsWidget > mContextOptionsWidget;
     bool mOverrideDefaultContextSettings = false;
     Qgis::InvalidGeometryCheck mGeometryCheck = Qgis::InvalidGeometryCheck::AbortOnInvalid;
     Qgis::DistanceUnit mDistanceUnits = Qgis::DistanceUnit::Unknown;
@@ -495,6 +500,7 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, public QgsPr
     QString formatHelp( QgsProcessingAlgorithm *algorithm );
     void scrollToBottomOfLog();
     void processEvents();
+
 };
 
 #ifndef SIP_RUN
@@ -509,6 +515,7 @@ class QgsProcessingAlgorithmProgressDialog : public QDialog, private Ui::QgsProc
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingAlgorithmProgressDialog.
      */
@@ -532,6 +539,7 @@ class QgsProcessingAlgorithmProgressDialog : public QDialog, private Ui::QgsProc
   public slots:
 
     void reject() override;
+
 };
 
 /**
@@ -545,6 +553,7 @@ class GUI_EXPORT QgsProcessingContextOptionsWidget : public QgsPanelWidget, priv
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingContextOptionsWidget, with the specified \a parent widget.
      */

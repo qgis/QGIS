@@ -7,10 +7,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Germán Carrillo"
-__date__ = "31.8.2021"
-__copyright__ = "Copyright 2021, The QGIS Project"
+__author__ = 'Germán Carrillo'
+__date__ = '31.8.2021'
+__copyright__ = 'Copyright 2021, The QGIS Project'
 
 import os
 
@@ -44,21 +43,13 @@ class TestPythonUtils(QgisTestCase):
 
     def test_sort_by_dependency(self):
         plugins = ["dependent_plugin_2", "dependent_plugin_1", "PluginPathTest"]
-        plugin_name_map = {
-            "Dependent plugin 2": "dependent_plugin_2",
-            "Dependent plugin 1": "dependent_plugin_1",
-            "plugin path test": "PluginPathTest",
-        }
+        plugin_name_map = {"Dependent plugin 2": "dependent_plugin_2", "Dependent plugin 1": "dependent_plugin_1", "plugin path test": "PluginPathTest"}
 
         utils.plugin_paths = [os.path.join(unitTestDataPath(), "test_plugin_path")]
         utils.updateAvailablePlugins()  # Required to have a proper plugins_metadata_parser
         sorted_plugins = utils._sortAvailablePlugins(plugins, plugin_name_map)
 
-        expected_sorted_plugins = [
-            "PluginPathTest",
-            "dependent_plugin_1",
-            "dependent_plugin_2",
-        ]
+        expected_sorted_plugins = ["PluginPathTest", "dependent_plugin_1", "dependent_plugin_2"]
         self.assertEqual(sorted_plugins, expected_sorted_plugins)
 
     def test_sort_by_dependency_move_plugin(self):
@@ -71,18 +62,7 @@ class TestPythonUtils(QgisTestCase):
         for plugin in plugins:
             utils._move_plugin(plugin, deps, visited, sorted_plugins)
 
-        expected_sorted_plugins = [
-            "MSP",
-            "P1",
-            "P2",
-            "MB",
-            "A",
-            "LA",
-            "LPA",
-            "P3",
-            "LAA",
-            "P4",
-        ]
+        expected_sorted_plugins = ["MSP", "P1", "P2", "MB", "A", "LA", "LPA", "P3", "LAA", "P4"]
 
         self.assertEqual(sorted_plugins, expected_sorted_plugins)
 

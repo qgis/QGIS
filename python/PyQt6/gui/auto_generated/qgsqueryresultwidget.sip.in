@@ -12,7 +12,7 @@
 
 
 
-class QgsQueryResultWidget : QWidget
+class QgsQueryResultWidget: QWidget
 {
 %Docstring(signature="appended")
 The :py:class:`QgsQueryResultWidget` class allows users to enter and run an SQL query on a
@@ -35,6 +35,8 @@ be used in different contexts like when updating the SQL of an existing query la
 #include "qgsqueryresultwidget.h"
 %End
   public:
+
+
     enum class QueryWidgetMode /BaseType=IntFlag/
     {
       SqlQueryMode,

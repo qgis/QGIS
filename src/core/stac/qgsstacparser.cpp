@@ -14,11 +14,6 @@
  ***************************************************************************/
 
 #include "qgsstacparser.h"
-#include "qgsstacitem.h"
-#include "qgsstaccatalog.h"
-#include "qgsstaccollection.h"
-#include "qgsstaccollections.h"
-#include "qgsstacitemcollection.h"
 #include "qgsjsonutils.h"
 #include "qgslogger.h"
 
@@ -26,29 +21,9 @@
 void QgsStacParser::setData( const QByteArray &data )
 {
   mError = QString();
-  mType = QgsStacObject::Type::Unknown;
   try
   {
     mData = nlohmann::json::parse( data.data() );
-    if ( mData.contains( "stac_version" ) )
-    {
-      const QString ver( QString::fromStdString( mData.at( "stac_version" ) ) );
-      if ( !isSupportedStacVersion( ver ) )
-      {
-        mError = QStringLiteral( "Unsupported STAC version: %1" ).arg( ver );
-        return;
-      }
-    }
-  }
-  catch ( nlohmann::json::exception &ex )
-  {
-    mError = QStringLiteral( "Error parsing JSON" );
-    QgsDebugError( QStringLiteral( "Error parsing JSON : %1" ).arg( ex.what() ) );
-    return;
-  }
-
-  try
-  {
     if ( mData.at( "type" ) == "Catalog" )
     {
       mType = QgsStacObject::Type::Catalog;
@@ -61,16 +36,17 @@ void QgsStacParser::setData( const QByteArray &data )
     {
       mType = QgsStacObject::Type::Item;
     }
+    else
+    {
+      mType = QgsStacObject::Type::Unknown;
+    }
   }
   catch ( nlohmann::json::exception &ex )
   {
-    // might still be FeatureCollection or Collections Collection
+    mError = QStringLiteral( "Error parsing JSON" );
+    QgsDebugError( QStringLiteral( "Error parsing JSON : %1" ).arg( ex.what() ) );
+    mType = QgsStacObject::Type::Unknown;
   }
-}
-
-void QgsStacParser::setBaseUrl( const QUrl &url )
-{
-  mBaseUrl = url;
 }
 
 QgsStacObject::Type QgsStacParser::type() const
@@ -85,49 +61,42 @@ QString QgsStacParser::error() const
 
 QgsStacCatalog *QgsStacParser::catalog()
 {
-  return parseCatalog( mData );
-}
-
-QgsStacCatalog *QgsStacParser::parseCatalog( const nlohmann::json &data )
-{
   try
   {
-    const QString ver( QString::fromStdString( data.at( "stac_version" ) ) );
+    const QString ver( QString::fromStdString( mData.at( "stac_version" ) ) );
     if ( !isSupportedStacVersion( ver ) )
     {
       mError = QStringLiteral( "Unsupported STAC version: %1" ).arg( ver );
       return nullptr;
     }
 
-    const QString id( QString::fromStdString( data.at( "id" ) ) );
-    const QString description( getString( data.at( "description" ) ) );
+    const QString id( QString::fromStdString( mData.at( "id" ) ) );
+    const QString description( QString::fromStdString( mData.at( "description" ) ) );
 
-    QVector< QgsStacLink > links = parseLinks( data.at( "links" ) );
+    QVector< QgsStacLink > links = parseLinks( mData.at( "links" ) );
 
     std::unique_ptr< QgsStacCatalog > catalog = std::make_unique< QgsStacCatalog >( id,
         ver,
         description,
         links );
 
-    if ( data.contains( "title" ) )
-      catalog->setTitle( getString( data["title"] ) );
+    if ( mData.contains( "title" ) )
+      catalog->setTitle( QString::fromStdString( mData["title"] ) );
 
-    if ( data.contains( "conformsTo" ) )
+    if ( mData.contains( "conformsTo" ) )
     {
-      for ( const auto &conformanceClass : data["conformsTo"] )
+      for ( const auto &conformanceClass : mData["conformsTo"] )
       {
-        if ( conformanceClass.is_string() )
-          catalog->addConformanceClass( QString::fromStdString( conformanceClass ) );
+        catalog->addConformanceClass( QString::fromStdString( conformanceClass ) );
       }
     }
 
-    if ( data.contains( "stac_extensions" ) )
+    if ( mData.contains( "stac_extensions" ) )
     {
       QStringList extensions;
-      for ( const auto &extension : data["stac_extensions"] )
+      for ( const auto &extension : mData["stac_extensions"] )
       {
-        if ( extension.is_string() )
-          extensions.append( QString::fromStdString( extension ) );
+        extensions.append( QString::fromStdString( extension ) );
       }
       catalog->setStacExtensions( extensions );
     }
@@ -144,27 +113,22 @@ QgsStacCatalog *QgsStacParser::parseCatalog( const nlohmann::json &data )
 
 QgsStacCollection *QgsStacParser::collection()
 {
-  return parseCollection( mData );
-}
-
-QgsStacCollection *QgsStacParser::parseCollection( const nlohmann::json &data )
-{
   try
   {
-    const QString ver( QString::fromStdString( data.at( "stac_version" ) ) );
+    const QString ver( QString::fromStdString( mData.at( "stac_version" ) ) );
     if ( !isSupportedStacVersion( ver ) )
     {
       mError = QStringLiteral( "Unsupported STAC version: %1" ).arg( ver );
       return nullptr;
     }
 
-    const QString id( QString::fromStdString( data.at( "id" ) ) );
-    const QString description( getString( data.at( "description" ) ) );
-    const QString license( getString( data.at( "license" ) ) );
+    const QString id( QString::fromStdString( mData.at( "id" ) ) );
+    const QString description( QString::fromStdString( mData.at( "description" ) ) );
+    const QString license( QString::fromStdString( mData.at( "license" ) ) );
 
     QgsStacExtent stacExtent;
     int totalExtents = 0;
-    for ( const auto &e : data.at( "extent" ).at( "spatial" ).at( "bbox" ) )
+    for ( const auto &e : mData.at( "extent" ).at( "spatial" ).at( "bbox" ) )
     {
       QgsBox3D extent;
       if ( e.size() == 4 )
@@ -198,7 +162,7 @@ QgsStacCollection *QgsStacParser::parseCollection( const nlohmann::json &data )
     }
 
     totalExtents = 0;
-    for ( const auto &e : data.at( "extent" ).at( "temporal" ).at( "interval" ) )
+    for ( const auto &e : mData.at( "extent" ).at( "temporal" ).at( "interval" ) )
     {
       if ( !e.is_array() ||
            e.size() != 2 )
@@ -207,8 +171,8 @@ QgsStacCollection *QgsStacParser::parseCollection( const nlohmann::json &data )
         QgsDebugError( mError );
         return nullptr;
       }
-      const QDateTime start = QDateTime::fromString( getString( e[0] ), Qt::ISODateWithMs );
-      const QDateTime end = QDateTime::fromString( getString( e[1] ), Qt::ISODateWithMs );
+      const QDateTime start = e[0].is_null() ? QDateTime() : QDateTime::fromString( QString::fromStdString( e[0] ), Qt::ISODateWithMs );
+      const QDateTime end = e[1].is_null() ? QDateTime() : QDateTime::fromString( QString::fromStdString( e[1] ), Qt::ISODateWithMs );
 
       if ( ++totalExtents == 1 )
         stacExtent.setTemporalExtent( QgsDateTimeRange( start, end ) );
@@ -216,7 +180,7 @@ QgsStacCollection *QgsStacParser::parseCollection( const nlohmann::json &data )
         stacExtent.addDetailedTemporalExtent( QgsDateTimeRange( start, end ) );
     }
 
-    QVector< QgsStacLink > links = parseLinks( data.at( "links" ) );
+    QVector< QgsStacLink > links = parseLinks( mData.at( "links" ) );
 
     std::unique_ptr< QgsStacCollection > collection = std::make_unique< QgsStacCollection >( id,
         ver,
@@ -225,35 +189,33 @@ QgsStacCollection *QgsStacParser::parseCollection( const nlohmann::json &data )
         license,
         stacExtent );
 
-    if ( data.contains( "title" ) )
-      collection->setTitle( getString( data["title"] ) );
+    if ( mData.contains( "title" ) )
+      collection->setTitle( QString::fromStdString( mData["title"] ) );
 
-    if ( data.contains( "stac_extensions" ) )
+    if ( mData.contains( "stac_extensions" ) )
     {
       QStringList extensions;
-      for ( const auto &extension : data["stac_extensions"] )
+      for ( const auto &extension : mData["stac_extensions"] )
       {
-        if ( extension.is_string() )
-          extensions.append( QString::fromStdString( extension ) );
+        extensions.append( QString::fromStdString( extension ) );
       }
       collection->setStacExtensions( extensions );
     }
 
-    if ( data.contains( "keywords" ) )
+    if ( mData.contains( "keywords" ) )
     {
       QStringList keywords;
-      for ( const auto &kw : data["keywords"] )
+      for ( const auto &kw : mData["keywords"] )
       {
-        if ( kw.is_string() )
-          keywords.append( QString::fromStdString( kw ) );
+        keywords.append( QString::fromStdString( kw ) );
       }
       collection->setKeywords( keywords );
     }
 
-    if ( data.contains( "providers" ) )
+    if ( mData.contains( "providers" ) )
     {
       QVector< QgsStacProvider > providers;
-      for ( const auto &p : data["providers"] )
+      for ( const auto &p : mData["providers"] )
       {
         if ( !p.contains( "name" ) ||
              ( p.contains( "roles" ) && !p["roles"].is_array() ) )
@@ -267,14 +229,13 @@ QgsStacCollection *QgsStacParser::parseCollection( const nlohmann::json &data )
         {
           for ( const auto &role : p["roles"] )
           {
-            if ( role.is_string() )
-              roles.append( QString::fromStdString( role ) );
+            roles.append( QString::fromStdString( role ) );
           }
         }
         const QgsStacProvider provider( QString::fromStdString( p["name"] ),
-                                        p.contains( "description" ) ? getString( p["description"] ) : QString(),
+                                        p.contains( "description" ) ? QString::fromStdString( p["description"] ) : QString(),
                                         roles,
-                                        p.contains( "url" ) ? getString( p["url"] ) : QString() );
+                                        p.contains( "url" ) ? QString::fromStdString( p["url"] ) : QString() );
 
 
 
@@ -283,15 +244,15 @@ QgsStacCollection *QgsStacParser::parseCollection( const nlohmann::json &data )
       collection->setProviders( providers );
     }
 
-    if ( data.contains( "summaries" ) )
+    if ( mData.contains( "summaries" ) )
     {
-      const QVariant summ = QgsJsonUtils::jsonToVariant( data["summaries"] );
+      const QVariant summ = QgsJsonUtils::jsonToVariant( mData["summaries"] );
       collection->setSummaries( summ.toMap() );
     }
 
-    if ( data.contains( "assets" ) )
+    if ( mData.contains( "assets" ) )
     {
-      QMap< QString, QgsStacAsset > assets = parseAssets( data["assets"] );
+      QMap< QString, QgsStacAsset > assets = parseAssets( mData["assets"] );
       collection->setAssets( assets );
     }
 
@@ -384,14 +345,13 @@ QgsStacItem *QgsStacParser::parseItem( const nlohmann::json &data )
       QStringList extensions;
       for ( const auto &extension : data["stac_extensions"] )
       {
-        if ( extension.is_string() )
-          extensions.append( QString::fromStdString( extension ) );
+        extensions.append( QString::fromStdString( extension ) );
       }
       item->setStacExtensions( extensions );
     }
 
     if ( data.contains( "collection" ) )
-      item->setCollection( getString( data["collection"] ) );
+      item->setCollection( QString::fromStdString( data["collection"] ) );
 
     return item.release();
   }
@@ -409,14 +369,10 @@ QVector<QgsStacLink> QgsStacParser::parseLinks( const json &data )
   links.reserve( static_cast<int>( data.size() ) );
   for ( const auto &link : data )
   {
-    QUrl linkUrl( QString::fromStdString( link.at( "href" ) ) );
-    if ( linkUrl.isRelative() )
-      linkUrl = mBaseUrl.resolved( linkUrl );
-
-    const QgsStacLink l( linkUrl.toString(),
+    const QgsStacLink l( QString::fromStdString( link.at( "href" ) ),
                          QString::fromStdString( link.at( "rel" ) ),
-                         link.contains( "type" ) ? getString( link["type"] ) : QString(),
-                         link.contains( "title" ) ? getString( link["title"] ) : QString() );
+                         link.contains( "type" ) ? QString::fromStdString( link["type"] ) : QString(),
+                         link.contains( "title" ) ? QString::fromStdString( link["title"] ) : QString() );
     links.append( l );
   }
   return links;
@@ -428,14 +384,10 @@ QMap<QString, QgsStacAsset> QgsStacParser::parseAssets( const json &data )
   for ( const auto &asset : data.items() )
   {
     const json value = asset.value();
-    QUrl assetUrl( QString::fromStdString( value.at( "href" ) ) );
-    if ( assetUrl.isRelative() )
-      assetUrl = mBaseUrl.resolved( assetUrl );
-
-    const QgsStacAsset a( assetUrl.toString(),
-                          value.contains( "title" ) ? getString( value["title"] ) : QString(),
-                          value.contains( "description" ) ? getString( value["description"] ) : QString(),
-                          value.contains( "type" ) ? getString( value["type"] ) : QString(),
+    const QgsStacAsset a( QString::fromStdString( value.at( "href" ) ),
+                          value.contains( "title" ) ? QString::fromStdString( value["title"] ) : QString(),
+                          value.contains( "description" ) ? QString::fromStdString( value["description"] ) : QString(),
+                          value.contains( "type" ) ? QString::fromStdString( value["type"] ) : QString(),
                           value.contains( "roles" ) ? QgsJsonUtils::jsonToVariant( value["roles"] ).toStringList() : QStringList() );
     assets.insert( QString::fromStdString( asset.key() ), a );
   }
@@ -473,11 +425,6 @@ bool QgsStacParser::isSupportedStacVersion( const QString &version )
   return true;
 }
 
-QString QgsStacParser::getString( const nlohmann::json &data )
-{
-  return data.is_null() ? QString() : QString::fromStdString( data );
-}
-
 QgsStacItemCollection *QgsStacParser::itemCollection()
 {
   try
@@ -496,33 +443,6 @@ QgsStacItemCollection *QgsStacParser::itemCollection()
     const int numberMatched = mData.contains( "numberMatched" ) ? mData["numberMatched"].get<int>() : -1;
 
     return new QgsStacItemCollection( items, links, numberMatched );
-  }
-  catch ( nlohmann::json::exception &ex )
-  {
-    mError = QStringLiteral( "Error parsing ItemCollection" );
-    QgsDebugError( QStringLiteral( "Error parsing ItemCollection: %1" ).arg( ex.what() ) );
-    return nullptr;
-  }
-}
-
-QgsStacCollections *QgsStacParser::collections()
-{
-  try
-  {
-    QVector< QgsStacLink > links = parseLinks( mData.at( "links" ) );
-
-    QVector< QgsStacCollection * > cols;
-    cols.reserve( static_cast<int>( mData.at( "collections" ).size() ) );
-    for ( auto &col : mData.at( "collections" ) )
-    {
-      QgsStacCollection *c = parseCollection( col );
-      if ( c )
-        cols.append( c );
-    }
-
-    const int numberMatched = mData.contains( "numberMatched" ) ? mData["numberMatched"].get<int>() : -1;
-
-    return new QgsStacCollections( cols, links, numberMatched );
   }
   catch ( nlohmann::json::exception &ex )
   {

@@ -46,6 +46,7 @@ class GUI_EXPORT QgsTextPreview : public QLabel
     Q_PROPERTY( Qgis::DistanceUnit mapUnits READ mapUnits WRITE setMapUnits )
 
   public:
+
     /**
      * Constructor for QgsTextPreview
      * \param parent parent widget
@@ -99,6 +100,7 @@ class GUI_EXPORT QgsTextPreview : public QLabel
     Qgis::DistanceUnit mapUnits() const { return mMapUnits; }
 
   private:
+
     QgsScreenHelper *mScreenHelper = nullptr;
 
     QgsTextFormat mFormat;

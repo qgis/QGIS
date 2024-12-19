@@ -55,6 +55,7 @@ class QgsFilterAlgorithmConfigurationWidgetFactory : public QgsProcessingAlgorit
 };
 
 
+
 class QgsConditionalBranchAlgorithmConfigurationWidget : public QgsProcessingAlgorithmConfigurationWidget
 {
     Q_OBJECT

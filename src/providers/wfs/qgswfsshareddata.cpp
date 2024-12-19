@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgswfsshareddata.h"
-#include "moc_qgswfsshareddata.cpp"
 #include "qgswfsprovider.h"
 #include "qgsogcutils.h"
 #include "qgsexpression.h"
@@ -81,7 +80,8 @@ QString QgsWFSSharedData::srsName() const
   QString srsName;
   if ( !mSourceCrs.authid().isEmpty() )
   {
-    if ( mWFSVersion.startsWith( QLatin1String( "1.0" ) ) || !mSourceCrs.authid().startsWith( QLatin1String( "EPSG:" ) ) ||
+    if ( mWFSVersion.startsWith( QLatin1String( "1.0" ) ) ||
+         !mSourceCrs.authid().startsWith( QLatin1String( "EPSG:" ) ) ||
          // For servers like Geomedia that advertise EPSG:XXXX in capabilities even in WFS 1.1 or 2.0
          mCaps.useEPSGColumnFormat )
     {
@@ -98,8 +98,10 @@ QString QgsWFSSharedData::srsName() const
 
 QString QgsWFSSharedData::computedExpression( const QgsExpression &expression ) const
 {
+
   if ( expression.isValid() )
   {
+
     QgsOgcUtils::GMLVersion gmlVersion;
     QgsOgcUtils::FilterVersion filterVersion;
     bool honourAxisOrientation = false;
@@ -118,11 +120,10 @@ QString QgsWFSSharedData::computedExpression( const QgsExpression &expression ) 
 
     QDomDocument expressionDoc;
     QDomElement expressionElem = QgsOgcUtils::expressionToOgcExpression(
-      expression, expressionDoc, gmlVersion, filterVersion, mGeometryAttribute,
-      srsName(), honourAxisOrientation, mURI.invertAxisOrientation(), nullptr,
-      true,
-      fieldNameToXPathMap, mNamespacePrefixToURIMap
-    );
+                                   expression, expressionDoc, gmlVersion, filterVersion, mGeometryAttribute,
+                                   srsName(), honourAxisOrientation, mURI.invertAxisOrientation(), nullptr,
+                                   true,
+                                   fieldNameToXPathMap, mNamespacePrefixToURIMap );
 
     if ( !expressionElem.isNull() )
     {
@@ -184,11 +185,10 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
 
     QDomDocument filterDoc;
     const QDomElement filterElem = QgsOgcUtils::SQLStatementToOgcFilter(
-      sql, filterDoc, gmlVersion, filterVersion, mLayerPropertiesList,
-      honourAxisOrientation, mURI.invertAxisOrientation(),
-      mCaps.mapUnprefixedTypenameToPrefixedTypename,
-      &errorMsg, fieldNameToXPathMap, mNamespacePrefixToURIMap
-    );
+                                     sql, filterDoc, gmlVersion, filterVersion, mLayerPropertiesList,
+                                     honourAxisOrientation, mURI.invertAxisOrientation(),
+                                     mCaps.mapUnprefixedTypenameToPrefixedTypename,
+                                     &errorMsg, fieldNameToXPathMap, mNamespacePrefixToURIMap );
     if ( !errorMsg.isEmpty() )
     {
       errorMsg = tr( "SQL statement to OGC Filter error: " ) + errorMsg;
@@ -228,13 +228,12 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
         }
 
         const QDomElement filterElem = QgsOgcUtils::expressionToOgcFilter(
-          filterExpression, filterDoc, gmlVersion, filterVersion,
-          mLayerPropertiesList.size() == 1 ? mLayerPropertiesList[0].mNamespacePrefix : QString(),
-          mLayerPropertiesList.size() == 1 ? mLayerPropertiesList[0].mNamespaceURI : QString(),
-          mGeometryAttribute,
-          srsName(), honourAxisOrientation, mURI.invertAxisOrientation(),
-          &errorMsg, fieldNameToXPathMap, mNamespacePrefixToURIMap
-        );
+                                         filterExpression, filterDoc, gmlVersion, filterVersion,
+                                         mLayerPropertiesList.size() == 1 ? mLayerPropertiesList[0].mNamespacePrefix : QString(),
+                                         mLayerPropertiesList.size() == 1 ? mLayerPropertiesList[0].mNamespaceURI : QString(),
+                                         mGeometryAttribute,
+                                         srsName(), honourAxisOrientation, mURI.invertAxisOrientation(),
+                                         &errorMsg, fieldNameToXPathMap, mNamespacePrefixToURIMap );
 
         if ( !errorMsg.isEmpty() )
         {
@@ -283,7 +282,7 @@ QgsGmlStreamingParser *QgsWFSSharedData::createParser() const
 
   if ( mLayerPropertiesList.size() > 1 )
   {
-    QList<QgsGmlStreamingParser::LayerProperties> layerPropertiesList;
+    QList< QgsGmlStreamingParser::LayerProperties > layerPropertiesList;
     const auto constMLayerPropertiesList = mLayerPropertiesList;
     for ( const QgsOgcUtils::LayerProperties &layerProperties : constMLayerPropertiesList )
     {
@@ -293,11 +292,19 @@ QgsGmlStreamingParser *QgsWFSSharedData::createParser() const
       layerPropertiesList << layerPropertiesOut;
     }
 
-    return new QgsGmlStreamingParser( layerPropertiesList, mFields, mMapFieldNameToSrcLayerNameFieldName, axisOrientationLogic, mURI.invertAxisOrientation() );
+    return new QgsGmlStreamingParser( layerPropertiesList,
+                                      mFields,
+                                      mMapFieldNameToSrcLayerNameFieldName,
+                                      axisOrientationLogic,
+                                      mURI.invertAxisOrientation() );
   }
   else
   {
-    auto parser = new QgsGmlStreamingParser( mURI.typeName(), mGeometryAttribute, mFields, axisOrientationLogic, mURI.invertAxisOrientation() );
+    auto parser = new QgsGmlStreamingParser( mURI.typeName(),
+        mGeometryAttribute,
+        mFields,
+        axisOrientationLogic,
+        mURI.invertAxisOrientation() );
     if ( !mFieldNameToXPathAndIsNestedContentMap.isEmpty() )
     {
       parser->setFieldsXPath( mFieldNameToXPathAndIsNestedContentMap, mNamespacePrefixToURIMap );
@@ -316,7 +323,7 @@ QgsRectangle QgsWFSSharedData::getExtentFromSingleFeatureRequest() const
 long long QgsWFSSharedData::getFeatureCountFromServer() const
 {
   QgsWFSFeatureHitsRequest request( mURI );
-  return request.getFeatureCount( mWFSVersion, combineWFSFilters( { mWFSFilter, mWFSGeometryTypeFilter } ), mCaps );
+  return request.getFeatureCount( mWFSVersion, combineWFSFilters( { mWFSFilter, mWFSGeometryTypeFilter} ), mCaps );
 }
 
 QString QgsWFSSharedData::combineWFSFilters( const std::vector<QString> &filters ) const
@@ -327,7 +334,7 @@ QString QgsWFSSharedData::combineWFSFilters( const std::vector<QString> &filters
   {
     if ( !filter.isEmpty() )
     {
-      countNonEmpty++;
+      countNonEmpty ++;
       nonEmptyFilter = filter;
     }
   }
@@ -347,7 +354,7 @@ QString QgsWFSSharedData::combineWFSFilters( const std::vector<QString> &filters
     QDomDocument doc;
     QDomNode node;
 
-    ( void ) doc.setContent( filter, !filter.contains( QStringLiteral( "BBOX" ) ) );
+    ( void )doc.setContent( filter, !filter.contains( QStringLiteral( "BBOX" ) ) );
     node = doc.firstChildElement().firstChildElement();
     node = doc.firstChildElement().removeChild( node );
     if ( !envelopeFilterDocSet || filter.contains( QStringLiteral( "BBOX" ) ) )
@@ -377,7 +384,8 @@ QString QgsWFSSharedData::combineWFSFilters( const std::vector<QString> &filters
       if ( subparts.size() == 2 && subparts[0] != QLatin1String( "gml" ) )
       {
         const auto iter = mNamespacePrefixToURIMap.constFind( subparts[0] );
-        if ( iter != mNamespacePrefixToURIMap.constEnd() && !setNamespaceURI.contains( *iter ) )
+        if ( iter != mNamespacePrefixToURIMap.constEnd() &&
+             !setNamespaceURI.contains( *iter ) )
         {
           setNamespaceURI.insert( *iter );
           QDomAttr attr = envelopeFilterDoc.createAttribute( QStringLiteral( "xmlns:" ) + subparts[0] );
@@ -388,7 +396,8 @@ QString QgsWFSSharedData::combineWFSFilters( const std::vector<QString> &filters
     }
   }
 
-  if ( mLayerPropertiesList.size() == 1 && envelopeFilterDoc.firstChildElement().hasAttribute( QStringLiteral( "xmlns:" ) + mLayerPropertiesList[0].mNamespacePrefix ) )
+  if ( mLayerPropertiesList.size() == 1 &&
+       envelopeFilterDoc.firstChildElement().hasAttribute( QStringLiteral( "xmlns:" ) + mLayerPropertiesList[0].mNamespacePrefix ) )
   {
     // nothing to do
   }
@@ -397,7 +406,8 @@ QString QgsWFSSharedData::combineWFSFilters( const std::vector<QString> &filters
     // add xmls:PREFIX=URI attributes to top element
     for ( const QgsOgcUtils::LayerProperties &props : std::as_const( mLayerPropertiesList ) )
     {
-      if ( !props.mNamespacePrefix.isEmpty() && !props.mNamespaceURI.isEmpty() && !setNamespaceURI.contains( props.mNamespaceURI ) )
+      if ( !props.mNamespacePrefix.isEmpty() && !props.mNamespaceURI.isEmpty() &&
+           !setNamespaceURI.contains( props.mNamespaceURI ) )
       {
         setNamespaceURI.insert( props.mNamespaceURI );
         QDomAttr attr = envelopeFilterDoc.createAttribute( QStringLiteral( "xmlns:" ) + props.mNamespacePrefix );
@@ -435,7 +445,11 @@ void QgsWFSSharedData::getVersionValues( QgsOgcUtils::GMLVersion &gmlVersion, Qg
 bool QgsWFSSharedData::detectPotentialServerAxisOrderIssueFromSingleFeatureExtent() const
 {
   Q_ASSERT( !mComputedExtent.isNull() );
-  if ( mWFSVersion.startsWith( QLatin1String( "1.1" ) ) && !mURI.ignoreAxisOrientation() && !mURI.invertAxisOrientation() && mSourceCrs.hasAxisInverted() && mCapabilityExtent.contains( mComputedExtent ) )
+  if ( mWFSVersion.startsWith( QLatin1String( "1.1" ) ) &&
+       !mURI.ignoreAxisOrientation() &&
+       !mURI.invertAxisOrientation() &&
+       mSourceCrs.hasAxisInverted() &&
+       mCapabilityExtent.contains( mComputedExtent ) )
   {
     pushError( QObject::tr( "It is likely that there is an issue with coordinate axis order of geometries when interacting with the server. You may want to enable the Ignore axis orientation and/or Invert axis orientation settings of the WFS connection." ) );
     return true;
@@ -451,13 +465,14 @@ QgsWFSFeatureHitsRequest::QgsWFSFeatureHitsRequest( const QgsWFSDataSourceURI &u
 {
 }
 
-long long QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion, const QString &filter, const QgsWfsCapabilities::Capabilities &caps )
+long long QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
+    const QString &filter, const QgsWfsCapabilities::Capabilities &caps )
 {
   const QString typeName = mUri.typeName();
 
   QUrl getFeatureUrl( mUri.requestUrl( QStringLiteral( "GetFeature" ) ) );
   QUrlQuery query( getFeatureUrl );
-  query.addQueryItem( QStringLiteral( "VERSION" ), WFSVersion );
+  query.addQueryItem( QStringLiteral( "VERSION" ),  WFSVersion );
   if ( WFSVersion.startsWith( QLatin1String( "2.0" ) ) )
   {
     query.addQueryItem( QStringLiteral( "TYPENAMES" ), typeName );
@@ -504,8 +519,9 @@ long long QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion, 
   }
 
   const QDomElement doc = domDoc.documentElement();
-  const QString numberOfFeatures = ( WFSVersion.startsWith( QLatin1String( "1.1" ) ) ) ? doc.attribute( QStringLiteral( "numberOfFeatures" ) ) :
-                                                                                       /* 2.0 */ doc.attribute( QStringLiteral( "numberMatched" ) );
+  const QString numberOfFeatures =
+    ( WFSVersion.startsWith( QLatin1String( "1.1" ) ) ) ? doc.attribute( QStringLiteral( "numberOfFeatures" ) ) :
+    /* 2.0 */                         doc.attribute( QStringLiteral( "numberMatched" ) );
   if ( !numberOfFeatures.isEmpty() )
   {
     bool isValid;
@@ -536,8 +552,8 @@ QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
 {
   QUrl getFeatureUrl( mUri.requestUrl( QStringLiteral( "GetFeature" ) ) );
   QUrlQuery query( getFeatureUrl );
-  query.addQueryItem( QStringLiteral( "VERSION" ), mShared->mWFSVersion );
-  if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+  query.addQueryItem( QStringLiteral( "VERSION" ),  mShared->mWFSVersion );
+  if ( mShared->mWFSVersion .startsWith( QLatin1String( "2.0" ) ) )
     query.addQueryItem( QStringLiteral( "TYPENAMES" ), mUri.typeName() );
   else
     query.addQueryItem( QStringLiteral( "TYPENAME" ), mUri.typeName() );
@@ -551,7 +567,7 @@ QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
       query.addQueryItem( QStringLiteral( "NAMESPACE" ), namespaceValue );
   }
 
-  if ( mShared->mWFSVersion.startsWith( QLatin1String( "2.0" ) ) )
+  if ( mShared->mWFSVersion .startsWith( QLatin1String( "2.0" ) ) )
     query.addQueryItem( QStringLiteral( "COUNT" ), QString::number( 1 ) );
   else
     query.addQueryItem( QStringLiteral( "MAXFEATURES" ), QString::number( 1 ) );
@@ -570,7 +586,8 @@ QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
   QgsRectangle extent;
   if ( parser->processData( buffer, true, gmlProcessErrorMsg ) )
   {
-    QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> featurePtrList = parser->getAndStealReadyFeatures();
+    QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> featurePtrList =
+      parser->getAndStealReadyFeatures();
     for ( int i = 0; i < featurePtrList.size(); i++ )
     {
       const QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair &featPair = featurePtrList[i];
@@ -591,3 +608,4 @@ QString QgsWFSSingleFeatureRequest::errorMessageWithReason( const QString &reaso
 {
   return tr( "Download of feature failed: %1" ).arg( reason );
 }
+

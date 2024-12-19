@@ -26,10 +26,11 @@ class QgsVectorFieldSymbolLayer;
  * \ingroup gui
  * \class QgsVectorFieldSymbolLayerWidget
  */
-class GUI_EXPORT QgsVectorFieldSymbolLayerWidget : public QgsSymbolLayerWidget, private Ui::WidgetVectorFieldBase
+class GUI_EXPORT QgsVectorFieldSymbolLayerWidget: public QgsSymbolLayerWidget, private Ui::WidgetVectorFieldBase
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsVectorFieldSymbolLayerWidget.
      * \param vl associated vector layer

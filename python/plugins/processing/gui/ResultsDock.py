@@ -15,16 +15,18 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "August 2012"
-__copyright__ = "(C) 2012, Victor Olaya"
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 import time
 import warnings
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QUrl, QFileInfo, QDir
+from qgis.PyQt.QtCore import (QUrl,
+                              QFileInfo,
+                              QDir)
 from qgis.gui import QgsDockWidget
 from qgis.PyQt.QtGui import QDesktopServices
 from qgis.PyQt.QtWidgets import QTreeWidgetItem
@@ -35,7 +37,8 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
-    WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, "ui", "resultsdockbase.ui"))
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'resultsdockbase.ui'))
 
 
 class ResultsDock(QgsDockWidget, WIDGET):
@@ -87,11 +90,6 @@ class TreeResultItem(QTreeWidgetItem):
     def __init__(self, result):
         QTreeWidgetItem.__init__(self)
         self.setIcon(0, result.icon)
-        self.setText(
-            0,
-            "{} [{}]".format(
-                result.name, time.strftime("%I:%M:%S%p", result.timestamp)
-            ),
-        )
+        self.setText(0, '{} [{}]'.format(result.name, time.strftime('%I:%M:%S%p', result.timestamp)))
         self.algorithm = result.name
         self.filename = result.filename

@@ -22,6 +22,7 @@ Display referer http header field and collapsible table of key/value pairs
 #include "qgshttpheaderwidget.h"
 %End
   public:
+
     explicit QgsHttpHeaderWidget( QWidget *parent = 0 );
 %Docstring
 Default constructor
@@ -43,7 +44,7 @@ Sets the widget from the headers
 .. versionadded:: 3.30
 %End
 
- void setFromSettings( const QgsSettings &settings, const QString &key ) /Deprecated="Since 3.30. Use setFromHeaders() instead."/;
+ void setFromSettings( const QgsSettings &settings, const QString &key ) /Deprecated/;
 %Docstring
 fill the inner header map from the settings defined at ``key``
 
@@ -54,10 +55,10 @@ fill the inner header map from the settings defined at ``key``
 
 .. deprecated:: 3.30
 
-   Use :py:func:`~QgsHttpHeaderWidget.setFromHeaders` instead.
+   Use setFromHeaders instead.
 %End
 
- void updateSettings( QgsSettings &settings, const QString &key ) const /Deprecated="Since 3.30. Use a variant map for settinds directly."/;
+ void updateSettings( QgsSettings &settings, const QString &key ) const /Deprecated/;
 %Docstring
 update the ``settings`` with the http headers present in the inner map.
 

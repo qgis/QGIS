@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsauthconfigurationstoragesqlite.h"
-#include "moc_qgsauthconfigurationstoragesqlite.cpp"
 #include "qgslogger.h"
 #include "qgsauthcertutils.h"
 

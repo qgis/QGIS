@@ -46,6 +46,7 @@ class QDomElement;
 class _3D_EXPORT QgsCameraPose
 {
   public:
+
     //! Returns center point (towards which point the camera is looking)
     QgsVector3D centerPoint() const { return mCenterPoint; }
     //! Sets center point (towards which point the camera is looking)
@@ -77,7 +78,10 @@ class _3D_EXPORT QgsCameraPose
     // TODO c++20 - replace with = default
     bool operator==( const QgsCameraPose &other ) const
     {
-      return mCenterPoint == other.mCenterPoint && mDistanceFromCenterPoint == other.mDistanceFromCenterPoint && mPitchAngle == other.mPitchAngle && mHeadingAngle == other.mHeadingAngle;
+      return mCenterPoint == other.mCenterPoint &&
+             mDistanceFromCenterPoint == other.mDistanceFromCenterPoint &&
+             mPitchAngle == other.mPitchAngle &&
+             mHeadingAngle == other.mHeadingAngle;
     }
     bool operator!=( const QgsCameraPose &other ) const
     {
@@ -94,7 +98,7 @@ class _3D_EXPORT QgsCameraPose
     // With a mPitchAngle < 0.2 or > 179.8, QQuaternion::fromEulerAngles( mPitchAngle, mHeadingAngle, 0 )
     // will return bad rotation angle.
     // See https://bugreports.qt.io/browse/QTBUG-72103
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     float mPitchAngle = 0.2f;
 #else
     float mPitchAngle = 0.0f;

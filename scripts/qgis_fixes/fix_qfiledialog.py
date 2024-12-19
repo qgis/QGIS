@@ -1,7 +1,6 @@
 """
 Migrate QFileDialog methods from PyQt4 to PyQt5
 """
-
 # Author: Médéric Ribreux <mederic.ribreux@medspx.fr>
 # Adapted from fix_pyqt
 # and http://python3porting.com/fixers.html
@@ -24,8 +23,8 @@ class FixQfiledialog(BaseFix):
         # First case: getOpen/SaveFileName
         # We need to add __ variable because in PyQt5
         # getOpen/SaveFileName returns a tuple
-        if "filename" in results:
-            node = results["filename"]
+        if 'filename' in results:
+            node = results['filename']
 
             # count number of leaves (result variables)
             nbLeaves = sum(1 for i in node.leaves())
@@ -34,11 +33,11 @@ class FixQfiledialog(BaseFix):
             # we add __ special variable
             if nbLeaves < 3:
                 fileName = node.value
-                node.value = f"{fileName}, __"
+                node.value = f'{fileName}, __'
                 node.changed()
 
         # Rename *AndFilter methods
-        if "filter" in results:
-            method = results["filter"][0]
-            method.value = method.value.replace("AndFilter", "")
+        if 'filter' in results:
+            method = results['filter'][0]
+            method.value = method.value.replace('AndFilter', '')
             method.changed()

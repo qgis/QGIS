@@ -45,6 +45,7 @@ class QgsOracleTransaction : public QgsTransaction
     bool beginTransaction( QString &error, int statementTimeout ) override;
     bool commitTransaction( QString &error ) override;
     bool rollbackTransaction( QString &error ) override;
+
 };
 
 ///@endcond

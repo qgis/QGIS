@@ -31,7 +31,9 @@
  */
 class QgsLineIntersectionAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
+
     QgsLineIntersectionAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmLineIntersections.svg" ) ); }
@@ -46,9 +48,14 @@ class QgsLineIntersectionAlgorithm : public QgsProcessingAlgorithm
     QgsLineIntersectionAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMLINEINTERSECTION_H
+
+

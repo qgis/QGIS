@@ -3,5 +3,5 @@ try:
     QgsPhongTexturedMaterialSettings.supportsTechnique = staticmethod(QgsPhongTexturedMaterialSettings.supportsTechnique)
     QgsPhongTexturedMaterialSettings.create = staticmethod(QgsPhongTexturedMaterialSettings.create)
     QgsPhongTexturedMaterialSettings.__group__ = ['materials']
-except (NameError, AttributeError):
+except NameError:
     pass

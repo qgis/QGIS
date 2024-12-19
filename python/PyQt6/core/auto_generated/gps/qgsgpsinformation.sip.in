@@ -113,7 +113,7 @@ Returns whether the connection information is valid
 .. versionadded:: 3.10
 %End
 
- Qgis::GpsFixStatus fixStatus() const /Deprecated="Since 3.40. Use constellationFixStatus() or bestFixStatus() instead."/;
+ Qgis::GpsFixStatus fixStatus() const /Deprecated/;
 %Docstring
 Returns the fix status
 

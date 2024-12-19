@@ -7,10 +7,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "(C) 2020 by Nyall Dawson"
-__date__ = "29/07/2020"
-__copyright__ = "Copyright 2020, The QGIS Project"
+__author__ = '(C) 2020 by Nyall Dawson'
+__date__ = '29/07/2020'
+__copyright__ = 'Copyright 2020, The QGIS Project'
 
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QColor, QImage, QPainter
@@ -63,11 +62,7 @@ class TestQgsAnnotationMarkerItem(QgisTestCase):
         self.assertEqual(item.geometry().y(), 2000.0)
         self.assertEqual(item.zIndex(), 11)
 
-        item.setSymbol(
-            QgsMarkerSymbol.createSimple(
-                {"color": "100,200,200", "size": "3", "outline_color": "black"}
-            )
-        )
+        item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '3', 'outline_color': 'black'}))
         self.assertEqual(item.symbol()[0].color(), QColor(100, 200, 200))
 
     def test_nodes(self):
@@ -75,101 +70,52 @@ class TestQgsAnnotationMarkerItem(QgisTestCase):
         Test nodes for item
         """
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
-        self.assertEqual(
-            item.nodesV2(QgsAnnotationItemEditContext()),
-            [
-                QgsAnnotationItemNode(
-                    QgsVertexId(0, 0, 0),
-                    QgsPointXY(12, 13),
-                    Qgis.AnnotationItemNodeType.VertexHandle,
-                )
-            ],
-        )
+        self.assertEqual(item.nodesV2(QgsAnnotationItemEditContext()), [QgsAnnotationItemNode(QgsVertexId(0, 0, 0), QgsPointXY(12, 13), Qgis.AnnotationItemNodeType.VertexHandle)])
 
     def test_transform(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
-        self.assertEqual(item.geometry().asWkt(), "POINT(12 13)")
+        self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
 
-        self.assertEqual(
-            item.applyEditV2(
-                QgsAnnotationItemEditOperationTranslateItem("", 100, 200),
-                QgsAnnotationItemEditContext(),
-            ),
-            Qgis.AnnotationItemEditOperationResult.Success,
-        )
-        self.assertEqual(item.geometry().asWkt(), "POINT(112 213)")
+        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationTranslateItem('', 100, 200), QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.geometry().asWkt(), 'POINT(112 213)')
 
     def test_apply_move_node_edit(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
-        self.assertEqual(item.geometry().asWkt(), "POINT(12 13)")
+        self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
 
-        self.assertEqual(
-            item.applyEditV2(
-                QgsAnnotationItemEditOperationMoveNode(
-                    "", QgsVertexId(0, 0, 1), QgsPoint(14, 13), QgsPoint(17, 18)
-                ),
-                QgsAnnotationItemEditContext(),
-            ),
-            Qgis.AnnotationItemEditOperationResult.Success,
-        )
-        self.assertEqual(item.geometry().asWkt(), "POINT(17 18)")
+        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 1), QgsPoint(14, 13), QgsPoint(17, 18)), QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Success)
+        self.assertEqual(item.geometry().asWkt(), 'POINT(17 18)')
 
     def test_apply_delete_node_edit(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
-        self.assertEqual(item.geometry().asWkt(), "POINT(12 13)")
+        self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
 
-        self.assertEqual(
-            item.applyEditV2(
-                QgsAnnotationItemEditOperationDeleteNode(
-                    "", QgsVertexId(0, 0, 0), QgsPoint(12, 13)
-                ),
-                QgsAnnotationItemEditContext(),
-            ),
-            Qgis.AnnotationItemEditOperationResult.ItemCleared,
-        )
+        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationDeleteNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13)), QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.ItemCleared)
 
     def test_apply_add_node_edit(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
-        self.assertEqual(
-            item.applyEditV2(
-                QgsAnnotationItemEditOperationAddNode("", QgsPoint(13, 14)),
-                QgsAnnotationItemEditContext(),
-            ),
-            Qgis.AnnotationItemEditOperationResult.Invalid,
-        )
+        self.assertEqual(item.applyEditV2(QgsAnnotationItemEditOperationAddNode('', QgsPoint(13, 14)), QgsAnnotationItemEditContext()), Qgis.AnnotationItemEditOperationResult.Invalid)
 
     def test_transient_move_operation(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
-        self.assertEqual(item.geometry().asWkt(), "POINT(12 13)")
+        self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
 
-        res = item.transientEditResultsV2(
-            QgsAnnotationItemEditOperationMoveNode(
-                "", QgsVertexId(0, 0, 0), QgsPoint(12, 13), QgsPoint(17, 18)
-            ),
-            QgsAnnotationItemEditContext(),
-        )
-        self.assertEqual(res.representativeGeometry().asWkt(), "Point (17 18)")
+        res = item.transientEditResultsV2(QgsAnnotationItemEditOperationMoveNode('', QgsVertexId(0, 0, 0), QgsPoint(12, 13), QgsPoint(17, 18)), QgsAnnotationItemEditContext())
+        self.assertEqual(res.representativeGeometry().asWkt(), 'Point (17 18)')
 
     def test_transient_translate_operation(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
-        self.assertEqual(item.geometry().asWkt(), "POINT(12 13)")
+        self.assertEqual(item.geometry().asWkt(), 'POINT(12 13)')
 
-        res = item.transientEditResultsV2(
-            QgsAnnotationItemEditOperationTranslateItem("", 100, 200),
-            QgsAnnotationItemEditContext(),
-        )
-        self.assertEqual(res.representativeGeometry().asWkt(), "Point (112 213)")
+        res = item.transientEditResultsV2(QgsAnnotationItemEditOperationTranslateItem('', 100, 200), QgsAnnotationItemEditContext())
+        self.assertEqual(res.representativeGeometry().asWkt(), 'Point (112 213)')
 
     def testReadWriteXml(self):
         doc = QDomDocument("testdoc")
-        elem = doc.createElement("test")
+        elem = doc.createElement('test')
 
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
-        item.setSymbol(
-            QgsMarkerSymbol.createSimple(
-                {"color": "100,200,200", "size": "3", "outline_color": "black"}
-            )
-        )
+        item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '3', 'outline_color': 'black'}))
         item.setZIndex(11)
         item.setUseSymbologyReferenceScale(True)
         item.setSymbologyReferenceScale(5000)
@@ -188,11 +134,7 @@ class TestQgsAnnotationMarkerItem(QgisTestCase):
 
     def testClone(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
-        item.setSymbol(
-            QgsMarkerSymbol.createSimple(
-                {"color": "100,200,200", "size": "3", "outline_color": "black"}
-            )
-        )
+        item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '3', 'outline_color': 'black'}))
         item.setZIndex(11)
         item.setUseSymbologyReferenceScale(True)
         item.setSymbologyReferenceScale(5000)
@@ -207,14 +149,10 @@ class TestQgsAnnotationMarkerItem(QgisTestCase):
 
     def testRenderMarker(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
-        item.setSymbol(
-            QgsMarkerSymbol.createSimple(
-                {"color": "100,200,200", "size": "3", "outline_color": "black"}
-            )
-        )
+        item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '3', 'outline_color': 'black'}))
 
         settings = QgsMapSettings()
-        settings.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:4326"))
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
         settings.setExtent(QgsRectangle(10, 10, 16, 16))
         settings.setOutputSize(QSize(300, 300))
 
@@ -233,31 +171,21 @@ class TestQgsAnnotationMarkerItem(QgisTestCase):
         finally:
             painter.end()
 
-        self.assertTrue(self.image_check("marker_item", "marker_item", image))
+        self.assertTrue(self.image_check('marker_item', 'marker_item', image))
 
     def testRenderWithTransform(self):
         item = QgsAnnotationMarkerItem(QgsPoint(12, 13))
-        item.setSymbol(
-            QgsMarkerSymbol.createSimple(
-                {"color": "100,200,200", "size": "3", "outline_color": "black"}
-            )
-        )
+        item.setSymbol(QgsMarkerSymbol.createSimple({'color': '100,200,200', 'size': '3', 'outline_color': 'black'}))
 
         settings = QgsMapSettings()
-        settings.setDestinationCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
+        settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
         settings.setExtent(QgsRectangle(1250958, 1386945, 1420709, 1532518))
         settings.setOutputSize(QSize(300, 300))
 
         settings.setFlag(QgsMapSettings.Flag.Antialiasing, False)
 
         rc = QgsRenderContext.fromMapSettings(settings)
-        rc.setCoordinateTransform(
-            QgsCoordinateTransform(
-                QgsCoordinateReferenceSystem("EPSG:4326"),
-                settings.destinationCrs(),
-                QgsProject.instance(),
-            )
-        )
+        rc.setCoordinateTransform(QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:4326'), settings.destinationCrs(), QgsProject.instance()))
         image = QImage(200, 200, QImage.Format.Format_ARGB32)
         image.setDotsPerMeterX(int(96 / 25.4 * 1000))
         image.setDotsPerMeterY(int(96 / 25.4 * 1000))
@@ -270,10 +198,8 @@ class TestQgsAnnotationMarkerItem(QgisTestCase):
         finally:
             painter.end()
 
-        self.assertTrue(
-            self.image_check("marker_item_transform", "marker_item_transform", image)
-        )
+        self.assertTrue(self.image_check('marker_item_transform', 'marker_item_transform', image))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

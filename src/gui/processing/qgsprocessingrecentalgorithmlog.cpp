@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsprocessingrecentalgorithmlog.h"
-#include "moc_qgsprocessingrecentalgorithmlog.cpp"
 #include "qgssettings.h"
 
 ///@cond PRIVATE

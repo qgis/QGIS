@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsgeopackageprojectstoragedialog.h"
-#include "moc_qgsgeopackageprojectstoragedialog.cpp"
 ///@cond PRIVATE
 
 #include "qgsgeopackageprojectstorage.h"
@@ -47,8 +46,9 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
   mFileWidget->lineEdit()->hide();
   mFileWidget->setFilter( QgsVectorFileWriter::filterForDriver( QStringLiteral( "GPKG" ) ) );
 
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [=]( const QString &path ) {
-    const QString fileName { QFileInfo( path ).fileName() };
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
+  {
+    const QString fileName{ QFileInfo( path ).fileName() };
     if ( mCboConnection->findData( path ) == -1 )
     {
       // the call to filePath standardizes the path and prevents
@@ -79,7 +79,8 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
   }
 
   connect( mCboProject, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::projectChanged );
-  connect( mCboProject, qOverload<const QString &>( &QComboBox::currentTextChanged ), this, [=]( const QString & ) {
+  connect( mCboProject, qOverload< const QString & >( &QComboBox::currentTextChanged ), this, [ = ]( const QString & )
+  {
     mCboProject->setItemData( mCboProject->currentIndex(), false );
   } );
   connect( mCboConnection, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsGeoPackageProjectStorageDialog::populateProjects );
@@ -87,6 +88,7 @@ QgsGeoPackageProjectStorageDialog::QgsGeoPackageProjectStorageDialog( bool savin
   // If possible, set the item currently displayed database
   const QString toSelect = QgsOgrDbConnection::selectedConnection( QStringLiteral( "GPKG" ) );
   mCboConnection->setCurrentIndex( mCboConnection->findText( toSelect ) );
+
 }
 
 QString QgsGeoPackageProjectStorageDialog::connectionName() const
@@ -128,7 +130,9 @@ void QgsGeoPackageProjectStorageDialog::onOK()
     // Check if this is an overwrite of an existing project
     if ( mCboProject->currentData().toBool() )
     {
-      const int res = QMessageBox::question( this, tr( "Overwrite project" ), tr( "A project with the same name already exists. Would you like to overwrite it?" ), QMessageBox::Yes | QMessageBox::No );
+      const int res = QMessageBox::question( this, tr( "Overwrite project" ),
+                                             tr( "A project with the same name already exists. Would you like to overwrite it?" ),
+                                             QMessageBox::Yes | QMessageBox::No );
       if ( res != QMessageBox::Yes )
         return;
     }
@@ -144,7 +148,9 @@ void QgsGeoPackageProjectStorageDialog::projectChanged()
 
 void QgsGeoPackageProjectStorageDialog::removeProject()
 {
-  const int res = QMessageBox::question( this, tr( "Remove project" ), tr( "Do you really want to remove the project \"%1\"?" ).arg( mCboProject->currentText() ), QMessageBox::Yes | QMessageBox::No );
+  const int res = QMessageBox::question( this, tr( "Remove project" ),
+                                         tr( "Do you really want to remove the project \"%1\"?" ).arg( mCboProject->currentText() ),
+                                         QMessageBox::Yes | QMessageBox::No );
   if ( res != QMessageBox::Yes )
     return;
 
@@ -154,7 +160,7 @@ void QgsGeoPackageProjectStorageDialog::removeProject()
   populateProjects();
 }
 
-QString QgsGeoPackageProjectStorageDialog::currentProjectUri()
+QString QgsGeoPackageProjectStorageDialog::currentProjectUri( )
 {
   QgsGeoPackageProjectUri gpkgUri;
   gpkgUri.database = mCboConnection->currentData().toString();

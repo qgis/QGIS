@@ -2,13 +2,13 @@
 try:
     QgsSymbolLayerRegistry.defaultSymbolLayer = staticmethod(QgsSymbolLayerRegistry.defaultSymbolLayer)
     QgsSymbolLayerRegistry.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsSymbolLayerAbstractMetadata.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsSymbolLayerMetadata.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

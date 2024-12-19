@@ -61,7 +61,7 @@ QgsPdalClipAlgorithm *QgsPdalClipAlgorithm::createInstance() const
 void QgsPdalClipAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterPointCloudLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "OVERLAY" ), QObject::tr( "Clipping polygons" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter( new QgsProcessingParameterVectorLayer( QStringLiteral( "OVERLAY" ), QObject::tr( "Clipping polygons" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) ) );
   createCommonParameters();
   addParameter( new QgsProcessingParameterPointCloudDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Clipped" ) ) );
 }
@@ -72,14 +72,23 @@ QStringList QgsPdalClipAlgorithm::createArgumentLists( const QVariantMap &parame
   if ( !layer )
     throw QgsProcessingException( invalidPointCloudError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  QString overlayPath = parameterAsCompatibleSourceLayerPath( parameters, QStringLiteral( "OVERLAY" ), context, QgsVectorFileWriter::supportedFormatExtensions(), QgsVectorFileWriter::supportedFormatExtensions()[0], feedback );
+  QString overlayPath = parameterAsCompatibleSourceLayerPath( parameters,
+                        QStringLiteral( "OVERLAY" ),
+                        context,
+                        QgsVectorFileWriter::supportedFormatExtensions(),
+                        QgsVectorFileWriter::supportedFormatExtensions()[0],
+                        feedback );
 
   const QString outputName = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   QString outputFile = fixOutputFileName( layer->source(), outputName, context );
   checkOutputFormat( layer->source(), outputFile );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
-  QStringList args = { QStringLiteral( "clip" ), QStringLiteral( "--input=%1" ).arg( layer->source() ), QStringLiteral( "--output=%1" ).arg( outputFile ), QStringLiteral( "--polygon=%1" ).arg( overlayPath ) };
+  QStringList args =  { QStringLiteral( "clip" ),
+                        QStringLiteral( "--input=%1" ).arg( layer->source() ),
+                        QStringLiteral( "--output=%1" ).arg( outputFile ),
+                        QStringLiteral( "--polygon=%1" ).arg( overlayPath )
+                      };
 
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );

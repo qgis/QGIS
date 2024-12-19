@@ -47,9 +47,10 @@
 class QgsFgUtils
 {
   public:
+
     struct FgDumpContext
     {
-        quint64 lowestId = 0;
+      quint64 lowestId = 0;
     };
 
     //! Returns a tree view of the scene graph starting from \a node. The object ids will be given relatively to the \a context lowestId.

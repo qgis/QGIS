@@ -46,7 +46,7 @@ QgsMeshLayer3DRenderer::QgsMeshLayer3DRenderer( QgsMesh3DSymbol *s )
 
 QgsMeshLayer3DRenderer *QgsMeshLayer3DRenderer::clone() const
 {
-  QgsMeshLayer3DRenderer *r = new QgsMeshLayer3DRenderer( mSymbol ? ( QgsMesh3DSymbol * ) mSymbol->clone() : nullptr );
+  QgsMeshLayer3DRenderer *r = new QgsMeshLayer3DRenderer( mSymbol ? ( QgsMesh3DSymbol * )mSymbol->clone() : nullptr );
   r->mLayerRef = mLayerRef;
   return r;
 }
@@ -78,7 +78,8 @@ Qt3DCore::QEntity *QgsMeshLayer3DRenderer::createEntity( Qgs3DMapSettings *map )
   if ( !meshLayer || !meshLayer->dataProvider() )
     return nullptr;
 
-  if ( meshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) || !mSymbol->isEnabled() )
+  if ( meshLayer->dataProvider()->contains( QgsMesh::ElementType::Edge ) ||
+       !mSymbol->isEnabled() )
   {
     // 3D not implemented for 1D meshes
     return nullptr;

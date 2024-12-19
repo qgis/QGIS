@@ -16,7 +16,6 @@
 #include "qgiscustomwidgets.h"
 #include "qgscheckablecombobox.h"
 #include "qgscheckablecomboboxplugin.h"
-#include "moc_qgscheckablecomboboxplugin.cpp"
 
 
 QgsCheckableComboBoxPlugin::QgsCheckableComboBoxPlugin( QObject *parent )
@@ -94,5 +93,5 @@ QString QgsCheckableComboBoxPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-    .arg( name() );
+         .arg( name() );
 }

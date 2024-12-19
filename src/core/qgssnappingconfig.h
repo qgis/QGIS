@@ -80,7 +80,7 @@ class CORE_EXPORT QgsSnappingConfig
      * Convenient method to return the translated name of the enum type
      * Qgis::SnappingTypes.
      * \since QGIS 3.12
-     * \deprecated QGIS 3.26. Use snappingTypeToString() instead.
+     * \deprecated QGIS 3.26. Use Qgis::snappingTypeToString instead.
      */
     Q_DECL_DEPRECATED static QString snappingTypeFlagToString( Qgis::SnappingType type ) SIP_DEPRECATED {return snappingTypeToString( type );}
 
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsSnappingConfig
     /**
      * Convenient method to return an icon corresponding to the enum type
      * Qgis::SnappingTypes.
-     * \deprecated QGIS 3.26. Use snappingTypeToIcon() instead.
+     * \deprecated QGIS 3.26. Use Qgis::snappingTypeToString instead.
      * \since QGIS 3.20
      */
     Q_DECL_DEPRECATED static QIcon snappingTypeFlagToIcon( Qgis::SnappingType type ) SIP_DEPRECATED {return snappingTypeToIcon( type );}
@@ -152,13 +152,13 @@ class CORE_EXPORT QgsSnappingConfig
 
         /**
          * Returns the flags type (vertices | segments | area | centroid | middle)
-         * \deprecated QGIS 3.12. Use typeFlag() instead.
+         * \deprecated QGIS 3.12. Use typeFlag instead.
          */
         Q_DECL_DEPRECATED QgsSnappingConfig::SnappingType type() const SIP_DEPRECATED;
 
         /**
          * define the type of snapping
-        * \deprecated QGIS 3.12. Use setTypeFlag() instead.
+        * \deprecated QGIS 3.12. Use setTypeFlag instead.
         */
         Q_DECL_DEPRECATED void setType( SnappingType type ) SIP_DEPRECATED;
 
@@ -249,13 +249,13 @@ class CORE_EXPORT QgsSnappingConfig
 
     /**
      * Returns the flags type (vertices | segments | area | centroid | middle)
-     * \deprecated QGIS 3.12. Use typeFlag() instead.
+     * \deprecated QGIS 3.12. Use typeFlag instead.
      */
     Q_DECL_DEPRECATED QgsSnappingConfig::SnappingType type() const SIP_DEPRECATED;
 
     /**
      * define the type of snapping
-    * \deprecated QGIS 3.12. Use setTypeFlag() instead.
+    * \deprecated QGIS 3.12. Use setTypeFlag instead.
     */
     Q_DECL_DEPRECATED void setType( QgsSnappingConfig::SnappingType type );
 

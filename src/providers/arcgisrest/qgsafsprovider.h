@@ -39,6 +39,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+
     static const inline QString AFS_PROVIDER_KEY = QStringLiteral( "arcgisfeatureserver" );
     static const inline QString AFS_PROVIDER_DESCRIPTION = QStringLiteral( "ArcGIS Feature Service data provider" );
 
@@ -112,7 +113,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     void reloadProviderData() override;
 };
 
-class QgsAfsProviderMetadata : public QgsProviderMetadata
+class QgsAfsProviderMetadata: public QgsProviderMetadata
 {
     Q_OBJECT
   public:
@@ -122,7 +123,7 @@ class QgsAfsProviderMetadata : public QgsProviderMetadata
     QVariantMap decodeUri( const QString &uri ) const override;
     QString encodeUri( const QVariantMap &parts ) const override;
     QgsAfsProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
-    QList<Qgis::LayerType> supportedLayerTypes() const override;
+    QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 
 #endif // QGSAFSPROVIDER_H

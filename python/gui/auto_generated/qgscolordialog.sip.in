@@ -21,7 +21,9 @@ hue wheel supports, color swatches, and a color sampler.
 #include "qgscolordialog.h"
 %End
   public:
-    QgsColorDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, const QColor &color = QColor() );
+
+    QgsColorDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
+                    const QColor &color = QColor() );
 %Docstring
 Create a new color picker dialog
 
@@ -52,7 +54,8 @@ for the color dialog. Defaults to ``True``.
 :param allowOpacity: set to ``False`` to disable opacity modification
 %End
 
-    static QColor getColor( const QColor &initialColor, QWidget *parent, const QString &title = QString(), bool allowOpacity = false );
+    static QColor getColor( const QColor &initialColor, QWidget *parent, const QString &title = QString(),
+                            bool allowOpacity = false );
 %Docstring
 Returns a color selection from a color dialog.
 
@@ -83,6 +86,7 @@ Sets the current color for the dialog
 %End
 
   protected:
+
     virtual void closeEvent( QCloseEvent *e );
 
 

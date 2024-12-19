@@ -55,7 +55,7 @@ class CORE_EXPORT QgsTiledSceneRenderContext
      * Returns a reference to the context's render context.
      * \note Not available in Python bindings.
      */
-    const QgsRenderContext &renderContext() const SIP_SKIP { return mRenderContext; }
+    const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
 
     /**
      * Returns the feedback object used to cancel rendering

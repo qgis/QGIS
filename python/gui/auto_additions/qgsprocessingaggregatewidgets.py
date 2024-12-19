@@ -24,14 +24,14 @@ try:
     QgsAggregateMappingModel.Aggregate.__attribute_docs__ = {'source': 'The source expression used as the input for the aggregate calculation', 'aggregate': 'Aggregate name', 'delimiter': 'Delimiter string', 'field': 'The field in its current status (it might have been renamed)'}
     QgsAggregateMappingModel.Aggregate.__doc__ = """The Aggregate struct holds information about an aggregate column"""
     QgsAggregateMappingModel.Aggregate.__group__ = ['processing']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsAggregateMappingWidget.__attribute_docs__ = {'changed': 'Emitted when the aggregates defined in the widget are changed.\n'}
     QgsAggregateMappingWidget.__group__ = ['processing']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsAggregateMappingModel.__group__ = ['processing']
-except (NameError, AttributeError):
+except NameError:
     pass

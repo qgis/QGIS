@@ -15,7 +15,6 @@
 
 
 #include "qgsrelationaggregatesearchwidgetwrapper.h"
-#include "moc_qgsrelationaggregatesearchwidgetwrapper.cpp"
 #include "qgsattributeform.h"
 #include "qgsrelationwidgetwrapper.h"
 #include "qgslogger.h"

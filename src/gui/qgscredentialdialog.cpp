@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgscredentialdialog.h"
-#include "moc_qgscredentialdialog.cpp"
 
 #include "qgsauthmanager.h"
 #include "qgsdatasourceuri.h"
@@ -54,8 +53,12 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
   connect( leMasterPassVerify, &QgsPasswordLineEdit::textChanged, this, &QgsCredentialDialog::leMasterPassVerify_textChanged );
   connect( chkbxEraseAuthDb, &QCheckBox::toggled, this, &QgsCredentialDialog::chkbxEraseAuthDb_toggled );
   setInstance( this );
-  connect( this, &QgsCredentialDialog::credentialsRequested, this, &QgsCredentialDialog::requestCredentials, Qt::BlockingQueuedConnection );
-  connect( this, &QgsCredentialDialog::credentialsRequestedMasterPassword, this, &QgsCredentialDialog::requestCredentialsMasterPassword, Qt::BlockingQueuedConnection );
+  connect( this, &QgsCredentialDialog::credentialsRequested,
+           this, &QgsCredentialDialog::requestCredentials,
+           Qt::BlockingQueuedConnection );
+  connect( this, &QgsCredentialDialog::credentialsRequestedMasterPassword,
+           this, &QgsCredentialDialog::requestCredentialsMasterPassword,
+           Qt::BlockingQueuedConnection );
 
   // Setup ignore button
   mIgnoreButton->setToolTip( tr( "All requests for this connection will be automatically rejected" ) );
@@ -66,12 +69,14 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
   ignoreForSession->setToolTip( tr( "All requests for this connection will be automatically rejected for the duration of the current session" ) );
   menu->addAction( ignoreTemporarily );
   menu->addAction( ignoreForSession );
-  connect( ignoreTemporarily, &QAction::triggered, this, [=] {
+  connect( ignoreTemporarily, &QAction::triggered, this, [ = ]
+  {
     mIgnoreMode = IgnoreTemporarily;
     mIgnoreButton->setText( ignoreTemporarily->text() );
     mIgnoreButton->setToolTip( ignoreTemporarily->toolTip() );
   } );
-  connect( ignoreForSession, &QAction::triggered, this, [=] {
+  connect( ignoreForSession, &QAction::triggered, this, [ = ]
+  {
     mIgnoreMode = IgnoreForSession;
     mIgnoreButton->setText( ignoreForSession->text() );
     mIgnoreButton->setToolTip( ignoreForSession->toolTip() );
@@ -86,7 +91,8 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
   connect( mCancelButton, &QPushButton::clicked, this, &QgsCredentialDialog::reject );
 
   // Keep a cache of ignored connections, and ignore them for 10 seconds.
-  connect( mIgnoreButton, &QPushButton::clicked, this, [=]( bool ) {
+  connect( mIgnoreButton, &QPushButton::clicked, this, [ = ]( bool )
+  {
     const QString realm { mRealm };
     {
       const QMutexLocker locker( &sIgnoredConnectionsCacheMutex );
@@ -95,18 +101,19 @@ QgsCredentialDialog::QgsCredentialDialog( QWidget *parent, Qt::WindowFlags fl )
     }
     if ( mIgnoreMode == IgnoreTemporarily )
     {
-      QTimer::singleShot( 10000, nullptr, [=]() {
+      QTimer::singleShot( 10000, nullptr, [ = ]()
+      {
         QgsDebugMsgLevel( QStringLiteral( "Removing ignored connection from cache: %1" ).arg( realm ), 4 );
         const QMutexLocker locker( &sIgnoredConnectionsCacheMutex );
         sIgnoredConnectionsCache->remove( realm );
       } );
     }
-    accept();
+    accept( );
   } );
 
   leMasterPass->setPlaceholderText( tr( "Required" ) );
   chkbxPasswordHelperEnable->setText( tr( "Store/update the master password in your %1" )
-                                        .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
+                                      .arg( QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
   leUsername->setFocus();
 }
 
@@ -342,3 +349,4 @@ void QgsCredentialDialog::chkbxEraseAuthDb_toggled( bool checked )
   if ( checked )
     mOkButton->setEnabled( true );
 }
+

@@ -23,6 +23,7 @@ Utility functions for :py:class:`QgsDataItemGuiProviders`.
 %End
   public:
 
+
 };
 
 /************************************************************************

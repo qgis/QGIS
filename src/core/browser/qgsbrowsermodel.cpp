@@ -28,7 +28,6 @@
 #include "qgsmimedatautils.h"
 #include "qgslogger.h"
 #include "qgsbrowsermodel.h"
-#include "moc_qgsbrowsermodel.cpp"
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgsdirectoryitem.h"

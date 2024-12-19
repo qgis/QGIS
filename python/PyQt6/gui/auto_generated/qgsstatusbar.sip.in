@@ -30,6 +30,7 @@ these widgets (and messages) should instead be added into the embedded :py:class
 #include "qgsstatusbar.h"
 %End
   public:
+
     enum Anchor /BaseType=IntEnum/
     {
       AnchorLeft,
@@ -96,10 +97,13 @@ and shown on this status bar too.
 
 
   protected:
+
     virtual void changeEvent( QEvent *event );
 
 
 };
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

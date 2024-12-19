@@ -17,19 +17,19 @@
 ***************************************************************************
 """
 
-__author__ = "Juergen E. Fischer"
-__date__ = "June 2013"
-__copyright__ = "(C) 2013, Juergen E. Fischer"
+__author__ = 'Juergen E. Fischer'
+__date__ = 'June 2013'
+__copyright__ = '(C) 2013, Juergen E. Fischer'
 
-import struct
 import sys
+import struct
 
 from PyQt5.QtCore import QCoreApplication, QSettings
 
 
 def chunks(l, n):
     for i in range(0, len(l), n):
-        yield l[i : i + n]
+        yield l[i:i + n]
 
 
 QCoreApplication.setOrganizationName("QGIS")
@@ -37,7 +37,7 @@ QCoreApplication.setOrganizationDomain("qgis.org")
 QCoreApplication.setApplicationName("QGIS3")
 
 if len(sys.argv) == 1:
-    print('Usage: ./scripts/mkuidefaults.py "location_to_ini"')
+    print("Usage: ./scripts/mkuidefaults.py \"location_to_ini\"")
     sys.exit(1)
 
 s = QSettings(sys.argv[1], QSettings.Format.IniFormat)
@@ -46,57 +46,40 @@ ba = bytes(s.value("/UI/geometry"))
 
 with open("src/app/ui_defaults.h", "w") as f:
 
-    f.write(
-        "#ifndef UI_DEFAULTS_H\n#define UI_DEFAULTS_H\n"
-        + "\nstatic const unsigned char defaultUIgeometry[] =\n{\n"
-    )
+    f.write("#ifndef UI_DEFAULTS_H\n#define UI_DEFAULTS_H\n" +
+            "\nstatic const unsigned char defaultUIgeometry[] =\n{\n")
 
     for chunk in chunks(ba, 16):
-        f.write(
-            "  {},\n".format(
-                ", ".join(map(hex, struct.unpack("B" * len(chunk), chunk)))
-            )
-        )
+        f.write('  {},\n'.format(
+            ', '.join(map(hex, struct.unpack('B' * len(chunk), chunk)))))
 
     f.write("};\n\nstatic const unsigned char defaultUIstate[] =\n{\n")
 
     ba = bytes(s.value("/UI/state"))
 
     for chunk in chunks(ba, 16):
-        f.write(
-            "  {},\n".format(
-                ", ".join(map(hex, struct.unpack("B" * len(chunk), chunk)))
-            )
-        )
+        f.write('  {},\n'.format(
+            ', '.join(map(hex, struct.unpack('B' * len(chunk), chunk)))))
 
     try:
         ba = bytes(s.value("/app/LayoutDesigner/geometry"))
-        f.write(
-            "};\n\nstatic const unsigned char "
-            + "defaultLayerDesignerUIgeometry[] =\n{\n"
-        )
+        f.write("};\n\nstatic const unsigned char " +
+                "defaultLayerDesignerUIgeometry[] =\n{\n")
 
         for chunk in chunks(ba, 16):
-            f.write(
-                "  {},\n".format(
-                    ", ".join(map(hex, struct.unpack("B" * len(chunk), chunk)))
-                )
-            )
+            f.write('  {},\n'.format(
+                ', '.join(map(hex, struct.unpack('B' * len(chunk), chunk)))))
     except TypeError as ex:
         pass
 
     try:
         ba = bytes(s.value("/app/LayoutDesigner/state"))
-        f.write(
-            "};\n\nstatic const unsigned char " + "defaultLayerDesignerUIstate[] =\n{\n"
-        )
+        f.write("};\n\nstatic const unsigned char " +
+                "defaultLayerDesignerUIstate[] =\n{\n")
 
         for chunk in chunks(ba, 16):
-            f.write(
-                "  {},\n".format(
-                    ", ".join(map(hex, struct.unpack("B" * len(chunk), chunk)))
-                )
-            )
+            f.write('  {},\n'.format(
+                ', '.join(map(hex, struct.unpack('B' * len(chunk), chunk)))))
     except TypeError as ex:
         pass
 

@@ -48,6 +48,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     Q_PROPERTY( QString dialogTitle READ dialogTitle WRITE setDialogTitle )
 
   public:
+
     /**
      * Construct a new symbol button.
      * Use \a dialogTitle string to define the title to show in the symbol settings dialog.
@@ -97,7 +98,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     * \see changed()
     * \note Not available in Python bindings.
     */
-    template<class SymbolType> SymbolType *clonedSymbol() SIP_SKIP
+    template <class SymbolType> SymbolType *clonedSymbol() SIP_SKIP
     {
       QgsSymbol *tmpSymbol = mSymbol.get();
       SymbolType *symbolCastToType = dynamic_cast<SymbolType *>( tmpSymbol );
@@ -278,6 +279,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     void changed();
 
   protected:
+
     void changeEvent( QEvent *e ) override;
     void showEvent( QShowEvent *e ) override;
     void resizeEvent( QResizeEvent *event ) override;
@@ -317,6 +319,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     void activatePicker();
 
   private:
+
     QSize mSizeHint;
 
     QString mDialogTitle;
@@ -330,11 +333,11 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     QMenu *mMenu = nullptr;
 
-    QPointer<QgsVectorLayer> mLayer;
+    QPointer< QgsVectorLayer > mLayer;
 
     QSize mIconSize;
 
-    std::unique_ptr<QgsSymbol> mSymbol;
+    std::unique_ptr< QgsSymbol > mSymbol;
 
     QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 
@@ -342,7 +345,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
 
     bool mShowNull = false;
 
-    std::unique_ptr<QgsSymbol> mDefaultSymbol;
+    std::unique_ptr< QgsSymbol > mDefaultSymbol;
 
     /**
      * Regenerates the text preview. If \a color is specified, a temporary color preview
@@ -377,6 +380,7 @@ class GUI_EXPORT QgsSymbolButton : public QToolButton
     void showColorDialog();
 
     void updateSizeHint();
+
 };
 
 #endif // QGSSYMBOLBUTTON_H

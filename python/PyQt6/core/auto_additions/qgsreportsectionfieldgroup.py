@@ -3,5 +3,5 @@ QgsReportSectionFieldGroup.IncludeWhenFeaturesFound = QgsReportSectionFieldGroup
 QgsReportSectionFieldGroup.AlwaysInclude = QgsReportSectionFieldGroup.SectionVisibility.AlwaysInclude
 try:
     QgsReportSectionFieldGroup.__group__ = ['layout']
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -88,7 +88,7 @@
          <string>URL of the connection</string>
         </property>
         <property name="placeholderText">
-         <string>https://example.com/stac/</string>
+         <string>http://example.com/stac/</string>
         </property>
        </widget>
       </item>

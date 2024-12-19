@@ -6,5 +6,5 @@ QgsRasterFormatSaveOptionsWidget.LineEdit = QgsRasterFormatSaveOptionsWidget.Typ
 QgsRasterFormatSaveOptionsWidget.ProfileLineEdit = QgsRasterFormatSaveOptionsWidget.Type.ProfileLineEdit
 try:
     QgsRasterFormatSaveOptionsWidget.__attribute_docs__ = {'optionsChanged': 'Emitted when the options configured in the widget are changed.\n'}
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -31,7 +31,10 @@ class FieldValueConverter : public QgsVectorFileWriter::FieldValueConverter
     FieldValueConverter( QgsVectorLayer *vl )
       : mLayer( vl )
     {
-      const QStringList formattersAllowList { QStringLiteral( "KeyValue" ), QStringLiteral( "List" ), QStringLiteral( "ValueRelation" ), QStringLiteral( "ValueMap" ) };
+      const QStringList formattersAllowList{ QStringLiteral( "KeyValue" ),
+                                             QStringLiteral( "List" ),
+                                             QStringLiteral( "ValueRelation" ),
+                                             QStringLiteral( "ValueMap" ) };
 
       for ( int i = 0; i < mLayer->fields().count(); ++i )
       {
@@ -72,7 +75,7 @@ class FieldValueConverter : public QgsVectorFileWriter::FieldValueConverter
       else
       {
         cache = formatter->createCache( mLayer.data(), i, mConfig.value( i ) );
-        mCaches[i] = cache;
+        mCaches[ i ] = cache;
       }
 
       return formatter->representValue( mLayer.data(), i, mConfig.value( i ), cache, value );
@@ -84,10 +87,10 @@ class FieldValueConverter : public QgsVectorFileWriter::FieldValueConverter
     }
 
   private:
-    QPointer<QgsVectorLayer> mLayer;
-    QMap<int, const QgsFieldFormatter *> mFormatters;
-    QMap<int, QVariantMap> mConfig;
-    QMap<int, QVariant> mCaches;
+    QPointer< QgsVectorLayer > mLayer;
+    QMap< int, const QgsFieldFormatter * > mFormatters;
+    QMap< int, QVariantMap > mConfig;
+    QMap< int, QVariant > mCaches;
 };
 
 QString QgsExportToSpreadsheetAlgorithm::name() const
@@ -121,7 +124,7 @@ void QgsExportToSpreadsheetAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "USE_ALIAS" ), QObject::tr( "Use field aliases as column headings" ), false ) );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "FORMATTED_VALUES" ), QObject::tr( "Export formatted values instead of raw values" ), false ) );
   QgsProcessingParameterFileDestination *outputParameter = new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ), QObject::tr( "Destination spreadsheet" ), QObject::tr( "Microsoft Excel (*.xlsx);;Open Document Spreadsheet (*.ods)" ) );
-  outputParameter->setMetadata( QVariantMap( { { QStringLiteral( "widget_wrapper" ), QVariantMap( { { QStringLiteral( "dontconfirmoverwrite" ), true } } ) } } ) );
+  outputParameter->setMetadata( QVariantMap( {{QStringLiteral( "widget_wrapper" ), QVariantMap( {{QStringLiteral( "dontconfirmoverwrite" ), true }} ) }} ) );
   addParameter( outputParameter );
   addParameter( new QgsProcessingParameterBoolean( QStringLiteral( "OVERWRITE" ), QObject::tr( "Overwrite existing spreadsheet" ), true ) );
   addOutput( new QgsProcessingOutputMultipleLayers( QStringLiteral( "OUTPUT_LAYERS" ), QObject::tr( "Layers within spreadsheet" ) ) );
@@ -140,7 +143,7 @@ QgsExportToSpreadsheetAlgorithm *QgsExportToSpreadsheetAlgorithm::createInstance
 
 bool QgsExportToSpreadsheetAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
   for ( QgsMapLayer *layer : layers )
   {
     mLayers.emplace_back( layer->clone() );
@@ -221,9 +224,10 @@ QVariantMap QgsExportToSpreadsheetAlgorithm::processAlgorithm( const QVariantMap
 
     feedback->pushInfo( QObject::tr( "Exporting layer %1/%2: %3" ).arg( i ).arg( mLayers.size() ).arg( layer ? layer->name() : QString() ) );
 
-    FieldValueConverter converter( qobject_cast<QgsVectorLayer *>( layer.get() ) );
+    FieldValueConverter converter( qobject_cast< QgsVectorLayer * >( layer.get() ) );
 
-    if ( !exportVectorLayer( qobject_cast<QgsVectorLayer *>( layer.get() ), outputPath, context, &multiStepFeedback, driverName, createNew, useAlias, formattedValues ? &converter : nullptr ) )
+    if ( !exportVectorLayer( qobject_cast< QgsVectorLayer * >( layer.get() ), outputPath,
+                             context, &multiStepFeedback, driverName, createNew, useAlias, formattedValues ? &converter : nullptr ) )
       errored = true;
     else
     {
@@ -241,7 +245,8 @@ QVariantMap QgsExportToSpreadsheetAlgorithm::processAlgorithm( const QVariantMap
   return outputs;
 }
 
-bool QgsExportToSpreadsheetAlgorithm::exportVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context, QgsProcessingFeedback *feedback, const QString &driverName, bool createNew, bool preferAlias, QgsVectorFileWriter::FieldValueConverter *converter )
+bool QgsExportToSpreadsheetAlgorithm::exportVectorLayer( QgsVectorLayer *layer, const QString &path, QgsProcessingContext &context,
+    QgsProcessingFeedback *feedback, const QString &driverName, bool createNew, bool preferAlias, QgsVectorFileWriter::FieldValueConverter *converter )
 {
   QgsVectorFileWriter::SaveVectorOptions options;
   options.driverName = driverName;

@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgslegendpatchshapewidget.h"
-#include "moc_qgslegendpatchshapewidget.cpp"
 #include "qgsstylesavedialog.h"
 #include "qgsproject.h"
 #include "qgsprojectstylesettings.h"
@@ -92,7 +91,10 @@ void QgsLegendPatchShapeWidget::saveShape()
   // check if there is no shape with same name
   if ( style->legendPatchShapeNames().contains( saveDlg.name() ) )
   {
-    const int res = QMessageBox::warning( this, tr( "Save Legend Patch Shape" ), tr( "A legend patch shape with the name '%1' already exists. Overwrite?" ).arg( saveDlg.name() ), QMessageBox::Yes | QMessageBox::No );
+    const int res = QMessageBox::warning( this, tr( "Save Legend Patch Shape" ),
+                                          tr( "A legend patch shape with the name '%1' already exists. Overwrite?" )
+                                          .arg( saveDlg.name() ),
+                                          QMessageBox::Yes | QMessageBox::No );
     if ( res != QMessageBox::Yes )
     {
       return;

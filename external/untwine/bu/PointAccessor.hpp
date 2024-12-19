@@ -15,8 +15,6 @@
 #include "../untwine/Common.hpp"
 #include "../untwine/Point.hpp"
 
-#include <mapfile.hpp>  // untwine/os
-
 #include "FileInfo.hpp"
 
 namespace untwine
@@ -33,13 +31,13 @@ public:
     ~PointAccessor()
     {
         for (FileInfo *fi : m_fileInfos)
-            os::unmapFile(fi->context());
+            unmapFile(fi->context());
     }
 
     void read(FileInfo& fi)
     {
         std::string filename = m_b.opts.tempDir + "/" + fi.filename();
-        auto ctx = os::mapFile(filename, true, 0, fi.numPoints() * m_b.pointSize);
+        auto ctx = mapFile(filename, true, 0, fi.numPoints() * m_b.pointSize);
         if (ctx.m_addr == nullptr)
             throw FatalError(filename + ": " + ctx.m_error);
         fi.setContext(ctx);

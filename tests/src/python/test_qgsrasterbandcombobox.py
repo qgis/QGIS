@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "09/05/2017"
-__copyright__ = "Copyright 2017, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '09/05/2017'
+__copyright__ = 'Copyright 2017, The QGIS Project'
 
 import os
 
@@ -46,7 +45,7 @@ class TestQgsRasterBandComboBox(QgisTestCase):
         self.assertEqual(combo.currentBand(), -1)
 
     def testInvalidLayer(self):
-        layer = QgsRasterLayer("blah", "blah")
+        layer = QgsRasterLayer('blah', 'blah')
         self.assertTrue(layer)
         self.assertFalse(layer.isValid())
         combo = QgsRasterBandComboBox()
@@ -65,9 +64,8 @@ class TestQgsRasterBandComboBox(QgisTestCase):
         self.assertEqual(signal_spy[-1][0], -1)
 
         # replace with valid layer
-        path = os.path.join(
-            unitTestDataPath("raster"), "band3_float32_noct_epsg4326.tif"
-        )
+        path = os.path.join(unitTestDataPath('raster'),
+                            'band3_float32_noct_epsg4326.tif')
         info = QFileInfo(path)
         base_name = info.baseName()
         layer2 = QgsRasterLayer(path, base_name)
@@ -110,31 +108,30 @@ class TestQgsRasterBandComboBox(QgisTestCase):
         self.assertEqual(len(signal_spy), 6)
 
         combo.setLayer(layer)
-        combo.setCurrentText("bad")
+        combo.setCurrentText('bad')
         self.assertEqual(combo.currentBand(), -1)
         self.assertEqual(len(signal_spy), 6)
         self.assertEqual(signal_spy[-1][0], -1)
-        combo.setCurrentText("5")
+        combo.setCurrentText('5')
         self.assertEqual(combo.currentBand(), 5)
         self.assertEqual(len(signal_spy), 7)
         self.assertEqual(signal_spy[-1][0], 5)
-        combo.setCurrentText("6.5")
+        combo.setCurrentText('6.5')
         self.assertEqual(combo.currentBand(), -1)
         self.assertEqual(len(signal_spy), 8)
         self.assertEqual(signal_spy[-1][0], -1)
-        combo.setCurrentText("5")
+        combo.setCurrentText('5')
         self.assertEqual(combo.currentBand(), 5)
         self.assertEqual(len(signal_spy), 9)
         self.assertEqual(signal_spy[-1][0], 5)
-        combo.setCurrentText("Not set")
+        combo.setCurrentText('Not set')
         self.assertEqual(combo.currentBand(), -1)
         self.assertEqual(len(signal_spy), 10)
         self.assertEqual(signal_spy[-1][0], -1)
 
     def testOneBandRaster(self):
-        path = os.path.join(
-            unitTestDataPath("raster"), "band1_float32_noct_epsg4326.tif"
-        )
+        path = os.path.join(unitTestDataPath('raster'),
+                            'band1_float32_noct_epsg4326.tif')
         info = QFileInfo(path)
         base_name = info.baseName()
         layer = QgsRasterLayer(path, base_name)
@@ -159,9 +156,8 @@ class TestQgsRasterBandComboBox(QgisTestCase):
         self.assertEqual(combo.count(), 1)
 
     def testMultiBandRaster(self):
-        path = os.path.join(
-            unitTestDataPath("raster"), "band3_float32_noct_epsg4326.tif"
-        )
+        path = os.path.join(unitTestDataPath('raster'),
+                            'band3_float32_noct_epsg4326.tif')
         info = QFileInfo(path)
         base_name = info.baseName()
         layer = QgsRasterLayer(path, base_name)
@@ -184,9 +180,8 @@ class TestQgsRasterBandComboBox(QgisTestCase):
         self.assertEqual(combo.count(), 3)
 
     def testSignals(self):
-        path = os.path.join(
-            unitTestDataPath("raster"), "band3_float32_noct_epsg4326.tif"
-        )
+        path = os.path.join(unitTestDataPath('raster'),
+                            'band3_float32_noct_epsg4326.tif')
         info = QFileInfo(path)
         base_name = info.baseName()
         layer = QgsRasterLayer(path, base_name)
@@ -204,5 +199,5 @@ class TestQgsRasterBandComboBox(QgisTestCase):
         self.assertEqual(signal_spy[1][0], 3)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgslayoutitem3dmap.h"
-#include "moc_qgslayoutitem3dmap.cpp"
 
 #include "qgs3dmapscene.h"
 #include "qgs3dutils.h"
@@ -147,7 +146,8 @@ void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
   }
 
   QSizeF sizePixels = mLayout->renderContext().measurementConverter().convert( sizeWithUnits(), Qgis::LayoutUnit::Pixels ).toQSizeF();
-  QSize sizePixelsInt = QSize( static_cast<int>( std::ceil( sizePixels.width() ) ), static_cast<int>( std::ceil( sizePixels.height() ) ) );
+  QSize sizePixelsInt = QSize( static_cast<int>( std::ceil( sizePixels.width() ) ),
+                               static_cast<int>( std::ceil( sizePixels.height() ) ) );
 
   if ( isTemporal() )
     mSettings->setTemporalRange( temporalRange() );
@@ -162,6 +162,7 @@ void QgsLayoutItem3DMap::draw( QgsLayoutItemRenderContext &context )
     connect( mScene, &Qgs3DMapScene::sceneStateChanged, this, &QgsLayoutItem3DMap::onSceneStateChanged );
 
     mEngine->setRootEntity( mScene );
+
   }
 
   if ( mEngine->size() != sizePixelsInt )

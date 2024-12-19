@@ -31,7 +31,7 @@ extern "C"
 #include "qgis_app.h"
 }
 
-class APP_EXPORT QgsNewSpatialiteLayerDialog : public QDialog, private Ui::QgsNewSpatialiteLayerDialogBase
+class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNewSpatialiteLayerDialogBase
 {
     Q_OBJECT
 

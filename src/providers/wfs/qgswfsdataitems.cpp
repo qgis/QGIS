@@ -26,7 +26,6 @@
 #include "qgswfsconnection.h"
 #include "qgswfscapabilities.h"
 #include "qgswfsdataitems.h"
-#include "moc_qgswfsdataitems.cpp"
 #include "qgswfsdatasourceuri.h"
 #include "qgswfsprovider.h"
 #include "qgssettings.h"
@@ -74,21 +73,22 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildrenOapif()
   const bool forceRefresh = false;
 
   QgsOapifLandingPageRequest landingPageRequest( uri );
-  if ( landingPageRequest.request( synchronous, forceRefresh ) && landingPageRequest.errorCode() == QgsBaseNetworkRequest::NoError )
+  if ( landingPageRequest.request( synchronous, forceRefresh ) &&
+       landingPageRequest.errorCode() == QgsBaseNetworkRequest::NoError )
   {
     QString url = landingPageRequest.collectionsUrl();
     while ( !url.isEmpty() )
     {
       QgsOapifCollectionsRequest collectionsRequest( uri, url );
       url.clear();
-      if ( collectionsRequest.request( synchronous, forceRefresh ) && collectionsRequest.errorCode() == QgsBaseNetworkRequest::NoError )
+      if ( collectionsRequest.request( synchronous, forceRefresh ) &&
+           collectionsRequest.errorCode() == QgsBaseNetworkRequest::NoError )
       {
         for ( const auto &collection : collectionsRequest.collections() )
         {
           QgsWfsLayerItem *layer = new QgsWfsLayerItem(
             this, mName, uri, collection.mId, collection.mTitle,
-            QString(), QgsOapifProvider::OAPIF_PROVIDER_KEY
-          );
+            QString(), QgsOapifProvider::OAPIF_PROVIDER_KEY );
           layers.append( layer );
         }
         url = collectionsRequest.nextUrl();
@@ -129,8 +129,7 @@ QVector<QgsDataItem *> QgsWfsConnectionItem::createChildren()
         QgsWfsLayerItem *layer = new QgsWfsLayerItem(
           this, mName, uri, featureType.name, featureType.title,
           !featureType.crslist.isEmpty() ? featureType.crslist.first() : QString(),
-          QgsWFSProvider::WFS_PROVIDER_KEY
-        );
+          QgsWFSProvider::WFS_PROVIDER_KEY );
         layers.append( layer );
       }
     }
@@ -160,7 +159,7 @@ QVector<QgsDataItem *> QgsWfsRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
 
-  const QStringList list = QgsWfsConnection::connectionList();
+  const QStringList list = QgsWfsConnection::connectionList() ;
   for ( const QString &connName : list )
   {
     const QgsWfsConnection connection( connName );

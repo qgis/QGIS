@@ -36,11 +36,12 @@ class QgsMessageBar;
  * \note Not available in Python bindings
  * \since QGIS 3.30
  */
-class GUI_EXPORT QgsLoadRasterAttributeTableDialog : public QDialog, private Ui::QgsLoadRasterAttributeTableDialogBase
+class GUI_EXPORT QgsLoadRasterAttributeTableDialog: public QDialog, private Ui::QgsLoadRasterAttributeTableDialogBase
 {
     Q_OBJECT
 
   public:
+
     /**
      * Creates a new QgsCreateRasterAttributeTableDialog.
      * \param rasterLayer the raster layer, must be suitable for creating a new raster attribute table
@@ -62,17 +63,17 @@ class GUI_EXPORT QgsLoadRasterAttributeTableDialog : public QDialog, private Ui:
     /**
      * Returns TRUE if the option to open the newly created attribute table is checked.
      */
-    bool openWhenDone() const;
+    bool openWhenDone( ) const;
 
     /**
      * Returns the raster band associated to the raster attribute table.
      */
-    int rasterBand();
+    int rasterBand( );
 
     /**
      * Returns the file path to VAT.DBF.
      */
-    QString filePath() const;
+    QString filePath( ) const;
 
     // QDialog interface
   public slots:
@@ -86,6 +87,7 @@ class GUI_EXPORT QgsLoadRasterAttributeTableDialog : public QDialog, private Ui:
     void notify( const QString &title, const QString &message, Qgis::MessageLevel level = Qgis::MessageLevel::Info );
 
   private:
+
     QgsRasterLayer *mRasterLayer = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
 };

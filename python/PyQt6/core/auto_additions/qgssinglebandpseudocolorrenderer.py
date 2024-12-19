@@ -2,5 +2,5 @@
 try:
     QgsSingleBandPseudoColorRenderer.create = staticmethod(QgsSingleBandPseudoColorRenderer.create)
     QgsSingleBandPseudoColorRenderer.__group__ = ['raster']
-except (NameError, AttributeError):
+except NameError:
     pass

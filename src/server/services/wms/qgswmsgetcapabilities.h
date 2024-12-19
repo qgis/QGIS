@@ -35,7 +35,11 @@ namespace QgsWms
   /**
    * Create element for get capabilities document
    */
-  QDomElement getLayersAndStylesCapabilitiesElement( QDomDocument &doc, QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, bool projectSettings );
+  QDomElement getLayersAndStylesCapabilitiesElement( QDomDocument &doc,
+      QgsServerInterface *serverIface,
+      const QgsProject *project,
+      const QgsWmsRequest &request,
+      bool projectSettings );
 
   /**
    * Create WFSLayers element for get capabilities document
@@ -55,17 +59,24 @@ namespace QgsWms
   /**
    * Create Capability element for get capabilities document
    */
-  QDomElement getCapabilityElement( QDomDocument &doc, const QgsProject *project, const QgsWmsRequest &request, bool projectSettings, QgsServerInterface *serverIface );
+  QDomElement getCapabilityElement( QDomDocument &doc, const QgsProject *project,
+                                    const QgsWmsRequest &request, bool projectSettings,
+                                    QgsServerInterface *serverIface );
 
   /**
    * Create Service element for get capabilities document
    */
-  QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project, const QgsWmsRequest &request, const QgsServerSettings *serverSettings );
+  QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project,
+                                 const QgsWmsRequest &request, const QgsServerSettings *serverSettings );
 
   /**
    * Output GetCapabilities response
    */
-  void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response, bool projectSettings = false );
+  void writeGetCapabilities( QgsServerInterface *serverIface,
+                             const QgsProject *project,
+                             const QgsWmsRequest &request,
+                             QgsServerResponse &response,
+                             bool projectSettings = false );
 
   /**
    * Creates the WMS GetCapabilities XML document.
@@ -75,7 +86,9 @@ namespace QgsWms
    * \param projectSettings If TRUE, adds extended project information (does not validate against WMS schema)
    * \returns GetCapabilities XML document
    */
-  QDomDocument getCapabilities( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, bool projectSettings );
+  QDomDocument getCapabilities( QgsServerInterface *serverIface, const QgsProject *project,
+                                const QgsWmsRequest &request,
+                                bool projectSettings );
 
   /**
    * Returns true if at least one layer from the layers ids is queryable
@@ -84,7 +97,7 @@ namespace QgsWms
    * \returns True if at least one layer form the layers ids is queryable
    * \since QGIS 3.28.0
    */
-  bool hasQueryableLayers( const QStringList &layerIds, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos );
+  bool hasQueryableLayers( const QStringList &layerIds, const QMap< QString, QgsWmsLayerInfos > &wmsLayerInfos );
 
   /**
    * Returns the combination of the WGS84 bounding rectangle of the layers from the list of layers ids
@@ -93,7 +106,7 @@ namespace QgsWms
    * \returns the extent combination of the WGS84 bounding rectangle of the layers from the list of layers ids
    * \since QGIS 3.28.0
    */
-  QgsRectangle combineWgs84BoundingRect( const QStringList &layerIds, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos );
+  QgsRectangle combineWgs84BoundingRect( const QStringList &layerIds, const QMap< QString, QgsWmsLayerInfos > &wmsLayerInfos );
 
   /**
    * Returns the combinations of the extent CRSes of the layers from the list of layers ids
@@ -102,7 +115,7 @@ namespace QgsWms
    * \returns the extent combination of the WGS84 bounding rectangle of the layers from the list of layers ids
    * \since QGIS 3.28.0
    */
-  QMap<QString, QgsRectangle> combineCrsExtents( const QStringList &layerIds, const QMap<QString, QgsWmsLayerInfos> &wmsLayerInfos );
+  QMap<QString, QgsRectangle> combineCrsExtents( const QStringList &layerIds, const QMap< QString, QgsWmsLayerInfos > &wmsLayerInfos );
 
 } // namespace QgsWms
 

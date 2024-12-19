@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 ***************************************************************************
     user.py
@@ -15,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = "Nathan Woodrow"
-__date__ = "January 2015"
-__copyright__ = "(C) 2015, Nathan Woodrow"
+__author__ = 'Nathan Woodrow'
+__date__ = 'January 2015'
+__copyright__ = '(C) 2015, Nathan Woodrow'
 
 import os
 import sys
@@ -41,16 +43,12 @@ def load_user_expressions(path):
         # As user expression functions should be registered with qgsfunction
         # just importing the file is enough to get it to load the functions into QGIS
         try:
-            __import__(f"expressions.{name}", locals(), globals())
+            __import__("expressions.{0}".format(name), locals(), globals())
         except:
             error = traceback.format_exc()
             msgtitle = QCoreApplication.translate("UserExpressions", "User expressions")
-            msg = QCoreApplication.translate(
-                "UserExpressions", "The user expression {0} is not valid"
-            ).format(name)
-            QgsMessageLog.logMessage(
-                msg + "\n" + error, msgtitle, Qgis.MessageLevel.Warning
-            )
+            msg = QCoreApplication.translate("UserExpressions", "The user expression {0} is not valid").format(name)
+            QgsMessageLog.logMessage(msg + "\n" + error, msgtitle, Qgis.MessageLevel.Warning)
 
 
 def reload_user_expressions(path):
@@ -65,12 +63,12 @@ def reload_user_expressions(path):
         if name == "__init__":
             continue
 
-        mod = f"expressions.{name}"
+        mod = "expressions.{0}".format(name)
         if mod not in sys.modules:
             continue
 
         # try removing path
-        if hasattr(sys.modules[mod], "__path__"):
+        if hasattr(sys.modules[mod], '__path__'):
             for path in sys.modules[mod].__path__:
                 try:
                     sys.path.remove(path)

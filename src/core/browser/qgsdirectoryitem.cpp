@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsdirectoryitem.h"
-#include "moc_qgsdirectoryitem.cpp"
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsdataitemprovider.h"

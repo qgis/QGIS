@@ -44,7 +44,9 @@ class QgsMapToolProfileCurve : public QgsMapToolCapture
   private:
     void lineCaptured( const QgsCurve *line ) override;
 
-    QPointer<QgsMapTool> mPreviousTool;
+    QPointer< QgsMapTool > mPreviousTool;
+
+
 };
 
 #endif // QGSMAPTOOLPROFILECURVE_H

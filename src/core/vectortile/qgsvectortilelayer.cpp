@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsvectortilelayer.h"
-#include "moc_qgsvectortilelayer.cpp"
 
 #include "qgslogger.h"
 #include "qgsvectortilelayerrenderer.h"

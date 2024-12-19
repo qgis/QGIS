@@ -244,26 +244,3 @@ bool QgsRasterRenderer::accept( QgsStyleEntityVisitorInterface * ) const
 {
   return true;
 }
-
-bool QgsRasterRenderer::needsRefresh( const QgsRectangle &extent ) const
-{
-  if ( mLastRectangleUsedByRefreshContrastEnhancementIfNeeded != extent &&
-       mMinMaxOrigin.limits() != Qgis::RasterRangeLimit::NotSet &&
-       mMinMaxOrigin.extent() == Qgis::RasterRangeExtent::UpdatedCanvas )
-  {
-    return true;
-  }
-
-  return false;
-}
-
-bool QgsRasterRenderer::refresh( const QgsRectangle &extent, const QList<double> &, const QList<double> &, bool forceRefresh )
-{
-  if ( !needsRefresh( extent ) && !forceRefresh )
-  {
-    return false;
-  }
-
-  mLastRectangleUsedByRefreshContrastEnhancementIfNeeded = extent;
-  return true;
-}

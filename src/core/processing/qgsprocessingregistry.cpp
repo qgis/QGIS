@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsprocessingregistry.h"
-#include "moc_qgsprocessingregistry.cpp"
 #include "qgsvectorfilewriter.h"
 #include "qgsprocessingparametertypeimpl.h"
 #include "qgsprocessingparametermeshdataset.h"

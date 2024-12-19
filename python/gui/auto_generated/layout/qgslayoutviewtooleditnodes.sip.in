@@ -19,6 +19,7 @@ Layout view tool for edit node based items in the layout.
 #include "qgslayoutviewtooleditnodes.h"
 %End
   public:
+
     QgsLayoutViewToolEditNodes( QgsLayoutView *view /TransferThis/ );
 %Docstring
 Constructor for QgsLayoutViewToolEditNodes.
@@ -43,7 +44,7 @@ Deletes the selected node from the item.
 
     virtual void deactivate();
 
-    virtual QList<QgsLayoutItem *> ignoredSnapItems() const;
+    virtual QList< QgsLayoutItem * > ignoredSnapItems() const;
 
 
 };

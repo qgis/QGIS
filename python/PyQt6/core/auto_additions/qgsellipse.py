@@ -5,5 +5,5 @@ try:
     QgsEllipse.fromCenterPoint = staticmethod(QgsEllipse.fromCenterPoint)
     QgsEllipse.fromCenter2Points = staticmethod(QgsEllipse.fromCenter2Points)
     QgsEllipse.__group__ = ['geometry']
-except (NameError, AttributeError):
+except NameError:
     pass

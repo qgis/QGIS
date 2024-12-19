@@ -24,7 +24,6 @@
 #include "qgis_sip.h"
 #include "qgsvector3d.h"
 #include "qgspointcloudattribute.h"
-#include "qgsstyle.h"
 
 class QgsPointCloudBlock;
 class QgsLayerTreeLayer;
@@ -71,7 +70,7 @@ class CORE_EXPORT QgsPointCloudRenderContext
      * Returns a reference to the context's render context.
      * \note Not available in Python bindings.
      */
-    const QgsRenderContext &renderContext() const SIP_SKIP { return mRenderContext; }
+    const QgsRenderContext &renderContext() const { return mRenderContext; } SIP_SKIP
 
     /**
      * Returns the scale of the layer's int32 coordinates compared to CRS coords.
@@ -341,7 +340,7 @@ class CORE_EXPORT QgsPointCloudRenderer
 
   public:
 
-    QgsPointCloudRenderer();
+    QgsPointCloudRenderer() = default;
 
     virtual ~QgsPointCloudRenderer() = default;
 
@@ -676,31 +675,6 @@ class CORE_EXPORT QgsPointCloudRenderer
      */
     virtual QStringList legendRuleKeys() const;
 
-    /**
-     * Set whether the renderer should also render file labels inside extent
-     * \since QGIS 3.42
-     */
-    void setShowLabels( const bool show ) { mShowLabels = show; }
-
-    /**
-     * Returns whether the renderer shows file labels inside the extent
-     * rectangle
-     * \since QGIS 3.42
-     */
-    bool showLabels() const { return mShowLabels; }
-
-    /**
-       * Sets the text format renderers should use for rendering labels
-       * \since QGIS 3.42
-       */
-    void setLabelTextFormat( const QgsTextFormat &textFormat ) { mLabelTextFormat = textFormat; }
-
-    /**
-     * Returns the text format renderer is using for rendering labels
-     * \since QGIS 3.42
-     */
-    QgsTextFormat labelTextFormat() const { return mLabelTextFormat; }
-
   protected:
 
     /**
@@ -839,9 +813,6 @@ class CORE_EXPORT QgsPointCloudRenderer
     bool mHorizontalTriangleFilter = false;
     double mHorizontalTriangleFilterThreshold = 5.0;
     Qgis::RenderUnit mHorizontalTriangleFilterUnit = Qgis::RenderUnit::Millimeters;
-
-    bool mShowLabels = false;
-    QgsTextFormat mLabelTextFormat;
 };
 
 #endif // QGSPOINTCLOUDRENDERER_H

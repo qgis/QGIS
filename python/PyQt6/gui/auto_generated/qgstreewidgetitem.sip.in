@@ -23,6 +23,7 @@ also correctly handles sorting numeric or mixed text and numeric values.
 #include "qgstreewidgetitem.h"
 %End
   public:
+
     explicit QgsTreeWidgetItem( QTreeWidget *view /TransferThis/, int type = Type );
 %Docstring
 Constructor for QgsTreeWidgetItem
@@ -139,7 +140,7 @@ be placed above items with a higher priority.
 
 };
 
-class QgsTreeWidgetItemObject : QObject, QgsTreeWidgetItem
+class QgsTreeWidgetItemObject: QObject, QgsTreeWidgetItem
 {
 %Docstring(signature="appended")
 Custom :py:class:`QgsTreeWidgetItem` with extra signals when item is edited.
@@ -149,6 +150,7 @@ Custom :py:class:`QgsTreeWidgetItem` with extra signals when item is edited.
 #include "qgstreewidgetitem.h"
 %End
   public:
+
     explicit QgsTreeWidgetItemObject( int type = Type );
 %Docstring
 Constructor for QgsTreeWidgetItemObject

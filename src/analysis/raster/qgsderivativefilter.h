@@ -32,7 +32,9 @@ class ANALYSIS_EXPORT QgsDerivativeFilter : public QgsNineCellFilter
   public:
     QgsDerivativeFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
 
-    float processNineCellWindow( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 ) override = 0;
+    float processNineCellWindow( float *x11, float *x21, float *x31,
+                                 float *x12, float *x22, float *x32,
+                                 float *x13, float *x23, float *x33 ) override = 0;
 
   protected:
     //! Calculates the first order derivative in x-direction according to Horn (1981)

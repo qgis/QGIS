@@ -30,10 +30,11 @@ class QgsCoordinateTransformContext;
 class ANALYSIS_EXPORT QgsGcpPoint
 {
   public:
+
     //! Coordinate point types
     enum class PointType
     {
-      Source,      //!< Source point
+      Source, //!< Source point
       Destination, //!< Destination point
     };
 
@@ -45,7 +46,8 @@ class ANALYSIS_EXPORT QgsGcpPoint
      * \param destinationPointCrs CRS of destination point
      * \param enabled whether the point is currently enabled
      */
-    QgsGcpPoint( const QgsPointXY &sourcePoint, const QgsPointXY &destinationPoint, const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled = true );
+    QgsGcpPoint( const QgsPointXY &sourcePoint, const QgsPointXY &destinationPoint,
+                 const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled = true );
 
     /**
      * Returns the source coordinates.
@@ -127,10 +129,12 @@ class ANALYSIS_EXPORT QgsGcpPoint
     }
 
   private:
+
     QgsPointXY mSourcePoint;
     QgsPointXY mDestinationPoint;
     QgsCoordinateReferenceSystem mDestinationCrs;
     bool mEnabled = true;
+
 };
 
 #endif //QGSGCPPOINT_H

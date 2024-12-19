@@ -15,22 +15,20 @@
 ***************************************************************************
 """
 
-__author__ = "Nyall Dawson"
-__date__ = "July 2018"
-__copyright__ = "(C) 2018, Nyall Dawson"
+__author__ = 'Nyall Dawson'
+__date__ = 'July 2018'
+__copyright__ = '(C) 2018, Nyall Dawson'
 
-from qgis.core import (
-    Qgis,
-    QgsApplication,
-    QgsProcessingProvider,
-    QgsMessageLog,
-    QgsProcessingModelAlgorithm,
-    QgsProject,
-    QgsXmlUtils,
-    QgsRuntimeProfiler,
-)
+from qgis.core import (Qgis,
+                       QgsApplication,
+                       QgsProcessingProvider,
+                       QgsMessageLog,
+                       QgsProcessingModelAlgorithm,
+                       QgsProject,
+                       QgsXmlUtils,
+                       QgsRuntimeProfiler)
 
-PROJECT_PROVIDER_ID = "project"
+PROJECT_PROVIDER_ID = 'project'
 
 
 class ProjectProvider(QgsProcessingProvider):
@@ -47,9 +45,7 @@ class ProjectProvider(QgsProcessingProvider):
 
         # must reload models if providers list is changed - previously unavailable algorithms
         # which models depend on may now be available
-        QgsApplication.processingRegistry().providerAdded.connect(
-            self.on_provider_added
-        )
+        QgsApplication.processingRegistry().providerAdded.connect(self.on_provider_added)
 
         self.project.readProject.connect(self.read_project)
         self.project.writeProject.connect(self.write_project)
@@ -62,7 +58,7 @@ class ProjectProvider(QgsProcessingProvider):
         self.refreshAlgorithms()
 
     def load(self):
-        with QgsRuntimeProfiler.profile("Project Provider"):
+        with QgsRuntimeProfiler.profile('Project Provider'):
             self.refreshAlgorithms()
 
         return True
@@ -104,7 +100,7 @@ class ProjectProvider(QgsProcessingProvider):
         :param doc: DOM document
         """
         self.model_definitions = {}
-        project_models_nodes = doc.elementsByTagName("projectModels")
+        project_models_nodes = doc.elementsByTagName('projectModels')
         if project_models_nodes:
             project_models_node = project_models_nodes.at(0)
             model_nodes = project_models_node.childNodes()
@@ -122,12 +118,12 @@ class ProjectProvider(QgsProcessingProvider):
         Writes out the project model definitions into the project DOM document
         :param doc: DOM document
         """
-        qgis_nodes = doc.elementsByTagName("qgis")
+        qgis_nodes = doc.elementsByTagName('qgis')
         if not qgis_nodes:
             return
 
         qgis_node = qgis_nodes.at(0)
-        project_models_node = doc.createElement("projectModels")
+        project_models_node = doc.createElement('projectModels')
 
         for a in self.algorithms():
             definition = a.toVariant()
@@ -136,10 +132,10 @@ class ProjectProvider(QgsProcessingProvider):
         qgis_node.appendChild(project_models_node)
 
     def name(self):
-        return self.tr("Project models", "ProjectProvider")
+        return self.tr('Project models', 'ProjectProvider')
 
     def longName(self):
-        return self.tr("Models embedded in the current project", "ProjectProvider")
+        return self.tr('Models embedded in the current project', 'ProjectProvider')
 
     def id(self):
         return PROJECT_PROVIDER_ID
@@ -164,9 +160,7 @@ class ProjectProvider(QgsProcessingProvider):
                 self.addAlgorithm(algorithm)
             else:
                 QgsMessageLog.logMessage(
-                    self.tr("Could not load model from project", "ProjectProvider"),
-                    self.tr("Processing"),
-                    Qgis.MessageLevel.Critical,
-                )
+                    self.tr('Could not load model from project', 'ProjectProvider'),
+                    self.tr('Processing'), Qgis.MessageLevel.Critical)
 
         self.is_loading = False

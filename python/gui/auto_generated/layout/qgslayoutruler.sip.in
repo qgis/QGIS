@@ -8,7 +8,7 @@
 
 
 
-class QgsLayoutRuler : QWidget
+class QgsLayoutRuler: QWidget
 {
 %Docstring(signature="appended")
 A custom ruler widget for use with :py:class:`QgsLayoutView`, displaying the
@@ -20,6 +20,7 @@ with guides in a layout.
 #include "qgslayoutruler.h"
 %End
   public:
+
     explicit QgsLayoutRuler( QWidget *parent /TransferThis/ = 0, Qt::Orientation orientation = Qt::Horizontal );
 %Docstring
 Constructor for QgsLayoutRuler, with the specified ``parent`` widget and ``orientation``.

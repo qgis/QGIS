@@ -18,15 +18,15 @@ email                : brush.tyler@gmail.com
  ***************************************************************************/
 """
 
-from qgis.PyQt.QtCore import (
-    Qt,
-    QElapsedTimer,
-    QRegularExpression,
-    QAbstractTableModel,
-    pyqtSignal,
-    QObject,
-)
-from qgis.PyQt.QtGui import QFont, QStandardItemModel, QStandardItem
+from qgis.PyQt.QtCore import (Qt,
+                              QElapsedTimer,
+                              QRegularExpression,
+                              QAbstractTableModel,
+                              pyqtSignal,
+                              QObject)
+from qgis.PyQt.QtGui import (QFont,
+                             QStandardItemModel,
+                             QStandardItem)
 from qgis.PyQt.QtWidgets import QApplication
 
 from qgis.core import QgsTask
@@ -47,7 +47,8 @@ class BaseTableModel(QAbstractTableModel):
 
     def rowToString(self, row, sep="\t"):
         return sep.join(
-            str(self.getData(row, col)) for col in range(self.columnCount())
+            str(self.getData(row, col))
+            for col in range(self.columnCount())
         )
 
     def getData(self, row, col):
@@ -63,11 +64,9 @@ class BaseTableModel(QAbstractTableModel):
         return len(self._header)
 
     def data(self, index, role):
-        if role not in [
-            Qt.ItemDataRole.DisplayRole,
-            Qt.ItemDataRole.EditRole,
-            Qt.ItemDataRole.FontRole,
-        ]:
+        if role not in [Qt.ItemDataRole.DisplayRole,
+                        Qt.ItemDataRole.EditRole,
+                        Qt.ItemDataRole.FontRole]:
             return None
 
         val = self.getData(index.row(), index.column())
@@ -93,9 +92,7 @@ class BaseTableModel(QAbstractTableModel):
         try:
             return str(val)  # convert to Unicode
         except UnicodeDecodeError:
-            return str(
-                val, "utf-8", "replace"
-            )  # convert from utf8 and replace errors (if any)
+            return str(val, 'utf-8', 'replace')  # convert from utf8 and replace errors (if any)
 
     def headerData(self, section, orientation, role):
         if role != Qt.ItemDataRole.DisplayRole:
@@ -124,22 +121,16 @@ class TableDataModel(BaseTableModel):
             self.fields.append(self._sanitizeTableField(fld))
 
         self.fetchedCount = 201
-        self.fetchedFrom = (
-            -self.fetchedCount - 1
-        )  # so the first call to getData will exec fetchMoreData(0)
+        self.fetchedFrom = -self.fetchedCount - 1  # so the first call to getData will exec fetchMoreData(0)
 
     def _sanitizeTableField(self, field):
-        """quote column names to avoid some problems (e.g. columns with upper case)"""
+        """ quote column names to avoid some problems (e.g. columns with upper case) """
         return self.db.quoteId(field)
 
     def getData(self, row, col):
         if row < self.fetchedFrom or row >= self.fetchedFrom + self.fetchedCount:
             margin = self.fetchedCount / 2
-            start = int(
-                self.rowCount() - margin
-                if row + margin >= self.rowCount()
-                else row - margin
-            )
+            start = int(self.rowCount() - margin if row + margin >= self.rowCount() else row - margin)
             if start < 0:
                 start = 0
             self.fetchMoreData(start)
@@ -150,11 +141,7 @@ class TableDataModel(BaseTableModel):
 
     def rowCount(self, index=None):
         # case for tables with no columns ... any reason to use them? :-)
-        return (
-            self.table.rowCount
-            if self.table.rowCount is not None and self.columnCount(index) > 0
-            else 0
-        )
+        return self.table.rowCount if self.table.rowCount is not None and self.columnCount(index) > 0 else 0
 
 
 class SqlResultModelAsync(QObject):
@@ -162,7 +149,7 @@ class SqlResultModelAsync(QObject):
 
     def __init__(self):
         super().__init__()
-        self.error = BaseError("")
+        self.error = BaseError('')
         self.status = None
         self.model = None
         self.task = None
@@ -185,13 +172,11 @@ class SqlResultModelAsync(QObject):
 class SqlResultModelTask(QgsTask):
 
     def __init__(self, db, sql, parent):
-        super().__init__(
-            description=QApplication.translate("DBManagerPlugin", "Executing SQL")
-        )
+        super().__init__(description=QApplication.translate("DBManagerPlugin", "Executing SQL"))
         self.db = db
         self.sql = sql
         self.parent = parent
-        self.error = BaseError("")
+        self.error = BaseError('')
         self.model = None
 
 
@@ -246,19 +231,12 @@ class SimpleTableModel(QStandardItemModel):
         row = []
         for c in data:
             item = QStandardItem(str(c))
-            item.setFlags(
-                (item.flags() | Qt.ItemFlag.ItemIsEditable)
-                if self.editable
-                else (item.flags() & ~Qt.ItemFlag.ItemIsEditable)
-            )
+            item.setFlags((item.flags() | Qt.ItemFlag.ItemIsEditable) if self.editable else (item.flags() & ~Qt.ItemFlag.ItemIsEditable))
             row.append(item)
         return row
 
     def headerData(self, section, orientation, role):
-        if (
-            orientation == Qt.Orientation.Horizontal
-            and role == Qt.ItemDataRole.DisplayRole
-        ):
+        if orientation == Qt.Orientation.Horizontal and role == Qt.ItemDataRole.DisplayRole:
             return self.header[section]
         return None
 
@@ -276,46 +254,27 @@ class SimpleTableModel(QStandardItemModel):
 class TableFieldsModel(SimpleTableModel):
 
     def __init__(self, parent, editable=False):
-        SimpleTableModel.__init__(
-            self, ["Name", "Type", "Null", "Default", "Comment"], editable, parent
-        )
+        SimpleTableModel.__init__(self, ['Name', 'Type', 'Null', 'Default', 'Comment'], editable, parent)
 
     def headerData(self, section, orientation, role):
-        if (
-            orientation == Qt.Orientation.Vertical
-            and role == Qt.ItemDataRole.DisplayRole
-        ):
+        if orientation == Qt.Orientation.Vertical and role == Qt.ItemDataRole.DisplayRole:
             return section + 1
         return SimpleTableModel.headerData(self, section, orientation, role)
 
     def flags(self, index):
         flags = SimpleTableModel.flags(self, index)
-        if (
-            index.column() == 2 and flags & Qt.ItemFlag.ItemIsEditable
-        ):  # set Null column as checkable instead of editable
-            flags = (
-                flags & ~Qt.ItemFlag.ItemIsEditable | Qt.ItemFlag.ItemIsUserCheckable
-            )
+        if index.column() == 2 and flags & Qt.ItemFlag.ItemIsEditable:  # set Null column as checkable instead of editable
+            flags = flags & ~Qt.ItemFlag.ItemIsEditable | Qt.ItemFlag.ItemIsUserCheckable
         return flags
 
     def append(self, fld):
-        data = [
-            fld.name,
-            fld.type2String(),
-            not fld.notNull,
-            fld.default2String(),
-            fld.getComment(),
-        ]
+        data = [fld.name, fld.type2String(), not fld.notNull, fld.default2String(), fld.getComment()]
         self.appendRow(self.rowFromData(data))
         row = self.rowCount() - 1
         self.setData(self.index(row, 0), fld, Qt.ItemDataRole.UserRole)
         self.setData(self.index(row, 1), fld.primaryKey, Qt.ItemDataRole.UserRole)
         self.setData(self.index(row, 2), None, Qt.ItemDataRole.DisplayRole)
-        self.setData(
-            self.index(row, 2),
-            Qt.CheckState.Unchecked if fld.notNull else Qt.CheckState.Checked,
-            Qt.ItemDataRole.CheckStateRole,
-        )
+        self.setData(self.index(row, 2), Qt.CheckState.Unchecked if fld.notNull else Qt.CheckState.Checked, Qt.ItemDataRole.CheckStateRole)
 
     def _getNewObject(self):
         from .plugin import TableField
@@ -336,31 +295,24 @@ class TableFieldsModel(SimpleTableModel):
             fld.modifier = None
             fld.dataType = typestr
 
-        fld.notNull = (
-            self.data(self.index(row, 2), Qt.ItemDataRole.CheckStateRole)
-            == Qt.CheckState.Unchecked
-        )
+        fld.notNull = self.data(self.index(row, 2), Qt.ItemDataRole.CheckStateRole) == Qt.CheckState.Unchecked
         fld.primaryKey = self.data(self.index(row, 1), Qt.ItemDataRole.UserRole)
         fld.comment = self.data(self.index(row, 4))
         return fld
 
     def getFields(self):
-        return [fld for fld in self.getObjectIter()]
+        return [
+            fld
+            for fld in self.getObjectIter()
+        ]
 
 
 class TableConstraintsModel(SimpleTableModel):
 
     def __init__(self, parent, editable=False):
-        SimpleTableModel.__init__(
-            self,
-            [
-                QApplication.translate("DBManagerPlugin", "Name"),
-                QApplication.translate("DBManagerPlugin", "Type"),
-                QApplication.translate("DBManagerPlugin", "Column(s)"),
-            ],
-            editable,
-            parent,
-        )
+        SimpleTableModel.__init__(self, [QApplication.translate("DBManagerPlugin", 'Name'),
+                                         QApplication.translate("DBManagerPlugin", 'Type'),
+                                         QApplication.translate("DBManagerPlugin", 'Column(s)')], editable, parent)
 
     def append(self, constr):
         field_names = [str(k_v[1].name) for k_v in iter(list(constr.fields().items()))]
@@ -386,21 +338,17 @@ class TableConstraintsModel(SimpleTableModel):
         return constr
 
     def getConstraints(self):
-        return [constr for constr in self.getObjectIter()]
+        return [
+            constr
+            for constr in self.getObjectIter()
+        ]
 
 
 class TableIndexesModel(SimpleTableModel):
 
     def __init__(self, parent, editable=False):
-        SimpleTableModel.__init__(
-            self,
-            [
-                QApplication.translate("DBManagerPlugin", "Name"),
-                QApplication.translate("DBManagerPlugin", "Column(s)"),
-            ],
-            editable,
-            parent,
-        )
+        SimpleTableModel.__init__(self, [QApplication.translate("DBManagerPlugin", 'Name'),
+                                         QApplication.translate("DBManagerPlugin", 'Column(s)')], editable, parent)
 
     def append(self, idx):
         field_names = [str(k_v1[1].name) for k_v1 in iter(list(idx.fields().items()))]
@@ -424,4 +372,7 @@ class TableIndexesModel(SimpleTableModel):
         return idx
 
     def getIndexes(self):
-        return [idx for idx in self.getObjectIter()]
+        return [
+            idx
+            for idx in self.getObjectIter()
+        ]

@@ -27,6 +27,7 @@ A PBR metal rough shading material used for rendering.
 #include "qgsmetalroughmaterialsettings.h"
 %End
   public:
+
     QgsMetalRoughMaterialSettings();
 
     virtual QString type() const;
@@ -44,8 +45,6 @@ Returns a new instance of QgsMetalRoughMaterialSettings.
 
     virtual QgsMetalRoughMaterialSettings *clone() const /Factory/;
 
-    virtual bool equals( const QgsAbstractMaterialSettings *other ) const;
-
 
     QColor baseColor() const;
 %Docstring
@@ -54,14 +53,14 @@ Returns the base material color.
 .. seealso:: :py:func:`setBaseColor`
 %End
 
-    double metalness() const;
+    float metalness() const;
 %Docstring
 Returns the material's metalness.
 
 .. seealso:: :py:func:`setMetalness`
 %End
 
-    double roughness() const;
+    float roughness() const;
 %Docstring
 Returns the material's roughness.
 
@@ -78,14 +77,14 @@ Sets the base material ``color``.
 .. seealso:: :py:func:`baseColor`
 %End
 
-    void setMetalness( double metalness );
+    void setMetalness( float metalness );
 %Docstring
 Returns the material's ``metalness``.
 
 .. seealso:: :py:func:`metalness`
 %End
 
-    void setRoughness( double roughness );
+    void setRoughness( float roughness );
 %Docstring
 Returns the material's ``roughness``.
 

@@ -33,4 +33,5 @@ class QgsTiledSceneRendererWidgetFactory : public QObject, public QgsMapLayerCon
 };
 
 
+
 #endif // QGSTILEDSCENELAYERSTYLEWIDGET_H

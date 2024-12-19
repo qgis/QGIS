@@ -40,7 +40,7 @@
      </attribute>
      <column>
       <property name="text">
-       <string>ID</string>
+       <string>Id</string>
       </property>
      </column>
      <column>
@@ -65,7 +65,7 @@
      </column>
      <column>
       <property name="text">
-       <string>URL</string>
+       <string>Url</string>
       </property>
      </column>
     </widget>

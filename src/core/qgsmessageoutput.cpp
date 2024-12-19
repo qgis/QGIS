@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmessageoutput.h"
-#include "moc_qgsmessageoutput.cpp"
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 

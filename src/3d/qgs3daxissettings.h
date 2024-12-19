@@ -35,13 +35,14 @@ class QDomElement;
 class _3D_EXPORT Qgs3DAxisSettings
 {
   public:
+
     /**
      * \brief Axis representation enum
      */
     enum class Mode
     {
-      Off = 1,  //!< Hide 3d axis
-      Crs = 2,  //!< Respect CRS directions
+      Off = 1, //!< Hide 3d axis
+      Crs = 2, //!< Respect CRS directions
       Cube = 3, //!< Abstract cube mode
     };
 
@@ -56,17 +57,17 @@ class _3D_EXPORT Qgs3DAxisSettings
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 
     //! Returns the default axis viewport size in millimeters
-    int defaultViewportSize() const { return mDefaultViewportSize; }
+    int defaultViewportSize() const { return mDefaultViewportSize;}
     //! Sets the defaultl axis viewport size in millimeters
     void setDefaultViewportSize( int size ) { mDefaultViewportSize = size; }
 
     //! Returns the minimal axis viewport ratio (see Qt3DRender::QViewport::normalizedRect())
-    double minViewportRatio() const { return mMinViewportRatio; }
+    double minViewportRatio() const { return mMinViewportRatio;}
     //! Sets the minimal axis viewport ratio between 0-1
     void setMinViewportRatio( double ratio );
 
     //! Returns the maximal axis viewport ratio (see Qt3DRender::QViewport::normalizedRect())
-    double maxViewportRatio() const { return mMaxViewportRatio; }
+    double maxViewportRatio() const { return mMaxViewportRatio;}
     //! Sets the maximal axis viewport ratio between 0-1
     void setMaxViewportRatio( double ratio );
 
@@ -92,6 +93,7 @@ class _3D_EXPORT Qgs3DAxisSettings
     Qgs3DAxisSettings::Mode mMode = Qgs3DAxisSettings::Mode::Crs;
     Qt::AnchorPoint mHorizontalPosition = Qt::AnchorPoint::AnchorRight;
     Qt::AnchorPoint mVerticalPosition = Qt::AnchorPoint::AnchorTop;
+
 };
 
 #endif // QGS3DAXISSETTINGS_H

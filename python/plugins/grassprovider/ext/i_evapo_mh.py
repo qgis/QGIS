@@ -15,22 +15,16 @@
 ***************************************************************************
 """
 
-__author__ = "Médéric Ribreux"
-__date__ = "March 2016"
-__copyright__ = "(C) 2016, Médéric Ribreux"
+__author__ = 'Médéric Ribreux'
+__date__ = 'March 2016'
+__copyright__ = '(C) 2016, Médéric Ribreux'
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
-    if alg.parameterAsBoolean(parameters, "-h", context) and alg.parameterAsLayer(
-        parameters, "precipitation", context
-    ):
-        return False, alg.tr(
-            "You can't use original Hargreaves flag and precipitation parameter together!"
-        )
-    if not alg.parameterAsBoolean(
-        parameters, "-h", context
-    ) and not alg.parameterAsLayer(parameters, "precipitation", context):
-        return False, alg.tr(
-            "If you don't use original Hargreaves flag, you must set the precipitation raster parameter!"
-        )
+    if (alg.parameterAsBoolean(parameters, '-h', context)
+            and alg.parameterAsLayer(parameters, 'precipitation', context)):
+        return False, alg.tr('You can\'t use original Hargreaves flag and precipitation parameter together!')
+    if (not alg.parameterAsBoolean(parameters, '-h', context)
+            and not alg.parameterAsLayer(parameters, 'precipitation', context)):
+        return False, alg.tr('If you don\'t use original Hargreaves flag, you must set the precipitation raster parameter!')
     return True, None

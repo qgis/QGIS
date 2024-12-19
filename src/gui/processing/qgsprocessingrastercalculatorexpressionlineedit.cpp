@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsprocessingrastercalculatorexpressionlineedit.h"
-#include "moc_qgsprocessingrastercalculatorexpressionlineedit.cpp"
 #include "qgsgui.h"
 #include "qgsapplication.h"
 #include "qgsfilterlineedit.h"
@@ -47,7 +46,7 @@ QgsProcessingRasterCalculatorExpressionLineEdit::QgsProcessingRasterCalculatorEx
 
   setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
   setFocusProxy( mLineEdit );
-  connect( mLineEdit, &QLineEdit::textChanged, this, static_cast<void ( QgsProcessingRasterCalculatorExpressionLineEdit::* )( const QString & )>( &QgsProcessingRasterCalculatorExpressionLineEdit::expressionEdited ) );
+  connect( mLineEdit, &QLineEdit::textChanged, this, static_cast < void ( QgsProcessingRasterCalculatorExpressionLineEdit::* )( const QString & ) > ( &QgsProcessingRasterCalculatorExpressionLineEdit::expressionEdited ) );
 
   setExpression( expression() );
 }

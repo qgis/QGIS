@@ -98,12 +98,16 @@ include_directories(SYSTEM
   ${${QT_VERSION_BASE}Designer_INCLUDE_DIRS}
 )
 
+if (BUILD_WITH_QT6)
+  QT6_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
+else()
+  QT5_WRAP_CPP(QGIS_CUSTOMWIDGETS_MOC_SRCS ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
+endif()
+
 #############################################################
 # qgis_customwidgets library
 
 add_library(qgis_customwidgets SHARED ${QGIS_CUSTOMWIDGETS_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_SRCS} ${QGIS_CUSTOMWIDGETS_MOC_HDRS})
-
-set_target_properties(qgis_customwidgets PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
 # require c++17
 target_compile_features(qgis_customwidgets PRIVATE cxx_std_17)

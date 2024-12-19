@@ -25,13 +25,15 @@ Determine interface for creating a graph. Contains the settings of the graph.
 #include "qgsgraphbuilderinterface.h"
 %End
 %ConvertToSubClassCode
-    if ( dynamic_cast<QgsGraphBuilder *>( sipCpp ) != NULL )
+    if ( dynamic_cast< QgsGraphBuilder * >( sipCpp ) != NULL )
       sipType = sipType_QgsGraphBuilder;
     else
       sipType = NULL;
 %End
   public:
-    QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem &crs, bool ctfEnabled = true, double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" );
+
+    QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem &crs, bool ctfEnabled = true,
+                              double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" );
 %Docstring
 Default constructor
 
@@ -75,7 +77,7 @@ Add vertex to the graph
    id and pt are redundant. You can use pt or id to identify the vertex
 %End
 
-    virtual void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector<QVariant> &strategies );
+    virtual void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector< QVariant > &strategies );
 %Docstring
 Add edge to the graph
 

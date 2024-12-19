@@ -21,6 +21,7 @@ Performs Kernel Density Estimation ("heatmap") calculations on a vector layer.
 #include "qgskde.h"
 %End
   public:
+
     enum KernelShape /BaseType=IntEnum/
     {
       KernelQuartic,
@@ -47,21 +48,21 @@ Performs Kernel Density Estimation ("heatmap") calculations on a vector layer.
 
     struct Parameters
     {
-        QgsFeatureSource *source;
+      QgsFeatureSource *source;
 
-        double radius;
+      double radius;
 
-        QString radiusField;
+      QString radiusField;
 
-        QString weightField;
+      QString weightField;
 
-        double pixelSize;
+      double pixelSize;
 
-        QgsKernelDensityEstimation::KernelShape shape;
+      QgsKernelDensityEstimation::KernelShape shape;
 
-        double decayRatio;
+      double decayRatio;
 
-        QgsKernelDensityEstimation::OutputValues outputValues;
+      QgsKernelDensityEstimation::OutputValues outputValues;
     };
 
     QgsKernelDensityEstimation( const Parameters &parameters, const QString &outputFile, const QString &outputFormat );

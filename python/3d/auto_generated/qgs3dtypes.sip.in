@@ -25,6 +25,7 @@ Defines enumerations and other auxiliary types for QGIS 3D
 #include "qgs3dtypes.h"
 %End
   public:
+
     enum CullingMode
     {
       NoCulling,
@@ -40,6 +41,8 @@ Defines enumerations and other auxiliary types for QGIS 3D
       Main3DRenderer,
       Selected3DRenderer,
     };
+
+
 };
 
 /************************************************************************

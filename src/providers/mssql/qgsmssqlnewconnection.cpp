@@ -24,7 +24,6 @@
 #include <QMenu>
 
 #include "qgsmssqlnewconnection.h"
-#include "moc_qgsmssqlnewconnection.cpp"
 #include "qgsmssqlprovider.h"
 #include "qgssettings.h"
 #include "qgsmssqlconnection.h"
@@ -49,8 +48,8 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
   connect( txtHost, &QLineEdit::textChanged, this, &QgsMssqlNewConnection::updateOkButtonState );
   connect( listDatabase, &QListWidget::currentItemChanged, this, &QgsMssqlNewConnection::updateOkButtonState );
   connect( listDatabase, &QListWidget::currentItemChanged, this, &QgsMssqlNewConnection::onCurrentDataBaseChange );
-  connect( groupBoxGeometryColumns, &QGroupBox::toggled, this, &QgsMssqlNewConnection::onCurrentDataBaseChange );
-  connect( cb_allowGeometrylessTables, &QCheckBox::clicked, this, &QgsMssqlNewConnection::onCurrentDataBaseChange );
+  connect( groupBoxGeometryColumns,  &QGroupBox::toggled, this, &QgsMssqlNewConnection::onCurrentDataBaseChange );
+  connect( cb_allowGeometrylessTables,  &QCheckBox::clicked, this, &QgsMssqlNewConnection::onCurrentDataBaseChange );
 
   connect( checkBoxExtentFromGeometryColumns, &QCheckBox::toggled, this, &QgsMssqlNewConnection::onExtentFromGeometryToggled );
   connect( checkBoxPKFromGeometryColumns, &QCheckBox::toggled, this, &QgsMssqlNewConnection::onPrimaryKeyFromGeometryToggled );
@@ -101,18 +100,22 @@ QgsMssqlNewConnection::QgsMssqlNewConnection( QWidget *parent, const QString &co
   schemaView->setModel( &mSchemaModel );
   schemaView->setContextMenuPolicy( Qt::CustomContextMenu );
 
-  connect( schemaView, &QWidget::customContextMenuRequested, this, [this]( const QPoint &p ) {
+  connect( schemaView, &QWidget::customContextMenuRequested, this, [this]( const QPoint & p )
+  {
     QMenu menu;
-    menu.addAction( tr( "Check All" ), this, [this] {
+    menu.addAction( tr( "Check All" ), this, [this]
+    {
       mSchemaModel.checkAll();
     } );
 
-    menu.addAction( tr( "Uncheck All" ), this, [this] {
+    menu.addAction( tr( "Uncheck All" ), this, [this]
+    {
       mSchemaModel.unCheckAll();
     } );
 
     menu.exec( this->schemaView->viewport()->mapToGlobal( p ) );
-  } );
+  }
+         );
   onCurrentDataBaseChange();
 
   groupBoxSchemasFilter->setCollapsed( !groupBoxSchemasFilter->isChecked() );
@@ -126,7 +129,13 @@ void QgsMssqlNewConnection::accept()
   settings.setValue( baseKey + "selected", txtName->text() );
 
   // warn if entry was renamed to an existing connection
-  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) && ( settings.contains( baseKey + txtName->text() + "/service" ) || settings.contains( baseKey + txtName->text() + "/host" ) ) && QMessageBox::question( this, tr( "Save Connection" ), tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ), QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
+       ( settings.contains( baseKey + txtName->text() + "/service" ) ||
+         settings.contains( baseKey + txtName->text() + "/host" ) ) &&
+       QMessageBox::question( this,
+                              tr( "Save Connection" ),
+                              tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
+                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -246,7 +255,7 @@ void QgsMssqlNewConnection::listDatabases()
   {
     QSqlQuery query = QSqlQuery( db->db() );
     query.setForwardOnly( true );
-    ( void ) query.exec( queryStr );
+    ( void )query.exec( queryStr );
 
     if ( !txtService->text().isEmpty() )
     {
@@ -293,7 +302,11 @@ std::shared_ptr<QgsMssqlDatabase> QgsMssqlNewConnection::getDatabase( const QStr
     database = item->text();
   }
 
-  return QgsMssqlDatabase::connectDb( txtService->text().trimmed(), txtHost->text().trimmed(), database, txtUsername->text().trimmed(), txtPassword->text().trimmed() );
+  return QgsMssqlDatabase::connectDb( txtService->text().trimmed(),
+                                      txtHost->text().trimmed(),
+                                      database,
+                                      txtUsername->text().trimmed(),
+                                      txtPassword->text().trimmed() );
 }
 
 
@@ -384,8 +397,7 @@ bool QgsMssqlNewConnection::testPrimaryKeyInGeometryColumns() const
   return test;
 }
 
-SchemaModel::SchemaModel( QObject *parent )
-  : QAbstractListModel( parent )
+SchemaModel::SchemaModel( QObject *parent ): QAbstractListModel( parent )
 {}
 
 int SchemaModel::rowCount( const QModelIndex &parent ) const

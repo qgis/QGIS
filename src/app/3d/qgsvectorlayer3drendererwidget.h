@@ -45,7 +45,7 @@ class QgsSingleSymbol3DRendererWidget : public QWidget
     void setLayer( QgsVectorLayer *layer );
 
     //! Returns the cloned symbol or NULLPTR.
-    std::unique_ptr<QgsAbstract3DSymbol> symbol();
+    std::unique_ptr< QgsAbstract3DSymbol > symbol();
 
   signals:
     void widgetChanged();
@@ -53,7 +53,9 @@ class QgsSingleSymbol3DRendererWidget : public QWidget
   private:
     QgsSymbol3DWidget *widgetSymbol = nullptr;
     QgsVectorLayer *mLayer = nullptr;
+
 };
+
 
 
 //! Widget for configuration of 3D renderer of a vector layer
@@ -97,6 +99,7 @@ class QgsVectorLayer3DRendererWidgetFactory : public QObject, public QgsMapLayer
     bool supportsLayer( QgsMapLayer *layer ) const override;
     QString layerPropertiesPagePositionHint() const override;
 };
+
 
 
 #endif // QGSVECTORLAYER3DRENDERERWIDGET_H

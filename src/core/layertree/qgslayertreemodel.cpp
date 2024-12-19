@@ -17,12 +17,10 @@
 #include <QTextStream>
 
 #include "qgslayertreemodel.h"
-#include "moc_qgslayertreemodel.cpp"
 
 #include "qgsapplication.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodellegendnode.h"
-#include "qgsmaplayerelevationproperties.h"
 #include "qgsproject.h"
 #include "qgsmaphittest.h"
 #include "qgsmaplayer.h"
@@ -993,11 +991,6 @@ void QgsLayerTreeModel::connectToLayer( QgsLayerTreeLayer *nodeLayer )
   connect( layer, &QgsMapLayer::legendChanged, this, &QgsLayerTreeModel::layerLegendChanged, Qt::UniqueConnection );
   connect( layer, &QgsMapLayer::flagsChanged, this, &QgsLayerTreeModel::layerFlagsChanged, Qt::UniqueConnection );
 
-  if ( QgsMapLayerElevationProperties *elevationProperties = layer->elevationProperties() )
-  {
-    connect( elevationProperties, &QgsMapLayerElevationProperties::profileGenerationPropertyChanged, this, &QgsLayerTreeModel::layerProfileGenerationPropertyChanged, Qt::UniqueConnection );
-  }
-
   // using unique connection because there may be temporarily more nodes for a layer than just one
   // which would create multiple connections, however disconnect() would disconnect all multiple connections
   // even if we wanted to disconnect just one connection in each call.
@@ -1785,26 +1778,6 @@ void QgsLayerTreeModel::invalidateLegendMapBasedData()
   }
 
   mInvalidatedNodes.clear();
-}
-
-void QgsLayerTreeModel::layerProfileGenerationPropertyChanged()
-{
-  if ( !mRootNode )
-    return;
-
-  QgsMapLayerElevationProperties *elevationProperties = qobject_cast<QgsMapLayerElevationProperties *>( sender() );
-  if ( !elevationProperties )
-    return;
-
-  if ( QgsMapLayer *layer = qobject_cast< QgsMapLayer * >( elevationProperties->parent() ) )
-  {
-    QgsLayerTreeLayer *nodeLayer = mRootNode->findLayer( layer->id() );
-    if ( !nodeLayer )
-      return;
-
-    QModelIndex index = node2index( nodeLayer );
-    emit dataChanged( index, index );
-  }
 }
 
 // Legend nodes routines - end

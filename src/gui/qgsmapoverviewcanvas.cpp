@@ -20,7 +20,6 @@
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
 #include "qgsmapoverviewcanvas.h"
-#include "moc_qgsmapoverviewcanvas.cpp"
 #include "qgsmaprenderersequentialjob.h"
 #include "qgsmaptopixel.h"
 #include "qgsprojectviewsettings.h"
@@ -77,7 +76,10 @@ void QgsMapOverviewCanvas::paintEvent( QPaintEvent *pe )
 {
   QPainter paint( this );
   QRect rect = pe->rect();
-  QRect sourceRect( std::ceil( pe->rect().left() * mPixmap.devicePixelRatio() ), std::ceil( pe->rect().top() * mPixmap.devicePixelRatio() ), std::ceil( pe->rect().width() * mPixmap.devicePixelRatio() ), std::ceil( pe->rect().height() * mPixmap.devicePixelRatio() ) );
+  QRect sourceRect( std::ceil( pe->rect().left() * mPixmap.devicePixelRatio() ),
+                    std::ceil( pe->rect().top() * mPixmap.devicePixelRatio() ),
+                    std::ceil( pe->rect().width() * mPixmap.devicePixelRatio() ),
+                    std::ceil( pe->rect().height() * mPixmap.devicePixelRatio() ) );
   if ( !mPixmap.isNull() )
   {
     paint.drawPixmap( rect.topLeft(), mPixmap, sourceRect );
@@ -91,8 +93,7 @@ void QgsMapOverviewCanvas::paintEvent( QPaintEvent *pe )
 
 void QgsMapOverviewCanvas::drawExtentRect()
 {
-  if ( !mMapCanvas )
-    return;
+  if ( !mMapCanvas ) return;
 
   const QgsRectangle &extent = mMapCanvas->extent();
 
@@ -105,7 +106,7 @@ void QgsMapOverviewCanvas::drawExtentRect()
 
   const QPolygonF &vPoly = mMapCanvas->mapSettings().visiblePolygon();
   const QgsMapToPixel &cXf = mSettings.mapToPixel();
-  QVector<QPoint> pts;
+  QVector< QPoint > pts;
   pts.push_back( cXf.transform( QgsPointXY( vPoly[0] ) ).toQPointF().toPoint() );
   pts.push_back( cXf.transform( QgsPointXY( vPoly[1] ) ).toQPointF().toPoint() );
   pts.push_back( cXf.transform( QgsPointXY( vPoly[2] ) ).toQPointF().toPoint() );
@@ -117,8 +118,8 @@ void QgsMapOverviewCanvas::drawExtentRect()
 
 void QgsMapOverviewCanvas::mousePressEvent( QMouseEvent *e )
 {
-  //  if (mPanningWidget->isHidden())
-  //    return;
+//  if (mPanningWidget->isHidden())
+//    return;
 
   // set offset in panning widget if inside it
   // for better experience with panning :)
@@ -138,8 +139,8 @@ void QgsMapOverviewCanvas::mousePressEvent( QMouseEvent *e )
 
 void QgsMapOverviewCanvas::mouseReleaseEvent( QMouseEvent *e )
 {
-  //  if (mPanningWidget->isHidden())
-  //    return;
+//  if (mPanningWidget->isHidden())
+//    return;
 
   if ( e->button() == Qt::LeftButton )
   {
@@ -190,8 +191,8 @@ void QgsMapOverviewCanvas::mouseMoveEvent( QMouseEvent *e )
 
 void QgsMapOverviewCanvas::updatePanningWidget( QPoint pos )
 {
-  //  if (mPanningWidget->isHidden())
-  //    return;
+//  if (mPanningWidget->isHidden())
+//    return;
   mPanningWidget->move( pos.x() - mPanningCursorOffset.x(), pos.y() - mPanningCursorOffset.y() );
 }
 
@@ -343,8 +344,7 @@ QgsPanningWidget::QgsPanningWidget( QWidget *parent )
 
 void QgsPanningWidget::setPolygon( const QPolygon &p )
 {
-  if ( p == mPoly )
-    return;
+  if ( p == mPoly ) return;
   mPoly = p;
 
   //ensure polygon is closed
@@ -383,6 +383,7 @@ void QgsPanningWidget::paintEvent( QPaintEvent *pe )
 
   p.end();
 }
+
 
 
 ///@endcond

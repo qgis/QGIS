@@ -50,7 +50,7 @@ Caller takes ownership of the returned symbol.
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
-    virtual QList<Qgis::GeometryType> compatibleGeometryTypes() const;
+    virtual QList< Qgis::GeometryType > compatibleGeometryTypes() const;
 
     virtual void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer );
 
@@ -191,11 +191,10 @@ Returns transform for individual objects represented by the symbol
 Sets transform for individual objects represented by the symbol
 %End
 
-    float billboardHeight() const;
+    QMatrix4x4 billboardTransform() const;
 %Docstring
-Returns how much the billboard should be elevated upwards
+Returns transform for billboards
 %End
-
 
   private:
     QgsPoint3DSymbol &operator=( const QgsPoint3DSymbol & );

@@ -14,9 +14,9 @@ try:
     QgsNetworkAccessManager.removeReplyPreprocessor = staticmethod(QgsNetworkAccessManager.removeReplyPreprocessor)
     QgsNetworkAccessManager.__signal_arguments__ = {'requestAboutToBeCreated': ['request: QgsNetworkRequestParameters'], 'requestCreated': ['request: QgsNetworkRequestParameters'], 'finished': ['reply: QgsNetworkReplyContent'], 'requestTimedOut': ['reply: QNetworkReply'], 'downloadProgress': ['requestId: int', 'bytesReceived: int', 'bytesTotal: int'], 'requestRequiresAuth': ['requestId: int', 'realm: str'], 'requestAuthDetailsAdded': ['requestId: int', 'realm: str', 'user: str', 'password: str'], 'requestEncounteredSslErrors': ['requestId: int', 'errors: List[QSslError]'], 'cookiesChanged': ['cookies: List[QNetworkCookie]']}
     QgsNetworkAccessManager.__group__ = ['network']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsNetworkRequestParameters.__group__ = ['network']
-except (NameError, AttributeError):
+except NameError:
     pass

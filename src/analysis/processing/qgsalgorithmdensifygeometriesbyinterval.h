@@ -29,6 +29,7 @@
 class QgsDensifyGeometriesByIntervalAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
   public:
+
     QgsDensifyGeometriesByIntervalAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -43,7 +44,7 @@ class QgsDensifyGeometriesByIntervalAlgorithm : public QgsProcessingFeatureBased
   protected:
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QString outputName() const override;
-    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:

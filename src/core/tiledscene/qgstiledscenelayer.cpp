@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgstiledscenelayer.h"
-#include "moc_qgstiledscenelayer.cpp"
 #include "qgsthreadingutils.h"
 #include "qgsmaplayerfactory.h"
 #include "qgspainting.h"

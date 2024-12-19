@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgslayoutviewtooltemporarykeypan.h"
-#include "moc_qgslayoutviewtooltemporarykeypan.cpp"
 #include "qgslayoutviewmouseevent.h"
 #include "qgslayoutview.h"
 #include <QScrollBar>

@@ -96,7 +96,7 @@ void QgsTinInterpolator::initialize()
   long long nProcessedFeatures = 0;
   if ( mFeedback )
   {
-    for ( const LayerData &layer : std::as_const( mLayerData ) )
+    for ( const LayerData &layer :  std::as_const( mLayerData ) )
     {
       if ( layer.source )
       {
@@ -135,7 +135,7 @@ void QgsTinInterpolator::initialize()
             break;
           }
           if ( nFeatures > 0 )
-            mFeedback->setProgress( 100.0 * static_cast<double>( nProcessedFeatures ) / nFeatures );
+            mFeedback->setProgress( 100.0 * static_cast< double >( nProcessedFeatures ) / nFeatures );
         }
         insertData( f, layer.valueSource, layer.interpolationAttribute, layer.sourceType );
         ++nProcessedFeatures;
@@ -238,18 +238,18 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
           std::vector<const QgsCurve *> curves;
           if ( QgsWkbTypes::geometryType( g.wkbType() ) == Qgis::GeometryType::Polygon )
           {
-            std::vector<const QgsCurvePolygon *> polygons;
+            std::vector< const QgsCurvePolygon * > polygons;
             if ( g.isMultipart() )
             {
-              const QgsMultiSurface *ms = qgsgeometry_cast<const QgsMultiSurface *>( g.constGet() );
+              const QgsMultiSurface *ms = qgsgeometry_cast< const QgsMultiSurface * >( g.constGet() );
               for ( int i = 0; i < ms->numGeometries(); ++i )
               {
-                polygons.emplace_back( qgsgeometry_cast<const QgsCurvePolygon *>( ms->geometryN( i ) ) );
+                polygons.emplace_back( qgsgeometry_cast< const QgsCurvePolygon * >( ms->geometryN( i ) ) );
               }
             }
             else
             {
-              polygons.emplace_back( qgsgeometry_cast<const QgsCurvePolygon *>( g.constGet() ) );
+              polygons.emplace_back( qgsgeometry_cast< const QgsCurvePolygon * >( g.constGet() ) );
             }
 
             for ( const QgsCurvePolygon *polygon : polygons )
@@ -270,7 +270,7 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
           {
             if ( g.isMultipart() )
             {
-              const QgsMultiCurve *mc = qgsgeometry_cast<const QgsMultiCurve *>( g.constGet() );
+              const QgsMultiCurve *mc = qgsgeometry_cast< const QgsMultiCurve * >( g.constGet() );
               for ( int i = 0; i < mc->numGeometries(); ++i )
               {
                 curves.emplace_back( mc->curveN( i ) );
@@ -278,7 +278,7 @@ int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueS
             }
             else
             {
-              curves.emplace_back( qgsgeometry_cast<const QgsCurve *>( g.constGet() ) );
+              curves.emplace_back( qgsgeometry_cast< const QgsCurve * >( g.constGet() ) );
             }
           }
 

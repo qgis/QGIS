@@ -9,7 +9,7 @@
 
 
 
-class QgsLUDialog : QDialog
+class QgsLUDialog: QDialog
 {
 
 %TypeHeaderCode

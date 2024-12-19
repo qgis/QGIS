@@ -21,6 +21,7 @@ editing range breaks for a :py:class:`QgsGraduatedSymbolRenderer` renderer.
 #include "qgsgraduatedhistogramwidget.h"
 %End
   public:
+
     QgsGraduatedHistogramWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsGraduatedHistogramWidget constructor
@@ -47,6 +48,7 @@ Emitted when the user modifies the graduated ranges using the histogram widget.
 %End
 
   protected:
+
     virtual void drawHistogram();
 
 

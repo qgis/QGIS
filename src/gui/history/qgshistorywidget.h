@@ -35,13 +35,16 @@ class GUI_EXPORT QgsHistoryEntryProxyModel : public QSortFilterProxyModel
 {
     Q_OBJECT
   public:
+
     QgsHistoryEntryProxyModel( QObject *parent = nullptr );
 
     void setFilter( const QString &filter );
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const override;
 
   private:
+
     QString mFilter;
+
 };
 ///@endcond PRIVATE
 #endif
@@ -56,6 +59,7 @@ class GUI_EXPORT QgsHistoryWidget : public QgsPanelWidget, private Ui::QgsHistor
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsHistoryWidget, with the specified \a parent widget.
      *
@@ -66,7 +70,11 @@ class GUI_EXPORT QgsHistoryWidget : public QgsPanelWidget, private Ui::QgsHistor
      * If no \a registry is specified then the singleton QgsHistoryProviderRegistry from QgsGui::historyProviderRegistry()
      * will be used.
      */
-    QgsHistoryWidget( const QString &providerId = QString(), Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile, QgsHistoryProviderRegistry *registry = nullptr, const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(), QWidget *parent = nullptr );
+    QgsHistoryWidget( const QString &providerId = QString(),
+                      Qgis::HistoryProviderBackends backends = Qgis::HistoryProviderBackend::LocalProfile,
+                      QgsHistoryProviderRegistry *registry = nullptr,
+                      const QgsHistoryWidgetContext &context = QgsHistoryWidgetContext(),
+                      QWidget *parent = nullptr );
 
   private slots:
 
@@ -76,9 +84,11 @@ class GUI_EXPORT QgsHistoryWidget : public QgsPanelWidget, private Ui::QgsHistor
     void urlClicked( const QUrl &url );
 
   private:
+
     QgsHistoryEntryModel *mModel = nullptr;
     QgsHistoryEntryProxyModel *mProxyModel = nullptr;
     QgsHistoryWidgetContext mContext;
+
 };
 
 #endif // QGSHISTORYWIDGET_H

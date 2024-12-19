@@ -2,5 +2,5 @@
 try:
     QgsStyleManagerDialog.addColorRampStatic = staticmethod(QgsStyleManagerDialog.addColorRampStatic)
     QgsStyleManagerDialog.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

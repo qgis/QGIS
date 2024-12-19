@@ -42,7 +42,7 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
      * QgsPointCloudBlockRequest constructor
      * Note: It is the responsablitiy of the caller to delete the block if it was loaded correctly
      */
-    QgsPointCloudBlockRequest( const QgsPointCloudNodeId &node, const QString &Uri,
+    QgsPointCloudBlockRequest( const IndexedPointCloudNode &node, const QString &Uri,
                                const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
                                const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect );
 
@@ -62,7 +62,7 @@ class CORE_EXPORT QgsPointCloudBlockRequest : public QObject
     void finished();
 
   protected:
-    QgsPointCloudNodeId mNode;
+    IndexedPointCloudNode mNode;
     QString mUri;
     QgsPointCloudAttributeCollection mAttributes;
     QgsPointCloudAttributeCollection mRequestedAttributes;

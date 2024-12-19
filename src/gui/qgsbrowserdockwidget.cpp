@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsbrowserdockwidget.h"
-#include "moc_qgsbrowserdockwidget.cpp"
 #include "qgsbrowserdockwidget_p.h"
 #include "qgsbrowserwidget.h"
 #include "qgsbrowserproxymodel.h"
@@ -163,13 +162,14 @@ void QgsBrowserDockWidget::toggleFastScan()
 {
   const QModelIndex index = mWidget->mProxyModel->mapToSource( mWidget->mBrowserView->currentIndex() );
   QgsDataItem *item = mWidget->mModel->dataItem( index );
-  if ( !item )
+  if ( ! item )
     return;
 
   if ( item->type() == Qgis::BrowserItemType::Directory )
   {
     QgsSettings settings;
-    QStringList fastScanDirs = settings.value( QStringLiteral( "qgis/scanItemsFastScanUris" ), QStringList() ).toStringList();
+    QStringList fastScanDirs = settings.value( QStringLiteral( "qgis/scanItemsFastScanUris" ),
+                               QStringList() ).toStringList();
     const int idx = fastScanDirs.indexOf( item->path() );
     if ( idx != -1 )
     {

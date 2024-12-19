@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgssensorthingsdataitems.h"
-#include "moc_qgssensorthingsdataitems.cpp"
 #include "qgsprovidermetadata.h"
 #include "qgssensorthingsconnection.h"
 #include "qgssensorthingsprovider.h"

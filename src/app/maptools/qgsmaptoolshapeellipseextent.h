@@ -37,7 +37,7 @@ class APP_EXPORT QgsMapToolShapeEllipseExtentMetadata : public QgsMapToolShapeMe
     QgsMapToolShapeAbstract *factory( QgsMapToolCapture *parentTool ) const override;
 };
 
-class APP_EXPORT QgsMapToolShapeEllipseExtent : public QgsMapToolShapeEllipseAbstract
+class APP_EXPORT QgsMapToolShapeEllipseExtent: public QgsMapToolShapeEllipseAbstract
 {
     Q_OBJECT
 

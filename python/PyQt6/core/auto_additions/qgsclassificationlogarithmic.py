@@ -4,5 +4,5 @@ QgsClassificationLogarithmic.Discard = QgsClassificationLogarithmic.NegativeValu
 QgsClassificationLogarithmic.PrependBreak = QgsClassificationLogarithmic.NegativeValueHandling.PrependBreak
 try:
     QgsClassificationLogarithmic.__group__ = ['classification']
-except (NameError, AttributeError):
+except NameError:
     pass

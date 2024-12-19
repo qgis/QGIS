@@ -29,7 +29,7 @@ class QgsLineMaterial;
 class QgsExpressionContext;
 
 #ifndef SIP_RUN
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 namespace Qt3DRender
 {
   class QGeometry;
@@ -47,15 +47,15 @@ namespace Qt3DCore
  * \ingroup 3d
  * \since QGIS 3.16
  */
-enum class QgsMaterialSettingsRenderingTechnique SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAbstractMaterialSettings, RenderingTechnique ) : int
-{
-  Triangles,                 //!< Triangle based rendering (default)
-  Lines,                     //!< Line based rendering, requires line data
-  InstancedPoints,           //!< Instanced based rendering, requiring triangles and point data
-  Points,                    //!< Point based rendering, requires point data
+enum class QgsMaterialSettingsRenderingTechnique SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsAbstractMaterialSettings, RenderingTechnique ): int
+  {
+  Triangles, //!< Triangle based rendering (default)
+  Lines, //!< Line based rendering, requires line data
+  InstancedPoints, //!< Instanced based rendering, requiring triangles and point data
+  Points, //!< Point based rendering, requires point data
   TrianglesWithFixedTexture, //!< Triangle based rendering, using a fixed, non-user-configurable texture (e.g. for terrain rendering)
-  TrianglesFromModel,        //!< Triangle based rendering, using a model object source
-  TrianglesDataDefined,      //!< Triangle based rendering with possibility of datadefined color \since QGIS 3.18
+  TrianglesFromModel, //!< Triangle based rendering, using a model object source
+  TrianglesDataDefined, //!< Triangle based rendering with possibility of datadefined color \since QGIS 3.18
 };
 
 
@@ -71,6 +71,7 @@ enum class QgsMaterialSettingsRenderingTechnique SIP_MONKEYPATCH_SCOPEENUM_UNNES
 class _3D_EXPORT QgsMaterialContext
 {
   public:
+
     /**
      * Returns TRUE if the material should represent a selected state.
      *
@@ -100,9 +101,11 @@ class _3D_EXPORT QgsMaterialContext
     void setSelectionColor( const QColor &color ) { mSelectedColor = color; }
 
   private:
+
     bool mIsSelected = false;
 
     QColor mSelectedColor;
+
 };
 
 
@@ -116,6 +119,7 @@ class _3D_EXPORT QgsMaterialContext
  */
 class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
 {
+
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( sipCpp->type() == QLatin1String( "gooch" ) )
@@ -146,6 +150,7 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
 #endif
 
   public:
+
     virtual ~QgsAbstractMaterialSettings() = default;
 
     /**
@@ -165,13 +170,6 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
 
     //! Writes settings to a DOM \a element
     virtual void writeXml( QDomElement &element, const QgsReadWriteContext & ) const;
-
-    /**
-     * Returns TRUE if this settings exactly matches an \a other settings.
-     *
-     * \since QGIS 3.42
-     */
-    virtual bool equals( const QgsAbstractMaterialSettings *other ) const = 0;
 
 #ifndef SIP_RUN
 
@@ -199,8 +197,8 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     {
       Diffuse, //!< Diffuse color
       Ambient, //!< Ambient color (phong material)
-      Warm,    //!< Warm color (gooch material)
-      Cool,    //!< Cool color (gooch material)
+      Warm, //!< Warm color (gooch material)
+      Cool,//!< Cool color (gooch material)
       Specular //!< Specular color
     };
     // *INDENT-ON*
@@ -221,13 +219,13 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
     * Returns a reference to the material properties definition, used for data defined overrides.
     * \since QGIS 3.18
     */
-    const QgsPropertiesDefinition &propertyDefinitions() const;
+    const QgsPropertiesDefinition   &propertyDefinitions() const;
 
     /**
      * Applies the data defined bytes, \a dataDefinedBytes, on the \a geometry by filling a specific vertex buffer that will be used by the shader.
      * \since QGIS 3.18
      */
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     virtual void applyDataDefinedToGeometry( Qt3DRender::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes ) const;
 #else
     virtual void applyDataDefinedToGeometry( Qt3DCore::QGeometry *geometry, int vertexCount, const QByteArray &dataDefinedBytes ) const;
@@ -245,7 +243,7 @@ class _3D_EXPORT QgsAbstractMaterialSettings SIP_ABSTRACT
      * Returns byte stride of the data defined colors,used to fill the vertex colors data defined buffer for rendering
      * \since QGIS 3.18
      */
-    virtual int dataDefinedByteStride() const { return 0; }
+    virtual int dataDefinedByteStride() const {return 0;}
 #endif
 
   private:

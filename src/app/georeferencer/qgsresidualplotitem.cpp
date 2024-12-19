@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsresidualplotitem.h"
-#include "moc_qgsresidualplotitem.cpp"
 #include "qgsgeorefdatapoint.h"
 #include "qgslayoututils.h"
 #include <QPainter>
@@ -126,7 +125,7 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   {
     nDecPlaces = -std::floor( std::log10( scaleBarWidthUnits ) );
     scaleBarWidthUnits *= std::pow( 10.0, nDecPlaces );
-    scaleBarWidthUnits = ( int ) ( scaleBarWidthUnits + 0.5 );
+    scaleBarWidthUnits = ( int )( scaleBarWidthUnits + 0.5 );
     scaleBarWidthUnits /= std::pow( 10.0, nDecPlaces );
     initialScaleBarWidth = scaleBarWidthUnits * minMMPixelRatio;
   }
@@ -134,7 +133,7 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   {
     nDecPlaces = static_cast<int>( std::log10( scaleBarWidthUnits ) );
     scaleBarWidthUnits /= std::pow( 10.0, nDecPlaces );
-    scaleBarWidthUnits = ( int ) ( scaleBarWidthUnits + 0.5 );
+    scaleBarWidthUnits = ( int )( scaleBarWidthUnits + 0.5 );
     scaleBarWidthUnits *= std::pow( 10.0, nDecPlaces );
     initialScaleBarWidth = scaleBarWidthUnits * minMMPixelRatio;
   }
@@ -177,6 +176,7 @@ void QgsResidualPlotItem::setGCPList( const QgsGCPList &list )
 
 void QgsResidualPlotItem::draw( QgsLayoutItemRenderContext & )
 {
+
 }
 
 double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p, double pixelXMM, double pixelYMM )
@@ -187,7 +187,7 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p
   }
 
   //calculate intersections with upper / lower frame edge depending on the residual y sign
-  double upDownDist = std::numeric_limits<double>::max();    //distance to frame intersection with lower or upper frame
+  double upDownDist = std::numeric_limits<double>::max(); //distance to frame intersection with lower or upper frame
   double leftRightDist = std::numeric_limits<double>::max(); //distance to frame intersection with left or right frame
 
   const QPointF residual = p->residual();

@@ -2,5 +2,5 @@
 try:
     QgsLegendRenderer.setNodeLegendStyle = staticmethod(QgsLegendRenderer.setNodeLegendStyle)
     QgsLegendRenderer.nodeLegendStyle = staticmethod(QgsLegendRenderer.nodeLegendStyle)
-except (NameError, AttributeError):
+except NameError:
     pass

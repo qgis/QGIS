@@ -34,6 +34,7 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
     Q_OBJECT
 
   public:
+
     /**
      * Edge direction
      * Edge can be one-way with direct flow (one can move only from the start
@@ -43,9 +44,9 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
      */
     enum Direction
     {
-      DirectionForward,  //!< One-way direct
-      DirectionBackward, //!< One-way reversed
-      DirectionBoth,     //!< Two-way
+      DirectionForward,     //!< One-way direct
+      DirectionBackward,    //!< One-way reversed
+      DirectionBoth,        //!< Two-way
     };
 
     /**
@@ -58,12 +59,21 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
      * \param defaultDirection default direction. Will be used if corresponding
      * attribute value is not set or does not equal to the given values
      */
-    QgsVectorLayerDirector( QgsFeatureSource *source, int directionFieldId, const QString &directDirectionValue, const QString &reverseDirectionValue, const QString &bothDirectionValue, Direction defaultDirection );
+    QgsVectorLayerDirector( QgsFeatureSource *source,
+                            int directionFieldId,
+                            const QString &directDirectionValue,
+                            const QString &reverseDirectionValue,
+                            const QString &bothDirectionValue,
+                            Direction defaultDirection
+                          );
 
     /*
      * MANDATORY DIRECTOR PROPERTY DECLARATION
      */
-    void makeGraph( QgsGraphBuilderInterface *builder, const QVector<QgsPointXY> &additionalPoints, QVector<QgsPointXY> &snappedPoints SIP_OUT, QgsFeedback *feedback = nullptr ) const override;
+    void makeGraph( QgsGraphBuilderInterface *builder,
+                    const QVector< QgsPointXY > &additionalPoints,
+                    QVector< QgsPointXY> &snappedPoints SIP_OUT,
+                    QgsFeedback *feedback = nullptr ) const override;
 
     QString name() const override;
 

@@ -32,6 +32,7 @@
 class QgsWfsDescribeFeatureTypeJson
 {
   private:
+
     /**
       * Returns the GML geometry type.
       */
@@ -42,11 +43,13 @@ class QgsWfsDescribeFeatureTypeJson
     /**
      * Create get capabilities document
      */
-    QJsonObject createDescribeFeatureTypeDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request ) const;
+    QJsonObject createDescribeFeatureTypeDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+        const QgsServerRequest &request ) const;
 
     const QgsWfs::QgsWfsParameters wfsParameters;
 
   public:
+
     /**
      * Constructor
      *
@@ -63,7 +66,8 @@ class QgsWfsDescribeFeatureTypeJson
      * \param request Input request handler
      * \param response Output response handler
      */
-    void writeDescribeFeatureType( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response ) const;
+    void writeDescribeFeatureType( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+                                   const QgsServerRequest &request, QgsServerResponse &response ) const;
 };
 
 

@@ -31,7 +31,9 @@
  */
 class QgsAlignRastersAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
+
     QgsAlignRastersAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     Qgis::ProcessingAlgorithmFlags flags() const override;
@@ -42,10 +44,11 @@ class QgsAlignRastersAlgorithm : public QgsProcessingAlgorithm
     QString groupId() const override;
     QString shortHelpString() const override;
     QgsAlignRastersAlgorithm *createInstance() const override SIP_FACTORY;
-    bool checkParameterValues( const QVariantMap &parameters, QgsProcessingContext &context, QString *message ) const override;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE

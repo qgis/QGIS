@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsrasterlayerelevationproperties.h"
-#include "moc_qgsrasterlayerelevationproperties.cpp"
 #include "qgsrasterlayer.h"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"

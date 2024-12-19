@@ -2,5 +2,5 @@
 try:
     QgsHillshadeRenderer.create = staticmethod(QgsHillshadeRenderer.create)
     QgsHillshadeRenderer.__group__ = ['raster']
-except (NameError, AttributeError):
+except NameError:
     pass

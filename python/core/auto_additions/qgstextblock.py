@@ -2,5 +2,5 @@
 try:
     QgsTextBlock.fromPlainText = staticmethod(QgsTextBlock.fromPlainText)
     QgsTextBlock.__group__ = ['textrenderer']
-except (NameError, AttributeError):
+except NameError:
     pass

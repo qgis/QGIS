@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgswebenginepage.h"
-#include "moc_qgswebenginepage.cpp"
 #include "qgsconfig.h"
 #include <QWebEnginePage>
 #include <QEventLoop>

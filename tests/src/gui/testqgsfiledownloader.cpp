@@ -25,7 +25,7 @@
 #include <qgsapplication.h>
 #include <qgsfiledownloader.h>
 
-class TestQgsFileDownloader : public QObject
+class TestQgsFileDownloader: public QObject
 {
     Q_OBJECT
   public:
@@ -63,10 +63,10 @@ class TestQgsFileDownloader : public QObject
     }
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
+    void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void init(); // will be called before each testfunction is executed.
+    void cleanup(); // will be called after every testfunction.
 
     void testValidDownload();
     void testInValidDownload();
@@ -84,11 +84,11 @@ class TestQgsFileDownloader : public QObject
     void makeCall( QUrl url, QString fileName, bool cancel = false );
     QTemporaryFile *mTempFile = nullptr;
     QString mErrorMessage;
-    bool mCanceled = false;
-    bool mProgress = false;
-    bool mError = false;
-    bool mCompleted = false;
-    bool mExited = false;
+    bool mCanceled =  false ;
+    bool mProgress =  false ;
+    bool mError =  false ;
+    bool mCompleted =  false ;
+    bool mExited =  false ;
     QgsFileDownloader *mFileDownloader = nullptr;
 };
 
@@ -109,12 +109,14 @@ void TestQgsFileDownloader::makeCall( QUrl url, QString fileName, bool cancel )
     QTimer::singleShot( 1000, mFileDownloader, &QgsFileDownloader::cancelDownload );
 
   loop.exec();
+
 }
 
 void TestQgsFileDownloader::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+
 }
 
 void TestQgsFileDownloader::cleanupTestCase()
@@ -136,6 +138,7 @@ void TestQgsFileDownloader::init()
 }
 
 
+
 void TestQgsFileDownloader::cleanup()
 {
   delete mTempFile;
@@ -143,7 +146,7 @@ void TestQgsFileDownloader::cleanup()
 
 void TestQgsFileDownloader::testValidDownload()
 {
-  QVERIFY( !mTempFile->fileName().isEmpty() );
+  QVERIFY( ! mTempFile->fileName().isEmpty() );
   makeCall( QUrl( QStringLiteral( "http://www.qgis.org" ) ), mTempFile->fileName() );
   QVERIFY( mExited );
   QVERIFY( mCompleted );
@@ -155,7 +158,7 @@ void TestQgsFileDownloader::testValidDownload()
 
 void TestQgsFileDownloader::testInValidDownload()
 {
-  QVERIFY( !mTempFile->fileName().isEmpty() );
+  QVERIFY( ! mTempFile->fileName().isEmpty() );
   makeCall( QUrl( QStringLiteral( "http://www.doesnotexistofthatimsure.qgis" ) ), mTempFile->fileName() );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
@@ -167,7 +170,7 @@ void TestQgsFileDownloader::testInValidDownload()
 
 void TestQgsFileDownloader::testCanceledDownload()
 {
-  QVERIFY( !mTempFile->fileName().isEmpty() );
+  QVERIFY( ! mTempFile->fileName().isEmpty() );
   makeCall( QUrl( QStringLiteral( "https://github.com/qgis/QGIS/archive/master.zip" ) ), mTempFile->fileName(), true );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
@@ -189,7 +192,7 @@ void TestQgsFileDownloader::testInvalidFile()
 
 void TestQgsFileDownloader::testInvalidUrl()
 {
-  QVERIFY( !mTempFile->fileName().isEmpty() );
+  QVERIFY( ! mTempFile->fileName().isEmpty() );
   makeCall( QUrl( QStringLiteral( "xyz://www" ) ), mTempFile->fileName() );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
@@ -200,7 +203,7 @@ void TestQgsFileDownloader::testInvalidUrl()
 
 void TestQgsFileDownloader::testBlankUrl()
 {
-  QVERIFY( !mTempFile->fileName().isEmpty() );
+  QVERIFY( ! mTempFile->fileName().isEmpty() );
   makeCall( QUrl( QString() ), mTempFile->fileName() );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
@@ -225,7 +228,7 @@ void TestQgsFileDownloader::testSslError()
 {
   QFETCH( QString, url );
   QFETCH( QString, result );
-  QVERIFY( !mTempFile->fileName().isEmpty() );
+  QVERIFY( ! mTempFile->fileName().isEmpty() );
   makeCall( QUrl( url ), mTempFile->fileName() );
   QCOMPARE( mErrorMessage, result );
   QVERIFY( !mCompleted );
@@ -236,16 +239,16 @@ void TestQgsFileDownloader::testSslError()
 void TestQgsFileDownloader::testLacksWritePermissionsError()
 {
   const QTemporaryDir dir;
-  QFile tmpDir( dir.path() );
-  tmpDir.setPermissions( tmpDir.permissions() & ~( QFile::Permission::WriteGroup | QFile::Permission::WriteUser | QFile::Permission::WriteOther | QFile::Permission::WriteOwner ) );
-  QVERIFY( !tmpDir.isWritable() );
+  QFile tmpDir( dir.path( ) );
+  tmpDir.setPermissions( tmpDir.permissions() & ~( QFile::Permission::WriteGroup |  QFile::Permission::WriteUser | QFile::Permission::WriteOther | QFile::Permission::WriteOwner ) );
+  QVERIFY( ! tmpDir.isWritable() );
   const QString fileName( dir.path() + '/' + QStringLiteral( "tmp.bin" ) );
   makeCall( QUrl( QStringLiteral( "http://www.qgis.org" ) ), fileName );
   QVERIFY( mExited );
   QVERIFY( !mCompleted );
   QVERIFY( mError );
   QVERIFY( !mCanceled );
-  QVERIFY( !QFileInfo::exists( fileName ) );
+  QVERIFY( ! QFileInfo::exists( fileName ) );
 }
 
 
@@ -254,3 +257,5 @@ void TestQgsFileDownloader::testLacksWritePermissionsError()
 
 QGSTEST_MAIN( TestQgsFileDownloader )
 #include "testqgsfiledownloader.moc"
+
+

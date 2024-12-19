@@ -2,5 +2,5 @@
 try:
     QgsLightSource.createFromXml = staticmethod(QgsLightSource.createFromXml)
     QgsLightSource.__group__ = ['lights']
-except (NameError, AttributeError):
+except NameError:
     pass

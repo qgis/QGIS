@@ -147,12 +147,12 @@ class CORE_EXPORT QgsTiledSceneRendererMetadata : public QgsTiledSceneRendererAb
 #endif
 
     //! \note not available in Python bindings
-    QgsTiledSceneRendererCreateFunc createFunction() const SIP_SKIP { return mCreateFunc; }
+    QgsTiledSceneRendererCreateFunc createFunction() const { return mCreateFunc; } SIP_SKIP
     //! \note not available in Python bindings
-    QgsTiledSceneRendererWidgetFunc widgetFunction() const SIP_SKIP { return mWidgetFunc; }
+    QgsTiledSceneRendererWidgetFunc widgetFunction() const { return mWidgetFunc; } SIP_SKIP
 
     //! \note not available in Python bindings
-    void setWidgetFunction( QgsTiledSceneRendererWidgetFunc f ) SIP_SKIP { mWidgetFunc = f; }
+    void setWidgetFunction( QgsTiledSceneRendererWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
 
   protected:
     //! pointer to function that creates an instance of the renderer when loading project / style

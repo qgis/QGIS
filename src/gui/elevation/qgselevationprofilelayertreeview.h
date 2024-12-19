@@ -44,9 +44,11 @@ class QgsMapLayer;
  */
 class GUI_EXPORT QgsElevationProfileLayerTreeModel : public QgsLayerTreeModel
 {
+
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new tree model with given layer tree (root node must not be NULLPTR).
      * The root node is not transferred by the model.
@@ -56,7 +58,8 @@ class GUI_EXPORT QgsElevationProfileLayerTreeModel : public QgsLayerTreeModel
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
-    bool canDropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) const override;
+    bool canDropMimeData( const QMimeData *data, Qt::DropAction action,
+                          int row, int column, const QModelIndex &parent ) const override;
     bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent ) override;
     QMimeData *mimeData( const QModelIndexList &indexes ) const override;
 
@@ -67,9 +70,10 @@ class GUI_EXPORT QgsElevationProfileLayerTreeModel : public QgsLayerTreeModel
      *
      * \since QGIS 3.32
      */
-    void addLayers( const QList<QgsMapLayer *> &layers );
+    void addLayers( const QList< QgsMapLayer * > &layers );
 
   private:
+
 #ifdef SIP_RUN
     QgsElevationProfileLayerTreeModel( const QgsElevationProfileLayerTreeModel &other );
 #endif
@@ -85,19 +89,24 @@ class GUI_EXPORT QgsElevationProfileLayerTreeModel : public QgsLayerTreeModel
  */
 class GUI_EXPORT QgsElevationProfileLayerTreeProxyModel : public QSortFilterProxyModel
 {
+
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsElevationProfileLayerTreeProxyModel.
      */
     explicit QgsElevationProfileLayerTreeProxyModel( QgsElevationProfileLayerTreeModel *model, QObject *parent = nullptr );
 
   protected:
+
     bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const override;
 
   private:
+
     QgsElevationProfileLayerTreeModel *mModel = nullptr;
+
 };
 
 /**
@@ -110,9 +119,11 @@ class GUI_EXPORT QgsElevationProfileLayerTreeProxyModel : public QSortFilterProx
  */
 class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
 {
+
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new tree view with given layer tree (root node must not be NULLPTR).
      * The root node is not transferred by the view.
@@ -143,15 +154,18 @@ class GUI_EXPORT QgsElevationProfileLayerTreeView : public QTreeView
      *
      * \since QGIS 3.32
      */
-    void addLayers( const QList<QgsMapLayer *> &layers );
+    void addLayers( const QList< QgsMapLayer * > &layers );
 
   protected:
+
     void resizeEvent( QResizeEvent *event ) override;
 
   private:
+
     QgsElevationProfileLayerTreeModel *mModel = nullptr;
     QgsElevationProfileLayerTreeProxyModel *mProxyModel = nullptr;
     QgsLayerTree *mLayerTree = nullptr;
+
 };
 
 

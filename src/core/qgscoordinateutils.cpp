@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgscoordinateutils.h"
-#include "moc_qgscoordinateutils.cpp"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatereferencesystemutils.h"
 #include "qgscoordinatetransform.h"
@@ -309,7 +308,7 @@ double QgsCoordinateUtils::dmsToDecimal( const QString &string, bool *ok, bool *
       value = !sign1.isEmpty() && negative.contains( sign1 ) ? -v : v;
       if ( isEasting )
       {
-        *isEasting = easting.contains( sign1 );
+        *isEasting = easting.contains( sign2 );
       }
     }
     else

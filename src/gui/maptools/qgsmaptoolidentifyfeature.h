@@ -30,6 +30,7 @@ class GUI_EXPORT QgsMapToolIdentifyFeature : public QgsMapToolIdentify
     Q_OBJECT
 
   public:
+
     /**
      * \brief QgsMapToolIdentifyFeature is a map tool to identify a feature on a chosen layer
      * \param canvas the map canvas

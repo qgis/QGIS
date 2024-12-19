@@ -53,8 +53,7 @@ class _3D_EXPORT Qgs3DExportObject
      * Constructs an export object that will be filled with coordinates later
      * \param name The name of the parent (Will be useful to define scene hierarchy)
      */
-    Qgs3DExportObject( const QString &name )
-      : mName( name ) {}
+    Qgs3DExportObject( const QString &name ) : mName( name ) { }
 
     //! Returns the object name
     QString name() const { return mName; }
@@ -71,15 +70,15 @@ class _3D_EXPORT Qgs3DExportObject
     //! Sets whether triangles edges will look smooth
     void setSmoothEdges( bool smoothEdges ) { mSmoothEdges = smoothEdges; }
 
-    //! Sets positions coordinates and does the translation, rotation and scaling
-    void setupPositionCoordinates( const QVector<float> &positionsBuffer, const QMatrix4x4 &transform );
+    //! Sets positions coordinates and does the translation and scaling
+    void setupPositionCoordinates( const QVector<float> &positionsBuffer, float scale = 1.0f, const QVector3D &translation = QVector3D( 0, 0, 0 ) );
     //! Sets the faces in facesIndexes to the faces in the object
     void setupFaces( const QVector<uint> &facesIndexes );
     //! sets line vertex indexes
     void setupLine( const QVector<uint> &facesIndexes );
 
     //! Sets normal coordinates for each vertex
-    void setupNormalCoordinates( const QVector<float> &normalsBuffer, const QMatrix4x4 &transform );
+    void setupNormalCoordinates( const QVector<float> &normalsBuffer );
     //! Sets texture coordinates for each vertex
     void setupTextureCoordinates( const QVector<float> &texturesBuffer );
     //! Sets the material parameters (diffuse color, shininess...) from phong material
@@ -109,10 +108,10 @@ class _3D_EXPORT Qgs3DExportObject
     QVector<float> vertexPosition() const { return mVertexPosition; }
 
     //! Returns the vertex normal coordinates
-    QVector<float> normals() const { return mNormals; }
+    QVector<float> normals() const { return mNormals;}
 
     //! Returns the vertex texture coordinates
-    QVector<float> texturesUV() const { return mTexturesUV; }
+    QVector<float> texturesUV() const { return mTexturesUV;}
 
     //! Returns the vertex indexes
     QVector<unsigned int> indexes() const { return mIndexes; }

@@ -26,6 +26,7 @@ Processing map layer combo box.
 #include "qgsprocessingmaplayercombobox.h"
 %End
   public:
+
     QgsProcessingMapLayerComboBox( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = 0 );
 %Docstring
 Constructor for QgsProcessingMapLayerComboBox, with the specified ``parameter`` definition.
@@ -111,6 +112,7 @@ Emitted whenever the value is changed in the widget.
 %End
 
   protected:
+
     virtual void dragEnterEvent( QDragEnterEvent *event );
 
     virtual void dragLeaveEvent( QDragLeaveEvent *event );

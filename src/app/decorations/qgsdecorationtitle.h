@@ -33,6 +33,7 @@ class APP_EXPORT QgsDecorationTitle : public QgsDecorationItem
 {
     Q_OBJECT
   public:
+
     //! Constructor
     QgsDecorationTitle( QObject *parent = nullptr );
 

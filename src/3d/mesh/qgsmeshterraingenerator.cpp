@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsmeshterraingenerator.h"
-#include "moc_qgsmeshterraingenerator.cpp"
 #include "qgsmeshterraintileloader_p.h"
 
 #include "qgsmesh3dentity_p.h"
@@ -48,14 +47,10 @@ Qt3DCore::QEntity *QgsMeshTerrainTileLoader::createEntity( Qt3DCore::QEntity *pa
 // QgsMeshTerrainGenerator
 //
 
-QgsTerrainGenerator *QgsMeshTerrainGenerator::create()
-{
-  return new QgsMeshTerrainGenerator();
-}
-
 QgsMeshTerrainGenerator::QgsMeshTerrainGenerator()
-  : mSymbol( std::make_unique<QgsMesh3DSymbol>() )
+  : mSymbol( std::make_unique< QgsMesh3DSymbol >() )
 {
+
 }
 
 QgsChunkLoader *QgsMeshTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
@@ -75,7 +70,7 @@ void QgsMeshTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) c
 
   for ( int i = 0; i < mTriangularMesh.vertices().count(); ++i )
   {
-    const float zValue = static_cast<float>( mTriangularMesh.vertices().at( i ).z() );
+    const float zValue = static_cast< float >( mTriangularMesh.vertices().at( i ).z() );
     if ( min > zValue )
       min = zValue;
     if ( max < zValue )
@@ -86,25 +81,30 @@ void QgsMeshTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) c
   hMax = max;
 }
 
+void QgsMeshTerrainGenerator::resolveReferences( const QgsProject &project )
+{
+  setLayer( qobject_cast<QgsMeshLayer *>( project.mapLayer( mLayer.layerId ) ) );
+}
+
 void QgsMeshTerrainGenerator::setLayer( QgsMeshLayer *layer )
 {
-  if ( mLayer )
-    disconnect( mLayer, &QgsMeshLayer::request3DUpdate, this, &QgsMeshTerrainGenerator::terrainChanged );
+  if ( mLayer.get() )
+    disconnect( mLayer.get(), &QgsMeshLayer::request3DUpdate, this, &QgsMeshTerrainGenerator::terrainChanged );
 
-  mLayer = layer;
+  mLayer = QgsMapLayerRef( layer );
   mIsValid = layer;
   updateTriangularMesh();
   if ( mIsValid )
   {
-    connect( mLayer, &QgsMeshLayer::request3DUpdate, this, &QgsMeshTerrainGenerator::updateTriangularMesh );
-    connect( mLayer, &QgsMeshLayer::request3DUpdate, this, &QgsMeshTerrainGenerator::terrainChanged );
+    connect( mLayer.get(), &QgsMeshLayer::request3DUpdate, this, &QgsMeshTerrainGenerator::updateTriangularMesh );
+    connect( mLayer.get(), &QgsMeshLayer::request3DUpdate, this, &QgsMeshTerrainGenerator::terrainChanged );
   }
 }
 
 
 QgsMeshLayer *QgsMeshTerrainGenerator::meshLayer() const
 {
-  return mLayer;
+  return qobject_cast<QgsMeshLayer *>( mLayer.layer.data() );
 }
 
 QgsTerrainGenerator *QgsMeshTerrainGenerator::clone() const
@@ -119,11 +119,29 @@ QgsTerrainGenerator *QgsMeshTerrainGenerator::clone() const
   return cloned;
 }
 
-QgsTerrainGenerator::Type QgsMeshTerrainGenerator::type() const { return QgsTerrainGenerator::Mesh; }
+QgsTerrainGenerator::Type QgsMeshTerrainGenerator::type() const {return QgsTerrainGenerator::Mesh;}
 
 QgsRectangle QgsMeshTerrainGenerator::rootChunkExtent() const
 {
   return mTriangularMesh.extent();
+}
+
+void QgsMeshTerrainGenerator::writeXml( QDomElement &elem ) const
+{
+  QDomDocument doc = elem.ownerDocument();
+
+  elem.setAttribute( QStringLiteral( "layer" ), mLayer.layerId );
+  QDomElement elemSymbol = doc.createElement( "symbol" );
+  const QgsReadWriteContext rwc;
+  mSymbol->writeXml( elemSymbol, rwc );
+  elem.appendChild( elemSymbol );
+}
+
+void QgsMeshTerrainGenerator::readXml( const QDomElement &elem )
+{
+  mLayer = QgsMapLayerRef( elem.attribute( QStringLiteral( "layer" ) ) );
+  const QgsReadWriteContext rwc;
+  mSymbol->readXml( elem.firstChildElement( "symbol" ), rwc );
 }
 
 float QgsMeshTerrainGenerator::heightAt( double x, double y, const Qgs3DRenderContext & ) const

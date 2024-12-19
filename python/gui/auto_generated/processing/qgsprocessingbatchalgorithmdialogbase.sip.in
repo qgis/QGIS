@@ -28,6 +28,7 @@ Base class for processing batch algorithm dialogs.
 #include "qgsprocessingbatchalgorithmdialogbase.h"
 %End
   public:
+
     QgsProcessingBatchAlgorithmDialogBase( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
 Constructor for QgsProcessingBatchAlgorithmDialogBase.
@@ -52,10 +53,11 @@ Will be called when the "Run as Single" button is clicked.
 
 
   protected:
+
     virtual bool isFinalized();
 
 
-    void execute( const QList<QVariantMap> &parameters );
+    void execute( const QList< QVariantMap > &parameters );
 %Docstring
 Starts the batch execution, where the ``parameters`` list dictates the parameters for each component
 step of the batch.
@@ -78,7 +80,7 @@ Called when the dialog should handle the results of an algorithm, e.g. by loadin
 Populates the HTML results dialog as a result of a successful algorithm execution.
 %End
 
-    virtual void createSummaryTable( const QList<QVariantMap> &results, const QList<QVariantMap> &errors ) = 0;
+    virtual void createSummaryTable( const QList< QVariantMap > &results, const QList< QVariantMap > &errors ) = 0;
 %Docstring
 Creates a summary table of the results of a batch execution.
 %End

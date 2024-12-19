@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsrasterattributetabledialog.h"
-#include "moc_qgsrasterattributetabledialog.cpp"
 #include "qgsrasterlayer.h"
 
 
@@ -28,6 +27,7 @@ QgsRasterAttributeTableDialog::QgsRasterAttributeTableDialog( QgsRasterLayer *ra
 
   connect( rasterLayer, &QgsRasterLayer::dataSourceChanged, this, &QgsRasterAttributeTableDialog::reject );
   connect( rasterLayer, &QgsRasterLayer::willBeDeleted, this, &QgsRasterAttributeTableDialog::reject );
+
 }
 
 void QgsRasterAttributeTableDialog::reject()

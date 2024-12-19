@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapecircleabstract.h"
-#include "moc_qgsmaptoolshapecircleabstract.cpp"
 #include "qgsmaptoolcapture.h"
 #include "qgsmapcanvas.h"
 #include "qgssettingsentryimpl.h"

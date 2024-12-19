@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgspointlocatorinittask.h"
-#include "moc_qgspointlocatorinittask.cpp"
 #include "qgspointlocator.h"
 #include "qgsvectorlayer.h"
 

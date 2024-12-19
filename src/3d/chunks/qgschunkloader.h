@@ -27,9 +27,7 @@
 // version without notice, or even be removed.
 //
 
-#include "qgis_3d.h"
 #include "qgschunkqueuejob.h"
-#include "qgsbox3d.h"
 
 #define SIP_NO_FILE
 
@@ -45,8 +43,7 @@ class QgsChunkLoader : public QgsChunkQueueJob
     Q_OBJECT
   public:
     //! Construct chunk loader for a node
-    QgsChunkLoader( QgsChunkNode *node )
-      : QgsChunkQueueJob( node ) {}
+    QgsChunkLoader( QgsChunkNode *node ) : QgsChunkQueueJob( node ) { }
 
     /**
      * Run in main thread to use loaded data.
@@ -60,7 +57,7 @@ class QgsChunkLoader : public QgsChunkQueueJob
  * \ingroup 3d
  * \brief Factory for chunk loaders for a particular type of entity
  */
-class QgsChunkLoaderFactory : public QObject
+class QgsChunkLoaderFactory  : public QObject
 {
     Q_OBJECT
   public:
@@ -92,11 +89,7 @@ class QgsChunkLoaderFactory : public QObject
      * \see prepareChildren()
      * \see createChildren()
      */
-    virtual bool canCreateChildren( QgsChunkNode *node )
-    {
-      Q_UNUSED( node );
-      return true;
-    }
+    virtual bool canCreateChildren( QgsChunkNode *node ) { Q_UNUSED( node ); return true; }
 
     /**
      * Requests that node has enough hierarchy information to create children in createChildren().
@@ -116,6 +109,8 @@ class QgsChunkLoaderFactory : public QObject
 };
 
 
+#include "qgsaabb.h"
+
 /**
  * \ingroup 3d
  * \brief Base class for factories where the hierarchy is a quadtree where all leaves
@@ -131,17 +126,18 @@ class _3D_EXPORT QgsQuadtreeChunkLoaderFactory : public QgsChunkLoaderFactory
     virtual ~QgsQuadtreeChunkLoaderFactory();
 
     //! Initializes the root node setup (bounding box and error) and tree depth
-    void setupQuadtree( const QgsBox3D &rootBox3D, float rootError, int maxLevel, const QgsBox3D &clippingBox3D = QgsBox3D() );
+    void setupQuadtree( const QgsAABB &rootBbox, float rootError, int maxLevel, const QgsAABB &clippingBbox = QgsAABB() );
 
     virtual QgsChunkNode *createRootNode() const override;
     virtual QVector<QgsChunkNode *> createChildren( QgsChunkNode *node ) const override;
 
   protected:
-    QgsBox3D mRootBox3D;
-    QgsBox3D mClippingBox3D;
+    QgsAABB mRootBbox;
+    QgsAABB mClippingBbox;
     float mRootError = 0;
     //! maximum allowed depth of quad tree
     int mMaxLevel = 0;
+
 };
 
 /// @endcond

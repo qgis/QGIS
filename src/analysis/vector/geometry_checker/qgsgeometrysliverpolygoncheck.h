@@ -44,6 +44,7 @@ class ANALYSIS_EXPORT QgsGeometrySliverPolygonCheck : public QgsGeometryAreaChec
 
     double mThresholdMapUnits = 0;
     double mMaxArea = 0;
+
 };
 
 #endif // QGS_GEOMETRY_SLIVERPOLYGON_CHECK_H

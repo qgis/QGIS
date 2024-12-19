@@ -84,17 +84,19 @@ bool QgsDeleteDuplicateGeometriesAlgorithm::prepareAlgorithm( const QVariantMap 
 QVariantMap QgsDeleteDuplicateGeometriesAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString destId;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, destId, mSource->fields(), mSource->wkbType(), mSource->sourceCrs() ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, destId, mSource->fields(),
+                                          mSource->wkbType(), mSource->sourceCrs() ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   QgsFeatureIterator it = mSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ), Qgis::ProcessingFeatureSourceFlag::SkipGeometryValidityChecks );
 
   double step = mSource->featureCount() > 0 ? 100.0 / mSource->featureCount() : 0;
-  QHash<QgsFeatureId, QgsGeometry> geometries;
-  QSet<QgsFeatureId> nullGeometryFeatures;
+  QHash< QgsFeatureId, QgsGeometry > geometries;
+  QSet< QgsFeatureId > nullGeometryFeatures;
   long current = 0;
-  const QgsSpatialIndex index( it, [&]( const QgsFeature &f ) -> bool {
+  const QgsSpatialIndex index( it, [&]( const QgsFeature & f ) ->bool
+  {
     if ( feedback->isCanceled() )
       return false;
 
@@ -116,7 +118,7 @@ QVariantMap QgsDeleteDuplicateGeometriesAlgorithm::processAlgorithm( const QVari
   QgsFeature f;
 
   // start by assuming everything is unique, and chop away at this list
-  QHash<QgsFeatureId, QgsGeometry> uniqueFeatures = geometries;
+  QHash< QgsFeatureId, QgsGeometry > uniqueFeatures = geometries;
   current = 0;
   long removed = 0;
 
@@ -163,7 +165,7 @@ QVariantMap QgsDeleteDuplicateGeometriesAlgorithm::processAlgorithm( const QVari
 
   // now, fetch all the feature attributes for the unique features only
   // be super-smart and don't re-fetch geometries
-  QSet<QgsFeatureId> outputFeatureIds = qgis::listToSet( uniqueFeatures.keys() );
+  QSet< QgsFeatureId > outputFeatureIds = qgis::listToSet( uniqueFeatures.keys() );
   outputFeatureIds.unite( nullGeometryFeatures );
   step = outputFeatureIds.empty() ? 1 : 100.0 / outputFeatureIds.size();
 
@@ -189,11 +191,9 @@ QVariantMap QgsDeleteDuplicateGeometriesAlgorithm::processAlgorithm( const QVari
 
   feedback->pushInfo( QObject::tr( "%n duplicate feature(s) removed", nullptr, removed ) );
 
-  sink->finalize();
-
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), destId );
-  outputs.insert( QStringLiteral( "DUPLICATE_COUNT" ), static_cast<long long>( removed ) );
+  outputs.insert( QStringLiteral( "DUPLICATE_COUNT" ), static_cast< long long >( removed ) );
   outputs.insert( QStringLiteral( "RETAINED_COUNT" ), outputFeatureIds.size() );
   return outputs;
 }

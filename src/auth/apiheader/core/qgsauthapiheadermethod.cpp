@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsauthapiheadermethod.h"
-#include "moc_qgsauthapiheadermethod.cpp"
 
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
@@ -41,8 +40,11 @@ QgsAuthApiHeaderMethod::QgsAuthApiHeaderMethod()
 {
   setVersion( 2 );
   setExpansions( QgsAuthMethod::NetworkRequest );
-  setDataProviders( QStringList() << QStringLiteral( "ows" ) << QStringLiteral( "wfs" ) // convert to lowercase
-                                  << QStringLiteral( "wcs" ) << QStringLiteral( "wms" ) );
+  setDataProviders( QStringList()
+                    << QStringLiteral( "ows" )
+                    << QStringLiteral( "wfs" )  // convert to lowercase
+                    << QStringLiteral( "wcs" )
+                    << QStringLiteral( "wms" ) );
 }
 
 QString QgsAuthApiHeaderMethod::key() const
@@ -60,7 +62,8 @@ QString QgsAuthApiHeaderMethod::displayDescription() const
   return AUTH_METHOD_DISPLAY_DESCRIPTION;
 }
 
-bool QgsAuthApiHeaderMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider )
+bool QgsAuthApiHeaderMethod::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
+    const QString &dataprovider )
 {
   Q_UNUSED( dataprovider )
   const QgsAuthMethodConfig config = getMethodConfig( authcfg );
@@ -82,7 +85,8 @@ bool QgsAuthApiHeaderMethod::updateNetworkRequest( QNetworkRequest &request, con
 
     if ( !headerKey.isEmpty() )
     {
-      request.setRawHeader( QStringLiteral( "%1" ).arg( headerKey ).toLocal8Bit(), QStringLiteral( "%1" ).arg( headerValue ).toLocal8Bit() );
+      request.setRawHeader( QStringLiteral( "%1" ).arg( headerKey ).toLocal8Bit(),
+                            QStringLiteral( "%1" ).arg( headerValue ).toLocal8Bit() );
     }
     else
     {

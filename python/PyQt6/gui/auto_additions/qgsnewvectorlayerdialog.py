@@ -2,5 +2,5 @@
 try:
     QgsNewVectorLayerDialog.runAndCreateLayer = staticmethod(QgsNewVectorLayerDialog.runAndCreateLayer)
     QgsNewVectorLayerDialog.execAndCreateLayer = staticmethod(QgsNewVectorLayerDialog.execAndCreateLayer)
-except (NameError, AttributeError):
+except NameError:
     pass

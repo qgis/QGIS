@@ -21,7 +21,7 @@
 #include "qgsvectordataprovider.h"
 
 QgsBinaryWidgetFactory::QgsBinaryWidgetFactory( const QString &name, QgsMessageBar *messageBar )
-  : QgsEditorWidgetFactory( name )
+  :  QgsEditorWidgetFactory( name )
   , mMessageBar( messageBar )
 {
 }

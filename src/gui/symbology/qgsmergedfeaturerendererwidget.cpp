@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmergedfeaturerendererwidget.h"
-#include "moc_qgsmergedfeaturerendererwidget.cpp"
 #include "qgsmergedfeaturerenderer.h"
 #include "qgsrendererregistry.h"
 #include "qgsvectorlayer.h"
@@ -42,8 +41,7 @@ QgsMergedFeatureRendererWidget::QgsMergedFeatureRendererWidget( QgsVectorLayer *
     QGridLayout *layout = new QGridLayout( this );
     QLabel *label = new QLabel( tr( "The merged feature renderer only applies to line and polygon layers. \n"
                                     "'%1' is not a line or polygon layer and then cannot be displayed" )
-                                  .arg( layer->name() ),
-                                this );
+                                .arg( layer->name() ), this );
     this->setLayout( layout );
     layout->addWidget( label );
     return;
@@ -57,7 +55,7 @@ QgsMergedFeatureRendererWidget::QgsMergedFeatureRendererWidget( QgsVectorLayer *
   {
     mRenderer.reset( QgsMergedFeatureRenderer::convertFromRenderer( renderer ) );
   }
-  if ( !mRenderer )
+  if ( ! mRenderer )
   {
     // use default embedded renderer
     mRenderer.reset( new QgsMergedFeatureRenderer( QgsFeatureRenderer::defaultRenderer( type ) ) );
@@ -67,7 +65,7 @@ QgsMergedFeatureRendererWidget::QgsMergedFeatureRendererWidget( QgsVectorLayer *
 
   int currentEmbeddedIdx = 0;
   //insert possible renderer types
-  const QStringList rendererList = QgsApplication::rendererRegistry()->renderersList( type == Qgis::GeometryType::Polygon ? QgsRendererAbstractMetadata::PolygonLayer : QgsRendererAbstractMetadata::LineLayer );
+  const QStringList rendererList = QgsApplication::rendererRegistry()->renderersList( type == Qgis::GeometryType::Polygon ? QgsRendererAbstractMetadata::PolygonLayer :  QgsRendererAbstractMetadata::LineLayer );
   QStringList::const_iterator it = rendererList.constBegin();
   int idx = 0;
   mRendererComboBox->blockSignals( true );
@@ -132,7 +130,7 @@ void QgsMergedFeatureRendererWidget::mRendererComboBox_currentIndexChanged( int 
   QgsRendererAbstractMetadata *m = QgsApplication::rendererRegistry()->rendererMetadata( rendererId );
   if ( m )
   {
-    const std::unique_ptr<QgsFeatureRenderer> oldRenderer( mRenderer->embeddedRenderer()->clone() );
+    const std::unique_ptr< QgsFeatureRenderer > oldRenderer( mRenderer->embeddedRenderer()->clone() );
     mEmbeddedRendererWidget.reset( m->createRendererWidget( mLayer, mStyle, oldRenderer.get() ) );
     connect( mEmbeddedRendererWidget.get(), &QgsRendererWidget::widgetChanged, this, &QgsMergedFeatureRendererWidget::widgetChanged );
     mEmbeddedRendererWidget->setContext( mContext );

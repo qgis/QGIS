@@ -2,17 +2,17 @@
 try:
     QgsRuleBasedRendererWidget.create = staticmethod(QgsRuleBasedRendererWidget.create)
     QgsRuleBasedRendererWidget.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsRuleBasedRendererModel.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsRendererRulePropsWidget.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsRendererRulePropsDialog.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

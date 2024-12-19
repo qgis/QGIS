@@ -32,6 +32,7 @@
 class QgsDelaunayTriangulationAlgorithm : public QgsProcessingAlgorithm
 {
   public:
+
     QgsDelaunayTriangulationAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmDelaunay.svg" ) ); }
@@ -45,7 +46,9 @@ class QgsDelaunayTriangulationAlgorithm : public QgsProcessingAlgorithm
     QgsDelaunayTriangulationAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE

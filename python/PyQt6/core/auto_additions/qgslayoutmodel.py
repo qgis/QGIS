@@ -4,9 +4,9 @@ QgsLayoutModel.LockStatus = QgsLayoutModel.Columns.LockStatus
 QgsLayoutModel.ItemId = QgsLayoutModel.Columns.ItemId
 try:
     QgsLayoutModel.__group__ = ['layout']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsLayoutProxyModel.__group__ = ['layout']
-except (NameError, AttributeError):
+except NameError:
     pass

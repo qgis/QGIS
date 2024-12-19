@@ -15,326 +15,286 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QgsScrollArea" name="scrollArea">
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Layer name</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mLayerNameCombo">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="editable">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+     <widget class="QLabel" name="mInformationLabel">
+     <property name="text">
+       <string>Build a layer by referring to the current project's vector layer names and/or any configured embedded layer names as tables in the custom SQL query.</string>
      </property>
-     <property name="widgetResizable">
+     <property name="wordWrap">
+       <bool>true</bool>
+     </property>
+     </widget>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="mEmbeddedlLayersGroup">
+     <property name="title">
+      <string>Embedded layers</string>
+     </property>
+     <property name="collapsed" stdset="0">
+      <bool>false</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_4">
+      <item>
+       <widget class="QTableWidget" name="mLayersTable">
+        <property name="toolTip">
+         <string>Embedded layers can be added to have SQL queries with layers that are independent from layers loaded by the current QGIS project.
+In particular, saving a virtual layer with embedded layers to a QLR file can be done to reuse its definition in another project.</string>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="mAddLayerBtn">
+          <property name="toolTip">
+           <string>Add a new embedded layer</string>
+          </property>
+          <property name="text">
+           <string>Add</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mImportLayerBtn">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="toolTip">
+           <string>Import layer definition from loaded layers of the current project</string>
+          </property>
+          <property name="text">
+           <string>Import</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="mRemoveLayerBtn">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Remove the selected embedded layer</string>
+          </property>
+          <property name="text">
+           <string>Remove</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="mQueryBox">
+     <property name="title">
+      <string>Query</string>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QgsCodeEditorSQL" name="mQueryEdit" native="true">
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is the SQL query editor. You can edit here an SQL query referring to any existing vector layers or embedded layers.&lt;/p&gt;&lt;p&gt;Virtual layers rely on SQLite and SpatiaLite. Any functions from SQLite or SpatiaLite can then be used in the query. To add or access geometries of a table, you can use &quot;tablename.geometry&quot;, regardless of original geometry column's name.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Special comments:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Because it is not always possible to autodetect the data type of each column in a query, special comments can be used in the query to force a specific type.&lt;/p&gt;&lt;p&gt;Special comments must be placed on the right of a column name and have the form &lt;tt&gt;/*:type*/&lt;/tt&gt; where type can be any of &lt;span style=&quot; font-style:italic;&quot;&gt;int&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;real&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;text&lt;/span&gt;. They can also be used to specify the type and SRID of the geometry column with the following syntax: &lt;tt&gt;/*:gtype:srid*/&lt;/tt&gt; where &lt;span style=&quot; font-style:italic;&quot;&gt;gtype&lt;/span&gt; can be &lt;span style=&quot; font-style:italic;&quot;&gt;point&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;linestring&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;polygon&lt;/span&gt; (with an optional &lt;span style=&quot; font-style:italic;&quot;&gt;multi&lt;/span&gt; prefix) and &lt;span style=&quot; font-style:italic;&quot;&gt;srid&lt;/span&gt; is an integer identifier.&lt;/p&gt;&lt;p&gt;Example:&lt;/p&gt;&lt;p&gt;&lt;tt&gt;SELECT id + 1 as id /*:int*/, ST_Centroid(geometry) as geom /*:point:4326*/ FROM tab&lt;/tt&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <item>
+      <widget class="QCheckBox" name="mUIDColumnNameChck">
+       <property name="text">
+        <string>Unique identifier column</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="mUIDField">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QgsCollapsibleGroupBox" name="mGeometryGroup">
+     <property name="title">
+      <string>Geometry</string>
+     </property>
+     <property name="collapsed" stdset="0">
       <bool>true</bool>
      </property>
-     <widget class="QWidget" name="scrollAreaWidgetContents">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>873</width>
-        <height>656</height>
-       </rect>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <item>
-          <widget class="QLabel" name="label_2">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Layer name</string>
-           </property>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="QRadioButton" name="mNoGeometryRadio">
+        <property name="text">
+         <string>No geometry</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="mAutodetectGeometryRadio">
+        <property name="text">
+         <string>Autodetect</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+        <widget class="QRadioButton" name="mGeometryRadio">
+        <property name="text">
+          <string>Manually defined</string>
+        </property>
+        </widget>
+      </item>
+      <item>
+        <widget class="QFrame" name="mGeometryFrame">
+        <property name="enabled">
+          <bool>false</bool>
+        </property>
+        <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+        </property>
+        <layout class="QFormLayout" name="formLayout_2">
+          <item row="0" column="0">
+          <widget class="QLabel" name="label">
+            <property name="text">
+            <string>Geometry column</string>
+            </property>
           </widget>
-         </item>
-         <item>
-          <widget class="QComboBox" name="mLayerNameCombo">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-             <horstretch>1</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="editable">
-            <bool>true</bool>
-           </property>
+          </item>
+          <item row="0" column="1">
+          <widget class="QLineEdit" name="mGeometryField">
+            <property name="text">
+            <string>geometry</string>
+            </property>
           </widget>
-         </item>
+          </item>
+          <item row="1" column="0">
+          <widget class="QLabel" name="label_3">
+            <property name="text">
+            <string>Type</string>
+            </property>
+          </widget>
+          </item>
+          <item row="1" column="1">
+          <widget class="QComboBox" name="mGeometryType"/>
+          </item>
+          <item row="2" column="0">
+          <widget class="QLabel" name="label_5">
+            <property name="text">
+            <string>CRS</string>
+            </property>
+          </widget>
+          </item>
+          <item row="2" column="1">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+            <widget class="QLineEdit" name="mCRS">
+              <property name="readOnly">
+              <bool>true</bool>
+              </property>
+            </widget>
+            </item>
+            <item>
+            <widget class="QToolButton" name="mBrowseCRSBtn">
+              <property name="text">
+              <string>…</string>
+              </property>
+            </widget>
+            </item>
+          </layout>
+          </item>
         </layout>
-       </item>
-       <item>
-        <widget class="QLabel" name="mInformationLabel">
-         <property name="text">
-          <string>Build a layer by referring to the current project's vector layer names and/or any configured embedded layer names as tables in the custom SQL query.</string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
         </widget>
-       </item>
-       <item>
-        <widget class="QgsCollapsibleGroupBox" name="mEmbeddedlLayersGroup" native="true">
-         <property name="title" stdset="0">
-          <string>Embedded layers</string>
-         </property>
-         <property name="collapsed" stdset="0">
-          <bool>false</bool>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
-          <item>
-           <widget class="QTableWidget" name="mLayersTable">
-            <property name="toolTip">
-             <string>Embedded layers can be added to have SQL queries with layers that are independent from layers loaded by the current QGIS project.
-In particular, saving a virtual layer with embedded layers to a QLR file can be done to reuse its definition in another project.</string>
-            </property>
-            <property name="selectionMode">
-             <enum>QAbstractItemView::SingleSelection</enum>
-            </property>
-            <property name="selectionBehavior">
-             <enum>QAbstractItemView::SelectRows</enum>
-            </property>
-            <attribute name="verticalHeaderVisible">
-             <bool>false</bool>
-            </attribute>
-           </widget>
-          </item>
-          <item>
-           <layout class="QHBoxLayout" name="horizontalLayout">
-            <item>
-             <widget class="QPushButton" name="mAddLayerBtn">
-              <property name="toolTip">
-               <string>Add a new embedded layer</string>
-              </property>
-              <property name="text">
-               <string>Add</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="mImportLayerBtn">
-              <property name="enabled">
-               <bool>true</bool>
-              </property>
-              <property name="toolTip">
-               <string>Import layer definition from loaded layers of the current project</string>
-              </property>
-              <property name="text">
-               <string>Import</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QPushButton" name="mRemoveLayerBtn">
-              <property name="enabled">
-               <bool>false</bool>
-              </property>
-              <property name="toolTip">
-               <string>Remove the selected embedded layer</string>
-              </property>
-              <property name="text">
-               <string>Remove</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <spacer name="horizontalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="mQueryBox">
-         <property name="title">
-          <string>Query</string>
-         </property>
-         <property name="checkable">
-          <bool>false</bool>
-         </property>
-         <property name="checked">
-          <bool>false</bool>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QgsCodeEditorSQL" name="mQueryEdit" native="true">
-            <property name="toolTip">
-             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is the SQL query editor. You can edit here an SQL query referring to any existing vector layers or embedded layers.&lt;/p&gt;&lt;p&gt;Virtual layers rely on SQLite and SpatiaLite. Any functions from SQLite or SpatiaLite can then be used in the query. To add or access geometries of a table, you can use &quot;tablename.geometry&quot;, regardless of original geometry column's name.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Special comments:&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Because it is not always possible to autodetect the data type of each column in a query, special comments can be used in the query to force a specific type.&lt;/p&gt;&lt;p&gt;Special comments must be placed on the right of a column name and have the form &lt;tt&gt;/*:type*/&lt;/tt&gt; where type can be any of &lt;span style=&quot; font-style:italic;&quot;&gt;int&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;real&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;text&lt;/span&gt;. They can also be used to specify the type and SRID of the geometry column with the following syntax: &lt;tt&gt;/*:gtype:srid*/&lt;/tt&gt; where &lt;span style=&quot; font-style:italic;&quot;&gt;gtype&lt;/span&gt; can be &lt;span style=&quot; font-style:italic;&quot;&gt;point&lt;/span&gt;, &lt;span style=&quot; font-style:italic;&quot;&gt;linestring&lt;/span&gt; or &lt;span style=&quot; font-style:italic;&quot;&gt;polygon&lt;/span&gt; (with an optional &lt;span style=&quot; font-style:italic;&quot;&gt;multi&lt;/span&gt; prefix) and &lt;span style=&quot; font-style:italic;&quot;&gt;srid&lt;/span&gt; is an integer identifier.&lt;/p&gt;&lt;p&gt;Example:&lt;/p&gt;&lt;p&gt;&lt;tt&gt;SELECT id + 1 as id /*:int*/, ST_Centroid(geometry) as geom /*:point:4326*/ FROM tab&lt;/tt&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
-         <item>
-          <widget class="QCheckBox" name="mUIDColumnNameChck">
-           <property name="text">
-            <string>Unique identifier column</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="mUIDField">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QgsCollapsibleGroupBox" name="mGeometryGroup" native="true">
-         <property name="title" stdset="0">
-          <string>Geometry</string>
-         </property>
-         <property name="collapsed" stdset="0">
-          <bool>true</bool>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
-           <widget class="QRadioButton" name="mNoGeometryRadio">
-            <property name="text">
-             <string>No geometry</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="mAutodetectGeometryRadio">
-            <property name="text">
-             <string>Autodetect</string>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QRadioButton" name="mGeometryRadio">
-            <property name="text">
-             <string>Manually defined</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QFrame" name="mGeometryFrame">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::StyledPanel</enum>
-            </property>
-            <property name="frameShadow">
-             <enum>QFrame::Raised</enum>
-            </property>
-            <layout class="QFormLayout" name="formLayout_2">
-             <item row="0" column="0">
-              <widget class="QLabel" name="label">
-               <property name="text">
-                <string>Geometry column</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QLineEdit" name="mGeometryField">
-               <property name="text">
-                <string>geometry</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QLabel" name="label_3">
-               <property name="text">
-                <string>Type</string>
-               </property>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <widget class="QComboBox" name="mGeometryType"/>
-             </item>
-             <item row="2" column="0">
-              <widget class="QLabel" name="label_5">
-               <property name="text">
-                <string>CRS</string>
-               </property>
-              </widget>
-             </item>
-             <item row="2" column="1">
-              <layout class="QHBoxLayout" name="horizontalLayout_2">
-               <item>
-                <widget class="QLineEdit" name="mCRS">
-                 <property name="readOnly">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QToolButton" name="mBrowseCRSBtn">
-                 <property name="text">
-                  <string>…</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </item>
-            </layout>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
-     </widget>
+      </item>
+     </layout>
     </widget>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
+      <property name="orientation">
       <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
+      </property>
+      <property name="standardButtons">
       <set>QDialogButtonBox::NoButton</set>
-     </property>
+      </property>
     </widget>
    </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header>qgsscrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
-   <extends>QWidget</extends>
+   <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
@@ -346,16 +306,8 @@ In particular, saving a virtual layer with embedded layers to a QLR file can be 
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>scrollArea</tabstop>
-  <tabstop>mLayerNameCombo</tabstop>
-  <tabstop>mLayersTable</tabstop>
-  <tabstop>mAddLayerBtn</tabstop>
-  <tabstop>mImportLayerBtn</tabstop>
-  <tabstop>mRemoveLayerBtn</tabstop>
-  <tabstop>mUIDColumnNameChck</tabstop>
-  <tabstop>mUIDField</tabstop>
-  <tabstop>mNoGeometryRadio</tabstop>
-  <tabstop>mAutodetectGeometryRadio</tabstop>
+  <tabstop>mGeometryGroup</tabstop>
+  <tabstop>buttonBox</tabstop>
   <tabstop>mGeometryRadio</tabstop>
   <tabstop>mGeometryField</tabstop>
   <tabstop>mGeometryType</tabstop>

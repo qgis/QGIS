@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsnewauxiliarylayerdialog.h"
-#include "moc_qgsnewauxiliarylayerdialog.cpp"
 #include "qgsauxiliarystorage.h"
 #include "qgsproject.h"
 #include "qgsgui.h"

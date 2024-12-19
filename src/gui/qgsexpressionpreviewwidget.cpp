@@ -18,10 +18,10 @@
 #include "qaction.h"
 #include "qgsapplication.h"
 #include "qgsexpressionpreviewwidget.h"
-#include "moc_qgsexpressionpreviewwidget.cpp"
 #include "qgsmessageviewer.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeaturepickerwidget.h"
+
 
 
 QgsExpressionPreviewWidget::QgsExpressionPreviewWidget( QWidget *parent )
@@ -39,13 +39,15 @@ QgsExpressionPreviewWidget::QgsExpressionPreviewWidget( QWidget *parent )
   mCustomButtonNext->setEnabled( false );
   mCustomButtonPrev->setEnabled( false );
   connect( mFeaturePickerWidget, &QgsFeaturePickerWidget::featureChanged, this, &QgsExpressionPreviewWidget::setCurrentFeature );
-  connect( mCustomComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsExpressionPreviewWidget::setCustomChoice );
+  connect( mCustomComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsExpressionPreviewWidget::setCustomChoice );
   connect( mPreviewLabel, &QLabel::linkActivated, this, &QgsExpressionPreviewWidget::linkActivated );
   connect( mCopyPreviewAction, &QAction::triggered, this, &QgsExpressionPreviewWidget::copyFullExpressionValue );
-  connect( mCustomButtonPrev, &QToolButton::clicked, this, [this] {
+  connect( mCustomButtonPrev, &QToolButton::clicked, this, [this]
+  {
     mCustomComboBox->setCurrentIndex( std::max( 0, mCustomComboBox->currentIndex() - 1 ) );
   } );
-  connect( mCustomButtonNext, &QToolButton::clicked, this, [this] {
+  connect( mCustomButtonNext, &QToolButton::clicked, this, [this]
+  {
     mCustomComboBox->setCurrentIndex( std::min( mCustomComboBox->count() - 1, mCustomComboBox->currentIndex() + 1 ) );
   } );
 }
@@ -59,7 +61,7 @@ void QgsExpressionPreviewWidget::setLayer( QgsVectorLayer *layer )
   }
 }
 
-void QgsExpressionPreviewWidget::setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant>> &choices, const std::function<QgsExpressionContext( const QVariant & )> &previewContextGenerator )
+void QgsExpressionPreviewWidget::setCustomPreviewGenerator( const QString &label, const QList<QPair<QString, QVariant> > &choices,  const std::function< QgsExpressionContext( const QVariant & ) > &previewContextGenerator )
 {
   mCustomPreviewGeneratorFunction = previewContextGenerator;
   mStackedWidget->setCurrentWidget( mPageCustomPicker );
@@ -157,15 +159,12 @@ void QgsExpressionPreviewWidget::refreshPreview()
       QString tooltip;
       if ( mExpression.hasParserError() )
         tooltip = QStringLiteral( "<b>%1:</b>"
-                                  "%2" )
-                    .arg( tr( "Parser Errors" ), errorString );
+                                  "%2" ).arg( tr( "Parser Errors" ), errorString );
       // Only show the eval error if there is no parser error.
       if ( !mExpression.hasParserError() && mExpression.hasEvalError() )
         tooltip += QStringLiteral( "<b>%1:</b> %2" ).arg( tr( "Eval Error" ), mExpression.evalErrorString() );
 
-      mPreviewLabel->setText( tr( "Expression is invalid <a href="
-                                  "more"
-                                  ">(more info)</a>" ) );
+      mPreviewLabel->setText( tr( "Expression is invalid <a href=""more"">(more info)</a>" ) );
       mPreviewLabel->setStyleSheet( QStringLiteral( "color: rgba(255, 6, 10, 255);" ) );
       setExpressionToolTip( tooltip );
       emit expressionParsed( false );

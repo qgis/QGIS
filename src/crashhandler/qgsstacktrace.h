@@ -37,28 +37,29 @@
 class QgsStackTrace
 {
   public:
+
     /**
     * Represents a line from a stack trace.
     */
     struct StackLine
     {
-        QString moduleName;
-        QString symbolName;
-        QString fileName;
-        QString lineNumber;
+      QString moduleName;
+      QString symbolName;
+      QString fileName;
+      QString lineNumber;
 
-        /**
+      /**
       * Check if this stack line is part of QGIS.
       * \return TRUE if part of QGIS.
       */
-        bool isQgisModule() const;
+      bool isQgisModule() const;
 
-        /**
+      /**
       * Check if this stack line is valid.  Considered valid when the filename and line
       * number are known.
       * \return TRUE of the line is valid.
       */
-        bool isValid() const;
+      bool isValid() const;
     };
 
     bool symbolsLoaded;

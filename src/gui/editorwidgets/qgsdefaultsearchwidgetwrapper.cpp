@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsdefaultsearchwidgetwrapper.h"
-#include "moc_qgsdefaultsearchwidgetwrapper.cpp"
 
 #include "qgsfields.h"
 #include "qgsfieldvalidator.h"
@@ -69,7 +68,12 @@ void QgsDefaultSearchWidgetWrapper::setExpression( const QString &expression )
   else
   {
     str = QStringLiteral( "%1 %2 '%3'" )
-            .arg( QgsExpression::quotedColumnRef( fieldName ), numeric ? QStringLiteral( "=" ) : mCaseString, numeric ? exp.replace( '\'', QLatin1String( "''" ) ) : '%' + exp.replace( '\'', QLatin1String( "''" ) ) + '%' ); // escape quotes
+          .arg( QgsExpression::quotedColumnRef( fieldName ),
+                numeric ? QStringLiteral( "=" ) : mCaseString,
+                numeric ?
+                exp.replace( '\'', QLatin1String( "''" ) )
+                :
+                '%' + exp.replace( '\'', QLatin1String( "''" ) ) + '%' ); // escape quotes
   }
   mExpression = str;
 }
@@ -204,7 +208,8 @@ QString QgsDefaultSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper:
                  + QgsExpression::quotedString( mLineEdit->text() );
         else
           return QStringLiteral( "lower(%1)" ).arg( fieldName )
-                 + ( ( flags & EqualTo ) ? "=" : "<>" ) + QStringLiteral( "lower(%1)" ).arg( QgsExpression::quotedString( mLineEdit->text() ) );
+                 + ( ( flags & EqualTo ) ? "=" : "<>" ) +
+                 QStringLiteral( "lower(%1)" ).arg( QgsExpression::quotedString( mLineEdit->text() ) );
       }
       else if ( flags & Contains || flags & DoesNotContain || flags & StartsWith || flags & EndsWith )
       {
@@ -256,8 +261,8 @@ void QgsDefaultSearchWidgetWrapper::initWidget( QWidget *widget )
   if ( fldType == QMetaType::Type::QString )
   {
     mLineEdit = new QgsFieldValuesLineEdit();
-    static_cast<QgsFieldValuesLineEdit *>( mLineEdit )->setLayer( layer() );
-    static_cast<QgsFieldValuesLineEdit *>( mLineEdit )->setAttributeIndex( mFieldIdx );
+    static_cast< QgsFieldValuesLineEdit * >( mLineEdit )->setLayer( layer() );
+    static_cast< QgsFieldValuesLineEdit * >( mLineEdit )->setAttributeIndex( mFieldIdx );
   }
   else
   {

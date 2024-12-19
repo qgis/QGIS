@@ -6,6 +6,7 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
+
 from qgis.core import QgsSelectionContext
 from qgis.testing import unittest
 
@@ -18,5 +19,5 @@ class TestQgsSelectionContext(unittest.TestCase):
         self.assertEqual(context.scale(), 1000)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

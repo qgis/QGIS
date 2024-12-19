@@ -32,6 +32,7 @@ subclassing and overriding the :py:func:`~value` method.
     static const QMetaObject staticMetaObject;
 
   public:
+
     enum class Type
     {
       String,
@@ -42,7 +43,11 @@ subclassing and overriding the :py:func:`~value` method.
     };
 
 
-    QgsServerQueryStringParameter( const QString name, bool required = false, Type type = QgsServerQueryStringParameter::Type::String, const QString &description = QString(), const QVariant &defaultValue = QVariant() );
+    QgsServerQueryStringParameter( const QString name,
+                                   bool required = false,
+                                   Type type = QgsServerQueryStringParameter::Type::String,
+                                   const QString &description = QString(),
+                                   const QVariant &defaultValue = QVariant() );
 %Docstring
 Constructs a QgsServerQueryStringParameter object.
 

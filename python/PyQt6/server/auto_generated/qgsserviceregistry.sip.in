@@ -28,6 +28,7 @@ will call 'delete'  on cleanup
 #include "qgsserviceregistry.h"
 %End
   public:
+
     QgsServiceRegistry();
     ~QgsServiceRegistry();
 
@@ -121,6 +122,7 @@ Clean up registered service and unregister modules
 %End
 
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

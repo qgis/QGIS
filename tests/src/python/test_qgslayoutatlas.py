@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "19/12/2017"
-__copyright__ = "Copyright 2017, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '19/12/2017'
+__copyright__ = 'Copyright 2017, The QGIS Project'
 
 import glob
 import os
@@ -60,12 +59,10 @@ class TestQgsLayoutAtlas(QgisTestCase):
     def testCase(self):
         self.TEST_DATA_DIR = unitTestDataPath()
         tmppath = tempfile.mkdtemp()
-        for file in glob.glob(os.path.join(self.TEST_DATA_DIR, "france_parts.*")):
+        for file in glob.glob(os.path.join(self.TEST_DATA_DIR, 'france_parts.*')):
             shutil.copy(os.path.join(self.TEST_DATA_DIR, file), tmppath)
         vectorFileInfo = QFileInfo(tmppath + "/france_parts.shp")
-        mVectorLayer = QgsVectorLayer(
-            vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr"
-        )
+        mVectorLayer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
 
         QgsProject.instance().addMapLayers([mVectorLayer])
         self.layers = [mVectorLayer]
@@ -73,14 +70,14 @@ class TestQgsLayoutAtlas(QgisTestCase):
         # create layout with layout map
 
         # select epsg:2154
-        crs = QgsCoordinateReferenceSystem("epsg:2154")
+        crs = QgsCoordinateReferenceSystem('epsg:2154')
         QgsProject.instance().setCrs(crs)
 
         self.layout = QgsPrintLayout(QgsProject.instance())
         self.layout.initializeDefaults()
 
         # fix the renderer, fill with green
-        props = {"color": "0,127,0", "outline_color": "black"}
+        props = {"color": "0,127,0", 'outline_color': 'black'}
         fillSymbol = QgsFillSymbol.createSimple(props)
         renderer = QgsSingleSymbolRenderer(fillSymbol)
         mVectorLayer.setRenderer(renderer)
@@ -108,14 +105,14 @@ class TestQgsLayoutAtlas(QgisTestCase):
         self.overview.setExtent(nextent)
 
         # set the fill symbol of the overview map
-        props2 = {"color": "127,0,0,127", "outline_color": "black"}
+        props2 = {"color": "127,0,0,127", 'outline_color': 'black'}
         fillSymbol2 = QgsFillSymbol.createSimple(props2)
         self.overview.overview().setFrameSymbol(fillSymbol2)
 
         # header label
         self.mLabel1 = QgsLayoutItemLabel(self.layout)
         self.layout.addLayoutItem(self.mLabel1)
-        self.mLabel1.setText('[% "NAME_1" %] area')
+        self.mLabel1.setText("[% \"NAME_1\" %] area")
         self.mLabel1.setFont(QgsFontUtils.getStandardTestFont())
         self.mLabel1.adjustSizeToText()
         self.mLabel1.attemptSetSceneRect(QRectF(150, 5, 60, 15))
@@ -125,9 +122,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
         # feature number label
         self.mLabel2 = QgsLayoutItemLabel(self.layout)
         self.layout.addLayoutItem(self.mLabel2)
-        self.mLabel2.setText(
-            "# [%@atlas_featurenumber || ' / ' || @atlas_totalfeatures%]"
-        )
+        self.mLabel2.setText("# [%@atlas_featurenumber || ' / ' || @atlas_totalfeatures%]")
         self.mLabel2.setFont(QgsFontUtils.getStandardTestFont())
         self.mLabel2.adjustSizeToText()
         self.mLabel2.attemptSetSceneRect(QRectF(150, 200, 60, 15))
@@ -147,9 +142,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
     def testReadWriteXml(self):
         p = QgsProject()
         vectorFileInfo = QFileInfo(unitTestDataPath() + "/france_parts.shp")
-        vector_layer = QgsVectorLayer(
-            vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr"
-        )
+        vector_layer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
         self.assertTrue(vector_layer.isValid())
         p.addMapLayer(vector_layer)
 
@@ -157,14 +150,14 @@ class TestQgsLayoutAtlas(QgisTestCase):
         atlas = l.atlas()
         atlas.setEnabled(True)
         atlas.setHideCoverage(True)
-        atlas.setFilenameExpression("filename exp")
+        atlas.setFilenameExpression('filename exp')
         atlas.setCoverageLayer(vector_layer)
-        atlas.setPageNameExpression("page name")
+        atlas.setPageNameExpression('page name')
         atlas.setSortFeatures(True)
         atlas.setSortAscending(False)
-        atlas.setSortExpression("sort exp")
+        atlas.setSortExpression('sort exp')
         atlas.setFilterFeatures(True)
-        atlas.setFilterExpression("filter exp")
+        atlas.setFilterExpression('filter exp')
 
         doc = QDomDocument("testdoc")
         elem = l.writeXml(doc, QgsReadWriteContext())
@@ -174,21 +167,19 @@ class TestQgsLayoutAtlas(QgisTestCase):
         atlas2 = l2.atlas()
         self.assertTrue(atlas2.enabled())
         self.assertTrue(atlas2.hideCoverage())
-        self.assertEqual(atlas2.filenameExpression(), "filename exp")
+        self.assertEqual(atlas2.filenameExpression(), 'filename exp')
         self.assertEqual(atlas2.coverageLayer(), vector_layer)
-        self.assertEqual(atlas2.pageNameExpression(), "page name")
+        self.assertEqual(atlas2.pageNameExpression(), 'page name')
         self.assertTrue(atlas2.sortFeatures())
         self.assertFalse(atlas2.sortAscending())
-        self.assertEqual(atlas2.sortExpression(), "sort exp")
+        self.assertEqual(atlas2.sortExpression(), 'sort exp')
         self.assertTrue(atlas2.filterFeatures())
-        self.assertEqual(atlas2.filterExpression(), "filter exp")
+        self.assertEqual(atlas2.filterExpression(), 'filter exp')
 
     def testIteration(self):
         p = QgsProject()
         vectorFileInfo = QFileInfo(unitTestDataPath() + "/france_parts.shp")
-        vector_layer = QgsVectorLayer(
-            vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr"
-        )
+        vector_layer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
         self.assertTrue(vector_layer.isValid())
         p.addMapLayer(vector_layer)
 
@@ -205,7 +196,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
         self.assertEqual(len(atlas_feature_changed_spy), 1)
         self.assertEqual(len(context_changed_spy), 1)
         self.assertEqual(atlas.currentFeatureNumber(), 0)
-        self.assertEqual(l.reportContext().feature()[4], "Basse-Normandie")
+        self.assertEqual(l.reportContext().feature()[4], 'Basse-Normandie')
         self.assertEqual(l.reportContext().layer(), vector_layer)
         f1 = l.reportContext().feature()
 
@@ -213,21 +204,21 @@ class TestQgsLayoutAtlas(QgisTestCase):
         self.assertEqual(len(atlas_feature_changed_spy), 2)
         self.assertEqual(len(context_changed_spy), 2)
         self.assertEqual(atlas.currentFeatureNumber(), 1)
-        self.assertEqual(l.reportContext().feature()[4], "Bretagne")
+        self.assertEqual(l.reportContext().feature()[4], 'Bretagne')
         f2 = l.reportContext().feature()
 
         self.assertTrue(atlas.next())
         self.assertEqual(len(atlas_feature_changed_spy), 3)
         self.assertEqual(len(context_changed_spy), 3)
         self.assertEqual(atlas.currentFeatureNumber(), 2)
-        self.assertEqual(l.reportContext().feature()[4], "Pays de la Loire")
+        self.assertEqual(l.reportContext().feature()[4], 'Pays de la Loire')
         f3 = l.reportContext().feature()
 
         self.assertTrue(atlas.next())
         self.assertEqual(len(atlas_feature_changed_spy), 4)
         self.assertEqual(len(context_changed_spy), 4)
         self.assertEqual(atlas.currentFeatureNumber(), 3)
-        self.assertEqual(l.reportContext().feature()[4], "Centre")
+        self.assertEqual(l.reportContext().feature()[4], 'Centre')
         f4 = l.reportContext().feature()
 
         self.assertFalse(atlas.next())
@@ -235,19 +226,19 @@ class TestQgsLayoutAtlas(QgisTestCase):
         self.assertEqual(len(atlas_feature_changed_spy), 5)
         self.assertEqual(len(context_changed_spy), 5)
         self.assertEqual(atlas.currentFeatureNumber(), 2)
-        self.assertEqual(l.reportContext().feature()[4], "Pays de la Loire")
+        self.assertEqual(l.reportContext().feature()[4], 'Pays de la Loire')
 
         self.assertTrue(atlas.last())
         self.assertEqual(len(atlas_feature_changed_spy), 6)
         self.assertEqual(len(context_changed_spy), 6)
         self.assertEqual(atlas.currentFeatureNumber(), 3)
-        self.assertEqual(l.reportContext().feature()[4], "Centre")
+        self.assertEqual(l.reportContext().feature()[4], 'Centre')
 
         self.assertTrue(atlas.previous())
         self.assertEqual(len(atlas_feature_changed_spy), 7)
         self.assertEqual(len(context_changed_spy), 7)
         self.assertEqual(atlas.currentFeatureNumber(), 2)
-        self.assertEqual(l.reportContext().feature()[4], "Pays de la Loire")
+        self.assertEqual(l.reportContext().feature()[4], 'Pays de la Loire')
 
         self.assertTrue(atlas.previous())
         self.assertTrue(atlas.previous())
@@ -259,21 +250,19 @@ class TestQgsLayoutAtlas(QgisTestCase):
         self.assertEqual(len(atlas_feature_changed_spy), 10)
 
         self.assertTrue(atlas.seekTo(f1))
-        self.assertEqual(l.reportContext().feature()[4], "Basse-Normandie")
+        self.assertEqual(l.reportContext().feature()[4], 'Basse-Normandie')
         self.assertTrue(atlas.seekTo(f4))
-        self.assertEqual(l.reportContext().feature()[4], "Centre")
+        self.assertEqual(l.reportContext().feature()[4], 'Centre')
         self.assertTrue(atlas.seekTo(f3))
-        self.assertEqual(l.reportContext().feature()[4], "Pays de la Loire")
+        self.assertEqual(l.reportContext().feature()[4], 'Pays de la Loire')
         self.assertTrue(atlas.seekTo(f2))
-        self.assertEqual(l.reportContext().feature()[4], "Bretagne")
+        self.assertEqual(l.reportContext().feature()[4], 'Bretagne')
         self.assertFalse(atlas.seekTo(QgsFeature(5)))
 
     def testUpdateFeature(self):
         p = QgsProject()
         vectorFileInfo = QFileInfo(unitTestDataPath() + "/france_parts.shp")
-        vector_layer = QgsVectorLayer(
-            vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr"
-        )
+        vector_layer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
         self.assertTrue(vector_layer.isValid())
         p.addMapLayer(vector_layer)
 
@@ -285,26 +274,20 @@ class TestQgsLayoutAtlas(QgisTestCase):
         self.assertTrue(atlas.beginRender())
         self.assertTrue(atlas.first())
         self.assertEqual(atlas.currentFeatureNumber(), 0)
-        self.assertEqual(l.reportContext().feature()[4], "Basse-Normandie")
+        self.assertEqual(l.reportContext().feature()[4], 'Basse-Normandie')
         self.assertEqual(l.reportContext().layer(), vector_layer)
 
         vector_layer.startEditing()
-        self.assertTrue(
-            vector_layer.changeAttributeValue(
-                l.reportContext().feature().id(), 4, "Nah, Canberra mate!"
-            )
-        )
-        self.assertEqual(l.reportContext().feature()[4], "Basse-Normandie")
+        self.assertTrue(vector_layer.changeAttributeValue(l.reportContext().feature().id(), 4, 'Nah, Canberra mate!'))
+        self.assertEqual(l.reportContext().feature()[4], 'Basse-Normandie')
         l.atlas().refreshCurrentFeature()
-        self.assertEqual(l.reportContext().feature()[4], "Nah, Canberra mate!")
+        self.assertEqual(l.reportContext().feature()[4], 'Nah, Canberra mate!')
         vector_layer.rollBack()
 
     def testFileName(self):
         p = QgsProject()
         vectorFileInfo = QFileInfo(unitTestDataPath() + "/france_parts.shp")
-        vector_layer = QgsVectorLayer(
-            vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr"
-        )
+        vector_layer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
         self.assertTrue(vector_layer.isValid())
         p.addMapLayer(vector_layer)
 
@@ -317,49 +300,31 @@ class TestQgsLayoutAtlas(QgisTestCase):
         self.assertTrue(atlas.beginRender())
         self.assertEqual(atlas.count(), 4)
         atlas.first()
-        self.assertEqual(atlas.currentFilename(), "output_Basse-Normandie")
-        self.assertEqual(
-            atlas.filePath("/tmp/output/", "png"),
-            "/tmp/output/output_Basse-Normandie.png",
-        )
-        self.assertEqual(
-            atlas.filePath("/tmp/output/", ".png"),
-            "/tmp/output/output_Basse-Normandie.png",
-        )
-        self.assertEqual(
-            atlas.filePath("/tmp/output/", "svg"),
-            "/tmp/output/output_Basse-Normandie.svg",
-        )
+        self.assertEqual(atlas.currentFilename(), 'output_Basse-Normandie')
+        self.assertEqual(atlas.filePath('/tmp/output/', 'png'), '/tmp/output/output_Basse-Normandie.png')
+        self.assertEqual(atlas.filePath('/tmp/output/', '.png'), '/tmp/output/output_Basse-Normandie.png')
+        self.assertEqual(atlas.filePath('/tmp/output/', 'svg'), '/tmp/output/output_Basse-Normandie.svg')
 
         atlas.next()
-        self.assertEqual(atlas.currentFilename(), "output_Bretagne")
-        self.assertEqual(
-            atlas.filePath("/tmp/output/", "png"), "/tmp/output/output_Bretagne.png"
-        )
+        self.assertEqual(atlas.currentFilename(), 'output_Bretagne')
+        self.assertEqual(atlas.filePath('/tmp/output/', 'png'), '/tmp/output/output_Bretagne.png')
         atlas.next()
-        self.assertEqual(atlas.currentFilename(), "output_Pays de la Loire")
-        self.assertEqual(
-            atlas.filePath("/tmp/output/", "png"),
-            "/tmp/output/output_Pays de la Loire.png",
-        )
+        self.assertEqual(atlas.currentFilename(), 'output_Pays de la Loire')
+        self.assertEqual(atlas.filePath('/tmp/output/', 'png'), '/tmp/output/output_Pays de la Loire.png')
         atlas.next()
-        self.assertEqual(atlas.currentFilename(), "output_Centre")
-        self.assertEqual(
-            atlas.filePath("/tmp/output/", "png"), "/tmp/output/output_Centre.png"
-        )
+        self.assertEqual(atlas.currentFilename(), 'output_Centre')
+        self.assertEqual(atlas.filePath('/tmp/output/', 'png'), '/tmp/output/output_Centre.png')
 
         # try changing expression, filename should be updated instantly
         atlas.setFilenameExpression("'export_' || \"NAME_1\"")
-        self.assertEqual(atlas.currentFilename(), "export_Centre")
+        self.assertEqual(atlas.currentFilename(), 'export_Centre')
 
         atlas.endRender()
 
     def testNameForPage(self):
         p = QgsProject()
         vectorFileInfo = QFileInfo(unitTestDataPath() + "/france_parts.shp")
-        vector_layer = QgsVectorLayer(
-            vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr"
-        )
+        vector_layer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
         self.assertTrue(vector_layer.isValid())
         p.addMapLayer(vector_layer)
 
@@ -367,13 +332,13 @@ class TestQgsLayoutAtlas(QgisTestCase):
         atlas = l.atlas()
         atlas.setEnabled(True)
         atlas.setCoverageLayer(vector_layer)
-        atlas.setPageNameExpression('"NAME_1"')
+        atlas.setPageNameExpression("\"NAME_1\"")
 
         self.assertTrue(atlas.beginRender())
-        self.assertEqual(atlas.nameForPage(0), "Basse-Normandie")
-        self.assertEqual(atlas.nameForPage(1), "Bretagne")
-        self.assertEqual(atlas.nameForPage(2), "Pays de la Loire")
-        self.assertEqual(atlas.nameForPage(3), "Centre")
+        self.assertEqual(atlas.nameForPage(0), 'Basse-Normandie')
+        self.assertEqual(atlas.nameForPage(1), 'Bretagne')
+        self.assertEqual(atlas.nameForPage(2), 'Pays de la Loire')
+        self.assertEqual(atlas.nameForPage(3), 'Centre')
 
     def filename_test(self):
         self.atlas.setFilenameExpression("'output_' || @atlas_featurenumber")
@@ -386,15 +351,11 @@ class TestQgsLayoutAtlas(QgisTestCase):
 
         # using feature attribute (refs https://github.com/qgis/QGIS/issues/27379)
 
-        self.atlas.setFilenameExpression(
-            "'output_' || attribute(@atlas_feature,'NAME_1')"
-        )
-        expected = [
-            "output_Basse-Normandie",
-            "output_Bretagne",
-            "output_Pays de la Loire",
-            "output_Centre",
-        ]
+        self.atlas.setFilenameExpression("'output_' || attribute(@atlas_feature,'NAME_1')")
+        expected = ['output_Basse-Normandie',
+                    'output_Bretagne',
+                    'output_Pays de la Loire',
+                    'output_Centre']
         self.atlas.beginRender()
         for i in range(0, self.atlas.count()):
             self.atlas.seekTo(i)
@@ -403,13 +364,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
 
     def autoscale_render_test(self):
         self.atlas_map.setExtent(
-            QgsRectangle(
-                332719.06221504929,
-                6765214.5887386119,
-                560957.85090677091,
-                6993453.3774303338,
-            )
-        )
+            QgsRectangle(332719.06221504929, 6765214.5887386119, 560957.85090677091, 6993453.3774303338))
 
         self.atlas_map.setAtlasDriven(True)
         self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Auto)
@@ -423,7 +378,9 @@ class TestQgsLayoutAtlas(QgisTestCase):
 
             self.assertTrue(
                 self.render_layout_check(
-                    "atlas_autoscale%d" % (i + 1), self.layout, allowed_mismatch=200
+                    'atlas_autoscale%d' % (i + 1),
+                    self.layout,
+                    allowed_mismatch=200
                 )
             )
         self.atlas.endRender()
@@ -433,9 +390,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
         self.atlas_map.setAtlasMargin(0)
 
     def fixedscale_render_test(self):
-        self.atlas_map.setExtent(
-            QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620)
-        )
+        self.atlas_map.setExtent(QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620))
         self.atlas_map.setAtlasDriven(True)
         self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Fixed)
 
@@ -447,16 +402,16 @@ class TestQgsLayoutAtlas(QgisTestCase):
 
             self.assertTrue(
                 self.render_layout_check(
-                    "atlas_fixedscale%d" % (i + 1), self.layout, allowed_mismatch=200
+                    'atlas_fixedscale%d' % (i + 1),
+                    self.layout,
+                    allowed_mismatch=200
                 )
             )
 
         self.atlas.endRender()
 
     def predefinedscales_render_test(self):
-        self.atlas_map.setExtent(
-            QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620)
-        )
+        self.atlas_map.setExtent(QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620))
         self.atlas_map.setAtlasDriven(True)
         self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Predefined)
 
@@ -473,17 +428,15 @@ class TestQgsLayoutAtlas(QgisTestCase):
 
             self.assertTrue(
                 self.render_layout_check(
-                    "atlas_predefinedscales%d" % (i + 1),
+                    'atlas_predefinedscales%d' % (i + 1),
                     self.layout,
-                    allowed_mismatch=200,
+                    allowed_mismatch=200
                 )
             )
         self.atlas.endRender()
 
     def hidden_render_test(self):
-        self.atlas_map.setExtent(
-            QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620)
-        )
+        self.atlas_map.setExtent(QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620))
         self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Fixed)
         self.atlas.setHideCoverage(True)
 
@@ -495,7 +448,9 @@ class TestQgsLayoutAtlas(QgisTestCase):
 
             self.assertTrue(
                 self.render_layout_check(
-                    "atlas_hiding%d" % (i + 1), self.layout, allowed_mismatch=200
+                    'atlas_hiding%d' % (i + 1),
+                    self.layout,
+                    allowed_mismatch=200
                 )
             )
         self.atlas.endRender()
@@ -503,9 +458,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
         self.atlas.setHideCoverage(False)
 
     def sorting_render_test(self):
-        self.atlas_map.setExtent(
-            QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620)
-        )
+        self.atlas_map.setExtent(QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620))
         self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Fixed)
         self.atlas.setHideCoverage(False)
 
@@ -521,25 +474,23 @@ class TestQgsLayoutAtlas(QgisTestCase):
 
             self.assertTrue(
                 self.render_layout_check(
-                    "atlas_sorting%d" % (i + 1), self.layout, allowed_mismatch=200
+                    'atlas_sorting%d' % (i + 1),
+                    self.layout,
+                    allowed_mismatch=200
                 )
             )
 
         self.atlas.endRender()
 
     def filtering_render_test(self):
-        self.atlas_map.setExtent(
-            QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620)
-        )
+        self.atlas_map.setExtent(QgsRectangle(209838.166, 6528781.020, 610491.166, 6920530.620))
         self.atlas_map.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Fixed)
         self.atlas.setHideCoverage(False)
 
         self.atlas.setSortFeatures(False)
 
         self.atlas.setFilterFeatures(True)
-        self.atlas.setFeatureFilter(
-            "substr(NAME_1,1,1)='P'"
-        )  # select only 'Pays de la loire'
+        self.atlas.setFeatureFilter("substr(NAME_1,1,1)='P'")  # select only 'Pays de la loire'
 
         self.atlas.beginRender()
 
@@ -549,16 +500,16 @@ class TestQgsLayoutAtlas(QgisTestCase):
 
             self.assertTrue(
                 self.render_layout_check(
-                    "atlas_filtering%d" % (i + 1), self.layout, allowed_mismatch=200
+                    'atlas_filtering%d' % (i + 1),
+                    self.layout,
+                    allowed_mismatch=200
                 )
             )
         self.atlas.endRender()
 
     def test_clipping(self):
         vectorFileInfo = QFileInfo(unitTestDataPath() + "/france_parts.shp")
-        vectorLayer = QgsVectorLayer(
-            vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr"
-        )
+        vectorLayer = QgsVectorLayer(vectorFileInfo.filePath(), vectorFileInfo.completeBaseName(), "ogr")
 
         p = QgsProject()
         p.addMapLayers([vectorLayer])
@@ -566,14 +517,14 @@ class TestQgsLayoutAtlas(QgisTestCase):
         # create layout with layout map
 
         # select epsg:2154
-        crs = QgsCoordinateReferenceSystem("epsg:2154")
+        crs = QgsCoordinateReferenceSystem('epsg:2154')
         p.setCrs(crs)
 
         layout = QgsPrintLayout(p)
         layout.initializeDefaults()
 
         # fix the renderer, fill with green
-        props = {"color": "0,127,0", "outline_style": "no"}
+        props = {"color": "0,127,0", 'outline_style': 'no'}
         fillSymbol = QgsFillSymbol.createSimple(props)
         renderer = QgsSingleSymbolRenderer(fillSymbol)
         vectorLayer.setRenderer(renderer)
@@ -591,13 +542,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
         atlas.setEnabled(True)
 
         atlas_map.setExtent(
-            QgsRectangle(
-                332719.06221504929,
-                6765214.5887386119,
-                560957.85090677091,
-                6993453.3774303338,
-            )
-        )
+            QgsRectangle(332719.06221504929, 6765214.5887386119, 560957.85090677091, 6993453.3774303338))
 
         atlas_map.setAtlasDriven(True)
         atlas_map.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Auto)
@@ -612,7 +557,9 @@ class TestQgsLayoutAtlas(QgisTestCase):
 
             self.assertTrue(
                 self.render_layout_check(
-                    "atlas_clipping%d" % (i + 1), layout, allowed_mismatch=200
+                    'atlas_clipping%d' % (i + 1),
+                    layout,
+                    allowed_mismatch=200
                 )
             )
 
@@ -624,11 +571,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
         self.atlas_map.setAtlasMargin(0.10)
 
         # add a point layer
-        ptLayer = QgsVectorLayer(
-            "Point?crs=epsg:4326&field=attr:int(1)&field=label:string(20)",
-            "points",
-            "memory",
-        )
+        ptLayer = QgsVectorLayer("Point?crs=epsg:4326&field=attr:int(1)&field=label:string(20)", "points", "memory")
 
         pr = ptLayer.dataProvider()
         f1 = QgsFeature(1)
@@ -644,25 +587,8 @@ class TestQgsLayoutAtlas(QgisTestCase):
         pr.addFeatures([f1, f2])
 
         # categorized symbology
-        r = QgsCategorizedSymbolRenderer(
-            "attr",
-            [
-                QgsRendererCategory(
-                    1,
-                    QgsMarkerSymbol.createSimple(
-                        {"color": "255,0,0", "outline_color": "black"}
-                    ),
-                    "red",
-                ),
-                QgsRendererCategory(
-                    2,
-                    QgsMarkerSymbol.createSimple(
-                        {"color": "0,0,255", "outline_color": "black"}
-                    ),
-                    "blue",
-                ),
-            ],
-        )
+        r = QgsCategorizedSymbolRenderer("attr", [QgsRendererCategory(1, QgsMarkerSymbol.createSimple({"color": "255,0,0", 'outline_color': 'black'}), "red"),
+                                                  QgsRendererCategory(2, QgsMarkerSymbol.createSimple({"color": "0,0,255", 'outline_color': 'black'}), "blue")])
         ptLayer.setRenderer(r)
 
         QgsProject.instance().addMapLayer(ptLayer)
@@ -675,18 +601,10 @@ class TestQgsLayoutAtlas(QgisTestCase):
 
         # add a legend
         legend = QgsLayoutItemLegend(self.layout)
-        legend.rstyle(QgsLegendStyle.Style.Title).setFont(
-            QgsFontUtils.getStandardTestFont("Bold", 20)
-        )
-        legend.rstyle(QgsLegendStyle.Style.Group).setFont(
-            QgsFontUtils.getStandardTestFont("Bold", 18)
-        )
-        legend.rstyle(QgsLegendStyle.Style.Subgroup).setFont(
-            QgsFontUtils.getStandardTestFont("Bold", 18)
-        )
-        legend.rstyle(QgsLegendStyle.Style.SymbolLabel).setFont(
-            QgsFontUtils.getStandardTestFont("Bold", 14)
-        )
+        legend.rstyle(QgsLegendStyle.Style.Title).setFont(QgsFontUtils.getStandardTestFont('Bold', 20))
+        legend.rstyle(QgsLegendStyle.Style.Group).setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
+        legend.rstyle(QgsLegendStyle.Style.Subgroup).setFont(QgsFontUtils.getStandardTestFont('Bold', 18))
+        legend.rstyle(QgsLegendStyle.Style.SymbolLabel).setFont(QgsFontUtils.getStandardTestFont('Bold', 14))
 
         legend.setTitle("Legend")
         legend.attemptMove(QgsLayoutPoint(200, 100))
@@ -700,7 +618,12 @@ class TestQgsLayoutAtlas(QgisTestCase):
         self.atlas.seekTo(0)
         self.mLabel1.adjustSizeToText()
 
-        self.assertTrue(self.render_layout_check("atlas_legend", self.layout))
+        self.assertTrue(
+            self.render_layout_check(
+                'atlas_legend',
+                self.layout
+            )
+        )
 
         self.atlas.endRender()
 
@@ -714,12 +637,10 @@ class TestQgsLayoutAtlas(QgisTestCase):
         # Then we will make it the object layer for the atlas,
         # rotate the map and test that the bounding rectangle
         # is smaller than the bounds without rotation.
-        polygonLayer = QgsVectorLayer("Polygon", "test_polygon", "memory")
+        polygonLayer = QgsVectorLayer('Polygon', 'test_polygon', 'memory')
         poly = QgsFeature(polygonLayer.fields())
         points = [(10, 15), (15, 10), (45, 40), (40, 45)]
-        poly.setGeometry(
-            QgsGeometry.fromPolygonXY([[QgsPointXY(x[0], x[1]) for x in points]])
-        )
+        poly.setGeometry(QgsGeometry.fromPolygonXY([[QgsPointXY(x[0], x[1]) for x in points]]))
         polygonLayer.dataProvider().addFeatures([poly])
         QgsProject.instance().addMapLayer(polygonLayer)
 
@@ -760,26 +681,18 @@ class TestQgsLayoutAtlas(QgisTestCase):
         QgsProject.instance().removeMapLayer(polygonLayer)
 
     def test_datadefined_margin(self):
-        polygonLayer = QgsVectorLayer(
-            "Polygon?field=margin:int", "test_polygon", "memory"
-        )
+        polygonLayer = QgsVectorLayer('Polygon?field=margin:int', 'test_polygon', 'memory')
         poly = QgsFeature(polygonLayer.fields())
         poly.setAttributes([0])
-        poly.setGeometry(
-            QgsGeometry.fromWkt("Polygon((30 30, 40 30, 40 40, 30 40, 30 30))")
-        )
+        poly.setGeometry(QgsGeometry.fromWkt('Polygon((30 30, 40 30, 40 40, 30 40, 30 30))'))
         polygonLayer.dataProvider().addFeatures([poly])
         poly = QgsFeature(polygonLayer.fields())
         poly.setAttributes([10])
-        poly.setGeometry(
-            QgsGeometry.fromWkt("Polygon((10 10, 20 10, 20 20, 10 20, 10 10))")
-        )
+        poly.setGeometry(QgsGeometry.fromWkt('Polygon((10 10, 20 10, 20 20, 10 20, 10 10))'))
         polygonLayer.dataProvider().addFeatures([poly])
         poly = QgsFeature(polygonLayer.fields())
         poly.setAttributes([20])
-        poly.setGeometry(
-            QgsGeometry.fromWkt("Polygon((50 50, 60 50, 60 60, 50 60, 50 50))")
-        )
+        poly.setGeometry(QgsGeometry.fromWkt('Polygon((50 50, 60 50, 60 60, 50 60, 50 50))'))
         polygonLayer.dataProvider().addFeatures([poly])
         QgsProject.instance().addMapLayer(polygonLayer)
 
@@ -799,10 +712,7 @@ class TestQgsLayoutAtlas(QgisTestCase):
         map.setAtlasDriven(True)
         map.setAtlasScalingMode(QgsLayoutItemMap.AtlasScalingMode.Auto)
         map.setAtlasMargin(77.0)
-        map.dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapAtlasMargin,
-            QgsProperty.fromExpression("margin/2"),
-        )
+        map.dataDefinedProperties().setProperty(QgsLayoutObject.DataDefinedProperty.MapAtlasMargin, QgsProperty.fromExpression('margin/2'))
 
         atlas.beginRender()
         atlas.first()
@@ -820,9 +730,9 @@ class TestQgsLayoutAtlas(QgisTestCase):
         atlas = layout.atlas()
         s = QSignalSpy(atlas.changed)
 
-        atlas.setPageNameExpression("1+2")
+        atlas.setPageNameExpression('1+2')
         self.assertEqual(len(s), 1)
-        atlas.setPageNameExpression("1+2")
+        atlas.setPageNameExpression('1+2')
         self.assertEqual(len(s), 1)
 
         atlas.setSortFeatures(True)
@@ -835,9 +745,9 @@ class TestQgsLayoutAtlas(QgisTestCase):
         atlas.setSortAscending(False)
         self.assertEqual(len(s), 3)
 
-        atlas.setSortExpression("1+2")
+        atlas.setSortExpression('1+2')
         self.assertEqual(len(s), 4)
-        atlas.setSortExpression("1+2")
+        atlas.setSortExpression('1+2')
         self.assertEqual(len(s), 4)
 
         atlas.setFilterFeatures(True)
@@ -845,9 +755,9 @@ class TestQgsLayoutAtlas(QgisTestCase):
         atlas.setFilterFeatures(True)
         self.assertEqual(len(s), 5)
 
-        atlas.setFilterExpression("1+2")
+        atlas.setFilterExpression('1+2')
         self.assertEqual(len(s), 6)
-        atlas.setFilterExpression("1+2")
+        atlas.setFilterExpression('1+2')
         self.assertEqual(len(s), 6)
 
         atlas.setHideCoverage(True)
@@ -855,11 +765,11 @@ class TestQgsLayoutAtlas(QgisTestCase):
         atlas.setHideCoverage(True)
         self.assertEqual(len(s), 7)
 
-        atlas.setFilenameExpression("1+2")
+        atlas.setFilenameExpression('1+2')
         self.assertEqual(len(s), 8)
-        atlas.setFilenameExpression("1+2")
+        atlas.setFilenameExpression('1+2')
         self.assertEqual(len(s), 8)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

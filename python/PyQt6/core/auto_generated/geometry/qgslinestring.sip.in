@@ -245,7 +245,7 @@ Constructs a linestring with a single segment from ``p1`` to ``p2``.
 .. versionadded:: 3.2
 %End
 
-    static std::unique_ptr< QgsLineString > fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments = 30 );
+    static QgsLineString *fromBezierCurve( const QgsPoint &start, const QgsPoint &controlPoint1, const QgsPoint &controlPoint2, const QgsPoint &end, int segments = 30 ) /Factory/;
 %Docstring
 Returns a new linestring created by segmentizing the bezier curve between ``start`` and ``end``, with
 the specified control points.
@@ -257,7 +257,7 @@ Any z or m values present in the input coordinates will be interpolated along wi
 .. versionadded:: 3.10
 %End
 
-    static std::unique_ptr< QgsLineString > fromQPolygonF( const QPolygonF &polygon );
+    static QgsLineString *fromQPolygonF( const QPolygonF &polygon ) /Factory/;
 %Docstring
 Returns a new linestring from a QPolygonF ``polygon`` input.
 
@@ -643,17 +643,6 @@ If ``useZValues`` is ``True`` then z values will also be considered when testing
 
 
 
-    QVector<QgsLineString *> splitToDisjointXYParts() const /Factory/;
-%Docstring
-Divides the linestring into parts that don't share any points or lines.
-
-This method throws away Z and M coordinates.
-
-The ownership of returned pointers is transferred to the caller.
-
-.. versionadded:: 3.40
-%End
-
     double length3D() const /HoldGIL/;
 %Docstring
 Returns the length in 3D world of the line string.
@@ -688,7 +677,7 @@ of the curve.
     virtual void draw( QPainter &p ) const;
 
 
-    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false );
+    virtual void transform( const QgsCoordinateTransform &ct, Qgis::TransformDirection d = Qgis::TransformDirection::Forward, bool transformZ = false )  throw( QgsCsException );
 
     virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 
@@ -854,17 +843,16 @@ corresponds to the last point in the line.
 %End
 
 
- QgsBox3D calculateBoundingBox3d() const /Deprecated="Since 3.34. use calculateBoundingBox3D() instead"/;
+ QgsBox3D calculateBoundingBox3d() const /Deprecated/;
 %Docstring
 Calculates the minimal 3D bounding box for the geometry.
+Deprecated: use calculateBoundingBox3D instead
 
 .. seealso:: :py:func:`calculateBoundingBox`
 
 .. versionadded:: 3.26
 
 .. deprecated:: 3.34
-
-   use :py:func:`~QgsLineString.calculateBoundingBox3D` instead
 %End
 
     virtual QgsBox3D calculateBoundingBox3D() const;
@@ -877,7 +865,7 @@ Calculates the minimal 3D bounding box for the geometry.
 .. versionadded:: 3.34
 %End
 
-    std::unique_ptr< QgsLineString > measuredLine( double start, double end ) const;
+    QgsLineString *measuredLine( double start, double end ) const /Factory/;
 %Docstring
 Re-write the measure ordinate (or add one, if it isn't already there) interpolating
 the measure between the supplied ``start`` and ``end`` values.
@@ -885,7 +873,7 @@ the measure between the supplied ``start`` and ``end`` values.
 .. versionadded:: 3.36
 %End
 
-    std::unique_ptr< QgsLineString > interpolateM( bool use3DDistance = true ) const;
+    QgsLineString *interpolateM( bool use3DDistance = true ) const /Factory/;
 %Docstring
 Returns a copy of this line with all missing (NaN) m values interpolated
 from m values of surrounding vertices.

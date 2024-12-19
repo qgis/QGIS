@@ -63,6 +63,7 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
     bool requestMasterPassword( QString &password SIP_INOUT, bool stored = false ) override;
 
   private:
+
     /**
      * The ConnectionsIgnoreMode enum represent the modes a connection can be ignored
      */
@@ -78,6 +79,7 @@ class GUI_EXPORT QgsCredentialDialog : public QDialog, public QgsCredentials, pr
     QString mRealm;
 
     ConnectionsIgnoreMode mIgnoreMode = ConnectionsIgnoreMode::IgnoreTemporarily;
+
 };
 
 #endif

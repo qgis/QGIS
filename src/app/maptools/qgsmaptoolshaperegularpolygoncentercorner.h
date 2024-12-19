@@ -37,7 +37,7 @@ class APP_EXPORT QgsMapToolShapeRegularPolygonCenterCornerMetadata : public QgsM
     QgsMapToolShapeAbstract *factory( QgsMapToolCapture *parentTool ) const override;
 };
 
-class APP_EXPORT QgsMapToolShapeRegularPolygonCenterCorner : public QgsMapToolShapeRegularPolygonAbstract
+class APP_EXPORT QgsMapToolShapeRegularPolygonCenterCorner: public QgsMapToolShapeRegularPolygonAbstract
 {
     Q_OBJECT
 

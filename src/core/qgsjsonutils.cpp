@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsjsonutils.h"
-#include "moc_qgsjsonutils.cpp"
 #include "qgsfeatureiterator.h"
 #include "qgsogrutils.h"
 #include "qgsgeometry.h"

@@ -21,6 +21,7 @@ Widget for configuring a custom legend patch shape.
 #include "qgslegendpatchshapewidget.h"
 %End
   public:
+
     QgsLegendPatchShapeWidget( QWidget *parent /TransferThis/ = 0, const QgsLegendPatchShape &shape = QgsLegendPatchShape() );
 %Docstring
 Constructor for QgsLegendPatchShapeWidget, with the specified ``parent`` widget.
@@ -61,6 +62,7 @@ A dialog for configuring a custom legend patch shape.
 #include "qgslegendpatchshapewidget.h"
 %End
   public:
+
     QgsLegendPatchShapeDialog( const QgsLegendPatchShape &shape, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLegendPatchShapeDialog, initially showing the specified ``shape``.

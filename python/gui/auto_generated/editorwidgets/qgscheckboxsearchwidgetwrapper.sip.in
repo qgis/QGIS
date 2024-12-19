@@ -21,6 +21,7 @@ Wraps a checkbox edit widget for searching.
 #include "qgscheckboxsearchwidgetwrapper.h"
 %End
   public:
+
     explicit QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCheckboxSearchWidgetWrapper.

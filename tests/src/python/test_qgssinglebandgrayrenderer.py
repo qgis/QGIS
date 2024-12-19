@@ -29,13 +29,15 @@ start_app()
 class TestQgsSingleBandGrayRenderer(QgisTestCase):
 
     def test_renderer(self):
-        path = os.path.join(unitTestDataPath(), "landsat.tif")
+        path = os.path.join(unitTestDataPath(),
+                            'landsat.tif')
         info = QFileInfo(path)
         base_name = info.baseName()
         layer = QgsRasterLayer(path, base_name)
-        self.assertTrue(layer.isValid(), f"Raster not loaded: {path}")
+        self.assertTrue(layer.isValid(), f'Raster not loaded: {path}')
 
-        renderer = QgsSingleBandGrayRenderer(layer.dataProvider(), 1)
+        renderer = QgsSingleBandGrayRenderer(layer.dataProvider(),
+                                             1)
 
         self.assertEqual(renderer.inputBand(), 1)
 
@@ -50,7 +52,8 @@ class TestQgsSingleBandGrayRenderer(QgisTestCase):
         """
         Test gray renderer band with a broken layer path
         """
-        renderer = QgsSingleBandGrayRenderer(None, 11)
+        renderer = QgsSingleBandGrayRenderer(None,
+                                             11)
 
         self.assertEqual(renderer.inputBand(), 11)
 
@@ -59,5 +62,5 @@ class TestQgsSingleBandGrayRenderer(QgisTestCase):
         self.assertEqual(renderer.inputBand(), 10)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

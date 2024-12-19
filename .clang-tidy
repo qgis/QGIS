@@ -1,1 +1,1 @@
-Checks: 'bugprone-*,-bugprone-easily-swappable-parameters,-bugprone-virtual-near-miss,-bugprone-suspicious-include'
+Checks: 'bugprone-*,-bugprone-easily-swappable-parameters,-bugprone-virtual-near-miss'

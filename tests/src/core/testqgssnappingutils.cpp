@@ -31,12 +31,11 @@
 
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
-    explicit FilterExcludePoint( const QgsPointXY &p )
-      : mPoint( p ) {}
+  explicit FilterExcludePoint( const QgsPointXY &p ) : mPoint( p ) {}
 
-    bool acceptMatch( const QgsPointLocator::Match &match ) override { return match.point() != mPoint; }
+  bool acceptMatch( const QgsPointLocator::Match &match ) override { return match.point() != mPoint; }
 
-    QgsPointXY mPoint;
+  QgsPointXY mPoint;
 };
 
 
@@ -84,6 +83,7 @@ class TestQgsSnappingUtils : public QObject
       mVL->dataProvider()->addFeatures( flist );
 
       QgsProject::instance()->addMapLayer( mVL );
+
     }
 
     void cleanupTestCase()
@@ -197,7 +197,7 @@ class TestQgsSnappingUtils : public QObject
       QCOMPARE( m5.point(), QgsPointXY( 0, 1 ) );
 
       //uncheck all and test that all nodes are unchecked
-      static_cast<QgsSymbolLegendNode *>( nodes.at( 0 ) )->uncheckAllItems();
+      static_cast< QgsSymbolLegendNode * >( nodes.at( 0 ) )->uncheckAllItems();
       for ( QgsLayerTreeModelLegendNode *ln : nodes )
       {
         QVERIFY( ln->data( Qt::CheckStateRole ) == Qt::Unchecked );
@@ -276,7 +276,7 @@ class TestQgsSnappingUtils : public QObject
       polyline1 << QgsPointXY( 0, 0 ) << QgsPointXY( 1, 1 );
       polyline2 << QgsPointXY( 1, 0 ) << QgsPointXY( 0, 1 );
       QgsFeature f1;
-      const QgsGeometry f1g = QgsGeometry::fromPolylineXY( polyline1 );
+      const QgsGeometry f1g = QgsGeometry::fromPolylineXY( polyline1 ) ;
       f1.setGeometry( f1g );
       QgsFeature f2;
       const QgsGeometry f2g = QgsGeometry::fromPolylineXY( polyline2 );
@@ -321,7 +321,7 @@ class TestQgsSnappingUtils : public QObject
       // testing with a layer with curve and Z
       std::unique_ptr<QgsVectorLayer> vCurveZ( new QgsVectorLayer( QStringLiteral( "CircularStringZ" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) ) );
       QgsFeature f1;
-      const QgsGeometry f1g = QgsGeometry::fromWkt( "CircularStringZ (0 0 0, 5 5 5, 0 10 10)" );
+      const QgsGeometry f1g = QgsGeometry::fromWkt( "CircularStringZ (0 0 0, 5 5 5, 0 10 10)" ) ;
       f1.setGeometry( f1g );
       QgsFeature f2;
       const QgsGeometry f2g = QgsGeometry::fromWkt( "CircularStringZ (8 0 20, 5 3 30, 8 10 40)" );
@@ -371,7 +371,7 @@ class TestQgsSnappingUtils : public QObject
       f2.setGeometry( f2g );
 
       QgsFeatureList flist;
-      flist << f1 << f2;
+      flist << f1 << f2 ;
       vMulti->dataProvider()->addFeatures( flist );
 
       QVERIFY( vMulti->dataProvider()->featureCount() == 2 );
@@ -400,6 +400,7 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m2.isValid() );
       QCOMPARE( m2.type(), QgsPointLocator::Vertex );
       QCOMPARE( m2.point(), QgsPointXY( 5.0, 2.5 ) );
+
     }
     void testSnapOnCentroidAndMiddleSegment()
     {
@@ -729,8 +730,8 @@ class TestQgsSnappingUtils : public QObject
       QVERIFY( m1.hasVertex() );
 
       snappingConfig.setScaleDependencyMode( QgsSnappingConfig::Global );
-      snappingConfig.setMinimumScale( 10000.0 ); // 1/10000 scale
-      snappingConfig.setMaximumScale( 1000.0 );  // 1/1000 scale
+      snappingConfig.setMinimumScale( 10000.0 );// 1/10000 scale
+      snappingConfig.setMaximumScale( 1000.0 );// 1/1000 scale
       u.setConfig( snappingConfig );
 
       //Global settings for scale limit, but scale outside min max range -> no snapping

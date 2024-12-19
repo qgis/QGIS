@@ -43,15 +43,15 @@ bool QgsRasterMinMaxOrigin::operator ==( const QgsRasterMinMaxOrigin &other ) co
          std::fabs( mStdDevFactor - other.mStdDevFactor ) < 1e-5;
 }
 
-QString QgsRasterMinMaxOrigin::limitsString( Qgis::RasterRangeLimit limits )
+QString QgsRasterMinMaxOrigin::limitsString( Limits limits )
 {
   switch ( limits )
   {
-    case Qgis::RasterRangeLimit::MinimumMaximum:
+    case MinMax:
       return QStringLiteral( "MinMax" );
-    case Qgis::RasterRangeLimit::StdDev:
+    case StdDev:
       return QStringLiteral( "StdDev" );
-    case Qgis::RasterRangeLimit::CumulativeCut:
+    case CumulativeCut:
       return QStringLiteral( "CumulativeCut" );
     default:
       break;
@@ -59,74 +59,69 @@ QString QgsRasterMinMaxOrigin::limitsString( Qgis::RasterRangeLimit limits )
   return QStringLiteral( "None" );
 }
 
-Qgis::RasterRangeLimit QgsRasterMinMaxOrigin::limitsFromString( const QString &limits )
+QgsRasterMinMaxOrigin::Limits QgsRasterMinMaxOrigin::limitsFromString( const QString &limits )
 {
   if ( limits == QLatin1String( "MinMax" ) )
   {
-    return Qgis::RasterRangeLimit::MinimumMaximum;
+    return MinMax;
   }
   else if ( limits == QLatin1String( "StdDev" ) )
   {
-    return Qgis::RasterRangeLimit::StdDev;
+    return StdDev;
   }
   else if ( limits == QLatin1String( "CumulativeCut" ) )
   {
-    return Qgis::RasterRangeLimit::CumulativeCut;
+    return CumulativeCut;
   }
-  return Qgis::RasterRangeLimit::NotSet;
+  return None;
 }
 
-QString QgsRasterMinMaxOrigin::extentString( Qgis::RasterRangeExtent minMaxExtent )
+QString QgsRasterMinMaxOrigin::extentString( Extent minMaxExtent )
 {
   switch ( minMaxExtent )
   {
-    case Qgis::RasterRangeExtent::WholeRaster:
+    case WholeRaster:
       return QStringLiteral( "WholeRaster" );
-    case Qgis::RasterRangeExtent::FixedCanvas:
+    case CurrentCanvas:
       return QStringLiteral( "CurrentCanvas" );
-    case Qgis::RasterRangeExtent::UpdatedCanvas:
+    case UpdatedCanvas:
       return QStringLiteral( "UpdatedCanvas" );
   }
   return QStringLiteral( "WholeRaster" );
 }
 
-Qgis::RasterRangeExtent QgsRasterMinMaxOrigin::extentFromString( const QString &extent )
+QgsRasterMinMaxOrigin::Extent QgsRasterMinMaxOrigin::extentFromString( const QString &extent )
 {
   if ( extent == QLatin1String( "WholeRaster" ) )
   {
-    return Qgis::RasterRangeExtent::WholeRaster;
+    return WholeRaster;
   }
   else if ( extent == QLatin1String( "CurrentCanvas" ) )
   {
-    return Qgis::RasterRangeExtent::FixedCanvas;
+    return CurrentCanvas;
   }
   else if ( extent == QLatin1String( "UpdatedCanvas" ) )
   {
-    return Qgis::RasterRangeExtent::UpdatedCanvas;
+    return UpdatedCanvas;
   }
   else
   {
-    return Qgis::RasterRangeExtent::WholeRaster;
+    return WholeRaster;
   }
 }
 
-QString QgsRasterMinMaxOrigin::statAccuracyString( Qgis::RasterRangeAccuracy accuracy )
+QString QgsRasterMinMaxOrigin::statAccuracyString( StatAccuracy accuracy )
 {
-  switch ( accuracy )
-  {
-    case Qgis::RasterRangeAccuracy::Exact:
-      return QStringLiteral( "Exact" );
-    case Qgis::RasterRangeAccuracy::Estimated:
-      return QStringLiteral( "Estimated" );
-  }
-  BUILTIN_UNREACHABLE
+  if ( accuracy == Exact )
+    return QStringLiteral( "Exact" );
+  return QStringLiteral( "Estimated" );
 }
 
-Qgis::RasterRangeAccuracy QgsRasterMinMaxOrigin::statAccuracyFromString( const QString &accuracy )
+QgsRasterMinMaxOrigin::StatAccuracy QgsRasterMinMaxOrigin::statAccuracyFromString( const QString &accuracy )
 {
   if ( accuracy == QLatin1String( "Exact" ) )
-    return Qgis::RasterRangeAccuracy::Exact;
-  return Qgis::RasterRangeAccuracy::Estimated;
+    return Exact;
+  return Estimated;
 }
 
 void QgsRasterMinMaxOrigin::writeXml( QDomDocument &doc, QDomElement &parentElem ) const

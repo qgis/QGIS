@@ -35,6 +35,7 @@ class GUI_EXPORT QgsVectorLayerTemporalPropertiesWidget : public QWidget, public
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsVectorLayerTemporalPropertiesWidget.
      */
@@ -53,9 +54,11 @@ class GUI_EXPORT QgsVectorLayerTemporalPropertiesWidget : public QWidget, public
     void syncToLayer();
 
   private:
+
     /**
      * The corresponding map layer with temporal attributes
      */
     QgsVectorLayer *mLayer = nullptr;
+
 };
 #endif // QGSVECTORLAYERTEMPORALPROPERTIESWIDGET_H

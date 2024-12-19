@@ -2,5 +2,5 @@
 try:
     QgsMarkerSymbol.createSimple = staticmethod(QgsMarkerSymbol.createSimple)
     QgsMarkerSymbol.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

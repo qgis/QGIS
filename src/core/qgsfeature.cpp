@@ -14,7 +14,6 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 
 #include "qgsfeature.h"
-#include "moc_qgsfeature.cpp"
 #include "qgsfeature_p.h"
 #include "qgsfields.h"
 #include "qgsgeometry.h"

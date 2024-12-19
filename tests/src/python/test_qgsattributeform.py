@@ -9,10 +9,9 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
 """
-
-__author__ = "Alessandro Pasotti"
-__date__ = "2019-06-06"
-__copyright__ = "Copyright 2019, The QGIS Project"
+__author__ = 'Alessandro Pasotti'
+__date__ = '2019-06-06'
+__copyright__ = 'Copyright 2019, The QGIS Project'
 
 from qgis.PyQt.QtCore import QVariant
 from qgis.core import (
@@ -46,7 +45,8 @@ class TestQgsAttributeForm(QgisTestCase):
 
     @classmethod
     def createLayerWithOnePoint(cls, field_type):
-        layer = QgsVectorLayer(f"Point?field=fld:{field_type}", "vl", "memory")
+        layer = QgsVectorLayer(f"Point?field=fld:{field_type}",
+                               "vl", "memory")
         pr = layer.dataProvider()
         f = QgsFeature()
         assert pr.addFeatures([f])
@@ -65,25 +65,22 @@ class TestQgsAttributeForm(QgisTestCase):
         vl.setEditFormConfig(config)
         vl.setEditorWidgetSetup(0, QgsEditorWidgetSetup(widget_type, {}))
         form = QgsAttributeForm(vl, next(vl.getFeatures()))
-        assert form.editable()
+        assert (form.editable())
         return form
 
     @classmethod
     def get_widgets_for_field(cls, vl):
         """Get compatible widget names"""
 
-        return [
-            k
-            for k, v in QgsGui.editorWidgetRegistry().factories().items()
-            if v.supportsField(vl, 0)
-        ]
+        return [k for k, v in QgsGui.editorWidgetRegistry().factories().items() if v.supportsField(vl, 0)]
 
     @classmethod
     def checkForm(cls, field_type, value):
-        """Creates a vector layer and an associated form with two identical widgets for the same field and test it with NULL and after setting a value"""
+        """Creates a vector layer and an associated form with two identical widgets for the same field and test it with NULL and after setting a value
+        """
 
         vl = cls.createLayerWithOnePoint(field_type)
-        assert vl.startEditing()
+        assert (vl.startEditing())
         for widget_type in cls.get_widgets_for_field(vl):
             form = cls.createFormWithDuplicateWidget(vl, field_type, widget_type)
             vl.changeAttributeValue(1, 0, value)
@@ -100,21 +97,21 @@ class TestQgsAttributeForm(QgisTestCase):
         """
 
         field_types = {
-            "integer": 123,
-            "double": 123.45,
-            "string": "lorem ipsum",
-            "date": "2019-01-01",
-            "time": "12:12:12",
-            "datetime": "2019-01-01",
-            "int2": 123,
-            "int4": 123,
-            "int8": 123,
-            "numeric": 123.45,
-            "decimal": 123.45,
-            "real": 123.45,
-            "double precision": 123.45,
-            "text": "lorem ipsum",
-            "bool": True,
+            'integer': 123,
+            'double': 123.45,
+            'string': 'lorem ipsum',
+            'date': '2019-01-01',
+            'time': '12:12:12',
+            'datetime': '2019-01-01',
+            'int2': 123,
+            'int4': 123,
+            'int8': 123,
+            'numeric': 123.45,
+            'decimal': 123.45,
+            'real': 123.45,
+            'double precision': 123.45,
+            'text': 'lorem ipsum',
+            'bool': True,
             # 'binary'
         }
 
@@ -126,7 +123,7 @@ class TestQgsAttributeForm(QgisTestCase):
         Test multiedit with duplicated widgets
         """
 
-        field_type = "integer"
+        field_type = 'integer'
         vl = self.createLayerWithOnePoint(field_type)
 
         # add another point
@@ -140,7 +137,7 @@ class TestQgsAttributeForm(QgisTestCase):
         assert vl.changeAttributeValue(1, 0, 123)
         assert vl.changeAttributeValue(2, 0, 456)
 
-        widget_type = "TextEdit"
+        widget_type = 'TextEdit'
         form = self.createFormWithDuplicateWidget(vl, field_type, widget_type)
 
         fids = list()
@@ -151,7 +148,7 @@ class TestQgsAttributeForm(QgisTestCase):
         form.setMultiEditFeatureIds(fids)
 
         for children in form.findChildren(QgsFilterLineEdit):
-            if children.objectName() == "fld":
+            if children.objectName() == 'fld':
                 # As the values are mixed, the widget values should be empty
                 assert not children.text()
 
@@ -166,22 +163,22 @@ class TestQgsAttributeForm(QgisTestCase):
 
         layer = QgsVectorLayer("Point?field=age:int", "vl", "memory")
         # set default value for numbers to [1, {age}], it will depend on the field age and should update
-        field = QgsField("numbers", QVariant.List, "array")
-        field.setEditorWidgetSetup(QgsEditorWidgetSetup("List", {}))
+        field = QgsField('numbers', QVariant.List, 'array')
+        field.setEditorWidgetSetup(QgsEditorWidgetSetup('List', {}))
         layer.dataProvider().addAttributes([field])
         layer.updateFields()
-        layer.setDefaultValueDefinition(1, QgsDefaultValue("array(1, age)", True))
-        layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup("List", {}))
+        layer.setDefaultValueDefinition(1, QgsDefaultValue('array(1, age)', True))
+        layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup('List', {}))
         layer.startEditing()
         form = QgsAttributeForm(layer)
         feature = QgsFeature(layer.fields())
         form.setFeature(feature)
         form.setMode(QgsAttributeEditorContext.Mode.AddFeatureMode)
-        form.changeAttribute("numbers", [12])
-        form.changeAttribute("age", 1)
-        self.assertEqual(form.currentFormFeature()["numbers"], [1, 1])
-        form.changeAttribute("age", 7)
-        self.assertEqual(form.currentFormFeature()["numbers"], [1, 7])
+        form.changeAttribute('numbers', [12])
+        form.changeAttribute('age', 1)
+        self.assertEqual(form.currentFormFeature()['numbers'], [1, 1])
+        form.changeAttribute('age', 7)
+        self.assertEqual(form.currentFormFeature()['numbers'], [1, 7])
 
     def test_default_value_always_updated(self):
         """Test that default values are not updated on every edit operation
@@ -189,18 +186,16 @@ class TestQgsAttributeForm(QgisTestCase):
 
         layer = QgsVectorLayer("Point?field=age:int&field=number:int", "vl", "memory")
 
-        layer.setEditorWidgetSetup(0, QgsEditorWidgetSetup("Range", {}))
+        layer.setEditorWidgetSetup(0, QgsEditorWidgetSetup('Range', {}))
 
         # set default value for numbers to attribute("age"), it will depend on the field age and should not update
-        layer.setDefaultValueDefinition(
-            1, QgsDefaultValue("attribute(@feature, 'age')", False)
-        )
-        layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup("Range", {}))
+        layer.setDefaultValueDefinition(1, QgsDefaultValue("attribute(@feature, 'age')", False))
+        layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup('Range', {}))
 
         layer.startEditing()
 
         feature = QgsFeature(layer.fields())
-        feature.setAttribute("age", 15)
+        feature.setAttribute('age', 15)
 
         form = QgsAttributeForm(layer)
         form.setMode(QgsAttributeEditorContext.Mode.AddFeatureMode)
@@ -208,15 +203,15 @@ class TestQgsAttributeForm(QgisTestCase):
 
         QGISAPP.processEvents()
 
-        self.assertEqual(form.currentFormFeature()["age"], 15)
+        self.assertEqual(form.currentFormFeature()['age'], 15)
         # not yet update it on init
-        self.assertEqual(form.currentFormFeature()["number"], None)
+        self.assertEqual(form.currentFormFeature()['number'], None)
         # return
-        form.changeAttribute("number", 12)
-        form.changeAttribute("age", 1)
-        self.assertEqual(form.currentFormFeature()["number"], 12)
-        form.changeAttribute("age", 7)
-        self.assertEqual(form.currentFormFeature()["number"], 12)
+        form.changeAttribute('number', 12)
+        form.changeAttribute('age', 1)
+        self.assertEqual(form.currentFormFeature()['number'], 12)
+        form.changeAttribute('age', 7)
+        self.assertEqual(form.currentFormFeature()['number'], 12)
 
     def test_default_value_always_updated_live_edit(self):
         """
@@ -244,94 +239,78 @@ class TestQgsAttributeForm(QgisTestCase):
         - update pos and random because of volatile functions
         """
 
-        layer = QgsVectorLayer(
-            "Point?field=age:int&field=year:int&field=birthday:int&field=pos:int&field=random:int",
-            "vl",
-            "memory",
-        )
+        layer = QgsVectorLayer("Point?field=age:int&field=year:int&field=birthday:int&field=pos:int&field=random:int", "vl", "memory")
 
         # add another field numbers
-        field = QgsField("numbers", QVariant.List, subType=QVariant.Int)
-        field.setEditorWidgetSetup(QgsEditorWidgetSetup("List", {}))
+        field = QgsField('numbers', QVariant.List, subType=QVariant.Int)
+        field.setEditorWidgetSetup(QgsEditorWidgetSetup('List', {}))
         layer.dataProvider().addAttributes([field])
         layer.updateFields()
 
         apply_on_update = True
 
-        layer.setEditorWidgetSetup(0, QgsEditorWidgetSetup("Range", {}))
-        layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup("Range", {}))
+        layer.setEditorWidgetSetup(0, QgsEditorWidgetSetup('Range', {}))
+        layer.setEditorWidgetSetup(1, QgsEditorWidgetSetup('Range', {}))
 
         # set default value for birthday (2), it will depend on the field age and year
-        layer.setDefaultValueDefinition(
-            2, QgsDefaultValue("year - age", apply_on_update)
-        )
-        layer.setEditorWidgetSetup(2, QgsEditorWidgetSetup("Range", {}))
+        layer.setDefaultValueDefinition(2, QgsDefaultValue('year - age', apply_on_update))
+        layer.setEditorWidgetSetup(2, QgsEditorWidgetSetup('Range', {}))
 
         # set default value for pos (3), it will depend on the field age and it contains a volatile function and should update after save (on singleeditmode)
-        layer.setDefaultValueDefinition(
-            3,
-            QgsDefaultValue(
-                "pos + age + day_of_week( now() ) - day_of_week( now() )",
-                apply_on_update,
-            ),
-        )
-        layer.setEditorWidgetSetup(3, QgsEditorWidgetSetup("Range", {}))
+        layer.setDefaultValueDefinition(3, QgsDefaultValue('pos + age + day_of_week( now() ) - day_of_week( now() )', apply_on_update))
+        layer.setEditorWidgetSetup(3, QgsEditorWidgetSetup('Range', {}))
 
         # set default value for random (4), it contains a volatile function and should update after save (on singleeditmode)
-        layer.setDefaultValueDefinition(
-            4, QgsDefaultValue("random + random + rand(0,0)", apply_on_update)
-        )
-        layer.setEditorWidgetSetup(4, QgsEditorWidgetSetup("Range", {}))
+        layer.setDefaultValueDefinition(4, QgsDefaultValue('random + random + rand(0,0)', apply_on_update))
+        layer.setEditorWidgetSetup(4, QgsEditorWidgetSetup('Range', {}))
 
         # set default value for numbers (5), it will depend on the field age
-        layer.setDefaultValueDefinition(
-            5, QgsDefaultValue("array(1, age)", apply_on_update)
-        )
-        layer.setEditorWidgetSetup(5, QgsEditorWidgetSetup("List", {}))
+        layer.setDefaultValueDefinition(5, QgsDefaultValue('array(1, age)', apply_on_update))
+        layer.setEditorWidgetSetup(5, QgsEditorWidgetSetup('List', {}))
 
         layer.startEditing()
         form = QgsAttributeForm(layer)
         feature = QgsFeature(layer.fields())
-        feature.setAttribute("age", 15)
-        feature.setAttribute("year", 2023)
-        feature.setAttribute("random", 100)
-        feature.setAttribute("birthday", 1900)
-        feature.setAttribute("pos", 100)
-        feature.setAttribute("numbers", [12])
+        feature.setAttribute('age', 15)
+        feature.setAttribute('year', 2023)
+        feature.setAttribute('random', 100)
+        feature.setAttribute('birthday', 1900)
+        feature.setAttribute('pos', 100)
+        feature.setAttribute('numbers', [12])
         form.setFeature(feature)
         form.setMode(QgsAttributeEditorContext.Mode.AddFeatureMode)
 
         QGISAPP.processEvents()
 
         # editing age
-        form.changeAttribute("age", 10)
-        self.assertEqual(form.currentFormFeature()["age"], 10)
+        form.changeAttribute('age', 10)
+        self.assertEqual(form.currentFormFeature()['age'], 10)
 
         # don't update year
-        self.assertEqual(form.currentFormFeature()["year"], 2023)
+        self.assertEqual(form.currentFormFeature()['year'], 2023)
         # update birthday because of age
-        self.assertEqual(form.currentFormFeature()["birthday"], 2013)
+        self.assertEqual(form.currentFormFeature()['birthday'], 2013)
         # update pos because of age
-        self.assertEqual(form.currentFormFeature()["pos"], 110)
+        self.assertEqual(form.currentFormFeature()['pos'], 110)
         # don't update random (yet)
-        self.assertEqual(form.currentFormFeature()["random"], 100)
+        self.assertEqual(form.currentFormFeature()['random'], 100)
         # update number because of age
-        self.assertEqual(form.currentFormFeature()["numbers"], [1, 10])
+        self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
 
         # editing year
-        form.changeAttribute("year", 2024)
-        self.assertEqual(form.currentFormFeature()["year"], 2024)
+        form.changeAttribute('year', 2024)
+        self.assertEqual(form.currentFormFeature()['year'], 2024)
 
         # don't update age
-        self.assertEqual(form.currentFormFeature()["age"], 10)
+        self.assertEqual(form.currentFormFeature()['age'], 10)
         # update birthday because of year
-        self.assertEqual(form.currentFormFeature()["birthday"], 2014)
+        self.assertEqual(form.currentFormFeature()['birthday'], 2014)
         # don't update pos (yet)
-        self.assertEqual(form.currentFormFeature()["pos"], 110)
+        self.assertEqual(form.currentFormFeature()['pos'], 110)
         # don't update random (yet)
-        self.assertEqual(form.currentFormFeature()["random"], 100)
+        self.assertEqual(form.currentFormFeature()['random'], 100)
         # don't update numbers
-        self.assertEqual(form.currentFormFeature()["numbers"], [1, 10])
+        self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
 
         # save form - this leads not to any updates (because it's a newly created features)
         form.save()
@@ -340,17 +319,17 @@ class TestQgsAttributeForm(QgisTestCase):
         feature = next(layer.getFeatures())
 
         # don't updated age
-        self.assertEqual(feature.attribute("age"), 10)
+        self.assertEqual(feature.attribute('age'), 10)
         # don't updated year
-        self.assertEqual(feature.attribute("year"), 2024)
+        self.assertEqual(feature.attribute('year'), 2024)
         # don't updated birthday
-        self.assertEqual(feature.attribute("birthday"), 2014)
+        self.assertEqual(feature.attribute('birthday'), 2014)
         # don't updated pos (because newly created feature)
-        self.assertEqual(feature.attribute("pos"), 110)
+        self.assertEqual(feature.attribute('pos'), 110)
         # don't updated random (because newly created feature)
-        self.assertEqual(feature.attribute("random"), 100)
+        self.assertEqual(feature.attribute('random'), 100)
         # don't updated numbers
-        self.assertEqual(feature.attribute("numbers"), [1, 10])
+        self.assertEqual(feature.attribute('numbers'), [1, 10])
 
         # changing mode of form
         form.setMode(QgsAttributeEditorContext.Mode.SingleEditMode)
@@ -359,45 +338,45 @@ class TestQgsAttributeForm(QgisTestCase):
 
         # check if nothing updated because of loading it:
         # don't update year
-        self.assertEqual(form.currentFormFeature()["year"], 2024)
+        self.assertEqual(form.currentFormFeature()['year'], 2024)
         # don't update age
-        self.assertEqual(form.currentFormFeature()["age"], 10)
+        self.assertEqual(form.currentFormFeature()['age'], 10)
         # don't update birthday
-        self.assertEqual(form.currentFormFeature()["birthday"], 2014)
+        self.assertEqual(form.currentFormFeature()['birthday'], 2014)
         # don't update pos (because newly created feature)
-        self.assertEqual(form.currentFormFeature()["pos"], 110)
+        self.assertEqual(form.currentFormFeature()['pos'], 110)
         # don't update random (because newly created feature)
-        self.assertEqual(form.currentFormFeature()["random"], 100)
+        self.assertEqual(form.currentFormFeature()['random'], 100)
         # don't update numbers
-        self.assertEqual(form.currentFormFeature()["numbers"], [1, 10])
+        self.assertEqual(form.currentFormFeature()['numbers'], [1, 10])
 
         # editing birthday
-        form.changeAttribute("birthday", 2200)
-        self.assertEqual(form.currentFormFeature()["birthday"], 2200)
+        form.changeAttribute('birthday', 2200)
+        self.assertEqual(form.currentFormFeature()['birthday'], 2200)
 
         # don't update age
-        self.assertEqual(form.currentFormFeature()["age"], 10)
+        self.assertEqual(form.currentFormFeature()['age'], 10)
         # don't update year
-        self.assertEqual(form.currentFormFeature()["year"], 2024)
+        self.assertEqual(form.currentFormFeature()['year'], 2024)
         # don't update pos
-        self.assertEqual(form.currentFormFeature()["pos"], 110)
+        self.assertEqual(form.currentFormFeature()['pos'], 110)
         # don't update random
-        self.assertEqual(form.currentFormFeature()["random"], 100)
+        self.assertEqual(form.currentFormFeature()['random'], 100)
 
         # editing age
-        form.changeAttribute("age", 41)
-        self.assertEqual(form.currentFormFeature()["age"], 41)
+        form.changeAttribute('age', 41)
+        self.assertEqual(form.currentFormFeature()['age'], 41)
 
         # don't update year
-        self.assertEqual(form.currentFormFeature()["year"], 2024)
+        self.assertEqual(form.currentFormFeature()['year'], 2024)
         # update birthday because of age
-        self.assertEqual(form.currentFormFeature()["birthday"], 1983)
+        self.assertEqual(form.currentFormFeature()['birthday'], 1983)
         # update pos because of age
-        self.assertEqual(form.currentFormFeature()["pos"], 151)
+        self.assertEqual(form.currentFormFeature()['pos'], 151)
         # don't update random (yet)
-        self.assertEqual(form.currentFormFeature()["random"], 100)
+        self.assertEqual(form.currentFormFeature()['random'], 100)
         # update number because of age
-        self.assertEqual(form.currentFormFeature()["numbers"], [1, 41])
+        self.assertEqual(form.currentFormFeature()['numbers'], [1, 41])
 
         # save form - this leads to updates, because existing feature
         form.save()
@@ -406,18 +385,18 @@ class TestQgsAttributeForm(QgisTestCase):
         feature = next(layer.getFeatures())
 
         # don't updated age
-        self.assertEqual(feature.attribute("age"), 41)
+        self.assertEqual(feature.attribute('age'), 41)
         # don't updated year
-        self.assertEqual(feature.attribute("year"), 2024)
+        self.assertEqual(feature.attribute('year'), 2024)
         # don't updated birthday
-        self.assertEqual(feature.attribute("birthday"), 1983)
+        self.assertEqual(feature.attribute('birthday'), 1983)
         # again updated pos
-        self.assertEqual(feature.attribute("pos"), 192)
+        self.assertEqual(feature.attribute('pos'), 192)
         # updated random
-        self.assertEqual(feature.attribute("random"), 200)
+        self.assertEqual(feature.attribute('random'), 200)
         # don't updated numbers
-        self.assertEqual(feature.attribute("numbers"), [1, 41])
+        self.assertEqual(feature.attribute('numbers'), [1, 41])
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

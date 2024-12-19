@@ -27,6 +27,7 @@ They are registered at runtime for a given service name.
 #include "qgsserverresponse.h"
 %End
   public:
+
     QgsService();
     virtual ~QgsService();
 
@@ -42,11 +43,14 @@ They are registered at runtime for a given service name.
 :return: the version of the service
 %End
 
-    virtual void executeRequest( const QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project ) = 0;
+    virtual void executeRequest( const QgsServerRequest &request,
+                                 QgsServerResponse &response,
+                                 const QgsProject *project ) = 0;
 %Docstring
 Execute the requests and set result in :py:class:`QgsServerRequest`
 %End
 };
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

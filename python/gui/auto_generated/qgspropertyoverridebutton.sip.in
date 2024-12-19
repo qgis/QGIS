@@ -9,7 +9,7 @@
 
 
 
-class QgsPropertyOverrideButton : QToolButton
+class QgsPropertyOverrideButton: QToolButton
 {
 %Docstring(signature="appended")
 A button for controlling property overrides which may apply to a widget.
@@ -28,7 +28,9 @@ and layouts.
 #include "qgspropertyoverridebutton.h"
 %End
   public:
-    QgsPropertyOverrideButton( QWidget *parent /TransferThis/ = 0, const QgsVectorLayer *layer = 0 );
+
+    QgsPropertyOverrideButton( QWidget *parent /TransferThis/ = 0,
+                               const QgsVectorLayer *layer = 0 );
 %Docstring
 Constructor for QgsPropertyOverrideButton.
 
@@ -36,7 +38,11 @@ Constructor for QgsPropertyOverrideButton.
 :param layer: associated vector layer
 %End
 
-    void init( int propertyKey, const QgsProperty &property, const QgsPropertiesDefinition &definitions, const QgsVectorLayer *layer = 0, bool auxiliaryStorageEnabled = false );
+    void init( int propertyKey,
+               const QgsProperty &property,
+               const QgsPropertiesDefinition &definitions,
+               const QgsVectorLayer *layer = 0,
+               bool auxiliaryStorageEnabled = false );
 %Docstring
 Initialize a newly constructed property button (useful if button was included in a UI layout).
 
@@ -47,7 +53,11 @@ Initialize a newly constructed property button (useful if button was included in
 :param auxiliaryStorageEnabled: If ``True``, activate the button to store data defined in auxiliary storage
 %End
 
-    void init( int propertyKey, const QgsProperty &property, const QgsPropertyDefinition &definition, const QgsVectorLayer *layer = 0, bool auxiliaryStorageEnabled = false );
+    void init( int propertyKey,
+               const QgsProperty &property,
+               const QgsPropertyDefinition &definition,
+               const QgsVectorLayer *layer = 0,
+               bool auxiliaryStorageEnabled = false );
 %Docstring
 Initialize a newly constructed property button (useful if button was included in a UI layout).
 
@@ -58,7 +68,11 @@ Initialize a newly constructed property button (useful if button was included in
 :param auxiliaryStorageEnabled: If ``True``, activate the button to store data defined in auxiliary storage
 %End
 
-    void init( int propertyKey, const QgsAbstractPropertyCollection &collection, const QgsPropertiesDefinition &definitions, const QgsVectorLayer *layer = 0, bool auxiliaryStorageEnabled = false );
+    void init( int propertyKey,
+               const QgsAbstractPropertyCollection &collection,
+               const QgsPropertiesDefinition &definitions,
+               const QgsVectorLayer *layer = 0,
+               bool auxiliaryStorageEnabled = false );
 %Docstring
 Initialize a newly constructed property button (useful if button was included in a UI layout).
 

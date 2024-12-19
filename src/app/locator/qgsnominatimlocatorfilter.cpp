@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsnominatimlocatorfilter.h"
-#include "moc_qgsnominatimlocatorfilter.cpp"
 #include "qgssettings.h"
 #include "qgsmessagebaritem.h"
 #include "qgsmessagebar.h"
@@ -35,6 +34,7 @@ QgsNominatimLocatorFilter::QgsNominatimLocatorFilter( QgsGeocoderInterface *geoc
 
 void QgsNominatimLocatorFilter::triggerResult( const QgsLocatorResult &result )
 {
+
   QgsSettings settings;
   if ( !settings.value( "locator_filters/nominatim_geocoder/attribution_shown", false, QgsSettings::App ).toBool() )
   {
@@ -42,7 +42,8 @@ void QgsNominatimLocatorFilter::triggerResult( const QgsLocatorResult &result )
 
     QgsMessageBarItem *messageWidget = QgsMessageBar::createMessage( tr( "The Nominatim geocoder data is made available by OpenStreetMap Foundation and contributors." ) );
     QPushButton *learnMoreButton = new QPushButton( tr( "Learn more" ) );
-    connect( learnMoreButton, &QPushButton::clicked, learnMoreButton, [=] {
+    connect( learnMoreButton, &QPushButton::clicked, learnMoreButton, [ = ]
+    {
       QDesktopServices::openUrl( QStringLiteral( "https://nominatim.org/" ) );
     } );
     messageWidget->layout()->addWidget( learnMoreButton );

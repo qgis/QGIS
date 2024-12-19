@@ -15,30 +15,27 @@
 ***************************************************************************
 """
 
-__author__ = "Médéric Ribreux"
-__date__ = "February 2016"
-__copyright__ = "(C) 2016, Médéric Ribreux"
+__author__ = 'Médéric Ribreux'
+__date__ = 'February 2016'
+__copyright__ = '(C) 2016, Médéric Ribreux'
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
-    """Verify if we have the right parameters"""
-    if alg.parameterAsString(parameters, "setnull", context) or alg.parameterAsString(
-        parameters, "null", context
-    ):
+    """ Verify if we have the right parameters """
+    if (alg.parameterAsString(parameters, 'setnull', context)
+            or alg.parameterAsString(parameters, 'null', context)):
         return True, None
 
-    return False, alg.tr(
-        "You need to set at least 'setnull' or 'null' parameters for this algorithm!"
-    )
+    return False, alg.tr("You need to set at least 'setnull' or 'null' parameters for this algorithm!")
 
 
 def processInputs(alg, parameters, context, feedback):
     """Prepare the GRASS import commands"""
-    if "map" in alg.exportedLayers:
+    if 'map' in alg.exportedLayers:
         return
 
     # We need to import without r.external
-    alg.loadRasterLayerFromParameter("map", parameters, context, False)
+    alg.loadRasterLayerFromParameter('map', parameters, context, False)
     alg.postInputs(context)
 
 
@@ -48,6 +45,6 @@ def processCommand(alg, parameters, context, feedback):
 
 
 def processOutputs(alg, parameters, context, feedback):
-    fileName = alg.parameterAsOutputLayer(parameters, "output", context)
-    grassName = alg.exportedLayers["map"]
+    fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
+    grassName = alg.exportedLayers['map']
     alg.exportRasterLayer(grassName, fileName, False)

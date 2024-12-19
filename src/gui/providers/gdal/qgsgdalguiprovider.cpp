@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsgdalguiprovider.h"
-#include "moc_qgsgdalguiprovider.cpp"
 ///@cond PRIVATE
 
 #include <QList>
@@ -55,7 +54,7 @@ void QgsGdalItemGuiProvider::onDeletePostgresRasterLayer( QgsDataItemGuiContext 
   QVariantMap data = s->data().toMap();
   const QString uri = data[QStringLiteral( "uri" )].toString();
   const QString path = data[QStringLiteral( "path" )].toString();
-  const QPointer<QgsDataItem> parent = data[QStringLiteral( "parentItem" )].value<QPointer<QgsDataItem>>();
+  const QPointer< QgsDataItem > parent = data[QStringLiteral( "parentItem" )].value<QPointer< QgsDataItem >>();
 
   const QString title = tr( "Delete Table" );
 
@@ -70,11 +69,13 @@ void QgsGdalItemGuiProvider::onDeletePostgresRasterLayer( QgsDataItemGuiContext 
     }
   }
 
-  if ( !projectLayer )
+  if ( ! projectLayer )
   {
     const QString confirmMessage = tr( "Are you sure you want to delete table “%1”?" ).arg( path );
 
-    if ( QMessageBox::question( nullptr, title, confirmMessage, QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    if ( QMessageBox::question( nullptr, title,
+                                confirmMessage,
+                                QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
       return;
 
     QString errorMessage;
@@ -101,6 +102,7 @@ void QgsGdalItemGuiProvider::onDeletePostgresRasterLayer( QgsDataItemGuiContext 
 
           connection->dropRasterTable( schema, dsUri.table() );
           deleted = true;
+
         }
         catch ( QgsProviderConnectionException &ex )
         {
@@ -125,15 +127,15 @@ void QgsGdalItemGuiProvider::onDeletePostgresRasterLayer( QgsDataItemGuiContext 
     }
     else
     {
-      notify( title, errorMessage.isEmpty() ? tr( "Could not delete table." ) : tr( "Could not delete table, reason: %1." ).arg( errorMessage ), context, Qgis::MessageLevel::Warning );
+      notify( title, errorMessage.isEmpty() ?
+              tr( "Could not delete table." ) :
+              tr( "Could not delete table, reason: %1." ).arg( errorMessage ), context, Qgis::MessageLevel::Warning );
     }
   }
   else
   {
     notify( title, tr( "The layer “%1” cannot be deleted because it is in the current project as “%2”,"
-                       " remove it from the project and retry." )
-                     .arg( path, projectLayer->name() ),
-            context, Qgis::MessageLevel::Warning );
+                       " remove it from the project and retry." ).arg( path, projectLayer->name() ), context, Qgis::MessageLevel::Warning );
   }
 }
 
@@ -141,7 +143,7 @@ void QgsGdalItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu
 {
   Q_UNUSED( selectedItems )
 
-  if ( QgsLayerItem *layerItem = qobject_cast<QgsLayerItem *>( item ) )
+  if ( QgsLayerItem *layerItem = qobject_cast< QgsLayerItem * >( item ) )
   {
     if ( layerItem->providerKey() == QLatin1String( "gdal" ) )
     {
@@ -155,9 +157,9 @@ void QgsGdalItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu
         QVariantMap data;
         data.insert( QStringLiteral( "uri" ), layerItem->uri() );
         data.insert( QStringLiteral( "path" ), layerItem->name() );
-        data.insert( QStringLiteral( "parentItem" ), QVariant::fromValue( QPointer<QgsDataItem>( layerItem->parent() ) ) );
+        data.insert( QStringLiteral( "parentItem" ), QVariant::fromValue( QPointer< QgsDataItem >( layerItem->parent() ) ) );
         actionDeleteLayer->setData( data );
-        connect( actionDeleteLayer, &QAction::triggered, this, [=] { onDeletePostgresRasterLayer( context ); } );
+        connect( actionDeleteLayer, &QAction::triggered, this, [ = ] { onDeletePostgresRasterLayer( context ); } );
         menu->addAction( actionDeleteLayer );
       }
     }
@@ -168,6 +170,7 @@ void QgsGdalItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu
 class QgsGdalRasterSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
+
     QString providerKey() const override { return QStringLiteral( "gdal" ); }
     QString text() const override { return QObject::tr( "Raster" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 20; }
@@ -188,6 +191,7 @@ class QgsGdalRasterSourceSelectProvider : public QgsSourceSelectProvider
 
 QgsGdalSourceWidgetProvider::QgsGdalSourceWidgetProvider()
 {
+
 }
 
 QString QgsGdalSourceWidgetProvider::providerKey() const
@@ -223,8 +227,8 @@ QgsProviderSourceWidget *QgsGdalSourceWidgetProvider::createWidget( QgsMapLayer 
 //
 // QgsGdalGuiProviderMetadata
 //
-QgsGdalGuiProviderMetadata::QgsGdalGuiProviderMetadata()
-  : QgsProviderGuiMetadata( PROVIDER_KEY )
+QgsGdalGuiProviderMetadata::QgsGdalGuiProviderMetadata():
+  QgsProviderGuiMetadata( PROVIDER_KEY )
 {
 }
 
@@ -237,7 +241,8 @@ QList<QgsSourceSelectProvider *> QgsGdalGuiProviderMetadata::sourceSelectProvide
 
 QList<QgsDataItemGuiProvider *> QgsGdalGuiProviderMetadata::dataItemGuiProviders()
 {
-  return {
+  return
+  {
     new QgsGdalItemGuiProvider(),
     new QgsGdalCloudDataItemGuiProvider()
   };

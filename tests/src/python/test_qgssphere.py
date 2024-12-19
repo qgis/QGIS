@@ -7,13 +7,17 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "(C) 2023 by Nyall Dawson"
-__date__ = "14/07/2023"
-__copyright__ = "Copyright 2023, The QGIS Project"
+__author__ = '(C) 2023 by Nyall Dawson'
+__date__ = '14/07/2023'
+__copyright__ = 'Copyright 2023, The QGIS Project'
 
 import math
-from qgis.core import QgsSphere, QgsPoint, QgsCircle, QgsVector3D
+from qgis.core import (
+    QgsSphere,
+    QgsPoint,
+    QgsCircle,
+    QgsVector3D
+)
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -28,7 +32,7 @@ class TestQgsSphere(QgisTestCase):
     def test_null(self):
         sphere = QgsSphere()
         self.assertTrue(sphere.isNull())
-        self.assertEqual(str(sphere), "<QgsSphere: null>")
+        self.assertEqual(str(sphere), '<QgsSphere: null>')
         # a null sphere should also be considered empty
         self.assertTrue(sphere.isEmpty())
 
@@ -41,7 +45,7 @@ class TestQgsSphere(QgisTestCase):
         self.assertEqual(sphere.center(), QgsPoint(1, 2, 3))
         self.assertEqual(sphere.centerVector(), QgsVector3D(1, 2, 3))
         self.assertEqual(sphere.radius(), 4)
-        self.assertEqual(str(sphere), "<QgsSphere: (1, 2, 3) radius 4>")
+        self.assertEqual(str(sphere), '<QgsSphere: (1, 2, 3) radius 4>')
 
     def test_setters(self):
         sphere = QgsSphere(1, 2, 3, 4)
@@ -103,5 +107,5 @@ class TestQgsSphere(QgisTestCase):
         self.assertEqual(box.zMaximum(), 7)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

@@ -23,17 +23,17 @@
 
 #include "qgssimplifymethod.h"
 
-class TestQgsSimplifyMethod : public QObject
+class TestQgsSimplifyMethod: public QObject
 {
     Q_OBJECT
 
   private slots:
-    void initTestCase();           // will be called before the first testfunction is executed.
-    void cleanupTestCase();        // will be called after the last testfunction was executed.
-    void init();                   // will be called before each testfunction is executed.
-    void cleanup();                // will be called after every testfunction.
-    void testCreate();             //test creating a simplify method
-    void testEqualityInequality(); //test equality operator
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init();// will be called before each testfunction is executed.
+    void cleanup();// will be called after every testfunction.
+    void testCreate();//test creating a simplify method
+    void testEqualityInequality();//test equality operator
 
   private:
 };
@@ -48,6 +48,7 @@ void TestQgsSimplifyMethod::initTestCase()
 
 void TestQgsSimplifyMethod::cleanupTestCase()
 {
+
 }
 
 void TestQgsSimplifyMethod::init()

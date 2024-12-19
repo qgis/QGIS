@@ -39,6 +39,7 @@ class QgsMeshRendererMeshSettingsWidget : public QWidget, private Ui::QgsMeshRen
     Q_OBJECT
 
   public:
+
     enum MeshType
     {
       Native,

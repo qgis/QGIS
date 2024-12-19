@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsvectorlayercache.h"
-#include "moc_qgsvectorlayercache.cpp"
 #include "qgscacheindex.h"
 #include "qgscachedfeatureiterator.h"
 #include "qgsvectorlayerjoininfo.h"
@@ -358,10 +357,11 @@ void QgsVectorLayerCache::attributeAdded( int field )
 
 void QgsVectorLayerCache::attributeDeleted( int field )
 {
-  const QgsAttributeList attrs = mCachedAttributes;
+  QgsAttributeList attrs = mCachedAttributes;
   mCachedAttributes.clear();
 
-  for ( int attr : attrs )
+  const auto constAttrs = attrs;
+  for ( int attr : constAttrs )
   {
     if ( attr < field )
       mCachedAttributes << attr;

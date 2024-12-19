@@ -22,9 +22,9 @@
 #include "qgis_gui.h"
 
 #ifdef SIP_RUN
-//%ModuleHeaderCode
+% ModuleHeaderCode
 #include "qgssearchwidgettoolbutton.h"
-//%End
+% End
 #endif
 
 /**
@@ -36,6 +36,7 @@
  */
 class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
 {
+
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsSearchWidgetToolButton *>( sipCpp ) )
@@ -48,6 +49,7 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsSearchWidgetToolButton.
      * \param parent parent object
@@ -150,12 +152,14 @@ class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
     void searchWidgetValueChanged();
 
   private:
+
     QgsSearchWidgetWrapper::FilterFlags mAvailableFilterFlags;
     QgsSearchWidgetWrapper::FilterFlags mDefaultFilterFlags;
     QgsSearchWidgetWrapper::FilterFlags mFilterFlags;
     QMenu *mMenu = nullptr;
 
     void updateState();
+
 };
 
 #endif // QGSSEARCHWIDGETTOOLBUTTON_H

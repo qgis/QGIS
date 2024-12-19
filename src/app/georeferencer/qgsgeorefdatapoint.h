@@ -32,6 +32,7 @@ class APP_EXPORT QgsGeorefDataPoint : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsGeorefDataPoint
      * \param srcCanvas
@@ -41,7 +42,9 @@ class APP_EXPORT QgsGeorefDataPoint : public QObject
      * \param destinationPointCrs CRS of destination point
      * \param enabled whether the point is currently enabled
      */
-    QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas, const QgsPointXY &sourceCoordinates, const QgsPointXY &destinationPoint, const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled );
+    QgsGeorefDataPoint( QgsMapCanvas *srcCanvas, QgsMapCanvas *dstCanvas,
+                        const QgsPointXY &sourceCoordinates, const QgsPointXY &destinationPoint,
+                        const QgsCoordinateReferenceSystem &destinationPointCrs, bool enabled );
     QgsGeorefDataPoint( const QgsGeorefDataPoint &p );
     ~QgsGeorefDataPoint() override;
 

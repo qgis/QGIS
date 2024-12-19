@@ -10,5 +10,5 @@ try:
     QgsDataSourceUri.removePassword = staticmethod(QgsDataSourceUri.removePassword)
     QgsDataSourceUri.decodeSslMode = staticmethod(QgsDataSourceUri.decodeSslMode)
     QgsDataSourceUri.encodeSslMode = staticmethod(QgsDataSourceUri.encodeSslMode)
-except (NameError, AttributeError):
+except NameError:
     pass

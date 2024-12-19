@@ -22,7 +22,7 @@
 
 #include "testgeometryutils.h"
 
-class TestQgsEllipse : public QObject
+class TestQgsEllipse: public QObject
 {
     Q_OBJECT
   private slots:
@@ -103,11 +103,13 @@ void TestQgsEllipse::fromCenter2Points()
 {
   QgsEllipse elp = QgsEllipse( QgsPoint( 2.5, 5 ), 2.5, 5 );
 
-  QVERIFY( QgsEllipse::fromCenter2Points( QgsPoint( 2.5, 5 ), QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ) ) == QgsEllipse( QgsPoint( 2.5, 5 ), 5, 5, 180 ) );
+  QVERIFY( QgsEllipse::fromCenter2Points( QgsPoint( 2.5, 5 ), QgsPoint( 2.5, 0 ), QgsPoint( 7.5, 5 ) )
+           == QgsEllipse( QgsPoint( 2.5, 5 ), 5, 5, 180 ) );
   QVERIFY( QgsEllipse::fromCenter2Points( QgsPoint( 2.5, 5 ), QgsPoint( 2.5, 7.5 ), QgsPoint( 7.5, 5 ) ) != elp ); //same ellipse with different azimuth
   QVERIFY( QgsEllipse::fromCenter2Points( QgsPoint( 2.5, 5 ), QgsPoint( 2.5, 2.5 ), QgsPoint( 7.5, 5 ) ) != elp ); //same ellipse with different azimuth
   QVERIFY( QgsEllipse::fromCenter2Points( QgsPoint( 2.5, 5 ), QgsPoint( 2.5, 0 ), QgsPoint( 5, 5 ) ) == elp );
-  QVERIFY( QgsEllipse::fromCenter2Points( QgsPoint( 5, 10 ), QgsPoint( 5, 10 ).project( 3, 45 ), QgsPoint( 5, 10 ).project( 2, 90 + 45 ) ) == QgsEllipse( QgsPoint( 5, 10 ), 3, 2, 45 ) );
+  QVERIFY( QgsEllipse::fromCenter2Points( QgsPoint( 5, 10 ), QgsPoint( 5, 10 ).project( 3, 45 ), QgsPoint( 5, 10 ).project( 2, 90 + 45 ) )
+           == QgsEllipse( QgsPoint( 5, 10 ), 3, 2, 45 ) );
 }
 
 void TestQgsEllipse::fromFoci()
@@ -198,11 +200,16 @@ void TestQgsEllipse::settersGetters()
 
 void TestQgsEllipse::equality()
 {
-  QVERIFY( !( QgsEllipse() == QgsEllipse( QgsPoint( 0, 0 ), 0, 0, 0.0005 ) ) );
-  QVERIFY( QgsEllipse( QgsPoint( 5, 10 ), 3, 2 ) == QgsEllipse( QgsPoint( 5, 10 ), 2, 3, 0 ) );
-  QVERIFY( QgsEllipse( QgsPoint( 5, 10 ), 3, 2 ) != QgsEllipse( QgsPoint( 5, 10 ), 3, 2, 45 ) );
-  QVERIFY( QgsEllipse( QgsPoint( 5, 10 ), 3, 2, 45 ) != QgsEllipse( QgsPoint( 5, 10 ), 2, 3, 45 ) );
-  QVERIFY( QgsEllipse( QgsPoint( 5, 10 ), 2, 3, 45 ) == QgsEllipse( QgsPoint( 5, 10 ), 3, 2, 90 + 45 ) );
+  QVERIFY( !( QgsEllipse()
+              == QgsEllipse( QgsPoint( 0, 0 ), 0, 0, 0.0005 ) ) );
+  QVERIFY( QgsEllipse( QgsPoint( 5, 10 ), 3, 2 )
+           == QgsEllipse( QgsPoint( 5, 10 ), 2, 3, 0 ) );
+  QVERIFY( QgsEllipse( QgsPoint( 5, 10 ), 3, 2 )
+           != QgsEllipse( QgsPoint( 5, 10 ), 3, 2, 45 ) );
+  QVERIFY( QgsEllipse( QgsPoint( 5, 10 ), 3, 2, 45 )
+           != QgsEllipse( QgsPoint( 5, 10 ), 2, 3, 45 ) );
+  QVERIFY( QgsEllipse( QgsPoint( 5, 10 ), 2, 3, 45 )
+           == QgsEllipse( QgsPoint( 5, 10 ), 3, 2, 90 + 45 ) );
 }
 
 void TestQgsEllipse::points()
@@ -273,7 +280,7 @@ void TestQgsEllipse::area()
 
 void TestQgsEllipse::perimeter()
 {
-  std::unique_ptr<QgsPolygon> poly( QgsEllipse( QgsPoint( 0, 0 ), 5, 2, 45 ).toPolygon( 10000 ) );
+  std::unique_ptr< QgsPolygon > poly( QgsEllipse( QgsPoint( 0, 0 ), 5, 2, 45 ).toPolygon( 10000 ) );
 
   QGSCOMPARENEAR( QgsEllipse( QgsPoint( 0, 0 ), 5, 2, 45 ).perimeter(), poly->perimeter(), 0.001 );
 }
@@ -302,36 +309,44 @@ void TestQgsEllipse::boundingBox()
 {
   QCOMPARE( QgsEllipse().boundingBox(), QgsRectangle() );
 
-  std::unique_ptr<QgsPolygon> poly( QgsEllipse( QgsPoint( 0, 0 ), 5, 2 ).orientedBoundingBox() );
+  std::unique_ptr< QgsPolygon > poly( QgsEllipse( QgsPoint( 0, 0 ), 5, 2 ).orientedBoundingBox() );
   QCOMPARE( QgsEllipse( QgsPoint( 0, 0 ), 5, 2 ).boundingBox(), poly->boundingBox() );
 
-  QCOMPARE( QgsEllipse( QgsPoint( 0, 0 ), 5, 5 ).boundingBox(), QgsRectangle( QgsPointXY( -5, -5 ), QgsPointXY( 5, 5 ) ) );
+  QCOMPARE( QgsEllipse( QgsPoint( 0, 0 ), 5, 5 ).boundingBox(),
+            QgsRectangle( QgsPointXY( -5, -5 ), QgsPointXY( 5, 5 ) ) );
 
-  QCOMPARE( QgsEllipse( QgsPoint( 0, 0 ), 5, 5, 60 ).boundingBox(), QgsRectangle( QgsPointXY( -5, -5 ), QgsPointXY( 5, 5 ) ) );
+  QCOMPARE( QgsEllipse( QgsPoint( 0, 0 ), 5, 5, 60 ).boundingBox(),
+            QgsRectangle( QgsPointXY( -5, -5 ), QgsPointXY( 5, 5 ) ) );
 
-  QCOMPARE( QgsEllipse( QgsPoint( 0, 0 ), 13, 9, 45 ).boundingBox().toString( 4 ).toStdString(), QgsRectangle( QgsPointXY( -11.1803, -11.1803 ), QgsPointXY( 11.1803, 11.1803 ) ).toString( 4 ).toStdString() );
+  QCOMPARE( QgsEllipse( QgsPoint( 0, 0 ), 13, 9, 45 ).boundingBox().toString( 4 ).toStdString(),
+            QgsRectangle( QgsPointXY( -11.1803, -11.1803 ), QgsPointXY( 11.1803, 11.1803 ) ).toString( 4 ).toStdString() );
 
-  QCOMPARE( QgsEllipse( QgsPoint( 0, 0 ), 13, 9, 60 ).boundingBox().toString( 4 ).toStdString(), QgsRectangle( QgsPointXY( -12.12436, -10.14889 ), QgsPointXY( 12.12436, 10.14889 ) ).toString( 4 ).toStdString() );
+  QCOMPARE( QgsEllipse( QgsPoint( 0, 0 ), 13, 9, 60 ).boundingBox().toString( 4 ).toStdString(),
+            QgsRectangle( QgsPointXY( -12.12436, -10.14889 ), QgsPointXY( 12.12436, 10.14889 ) ).toString( 4 ).toStdString() );
 
-  QCOMPARE( QgsEllipse( QgsPoint( 0, 0 ), 13, 9, 60 + 90 ).boundingBox().toString( 4 ).toStdString(), QgsRectangle( QgsPointXY( -10.14889, -12.12436 ), QgsPointXY( 10.14889, 12.12436 ) ).toString( 4 ).toStdString() );
+  QCOMPARE( QgsEllipse( QgsPoint( 0, 0 ), 13, 9, 60 + 90 ).boundingBox().toString( 4 ).toStdString(),
+            QgsRectangle( QgsPointXY( -10.14889, -12.12436 ), QgsPointXY( 10.14889, 12.12436 ) ).toString( 4 ).toStdString() );
 
-  QCOMPARE( QgsEllipse( QgsPoint( 0, 0 ), 13, 9, 300 ).boundingBox().toString( 4 ).toStdString(), QgsRectangle( QgsPointXY( -12.12436, -10.14889 ), QgsPointXY( 12.12436, 10.14889 ) ).toString( 4 ).toStdString() );
+  QCOMPARE( QgsEllipse( QgsPoint( 0, 0 ), 13, 9, 300 ).boundingBox().toString( 4 ).toStdString(),
+            QgsRectangle( QgsPointXY( -12.12436, -10.14889 ), QgsPointXY( 12.12436, 10.14889 ) ).toString( 4 ).toStdString() );
 
-  QCOMPARE( QgsEllipse( QgsPoint( 0, 0 ), 13, 9, 300 - 90 ).boundingBox().toString( 4 ).toStdString(), QgsRectangle( QgsPointXY( -10.14889, -12.12436 ), QgsPointXY( 10.14889, 12.12436 ) ).toString( 4 ).toStdString() );
+  QCOMPARE( QgsEllipse( QgsPoint( 0, 0 ), 13, 9, 300 - 90 ).boundingBox().toString( 4 ).toStdString(),
+            QgsRectangle( QgsPointXY( -10.14889, -12.12436 ), QgsPointXY( 10.14889, 12.12436 ) ).toString( 4 ).toStdString() );
 }
 
 void TestQgsEllipse::orientedBoundingBox()
 {
-  std::unique_ptr<QgsPolygon> poly1( QgsEllipse().orientedBoundingBox() );
+  std::unique_ptr< QgsPolygon > poly1( QgsEllipse().orientedBoundingBox() );
   QVERIFY( poly1->isEmpty() );
 
   QgsLineString *ext = new QgsLineString();
-  ext->setPoints( QgsPointSequence() << QgsPoint( 5, 2 ) << QgsPoint( 5, -2 ) << QgsPoint( -5, -2 ) << QgsPoint( -5, 2 ) );
+  ext->setPoints( QgsPointSequence() << QgsPoint( 5, 2 ) << QgsPoint( 5, -2 )
+                  << QgsPoint( -5, -2 ) << QgsPoint( -5, 2 ) );
   poly1.reset( new QgsPolygon() );
   poly1->setExteriorRing( ext );
 
   QgsEllipse elp( QgsPoint( 0, 0 ), 5, 2 );
-  std::unique_ptr<QgsPolygon> poly2( elp.orientedBoundingBox() );
+  std::unique_ptr< QgsPolygon > poly2( elp.orientedBoundingBox() );
 
   QCOMPARE( poly1->asWkt( 2 ), poly2->asWkt( 2 ) );
 
@@ -354,15 +369,19 @@ void TestQgsEllipse::orientedBoundingBox()
 
 void TestQgsEllipse::toString()
 {
-  QCOMPARE( QgsEllipse().toString(), QString( "Empty" ) );
-  QCOMPARE( QgsEllipse( QgsPoint( 5, 10 ), 3, 2 ).toString(), QString( "Ellipse (Center: Point (5 10), Semi-Major Axis: 3, Semi-Minor Axis: 2, Azimuth: 90)" ) );
-  QCOMPARE( QgsEllipse( QgsPoint( 5, 10 ), 3, 2, 45 ).toString(), QString( "Ellipse (Center: Point (5 10), Semi-Major Axis: 3, Semi-Minor Axis: 2, Azimuth: 45)" ) );
-  QCOMPARE( QgsEllipse( QgsPoint( 5, 10 ), 2, 3, 45 ).toString(), QString( "Ellipse (Center: Point (5 10), Semi-Major Axis: 3, Semi-Minor Axis: 2, Azimuth: 135)" ) );
+  QCOMPARE( QgsEllipse().toString(),
+            QString( "Empty" ) );
+  QCOMPARE( QgsEllipse( QgsPoint( 5, 10 ), 3, 2 ).toString(),
+            QString( "Ellipse (Center: Point (5 10), Semi-Major Axis: 3, Semi-Minor Axis: 2, Azimuth: 90)" ) );
+  QCOMPARE( QgsEllipse( QgsPoint( 5, 10 ), 3, 2, 45 ).toString(),
+            QString( "Ellipse (Center: Point (5 10), Semi-Major Axis: 3, Semi-Minor Axis: 2, Azimuth: 45)" ) );
+  QCOMPARE( QgsEllipse( QgsPoint( 5, 10 ), 2, 3, 45 ).toString(),
+            QString( "Ellipse (Center: Point (5 10), Semi-Major Axis: 3, Semi-Minor Axis: 2, Azimuth: 135)" ) );
 }
 
 void TestQgsEllipse::toLineString()
 {
-  std::unique_ptr<QgsLineString> ls( new QgsLineString() );
+  std::unique_ptr< QgsLineString > ls( new QgsLineString() );
 
   ls.reset( QgsEllipse( QgsPoint( 0, 0 ), 5, 2, 0 ).toLineString( 2 ) );
   QVERIFY( ls->isEmpty() ); // segments too low
@@ -379,7 +398,7 @@ void TestQgsEllipse::toLineString()
 
 void TestQgsEllipse::toPolygon()
 {
-  std::unique_ptr<QgsPolygon> poly( new QgsPolygon() );
+  std::unique_ptr< QgsPolygon > poly( new QgsPolygon() );
 
   poly.reset( QgsEllipse( QgsPoint( 0, 0 ), 5, 2, 0 ).toPolygon( 2 ) );
   QVERIFY( poly->isEmpty() ); // segments too low

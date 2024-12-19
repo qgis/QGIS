@@ -75,11 +75,6 @@ class CORE_EXPORT QgsColorRampShader : public QgsRasterShaderFunction
       return true;
     }
 
-    bool operator!=( const QgsColorRampShader &other ) const
-    {
-      return !( *this == other );
-    }
-
     //An entry for classification based upon value.
     //Such a classification is typically used for
     //single band layers where a pixel value represents

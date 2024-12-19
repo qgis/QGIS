@@ -29,10 +29,10 @@ QgsClassificationLogarithmic::QgsClassificationLogarithmic()
 }
 
 
-std::unique_ptr<QgsClassificationMethod> QgsClassificationLogarithmic::clone() const
+QgsClassificationMethod *QgsClassificationLogarithmic::clone() const
 {
-  std::unique_ptr<QgsClassificationLogarithmic > c = std::make_unique< QgsClassificationLogarithmic >();
-  copyBase( c.get() );
+  QgsClassificationLogarithmic *c = new QgsClassificationLogarithmic();
+  copyBase( c );
   return c;
 }
 

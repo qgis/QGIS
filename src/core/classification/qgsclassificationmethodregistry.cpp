@@ -52,12 +52,10 @@ bool QgsClassificationMethodRegistry::addMethod( QgsClassificationMethod *method
   return true;
 }
 
-std::unique_ptr< QgsClassificationMethod > QgsClassificationMethodRegistry::method( const QString &id )
+QgsClassificationMethod *QgsClassificationMethodRegistry::method( const QString &id )
 {
-  auto it = mMethods.constFind( id );
-  if ( it == mMethods.constEnd() )
-    return std::make_unique< QgsClassificationCustom >();
-  return it.value()->clone();
+  QgsClassificationMethod *method = mMethods.value( id, new QgsClassificationCustom() );
+  return method->clone();
 }
 
 QMap<QString, QString> QgsClassificationMethodRegistry::methodNames() const

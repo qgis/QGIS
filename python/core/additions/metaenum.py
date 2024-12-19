@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 ***************************************************************************
     metaenum.py
@@ -59,9 +61,7 @@ def metaEnumFromType(enumClass, baseClass=None, raiseException=True):
             return metaEnumFromType(enumClass, baseClass, raiseException)
         except AttributeError:
             if raiseException:
-                raise ValueError(
-                    "Enum type does not implement baseClass method. Provide the base class as argument."
-                )
+                raise ValueError("Enum type does not implement baseClass method. Provide the base class as argument.")
 
     try:
         meta_object = baseClass.staticMetaObject
@@ -71,7 +71,7 @@ def metaEnumFromType(enumClass, baseClass=None, raiseException=True):
         META_ENUM_BY_ENUM_CLASS[enumClass] = meta_enum
     except AttributeError:
         if raiseException:
-            raise TypeError(f"could not get the metaEnum for {enumClass.__name__}")
+            raise TypeError("could not get the metaEnum for {}".format(enumClass.__name__))
         meta_enum = None
 
     return meta_enum

@@ -79,7 +79,7 @@ vector layers have been changed. Will request the parent dialog
 to re-synchronize with the variables.
 %End
 
- void symbolLevelsChanged() /Deprecated="Since 3.20. No longer emitted."/;
+ void symbolLevelsChanged() /Deprecated/;
 %Docstring
 Emitted when the symbol levels settings have been changed.
 
@@ -106,7 +106,7 @@ Creates widget to setup data-defined size legend.
 Returns newly created panel - may be ``None`` if it could not be opened. Ownership is transferred to the caller.
 %End
 
-    virtual void setSymbolLevels( const QList<QgsLegendSymbolItem> &levels, bool enabled );
+    virtual void setSymbolLevels( const QList< QgsLegendSymbolItem > &levels, bool enabled );
 %Docstring
 Sets the symbol levels for the renderer defined in the widget.
 
@@ -125,7 +125,7 @@ and help text for the associated property.
 %End
 
   protected slots:
-    void contextMenuViewCategories( QPoint p );
+    void  contextMenuViewCategories( QPoint p );
     void changeSymbolColor();
 %Docstring
 Change color of selected symbols
@@ -186,6 +186,7 @@ Utility classes for "en masse" size definition.
 #include "qgsrendererwidget.h"
 %End
   public:
+
     QgsDataDefinedValueDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer, const QString &label );
 %Docstring
 Constructor
@@ -220,6 +221,7 @@ Returns the vector layer associated with the widget.
     void dataDefinedChanged();
 
   protected:
+
     void init( int propertyKey ); // needed in children ctor to call virtual
 
   private:
@@ -289,6 +291,7 @@ class QgsDataDefinedWidthDialog : QgsDataDefinedValueDialog
     virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd );
 
 };
+
 
 
 /************************************************************************

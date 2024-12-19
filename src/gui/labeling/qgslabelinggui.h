@@ -25,9 +25,6 @@
 
 class QDialogButtonBox;
 
-class QgsMeshLayer;
-class QgsVectorTileLayer;
-
 #define SIP_NO_FILE
 
 ///@cond PRIVATE
@@ -37,25 +34,8 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     Q_OBJECT
 
   public:
-    /**
-     * Constructor for QgsLabelingGui, for configuring a vector \a layer labeling.
-     */
-    QgsLabelingGui( QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &settings, QWidget *parent = nullptr, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown );
-
-    /**
-     * Constructor for QgsLabelingGui, for configuring a mesh \a layer labeling.
-     */
-    QgsLabelingGui( QgsMeshLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &settings, QWidget *parent = nullptr, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown );
-
-    /**
-     * Constructor for QgsLabelingGui, for configuring a vector tile \a layer labeling.
-     */
-    QgsLabelingGui( QgsVectorTileLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &settings, QWidget *parent = nullptr, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown );
-
-    /**
-     * Generic constructor for QgsLabelingGui, when no layer is available.
-     */
-    QgsLabelingGui( QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &settings, QWidget *parent = nullptr );
+    QgsLabelingGui( QgsMapLayer *layer, QgsMapCanvas *mapCanvas, const QgsPalLayerSettings &settings, QWidget *parent = nullptr,
+                    Qgis::GeometryType geomType = Qgis::GeometryType::Unknown );
 
     QgsPalLayerSettings layerSettings();
 
@@ -68,7 +48,7 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
 
     void setLabelMode( LabelMode mode );
 
-    virtual void setLayer( QgsMapLayer *layer );
+    void setLayer( QgsMapLayer *layer );
 
     void setSettings( const QgsPalLayerSettings &settings );
 
@@ -83,33 +63,9 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     void saveFormat() override;
 
   protected:
-    /**
-     * Constructor for QgsLabelingGui, for subclasses.
-     *
-     * \warning The subclass constructor must call the init() and setLayer() methods.
-     *
-     * \param mapCanvas associated map canvas
-     * \param parent parent widget
-     * \param layer associated layer
-     *
-     * \note Not available in Python bindings
-     * \since QGIS 3.42
-     */
-    QgsLabelingGui( QgsMapCanvas *mapCanvas, QWidget *parent, QgsMapLayer *layer ) SIP_SKIP;
-
-    /**
-     * Initializes the widget.
-     *
-     * \since QGIS 3.42
-     */
-    void init();
-
     void blockInitSignals( bool block );
     void syncDefinedCheckboxFrame( QgsPropertyOverrideButton *ddBtn, QCheckBox *chkBx, QFrame *f );
     bool eventFilter( QObject *object, QEvent *event ) override;
-
-    //! Dialog mode
-    LabelMode mMode;
 
   private slots:
 
@@ -129,8 +85,11 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     void calloutTypeChanged();
 
   private:
+
     QgsPalLayerSettings mSettings;
+    LabelMode mMode;
     QgsFeature mPreviewFeature;
+    QgsMapCanvas *mCanvas = nullptr;
 
     QgsLabelObstacleSettings mObstacleSettings;
     QgsLabelLineSettings mLineSettings;
@@ -142,6 +101,7 @@ class GUI_EXPORT QgsLabelingGui : public QgsTextFormatWidget
     void updateCalloutWidget( QgsCallout *callout );
     void showObstacleSettings();
     void showLineAnchorSettings();
+
 };
 
 class GUI_EXPORT QgsLabelSettingsDialog : public QDialog
@@ -149,7 +109,9 @@ class GUI_EXPORT QgsLabelSettingsDialog : public QDialog
     Q_OBJECT
 
   public:
-    QgsLabelSettingsDialog( const QgsPalLayerSettings &settings, QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qgis::GeometryType geomType = Qgis::GeometryType::Unknown );
+
+    QgsLabelSettingsDialog( const QgsPalLayerSettings &settings, QgsVectorLayer *layer, QgsMapCanvas *mapCanvas, QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                            Qgis::GeometryType geomType = Qgis::GeometryType::Unknown );
 
     QgsPalLayerSettings settings() const { return mWidget->layerSettings(); }
 
@@ -159,13 +121,17 @@ class GUI_EXPORT QgsLabelSettingsDialog : public QDialog
     QDialogButtonBox *buttonBox() const;
 
   private:
+
     QgsLabelingGui *mWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
 
   private slots:
     void showHelp();
+
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSLABELINGGUI_H
+
+

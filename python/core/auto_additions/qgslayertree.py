@@ -6,5 +6,5 @@ try:
     QgsLayerTree.readXml = staticmethod(QgsLayerTree.readXml)
     QgsLayerTree.__signal_arguments__ = {'hasCustomLayerOrderChanged': ['hasCustomLayerOrder: bool']}
     QgsLayerTree.__group__ = ['layertree']
-except (NameError, AttributeError):
+except NameError:
     pass

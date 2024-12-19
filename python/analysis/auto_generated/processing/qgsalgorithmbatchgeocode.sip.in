@@ -57,6 +57,7 @@ Example
 #include "qgsalgorithmbatchgeocode.h"
 %End
   public:
+
     QgsBatchGeocodeAlgorithm( QgsGeocoderInterface *geocoder );
 %Docstring
 Constructor for QgsBatchGeocodeAlgorithm.
@@ -84,7 +85,7 @@ exists for the lifetime of this algorithm.
 
     virtual bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
-    virtual QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback );
+    virtual QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &, QgsProcessingFeedback *feedback );
 
     virtual QgsCoordinateReferenceSystem outputCrs( const QgsCoordinateReferenceSystem &inputCrs ) const;
 
@@ -94,6 +95,8 @@ exists for the lifetime of this algorithm.
 
 
 };
+
+
 
 
 /************************************************************************

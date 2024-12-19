@@ -33,6 +33,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new color swatch grid.
      * \param scheme QgsColorScheme for colors to show in grid
@@ -102,6 +103,7 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
     void hovered();
 
   protected:
+
     //reimplemented QWidget events
     void paintEvent( QPaintEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override;
@@ -184,11 +186,12 @@ class GUI_EXPORT QgsColorSwatchGrid : public QWidget
  * \see QgsColorSwatchGrid
  */
 
-class GUI_EXPORT QgsColorSwatchGridAction : public QWidgetAction
+class GUI_EXPORT QgsColorSwatchGridAction: public QWidgetAction
 {
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new color swatch grid action.
      * \param scheme QgsColorScheme for colors to show in grid

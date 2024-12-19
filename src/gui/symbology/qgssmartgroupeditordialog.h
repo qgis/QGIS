@@ -29,7 +29,7 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
     Q_OBJECT
 
   public:
-    QgsSmartGroupCondition( int id, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsSmartGroupCondition( int id,  QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! returns the constraint key
     QString constraint();
@@ -58,6 +58,7 @@ class GUI_EXPORT QgsSmartGroupCondition : public QWidget, private Ui::QgsSmartGr
 
   protected:
     int mConditionId;
+
 };
 
 

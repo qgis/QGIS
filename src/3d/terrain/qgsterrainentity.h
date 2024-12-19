@@ -75,9 +75,10 @@ class QgsTerrainEntity : public QgsChunkedEntity
     void onShowBoundingBoxesChanged();
     void invalidateMapImages();
     void onLayersChanged();
-    void onTerrainElevationOffsetChanged();
+    void onTerrainElevationOffsetChanged( float newOffset );
 
   private:
+
     void connectToLayersRepaintRequest();
 
     QgsTerrainTextureGenerator *mTextureGenerator = nullptr;
@@ -88,6 +89,7 @@ class QgsTerrainEntity : public QgsChunkedEntity
     //! layers that are currently being used for map rendering (and thus being watched for renderer updates)
     QList<QgsMapLayer *> mLayers;
 };
+
 
 
 //! Handles asynchronous updates of terrain's map images when layers change

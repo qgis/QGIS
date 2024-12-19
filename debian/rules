@@ -43,7 +43,7 @@ endif
 
 QT_PLUGINS_DIR = lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"bookworm jammy kinetic lunar mantic noble oracular"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"bookworm jammy kinetic lunar mantic noble"))
 	DISTRIBUTION := sid
 endif
 
@@ -101,8 +101,7 @@ CMAKE_OPTS := \
 	-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so \
 	-DWITH_HANA=TRUE \
 	-DWITH_EPT=TRUE \
-	-DSUBMIT_URL="https://cdash.orfeo-toolbox.org/submit.php?project=QGIS" \
-	-DPUSH_TO_CDASH=TRUE
+	-DSUBMIT_URL="https://cdash.orfeo-toolbox.org/submit.php?project=QGIS"
 
 ifneq ($(SHA),)
 	CMAKE_OPTS += -DSHA=$(SHA)
@@ -115,7 +114,7 @@ ifneq (,$(findstring ;$(GRASSVER);, ";7;8;"))
 		-DGRASS_PREFIX$(GRASSVER)=/usr/lib/$(GRASS)
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid kinetic lunar mantic noble oracular"))
+ifneq (,$(findstring $(DISTRIBUTION),"sid kinetic lunar mantic noble"))
 	CMAKE_OPTS += -DGDAL_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgdal.so
 endif
 
@@ -157,7 +156,7 @@ endif
 ifneq (,$(filter nocheck,$(DEB_BUILD_OPTIONS)))
 	CMAKE_OPTS += -DENABLE_TESTS=FALSE
 else
-	CMAKE_OPTS += -DENABLE_TESTS=TRUE -DDART_TESTING_TIMEOUT=60
+	CMAKE_OPTS += -DENABLE_TESTS=TRUE -DDART_TESTING_TIMEOUT=60 -DPUSH_TO_CDASH=TRUE
 endif
 
 CPPFLAGS := $(shell dpkg-buildflags --get CPPFLAGS)

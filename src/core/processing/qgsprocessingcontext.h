@@ -483,7 +483,7 @@ class CORE_EXPORT QgsProcessingContext
      * \note not available in Python bindings
      * \see setTransformErrorCallback()
      */
-    std::function< void( const QgsFeature & ) > transformErrorCallback() const SIP_SKIP { return mTransformErrorCallback; }
+    std::function< void( const QgsFeature & ) > transformErrorCallback() const { return mTransformErrorCallback; } SIP_SKIP
 
     /**
      * Returns the default encoding to use for newly created files.

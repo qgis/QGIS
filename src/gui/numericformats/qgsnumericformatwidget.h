@@ -36,6 +36,7 @@ class GUI_EXPORT QgsNumericFormatWidget : public QgsPanelWidget, public QgsExpre
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsNumericFormatWidget.
      */
@@ -76,7 +77,9 @@ class GUI_EXPORT QgsNumericFormatWidget : public QgsPanelWidget, public QgsExpre
     void changed();
 
   private:
+
     QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
+
 };
 
 
@@ -95,6 +98,7 @@ class GUI_EXPORT QgsBasicNumericFormatWidget : public QgsNumericFormatWidget, pr
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsBasicNumericFormatWidget, initially showing the specified \a format.
      */
@@ -106,8 +110,9 @@ class GUI_EXPORT QgsBasicNumericFormatWidget : public QgsNumericFormatWidget, pr
     QgsNumericFormat *format() final SIP_FACTORY;
 
   private:
-    std::unique_ptr<QgsBasicNumericFormat> mFormat;
+    std::unique_ptr< QgsBasicNumericFormat > mFormat;
     bool mBlockSignals = false;
+
 };
 
 #include "ui_qgsbearingnumericformatwidgetbase.h"
@@ -125,6 +130,7 @@ class GUI_EXPORT QgsBearingNumericFormatWidget : public QgsNumericFormatWidget, 
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsBearingNumericFormatWidget, initially showing the specified \a format.
      */
@@ -136,8 +142,9 @@ class GUI_EXPORT QgsBearingNumericFormatWidget : public QgsNumericFormatWidget, 
     QgsNumericFormat *format() final SIP_FACTORY;
 
   private:
-    std::unique_ptr<QgsBearingNumericFormat> mFormat;
+    std::unique_ptr< QgsBearingNumericFormat > mFormat;
     bool mBlockSignals = false;
+
 };
 
 
@@ -152,6 +159,7 @@ class GUI_EXPORT QgsBearingNumericFormatDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsBearingNumericFormatDialog, initially showing the specified \a format.
      */
@@ -165,6 +173,7 @@ class GUI_EXPORT QgsBearingNumericFormatDialog : public QDialog
     QgsBearingNumericFormat *format() SIP_FACTORY;
 
   private:
+
     QgsBearingNumericFormatWidget *mWidget = nullptr;
 };
 
@@ -184,6 +193,7 @@ class GUI_EXPORT QgsGeographicCoordinateNumericFormatWidget : public QgsNumericF
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsGeographicCoordinateNumericFormatWidget, initially showing the specified \a format.
      */
@@ -195,8 +205,9 @@ class GUI_EXPORT QgsGeographicCoordinateNumericFormatWidget : public QgsNumericF
     QgsNumericFormat *format() final SIP_FACTORY;
 
   private:
-    std::unique_ptr<QgsGeographicCoordinateNumericFormat> mFormat;
+    std::unique_ptr< QgsGeographicCoordinateNumericFormat > mFormat;
     bool mBlockSignals = false;
+
 };
 
 
@@ -211,6 +222,7 @@ class GUI_EXPORT QgsGeographicCoordinateNumericFormatDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsGeographicCoordinateNumericFormatDialog, initially showing the specified \a format.
      */
@@ -224,8 +236,10 @@ class GUI_EXPORT QgsGeographicCoordinateNumericFormatDialog : public QDialog
     QgsGeographicCoordinateNumericFormat *format() SIP_FACTORY;
 
   private:
+
     QgsGeographicCoordinateNumericFormatWidget *mWidget = nullptr;
 };
+
 
 
 #include "ui_qgscurrencynumericformatwidgetbase.h"
@@ -243,6 +257,7 @@ class GUI_EXPORT QgsCurrencyNumericFormatWidget : public QgsNumericFormatWidget,
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsCurrencyNumericFormatWidget, initially showing the specified \a format.
      */
@@ -254,8 +269,9 @@ class GUI_EXPORT QgsCurrencyNumericFormatWidget : public QgsNumericFormatWidget,
     QgsNumericFormat *format() final SIP_FACTORY;
 
   private:
-    std::unique_ptr<QgsCurrencyNumericFormat> mFormat;
+    std::unique_ptr< QgsCurrencyNumericFormat > mFormat;
     bool mBlockSignals = false;
+
 };
 
 
@@ -274,6 +290,7 @@ class GUI_EXPORT QgsPercentageNumericFormatWidget : public QgsNumericFormatWidge
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPercentageNumericFormatWidget, initially showing the specified \a format.
      */
@@ -285,9 +302,11 @@ class GUI_EXPORT QgsPercentageNumericFormatWidget : public QgsNumericFormatWidge
     QgsNumericFormat *format() final SIP_FACTORY;
 
   private:
-    std::unique_ptr<QgsPercentageNumericFormat> mFormat;
+    std::unique_ptr< QgsPercentageNumericFormat > mFormat;
     bool mBlockSignals = false;
+
 };
+
 
 
 #include "ui_qgsscientificnumericformatwidgetbase.h"
@@ -305,6 +324,7 @@ class GUI_EXPORT QgsScientificNumericFormatWidget : public QgsNumericFormatWidge
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsScientificNumericFormatWidget, initially showing the specified \a format.
      */
@@ -316,8 +336,9 @@ class GUI_EXPORT QgsScientificNumericFormatWidget : public QgsNumericFormatWidge
     QgsNumericFormat *format() final SIP_FACTORY;
 
   private:
-    std::unique_ptr<QgsScientificNumericFormat> mFormat;
+    std::unique_ptr< QgsScientificNumericFormat > mFormat;
     bool mBlockSignals = false;
+
 };
 
 
@@ -334,6 +355,7 @@ class GUI_EXPORT QgsFractionNumericFormatWidget : public QgsNumericFormatWidget,
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsFractionNumericFormatWidget, initially showing the specified \a format.
      */
@@ -345,8 +367,9 @@ class GUI_EXPORT QgsFractionNumericFormatWidget : public QgsNumericFormatWidget,
     QgsNumericFormat *format() final SIP_FACTORY;
 
   private:
-    std::unique_ptr<QgsFractionNumericFormat> mFormat;
+    std::unique_ptr< QgsFractionNumericFormat > mFormat;
     bool mBlockSignals = false;
+
 };
 
 
@@ -363,6 +386,7 @@ class GUI_EXPORT QgsExpressionBasedNumericFormatWidget : public QgsNumericFormat
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsExpressionBasedNumericFormatWidget, initially showing the specified \a format.
      */
@@ -376,7 +400,8 @@ class GUI_EXPORT QgsExpressionBasedNumericFormatWidget : public QgsNumericFormat
     QgsNumericFormat *format() final SIP_FACTORY;
 
   private:
-    std::unique_ptr<QgsExpressionBasedNumericFormat> mFormat;
+    std::unique_ptr< QgsExpressionBasedNumericFormat > mFormat;
     bool mBlockSignals = false;
+
 };
 #endif // QGSNUMERICFORMATWIDGET_H

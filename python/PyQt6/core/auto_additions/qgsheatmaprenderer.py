@@ -3,5 +3,5 @@ try:
     QgsHeatmapRenderer.create = staticmethod(QgsHeatmapRenderer.create)
     QgsHeatmapRenderer.convertFromRenderer = staticmethod(QgsHeatmapRenderer.convertFromRenderer)
     QgsHeatmapRenderer.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

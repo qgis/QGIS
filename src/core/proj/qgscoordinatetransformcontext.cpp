@@ -65,11 +65,6 @@ bool QgsCoordinateTransformContext::operator==( const QgsCoordinateTransformCont
   return equal;
 }
 
-bool QgsCoordinateTransformContext::operator!=( const QgsCoordinateTransformContext &rhs ) const
-{
-  return !( *this == rhs );
-}
-
 void QgsCoordinateTransformContext::clear()
 {
   d.detach();

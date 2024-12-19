@@ -30,7 +30,9 @@
  */
 class QgsMultiRingConstantBufferAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
+
   public:
+
     QgsMultiRingConstantBufferAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -44,18 +46,15 @@ class QgsMultiRingConstantBufferAlgorithm : public QgsProcessingFeatureBasedAlgo
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
+
     QString outputName() const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
     Qgis::ProcessingSourceType outputLayerType() const override { return Qgis::ProcessingSourceType::VectorPolygon; }
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     QgsFeatureSink::SinkFlags sinkFlags() const override;
-    Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override
-    {
-      Q_UNUSED( inputWkbType )
-      return Qgis::WkbType::MultiPolygon;
-    }
+    Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override { Q_UNUSED( inputWkbType ) return Qgis::WkbType::MultiPolygon; }
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     int mRingsNumber = 0;
@@ -65,8 +64,11 @@ class QgsMultiRingConstantBufferAlgorithm : public QgsProcessingFeatureBasedAlgo
     double mDistance = 0.0;
     bool mDynamicDistance = false;
     QgsProperty mDistanceProperty;
+
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMMULTIRINGCONSTANTBUFFER_H
+
+

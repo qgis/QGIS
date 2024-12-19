@@ -28,7 +28,7 @@
  * color blindness modes.
  */
 
-class GUI_EXPORT QgsPreviewEffect : public QGraphicsEffect
+class GUI_EXPORT QgsPreviewEffect: public QGraphicsEffect
 {
     Q_OBJECT
 
@@ -62,6 +62,7 @@ class GUI_EXPORT QgsPreviewEffect : public QGraphicsEffect
     void draw( QPainter *painter ) override;
 
   private:
+
     PreviewMode mMode;
 
     QRgb simulateColorBlindness( QRgb &originalColor, PreviewMode type );

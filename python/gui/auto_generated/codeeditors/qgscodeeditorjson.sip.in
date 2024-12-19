@@ -23,6 +23,7 @@ code autocompletion.
 #include "qgscodeeditorjson.h"
 %End
   public:
+
     QgsCodeEditorJson( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCodeEditorJson
@@ -33,6 +34,7 @@ Constructor for QgsCodeEditorJson
 
   protected:
     virtual void initializeLexer();
+
 
 };
 

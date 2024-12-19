@@ -19,7 +19,7 @@ from qgis.core import (
     QgsRendererCategory,
     QgsMarkerSymbol,
     QgsMapLayerLegend,
-    QgsLayerTreeFilterProxyModel,
+    QgsLayerTreeFilterProxyModel
 )
 from qgis.testing import start_app, QgisTestCase
 from utilities import unitTestDataPath
@@ -37,11 +37,16 @@ class TestQgsLayerTreeFilterProxyModel(QgisTestCase):
 
         # setup a dummy project
         self.project = QgsProject()
-        self.layer = QgsVectorLayer("Point?field=fldtxt:string", "layer1", "memory")
-        self.layer2 = QgsVectorLayer("Point?field=fldtxt:string", "layer2", "memory")
-        self.layer3 = QgsVectorLayer("Point?field=fldtxt:string", "layer3", "memory")
-        self.layer4 = QgsVectorLayer("Point?field=fldtxt:string", "layer4", "memory")
-        self.layer5 = QgsVectorLayer("Point?field=fldtxt:string", "layer5", "memory")
+        self.layer = QgsVectorLayer("Point?field=fldtxt:string",
+                                    "layer1", "memory")
+        self.layer2 = QgsVectorLayer("Point?field=fldtxt:string",
+                                     "layer2", "memory")
+        self.layer3 = QgsVectorLayer("Point?field=fldtxt:string",
+                                     "layer3", "memory")
+        self.layer4 = QgsVectorLayer("Point?field=fldtxt:string",
+                                     "layer4", "memory")
+        self.layer5 = QgsVectorLayer("Point?field=fldtxt:string",
+                                     "layer5", "memory")
         self.project.addMapLayers([self.layer, self.layer2, self.layer3])
         self.model = QgsLayerTreeModel(self.project.layerTreeRoot())
 
@@ -58,15 +63,14 @@ class TestQgsLayerTreeFilterProxyModel(QgisTestCase):
         for r in range(self.model.rowCount()):
             items.append(self.model.data(self.model.index(r, 0)))
 
-        self.assertEqual(items, ["layer1", "layer2", "layer3"])
+        self.assertEqual(items, ['layer1', 'layer2', 'layer3'])
 
         proxy_items = []
         for r in range(proxy_model.rowCount()):
             proxy_items.append(
-                proxy_model.data(proxy_model.index(r, 0), Qt.ItemDataRole.DisplayRole)
-            )
+                proxy_model.data(proxy_model.index(r, 0), Qt.ItemDataRole.DisplayRole))
 
-        self.assertEqual(proxy_items, ["layer1", "layer2", "layer3"])
+        self.assertEqual(proxy_items, ['layer1', 'layer2', 'layer3'])
 
         self.layer3.setFlags(self.layer.Private)
 
@@ -78,15 +82,14 @@ class TestQgsLayerTreeFilterProxyModel(QgisTestCase):
         proxy_items = []
         for r in range(proxy_model.rowCount()):
             proxy_items.append(
-                proxy_model.data(proxy_model.index(r, 0), Qt.ItemDataRole.DisplayRole)
-            )
+                proxy_model.data(proxy_model.index(r, 0), Qt.ItemDataRole.DisplayRole))
 
-        self.assertEqual(proxy_items, ["layer1", "layer2"])
+        self.assertEqual(proxy_items, ['layer1', 'layer2'])
 
         proxy_model.setShowPrivateLayers(True)
 
         self.assertEqual(proxy_model.rowCount(), 3)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

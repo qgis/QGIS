@@ -110,7 +110,7 @@ The default implementation returns an empty string.
 .. versionadded:: 3.8.1
 %End
 
- virtual QString visibleName() /Deprecated="Since 3.10. Use QgsProjectStorageGuiProvider for GUI-related project storage functionality."/;
+ virtual QString visibleName() /Deprecated/;
 %Docstring
 Returns human-readable name of the storage. Used as the menu item text in QGIS. Empty name
 indicates that the storage does not implement GUI support (:py:func:`~QgsProjectStorage.showLoadGui` and :py:func:`~QgsProjectStorage.showSaveGui`).
@@ -121,7 +121,7 @@ The name may be translatable and ideally unique as well.
    Use :py:class:`QgsProjectStorageGuiProvider` for GUI-related project storage functionality.
 %End
 
- virtual QString showLoadGui() /Deprecated="Since 3.10. Use QgsProjectStorageGuiProvider for GUI-related project storage functionality."/;
+ virtual QString showLoadGui() /Deprecated/;
 %Docstring
 Opens GUI to allow user to select a project to be loaded (GUI specific to this storage type).
 Returns project URI if user has picked a project or empty string if the GUI was canceled.
@@ -131,7 +131,7 @@ Returns project URI if user has picked a project or empty string if the GUI was 
    Use :py:class:`QgsProjectStorageGuiProvider` for GUI-related project storage functionality.
 %End
 
- virtual QString showSaveGui() /Deprecated="Since 3.10. Use QgsProjectStorageGuiProvider for GUI-related project storage functionality."/;
+ virtual QString showSaveGui() /Deprecated/;
 %Docstring
 Opens GUI to allow user to select where a project should be saved (GUI specific to this storage type).
 Returns project URI if user has picked a destination or empty string if the GUI was canceled.

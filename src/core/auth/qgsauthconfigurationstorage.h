@@ -95,10 +95,9 @@ class CORE_EXPORT QgsAuthConfigurationStorage: public QObject
     /**
      * Initializes the storage.
      * \returns TRUE if the storage was successfully initialized, FALSE otherwise.
-     * If the storage is already initialized, this method does nothing and returns TRUE.
-     *
-     * \note The default implementation does nothing and returns TRUE.
-     * This method is called by the authentication manager when the storage is added to the manager.
+     *         If the storage is already initialized, this method does nothing and returns TRUE.
+     * \note   The default implementation does nothing and returns TRUE.
+     *         This method is called by the authentication manager when the storage is added to the manager.
      */
     virtual bool initialize() { return true; }
 

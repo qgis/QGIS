@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsgpsconnection.h"
-#include "moc_qgsgpsconnection.cpp"
 #include "qgssettingsentryenumflag.h"
 #include "qgssettingsentryimpl.h"
 #include "qgssettingstree.h"

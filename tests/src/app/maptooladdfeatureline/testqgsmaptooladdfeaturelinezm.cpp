@@ -47,7 +47,7 @@ namespace QTest
     QByteArray ba = geom.asWkt().toLatin1();
     return qstrdup( ba.data() );
   }
-} // namespace QTest
+}
 
 
 /**
@@ -61,8 +61,8 @@ class TestQgsMapToolAddFeatureLineZM : public QObject
     TestQgsMapToolAddFeatureLineZM();
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void testZM();
 
@@ -109,7 +109,7 @@ void TestQgsMapToolAddFeatureLineZM::initTestCase()
 
   mLayerLineZM->startEditing();
   mLayerLineZM->addFeature( lineF );
-  QCOMPARE( mLayerLineZM->featureCount(), ( long ) 1 );
+  QCOMPARE( mLayerLineZM->featureCount(), ( long )1 );
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
@@ -182,6 +182,7 @@ void TestQgsMapToolAddFeatureLineZM::testZM()
   QCOMPARE( mLayerLineZM->getFeature( newFid ).geometry(), QgsGeometry::fromWkt( wkt ) );
 
   mLayerLineZM->undoStack()->undo();
+
 }
 
 QGSTEST_MAIN( TestQgsMapToolAddFeatureLineZM )

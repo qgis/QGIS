@@ -22,8 +22,6 @@
 #include "qgis_sip.h"
 #include "qgis_gui.h"
 
-SIP_IF_MODULE( HAVE_QSCI_SIP )
-
 /**
  * \ingroup gui
  * \class QgsJsonEditWidget
@@ -35,19 +33,20 @@ class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidg
     Q_OBJECT
 
   public:
+
     //! View mode, text or tree.
     enum class View : int
     {
       Text = 0, //!< JSON data displayed as text.
-      Tree = 1  //!< JSON data displayed as tree. Tree view is disabled for invalid JSON data.
+      Tree = 1 //!< JSON data displayed as tree. Tree view is disabled for invalid JSON data.
     };
 
     //! Format mode in the text view
     enum class FormatJson : int
     {
       Indented = 0, //!< JSON data formatted with regular indentation
-      Compact = 1,  //!< JSON data formatted as a compact one line string
-      Disabled = 2  //!< JSON data is not formatted
+      Compact = 1, //!< JSON data formatted as a compact one line string
+      Disabled = 2 //!< JSON data is not formatted
     };
 
     /**
@@ -104,6 +103,7 @@ class GUI_EXPORT QgsJsonEditWidget : public QWidget, private Ui::QgsJsonEditWidg
     void codeEditorJsonDwellEnd( int position, int x, int y );
 
   private:
+
     enum class TreeWidgetColumn : int
     {
       Key = 0,

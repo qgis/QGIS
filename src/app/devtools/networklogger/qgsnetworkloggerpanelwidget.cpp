@@ -17,7 +17,6 @@
 #include "qgsguiutils.h"
 #include "qgsjsonutils.h"
 #include "qgsnetworkloggerpanelwidget.h"
-#include "moc_qgsnetworkloggerpanelwidget.cpp"
 #include "qgsnetworkloggernode.h"
 #include "qgsnetworklogger.h"
 #include "qgssettings.h"
@@ -51,20 +50,22 @@ QgsNetworkLoggerTreeView::QgsNetworkLoggerTreeView( QgsNetworkLogger *logger, QW
   setContextMenuPolicy( Qt::CustomContextMenu );
   connect( this, &QgsNetworkLoggerTreeView::customContextMenuRequested, this, &QgsNetworkLoggerTreeView::contextMenu );
 
-  connect( verticalScrollBar(), &QAbstractSlider::sliderMoved, this, [this]( int value ) {
+  connect( verticalScrollBar(), &QAbstractSlider::sliderMoved, this, [this]( int value )
+  {
     if ( value == verticalScrollBar()->maximum() )
       mAutoScroll = true;
     else
       mAutoScroll = false;
   } );
 
-  connect( mLogger, &QAbstractItemModel::rowsInserted, this, [=] {
+  connect( mLogger, &QAbstractItemModel::rowsInserted, this, [ = ]
+  {
     if ( mLogger->rowCount() > ( QgsNetworkLogger::MAX_LOGGED_REQUESTS * 1.2 ) ) // 20 % more as buffer
     {
       // never trim expanded nodes
       const int toTrim = mLogger->rowCount() - QgsNetworkLogger::MAX_LOGGED_REQUESTS;
       int trimmed = 0;
-      QList<int> rowsToTrim;
+      QList< int > rowsToTrim;
       rowsToTrim.reserve( toTrim );
       for ( int i = 0; i < mLogger->rowCount(); ++i )
       {
@@ -130,7 +131,7 @@ void QgsNetworkLoggerTreeView::contextMenu( QPoint point )
   {
     mMenu->clear();
 
-    const QList<QAction *> actions = mLogger->actions( modelIndex, mMenu );
+    const QList< QAction * > actions = mLogger->actions( modelIndex, mMenu );
     mMenu->addActions( actions );
     if ( !mMenu->actions().empty() )
     {
@@ -183,12 +184,15 @@ QgsNetworkLoggerPanelWidget::QgsNetworkLoggerPanelWidget( QgsNetworkLogger *logg
   connect( mActionShowSuccessful, &QAction::toggled, mTreeView, &QgsNetworkLoggerTreeView::setShowSuccessful );
   connect( mActionShowCached, &QAction::toggled, mTreeView, &QgsNetworkLoggerTreeView::setShowCached );
   connect( mActionClear, &QAction::triggered, mLogger, &QgsNetworkLogger::clear );
-  connect( mActionRecord, &QAction::toggled, this, [=]( bool enabled ) {
+  connect( mActionRecord, &QAction::toggled, this, [ = ]( bool enabled )
+  {
     QgsSettings().setValue( QStringLiteral( "logNetworkRequests" ), enabled, QgsSettings::App );
     mLogger->enableLogging( enabled );
   } );
-  connect( mActionSaveLog, &QAction::triggered, this, [=]() {
-    if ( QMessageBox::warning( this, tr( "Save Network Log" ), tr( "Security warning: network logs may contain sensitive data including usernames or passwords. Treat this log as confidential and be careful who you share it with. Continue?" ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+  connect( mActionSaveLog, &QAction::triggered, this, [ = ]()
+  {
+    if ( QMessageBox::warning( this, tr( "Save Network Log" ),
+                               tr( "Security warning: network logs may contain sensitive data including usernames or passwords. Treat this log as confidential and be careful who you share it with. Continue?" ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
       return;
 
     const QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save Network Log" ), QDir::homePath(), tr( "Log files" ) + " (*.json)" );
@@ -226,7 +230,8 @@ QgsNetworkLoggerPanelWidget::QgsNetworkLoggerPanelWidget( QgsNetworkLogger *logg
 
   mToolbar->addSeparator();
   QCheckBox *disableCacheCheck = new QCheckBox( tr( "Disable cache" ) );
-  connect( disableCacheCheck, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( disableCacheCheck, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
     // note -- we deliberately do NOT store this as a permanent setting in QSettings
     // as it is designed to be a temporary debugging tool only and we don't want
     // users to accidentally leave this enabled and cause unnecessary server load...

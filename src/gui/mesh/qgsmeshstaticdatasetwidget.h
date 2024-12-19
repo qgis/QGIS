@@ -33,7 +33,7 @@ class QgsMeshDataProvider;
  * \brief List model for dataset contained in dataset group,
  * used to display by time dataset in widget
  */
-class QgsMeshDatasetListModel : public QAbstractListModel
+class QgsMeshDatasetListModel: public QAbstractListModel
 {
     Q_OBJECT
   public:
@@ -59,7 +59,7 @@ class QgsMeshDatasetListModel : public QAbstractListModel
  *
  * \brief A widget for setup of the static dataset of a mesh layer.
  */
-class GUI_EXPORT QgsMeshStaticDatasetWidget : public QWidget, private Ui::QgsMeshStaticDatasetWidget
+class GUI_EXPORT QgsMeshStaticDatasetWidget  : public QWidget, private Ui::QgsMeshStaticDatasetWidget
 {
     Q_OBJECT
   public:

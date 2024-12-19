@@ -160,7 +160,7 @@ QList<int> TriDecorator::surroundingTriangles( int pointno )
   }
   else
   {
-    return QList<int>();
+    return QList< int >();
   }
 }
 

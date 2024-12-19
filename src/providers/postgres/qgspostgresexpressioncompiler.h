@@ -24,9 +24,11 @@
 class QgsPostgresExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
+
     explicit QgsPostgresExpressionCompiler( QgsPostgresFeatureSource *source, bool ignoreStaticNodes = false );
 
   protected:
+
     QString quotedIdentifier( const QString &identifier ) override;
     QString quotedValue( const QVariant &value, bool &ok ) override;
     Result compileNode( const QgsExpressionNode *node, QString &str ) override;

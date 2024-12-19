@@ -32,7 +32,7 @@ class QgsPointCloudRgbRenderer;
 
 ///@cond PRIVATE
 
-class GUI_EXPORT QgsPointCloudRgbRendererWidget : public QgsPointCloudRendererWidget, private Ui::QgsPointCloudRgbRendererWidgetBase
+class GUI_EXPORT QgsPointCloudRgbRendererWidget: public QgsPointCloudRendererWidget, private Ui::QgsPointCloudRgbRendererWidgetBase
 {
     Q_OBJECT
 
@@ -68,6 +68,7 @@ class GUI_EXPORT QgsPointCloudRgbRendererWidget : public QgsPointCloudRendererWi
 
     bool mBlockChangedSignal = false;
     int mDisableMinMaxWidgetRefresh = 0;
+
 };
 
 ///@endcond

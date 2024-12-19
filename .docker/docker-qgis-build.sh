@@ -18,9 +18,6 @@ ccache -M 2.0G
 # export CCACHE_LOGFILE=/tmp/cache.debug
 ccache -z
 
-# To make ccache work properly with precompiled headers
-ccache --set-config sloppiness=pch_defines,time_macros,include_file_mtime,include_file_ctime
-
 ##############################
 # Variables for output styling
 ##############################
@@ -70,12 +67,6 @@ if [[ ${WITH_GRASS7} == "ON" || ${WITH_GRASS8} == "ON" ]]; then
   )
 fi
 
-if [[ ${BUILD_WITH_QT6} = "ON" ]]; then
-  CMAKE_EXTRA_ARGS+=(
-    "-DUSE_ALTERNATE_LINKER=mold"
-  )
-fi
-
 cmake \
  -GNinja \
  -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
@@ -98,7 +89,6 @@ cmake \
  -DENABLE_MSSQLTEST=${WITH_QT5} \
  -DENABLE_HANATEST=${WITH_QT5} \
  -DENABLE_ORACLETEST=${WITH_QT5} \
- -DENABLE_UNITY_BUILDS=${ENABLE_UNITY_BUILDS} \
  -DPUSH_TO_CDASH=${PUSH_TO_CDASH} \
  -DWITH_HANA=ON \
  -DWITH_QGIS_PROCESS=ON \
@@ -114,9 +104,10 @@ cmake \
  -DWITH_QTSERIALPORT=ON \
  -DWITH_QTWEBKIT=${WITH_QT5} \
  -DWITH_QTWEBENGINE=${WITH_QTWEBENGINE} \
+ -DWITH_OAUTH2_PLUGIN=${WITH_QT5} \
  -DWITH_PDF4QT=${WITH_PDF4QT} \
- -DORACLE_INCLUDEDIR=/instantclient_21_16/sdk/include/ \
- -DORACLE_LIBDIR=/instantclient_21_16/ \
+ -DORACLE_INCLUDEDIR=/instantclient_19_9/sdk/include/ \
+ -DORACLE_LIBDIR=/instantclient_19_9/ \
  -DDISABLE_DEPRECATED=ON \
  -DPYTHON_TEST_WRAPPER="timeout -sSIGSEGV 55s" \
  -DCXX_EXTRA_FLAGS="${CLANG_WARNINGS}" \

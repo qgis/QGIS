@@ -18,7 +18,6 @@
 
 #include "qgslogger.h"
 #include "qgsnetworkreplyparser.h"
-#include "moc_qgsnetworkreplyparser.cpp"
 
 #include <QNetworkReply>
 #include <QObject>

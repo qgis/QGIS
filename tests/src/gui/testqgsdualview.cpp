@@ -41,10 +41,10 @@ class TestQgsDualView : public QObject
     TestQgsDualView() = default;
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
+    void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void init(); // will be called before each testfunction is executed.
+    void cleanup(); // will be called after every testfunction.
 
     void testColumnCount();
 
@@ -92,7 +92,8 @@ void TestQgsDualView::initTestCase()
   //
   const QString myPointsFileName = mTestDataDir + "points.shp";
   const QFileInfo myPointFileInfo( myPointsFileName );
-  mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
+                                     myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   mCanvas = new QgsMapCanvas();
 }
@@ -151,13 +152,13 @@ void TestQgsDualView::testAttributeTableConfig()
 void TestQgsDualView::testFilterSelected()
 {
   QgsFeature feature;
-  QList<QgsFeatureId> ids;
+  QList< QgsFeatureId > ids;
   QgsFeatureIterator it = mPointsLayer->getFeatures( QgsFeatureRequest().setOrderBy( QgsFeatureRequest::OrderBy() << QgsFeatureRequest::OrderByClause( QStringLiteral( "Heading" ) ) ) );
   while ( it.nextFeature( feature ) )
     ids << feature.id();
 
   // select some features
-  QList<QgsFeatureId> selected;
+  QList< QgsFeatureId > selected;
   selected << ids.at( 1 ) << ids.at( 3 );
   mPointsLayer->selectByIds( qgis::listToSet( selected ) );
 
@@ -180,6 +181,7 @@ void TestQgsDualView::testFilterSelected()
 
 void TestQgsDualView::testSelectAll()
 {
+
   QEventLoop loop;
   connect( qobject_cast<QgsAttributeTableFilterModel *>( mDualView->mFilterModel ), &QgsAttributeTableFilterModel::visibleReloaded, &loop, &QEventLoop::quit );
   mDualView->setFilterMode( QgsAttributeTableFilterModel::ShowVisible );
@@ -227,22 +229,22 @@ void TestQgsDualView::testSort()
 
   QStringList headings;
   headings << QStringLiteral( "0" )
-           << QStringLiteral( "0" )
-           << QStringLiteral( "12" )
-           << QStringLiteral( "34" )
-           << QStringLiteral( "80" )
-           << QStringLiteral( "85" )
-           << QStringLiteral( "90" )
-           << QStringLiteral( "90" )
-           << QStringLiteral( "95" )
-           << QStringLiteral( "100" )
-           << QStringLiteral( "140" )
-           << QStringLiteral( "160" )
-           << QStringLiteral( "180" )
-           << QStringLiteral( "240" )
-           << QStringLiteral( "270" )
-           << QStringLiteral( "300" )
-           << QStringLiteral( "340" );
+           <<  QStringLiteral( "0" )
+           <<  QStringLiteral( "12" )
+           <<  QStringLiteral( "34" )
+           <<  QStringLiteral( "80" )
+           <<  QStringLiteral( "85" )
+           <<  QStringLiteral( "90" )
+           <<  QStringLiteral( "90" )
+           <<  QStringLiteral( "95" )
+           <<  QStringLiteral( "100" )
+           <<  QStringLiteral( "140" )
+           <<  QStringLiteral( "160" )
+           <<  QStringLiteral( "180" )
+           <<  QStringLiteral( "240" )
+           <<  QStringLiteral( "270" )
+           <<  QStringLiteral( "300" )
+           <<  QStringLiteral( "340" );
 
   mDualView->setSortExpression( QStringLiteral( "Heading" ) );
 
@@ -257,8 +259,8 @@ void TestQgsDualView::testAttributeFormSharedValueScanning()
 {
   // test QgsAttributeForm::scanForEqualAttributes
 
-  QSet<int> mixedValueFields;
-  QHash<int, QVariant> fieldSharedValues;
+  QSet< int > mixedValueFields;
+  QHash< int, QVariant > fieldSharedValues;
 
   // make a temporary layer to check through
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer&field=col4:integer" ), QStringLiteral( "test" ), QStringLiteral( "memory" ) );
@@ -291,7 +293,7 @@ void TestQgsDualView::testAttributeFormSharedValueScanning()
 
   form.scanForEqualAttributes( it, mixedValueFields, fieldSharedValues );
 
-  QCOMPARE( mixedValueFields, QSet<int>() << 1 << 3 );
+  QCOMPARE( mixedValueFields, QSet< int >() << 1 << 3 );
   QCOMPARE( fieldSharedValues.value( 0 ).toInt(), 1 );
   QCOMPARE( fieldSharedValues.value( 2 ).toInt(), 3 );
 
@@ -306,7 +308,7 @@ void TestQgsDualView::testAttributeFormSharedValueScanning()
   it = layer->getFeatures();
 
   form.scanForEqualAttributes( it, mixedValueFields, fieldSharedValues );
-  QCOMPARE( mixedValueFields, QSet<int>() << 0 << 1 << 2 << 3 );
+  QCOMPARE( mixedValueFields, QSet< int >() << 0 << 1 << 2 << 3 );
   QVERIFY( fieldSharedValues.isEmpty() );
 
   // single feature, all attributes should be shared
@@ -322,7 +324,7 @@ void TestQgsDualView::testAttributeFormSharedValueScanning()
 void TestQgsDualView::testNoGeom()
 {
   //test that both the master model and cache for the dual view either both request geom or both don't request geom
-  std::unique_ptr<QgsDualView> dv( new QgsDualView() );
+  std::unique_ptr< QgsDualView > dv( new QgsDualView() );
 
   // request with geometry
   QgsFeatureRequest req;
@@ -436,31 +438,11 @@ void TestQgsDualView::testDuplicateField()
 
   const QList<QgsAttributeFormEditorWidget *> formEditorWidgets = dualView.mAttributeForm->mFormEditorWidgets.values( 0 );
 
-  // reset mIsChanged state
-  formEditorWidgets[0]->changesCommitted();
-  formEditorWidgets[1]->changesCommitted();
-  QVERIFY( !formEditorWidgets[0]->hasChanged() );
-  QVERIFY( !formEditorWidgets[1]->hasChanged() );
-
   formEditorWidgets[0]->editorWidget()->setValues( 20, QVariantList() );
-  QCOMPARE( formEditorWidgets[0]->editorWidget()->value().toInt(), 20 );
-  QCOMPARE( formEditorWidgets[1]->editorWidget()->value().toInt(), 20 );
-  QVERIFY( formEditorWidgets[0]->hasChanged() );
-  QVERIFY( formEditorWidgets[1]->hasChanged() );
   ft = layer->getFeature( ft.id() );
   QCOMPARE( ft.attribute( QStringLiteral( "col0" ) ).toInt(), 20 );
 
-  // reset mIsChanged state
-  formEditorWidgets[0]->changesCommitted();
-  formEditorWidgets[1]->changesCommitted();
-  QVERIFY( !formEditorWidgets[0]->hasChanged() );
-  QVERIFY( !formEditorWidgets[1]->hasChanged() );
-
   formEditorWidgets[1]->editorWidget()->setValues( 21, QVariantList() );
-  QCOMPARE( formEditorWidgets[0]->editorWidget()->value().toInt(), 21 );
-  QCOMPARE( formEditorWidgets[1]->editorWidget()->value().toInt(), 21 );
-  QVERIFY( formEditorWidgets[0]->hasChanged() );
-  QVERIFY( formEditorWidgets[1]->hasChanged() );
   ft = layer->getFeature( ft.id() );
   QCOMPARE( ft.attribute( QStringLiteral( "col0" ) ).toInt(), 21 );
 

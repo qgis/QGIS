@@ -29,7 +29,7 @@ class QgsPointDisplacementRenderer;
  * \ingroup gui
  * \class QgsPointDisplacementRendererWidget
  */
-class GUI_EXPORT QgsPointDisplacementRendererWidget : public QgsRendererWidget, private Ui::QgsPointDisplacementRendererWidgetBase
+class GUI_EXPORT QgsPointDisplacementRendererWidget: public QgsRendererWidget, private Ui::QgsPointDisplacementRendererWidgetBase
 {
     Q_OBJECT
   public:
@@ -43,7 +43,7 @@ class GUI_EXPORT QgsPointDisplacementRendererWidget : public QgsRendererWidget, 
     QgsExpressionContext createExpressionContext() const override;
 
   private:
-    std::unique_ptr<QgsPointDisplacementRenderer> mRenderer;
+    std::unique_ptr< QgsPointDisplacementRenderer > mRenderer;
 
     void blockAllSignals( bool block );
     void setupBlankUi( const QString &layerName );

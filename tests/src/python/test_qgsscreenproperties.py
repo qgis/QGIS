@@ -5,13 +5,15 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "22/06/2023"
-__copyright__ = "Copyright 2023, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '22/06/2023'
+__copyright__ = 'Copyright 2023, The QGIS Project'
 
 from qgis.PyQt.QtGui import QGuiApplication
-from qgis.core import QgsScreenProperties, QgsRenderContext
+from qgis.core import (
+    QgsScreenProperties,
+    QgsRenderContext
+)
 from qgis.testing import unittest, start_app
 
 qgis_app = start_app()
@@ -56,10 +58,14 @@ class TestQgsScreenProperties(unittest.TestCase):
         if not screen:
             return
 
-        properties = QgsScreenProperties(screen)
+        properties = QgsScreenProperties(
+            screen
+        )
         self.assertTrue(properties.isValid())
-        self.assertEqual(properties.devicePixelRatio(), screen.devicePixelRatio())
-        self.assertEqual(properties.physicalDpi(), screen.physicalDotsPerInch())
+        self.assertEqual(properties.devicePixelRatio(),
+                         screen.devicePixelRatio())
+        self.assertEqual(properties.physicalDpi(),
+                         screen.physicalDotsPerInch())
 
     def test_update_render_context(self):
         context = QgsRenderContext()
@@ -84,5 +90,5 @@ class TestQgsScreenProperties(unittest.TestCase):
         self.assertAlmostEqual(context.scaleFactor(), 7.87401, 3)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

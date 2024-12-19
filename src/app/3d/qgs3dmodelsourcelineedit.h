@@ -32,6 +32,7 @@ class Qgs3DModelSourceLineEdit : public QgsAbstractFileContentSourceLineEdit
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for Qgs3DModelSourceLineEdit, with the specified \a parent widget.
      */
@@ -41,7 +42,7 @@ class Qgs3DModelSourceLineEdit : public QgsAbstractFileContentSourceLineEdit
 
   private:
 #ifndef SIP_RUN
-    ///@cond PRIVATE
+///@cond PRIVATE
     QString fileFilter() const override;
     QString selectFileTitle() const override;
     QString fileFromUrlTitle() const override;

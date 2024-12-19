@@ -115,6 +115,7 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     void credentialOptionsChanged();
 
   private:
+
     void computeDataSources( bool interactive );
     void clearOpenOptions();
     void fillOpenOptions();
@@ -123,6 +124,7 @@ class QgsOgrSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsOg
     bool mIsOgcApi = false;
     QVariantMap mCredentialOptions;
     QString mVectorPath;
+
 };
 
 ///@endcond

@@ -33,6 +33,7 @@ class QgsPanelWidget;
  */
 class GUI_EXPORT QgsColorButton : public QToolButton
 {
+
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsColorButton *>( sipCpp ) )
@@ -55,13 +56,14 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     Q_PROPERTY( QString context READ context WRITE setContext )
 
   public:
+
     /**
      * Specifies the behavior when the button is clicked
      */
     enum Behavior
     {
       ShowDialog = 0, //!< Show a color picker dialog when clicked
-      SignalOnly      //!< Emit colorClicked signal only, no dialog
+      SignalOnly //!< Emit colorClicked signal only, no dialog
     };
     Q_ENUM( Behavior )
 
@@ -406,6 +408,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     void unlinked();
 
   protected:
+
     bool event( QEvent *e ) override;
     void changeEvent( QEvent *e ) override;
     void showEvent( QShowEvent *e ) override;
@@ -454,6 +457,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
     void wheelEvent( QWheelEvent *event ) override;
 
   private:
+
     Behavior mBehavior = QgsColorButton::ShowDialog;
     QString mColorDialogTitle;
     QColor mColor;

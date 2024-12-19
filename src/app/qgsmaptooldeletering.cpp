@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmaptooldeletering.h"
-#include "moc_qgsmaptooldeletering.cpp"
 
 #include "qgsmapcanvas.h"
 #include "qgsfeatureiterator.h"
@@ -94,8 +93,7 @@ void QgsMapToolDeleteRing::canvasPressEvent( QgsMapMouseEvent *e )
   {
     emit messageEmitted(
       tr( "If there are selected features, the delete ring tool only applies to those. Clear the selection and try again." ),
-      Qgis::MessageLevel::Warning
-    );
+      Qgis::MessageLevel::Warning );
   }
 }
 
@@ -140,7 +138,8 @@ QgsGeometry QgsMapToolDeleteRing::ringUnderPoint( const QgsPointXY &p, QgsFeatur
   const QgsFeatureIds selectedFeatureIds = vlayer->selectedFeatureIds();
   while ( fit.nextFeature( f ) )
   {
-    if ( !selectedFeatureIds.isEmpty() && !selectedFeatureIds.contains( f.id() ) )
+    if ( !selectedFeatureIds.isEmpty() &&
+         !selectedFeatureIds.contains( f.id() ) )
       continue;
 
     g = f.geometry();
@@ -156,7 +155,7 @@ QgsGeometry QgsMapToolDeleteRing::ringUnderPoint( const QgsPointXY &p, QgsFeatur
       pol = g.asMultiPolygon();
     }
 
-    for ( int i = 0; i < pol.size(); ++i )
+    for ( int i = 0; i < pol.size() ; ++i )
     {
       //for each part
       if ( pol[i].size() > 1 )
@@ -210,6 +209,7 @@ void QgsMapToolDeleteRing::deleteRing( QgsFeatureId fId, int beforeVertexNr, Qgs
     vlayer->endEditCommand();
     vlayer->triggerRepaint();
   }
+
 }
 
 int QgsMapToolDeleteRing::ringNumInPolygon( const QgsGeometry &g, int vertexNr )
@@ -248,5 +248,6 @@ int QgsMapToolDeleteRing::ringNumInMultiPolygon( const QgsGeometry &g, int verte
 
 void QgsMapToolDeleteRing::deactivate()
 {
+
   QgsMapTool::deactivate();
 }

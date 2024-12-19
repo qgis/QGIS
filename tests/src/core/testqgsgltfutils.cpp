@@ -25,8 +25,8 @@ class TestQgsGltfUtils : public QObject
     TestQgsGltfUtils() = default;
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void testImageResourceType();
     void testExtractEmbeddedImage();
@@ -88,15 +88,15 @@ void TestQgsGltfUtils::testExtractTextureCoordinates()
 
   tinygltf::Model model;
   QVERIFY( QgsGltfUtils::loadGltfModel( data, model, nullptr, nullptr ) );
-  QVector<float> x;
-  QVector<float> y;
+  QVector< float > x;
+  QVector< float > y;
   QVERIFY( QgsGltfUtils::extractTextureCoordinates( model, 3, x, y ) );
   QCOMPARE( x.size(), 24 );
   QCOMPARE( y.size(), 24 );
   QCOMPARE( x.at( 0 ), 6.0 );
   QCOMPARE( y.at( 0 ), 0.0 );
   QCOMPARE( x.at( 23 ), 1.0 );
-  QGSCOMPARENEAR( y.at( 23 ), 1.0, 0.01 );
+  QGSCOMPARENEAR( y.at( 23 ),  1.0, 0.01 );
 }
 
 QGSTEST_MAIN( TestQgsGltfUtils )

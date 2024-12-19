@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsgeometrycheckerplugin.h"
-#include "moc_qgsgeometrycheckerplugin.cpp"
 #include "qgisinterface.h"
 #include "qgsgeometrycheckerdialog.h"
 #include <QMenu>

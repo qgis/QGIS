@@ -63,5 +63,5 @@ try:
     QgsGeometryUtils.lineIntersection = staticmethod(QgsGeometryUtils.lineIntersection)
     QgsGeometryUtils.segmentIntersection = staticmethod(QgsGeometryUtils.segmentIntersection)
     QgsGeometryUtils.__group__ = ['geometry']
-except (NameError, AttributeError):
+except NameError:
     pass

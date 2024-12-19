@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgshtmlannotation.h"
-#include "moc_qgshtmlannotation.cpp"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"

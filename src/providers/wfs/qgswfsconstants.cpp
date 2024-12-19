@@ -46,3 +46,4 @@ const QString QgsWFSConstants::URI_PARAM_GEOMETRY_TYPE_FILTER( QStringLiteral( "
 const QString QgsWFSConstants::URI_PARAM_SQL( QStringLiteral( "sql" ) );
 
 const QString QgsWFSConstants::VERSION_AUTO( QStringLiteral( "auto" ) );
+

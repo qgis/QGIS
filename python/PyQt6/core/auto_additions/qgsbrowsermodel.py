@@ -60,5 +60,5 @@ try:
     QgsBrowserModel.__attribute_docs__ = {'stateChanged': 'Emitted when item children fetch was finished\n', 'connectionsChanged': 'Emitted when connections for the specified ``providerKey`` have changed in the browser.\n\nForwarded to the widget and used to notify the provider dialogs of a changed connection.\n'}
     QgsBrowserModel.__signal_arguments__ = {'stateChanged': ['index: QModelIndex', 'oldState: Qgis.BrowserItemState'], 'connectionsChanged': ['providerKey: str']}
     QgsBrowserModel.__group__ = ['browser']
-except (NameError, AttributeError):
+except NameError:
     pass

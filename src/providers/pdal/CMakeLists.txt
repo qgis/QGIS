@@ -46,6 +46,7 @@ set(UNTWINE_SRCS
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/Reprocessor.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/Writer.cpp
 
+  ${CMAKE_SOURCE_DIR}/external/untwine/untwine/Common.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/ProgressWriter.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/ThreadPool.cpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/Untwine.cpp
@@ -72,7 +73,6 @@ set(UNTWINE_HDRS
   ${CMAKE_SOURCE_DIR}/external/untwine/epf/Writer.hpp
 
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/Common.hpp
-  ${CMAKE_SOURCE_DIR}/external/untwine/untwine/FatalError.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/FileDimInfo.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/GridKey.hpp
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/Point.hpp
@@ -81,27 +81,12 @@ set(UNTWINE_HDRS
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine/VoxelKey.hpp
 )
 
-# MINGW must come before WIN32 test
-# APPLE must come before UNIX test
-if (MINGW)
-    set(UNTWINE_OS_DIR ${CMAKE_SOURCE_DIR}/external/untwine/untwine/mingw)
-elseif (WIN32)
-    set(UNTWINE_OS_DIR ${CMAKE_SOURCE_DIR}/external/untwine/untwine/windows)
-elseif (APPLE)
-    set(UNTWINE_OS_DIR ${CMAKE_SOURCE_DIR}/external/untwine/untwine/osx)
-elseif (UNIX)
-    set(UNTWINE_OS_DIR ${CMAKE_SOURCE_DIR}/external/untwine/untwine/generic)
-else()
-    message(FATAL_ERROR "OS not supported")
-endif()
-
 configure_file(${CMAKE_SOURCE_DIR}/external/untwine/untwine/Config.hpp.in ${CMAKE_BINARY_DIR}/untwine/Config.hpp)
 
 set(UNTWINE_INCLUDE_DIRS
   ${CMAKE_SOURCE_DIR}/external/untwine/untwine
   ${CMAKE_SOURCE_DIR}/external/untwine/epf
   ${CMAKE_SOURCE_DIR}/external/untwine/bu
-  ${CMAKE_SOURCE_DIR}/external/untwine
   ${CMAKE_SOURCE_DIR}/untwine/api
   ${CMAKE_BINARY_DIR}/untwine
 )
@@ -171,7 +156,7 @@ target_link_libraries (untwine
   ${PDAL_LIBRARIES}
   Threads::Threads
 )
-target_include_directories(untwine PRIVATE ${UNTWINE_OS_DIR} ${UNTWINE_INCLUDE_DIRS})
+target_include_directories(untwine PRIVATE ${UNTWINE_INCLUDE_DIRS})
 
 if (LazPerf_FOUND)
   # Use system laz-perf

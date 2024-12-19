@@ -199,7 +199,6 @@ class CORE_EXPORT QgsRenderChecker
     enum class Flag : int SIP_ENUM_BASETYPE( IntFlag )
     {
       AvoidExportingRenderedImage = 1 << 0, //!< Avoids exporting rendered images to reports
-      Silent = 1 << 1, //!< Don't output non-critical messages to console \since QGIS 3.40
     };
     Q_ENUM( Flag )
 

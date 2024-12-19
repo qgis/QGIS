@@ -64,12 +64,6 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
     QgsDataProvider *dataProvider() override;
     const QgsDataProvider *dataProvider() const override SIP_SKIP;
 
-    /**
-     * Returns an icon for the layer.
-     * \since QGIS 3.42
-     */
-    virtual QIcon icon() const;
-
   protected:
     QString mPluginLayerType;
     QgsDataProvider *mDataProvider;

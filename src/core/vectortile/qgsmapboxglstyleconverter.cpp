@@ -19,7 +19,6 @@
  */
 
 #include "qgsmapboxglstyleconverter.h"
-#include "moc_qgsmapboxglstyleconverter.cpp"
 #include "qgsvectortilebasicrenderer.h"
 #include "qgsvectortilebasiclabeling.h"
 #include "qgssymbollayer.h"
@@ -3337,7 +3336,7 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
     QVariantList values = expression.mid( 2 );
     if ( expression.size() == 3
          && expression.at( 2 ).userType() == QMetaType::Type::QVariantList && expression.at( 2 ).toList().count() > 1
-         && expression.at( 2 ).toList().at( 0 ).toString() == QLatin1String( "literal" ) )
+         && expression.at( 2 ).toList().at( 0 ).toString() == QStringLiteral( "literal" ) )
     {
       values = expression.at( 2 ).toList().at( 1 ).toList();
     }
@@ -3427,10 +3426,6 @@ QString QgsMapBoxGlStyleConverter::parseExpression( const QVariantList &expressi
   else if ( op == QLatin1String( "to-string" ) )
   {
     return QStringLiteral( "to_string(%1)" ).arg( parseExpression( expression.value( 1 ).toList(), context ) );
-  }
-  else if ( op == QLatin1String( "to-boolean" ) )
-  {
-    return QStringLiteral( "to_bool(%1)" ).arg( parseExpression( expression.value( 1 ).toList(), context ) );
   }
   else if ( op == QLatin1String( "case" ) )
   {

@@ -40,6 +40,7 @@ class GUI_EXPORT QgsMapLayerStyleGuiUtils : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * \brief returns a singleton instance of this class
      */
@@ -59,7 +60,7 @@ class GUI_EXPORT QgsMapLayerStyleGuiUtils : public QObject
 
   public slots:
 
-  private:
+  private :
     QAction *actionAddStyle( QgsMapLayer *layer, QObject *parent = nullptr );
     QAction *actionRemoveStyle( QgsMapLayer *layer, QObject *parent = nullptr );
     QAction *actionRenameStyle( QgsMapLayer *layer, QObject *parent = nullptr );

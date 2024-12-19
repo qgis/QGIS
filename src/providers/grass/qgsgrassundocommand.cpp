@@ -74,3 +74,4 @@ void QgsGrassUndoCommandChangeAttribute::undo()
     }
   }
 }
+

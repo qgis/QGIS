@@ -26,6 +26,7 @@ a single tile for the whole layer, for count=3 there will be 16 tiles.
 #include "qgsabstractvectorlayer3drenderer.h"
 %End
   public:
+
     int zoomLevelsCount() const;
 %Docstring
 Returns number of zoom levels. One zoom level means there will be one tile.

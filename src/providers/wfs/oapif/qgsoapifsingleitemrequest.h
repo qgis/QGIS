@@ -62,6 +62,8 @@ class QgsOapifSingleItemRequest : public QgsBaseNetworkRequest
   private:
     QString mUrl;
 
+    bool mComputeBbox = false;
+
     QgsFields mFields;
 
     QgsFeature mFeature;

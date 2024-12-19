@@ -20,5 +20,5 @@ try:
     QgsCoordinateReferenceSystem.clearRecentCoordinateReferenceSystems = staticmethod(QgsCoordinateReferenceSystem.clearRecentCoordinateReferenceSystems)
     QgsCoordinateReferenceSystem.invalidateCache = staticmethod(QgsCoordinateReferenceSystem.invalidateCache)
     QgsCoordinateReferenceSystem.__group__ = ['proj']
-except (NameError, AttributeError):
+except NameError:
     pass

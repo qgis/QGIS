@@ -31,6 +31,7 @@ static QString quotedColumn( QString name )
 QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsVirtualLayerFeatureSource>( source, ownSource, request )
 {
+
   // NOTE: this is really bad and should be removed.
   // it's only here to guard mSource->mSqlite - because if the provider is removed
   // then mSqlite will be meaningless.
@@ -91,8 +92,9 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       {
         const bool do_exact = request.flags() & Qgis::FeatureRequestFlag::ExactIntersect;
         wheres << quotedColumn( mSource->mDefinition.geometryField() ) + " is not null";
-        wheres << QStringLiteral( "%1Intersects(%2,BuildMbr(?,?,?,?))" )
-                    .arg( do_exact ? "" : "Mbr", quotedColumn( mSource->mDefinition.geometryField() ) );
+        wheres <<  QStringLiteral( "%1Intersects(%2,BuildMbr(?,?,?,?))" )
+               .arg( do_exact ? "" : "Mbr",
+                     quotedColumn( mSource->mDefinition.geometryField() ) );
 
         binded << mFilterRect.xMinimum() << mFilterRect.yMinimum()
                << mFilterRect.xMaximum() << mFilterRect.yMaximum();
@@ -100,8 +102,8 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       else if ( request.filterType() == Qgis::FeatureRequestFilterType::Fid )
       {
         wheres << QStringLiteral( "%1=%2" )
-                    .arg( quotedColumn( mSource->mDefinition.uid() ) )
-                    .arg( request.filterFid() );
+               .arg( quotedColumn( mSource->mDefinition.uid() ) )
+               .arg( request.filterFid() );
       }
       else if ( request.filterType() == Qgis::FeatureRequestFilterType::Fids )
       {
@@ -287,7 +289,8 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature &feature )
 
     feature.setFields( mSource->mFields, /* init */ true );
 
-    if ( mSource->mDefinition.uid().isNull() && mRequest.filterType() != Qgis::FeatureRequestFilterType::Fid )
+    if ( mSource->mDefinition.uid().isNull() &&
+         mRequest.filterType() != Qgis::FeatureRequestFilterType::Fid )
     {
       // no id column => autoincrement
       feature.setId( mFid++ );
@@ -360,7 +363,8 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature &feature )
       if ( mDistanceWithinEngine->distance( feature.geometry().constGet() ) > mRequest.distanceWithin() )
         skipFeature = true;
     }
-  } while ( skipFeature );
+  }
+  while ( skipFeature );
 
   return true;
 }

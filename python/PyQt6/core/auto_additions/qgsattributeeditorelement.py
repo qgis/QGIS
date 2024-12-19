@@ -5,10 +5,10 @@ try:
 
 .. versionadded:: 3.26"""
     QgsAttributeEditorElement.LabelStyle.__group__ = ['editform']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsAttributeEditorElement.create = staticmethod(QgsAttributeEditorElement.create)
     QgsAttributeEditorElement.__group__ = ['editform']
-except (NameError, AttributeError):
+except NameError:
     pass

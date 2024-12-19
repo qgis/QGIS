@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsdockablewidgethelper.h"
-#include "moc_qgsdockablewidgethelper.cpp"
 
 #include "qgsdockwidget.h"
 #include "qgsapplication.h"
@@ -27,11 +26,14 @@
 ///@cond PRIVATE
 
 
-std::function<void( Qt::DockWidgetArea, QDockWidget *, const QStringList &, bool )> QgsDockableWidgetHelper::sAddTabifiedDockWidgetFunction = []( Qt::DockWidgetArea, QDockWidget *, const QStringList &, bool ) {};
-std::function<QString()> QgsDockableWidgetHelper::sAppStylesheetFunction = [] { return QString(); };
+std::function< void( Qt::DockWidgetArea, QDockWidget *, const QStringList &, bool ) > QgsDockableWidgetHelper::sAddTabifiedDockWidgetFunction = []( Qt::DockWidgetArea, QDockWidget *, const QStringList &, bool ) {};
+std::function< QString( ) > QgsDockableWidgetHelper::sAppStylesheetFunction = [] { return QString(); };
 QMainWindow *QgsDockableWidgetHelper::sOwnerWindow = nullptr;
 
-QgsDockableWidgetHelper::QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget, QMainWindow *ownerWindow, Qt::DockWidgetArea defaultDockArea, const QStringList &tabifyWith, bool raiseTab, const QString &windowGeometrySettingsKey, bool usePersistentWidget )
+QgsDockableWidgetHelper::QgsDockableWidgetHelper( bool isDocked, const QString &windowTitle, QWidget *widget, QMainWindow *ownerWindow,
+    Qt::DockWidgetArea defaultDockArea,
+    const QStringList &tabifyWith,
+    bool raiseTab, const QString &windowGeometrySettingsKey, bool usePersistentWidget )
   : QObject( nullptr )
   , mWidget( widget )
   , mDialogGeometry( 0, 0, 0, 0 )
@@ -102,7 +104,7 @@ void QgsDockableWidgetHelper::writeXml( QDomElement &viewDom )
 
   if ( mDock )
   {
-    const QList<QDockWidget *> tabSiblings = mOwnerWindow ? mOwnerWindow->tabifiedDockWidgets( mDock ) : QList<QDockWidget *>();
+    const QList<QDockWidget * > tabSiblings = mOwnerWindow ? mOwnerWindow->tabifiedDockWidgets( mDock ) : QList<QDockWidget * >();
     QDomElement tabSiblingsElement = viewDom.ownerDocument().createElement( QStringLiteral( "tab_siblings" ) );
     for ( QDockWidget *dock : tabSiblings )
     {
@@ -144,7 +146,7 @@ void QgsDockableWidgetHelper::readXml( const QDomElement &viewDom )
     int h = viewDom.attribute( QStringLiteral( "height" ), QStringLiteral( "200" ) ).toInt();
     mDockGeometry = QRect( x, y, w, h );
     mIsDockFloating = viewDom.attribute( QStringLiteral( "floating" ), QStringLiteral( "0" ) ).toInt();
-    mDockArea = static_cast<Qt::DockWidgetArea>( viewDom.attribute( QStringLiteral( "area" ), QString::number( Qt::RightDockWidgetArea ) ).toInt() );
+    mDockArea = static_cast< Qt::DockWidgetArea >( viewDom.attribute( QStringLiteral( "area" ), QString::number( Qt::RightDockWidgetArea ) ).toInt() );
 
     if ( mDockArea == Qt::DockWidgetArea::NoDockWidgetArea && !mIsDockFloating )
     {
@@ -258,7 +260,8 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     mDock->setProperty( "dock_uuid", mUuid );
     setupDockWidget();
 
-    connect( mDock, &QgsDockWidget::closed, this, [=]() {
+    connect( mDock, &QgsDockWidget::closed, this, [ = ]()
+    {
       mDockGeometry = mDock->geometry();
       mIsDockFloating = mDock->isFloating();
       if ( mOwnerWindow )
@@ -310,7 +313,8 @@ void QgsDockableWidgetHelper::toggleDockMode( bool docked )
     mDialog->raise();
     mDialog->show();
 
-    connect( mDialog, &QDialog::finished, this, [=]() {
+    connect( mDialog, &QDialog::finished, this, [ = ]()
+    {
       mDialogGeometry = mDialog->geometry();
       emit closed();
       emit visibilityChanged( false );
@@ -394,7 +398,9 @@ void QgsDockableWidgetHelper::setupDockWidget( const QStringList &tabSiblings )
   {
     const QFontMetrics fm( mOwnerWindow->font() );
     const int initialDockSize = fm.horizontalAdvance( '0' ) * 75;
-    mDockGeometry = QRect( static_cast<int>( mOwnerWindow->rect().width() * 0.75 ), static_cast<int>( mOwnerWindow->rect().height() * 0.5 ), initialDockSize, initialDockSize );
+    mDockGeometry = QRect( static_cast< int >( mOwnerWindow->rect().width() * 0.75 ),
+                           static_cast< int >( mOwnerWindow->rect().height() * 0.5 ),
+                           initialDockSize, initialDockSize );
   }
   if ( !tabSiblings.isEmpty() )
   {
@@ -470,6 +476,7 @@ bool QgsDockableWidgetHelper::eventFilter( QObject *watched, QEvent *event )
 QgsNonRejectableDialog::QgsNonRejectableDialog( QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
 {
+
 }
 
 void QgsNonRejectableDialog::reject()
@@ -479,3 +486,4 @@ void QgsNonRejectableDialog::reject()
 
 
 ///@endcond
+

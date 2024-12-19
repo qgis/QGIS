@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgschunkqueuejob.h"
-#include "moc_qgschunkqueuejob.cpp"
 
 ///@cond PRIVATE
 

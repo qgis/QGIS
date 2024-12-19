@@ -16,5 +16,5 @@ try:
     QgsProcessingAlgorithmDialogBase.formatStringForLog = staticmethod(QgsProcessingAlgorithmDialogBase.formatStringForLog)
     QgsProcessingAlgorithmDialogBase.__signal_arguments__ = {'algorithmAboutToRun': ['context: QgsProcessingContext'], 'algorithmFinished': ['successful: bool', 'result: Dict[str, object]']}
     QgsProcessingAlgorithmDialogBase.__group__ = ['processing']
-except (NameError, AttributeError):
+except NameError:
     pass

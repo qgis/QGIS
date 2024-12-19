@@ -28,6 +28,7 @@
 class QgsWfsSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
+
     QString providerKey() const override { return QgsWFSProvider::WFS_PROVIDER_KEY; }
     QString text() const override { return QObject::tr( "WFS / OGC API - Features" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 20; }
@@ -39,15 +40,16 @@ class QgsWfsSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 //! Provider for dedicated subset string editor for WFS layers
-class QgsWfsSubsetStringEditorProvider : public QgsSubsetStringEditorProvider
+class QgsWfsSubsetStringEditorProvider: public QgsSubsetStringEditorProvider
 {
   public:
+
     QString providerKey() const override { return QgsWFSProvider::WFS_PROVIDER_KEY; }
 
     bool canHandleLayer( QgsVectorLayer *layer ) const override
     {
       QgsDataProvider *provider = layer->dataProvider();
-      return static_cast<bool>( dynamic_cast<QgsWFSProvider *>( provider ) );
+      return static_cast< bool >( dynamic_cast<QgsWFSProvider *>( provider ) );
     }
 
     QgsSubsetStringEditorInterface *createDialog( QgsVectorLayer *layer, QWidget *parent, Qt::WindowFlags fl ) override
@@ -60,7 +62,10 @@ class QgsWfsSubsetStringEditorProvider : public QgsSubsetStringEditorProvider
       // If we have an existing full SQL request, open the SQL editor
       // Otherwise use the standard expression builder.
       const QString subsetString = wfsProvider->subsetString();
-      if ( subsetString.startsWith( QLatin1String( "SELECT " ), Qt::CaseInsensitive ) || subsetString.startsWith( QLatin1String( "SELECT\t" ), Qt::CaseInsensitive ) || subsetString.startsWith( QLatin1String( "SELECT\r" ), Qt::CaseInsensitive ) || subsetString.startsWith( QLatin1String( "SELECT\n" ), Qt::CaseInsensitive ) )
+      if ( subsetString.startsWith( QLatin1String( "SELECT " ), Qt::CaseInsensitive ) ||
+           subsetString.startsWith( QLatin1String( "SELECT\t" ), Qt::CaseInsensitive ) ||
+           subsetString.startsWith( QLatin1String( "SELECT\r" ), Qt::CaseInsensitive ) ||
+           subsetString.startsWith( QLatin1String( "SELECT\n" ), Qt::CaseInsensitive ) )
       {
         return QgsWfsSubsetStringEditor::create( layer, wfsProvider, parent, fl );
       }

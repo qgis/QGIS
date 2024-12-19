@@ -39,6 +39,7 @@ class GUI_EXPORT QgsStackedWidget : public QStackedWidget
     Q_OBJECT
 
   public:
+
     /**
      * Possible modes for calculating a QgsStackedWidget's size
      */
@@ -46,7 +47,7 @@ class GUI_EXPORT QgsStackedWidget : public QStackedWidget
     {
       //! The sizes of all pages are considered when calculating the stacked widget size
       ConsiderAllPages, //#spellok
-      CurrentPageOnly,  //!< Only the size of the current page is considered when calculating the stacked widget size
+      CurrentPageOnly, //!< Only the size of the current page is considered when calculating the stacked widget size
     };
 
     /**

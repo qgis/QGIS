@@ -30,6 +30,7 @@ class QgsMeshGroupFixedElevationRangeModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
+
     QgsMeshGroupFixedElevationRangeModel( QObject *parent );
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -40,13 +41,14 @@ class QgsMeshGroupFixedElevationRangeModel : public QAbstractItemModel
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
 
-    void setLayerData( QgsMeshLayer *layer, const QMap<int, QgsDoubleRange> &ranges );
-    QMap<int, QgsDoubleRange> rangeData() const { return mRanges; }
+    void setLayerData( QgsMeshLayer *layer, const QMap<int, QgsDoubleRange > &ranges );
+    QMap<int, QgsDoubleRange > rangeData() const { return mRanges; }
 
   private:
+
     int mGroupCount = 0;
-    QMap<int, QString> mGroupNames;
-    QMap<int, QgsDoubleRange> mRanges;
+    QMap<int, QString > mGroupNames;
+    QMap<int, QgsDoubleRange > mRanges;
 };
 
 
@@ -55,17 +57,20 @@ class QgsMeshFixedElevationRangeDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
+
     QgsMeshFixedElevationRangeDelegate( QObject *parent );
 
   protected:
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem & /*option*/, const QModelIndex &index ) const override;
     void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const override;
+
 };
 
 class QgsMeshElevationPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsMeshElevationPropertiesWidgetBase
 {
     Q_OBJECT
   public:
+
     QgsMeshElevationPropertiesWidget( QgsMeshLayer *layer, QgsMapCanvas *canvas, QWidget *parent );
 
     void syncToLayer( QgsMapLayer *layer ) final;
@@ -86,6 +91,7 @@ class QgsMeshElevationPropertiesWidget : public QgsMapLayerConfigWidget, private
     QgsMeshGroupFixedElevationRangeModel *mFixedRangePerGroupModel = nullptr;
     QString mFixedRangeLowerExpression = QStringLiteral( "@group" );
     QString mFixedRangeUpperExpression = QStringLiteral( "@group" );
+
 };
 
 
@@ -101,6 +107,7 @@ class QgsMeshElevationPropertiesWidgetFactory : public QObject, public QgsMapLay
     bool supportsLayer( QgsMapLayer *layer ) const override;
     QString layerPropertiesPagePositionHint() const override;
 };
+
 
 
 #endif // QGSMESHELEVATIONPROPERTIESWIDGET_H

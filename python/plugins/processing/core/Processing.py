@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "August 2012"
-__copyright__ = "(C) 2012, Victor Olaya"
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 import traceback
@@ -27,22 +27,20 @@ from qgis.PyQt.QtWidgets import QApplication
 from qgis.PyQt.QtGui import QCursor
 
 from qgis.utils import iface
-from qgis.core import (
-    QgsMessageLog,
-    QgsApplication,
-    QgsMapLayer,
-    QgsProcessingProvider,
-    QgsProcessingAlgorithm,
-    QgsProcessingException,
-    QgsProcessingParameterDefinition,
-    QgsProcessingOutputVectorLayer,
-    QgsProcessingOutputRasterLayer,
-    QgsProcessingOutputPointCloudLayer,
-    QgsProcessingOutputMapLayer,
-    QgsProcessingOutputMultipleLayers,
-    QgsProcessingFeedback,
-    QgsRuntimeProfiler,
-)
+from qgis.core import (QgsMessageLog,
+                       QgsApplication,
+                       QgsMapLayer,
+                       QgsProcessingProvider,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingException,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingOutputRasterLayer,
+                       QgsProcessingOutputPointCloudLayer,
+                       QgsProcessingOutputMapLayer,
+                       QgsProcessingOutputMultipleLayers,
+                       QgsProcessingFeedback,
+                       QgsRuntimeProfiler)
 from qgis.analysis import QgsNativeAlgorithms
 
 import processing
@@ -53,16 +51,14 @@ from processing.gui.AlgorithmExecutor import execute
 from processing.script import ScriptUtils
 from processing.tools import dataobjects
 
-with QgsRuntimeProfiler.profile("Import QGIS Provider"):
+with QgsRuntimeProfiler.profile('Import QGIS Provider'):
     from processing.algs.qgis.QgisAlgorithmProvider import QgisAlgorithmProvider  # NOQA
 
-with QgsRuntimeProfiler.profile("Import GDAL Provider"):
+with QgsRuntimeProfiler.profile('Import GDAL Provider'):
     from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
 
-with QgsRuntimeProfiler.profile("Import Script Provider"):
-    from processing.script.ScriptAlgorithmProvider import (
-        ScriptAlgorithmProvider,
-    )  # NOQA
+with QgsRuntimeProfiler.profile('Import Script Provider'):
+    from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
 
 # should be loaded last - ensures that all dependent algorithms are available when loading models
 from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
@@ -74,51 +70,32 @@ class Processing:
 
     @staticmethod
     def activateProvider(providerOrName, activate=True):
-        provider_id = (
-            providerOrName.id()
-            if isinstance(providerOrName, QgsProcessingProvider)
-            else providerOrName
-        )
+        provider_id = providerOrName.id() if isinstance(providerOrName, QgsProcessingProvider) else providerOrName
         provider = QgsApplication.processingRegistry().providerById(provider_id)
         try:
             provider.setActive(True)
             provider.refreshAlgorithms()
         except:
             # provider could not be activated
-            QgsMessageLog.logMessage(
-                Processing.tr("Error: Provider {0} could not be activated\n").format(
-                    provider_id
-                ),
-                Processing.tr("Processing"),
-            )
+            QgsMessageLog.logMessage(Processing.tr('Error: Provider {0} could not be activated\n').format(provider_id),
+                                     Processing.tr("Processing"))
 
     @staticmethod
     def initialize():
-        if "script" in [
-            p.id() for p in QgsApplication.processingRegistry().providers()
-        ]:
+        if "script" in [p.id() for p in QgsApplication.processingRegistry().providers()]:
             return
 
-        with QgsRuntimeProfiler.profile("Initialize"):
+        with QgsRuntimeProfiler.profile('Initialize'):
 
             # add native provider if not already added
-            if "native" not in [
-                p.id() for p in QgsApplication.processingRegistry().providers()
-            ]:
-                QgsApplication.processingRegistry().addProvider(
-                    QgsNativeAlgorithms(QgsApplication.processingRegistry())
-                )
+            if "native" not in [p.id() for p in QgsApplication.processingRegistry().providers()]:
+                QgsApplication.processingRegistry().addProvider(QgsNativeAlgorithms(QgsApplication.processingRegistry()))
 
             # add 3d provider if available and not already added
-            if "3d" not in [
-                p.id() for p in QgsApplication.processingRegistry().providers()
-            ]:
+            if "3d" not in [p.id() for p in QgsApplication.processingRegistry().providers()]:
                 try:
                     from qgis._3d import Qgs3DAlgorithms
-
-                    QgsApplication.processingRegistry().addProvider(
-                        Qgs3DAlgorithms(QgsApplication.processingRegistry())
-                    )
+                    QgsApplication.processingRegistry().addProvider(Qgs3DAlgorithms(QgsApplication.processingRegistry()))
                 except ImportError:
                     # no 3d library available
                     pass
@@ -127,23 +104,25 @@ class Processing:
             basic_providers = [
                 QgisAlgorithmProvider,
                 GdalAlgorithmProvider,
-                ScriptAlgorithmProvider,
+                ScriptAlgorithmProvider
             ]
 
             # model providers are deferred for qgis_process startup
-            if QgsApplication.platform() != "qgis_process":
-                basic_providers.extend([ModelerAlgorithmProvider, ProjectProvider])
+            if QgsApplication.platform() != 'qgis_process':
+                basic_providers.extend([
+                    ModelerAlgorithmProvider,
+                    ProjectProvider
+                ])
 
             for c in basic_providers:
                 p = c()
                 if QgsApplication.processingRegistry().addProvider(p):
                     Processing.BASIC_PROVIDERS.append(p)
 
-            if QgsApplication.platform() == "external":
+            if QgsApplication.platform() == 'external':
                 # for external applications we must also load the builtin providers stored in separate plugins
                 try:
                     from grassprovider.grass_provider import GrassProvider
-
                     p = GrassProvider()
                     if QgsApplication.processingRegistry().addProvider(p):
                         Processing.BASIC_PROVIDERS.append(p)
@@ -163,7 +142,9 @@ class Processing:
         # Add the model providers
         # note that we don't add the Project Provider, as this cannot be called
         # from qgis_process
-        model_providers = [ModelerAlgorithmProvider]
+        model_providers = [
+            ModelerAlgorithmProvider
+        ]
 
         for c in model_providers:
             p = c()
@@ -188,7 +169,7 @@ class Processing:
             feedback = QgsProcessingFeedback()
 
         if alg is None:
-            msg = Processing.tr("Error: Algorithm {0} not found\n").format(algOrName)
+            msg = Processing.tr('Error: Algorithm {0} not found\n').format(algOrName)
             feedback.reportError(msg)
             raise QgsProcessingException(msg)
 
@@ -200,22 +181,18 @@ class Processing:
 
         ok, msg = alg.checkParameterValues(parameters, context)
         if not ok:
-            msg = Processing.tr("Unable to execute algorithm\n{0}").format(msg)
+            msg = Processing.tr('Unable to execute algorithm\n{0}').format(msg)
             feedback.reportError(msg)
             raise QgsProcessingException(msg)
 
         if not alg.validateInputCrs(parameters, context):
             feedback.pushInfo(
-                Processing.tr(
-                    "Warning: Not all input layers use the same CRS.\nThis can cause unexpected results."
-                )
-            )
+                Processing.tr('Warning: Not all input layers use the same CRS.\nThis can cause unexpected results.'))
 
-        ret, results = execute(
-            alg, parameters, context, feedback, catch_exceptions=False
-        )
+        ret, results = execute(alg, parameters, context, feedback, catch_exceptions=False)
         if ret:
-            feedback.pushInfo(Processing.tr("Results: {}").format(results))
+            feedback.pushInfo(
+                Processing.tr('Results: {}').format(results))
 
             if onFinish is not None:
                 onFinish(alg, context, feedback)
@@ -225,33 +202,19 @@ class Processing:
                     if out.name() not in results:
                         continue
 
-                    if isinstance(
-                        out,
-                        (
-                            QgsProcessingOutputVectorLayer,
-                            QgsProcessingOutputRasterLayer,
-                            QgsProcessingOutputPointCloudLayer,
-                            QgsProcessingOutputMapLayer,
-                        ),
-                    ):
+                    if isinstance(out, (QgsProcessingOutputVectorLayer, QgsProcessingOutputRasterLayer, QgsProcessingOutputPointCloudLayer, QgsProcessingOutputMapLayer)):
                         result = results[out.name()]
                         if not isinstance(result, QgsMapLayer):
-                            layer = context.takeResultLayer(
-                                result
-                            )  # transfer layer ownership out of context
+                            layer = context.takeResultLayer(result)  # transfer layer ownership out of context
                             if layer:
-                                results[out.name()] = (
-                                    layer  # replace layer string ref with actual layer (+ownership)
-                                )
+                                results[out.name()] = layer  # replace layer string ref with actual layer (+ownership)
                     elif isinstance(out, QgsProcessingOutputMultipleLayers):
                         result = results[out.name()]
                         if result:
                             layers_result = []
                             for l in result:
                                 if not isinstance(l, QgsMapLayer):
-                                    layer = context.takeResultLayer(
-                                        l
-                                    )  # transfer layer ownership out of context
+                                    layer = context.takeResultLayer(l)  # transfer layer ownership out of context
                                     if layer:
                                         layers_result.append(layer)
                                     else:
@@ -259,9 +222,8 @@ class Processing:
                                 else:
                                     layers_result.append(l)
 
-                            results[out.name()] = (
-                                layers_result  # replace layers strings ref with actual layers (+ownership)
-                            )
+                            results[
+                                out.name()] = layers_result  # replace layers strings ref with actual layers (+ownership)
 
         else:
             msg = Processing.tr("There were errors executing the algorithm.")
@@ -273,7 +235,7 @@ class Processing:
         return results
 
     @staticmethod
-    def tr(string, context=""):
-        if context == "":
-            context = "Processing"
+    def tr(string, context=''):
+        if context == '':
+            context = 'Processing'
         return QCoreApplication.translate(context, string)

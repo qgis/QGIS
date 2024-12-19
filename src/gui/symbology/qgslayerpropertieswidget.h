@@ -45,6 +45,7 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayerPropertiesWidget.
      * \param layer the symbol layer
@@ -115,7 +116,9 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
     void updateProperty();
 
   private:
+
     QgsSymbolWidgetContext mContext;
+
 };
 
 #endif //QGSLAYERPROPERTIESWIDGET_H

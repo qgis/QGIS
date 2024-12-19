@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgssymbolselectordialog.h"
-#include "moc_qgssymbolselectordialog.cpp"
 
 #include "qgsstyle.h"
 #include "qgssymbol.h"
@@ -98,14 +97,17 @@ void DataDefinedRestorer::restore()
 {
   if ( mMarker )
   {
-    if ( mDDSize && ( mSize != mMarkerSymbolLayer->size() || mMarkerOffset != mMarkerSymbolLayer->offset() ) )
+    if ( mDDSize &&
+         ( mSize != mMarkerSymbolLayer->size() || mMarkerOffset != mMarkerSymbolLayer->offset() ) )
       mMarker->setDataDefinedSize( mDDSize );
-    if ( mDDAngle && mAngle != mMarkerSymbolLayer->angle() )
+    if ( mDDAngle &&
+         mAngle != mMarkerSymbolLayer->angle() )
       mMarker->setDataDefinedAngle( mDDAngle );
   }
   else if ( mLine )
   {
-    if ( mDDWidth && ( mWidth != mLineSymbolLayer->width() || mLineOffset != mLineSymbolLayer->offset() ) )
+    if ( mDDWidth &&
+         ( mWidth != mLineSymbolLayer->width() || mLineOffset != mLineSymbolLayer->offset() ) )
       mLine->setDataDefinedWidth( mDDWidth );
   }
   save();
@@ -199,11 +201,11 @@ class SymbolLayerItem : public QStandardItem
         {
           switch ( mSymbol->type() )
           {
-            case Qgis::SymbolType::Marker:
+            case Qgis::SymbolType::Marker :
               return QCoreApplication::translate( "SymbolLayerItem", "Marker" );
-            case Qgis::SymbolType::Fill:
+            case Qgis::SymbolType::Fill   :
               return QCoreApplication::translate( "SymbolLayerItem", "Fill" );
-            case Qgis::SymbolType::Line:
+            case Qgis::SymbolType::Line   :
               return QCoreApplication::translate( "SymbolLayerItem", "Line" );
             default:
               return "Symbol";
@@ -215,7 +217,7 @@ class SymbolLayerItem : public QStandardItem
         if ( !mLayer->enabled() )
         {
           QPalette pal = qApp->palette();
-          QBrush brush = QStandardItem::data( role ).value<QBrush>();
+          QBrush brush = QStandardItem::data( role ).value< QBrush >();
           brush.setColor( pal.color( QPalette::Disabled, QPalette::WindowText ) );
           return brush;
         }
@@ -225,8 +227,8 @@ class SymbolLayerItem : public QStandardItem
         }
       }
 
-      //      if ( role == Qt::SizeHintRole )
-      //        return QVariant( QSize( 32, 32 ) );
+//      if ( role == Qt::SizeHintRole )
+//        return QVariant( QSize( 32, 32 ) );
       if ( role == Qt::CheckStateRole )
         return QVariant(); // could be true/false
       return QStandardItem::data( role );
@@ -235,11 +237,11 @@ class SymbolLayerItem : public QStandardItem
   protected:
     QgsSymbolLayer *mLayer = nullptr;
     QgsSymbol *mSymbol = nullptr;
-    QPointer<QgsVectorLayer> mVectorLayer;
+    QPointer< QgsVectorLayer > mVectorLayer;
     bool mIsLayer = false;
     QSize mSize;
     Qgis::SymbolType mSymbolType = Qgis::SymbolType::Hybrid;
-    QPointer<QScreen> mScreen;
+    QPointer< QScreen > mScreen;
 };
 
 ///@endcond
@@ -259,7 +261,7 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   setupUi( this );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  layersTree->setMaximumHeight( static_cast<int>( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 7 ) );
+  layersTree->setMaximumHeight( static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 7 ) );
   layersTree->setMinimumHeight( layersTree->maximumHeight() );
   lblPreview->setMaximumWidth( layersTree->maximumHeight() );
 
@@ -338,7 +340,8 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   connect( btnAddLayer, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::addLayer );
   connect( btnRemoveLayer, &QAbstractButton::clicked, this, &QgsSymbolSelectorWidget::removeLayer );
   connect( mLockColorAction, &QAction::toggled, this, &QgsSymbolSelectorWidget::lockLayer );
-  connect( mLockSelectionColorAction, &QAction::toggled, this, [=]( bool checked ) {
+  connect( mLockSelectionColorAction, &QAction::toggled, this, [ = ]( bool checked )
+  {
     QgsSymbolLayer *layer = currentLayer();
     if ( !layer )
       return;
@@ -380,7 +383,7 @@ QgsSymbolSelectorWidget::QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *s
   // need updating to reflect the new colors
   connect( QgsProject::instance(), &QgsProject::projectColorsChanged, this, &QgsSymbolSelectorWidget::projectDataChanged );
 
-  connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( const QList<QgsMapLayer *> &layers )>( &QgsProject::layersWillBeRemoved ), this, &QgsSymbolSelectorWidget::layersAboutToBeRemoved );
+  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QList<QgsMapLayer *>& layers ) > ( &QgsProject::layersWillBeRemoved ), this, &QgsSymbolSelectorWidget::layersAboutToBeRemoved );
 }
 
 QgsSymbolSelectorWidget *QgsSymbolSelectorWidget::createWidgetWithSymbolOwnership( std::unique_ptr<QgsSymbol> symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent )
@@ -416,9 +419,9 @@ void QgsSymbolSelectorWidget::setContext( const QgsSymbolWidgetContext &context 
   }
 
   QWidget *widget = stackedWidget->currentWidget();
-  if ( QgsLayerPropertiesWidget *layerProp = qobject_cast<QgsLayerPropertiesWidget *>( widget ) )
+  if ( QgsLayerPropertiesWidget *layerProp = qobject_cast< QgsLayerPropertiesWidget * >( widget ) )
     layerProp->setContext( context );
-  else if ( QgsSymbolsListWidget *listWidget = qobject_cast<QgsSymbolsListWidget *>( widget ) )
+  else if ( QgsSymbolsListWidget *listWidget = qobject_cast< QgsSymbolsListWidget * >( widget ) )
     listWidget->setContext( context );
 
   layerChanged();
@@ -507,7 +510,7 @@ void QgsSymbolSelectorWidget::updatePreview()
   if ( !mSymbol )
     return;
 
-  std::unique_ptr<QgsSymbol> symbolClone( mSymbol->clone() );
+  std::unique_ptr< QgsSymbol > symbolClone( mSymbol->clone() );
   const QImage preview = symbolClone->bigSymbolPreviewImage( &mPreviewExpressionContext, Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols, QgsScreenProperties( screen() ) );
   lblPreview->setPixmap( QPixmap::fromImage( preview ) );
   // Hope this is a appropriate place
@@ -669,9 +672,15 @@ void QgsSymbolSelectorWidget::addLayer()
   QgsSymbol *parentSymbol = item->symbol();
 
   // save data-defined values at marker level
-  const QgsProperty ddSize( parentSymbol->type() == Qgis::SymbolType::Marker ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedSize() : QgsProperty() );
-  const QgsProperty ddAngle( parentSymbol->type() == Qgis::SymbolType::Marker ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedAngle() : QgsProperty() );
-  const QgsProperty ddWidth( parentSymbol->type() == Qgis::SymbolType::Line ? static_cast<QgsLineSymbol *>( parentSymbol )->dataDefinedWidth() : QgsProperty() );
+  const QgsProperty ddSize( parentSymbol->type() == Qgis::SymbolType::Marker
+                            ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedSize()
+                            : QgsProperty() );
+  const QgsProperty ddAngle( parentSymbol->type() == Qgis::SymbolType::Marker
+                             ? static_cast<QgsMarkerSymbol *>( parentSymbol )->dataDefinedAngle()
+                             : QgsProperty() );
+  const QgsProperty ddWidth( parentSymbol->type() == Qgis::SymbolType::Line
+                             ? static_cast<QgsLineSymbol *>( parentSymbol )->dataDefinedWidth()
+                             : QgsProperty() );
 
   QgsSymbolLayer *newLayer = QgsSymbolLayerRegistry::defaultSymbolLayer( parentSymbol->type() );
   if ( insertIdx == -1 )
@@ -720,7 +729,7 @@ void QgsSymbolSelectorWidget::removeLayer()
 
 void QgsSymbolSelectorWidget::moveLayerDown()
 {
-  moveLayerByOffset( +1 );
+  moveLayerByOffset( + 1 );
 }
 
 void QgsSymbolSelectorWidget::moveLayerUp()
@@ -747,7 +756,7 @@ void QgsSymbolSelectorWidget::moveLayerByOffset( int offset )
   parent->insertRows( row + offset, rowItems );
   parent->updatePreview();
 
-  const QModelIndex newIdx = rowItems[0]->index();
+  const QModelIndex newIdx = rowItems[ 0 ]->index();
   layersTree->setCurrentIndex( newIdx );
 
   updatePreview();

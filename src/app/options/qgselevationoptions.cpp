@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgselevationoptions.h"
-#include "moc_qgselevationoptions.cpp"
 
 #include "qgssettings.h"
 #include "qgsapplication.h"
@@ -73,3 +72,4 @@ QString QgsElevationOptionsFactory::pagePositionHint() const
 {
   return QStringLiteral( "mOptionsPageColors" );
 }
+

@@ -34,6 +34,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
     Q_PROPERTY( double minScale READ minScale WRITE setMinScale )
 
   public:
+
     /**
      * Constructor for QgsScaleComboBox.
      */
@@ -118,7 +119,7 @@ class GUI_EXPORT QgsScaleComboBox : public QComboBox
      *
      * \since QGIS 3.38
     */
-    void setPredefinedScales( const QVector<double> &scales );
+    void setPredefinedScales( const QVector< double > &scales );
 
   signals:
 

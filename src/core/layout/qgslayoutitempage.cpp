@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgslayoutitempage.h"
-#include "moc_qgslayoutitempage.cpp"
 #include "qgslayout.h"
 #include "qgslayoututils.h"
 #include "qgspagesizeregistry.h"

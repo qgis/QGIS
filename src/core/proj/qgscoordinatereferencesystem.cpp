@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgscoordinatereferencesystem.h"
-#include "moc_qgscoordinatereferencesystem.cpp"
 #include "qgscoordinatereferencesystem_p.h"
 
 #include "qgscoordinatereferencesystem_legacy_p.h"
@@ -1688,11 +1687,7 @@ void QgsCoordinateReferenceSystem::setProjString( const QString &proj4String )
   {
 #ifdef QGISDEBUG
     const int errNo = proj_context_errno( ctx );
-#if PROJ_VERSION_MAJOR>=8
-    QgsDebugError( QStringLiteral( "proj string rejected: %1" ).arg( proj_context_errno_string( ctx, errNo ) ) );
-#else
     QgsDebugError( QStringLiteral( "proj string rejected: %1" ).arg( proj_errno_string( errNo ) ) );
-#endif
 #endif
     d->mIsValid = false;
   }
@@ -1724,13 +1719,9 @@ bool QgsCoordinateReferenceSystem::setWktString( const QString &wkt )
     QgsDebugMsgLevel( QStringLiteral( "This CRS could *** NOT *** be set from the supplied Wkt " ), 2 );
     QgsDebugMsgLevel( "INPUT: " + wkt, 2 );
     for ( auto iter = warnings; iter && *iter; ++iter )
-    {
       QgsDebugMsgLevel( *iter, 2 );
-    }
     for ( auto iter = grammarErrors; iter && *iter; ++iter )
-    {
       QgsDebugMsgLevel( *iter, 2 );
-    }
     QgsDebugMsgLevel( QStringLiteral( "---------------------------------------------------------------\n" ), 2 );
   }
   proj_string_list_destroy( warnings );
@@ -3250,7 +3241,7 @@ bool QgsCoordinateReferenceSystem::createFromProjObject( PJ *object )
     // maybe we can directly grab the auth name and code from the crs
     const QString authName( proj_get_id_auth_name( d->threadLocalProjObject(), 0 ) );
     const QString authCode( proj_get_id_code( d->threadLocalProjObject(), 0 ) );
-    if ( !authName.isEmpty() && !authCode.isEmpty() && createFromOgcWmsCrs( QStringLiteral( "%1:%2" ).arg( authName, authCode ) ) )
+    if ( !authName.isEmpty() && !authCode.isEmpty() && loadFromAuthCode( authName, authCode ) )
     {
       return d->mIsValid;
     }

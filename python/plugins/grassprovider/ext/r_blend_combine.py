@@ -15,21 +15,21 @@
 ***************************************************************************
 """
 
-__author__ = "Médéric Ribreux"
-__date__ = "February 2016"
-__copyright__ = "(C) 2016, Médéric Ribreux"
+__author__ = 'Médéric Ribreux'
+__date__ = 'February 2016'
+__copyright__ = '(C) 2016, Médéric Ribreux'
 
 
 def processInputs(alg, parameters, context, feedback):
-    if "first" and "second" in alg.exportedLayers:
+    if 'first' and 'second' in alg.exportedLayers:
         return
 
     # Use v.in.ogr
-    for name in ["first", "second"]:
+    for name in ['first', 'second']:
         alg.loadRasterLayerFromParameter(name, parameters, context, False, None)
     alg.postInputs(context)
 
 
 def processOutputs(alg, parameters, context, feedback):
     # Keep color table
-    alg.exportRasterLayerFromParameter("output", parameters, context)
+    alg.exportRasterLayerFromParameter('output', parameters, context)

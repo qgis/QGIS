@@ -71,11 +71,11 @@ class GUI_EXPORT QgsGraduatedSymbolRendererModel : public QAbstractItemModel
   private:
     QgsGraduatedSymbolRenderer *mRenderer = nullptr;
     QString mMimeFormat;
-    QPointer<QScreen> mScreen;
+    QPointer< QScreen > mScreen;
 };
 
 // View style which shows drop indicator line between items
-class QgsGraduatedSymbolRendererViewStyle : public QgsProxyStyle
+class QgsGraduatedSymbolRendererViewStyle: public QgsProxyStyle
 {
     Q_OBJECT
 
@@ -191,9 +191,9 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
 
     void clearParameterWidgets();
 
-    std::unique_ptr<QgsGraduatedSymbolRenderer> mRenderer;
+    std::unique_ptr< QgsGraduatedSymbolRenderer > mRenderer;
 
-    std::unique_ptr<QgsSymbol> mGraduatedSymbol;
+    std::unique_ptr< QgsSymbol > mGraduatedSymbol;
 
     int mRowSelected;
 
@@ -203,7 +203,7 @@ class GUI_EXPORT QgsGraduatedSymbolRendererWidget : public QgsRendererWidget, pr
 
     QgsDoubleValidator *mSymmetryPointValidator = nullptr;
     QAction *mActionLevels = nullptr;
-    std::vector<std::unique_ptr<QgsAbstractProcessingParameterWidgetWrapper>> mParameterWidgetWrappers;
+    std::vector< std::unique_ptr< QgsAbstractProcessingParameterWidgetWrapper >> mParameterWidgetWrappers;
 
     int mBlockUpdates = 0;
 

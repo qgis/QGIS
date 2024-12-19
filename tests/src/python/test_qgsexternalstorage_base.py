@@ -72,8 +72,7 @@ class TestPyQgsExternalStorageBase:
 
     def getNewFile(self, content, with_special_characters=False):
         """Return a newly created temporary file with content
-        if with_special_characters is True then add url reserved characters in the file name
-        """
+        if with_special_characters is True then add url reserved characters in the file name"""
 
         f = tempfile.NamedTemporaryFile(
             suffix=".txt",

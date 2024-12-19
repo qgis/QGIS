@@ -15,7 +15,6 @@
 
 
 #include "qgsmodelviewrubberband.h"
-#include "moc_qgsmodelviewrubberband.cpp"
 #include "qgsmodelgraphicsview.h"
 #include "qgsmodelgraphicsscene.h"
 #include <QGraphicsRectItem>
@@ -23,6 +22,7 @@
 QgsModelViewRubberBand::QgsModelViewRubberBand( QgsModelGraphicsView *view )
   : mView( view )
 {
+
 }
 
 QgsModelGraphicsView *QgsModelViewRubberBand::view() const

@@ -2,5 +2,5 @@
 try:
     QgsOrientedBox3D.fromBox3D = staticmethod(QgsOrientedBox3D.fromBox3D)
     QgsOrientedBox3D.__group__ = ['geometry']
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgscolorramptexture.h"
-#include "moc_qgscolorramptexture.cpp"
 
 /// @cond PRIVATE
 
@@ -38,7 +37,7 @@ Qt3DRender::QTextureImageDataPtr QgsColorRampTextureGenerator::operator()()
 
   QByteArray data;
   const QList<QgsColorRampShader::ColorRampItem> colorItemList = mColorRampShader.colorRampItemList();
-  const int size = colorItemList.count();
+  const int size = colorItemList.count() ;
 
   dataPtr->setWidth( size );
   dataPtr->setHeight( 1 );
@@ -81,8 +80,11 @@ bool QgsColorRampTextureGenerator::operator==( const Qt3DRender::QTextureImageDa
 // ColorRampTexture
 
 QgsColorRampTexture::QgsColorRampTexture( const QgsColorRampShader &colorRampShader, double verticalScale, Qt3DCore::QNode *parent )
-  : Qt3DRender::QAbstractTextureImage( parent ), mColorRampShader( colorRampShader ), mVerticalScale( verticalScale )
+  : Qt3DRender::QAbstractTextureImage( parent ),
+    mColorRampShader( colorRampShader ),
+    mVerticalScale( verticalScale )
 {
+
 }
 
 Qt3DRender::QTextureImageDataGeneratorPtr QgsColorRampTexture::dataGenerator() const

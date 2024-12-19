@@ -19,33 +19,33 @@ QgsMeshRendererVectorWindBarbSettings.WindSpeedUnit.__doc__ = """Wind speed unit
 # --
 try:
     QgsMeshRendererMeshSettings.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMeshRendererScalarSettings.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMeshRendererVectorArrowSettings.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMeshRendererVectorStreamlineSettings.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMeshRendererVectorTracesSettings.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMeshRendererVectorWindBarbSettings.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMeshRendererVectorSettings.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMeshRendererSettings.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass

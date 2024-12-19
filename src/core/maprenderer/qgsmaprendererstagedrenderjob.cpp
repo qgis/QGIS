@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmaprendererstagedrenderjob.h"
-#include "moc_qgsmaprendererstagedrenderjob.cpp"
 
 #include "qgsfeedback.h"
 #include "qgslabelingengine.h"

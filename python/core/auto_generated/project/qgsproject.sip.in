@@ -228,7 +228,7 @@ QGIS) project file to be overwritten when the project is next saved.
 .. versionadded:: 3.14
 %End
 
- QFileInfo fileInfo() const /Deprecated="Since 3.2. Use absoluteFilePath(), baseName() or lastModifiedTime() instead."/;
+ QFileInfo fileInfo() const /Deprecated/;
 %Docstring
 Returns QFileInfo object for the project's associated file.
 
@@ -961,7 +961,7 @@ Gets the list of layers which currently should not be taken into account on map 
    Use :py:func:`QgsMapLayer.setFlags()` instead.
 %End
 
- bool autoTransaction() const /Deprecated="Since 3.26. Use transactionMode() instead."/;
+ bool autoTransaction() const /Deprecated/;
 %Docstring
 Transactional editing means that on supported datasources (postgres databases) the edit state of
 all tables that originate from the same database are synchronized and executed in a server side
@@ -969,10 +969,10 @@ transaction.
 
 .. deprecated:: 3.26
 
-   Use :py:func:`~QgsProject.transactionMode` instead.
+   Use transactionMode instead.
 %End
 
- void setAutoTransaction( bool autoTransaction ) /Deprecated="Since 3.26. Use setTransactionMode() instead."/;
+ void setAutoTransaction( bool autoTransaction ) /Deprecated/;
 %Docstring
 Transactional editing means that on supported datasources (postgres databases) the edit state of
 all tables that originate from the same database are synchronized and executed in a server side
@@ -984,7 +984,7 @@ transaction.
 
 .. deprecated:: 3.26
 
-   Use :py:func:`~QgsProject.setTransactionMode` instead.
+   Use setTransactionMode instead.
 %End
 
     Qgis::TransactionMode transactionMode() const;
@@ -1028,7 +1028,7 @@ Returns the edit buffer group
 .. versionadded:: 3.26
 %End
 
- bool evaluateDefaultValues() const /Deprecated="Since 3.40. Test whether the flags() method returns the Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide flag instead."/;
+ bool evaluateDefaultValues() const /Deprecated/;
 %Docstring
 Should default values be evaluated on provider side when requested and not when committed.
 
@@ -1037,7 +1037,7 @@ Should default values be evaluated on provider side when requested and not when 
    Test whether the :py:func:`~QgsProject.flags` method returns the :py:class:`Qgis`.ProjectFlag.EvaluateDefaultValuesOnProviderSide flag instead.
 %End
 
- void setEvaluateDefaultValues( bool evaluateDefaultValues ) /Deprecated="Since 3.40. Use setFlag( Qgis.ProjectFlag.EvaluateDefaultValuesOnProviderSide ) instead."/;
+ void setEvaluateDefaultValues( bool evaluateDefaultValues ) /Deprecated/;
 %Docstring
 Defines if default values should be evaluated on provider side when requested and not when committed.
 
@@ -1065,7 +1065,6 @@ A list of layers with which intersections should be avoided.
 %Docstring
 Sets the list of layers with which intersections should be avoided.
 Only used if the avoid intersection mode is set to advanced.
-Line and point layers will not be added.
 %End
 
     void setAvoidIntersectionsMode( const Qgis::AvoidIntersectionsMode mode );
@@ -1375,7 +1374,7 @@ Returns the default CRS for new layers based on the settings and
 the current project CRS
 %End
 
- void setTrustLayerMetadata( bool trust ) /Deprecated="Since 3.40. Use setFlag( Qgis.ProjectFlag.TrustStoredLayerStatistics ) instead."/;
+ void setTrustLayerMetadata( bool trust ) /Deprecated/;
 %Docstring
 Sets the trust option allowing to indicate if the extent has to be
 read from the XML document when data source has no metadata or if the
@@ -1390,7 +1389,7 @@ materialized views with Postgres provider.
    Use setFlag( :py:class:`Qgis`.ProjectFlag.TrustStoredLayerStatistics ) instead.
 %End
 
- bool trustLayerMetadata() const /Deprecated="Since 3.40. Test whether the flags() method returns the Qgis.ProjectFlag.TrustStoredLayerStatistics flag instead."/;
+ bool trustLayerMetadata() const /Deprecated/;
 %Docstring
 Returns ``True`` if the trust option is activated, ``False`` otherwise. This
 option allows indicateing if the extent has to be read from the XML
@@ -1565,7 +1564,7 @@ Returns the color used to highlight selected features
 .. versionadded:: 3.10
 %End
 
- void setMapScales( const QVector<double> &scales ) /Deprecated="Since 3.40. Use viewSettings() instead."/;
+ void setMapScales( const QVector<double> &scales ) /Deprecated/;
 %Docstring
 Sets the list of custom project map ``scales``.
 
@@ -1581,7 +1580,7 @@ The ``scales`` list consists of a list of scale denominator values, e.g.
    Use :py:func:`~QgsProject.viewSettings` instead.
 %End
 
- QVector<double> mapScales() const /Deprecated="Since 3.40. Use viewSettings() instead."/;
+ QVector<double> mapScales() const /Deprecated/;
 %Docstring
 Returns the list of custom project map scales.
 
@@ -1597,7 +1596,7 @@ The scales list consists of a list of scale denominator values, e.g.
    Use :py:func:`~QgsProject.viewSettings` instead.
 %End
 
- void setUseProjectScales( bool enabled ) /Deprecated="Since 3.40. Use viewSettings() instead."/;
+ void setUseProjectScales( bool enabled ) /Deprecated/;
 %Docstring
 Sets whether project :py:func:`~QgsProject.mapScales` are ``enabled``.
 
@@ -1610,7 +1609,7 @@ Sets whether project :py:func:`~QgsProject.mapScales` are ``enabled``.
    Use :py:func:`~QgsProject.viewSettings` instead.
 %End
 
- bool useProjectScales() const /Deprecated="Since 3.40. Use viewSettings() instead."/;
+ bool useProjectScales() const /Deprecated/;
 %Docstring
 Returns ``True`` if project :py:func:`~QgsProject.mapScales` are enabled.
 
@@ -1729,7 +1728,7 @@ additional information to the layer.
 Emitted when the project file has been written and closed.
 %End
 
- void oldProjectVersionWarning( const QString &warning ) /Deprecated="Since 3.40. Use readVersionMismatchOccurred() instead."/;
+ void oldProjectVersionWarning( const QString &warning ) /Deprecated/;
 %Docstring
 Emitted when an old project file is read.
 
@@ -2120,7 +2119,7 @@ Emitted when setDirty(true) is called.
 .. versionadded:: 3.20
 %End
 
- void mapScalesChanged() /Deprecated="Since 3.40. Use viewSettings() instead."/;
+ void mapScalesChanged() /Deprecated/;
 %Docstring
 Emitted when the list of custom project map scales changes.
 

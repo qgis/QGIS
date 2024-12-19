@@ -27,5 +27,5 @@ void main()
     if (isScalarMagnitude)
         vs_out.magnitude=scalarMagnitude;
     else
-        vs_out.magnitude=worldPosition.z;
+        vs_out.magnitude=worldPosition.y;
 }

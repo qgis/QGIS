@@ -61,7 +61,6 @@ Sets the map layer for this record
         QSet<QString> expandedLegendItems;
 
         bool expandedLayerNode;
-
     };
 
     class MapThemeRecord
@@ -161,30 +160,6 @@ Sets a set of group identifiers for group nodes that should have checked state. 
 .. versionadded:: 3.10.1
 %End
 
-        static MapThemeRecord readXml( const QDomElement &element, const QgsProject *project );
-%Docstring
-Reads the map theme record from XML
-
-:param element: DOM element
-:param project: the QGIS project
-
-.. seealso:: :py:func:`writeXml`
-
-.. versionadded:: 3.42
-%End
-
-        void writeXml( QDomElement element, QDomDocument &document ) const;
-%Docstring
-Writes the map theme record to XML.
-
-:param element: DOM element
-:param document: DOM document
-
-.. seealso:: :py:func:`readXml`
-
-.. versionadded:: 3.42
-%End
-
     };
 
     QgsMapThemeCollection( QgsProject *project = 0 );
@@ -276,7 +251,7 @@ Reads the map theme collection state from XML
 .. seealso:: :py:func:`writeXml`
 %End
 
-    void writeXml( QDomDocument &doc ) const;
+    void writeXml( QDomDocument &doc );
 %Docstring
 Writes the map theme collection state to XML.
 

@@ -67,14 +67,14 @@ class GUI_EXPORT QgsCategorizedSymbolRendererModel : public QAbstractItemModel
   private:
     QgsCategorizedSymbolRenderer *mRenderer = nullptr;
     QString mMimeFormat;
-    QPointer<QScreen> mScreen;
+    QPointer< QScreen > mScreen;
 };
 
 /**
  * \ingroup gui
  * \brief View style which shows drop indicator line between items
  */
-class QgsCategorizedSymbolRendererViewStyle : public QgsProxyStyle
+class QgsCategorizedSymbolRendererViewStyle: public QgsProxyStyle
 {
     Q_OBJECT
 
@@ -88,7 +88,7 @@ class QgsCategorizedSymbolRendererViewStyle : public QgsProxyStyle
  * \ingroup gui
  * \brief Custom delegate for localized numeric input.
  */
-class QgsCategorizedRendererViewItemDelegate : public QStyledItemDelegate
+class QgsCategorizedRendererViewItemDelegate: public QStyledItemDelegate
 {
     Q_OBJECT
 
@@ -99,6 +99,7 @@ class QgsCategorizedRendererViewItemDelegate : public QStyledItemDelegate
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 
   private:
+
     QgsFieldExpressionWidget *mFieldExpressionWidget = nullptr;
 };
 
@@ -115,6 +116,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
 {
     Q_OBJECT
   public:
+
     // *INDENT-OFF*
 
     /**
@@ -125,7 +127,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
      */
     enum class CustomRole SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsCategorizedSymbolRendererWidget, CustomRoles ) : int
     {
-      Value SIP_MONKEYPATCH_COMPAT_NAME( ValueRole ) = Qt::UserRole + 1 //!< Category value
+      Value SIP_MONKEYPATCH_COMPAT_NAME(ValueRole) = Qt::UserRole + 1 //!< Category value
     };
     Q_ENUM( CustomRole )
     // *INDENT-ON*
@@ -217,6 +219,7 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void selectionChanged( const QItemSelection &selected, const QItemSelection &deselected );
 
   protected:
+
     void updateUiFromRenderer();
 
     // Called by virtual refreshSymbolView()
@@ -241,9 +244,9 @@ class GUI_EXPORT QgsCategorizedSymbolRendererWidget : public QgsRendererWidget, 
     void keyPressEvent( QKeyEvent *event ) override;
 
   protected:
-    std::unique_ptr<QgsCategorizedSymbolRenderer> mRenderer;
+    std::unique_ptr< QgsCategorizedSymbolRenderer > mRenderer;
 
-    std::unique_ptr<QgsSymbol> mCategorizedSymbol;
+    std::unique_ptr< QgsSymbol > mCategorizedSymbol;
 
     QgsCategorizedSymbolRendererModel *mModel = nullptr;
 

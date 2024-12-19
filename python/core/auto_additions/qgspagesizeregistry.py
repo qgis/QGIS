@@ -2,9 +2,9 @@
 try:
     QgsPageSize.__attribute_docs__ = {'name': 'Name of page size', 'size': 'Page size', 'displayName': 'Translated page name'}
     QgsPageSize.__group__ = ['layout']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsPageSizeRegistry.__group__ = ['layout']
-except (NameError, AttributeError):
+except NameError:
     pass

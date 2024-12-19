@@ -19,14 +19,17 @@
 
 class QgsRuntimeProfiler;
 
-class QgsProfilerWidgetFactory : public QgsDevToolWidgetFactory
+class QgsProfilerWidgetFactory: public QgsDevToolWidgetFactory
 {
   public:
+
     QgsProfilerWidgetFactory( QgsRuntimeProfiler *profiler );
     QgsDevToolWidget *createWidget( QWidget *parent = nullptr ) const override;
 
   private:
+
     QgsRuntimeProfiler *mProfiler = nullptr;
+
 };
 
 

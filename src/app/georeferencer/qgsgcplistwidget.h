@@ -74,11 +74,11 @@ class QgsGCPListWidget : public QgsTableView
     void createItemContextMenu();
     void adjustTableContent();
 
-    QgsGCPList *mGCPList = nullptr;
-    QgsGCPListModel *mGCPListModel = nullptr;
+    QgsGCPList               *mGCPList = nullptr;
+    QgsGCPListModel          *mGCPListModel = nullptr;
 
-    QgsDmsAndDdDelegate *mDmsAndDdDelegate = nullptr;
-    QgsCoordDelegate *mCoordDelegate = nullptr;
+    QgsDmsAndDdDelegate      *mDmsAndDdDelegate = nullptr;
+    QgsCoordDelegate         *mCoordDelegate = nullptr;
 
     int mPrevRow = 0;
     int mPrevColumn = 0;

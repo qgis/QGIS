@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>297</width>
-    <height>211</height>
+    <height>182</height>
    </rect>
   </property>
   <property name="floating">
@@ -18,6 +18,9 @@
   </property>
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QGridLayout" name="gridLayout">
+    <item row="3" column="1">
+     <widget class="QgsExpressionLineEdit" name="mExpressionEditZ" native="true"/>
+    </item>
     <item row="1" column="0">
      <widget class="QCheckBox" name="mCheckBoxX">
       <property name="text">
@@ -25,16 +28,10 @@
       </property>
      </widget>
     </item>
-    <item row="2" column="1">
-     <widget class="QgsExpressionLineEdit" name="mExpressionEditY" native="true"/>
-    </item>
-    <item row="3" column="1">
-     <widget class="QgsExpressionLineEdit" name="mExpressionEditZ" native="true"/>
-    </item>
-    <item row="3" column="0">
-     <widget class="QCheckBox" name="mCheckBoxZ">
+    <item row="2" column="0">
+     <widget class="QCheckBox" name="mCheckBoxY">
       <property name="text">
-       <string>Z value</string>
+       <string>Y coordinate</string>
       </property>
      </widget>
     </item>
@@ -59,10 +56,16 @@
       </item>
      </layout>
     </item>
-    <item row="2" column="0">
-     <widget class="QCheckBox" name="mCheckBoxY">
+    <item row="1" column="1">
+     <widget class="QgsExpressionLineEdit" name="mExpressionEditX" native="true"/>
+    </item>
+    <item row="2" column="1">
+     <widget class="QgsExpressionLineEdit" name="mExpressionEditY" native="true"/>
+    </item>
+    <item row="3" column="0">
+     <widget class="QCheckBox" name="mCheckBoxZ">
       <property name="text">
-       <string>Y coordinate</string>
+       <string>Z value</string>
       </property>
      </widget>
     </item>
@@ -134,7 +137,7 @@
       </item>
      </layout>
     </item>
-    <item row="6" column="0">
+    <item row="5" column="0">
      <spacer name="verticalSpacer">
       <property name="orientation">
        <enum>Qt::Vertical</enum>
@@ -146,19 +149,6 @@
        </size>
       </property>
      </spacer>
-    </item>
-    <item row="1" column="1">
-     <widget class="QgsExpressionLineEdit" name="mExpressionEditX" native="true"/>
-    </item>
-    <item row="5" column="0" colspan="2">
-     <widget class="QPushButton" name="mGetZValuesButton">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string>Get Z value from project terrain</string>
-      </property>
-     </widget>
     </item>
    </layout>
   </widget>

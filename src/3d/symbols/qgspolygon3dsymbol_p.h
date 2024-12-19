@@ -38,7 +38,7 @@ namespace Qgs3DSymbolImpl
 {
   //! factory method for QgsPolygon3DSymbol
   QgsFeature3DHandler *handlerForPolygon3DSymbol( QgsVectorLayer *layer, const QgsAbstract3DSymbol *symbol );
-} // namespace Qgs3DSymbolImpl
+}
 
 /// @endcond
 

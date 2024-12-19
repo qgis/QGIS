@@ -48,6 +48,7 @@ class GUI_EXPORT QgsProcessingAbstractParameterDefinitionWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Creates a new QgsProcessingAbstractParameterDefinitionWidget, with the specified \a parent widget.
      *
@@ -62,7 +63,10 @@ class GUI_EXPORT QgsProcessingAbstractParameterDefinitionWidget : public QWidget
      * Additionally, the optional \a algorithm parameter may be used to specify the algorithm or model
      * associated with the parameter.
      */
-    QgsProcessingAbstractParameterDefinitionWidget( QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingAbstractParameterDefinitionWidget( QgsProcessingContext &context,
+        const QgsProcessingParameterWidgetContext &widgetContext,
+        const QgsProcessingParameterDefinition *definition = nullptr,
+        const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns a new instance of a parameter definition, using the current settings defined in the dialog.
@@ -106,6 +110,7 @@ class GUI_EXPORT QgsProcessingAbstractParameterDefinitionWidget : public QWidget
     QgsExpressionContext createExpressionContext() const override;
 
   private:
+
     QgsProcessingContextGenerator *mContextGenerator = nullptr;
     QgsProcessingParameterWidgetContext mWidgetContext;
 };
@@ -117,10 +122,11 @@ class GUI_EXPORT QgsProcessingAbstractParameterDefinitionWidget : public QWidget
  * \ingroup gui
  * \since QGIS 3.10
  */
-class GUI_EXPORT QgsProcessingParameterDefinitionWidget : public QWidget
+class GUI_EXPORT QgsProcessingParameterDefinitionWidget: public QWidget
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsProcessingParameterDefinitionWidget, for a parameter of the
      * specified \a type.
@@ -137,7 +143,12 @@ class GUI_EXPORT QgsProcessingParameterDefinitionWidget : public QWidget
      * associated with the parameter.
      *
      */
-    QgsProcessingParameterDefinitionWidget( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingParameterDefinitionWidget( const QString &type,
+                                            QgsProcessingContext &context,
+                                            const QgsProcessingParameterWidgetContext &widgetContext,
+                                            const QgsProcessingParameterDefinition *definition = nullptr,
+                                            const QgsProcessingAlgorithm *algorithm = nullptr,
+                                            QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns a new instance of a parameter definition, using the current settings defined in the dialog.
@@ -155,6 +166,7 @@ class GUI_EXPORT QgsProcessingParameterDefinitionWidget : public QWidget
     void registerProcessingContextGenerator( QgsProcessingContextGenerator *generator );
 
   private:
+
     QString mType;
     QgsProcessingAbstractParameterDefinitionWidget *mDefinitionWidget = nullptr;
     QLineEdit *mDescriptionLineEdit = nullptr;
@@ -162,6 +174,7 @@ class GUI_EXPORT QgsProcessingParameterDefinitionWidget : public QWidget
     QCheckBox *mAdvancedCheckBox = nullptr;
 
     friend class QgsProcessingParameterDefinitionDialog;
+
 };
 
 /**
@@ -170,10 +183,11 @@ class GUI_EXPORT QgsProcessingParameterDefinitionWidget : public QWidget
  * \ingroup gui
  * \since QGIS 3.10
  */
-class GUI_EXPORT QgsProcessingParameterDefinitionDialog : public QDialog
+class GUI_EXPORT QgsProcessingParameterDefinitionDialog: public QDialog
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsProcessingParameterDefinitionDialog, for a parameter of the
      * specified \a type.
@@ -190,7 +204,12 @@ class GUI_EXPORT QgsProcessingParameterDefinitionDialog : public QDialog
      * associated with the parameter.
      *
      */
-    QgsProcessingParameterDefinitionDialog( const QString &type, QgsProcessingContext &context, const QgsProcessingParameterWidgetContext &widgetContext, const QgsProcessingParameterDefinition *definition = nullptr, const QgsProcessingAlgorithm *algorithm = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    QgsProcessingParameterDefinitionDialog( const QString &type,
+                                            QgsProcessingContext &context,
+                                            const QgsProcessingParameterWidgetContext &widgetContext,
+                                            const QgsProcessingParameterDefinition *definition = nullptr,
+                                            const QgsProcessingAlgorithm *algorithm = nullptr,
+                                            QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns a new instance of a parameter definition, using the current settings defined in the dialog.
@@ -244,10 +263,12 @@ class GUI_EXPORT QgsProcessingParameterDefinitionDialog : public QDialog
     void accept() override;
 
   private:
+
     QTabWidget *mTabWidget = nullptr;
     QTextEdit *mCommentEdit = nullptr;
     QgsColorButton *mCommentColorButton = nullptr;
     QgsProcessingParameterDefinitionWidget *mWidget = nullptr;
+
 };
 
 

@@ -15,16 +15,16 @@
 ***************************************************************************
 """
 
-__author__ = "Andrea Giudiceandrea"
-__date__ = "June 2023"
-__copyright__ = "(C) 2023, Andrea Giudiceandrea"
+__author__ = 'Andrea Giudiceandrea'
+__date__ = 'June 2023'
+__copyright__ = '(C) 2023, Andrea Giudiceandrea'
 
 
 def checkParameterValuesBeforeExecuting(alg, parameters, context):
-    """Verify if we have the right parameters"""
+    """ Verify if we have the right parameters """
     # rules and column parameters are mutually exclusive
-    rules = alg.parameterAsString(parameters, "rules", context)
-    column = alg.parameterAsString(parameters, "column", context)
+    rules = alg.parameterAsString(parameters, 'rules', context)
+    column = alg.parameterAsString(parameters, 'column', context)
     if (rules and column) or (not rules and not column):
         return False, alg.tr("You need to set either a rules file or a column!")
 

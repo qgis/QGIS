@@ -20,6 +20,7 @@ Widget for viewing and editing authentication identities database
 #include "qgsauthauthoritieseditor.h"
 %End
   public:
+
     explicit QgsAuthAuthoritiesEditor( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Widget for viewing and editing certificate authorities directly in database

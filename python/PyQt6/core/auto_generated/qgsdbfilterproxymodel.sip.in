@@ -10,7 +10,7 @@
 
 
 
-class QgsDatabaseFilterProxyModel : QSortFilterProxyModel /Deprecated="Since 3.24. "/
+class QgsDatabaseFilterProxyModel : QSortFilterProxyModel /Deprecated/
 {
 %Docstring(signature="appended")
 A class that implements a custom filter and can be used

@@ -21,6 +21,7 @@ A widget which allows the user to modify the rendering order of symbol layers.
 #include "qgssymbollevelsdialog.h"
 %End
   public:
+
     QgsSymbolLevelsWidget( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSymbolLevelsWidget
@@ -54,7 +55,7 @@ Sets whether the level ordering is always forced on and hide the checkbox (used 
 
   public slots:
 
- void apply() /Deprecated="Since 3.20. Use symbolLevels() and manually apply the changes to the renderer as appropriate."/;
+ void apply() /Deprecated/;
 %Docstring
 Apply button.
 
@@ -78,6 +79,7 @@ A dialog which allows the user to modify the rendering order of symbol layers.
 #include "qgssymbollevelsdialog.h"
 %End
   public:
+
     QgsSymbolLevelsDialog( QgsFeatureRenderer *renderer, bool usingSymbolLevels, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSymbolLevelsDialog.

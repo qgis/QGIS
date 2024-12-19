@@ -38,6 +38,7 @@ class APP_EXPORT QgsFixAttributeDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Feedback code on closing the dialog
      */
@@ -83,3 +84,4 @@ class APP_EXPORT QgsFixAttributeDialog : public QDialog
 };
 
 #endif // QGSFIXATTRIBUTEDIALOG_H
+

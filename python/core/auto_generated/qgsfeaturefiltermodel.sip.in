@@ -33,7 +33,7 @@ If there are several identifier fields defined, the behavior is not guaranteed
 
 .. deprecated:: 3.10
 
-   Use :py:func:`~QgsFeatureFilterModel.identifierFields` instead.
+   Use identifierFields instead.
 %End
 
     QStringList identifierFields() const;

@@ -38,6 +38,7 @@ class GUI_EXPORT QgsAbstractHistoryProvider : public QObject
     Q_OBJECT
 
   public:
+
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsProcessingHistoryProvider *>( sipCpp ) )
@@ -67,6 +68,10 @@ class GUI_EXPORT QgsAbstractHistoryProvider : public QObject
      * \since QGIS 3.32
      */
     virtual void updateNodeForEntry( QgsHistoryEntryNode *node, const QgsHistoryEntry &entry, const QgsHistoryWidgetContext &context );
+
 };
 
 #endif //QGSHISTORYPROVIDER_H
+
+
+

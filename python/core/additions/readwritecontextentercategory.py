@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 ***************************************************************************
     readwritecontextentercategory.py
@@ -16,7 +18,7 @@
 """
 
 
-class ReadWriteContextEnterCategory:
+class ReadWriteContextEnterCategory():
     """
     Push a category to the stack
 

@@ -4,5 +4,5 @@ try:
     QgsTiledSceneWireframeRenderer.createDefaultFillSymbol = staticmethod(QgsTiledSceneWireframeRenderer.createDefaultFillSymbol)
     QgsTiledSceneWireframeRenderer.createDefaultLineSymbol = staticmethod(QgsTiledSceneWireframeRenderer.createDefaultLineSymbol)
     QgsTiledSceneWireframeRenderer.__group__ = ['tiledscene']
-except (NameError, AttributeError):
+except NameError:
     pass

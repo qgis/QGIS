@@ -25,7 +25,6 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrasteriterator.h"
 #include "qgsgrassimport.h"
-#include "moc_qgsgrassimport.cpp"
 
 #include <QFileInfo>
 
@@ -191,7 +190,8 @@ void QgsGrassImport::cancel()
 }
 
 //------------------------------ QgsGrassRasterImport ------------------------------------
-QgsGrassRasterImport::QgsGrassRasterImport( QgsRasterPipe *pipe, const QgsGrassObject &grassObject, const QgsRectangle &extent, int xSize, int ySize )
+QgsGrassRasterImport::QgsGrassRasterImport( QgsRasterPipe *pipe, const QgsGrassObject &grassObject,
+    const QgsRectangle &extent, int xSize, int ySize )
   : QgsGrassImport( grassObject )
   , mPipe( pipe )
   , mExtent( extent )
@@ -281,14 +281,14 @@ bool QgsGrassRasterImport::import()
         break;
       case Qgis::DataType::ARGB32:
       case Qgis::DataType::ARGB32_Premultiplied:
-        qgis_out_type = Qgis::DataType::Int32; // split to multiple bands?
+        qgis_out_type = Qgis::DataType::Int32;  // split to multiple bands?
         break;
       case Qgis::DataType::CInt16:
       case Qgis::DataType::CInt32:
       case Qgis::DataType::CFloat32:
       case Qgis::DataType::CFloat64:
       case Qgis::DataType::UnknownDataType:
-        setError( tr( "Data type %1 not supported" ).arg( static_cast<int>( provider->dataType( band ) ) ) );
+        setError( tr( "Data type %1 not supported" ).arg( static_cast< int >( provider->dataType( band ) ) ) );
         return false;
     }
 
@@ -302,7 +302,7 @@ bool QgsGrassRasterImport::import()
       // raster.<band> to keep in sync with r.in.gdal
       name += QStringLiteral( ".%1" ).arg( band );
     }
-    arguments.append( "output=" + name ); // get list of all output names
+    arguments.append( "output=" + name );    // get list of all output names
     QTemporaryFile gisrcFile;
     try
     {
@@ -327,8 +327,8 @@ bool QgsGrassRasterImport::import()
 
     outStream << ( qint32 ) defaultWindow.proj;
     outStream << ( qint32 ) defaultWindow.zone;
-    outStream << mExtent << ( qint32 ) mXSize << ( qint32 ) mYSize;
-    outStream << ( qint32 ) qgis_out_type;
+    outStream << mExtent << ( qint32 )mXSize << ( qint32 )mYSize;
+    outStream << ( qint32 )qgis_out_type;
 
     // calculate reasonable block size (5MB)
     int maximumTileHeight = 5000000 / mXSize;
@@ -360,7 +360,7 @@ bool QgsGrassRasterImport::import()
 
         if ( !block->convert( qgis_out_type ) )
         {
-          setError( tr( "Cannot convert block (%1) to data type %2" ).arg( block->toString() ).arg( qgsEnumValueToKey<Qgis::DataType>( qgis_out_type ) ) );
+          setError( tr( "Cannot convert block (%1) to data type %2" ).arg( block->toString() ).arg( qgsEnumValueToKey< Qgis::DataType >( qgis_out_type ) ) );
           delete block;
           return false;
         }
@@ -386,7 +386,7 @@ bool QgsGrassRasterImport::import()
             default: // should not happen
               noDataValue = std::numeric_limits<double>::max() * -1.0;
           }
-          for ( qgssize i = 0; i < ( qgssize ) block->width() * block->height(); i++ )
+          for ( qgssize i = 0; i < ( qgssize )block->width()*block->height(); i++ )
           {
             if ( block->isNoData( i ) )
             {
@@ -437,10 +437,9 @@ bool QgsGrassRasterImport::import()
 #ifdef QGISDEBUG
     QString stdoutString = mProcess->readAllStandardOutput().constData();
     QString processResult = QStringLiteral( "exitStatus=%1, exitCode=%2, error=%3, errorString=%4 stdout=%5, stderr=%6" )
-                              .arg( mProcess->exitStatus() )
-                              .arg( mProcess->exitCode() )
-                              .arg( mProcess->error() )
-                              .arg( mProcess->errorString(), stdoutString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ), stderrString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ) );
+                            .arg( mProcess->exitStatus() ).arg( mProcess->exitCode() )
+                            .arg( mProcess->error() ).arg( mProcess->errorString(),
+                                stdoutString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ), stderrString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ) );
     QgsDebugMsgLevel( "processResult: " + processResult, 3 );
 #endif
 
@@ -550,6 +549,7 @@ QgsGrassVectorImport::~QgsGrassVectorImport()
 
 bool QgsGrassVectorImport::import()
 {
+
   if ( !mProvider )
   {
     setError( QStringLiteral( "Provider is null." ) );
@@ -596,7 +596,7 @@ bool QgsGrassVectorImport::import()
 
   Qgis::WkbType wkbType = mProvider->wkbType();
   bool isPolygon = QgsWkbTypes::singleType( QgsWkbTypes::flatType( wkbType ) ) == Qgis::WkbType::Polygon;
-  outStream << ( qint32 ) wkbType;
+  outStream << ( qint32 )wkbType;
 
   outStream << mProvider->fields();
 
@@ -684,7 +684,7 @@ bool QgsGrassVectorImport::import()
     }
 
     feature = QgsFeature(); // indicate end by invalid feature
-    outStream << false;     // not canceled
+    outStream << false; // not canceled
     outStream << feature;
 
     mProcess->waitForBytesWritten( -1 );
@@ -719,10 +719,9 @@ bool QgsGrassVectorImport::import()
 
 #ifdef QGISDEBUG
   QString processResult = QStringLiteral( "exitStatus=%1, exitCode=%2, error=%3, errorString=%4 stdout=%5, stderr=%6" )
-                            .arg( mProcess->exitStatus() )
-                            .arg( mProcess->exitCode() )
-                            .arg( mProcess->error() )
-                            .arg( mProcess->errorString(), stdoutString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ), stderrString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ) );
+                          .arg( mProcess->exitStatus() ).arg( mProcess->exitCode() )
+                          .arg( mProcess->error() ).arg( mProcess->errorString(),
+                              stdoutString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ), stderrString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ) );
   QgsDebugMsgLevel( "processResult: " + processResult, 3 );
 #endif
 
@@ -765,6 +764,7 @@ QgsGrassCopy::QgsGrassCopy( const QgsGrassObject &srcObject, const QgsGrassObjec
 
 bool QgsGrassCopy::import()
 {
+
   try
   {
     QgsGrass::copyObject( mSrcObject, mGrassObject );
@@ -793,6 +793,7 @@ QgsGrassExternal::QgsGrassExternal( const QString &gdalSource, const QgsGrassObj
 
 bool QgsGrassExternal::import()
 {
+
   try
   {
     QString cmd = QgsGrass::gisbase() + "/bin/r.external";

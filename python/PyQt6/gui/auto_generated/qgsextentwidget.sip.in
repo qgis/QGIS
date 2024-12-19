@@ -31,6 +31,7 @@ When using the widget, make sure to call :py:func:`~setOriginalExtent`, :py:func
 #include "qgsextentwidget.h"
 %End
   public:
+
     enum ExtentState /BaseType=IntEnum/
     {
       OriginalExtent,
@@ -230,6 +231,7 @@ to permit access to the map canvas)
 %End
 
   protected:
+
     virtual void dragEnterEvent( QDragEnterEvent *event );
 
     virtual void dragLeaveEvent( QDragLeaveEvent *event );

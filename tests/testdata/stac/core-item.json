@@ -81,7 +81,7 @@
   ],
   "assets": {
     "analytic": {
-      "href": "./20201211_223832_CS2_analytic.tif",
+      "href": "https://storage.googleapis.com/open-cogs/stac-examples/20201211_223832_CS2_analytic.tif",
       "type": "image/tiff; application=geotiff; profile=cloud-optimized",
       "title": "4-Band Analytic",
       "roles": [

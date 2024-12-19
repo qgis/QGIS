@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsgrouplayer.h"
-#include "moc_qgsgrouplayer.cpp"
 #include "qgsmaplayerfactory.h"
 #include "qgspainting.h"
 #include "qgsmaplayerlistutils_p.h"

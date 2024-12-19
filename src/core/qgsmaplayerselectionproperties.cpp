@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsmaplayerselectionproperties.h"
-#include "moc_qgsmaplayerselectionproperties.cpp"
 
 QgsMapLayerSelectionProperties::QgsMapLayerSelectionProperties( QObject *parent )
   : QObject( parent )

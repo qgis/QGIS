@@ -16,7 +16,6 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 
 #include "qgsogrprovider.h"
-#include "moc_qgsogrprovider.cpp"
 ///@cond PRIVATE
 
 #include "qgscplerrorhandler_p.h"
@@ -40,7 +39,6 @@ email                : sherman at mrcc.com
 #include "qgsvariantutils.h"
 #include "qgsjsonutils.h"
 #include "qgssetrequestinitiator_p.h"
-#include "qgsthreadingutils.h"
 
 #include <nlohmann/json.hpp>
 
@@ -626,8 +624,6 @@ QString QgsOgrProvider::subsetStringHelpUrl() const
 uint QgsOgrProvider::subLayerCount() const
 {
   uint count = layerCount();
-  if ( count == 0 )
-    return 0;
 
   QString errCause;
   QgsOgrLayerUniquePtr layerStyles = QgsOgrProviderUtils::getLayer( mFilePath, QStringLiteral( "layer_styles" ), errCause );
@@ -1237,7 +1233,7 @@ QgsRectangle QgsOgrProvider::extent() const
     QgsCPLHTTPFetchOverrider oCPLHTTPFetcher( mAuthCfg );
     QgsSetCPLHTTPFetchOverriderInitiatorClass( oCPLHTTPFetcher, QStringLiteral( "QgsOgrProvider" ) );
 
-    mExtent2D.reset( new OGREnvelope() );
+    mExtent2D.reset( new OGREnvelope3D() );
 
     // get the extent_ (envelope) of the layer
     QgsDebugMsgLevel( QStringLiteral( "Starting computing extent. subset: '%1'" ).arg( mSubsetString ), 3 );
@@ -1286,16 +1282,8 @@ QgsRectangle QgsOgrProvider::extent() const
     else
     {
       QgsDebugMsgLevel( QStringLiteral( "will apply slow default 2D extent computing" ), 3 );
-      OGREnvelope3D sExtent3D;
-      OGRErr err = mOgrLayer->computeExtent3DSlowly( &sExtent3D );
-      if ( err == OGRERR_NONE )
-      {
-        mExtent2D->MinX = sExtent3D.MinX;
-        mExtent2D->MinY = sExtent3D.MinY;
-        mExtent2D->MaxX = sExtent3D.MaxX;
-        mExtent2D->MaxY = sExtent3D.MaxY;
-      }
-      else
+      OGRErr err = mOgrLayer->computeExtent3DSlowly( mExtent2D.get() );
+      if ( err != OGRERR_NONE )
       {
         QgsDebugMsgLevel( QStringLiteral( "Failure: unable to compute slow extent2D (ogr error: %1)" ).arg( err ), 1 );
         mExtent2D.reset();
@@ -1366,16 +1354,7 @@ QgsBox3D QgsOgrProvider::extent3D() const
         mOgrOrigLayer->ExecuteSQLNoReturn( sql );
       }
       else
-      {
-        OGREnvelope envelope2D;
-        if ( mOgrLayer->GetExtent( &envelope2D, true ) == OGRERR_NONE ) // switch OLCFastGetExtent flag to TRUE
-        {
-          mExtent3D->MinX = envelope2D.MinX;
-          mExtent3D->MinY = envelope2D.MinY;
-          mExtent3D->MaxX = envelope2D.MaxX;
-          mExtent3D->MaxY = envelope2D.MaxY;
-        }
-      }
+        mOgrLayer->GetExtent( mExtent3D.get(), true ); // switch OLCFastGetExtent flag to TRUE
 
       if ( !mOgrLayer->TestCapability( OLCFastGetExtent ) )
       {
@@ -3505,27 +3484,6 @@ Qgis::VectorDataProviderAttributeEditCapabilities QgsOgrProvider::attributeEditC
   return mAttributeEditCapabilities;
 }
 
-QgsAttributeList QgsOgrProvider::pkAttributeIndexes() const
-{
-  return mPrimaryKeyAttrs;
-}
-
-QString QgsOgrProvider::geometryColumnName() const
-{
-  QGIS_PROTECT_QOBJECT_THREAD_ACCESS
-
-  if ( !mOgrLayer )
-    return QString();
-
-  QgsOgrFeatureDefn &featureDefinition = mOgrLayer->GetLayerDefn();
-  if ( featureDefinition.GetGeomFieldCount() )
-  {
-    OGRGeomFieldDefnH geomH = featureDefinition.GetGeomFieldDefn( 0 );
-    return QString::fromUtf8( OGR_GFld_GetNameRef( geomH ) );
-  }
-  return QString();
-}
-
 void QgsOgrProvider::computeCapabilities()
 {
   Qgis::VectorProviderCapabilities ability;
@@ -4760,8 +4718,5 @@ QString QgsOgrProvider::fileVectorFilters() const
 {
   return QgsOgrProviderUtils::fileVectorFilters();
 }
-
-#undef TEXT_PROVIDER_KEY
-#undef TEXT_PROVIDER_DESCRIPTION
 
 ///@endcond

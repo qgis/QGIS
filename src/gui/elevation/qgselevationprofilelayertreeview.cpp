@@ -17,7 +17,6 @@
  ***************************************************************************/
 
 #include "qgselevationprofilelayertreeview.h"
-#include "moc_qgselevationprofilelayertreeview.cpp"
 #include "qgslayertreenode.h"
 #include "qgslayertree.h"
 #include "qgssymbollayerutils.h"
@@ -60,19 +59,20 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
           std::unique_ptr<QgsRenderContext> context( createTemporaryRenderContext() );
 
           const int iconSize = scaleIconSize( 16 );
-          std::unique_ptr<QgsSymbol> symbol;
+          std::unique_ptr< QgsSymbol > symbol;
           switch ( layer->type() )
           {
             case Qgis::LayerType::Vector:
             {
-              QgsVectorLayerElevationProperties *elevationProperties = qgis::down_cast<QgsVectorLayerElevationProperties *>( layer->elevationProperties() );
-              QgsVectorLayer *vLayer = qobject_cast<QgsVectorLayer *>( layer );
+              QgsVectorLayerElevationProperties *elevationProperties = qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() );
+              QgsVectorLayer *vLayer = qobject_cast< QgsVectorLayer * >( layer );
 
               switch ( elevationProperties->type() )
               {
                 case Qgis::VectorProfileType::IndividualFeatures:
                   if ( ( vLayer->geometryType() == Qgis::GeometryType::Point && !elevationProperties->extrusionEnabled() )
-                       || ( vLayer->geometryType() == Qgis::GeometryType::Line && !elevationProperties->extrusionEnabled() ) )
+                       || ( vLayer->geometryType() == Qgis::GeometryType::Line && !elevationProperties->extrusionEnabled() )
+                     )
                   {
                     if ( QgsMarkerSymbol *markerSymbol = elevationProperties->profileMarkerSymbol() )
                     {
@@ -98,7 +98,7 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
 
                   if ( elevationProperties->respectLayerSymbology() )
                   {
-                    if ( QgsSingleSymbolRenderer *renderer = dynamic_cast<QgsSingleSymbolRenderer *>( qobject_cast<QgsVectorLayer *>( layer )->renderer() ) )
+                    if ( QgsSingleSymbolRenderer *renderer = dynamic_cast< QgsSingleSymbolRenderer * >( qobject_cast< QgsVectorLayer * >( layer )->renderer() ) )
                     {
                       if ( renderer->symbol()->type() == symbol->type() )
                       {
@@ -138,13 +138,14 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
                       break;
                   }
                   break;
+
               }
               break;
             }
 
             case Qgis::LayerType::Raster:
             {
-              QgsRasterLayerElevationProperties *rlProps = qgis::down_cast<QgsRasterLayerElevationProperties *>( layer->elevationProperties() );
+              QgsRasterLayerElevationProperties *rlProps = qgis::down_cast< QgsRasterLayerElevationProperties * >( layer->elevationProperties() );
               switch ( rlProps->profileSymbology() )
               {
                 case Qgis::ProfileSurfaceSymbology::Line:
@@ -166,7 +167,7 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
 
             case Qgis::LayerType::Mesh:
             {
-              QgsMeshLayerElevationProperties *mlProps = qgis::down_cast<QgsMeshLayerElevationProperties *>( layer->elevationProperties() );
+              QgsMeshLayerElevationProperties *mlProps = qgis::down_cast< QgsMeshLayerElevationProperties * >( layer->elevationProperties() );
               switch ( mlProps->profileSymbology() )
               {
                 case Qgis::ProfileSurfaceSymbology::Line:
@@ -212,9 +213,11 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
       {
         if ( QgsMapLayer *layer = QgsLayerTree::toLayer( node )->layer() )
         {
-          QString title = !layer->metadata().title().isEmpty() ? layer->metadata().title() : !layer->serverProperties()->title().isEmpty()     ? layer->serverProperties()->title()
-                                                                                           : !layer->serverProperties()->shortName().isEmpty() ? layer->serverProperties()->shortName()
-                                                                                                                                               : layer->name();
+          QString title =
+            !layer->metadata().title().isEmpty() ? layer->metadata().title() :
+            !layer->serverProperties()->title().isEmpty() ? layer->serverProperties()->title() :
+            !layer->serverProperties()->shortName().isEmpty() ? layer->serverProperties()->shortName() :
+            layer->name();
 
           title = "<b>" + title.toHtmlEscaped() + "</b>";
 
@@ -222,7 +225,7 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
           parts << title;
 
           const QString elevationPropertiesSummary = layer->elevationProperties() ? layer->elevationProperties()->htmlSummary() : QString();
-          if ( !elevationPropertiesSummary.isEmpty() )
+          if ( !elevationPropertiesSummary.isEmpty( ) )
             parts << elevationPropertiesSummary;
 
           return parts.join( QLatin1String( "<br/>" ) );
@@ -239,11 +242,11 @@ QVariant QgsElevationProfileLayerTreeModel::data( const QModelIndex &index, int 
 
 bool QgsElevationProfileLayerTreeModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  if ( QgsLayerTreeLayer *layerNode = qobject_cast<QgsLayerTreeLayer *>( index2node( index ) ) )
+  if ( QgsLayerTreeLayer *layerNode = qobject_cast< QgsLayerTreeLayer * >( index2node( index ) ) )
   {
     if ( role == Qt::CheckStateRole )
     {
-      const bool checked = static_cast<Qt::CheckState>( value.toInt() ) == Qt::Checked;
+      const bool checked = static_cast< Qt::CheckState >( value.toInt() ) == Qt::Checked;
       if ( QgsMapLayer *layer = layerNode->layer() )
       {
         layer->setCustomProperty( QStringLiteral( "_include_in_elevation_profiles" ), checked );
@@ -304,10 +307,10 @@ bool QgsElevationProfileLayerTreeModel::dropMimeData( const QMimeData *data, Qt:
       QDomElement elem = rootLayerTreeElem.firstChildElement();
       while ( !elem.isNull() )
       {
-        std::unique_ptr<QgsLayerTreeNode> node( QgsLayerTreeNode::readXml( elem, QgsProject::instance() ) );
+        std::unique_ptr< QgsLayerTreeNode > node( QgsLayerTreeNode::readXml( elem, QgsProject::instance() ) );
         if ( node && QgsLayerTree::isLayer( node.get() ) )
         {
-          if ( QgsMapLayer *layer = qobject_cast<QgsLayerTreeLayer *>( node.get() )->layer() )
+          if ( QgsMapLayer *layer = qobject_cast< QgsLayerTreeLayer * >( node.get() )->layer() )
           {
             layersToAdd << layer;
           }
@@ -384,13 +387,13 @@ bool QgsElevationProfileLayerTreeProxyModel::filterAcceptsRow( int sourceRow, co
     // (and the layer's renderer isn't a single symbol renderer)
     if ( QgsLayerTreeLayer *layerTreeLayer = QgsLayerTree::toLayer( legendNode->layerNode() ) )
     {
-      if ( QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( layerTreeLayer->layer() ) )
+      if ( QgsVectorLayer *layer = qobject_cast< QgsVectorLayer * >( layerTreeLayer->layer() ) )
       {
-        if ( !qgis::down_cast<QgsVectorLayerElevationProperties *>( layer->elevationProperties() )->respectLayerSymbology() )
+        if ( !qgis::down_cast< QgsVectorLayerElevationProperties * >( layer->elevationProperties() )->respectLayerSymbology() )
         {
           return false;
         }
-        else if ( dynamic_cast<QgsSingleSymbolRenderer *>( qobject_cast<QgsVectorLayer *>( layer )->renderer() ) )
+        else if ( dynamic_cast< QgsSingleSymbolRenderer * >( qobject_cast< QgsVectorLayer * >( layer )->renderer() ) )
         {
           return false;
         }
@@ -440,7 +443,7 @@ QgsMapLayer *QgsElevationProfileLayerTreeView::indexToLayer( const QModelIndex &
 {
   if ( QgsLayerTreeNode *node = mModel->index2node( mProxyModel->mapToSource( index ) ) )
   {
-    if ( QgsLayerTreeLayer *layerTreeLayerNode = mLayerTree->toLayer( node ) )
+    if ( QgsLayerTreeLayer *layerTreeLayerNode =  mLayerTree->toLayer( node ) )
     {
       return layerTreeLayerNode->layer();
     }
@@ -450,12 +453,18 @@ QgsMapLayer *QgsElevationProfileLayerTreeView::indexToLayer( const QModelIndex &
 
 void QgsElevationProfileLayerTreeView::populateInitialLayers( QgsProject *project )
 {
-  const QList<QgsMapLayer *> layers = project->layers<QgsMapLayer *>().toList();
+  const QList< QgsMapLayer * > layers = project->layers< QgsMapLayer * >().toList();
 
   // sort layers so that types which are more likely to obscure others are rendered below
   // e.g. vector features should be drawn above raster DEMS, or the DEM line may completely obscure
   // the vector feature
-  QList<QgsMapLayer *> sortedLayers = QgsMapLayerUtils::sortLayersByType( layers, { Qgis::LayerType::Raster, Qgis::LayerType::Mesh, Qgis::LayerType::Vector, Qgis::LayerType::PointCloud } );
+  QList< QgsMapLayer * > sortedLayers = QgsMapLayerUtils::sortLayersByType( layers,
+  {
+    Qgis::LayerType::Raster,
+    Qgis::LayerType::Mesh,
+    Qgis::LayerType::Vector,
+    Qgis::LayerType::PointCloud
+  } );
 
   std::reverse( sortedLayers.begin(), sortedLayers.end() );
   for ( QgsMapLayer *layer : std::as_const( sortedLayers ) )

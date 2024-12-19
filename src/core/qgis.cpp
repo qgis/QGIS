@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgis.h"
-#include "moc_qgis.cpp"
 #ifndef QGSVERSION
 #include "qgsversion.h"
 #endif
@@ -35,8 +34,8 @@
 #include <geos_c.h>
 #include <ogr_api.h>
 
-#define qgis_xstr(x) qgis_str(x)
-#define qgis_str(x) #x
+#define xstr(x) str(x)
+#define str(x) #x
 
 // Version constants
 //
@@ -305,7 +304,7 @@ int Qgis::geosVersionMinor()
 
 int Qgis::geosVersionPatch()
 {
-  static const int version = atoi( qgis_xstr( GEOS_VERSION_PATCH ) );
+  static const int version = atoi( xstr( GEOS_VERSION_PATCH ) );
   return version;
 }
 

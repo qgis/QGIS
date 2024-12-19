@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsuuidwidgetwrapper.h"
-#include "moc_qgsuuidwidgetwrapper.cpp"
 
 #include <QUuid>
 

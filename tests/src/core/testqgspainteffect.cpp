@@ -78,6 +78,7 @@ class DummyPaintEffect : public QgsPaintEffect
     QString prop2() { return mProp2; }
 
   protected:
+
     void draw( QgsRenderContext &context ) override { Q_UNUSED( context ); }
 
   private:
@@ -86,23 +87,23 @@ class DummyPaintEffect : public QgsPaintEffect
 };
 
 
+
 /**
  * \ingroup UnitTests
  * This is a unit test for paint effects
  */
-class TestQgsPaintEffect : public QgsTest
+class TestQgsPaintEffect: public QgsTest
 {
     Q_OBJECT
 
   public:
-    TestQgsPaintEffect()
-      : QgsTest( QStringLiteral( "Paint Effect Tests" ) ) {}
+    TestQgsPaintEffect() : QgsTest( QStringLiteral( "Paint Effect Tests" ) ) {}
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init(); // will be called before each testfunction is executed.
+    void cleanup(); // will be called after every testfunction.
     void saveRestore();
     void stackSaveRestore();
 
@@ -172,9 +173,9 @@ void TestQgsPaintEffect::saveRestore()
   DummyPaintEffect *effect = new DummyPaintEffect( QStringLiteral( "a" ), QStringLiteral( "b" ) );
 
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
-  );
+  const QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
 
   //test writing with no node
@@ -229,9 +230,9 @@ void TestQgsPaintEffect::stackSaveRestore()
   stack->setEnabled( false );
 
   QDomImplementation DomImplementation;
-  const QDomDocumentType documentType = DomImplementation.createDocumentType(
-    QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" )
-  );
+  const QDomDocumentType documentType =
+    DomImplementation.createDocumentType(
+      QStringLiteral( "qgis" ), QStringLiteral( "http://mrcc.com/qgis.dtd" ), QStringLiteral( "SYSTEM" ) );
   QDomDocument doc( documentType );
 
   //test writing with no node
@@ -297,7 +298,7 @@ void TestQgsPaintEffect::drawSource()
 
   //clone
   QgsPaintEffect *clone = effect->clone();
-  QgsDrawSourceEffect *cloneCast = dynamic_cast<QgsDrawSourceEffect *>( clone );
+  QgsDrawSourceEffect *cloneCast = dynamic_cast<QgsDrawSourceEffect * >( clone );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->blendMode(), effect->blendMode() );
   QCOMPARE( cloneCast->opacity(), effect->opacity() );
@@ -308,7 +309,7 @@ void TestQgsPaintEffect::drawSource()
   //read/write
   const QVariantMap props = effect->properties();
   QgsPaintEffect *readEffect = QgsDrawSourceEffect::create( props );
-  QgsDrawSourceEffect *readCast = dynamic_cast<QgsDrawSourceEffect *>( readEffect );
+  QgsDrawSourceEffect *readCast = dynamic_cast<QgsDrawSourceEffect * >( readEffect );
   QVERIFY( readCast );
   QCOMPARE( readCast->blendMode(), effect->blendMode() );
   QCOMPARE( readCast->opacity(), effect->opacity() );
@@ -369,7 +370,7 @@ void TestQgsPaintEffect::blur()
 
   //clone
   QgsPaintEffect *clone = effect->clone();
-  QgsBlurEffect *cloneCast = dynamic_cast<QgsBlurEffect *>( clone );
+  QgsBlurEffect *cloneCast = dynamic_cast<QgsBlurEffect * >( clone );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->blendMode(), effect->blendMode() );
   QCOMPARE( cloneCast->opacity(), effect->opacity() );
@@ -382,7 +383,7 @@ void TestQgsPaintEffect::blur()
   //read/write
   const QVariantMap props = effect->properties();
   QgsPaintEffect *readEffect = QgsBlurEffect::create( props );
-  QgsBlurEffect *readCast = dynamic_cast<QgsBlurEffect *>( readEffect );
+  QgsBlurEffect *readCast = dynamic_cast<QgsBlurEffect * >( readEffect );
   QVERIFY( readCast );
   QCOMPARE( readCast->blendMode(), effect->blendMode() );
   QCOMPARE( readCast->opacity(), effect->opacity() );
@@ -457,7 +458,7 @@ void TestQgsPaintEffect::dropShadow()
 
   //clone
   QgsPaintEffect *clone = effect->clone();
-  QgsDropShadowEffect *cloneCast = dynamic_cast<QgsDropShadowEffect *>( clone );
+  QgsDropShadowEffect *cloneCast = dynamic_cast<QgsDropShadowEffect * >( clone );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->blendMode(), effect->blendMode() );
   QCOMPARE( cloneCast->opacity(), effect->opacity() );
@@ -475,7 +476,7 @@ void TestQgsPaintEffect::dropShadow()
   //read/write
   const QVariantMap props = effect->properties();
   QgsPaintEffect *readEffect = QgsDropShadowEffect::create( props );
-  QgsDropShadowEffect *readCast = dynamic_cast<QgsDropShadowEffect *>( readEffect );
+  QgsDropShadowEffect *readCast = dynamic_cast<QgsDropShadowEffect * >( readEffect );
   QVERIFY( readCast );
   QCOMPARE( readCast->blendMode(), effect->blendMode() );
   QCOMPARE( readCast->opacity(), effect->opacity() );
@@ -558,7 +559,7 @@ void TestQgsPaintEffect::glow()
 
   //clone
   QgsPaintEffect *clone = effect->clone();
-  QgsOuterGlowEffect *cloneCast = dynamic_cast<QgsOuterGlowEffect *>( clone );
+  QgsOuterGlowEffect *cloneCast = dynamic_cast<QgsOuterGlowEffect * >( clone );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->blendMode(), effect->blendMode() );
   QCOMPARE( cloneCast->opacity(), effect->opacity() );
@@ -577,7 +578,7 @@ void TestQgsPaintEffect::glow()
   //read/write
   const QVariantMap props = effect->properties();
   QgsPaintEffect *readEffect = QgsOuterGlowEffect::create( props );
-  QgsOuterGlowEffect *readCast = dynamic_cast<QgsOuterGlowEffect *>( readEffect );
+  QgsOuterGlowEffect *readCast = dynamic_cast<QgsOuterGlowEffect * >( readEffect );
   QVERIFY( readCast );
   QCOMPARE( readCast->blendMode(), effect->blendMode() );
   QCOMPARE( readCast->opacity(), effect->opacity() );
@@ -614,12 +615,13 @@ void TestQgsPaintEffect::glow()
   QVERIFY( result );
 
   //TODO - inner glow
+
 }
 
 void TestQgsPaintEffect::transform()
 {
   //create
-  std::unique_ptr<QgsTransformEffect> effect( new QgsTransformEffect() );
+  std::unique_ptr< QgsTransformEffect > effect( new QgsTransformEffect() );
   QVERIFY( effect.get() );
   effect->setEnabled( false );
   QCOMPARE( effect->enabled(), false );
@@ -650,7 +652,7 @@ void TestQgsPaintEffect::transform()
   QCOMPARE( effect->drawMode(), QgsPaintEffect::Modifier );
 
   //copy constructor
-  std::unique_ptr<QgsTransformEffect> copy( new QgsTransformEffect( *effect ) );
+  std::unique_ptr< QgsTransformEffect > copy( new QgsTransformEffect( *effect ) );
   QVERIFY( copy.get() );
   QCOMPARE( copy->enabled(), false );
   QCOMPARE( copy->translateX(), 6.0 );
@@ -669,8 +671,8 @@ void TestQgsPaintEffect::transform()
   copy.reset( nullptr );
 
   //clone
-  std::unique_ptr<QgsPaintEffect> clone( effect->clone() );
-  QgsTransformEffect *cloneCast = dynamic_cast<QgsTransformEffect *>( clone.get() );
+  std::unique_ptr< QgsPaintEffect > clone( effect->clone() );
+  QgsTransformEffect *cloneCast = dynamic_cast<QgsTransformEffect * >( clone.get() );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->enabled(), false );
   QCOMPARE( cloneCast->translateX(), 6.0 );
@@ -690,8 +692,8 @@ void TestQgsPaintEffect::transform()
 
   //read/write
   const QVariantMap props = effect->properties();
-  const std::unique_ptr<QgsPaintEffect> readEffect( QgsTransformEffect::create( props ) );
-  QgsTransformEffect *readCast = dynamic_cast<QgsTransformEffect *>( readEffect.get() );
+  const std::unique_ptr< QgsPaintEffect > readEffect( QgsTransformEffect::create( props ) );
+  QgsTransformEffect *readCast = dynamic_cast<QgsTransformEffect * >( readEffect.get() );
   QVERIFY( readCast );
   QCOMPARE( readCast->enabled(), false );
   QCOMPARE( readCast->translateX(), 6.0 );
@@ -729,7 +731,7 @@ void TestQgsPaintEffect::stack()
 
   //clone
   QgsPaintEffect *clone = effect->clone();
-  QgsEffectStack *cloneCast = dynamic_cast<QgsEffectStack *>( clone );
+  QgsEffectStack *cloneCast = dynamic_cast<QgsEffectStack * >( clone );
   QVERIFY( cloneCast );
   QCOMPARE( cloneCast->enabled(), effect->enabled() );
   QCOMPARE( cloneCast->count(), effect->count() );
@@ -778,7 +780,8 @@ void TestQgsPaintEffect::layerEffectPolygon()
 
   const QString polysFileName = mTestDataDir + "polys.shp";
   const QFileInfo polyFileInfo( polysFileName );
-  QgsVectorLayer *polysLayer = new QgsVectorLayer( polyFileInfo.filePath(), polyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *polysLayer = new QgsVectorLayer( polyFileInfo.filePath(),
+      polyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   polysLayer->setSimplifyMethod( simplifyMethod );
@@ -807,7 +810,8 @@ void TestQgsPaintEffect::layerEffectLine()
   // test rendering a line symbol layer with a paint effect
   const QString linesFileName = mTestDataDir + "lines.shp";
   const QFileInfo lineFileInfo( linesFileName );
-  QgsVectorLayer *lineLayer = new QgsVectorLayer( lineFileInfo.filePath(), lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *lineLayer = new QgsVectorLayer( lineFileInfo.filePath(),
+      lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   lineLayer->setSimplifyMethod( simplifyMethod );
@@ -837,7 +841,8 @@ void TestQgsPaintEffect::layerEffectMarker()
   // test rendering a marker symbol layer with a paint effect
   const QString pointFileName = mTestDataDir + "points.shp";
   const QFileInfo pointFileInfo( pointFileName );
-  QgsVectorLayer *pointLayer = new QgsVectorLayer( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *pointLayer = new QgsVectorLayer( pointFileInfo.filePath(),
+      pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsMapSettings ms;
   QgsSimpleMarkerSymbolLayer *marker = new QgsSimpleMarkerSymbolLayer;
@@ -863,7 +868,8 @@ void TestQgsPaintEffect::vectorLayerEffect()
   // test rendering a whole vector layer with a layer-wide effect
   const QString polysFileName = mTestDataDir + "polys.shp";
   const QFileInfo polyFileInfo( polysFileName );
-  QgsVectorLayer *polysLayer = new QgsVectorLayer( polyFileInfo.filePath(), polyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *polysLayer = new QgsVectorLayer( polyFileInfo.filePath(),
+      polyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   polysLayer->setSimplifyMethod( simplifyMethod );
@@ -896,7 +902,8 @@ void TestQgsPaintEffect::mapUnits()
   //test rendering an effect which utilizes map units
   const QString linesFileName = mTestDataDir + "lines.shp";
   const QFileInfo lineFileInfo( linesFileName );
-  QgsVectorLayer *lineLayer = new QgsVectorLayer( lineFileInfo.filePath(), lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *lineLayer = new QgsVectorLayer( lineFileInfo.filePath(),
+      lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   lineLayer->setSimplifyMethod( simplifyMethod );
@@ -930,7 +937,8 @@ void TestQgsPaintEffect::layout()
 
   const QString linesFileName = mTestDataDir + "lines.shp";
   const QFileInfo lineFileInfo( linesFileName );
-  QgsVectorLayer *lineLayer = new QgsVectorLayer( lineFileInfo.filePath(), lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  QgsVectorLayer *lineLayer = new QgsVectorLayer( lineFileInfo.filePath(),
+      lineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   QgsVectorSimplifyMethod simplifyMethod;
   simplifyMethod.setSimplifyHints( Qgis::VectorRenderingSimplificationFlags() );
   lineLayer->setSimplifyMethod( simplifyMethod );
@@ -950,7 +958,7 @@ void TestQgsPaintEffect::layout()
   lineLayer->setRenderer( renderer );
 
   QgsLayout l( QgsProject::instance() );
-  std::unique_ptr<QgsLayoutItemPage> page = std::make_unique<QgsLayoutItemPage>( &l );
+  std::unique_ptr< QgsLayoutItemPage > page = std::make_unique< QgsLayoutItemPage >( &l );
   page->setPageSize( QgsLayoutSize( 50, 50 ) );
   l.pageCollection()->addPage( page.release() );
 

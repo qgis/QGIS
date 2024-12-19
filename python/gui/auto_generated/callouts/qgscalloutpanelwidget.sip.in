@@ -21,6 +21,7 @@ A panel widget for configuration of callouts.
 #include "qgscalloutpanelwidget.h"
 %End
   public:
+
     QgsCalloutPanelWidget( QWidget *parent /TransferThis/ = 0, QgsMapLayer *layer = 0 );
 %Docstring
 Constructor for QgsCalloutPanelWidget, with the specified ``parent`` widget

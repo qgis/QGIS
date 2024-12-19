@@ -22,6 +22,7 @@ class to manage the panels.
 #include "qgspanelwidgetstack.h"
 %End
   public:
+
     QgsPanelWidgetStack( QWidget *parent = 0 );
 %Docstring
 A stack widget to manage panels in the interface. Handles the open and close events
@@ -128,6 +129,7 @@ This slot is normally auto connected to panelAccepted when a panel is shown.
 %End
 
   protected:
+
     virtual void mouseReleaseEvent( QMouseEvent *e );
 
     virtual void keyPressEvent( QKeyEvent *e );

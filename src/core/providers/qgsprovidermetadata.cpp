@@ -17,7 +17,6 @@
  ***************************************************************************/
 
 #include "qgsprovidermetadata.h"
-#include "moc_qgsprovidermetadata.cpp"
 #include "qgsdataprovider.h"
 #include "qgsmaplayer.h"
 #include "qgsexception.h"

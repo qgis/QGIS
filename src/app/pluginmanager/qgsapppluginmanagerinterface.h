@@ -31,6 +31,7 @@ class QgsAppPluginManagerInterface : public QgsPluginManagerInterface
     Q_OBJECT
 
   public:
+
     //! Constructor
     explicit QgsAppPluginManagerInterface( QgsPluginManager *pluginManager );
 
@@ -59,6 +60,7 @@ class QgsAppPluginManagerInterface : public QgsPluginManagerInterface
     void pushMessage( const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = -1 ) override;
 
   private:
+
     //! Pointer to QgsPluginManager object
     QgsPluginManager *mPluginManager = nullptr;
 };

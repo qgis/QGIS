@@ -31,7 +31,7 @@
 class QgsMssqlProvider;
 class QgsMssqlQuery;
 
-class QgsMssqlFeatureSource final : public QgsAbstractFeatureSource
+class QgsMssqlFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsMssqlFeatureSource( const QgsMssqlProvider *p );
@@ -85,7 +85,7 @@ class QgsMssqlFeatureSource final : public QgsAbstractFeatureSource
     friend class QgsMssqlExpressionCompiler;
 };
 
-class QgsMssqlFeatureIterator final : public QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>
+class QgsMssqlFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsMssqlFeatureSource>
 {
   public:
     QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
@@ -104,16 +104,17 @@ class QgsMssqlFeatureIterator final : public QgsAbstractFeatureIteratorFromSourc
     QString whereClauseFid( QgsFeatureId featureId );
 
   private:
+
     bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
 
     double validLat( double latitude ) const;
     double validLon( double longitude ) const;
 
     // The current database
-    std::shared_ptr<QgsMssqlDatabase> mDatabase;
+    std::shared_ptr< QgsMssqlDatabase > mDatabase;
 
     // The current sql query
-    std::unique_ptr<QgsMssqlQuery> mQuery;
+    std::unique_ptr< QgsMssqlQuery > mQuery;
 
     // The current sql statement
     QString mStatement;
@@ -134,7 +135,7 @@ class QgsMssqlFeatureIterator final : public QgsAbstractFeatureIteratorFromSourc
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
     QgsGeometry mDistanceWithinGeom;
-    std::unique_ptr<QgsGeometryEngine> mDistanceWithinEngine;
+    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
 };
 
 #endif // QGSMSSQLFEATUREITERATOR_H

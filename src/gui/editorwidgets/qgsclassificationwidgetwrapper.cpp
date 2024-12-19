@@ -14,13 +14,12 @@
  ***************************************************************************/
 
 #include "qgsclassificationwidgetwrapper.h"
-#include "moc_qgsclassificationwidgetwrapper.cpp"
 
 #include "qgscategorizedsymbolrenderer.h"
 #include "qgsvectorlayer.h"
 
 QgsClassificationWidgetWrapper::QgsClassificationWidgetWrapper( QgsVectorLayer *layer, int fieldIdx, QWidget *editor, QWidget *parent )
-  : QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
+  :  QgsEditorWidgetWrapper( layer, fieldIdx, editor, parent )
 
 {
 }
@@ -64,7 +63,8 @@ void QgsClassificationWidgetWrapper::initWidget( QWidget *editor )
       }
     }
 
-    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::emitValueChanged ) );
+    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+             this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::emitValueChanged ) );
   }
 }
 

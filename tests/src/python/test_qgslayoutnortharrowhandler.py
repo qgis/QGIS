@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "(C) 2020 by Nyall Dawson"
-__date__ = "05/04/2020"
-__copyright__ = "Copyright 2020, The QGIS Project"
+__author__ = '(C) 2020 by Nyall Dawson'
+__date__ = '05/04/2020'
+__copyright__ = 'Copyright 2020, The QGIS Project'
 
 from qgis.PyQt.QtCore import QRectF
 from qgis.PyQt.QtTest import QSignalSpy
@@ -126,9 +125,7 @@ class TestQgsLayoutNorthArrowHandler(QgisTestCase):
         map = QgsLayoutItemMap(layout)
         map.attemptSetSceneRect(QRectF(0, 0, 10, 10))
         map.setCrs(QgsCoordinateReferenceSystem.fromEpsgId(3575))
-        map.setExtent(
-            QgsRectangle(-2126029.962, -2200807.749, -119078.102, -757031.156)
-        )
+        map.setExtent(QgsRectangle(-2126029.962, -2200807.749, -119078.102, -757031.156))
         layout.addLayoutItem(map)
 
         handler = QgsLayoutNorthArrowHandler(layout)
@@ -144,9 +141,7 @@ class TestQgsLayoutNorthArrowHandler(QgisTestCase):
         self.assertAlmostEqual(spy[-1][0], 37.20, 1)
 
         # shift map
-        map.setExtent(
-            QgsRectangle(2120672.293, -3056394.691, 2481640.226, -2796718.780)
-        )
+        map.setExtent(QgsRectangle(2120672.293, -3056394.691, 2481640.226, -2796718.780))
         self.assertAlmostEqual(handler.arrowRotation(), -38.18, 1)
         self.assertEqual(len(spy), 2)
         self.assertAlmostEqual(spy[-1][0], -38.18, 1)
@@ -164,5 +159,5 @@ class TestQgsLayoutNorthArrowHandler(QgisTestCase):
         self.assertAlmostEqual(spy[-1][0], -38.18 + 35, 1)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

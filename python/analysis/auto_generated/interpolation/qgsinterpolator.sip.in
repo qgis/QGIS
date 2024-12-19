@@ -17,17 +17,18 @@
 
 struct QgsInterpolatorVertexData
 {
-    QgsInterpolatorVertexData( double x, double y, double z );
+
+  QgsInterpolatorVertexData( double x, double y, double z );
 %Docstring
 Constructor for QgsInterpolatorVertexData with the specified
 ``x``, ``y``, and ``z`` coordinate.
 %End
 
-    QgsInterpolatorVertexData();
+  QgsInterpolatorVertexData();
 
-    double x;
-    double y;
-    double z;
+  double x;
+  double y;
+  double z;
 };
 
 class QgsInterpolator
@@ -44,6 +45,7 @@ can be an attribute or the z-coordinates in case of 3D types.
 #include "qgsinterpolator.h"
 %End
   public:
+
     enum SourceType
     {
       SourcePoints,
@@ -68,12 +70,12 @@ can be an attribute or the z-coordinates in case of 3D types.
 
     struct LayerData
     {
-        QgsFeatureSource *source;
-        QgsInterpolator::ValueSource valueSource;
-        int interpolationAttribute;
-        QgsInterpolator::SourceType sourceType;
+      QgsFeatureSource *source;
+      QgsInterpolator::ValueSource valueSource;
+      int interpolationAttribute;
+      QgsInterpolator::SourceType sourceType;
 
-        QgsCoordinateTransformContext transformContext;
+      QgsCoordinateTransformContext transformContext;
     };
 
     QgsInterpolator( const QList<QgsInterpolator::LayerData> &layerData );
@@ -94,6 +96,7 @@ Calculates interpolation value for map coordinates x, y
 
 
   protected:
+
     Result cacheBaseData( QgsFeedback *feedback = 0 );
 %Docstring
 Caches the vertex and value data from the provider. All the vertex data

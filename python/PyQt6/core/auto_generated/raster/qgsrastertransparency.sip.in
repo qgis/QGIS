@@ -142,7 +142,7 @@ Sets the transparent three value pixel list, replacing the whole existing list.
 .. seealso:: :py:func:`transparentThreeValuePixelList`
 %End
 
- int alphaValue( double value, int globalTransparency = 255 ) const /Deprecated="Since 3.40. Use opacityForValue() instead."/;
+ int alphaValue( double value, int globalTransparency = 255 ) const /Deprecated/;
 %Docstring
 Returns the transparency value for a single ``value`` pixel.
 
@@ -167,7 +167,7 @@ the opacity corresponding to the value. Returns 1 if no matches are found.
 .. versionadded:: 3.38
 %End
 
- int alphaValue( double redValue, double greenValue, double blueValue, int globalTransparency = 255 ) const /Deprecated="Since 3.40. Use opacityForRgbValues() instead."/;
+ int alphaValue( double redValue, double greenValue, double blueValue, int globalTransparency = 255 ) const /Deprecated/;
 %Docstring
 Returns the transparency value for a RGB pixel.
 

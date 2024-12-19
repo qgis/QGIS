@@ -44,6 +44,7 @@ namespace Qt3DRender
 }
 
 
+
 /**
  * \ingroup 3d
  * \brief Base class for chunk loaders for terrain tiles.
@@ -81,6 +82,7 @@ class QgsTerrainTileLoader : public QgsChunkLoader
     QString mTileDebugText;
     int mTextureJobId = -1;
     QImage mTextureImage;
+
 };
 
 /// @endcond

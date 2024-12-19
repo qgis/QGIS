@@ -32,19 +32,19 @@ class TestQgsLayoutPicture : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLayoutPicture()
-      : QgsTest( QStringLiteral( "Layout Picture Tests" ), QStringLiteral( "composer_picture" ) ) {}
+
+    TestQgsLayoutPicture() : QgsTest( QStringLiteral( "Layout Picture Tests" ), QStringLiteral( "composer_picture" ) ) {}
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init();// will be called before each testfunction is executed.
+    void cleanup();// will be called after every testfunction.
 
     void pictureRender();
     void pictureRaster();
     void pictureSvg();
-    void pictureRotation();     //test if picture pictureRotation is functioning
+    void pictureRotation(); //test if picture pictureRotation is functioning
     void pictureItemRotation(); //test if composer picture item rotation is functioning
 
     void pictureResizeZoom();
@@ -86,7 +86,7 @@ void TestQgsLayoutPicture::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
-  QgsFontUtils::loadStandardTestFonts( { QStringLiteral( "Roman" ), QStringLiteral( "Bold" ) } );
+  QgsFontUtils::loadStandardTestFonts( {QStringLiteral( "Roman" ), QStringLiteral( "Bold" ) } );
 
   mPngImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_image.png";
   mSvgImage = QStringLiteral( TEST_DATA_DIR ) + "/sample_svg.svg";
@@ -100,6 +100,7 @@ void TestQgsLayoutPicture::initTestCase()
   mPicture->setPicturePath( mPngImage );
   mPicture->attemptSetSceneRect( QRectF( 70, 70, 100, 100 ) );
   mPicture->setFrameEnabled( true );
+
 }
 
 void TestQgsLayoutPicture::cleanupTestCase()
@@ -112,10 +113,12 @@ void TestQgsLayoutPicture::cleanupTestCase()
 
 void TestQgsLayoutPicture::init()
 {
+
 }
 
 void TestQgsLayoutPicture::cleanup()
 {
+
 }
 
 void TestQgsLayoutPicture::pictureRender()
@@ -167,13 +170,6 @@ void TestQgsLayoutPicture::pictureRotation()
 
   mLayout->removeItem( mPicture );
   mPicture->setPictureRotation( 0 );
-
-  // Set picture rotation on uninitialized picture should not create an invalid size (NaN)
-  std::unique_ptr<QgsLayoutItemPicture> uninitialized( new QgsLayoutItemPicture( mLayout ) );
-  uninitialized->setResizeMode( QgsLayoutItemPicture::ZoomResizeFrame );
-  QCOMPARE( uninitialized->sizeWithUnits().toQSizeF(), QSizeF( 0, 0 ) );
-  uninitialized->setPictureRotation( 10 );
-  QCOMPARE( uninitialized->sizeWithUnits().toQSizeF(), QSizeF( 0, 0 ) );
 }
 
 void TestQgsLayoutPicture::pictureItemRotation()

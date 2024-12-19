@@ -42,9 +42,7 @@ class LayerPreview(QgsMapCanvas):
 
         # reuse settings from QGIS
         settings = QgsSettings()
-        self.enableAntiAliasing(
-            settings.value("/qgis/enable_anti_aliasing", False, type=bool)
-        )
+        self.enableAntiAliasing(settings.value("/qgis/enable_anti_aliasing", False, type=bool))
         zoomFactor = settings.value("/qgis/zoom_factor", 2, type=float)
         self.setWheelFactor(zoomFactor)
 
@@ -61,10 +59,7 @@ class LayerPreview(QgsMapCanvas):
 
         self._clear()
 
-        if isinstance(item, Table) and item.type in [
-            Table.VectorType,
-            Table.RasterType,
-        ]:
+        if isinstance(item, Table) and item.type in [Table.VectorType, Table.RasterType]:
             # update the preview, but first let the manager chance to show the canvas
             def runPrev():
                 return self._loadTablePreview(item)
@@ -80,7 +75,7 @@ class LayerPreview(QgsMapCanvas):
         self.dirty = val
 
     def _clear(self):
-        """remove any layers from preview canvas"""
+        """ remove any layers from preview canvas """
         if self.item is not None:
             # skip exception on RuntimeError fixes #6892
             try:
@@ -93,7 +88,7 @@ class LayerPreview(QgsMapCanvas):
         self._loadTablePreview(None)
 
     def _loadTablePreview(self, table, limit=False):
-        """if has geometry column load to map canvas"""
+        """ if has geometry column load to map canvas """
         with OverrideCursor(Qt.CursorShape.WaitCursor):
             self.freeze()
             vl = None
@@ -105,22 +100,13 @@ class LayerPreview(QgsMapCanvas):
                     if uniqueField is None:
                         self.parent.tabs.setCurrentWidget(self.parent.info)
                         self.parent.infoBar.pushMessage(
-                            QApplication.translate(
-                                "DBManagerPlugin", "Unable to find a valid unique field"
-                            ),
-                            Qgis.MessageLevel.Warning,
-                            self.parent.iface.messageTimeout(),
-                        )
+                            QApplication.translate("DBManagerPlugin", "Unable to find a valid unique field"),
+                            Qgis.MessageLevel.Warning, self.parent.iface.messageTimeout())
                         return
 
                     uri = table.database().uri()
-                    uri.setDataSource(
-                        "",
-                        "(SELECT * FROM %s LIMIT 1000)" % table.quotedName(),
-                        table.geomColumn,
-                        "",
-                        uniqueField.name,
-                    )
+                    uri.setDataSource("", "(SELECT * FROM %s LIMIT 1000)" % table.quotedName(), table.geomColumn, "",
+                                      uniqueField.name)
                     provider = table.database().dbplugin().providerName()
                     vl = QgsVectorLayer(uri.uri(False), table.name, provider)
                 else:

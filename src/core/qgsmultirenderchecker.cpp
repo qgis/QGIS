@@ -78,11 +78,13 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
   // we can only report one diff image, so just use the first
   QString diffImageFile;
 
-  QMap< QString, int > variantMismatchCount;
-  QMap< QString, int > variantSize;
-
   for ( const QString &suffix : std::as_const( subDirs ) )
   {
+    if ( subDirs.count() > 1 )
+    {
+      qDebug() << "Checking subdir " << suffix;
+    }
+    bool result;
     QgsRenderChecker checker;
     checker.enableDashBuffering( true );
     checker.setColorTolerance( mColorTolerance );
@@ -93,15 +95,14 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
     checker.setMapSettings( mMapSettings );
     checker.setExpectFail( mExpectFail );
 
-    bool result = false;
     if ( !mRenderedImage.isNull() )
     {
       checker.setRenderedImage( mRenderedImage );
-      result = checker.compareImages( testName, mismatchCount, mRenderedImage, QgsRenderChecker::Flag::AvoidExportingRenderedImage | QgsRenderChecker::Flag::Silent );
+      result = checker.compareImages( testName, mismatchCount, mRenderedImage, QgsRenderChecker::Flag::AvoidExportingRenderedImage );
     }
     else
     {
-      result = checker.runTest( testName, mismatchCount, QgsRenderChecker::Flag::AvoidExportingRenderedImage | QgsRenderChecker::Flag::Silent );
+      result = checker.runTest( testName, mismatchCount, QgsRenderChecker::Flag::AvoidExportingRenderedImage );
       mRenderedImage = checker.renderedImage();
     }
 
@@ -118,11 +119,6 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
     if ( !mResult && diffImageFile.isEmpty() )
     {
       diffImageFile = checker.mDiffImageFile;
-    }
-    if ( !mResult )
-    {
-      variantMismatchCount.insert( suffix, checker.mismatchCount() );
-      variantSize.insert( suffix, checker.matchTarget() );
     }
   }
 
@@ -152,17 +148,6 @@ bool QgsMultiRenderChecker::runTest( const QString &testName, unsigned int misma
 
   if ( !mResult && !mExpectFail )
   {
-    for ( auto it = variantMismatchCount.constBegin(); it != variantMismatchCount.constEnd(); it++ )
-    {
-      if ( subDirs.size() > 1 )
-      {
-        qDebug() << QStringLiteral( "Variant %1: %2/%3 pixels mismatched (%4 allowed)" ).arg( it.key() ).arg( it.value() ).arg( variantSize.value( it.key() ) ).arg( mismatchCount );
-      }
-      else
-      {
-        qDebug() << QStringLiteral( "%1/%2 pixels mismatched (%4 allowed)" ).arg( it.value() ).arg( variantSize.value( it.key() ) ).arg( mismatchCount );
-      }
-    }
     const QDir reportDir = QgsRenderChecker::testReportDir();
     if ( !reportDir.exists() )
     {

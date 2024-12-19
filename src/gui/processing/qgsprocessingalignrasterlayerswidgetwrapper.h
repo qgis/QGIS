@@ -51,14 +51,14 @@ class GUI_EXPORT QgsProcessingAlignRasterLayersPanelWidget : public QgsProcessin
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingAlignRasterLayersPanelWidget.
      */
     QgsProcessingAlignRasterLayersPanelWidget(
       const QVariant &value,
       QgsProject *project,
-      QWidget *parent SIP_TRANSFERTHIS = nullptr
-    );
+      QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   private slots:
 
@@ -78,6 +78,7 @@ class GUI_EXPORT QgsProcessingAlignRasterLayersWidget : public QWidget
     Q_OBJECT
 
   public:
+
     QgsProcessingAlignRasterLayersWidget( QWidget *parent = nullptr );
 
     QVariant value() const { return mValue; }
@@ -94,6 +95,7 @@ class GUI_EXPORT QgsProcessingAlignRasterLayersWidget : public QWidget
     void showDialog();
 
   private:
+
     void updateSummaryText();
 
     QLineEdit *mLineEdit = nullptr;
@@ -112,7 +114,9 @@ class GUI_EXPORT QgsProcessingAlignRasterLayersWidgetWrapper : public QgsAbstrac
     Q_OBJECT
 
   public:
-    QgsProcessingAlignRasterLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr, QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
+
+    QgsProcessingAlignRasterLayersWidgetWrapper( const QgsProcessingParameterDefinition *parameter = nullptr,
+        QgsProcessingGui::WidgetType type = QgsProcessingGui::Standard, QWidget *parent = nullptr );
 
     // QgsProcessingParameterWidgetFactoryInterface
     QString parameterType() const override;
@@ -123,6 +127,7 @@ class GUI_EXPORT QgsProcessingAlignRasterLayersWidgetWrapper : public QgsAbstrac
     void setWidgetContext( const QgsProcessingParameterWidgetContext &context ) override;
 
   protected:
+
     void setWidgetValue( const QVariant &value, QgsProcessingContext &context ) override;
     QVariant widgetValue() const override;
 
@@ -130,6 +135,7 @@ class GUI_EXPORT QgsProcessingAlignRasterLayersWidgetWrapper : public QgsAbstrac
     QStringList compatibleOutputTypes() const override;
 
   private:
+
     QgsProcessingAlignRasterLayersWidget *mPanel = nullptr;
 
     friend class TestProcessingGui;

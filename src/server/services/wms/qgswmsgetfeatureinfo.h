@@ -27,6 +27,12 @@ namespace QgsWms
   /**
    * Output GetFeatureInfo response
    */
-  void writeGetFeatureInfo( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response );
+  void writeGetFeatureInfo( QgsServerInterface *serverIface, const QgsProject *project,
+                            const QgsWmsRequest &request,
+                            QgsServerResponse &response );
 
 } // namespace QgsWms
+
+
+
+

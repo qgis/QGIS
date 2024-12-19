@@ -17,7 +17,7 @@ class QgsSymbolLayer
 
 %TypeHeaderCode
 #include "qgssymbollayer.h"
-#include "qgslinesymbollayer.h"
+#include <qgslinesymbollayer.h>
 %End
 %ConvertToSubClassCode
     switch ( sipCpp->type() )
@@ -1061,7 +1061,6 @@ any data defined overrides and offsets which are set for the marker layer.
 %End
 
   protected:
-
 
     QgsMarkerSymbolLayer( bool locked = false );
 %Docstring

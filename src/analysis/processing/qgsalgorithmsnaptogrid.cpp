@@ -67,25 +67,31 @@ QgsSnapToGridAlgorithm *QgsSnapToGridAlgorithm::createInstance() const
 
 void QgsSnapToGridAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterDistance> hSpacing = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "HSPACING" ), QObject::tr( "X Grid Spacing" ), 1, QStringLiteral( "INPUT" ), false, 0 );
+  std::unique_ptr< QgsProcessingParameterDistance> hSpacing = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "HSPACING" ),
+      QObject::tr( "X Grid Spacing" ), 1, QStringLiteral( "INPUT" ), false, 0 );
   hSpacing->setIsDynamic( true );
   hSpacing->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "HSPACING" ), QObject::tr( "X Grid Spacing" ), QgsPropertyDefinition::DoublePositive ) );
   hSpacing->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( hSpacing.release() );
 
-  std::unique_ptr<QgsProcessingParameterDistance> vSpacing = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "VSPACING" ), QObject::tr( "Y Grid Spacing" ), 1, QStringLiteral( "INPUT" ), false, 0 );
+  std::unique_ptr< QgsProcessingParameterDistance> vSpacing = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "VSPACING" ),
+      QObject::tr( "Y Grid Spacing" ), 1, QStringLiteral( "INPUT" ), false, 0 );
   vSpacing->setIsDynamic( true );
   vSpacing->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "VSPACING" ), QObject::tr( "Y Grid Spacing" ), QgsPropertyDefinition::DoublePositive ) );
   vSpacing->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( vSpacing.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> zSpacing = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "ZSPACING" ), QObject::tr( "Z Grid Spacing" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0 );
+  std::unique_ptr< QgsProcessingParameterNumber > zSpacing = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "ZSPACING" ),
+      QObject::tr( "Z Grid Spacing" ), Qgis::ProcessingNumberParameterType::Double,
+      0, false, 0 );
   zSpacing->setIsDynamic( true );
   zSpacing->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "ZSPACING" ), QObject::tr( "Z Grid Spacing" ), QgsPropertyDefinition::DoublePositive ) );
   zSpacing->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( zSpacing.release() );
 
-  std::unique_ptr<QgsProcessingParameterNumber> mSpacing = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MSPACING" ), QObject::tr( "M Grid Spacing" ), Qgis::ProcessingNumberParameterType::Double, 0, false, 0 );
+  std::unique_ptr< QgsProcessingParameterNumber > mSpacing = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MSPACING" ),
+      QObject::tr( "M Grid Spacing" ), Qgis::ProcessingNumberParameterType::Double,
+      0, false, 0 );
   mSpacing->setIsDynamic( true );
   mSpacing->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "MSPACING" ), QObject::tr( "M Grid Spacing" ), QgsPropertyDefinition::DoublePositive ) );
   mSpacing->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
@@ -97,22 +103,22 @@ bool QgsSnapToGridAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qg
   mIntervalX = parameterAsDouble( parameters, QStringLiteral( "HSPACING" ), context );
   mDynamicIntervalX = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "HSPACING" ) );
   if ( mDynamicIntervalX )
-    mIntervalXProperty = parameters.value( QStringLiteral( "HSPACING" ) ).value<QgsProperty>();
+    mIntervalXProperty = parameters.value( QStringLiteral( "HSPACING" ) ).value< QgsProperty >();
 
   mIntervalY = parameterAsDouble( parameters, QStringLiteral( "VSPACING" ), context );
   mDynamicIntervalY = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "VSPACING" ) );
   if ( mDynamicIntervalY )
-    mIntervalYProperty = parameters.value( QStringLiteral( "VSPACING" ) ).value<QgsProperty>();
+    mIntervalYProperty = parameters.value( QStringLiteral( "VSPACING" ) ).value< QgsProperty >();
 
   mIntervalZ = parameterAsDouble( parameters, QStringLiteral( "ZSPACING" ), context );
   mDynamicIntervalZ = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "ZSPACING" ) );
   if ( mDynamicIntervalZ )
-    mIntervalZProperty = parameters.value( QStringLiteral( "ZSPACING" ) ).value<QgsProperty>();
+    mIntervalZProperty = parameters.value( QStringLiteral( "ZSPACING" ) ).value< QgsProperty >();
 
   mIntervalM = parameterAsDouble( parameters, QStringLiteral( "MSPACING" ), context );
   mDynamicIntervalM = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "MSPACING" ) );
   if ( mDynamicIntervalM )
-    mIntervalMProperty = parameters.value( QStringLiteral( "MSPACING" ) ).value<QgsProperty>();
+    mIntervalMProperty = parameters.value( QStringLiteral( "MSPACING" ) ).value< QgsProperty >();
 
   return true;
 }
@@ -154,3 +160,5 @@ Qgis::ProcessingFeatureSourceFlags QgsSnapToGridAlgorithm::sourceFlags() const
 }
 
 ///@endcond
+
+

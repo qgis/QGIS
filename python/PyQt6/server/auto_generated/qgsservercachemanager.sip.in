@@ -22,7 +22,6 @@ A helper class that centralizes caches accesses given by all the server cache fi
 
 %TypeHeaderCode
 #include "qgsservercachemanager.h"
-#include "qgsservercachefilter.h"
 %End
   public:
     QgsServerCacheManager( const QgsServerSettings &settings = QgsServerSettings() );

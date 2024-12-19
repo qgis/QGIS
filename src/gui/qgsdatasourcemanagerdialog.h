@@ -32,6 +32,7 @@ class QgsBrowserDockWidget;
 class QgsRasterLayer;
 class QgsMapCanvas;
 class QgsAbstractDataSourceWidget;
+class QgsLayerMetadataSearchWidget;
 class QgsBrowserGuiModel;
 class QgsMessageBar;
 
@@ -48,6 +49,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     Q_OBJECT
 
   public:
+
     /**
      * QgsDataSourceManagerDialog constructor
       * \param browserModel instance of the (shared) browser model
@@ -167,6 +169,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     void makeConnections( QgsAbstractDataSourceWidget *dlg, const QString &providerKey );
     Ui::QgsDataSourceManagerDialog *ui = nullptr;
     QgsBrowserDockWidget *mBrowserWidget = nullptr;
+    QgsLayerMetadataSearchWidget *mLayerMetadataSearchWidget = nullptr;
     int mPreviousRow;
     QStringList mPageProviderKeys;
     QStringList mPageProviderNames;
@@ -174,6 +177,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsMessageBar *mMessageBar = nullptr;
     QgsBrowserGuiModel *mBrowserModel = nullptr;
+
 };
 
 #endif // QGSDATASOURCEMANAGERDIALOG_H

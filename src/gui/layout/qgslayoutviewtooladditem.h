@@ -28,9 +28,11 @@
  */
 class GUI_EXPORT QgsLayoutViewToolAddItem : public QgsLayoutViewTool
 {
+
     Q_OBJECT
 
   public:
+
     //! Constructs a QgsLayoutViewToolAddItem for the given layout \a view.
     QgsLayoutViewToolAddItem( QgsLayoutView *view SIP_TRANSFERTHIS );
 
@@ -83,12 +85,13 @@ class GUI_EXPORT QgsLayoutViewToolAddItem : public QgsLayoutViewTool
     void createdItem();
 
   private:
+
     bool mDrawing = false;
 
     int mItemMetadataId = -1;
 
     //! Rubber band item
-    std::unique_ptr<QgsLayoutViewRubberBand> mRubberBand;
+    std::unique_ptr< QgsLayoutViewRubberBand > mRubberBand;
 
     //! Start position for mouse press
     QPoint mMousePressStartPos;
@@ -100,6 +103,7 @@ class GUI_EXPORT QgsLayoutViewToolAddItem : public QgsLayoutViewTool
     QPointF mRubberBandStartPos;
 
     QVariantMap mCustomProperties;
+
 };
 
 #endif // QGSLAYOUTVIEWTOOLADDITEM_H

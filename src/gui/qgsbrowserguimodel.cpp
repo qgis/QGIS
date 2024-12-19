@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsbrowserguimodel.h"
-#include "moc_qgsbrowserguimodel.cpp"
 #include "qgslogger.h"
 #include "qgsdataitemguiproviderregistry.h"
 #include "qgsdataitemguiprovider.h"
@@ -35,8 +34,8 @@ QgsDataItemGuiContext QgsBrowserGuiModel::createDataItemContext() const
 
 struct QgsBrowserGuiModelCachedAcceptDropValue
 {
-    bool acceptDrop;
-    int numberOfProviders;
+  bool acceptDrop;
+  int numberOfProviders;
 };
 Q_DECLARE_METATYPE( QgsBrowserGuiModelCachedAcceptDropValue )
 

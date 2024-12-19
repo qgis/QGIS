@@ -47,6 +47,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull NOTIFY allowNullChanged )
 
   public:
+
     /**
      * Create a new QgsFeatureListComboBox, optionally specifying a \a parent.
      */
@@ -277,6 +278,7 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
 
     friend class TestQgsFeatureListComboBox;
 };
+
 
 
 #endif // QGSFIELDLISTCOMBOBOX_H

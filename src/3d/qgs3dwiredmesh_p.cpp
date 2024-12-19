@@ -14,9 +14,8 @@
  ***************************************************************************/
 
 #include "qgs3dwiredmesh_p.h"
-#include "moc_qgs3dwiredmesh_p.cpp"
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QGeometry>
 typedef Qt3DRender::QAttribute Qt3DQAttribute;

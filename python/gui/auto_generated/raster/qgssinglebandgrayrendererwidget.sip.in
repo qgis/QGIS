@@ -10,7 +10,7 @@
 
 
 
-class QgsSingleBandGrayRendererWidget : QgsRasterRendererWidget
+class QgsSingleBandGrayRendererWidget: QgsRasterRendererWidget
 {
 
 %TypeHeaderCode

@@ -17,7 +17,6 @@
  ***************************************************************************/
 
 #include "qgsnetworkcontentfetcher.h"
-#include "moc_qgsnetworkcontentfetcher.cpp"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
 #include "qgsmessagelog.h"

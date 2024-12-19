@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "09/01/2020"
-__copyright__ = "Copyright 2020, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '09/01/2020'
+__copyright__ = 'Copyright 2020, The QGIS Project'
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtTest import QSignalSpy
@@ -50,62 +49,42 @@ class TestQgsProjectDisplaySettings(QgisTestCase):
 
         format = QgsBearingNumericFormat()
         format.setNumberDecimalPlaces(9)
-        format.setDirectionFormat(
-            QgsBearingNumericFormat.FormatDirectionOption.UseRange0To360
-        )
+        format.setDirectionFormat(QgsBearingNumericFormat.FormatDirectionOption.UseRange0To360)
 
         spy = QSignalSpy(p.bearingFormatChanged)
         p.setBearingFormat(format)
         self.assertEqual(len(spy), 1)
         self.assertEqual(p.bearingFormat().numberDecimalPlaces(), 9)
-        self.assertEqual(
-            p.bearingFormat().directionFormat(),
-            QgsBearingNumericFormat.FormatDirectionOption.UseRange0To360,
-        )
+        self.assertEqual(p.bearingFormat().directionFormat(), QgsBearingNumericFormat.FormatDirectionOption.UseRange0To360)
 
         format = QgsBearingNumericFormat()
         format.setNumberDecimalPlaces(3)
-        format.setDirectionFormat(
-            QgsBearingNumericFormat.FormatDirectionOption.UseRangeNegative180ToPositive180
-        )
+        format.setDirectionFormat(QgsBearingNumericFormat.FormatDirectionOption.UseRangeNegative180ToPositive180)
         p.setBearingFormat(format)
         self.assertEqual(len(spy), 2)
         self.assertEqual(p.bearingFormat().numberDecimalPlaces(), 3)
-        self.assertEqual(
-            p.bearingFormat().directionFormat(),
-            QgsBearingNumericFormat.FormatDirectionOption.UseRangeNegative180ToPositive180,
-        )
+        self.assertEqual(p.bearingFormat().directionFormat(), QgsBearingNumericFormat.FormatDirectionOption.UseRangeNegative180ToPositive180)
 
     def testGeographicCoordinateFormat(self):
         p = QgsProjectDisplaySettings()
 
         format = QgsGeographicCoordinateNumericFormat()
         format.setNumberDecimalPlaces(9)
-        format.setAngleFormat(
-            QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds
-        )
+        format.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
 
         spy = QSignalSpy(p.geographicCoordinateFormatChanged)
         p.setGeographicCoordinateFormat(format)
         self.assertEqual(len(spy), 1)
         self.assertEqual(p.geographicCoordinateFormat().numberDecimalPlaces(), 9)
-        self.assertEqual(
-            p.geographicCoordinateFormat().angleFormat(),
-            QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds,
-        )
+        self.assertEqual(p.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
 
         format = QgsGeographicCoordinateNumericFormat()
         format.setNumberDecimalPlaces(3)
-        format.setAngleFormat(
-            QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes
-        )
+        format.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
         p.setGeographicCoordinateFormat(format)
         self.assertEqual(len(spy), 2)
         self.assertEqual(p.geographicCoordinateFormat().numberDecimalPlaces(), 3)
-        self.assertEqual(
-            p.geographicCoordinateFormat().angleFormat(),
-            QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes,
-        )
+        self.assertEqual(p.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
 
     def testCoordinateTypeGeographic(self):
         p = QgsProjectDisplaySettings()
@@ -135,9 +114,9 @@ class TestQgsProjectDisplaySettings(QgisTestCase):
         self.assertEqual(len(spy), 1)
         self.assertEqual(p.coordinateType(), Qgis.CoordinateDisplayType.CustomCrs)
         spy = QSignalSpy(p.coordinateCustomCrsChanged)
-        p.setCoordinateCustomCrs(QgsCoordinateReferenceSystem("EPSG:3148"))
+        p.setCoordinateCustomCrs(QgsCoordinateReferenceSystem('EPSG:3148'))
         self.assertEqual(len(spy), 1)
-        self.assertEqual(p.coordinateCustomCrs().authid(), "EPSG:3148")
+        self.assertEqual(p.coordinateCustomCrs().authid(), 'EPSG:3148')
 
     def testReset(self):
         """
@@ -145,47 +124,33 @@ class TestQgsProjectDisplaySettings(QgisTestCase):
         """
         format = QgsBearingNumericFormat()
         format.setNumberDecimalPlaces(3)
-        format.setDirectionFormat(
-            QgsBearingNumericFormat.FormatDirectionOption.UseRangeNegative180ToPositive180
-        )
+        format.setDirectionFormat(QgsBearingNumericFormat.FormatDirectionOption.UseRangeNegative180ToPositive180)
         p = QgsProjectDisplaySettings()
         p.setBearingFormat(format)
         self.assertEqual(p.bearingFormat().numberDecimalPlaces(), 3)
-        self.assertEqual(
-            p.bearingFormat().directionFormat(),
-            QgsBearingNumericFormat.FormatDirectionOption.UseRangeNegative180ToPositive180,
-        )
+        self.assertEqual(p.bearingFormat().directionFormat(), QgsBearingNumericFormat.FormatDirectionOption.UseRangeNegative180ToPositive180)
 
         format = QgsGeographicCoordinateNumericFormat()
         format.setNumberDecimalPlaces(7)
-        format.setAngleFormat(
-            QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds
-        )
+        format.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
         p.setGeographicCoordinateFormat(format)
         self.assertEqual(p.geographicCoordinateFormat().numberDecimalPlaces(), 7)
-        self.assertEqual(
-            p.geographicCoordinateFormat().angleFormat(),
-            QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds,
-        )
+        self.assertEqual(p.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
 
         # setup a local default bearing format
         s = QgsLocalDefaultSettings()
         format = QgsBearingNumericFormat()
         format.setNumberDecimalPlaces(9)
-        format.setDirectionFormat(
-            QgsBearingNumericFormat.FormatDirectionOption.UseRange0To360
-        )
+        format.setDirectionFormat(QgsBearingNumericFormat.FormatDirectionOption.UseRange0To360)
         s.setBearingFormat(format)
 
         format = QgsGeographicCoordinateNumericFormat()
         format.setNumberDecimalPlaces(5)
-        format.setAngleFormat(
-            QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes
-        )
+        format.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
         s.setGeographicCoordinateFormat(format)
 
         p.setCoordinateType(Qgis.CoordinateDisplayType.MapGeographic)
-        p.setCoordinateCustomCrs(QgsCoordinateReferenceSystem("EPSG:3148"))
+        p.setCoordinateCustomCrs(QgsCoordinateReferenceSystem('EPSG:3148'))
 
         spy = QSignalSpy(p.bearingFormatChanged)
         spy2 = QSignalSpy(p.geographicCoordinateFormatChanged)
@@ -198,35 +163,25 @@ class TestQgsProjectDisplaySettings(QgisTestCase):
         self.assertEqual(len(spy4), 1)
         # project should default to local default format
         self.assertEqual(p.bearingFormat().numberDecimalPlaces(), 9)
-        self.assertEqual(
-            p.bearingFormat().directionFormat(),
-            QgsBearingNumericFormat.FormatDirectionOption.UseRange0To360,
-        )
+        self.assertEqual(p.bearingFormat().directionFormat(), QgsBearingNumericFormat.FormatDirectionOption.UseRange0To360)
 
         self.assertEqual(p.geographicCoordinateFormat().numberDecimalPlaces(), 5)
-        self.assertEqual(
-            p.geographicCoordinateFormat().angleFormat(),
-            QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes,
-        )
+        self.assertEqual(p.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutes)
 
         self.assertEqual(p.coordinateType(), Qgis.CoordinateDisplayType.MapCrs)
-        self.assertEqual(p.coordinateCustomCrs().authid(), "EPSG:4326")
+        self.assertEqual(p.coordinateCustomCrs().authid(), 'EPSG:4326')
 
     def testReadWrite(self):
         p = QgsProjectDisplaySettings()
 
         format = QgsBearingNumericFormat()
         format.setNumberDecimalPlaces(9)
-        format.setDirectionFormat(
-            QgsBearingNumericFormat.FormatDirectionOption.UseRange0To360
-        )
+        format.setDirectionFormat(QgsBearingNumericFormat.FormatDirectionOption.UseRange0To360)
         p.setBearingFormat(format)
 
         format = QgsGeographicCoordinateNumericFormat()
         format.setNumberDecimalPlaces(7)
-        format.setAngleFormat(
-            QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds
-        )
+        format.setAngleFormat(QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
         p.setGeographicCoordinateFormat(format)
 
         p.setCoordinateAxisOrder(Qgis.CoordinateOrder.YX)
@@ -241,17 +196,11 @@ class TestQgsProjectDisplaySettings(QgisTestCase):
         self.assertEqual(len(spy), 1)
         self.assertEqual(len(spy2), 1)
         self.assertEqual(p2.bearingFormat().numberDecimalPlaces(), 9)
-        self.assertEqual(
-            p2.bearingFormat().directionFormat(),
-            QgsBearingNumericFormat.FormatDirectionOption.UseRange0To360,
-        )
+        self.assertEqual(p2.bearingFormat().directionFormat(), QgsBearingNumericFormat.FormatDirectionOption.UseRange0To360)
         self.assertEqual(p.geographicCoordinateFormat().numberDecimalPlaces(), 7)
-        self.assertEqual(
-            p.geographicCoordinateFormat().angleFormat(),
-            QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds,
-        )
+        self.assertEqual(p.geographicCoordinateFormat().angleFormat(), QgsGeographicCoordinateNumericFormat.AngleFormat.DegreesMinutesSeconds)
         self.assertEqual(p.coordinateAxisOrder(), Qgis.CoordinateOrder.YX)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

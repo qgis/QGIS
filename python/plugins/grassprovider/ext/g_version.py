@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Alister Hood"
-__date__ = "May 2023"
-__copyright__ = "(C) 2023, Alister Hood"
+__author__ = 'Alister Hood'
+__date__ = 'May 2023'
+__copyright__ = '(C) 2023, Alister Hood'
 
 
 def processInputs(alg, parameters, context, feedback):
@@ -27,7 +27,7 @@ def processInputs(alg, parameters, context, feedback):
 def convertToHtml(alg, fileName, outputs):
     # don't copy this for something that will have lots of data like r.stats
     # it will be very slow
-    with open(fileName) as f:
-        outputs["GRASS_VERSIONINFO"] = f.read()
+    with open(fileName, 'r') as f:
+        outputs['GRASS_VERSIONINFO'] = f.read()
     # this will read the file a second time, but calling it saves us duplicating the code here
     alg.convertToHtml(fileName)

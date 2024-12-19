@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsgeometrygeneratorsymbollayer.h"
-#include "qgsexpressionutils.h"
 #include "qgsgeometry.h"
 #include "qgsmarkersymbol.h"
 #include "qgslinesymbol.h"
@@ -338,8 +337,7 @@ QgsGeometry QgsGeometryGeneratorSymbolLayer::evaluateGeometryInPainterUnits( con
   generatorScope->setGeometry( drawGeometry );
 
   // step 3 - evaluate the new generated geometry.
-  QVariant value = mExpression->evaluate( &expressionContext );
-  QgsGeometry geom = QgsExpressionUtils::getGeometry( value, mExpression.get() );
+  QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
 
   // step 4 - transform geometry back from target units to painter units
   geom.transform( painterToTargetUnits.inverted( ) );
@@ -422,8 +420,7 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
         {
           for ( const QPolygonF &ring : *rings )
           {
-            std::unique_ptr< QgsLineString > fromRing = QgsLineString::fromQPolygonF( ring );
-            polygon->addInteriorRing( fromRing.release() );
+            polygon->addInteriorRing( QgsLineString::fromQPolygonF( ring ) );
           }
         }
         drawGeometry = QgsGeometry( std::move( polygon ) );
@@ -464,8 +461,8 @@ void QgsGeometryGeneratorSymbolLayer::render( QgsSymbolRenderContext &context, Q
       case Qgis::RenderUnit::MetersInMapUnits: // unsupported, not exposed as an option
       case Qgis::RenderUnit::Percentage: // unsupported, not exposed as an option
       {
-        QVariant value = mExpression->evaluate( &expressionContext );
-        f.setGeometry( coerceToExpectedType( QgsExpressionUtils::getGeometry( value, mExpression.get() ) ) );
+        QgsGeometry geom = mExpression->evaluate( &expressionContext ).value<QgsGeometry>();
+        f.setGeometry( coerceToExpectedType( geom ) );
         break;
       }
 

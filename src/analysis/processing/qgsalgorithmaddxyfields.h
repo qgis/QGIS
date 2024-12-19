@@ -30,7 +30,9 @@
  */
 class QgsAddXYFieldsAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
+
   public:
+
     QgsAddXYFieldsAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -44,6 +46,7 @@ class QgsAddXYFieldsAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     bool supportInPlaceEdit( const QgsMapLayer *layer ) const override;
 
   protected:
+
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
     QString outputName() const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
@@ -51,9 +54,10 @@ class QgsAddXYFieldsAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
+
     bool mIsInPlace = false;
     QString mPrefix;
     mutable QgsCoordinateReferenceSystem mSourceCrs;
@@ -64,8 +68,11 @@ class QgsAddXYFieldsAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString mInPlaceYField;
     mutable int mInPlaceXFieldIndex = -1;
     mutable int mInPlaceYFieldIndex = -1;
+
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMADDXYFIELDS_H
+
+

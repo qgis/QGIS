@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsmssqldataitems.h"
-#include "moc_qgsmssqldataitems.cpp"
 #include "qgsmssqlconnection.h"
 #include "qgsmssqldatabase.h"
 
@@ -154,9 +153,9 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
   // issue the sql query
   QSqlQuery q = QSqlQuery( db->db() );
   q.setForwardOnly( true );
-  ( void ) q.exec( query );
+  ( void )q.exec( query );
 
-  QSet<QString> addedSchemas;
+  QSet< QString > addedSchemas;
 
   if ( q.isActive() )
   {
@@ -170,7 +169,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
       layer.srid = q.value( 3 ).toString();
       layer.type = q.value( 4 ).toString();
       layer.isView = q.value( 5 ).toBool();
-      const int dimensions { q.value( 6 ).toInt() };
+      const int dimensions { q.value( 6 ).toInt( ) };
       if ( dimensions >= 3 )
       {
         layer.type = layer.type.append( 'Z' );
@@ -192,7 +191,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
           const auto constChildren = child->children();
           for ( QgsDataItem *child2 : constChildren )
           {
-            QgsMssqlLayerItem *layerItem = qobject_cast<QgsMssqlLayerItem *>( child2 );
+            QgsMssqlLayerItem *layerItem = qobject_cast< QgsMssqlLayerItem *>( child2 );
             if ( child2->name() == layer.tableName && layerItem && layerItem->disableInvalidGeometryHandling() == disableInvalidGeometryHandling )
             {
               newLayers.append( child2 );
@@ -215,7 +214,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
       {
         if ( child->name() == layer.schemaName )
         {
-          schemaItem = static_cast<QgsMssqlSchemaItem *>( child );
+          schemaItem = static_cast< QgsMssqlSchemaItem * >( child );
           break;
         }
       }
@@ -236,8 +235,10 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
           {
             mColumnTypeThread = new QgsMssqlGeomColumnTypeThread( mService, mHost, mDatabase, mUsername, mPassword, true /* use estimated metadata */ );
 
-            connect( mColumnTypeThread, &QgsMssqlGeomColumnTypeThread::setLayerType, this, &QgsMssqlConnectionItem::setLayerType );
-            connect( this, &QgsMssqlConnectionItem::addGeometryColumn, mColumnTypeThread, &QgsMssqlGeomColumnTypeThread::addGeometryColumn );
+            connect( mColumnTypeThread, &QgsMssqlGeomColumnTypeThread::setLayerType,
+                     this, &QgsMssqlConnectionItem::setLayerType );
+            connect( this, &QgsMssqlConnectionItem::addGeometryColumn,
+                     mColumnTypeThread, &QgsMssqlGeomColumnTypeThread::addGeometryColumn );
           }
 
           emit addGeometryColumn( layer );
@@ -269,7 +270,7 @@ QVector<QgsDataItem *> QgsMssqlConnectionItem::createChildren()
     for ( const QString &schema : allSchemas )
     {
       if ( mSchemasFilteringEnabled && excludedSchema.contains( schema ) )
-        continue; // user does not want it to be shown
+        continue;  // user does not want it to be shown
 
       if ( addedSchemas.contains( schema ) )
         continue;
@@ -333,7 +334,7 @@ void QgsMssqlConnectionItem::setLayerType( QgsMssqlLayerProperty layerProperty )
   {
     if ( child->name() == layerProperty.schemaName )
     {
-      schemaItem = static_cast<QgsMssqlSchemaItem *>( child );
+      schemaItem = static_cast< QgsMssqlSchemaItem * >( child );
       break;
     }
   }
@@ -429,10 +430,11 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &t
       if ( srcLayer->geometryType() != Qgis::GeometryType::Null )
         uri += QLatin1String( " (geom)" );
 
-      std::unique_ptr<QgsVectorLayerExporterTask> exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri, QStringLiteral( "mssql" ), srcLayer->crs() ) );
+      std::unique_ptr< QgsVectorLayerExporterTask > exportTask( QgsVectorLayerExporterTask::withLayerOwnership( srcLayer, uri, QStringLiteral( "mssql" ), srcLayer->crs() ) );
 
       // when export is successful:
-      connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [=]() {
+      connect( exportTask.get(), &QgsVectorLayerExporterTask::exportComplete, this, [ = ]()
+      {
         // this is gross - TODO - find a way to get access to messageBar from data items
         QMessageBox::information( nullptr, tr( "Import to MS SQL Server database" ), tr( "Import was successful." ) );
         if ( state() == Qgis::BrowserItemState::Populated )
@@ -442,7 +444,8 @@ bool QgsMssqlConnectionItem::handleDrop( const QMimeData *data, const QString &t
       } );
 
       // when an error occurs:
-      connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [=]( Qgis::VectorExportResult error, const QString &errorMessage ) {
+      connect( exportTask.get(), &QgsVectorLayerExporterTask::errorOccurred, this, [ = ]( Qgis::VectorExportResult error, const QString & errorMessage )
+      {
         if ( error != Qgis::VectorExportResult::UserCanceled )
         {
           QgsMessageOutput *output = QgsMessageOutput::createMessageOutput();
@@ -553,7 +556,7 @@ void QgsMssqlSchemaItem::addLayers( QgsDataItem *newLayers )
     {
       continue;
     }
-    QgsMssqlLayerItem *layer = static_cast<QgsMssqlLayerItem *>( child )->createClone();
+    QgsMssqlLayerItem *layer = static_cast< QgsMssqlLayerItem * >( child )->createClone();
     addChildItem( layer, true );
   }
 }

@@ -48,8 +48,10 @@ template<class T> class QgsSettingsEntryEnumFlag;
 */
 class CORE_EXPORT QgsGpsConnection : public QObject
 {
-    //SIP_TYPEHEADER_INCLUDE( "qgsgpsdconnection.h" );
-    //SIP_TYPEHEADER_INCLUDE( "qgsnmeaconnection.h" );
+#ifdef SIP_RUN
+#include <qgsgpsdconnection.h>
+#include <qgsnmeaconnection.h>
+#endif
 
 
 #ifdef SIP_RUN

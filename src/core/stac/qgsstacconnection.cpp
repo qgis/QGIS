@@ -87,7 +87,7 @@ void QgsStacConnection::deleteConnection( const QString &name )
   sTreeConnectionStac->deleteItem( name );
 }
 
-void QgsStacConnection::addConnection( const QString &name, const Data &conn )
+void QgsStacConnection::addConnection( const QString &name, QgsStacConnection::Data conn )
 {
   settingsUrl->setValue( conn.url, name );
   settingsAuthcfg->setValue( conn.authCfg, name );

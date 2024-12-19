@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsfieldformatterregistry.h"
-#include "moc_qgsfieldformatterregistry.cpp"
 #include "qgsfieldformatter.h"
 
 #include "qgsvaluerelationfieldformatter.h"

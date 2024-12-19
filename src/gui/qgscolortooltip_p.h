@@ -30,15 +30,16 @@
 class QgsColorTooltip
 {
   public:
+
     //! Returns an HTML desciption given a \a color with a preview image of the color
     template<typename T>
     static QString htmlDescription( QColor color, T *widget )
     {
       // create very large preview swatch
-      const int width = static_cast<int>( Qgis::UI_SCALE_FACTOR * widget->fontMetrics().horizontalAdvance( 'X' ) * 23 );
-      const int height = static_cast<int>( width / 1.61803398875 ); // golden ratio
+      const int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * widget->fontMetrics().horizontalAdvance( 'X' ) * 23 );
+      const int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
 
-      const int margin = static_cast<int>( height * 0.1 );
+      const int margin = static_cast< int >( height * 0.1 );
       QImage icon = QImage( width + 2 * margin, height + 2 * margin, QImage::Format_ARGB32 );
       icon.fill( Qt::transparent );
 
@@ -53,19 +54,9 @@ class QgsColorTooltip
 
       //draw color over pattern
       p.setBrush( QBrush( color ) );
-      p.drawRect( margin, margin, width, height );
-
-      if ( color.alpha() < 255 )
-      {
-        //draw fully opaque color over half of the area
-        color.setAlpha( 255 );
-        p.setBrush( QBrush( color ) );
-        p.drawRect( margin, margin, width / 2, height );
-      }
 
       //draw border
       p.setPen( QColor( 197, 197, 197 ) );
-      p.setBrush( Qt::NoBrush );
       p.drawRect( margin, margin, width, height );
       p.end();
 
@@ -84,11 +75,9 @@ class QgsColorTooltip
         const double alpha = color.alphaF() * 100.;
 
         info += QStringLiteral( "<b>CMYKA</b> %1,%2,%3,%4,%5<p>" )
-                  .arg( cyan, 0, 'f', 2 )
-                  .arg( magenta, 0, 'f', 2 )
-                  .arg( yellow, 0, 'f', 2 )
-                  .arg( black, 0, 'f', 2 )
-                  .arg( alpha, 0, 'f', 2 );
+                .arg( cyan, 0, 'f', 2 ).arg( magenta, 0, 'f', 2 )
+                .arg( yellow, 0, 'f', 2 ).arg( black, 0, 'f', 2 )
+                .arg( alpha, 0, 'f', 2 );
       }
       else
       {
@@ -97,11 +86,8 @@ class QgsColorTooltip
         const int saturation = color.saturation();
 
         info += QStringLiteral( "<b>RGBA</b> %1<br>"
-                                "<b>HSV</b> %2,%3,%4<p>" )
-                  .arg( QgsSymbolLayerUtils::encodeColor( color ) )
-                  .arg( hue )
-                  .arg( saturation )
-                  .arg( value );
+                                "<b>HSV</b> %2,%3,%4<p>" ).arg( QgsSymbolLayerUtils::encodeColor( color ) )
+                .arg( hue ).arg( saturation ).arg( value );
       }
 
       info += QStringLiteral( "<img src='data:image/png;base64, %1'>" ).arg( QString( data.toBase64() ) );

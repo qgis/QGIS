@@ -35,11 +35,12 @@ class QgsMapCanvas;
  * \ingroup app
  * \brief a dialog for saving a map to an image.
 */
-class APP_EXPORT QgsMapSaveDialog : public QDialog, private Ui::QgsMapSaveDialog
+class APP_EXPORT QgsMapSaveDialog: public QDialog, private Ui::QgsMapSaveDialog
 {
     Q_OBJECT
 
   public:
+
     enum DialogType
     {
       Image = 1, // Image-specific dialog
@@ -49,7 +50,10 @@ class APP_EXPORT QgsMapSaveDialog : public QDialog, private Ui::QgsMapSaveDialog
     /**
      * Constructor for QgsMapSaveDialog
      */
-    QgsMapSaveDialog( QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr, const QList<QgsMapDecoration *> &decorations = QList<QgsMapDecoration *>(), const QList<QgsAnnotation *> &annotations = QList<QgsAnnotation *>(), DialogType type = Image );
+    QgsMapSaveDialog( QWidget *parent = nullptr, QgsMapCanvas *mapCanvas = nullptr,
+                      const QList< QgsMapDecoration * > &decorations = QList< QgsMapDecoration * >(),
+                      const QList<QgsAnnotation *> &annotations = QList< QgsAnnotation * >(),
+                      DialogType type = Image );
 
     //! returns extent rectangle
     QgsRectangle extent() const;
@@ -84,6 +88,7 @@ class APP_EXPORT QgsMapSaveDialog : public QDialog, private Ui::QgsMapSaveDialog
     void updatePdfExportWarning();
 
   private:
+
     void lockChanged( bool locked );
     void copyToClipboard();
     void checkOutputSize();
@@ -97,8 +102,8 @@ class APP_EXPORT QgsMapSaveDialog : public QDialog, private Ui::QgsMapSaveDialog
 
     DialogType mDialogType;
     QgsMapCanvas *mMapCanvas = nullptr;
-    QList<QgsMapDecoration *> mDecorations;
-    QList<QgsAnnotation *> mAnnotations;
+    QList< QgsMapDecoration * > mDecorations;
+    QList< QgsAnnotation *> mAnnotations;
 
     QgsRectangle mExtent;
     int mDpi;

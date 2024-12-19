@@ -33,6 +33,7 @@ class GUI_EXPORT QgsLabelObstacleSettingsWidget : public QgsLabelSettingsWidgetB
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLabelObstacleSettingsWidget.
      * \param parent parent widget
@@ -59,7 +60,9 @@ class GUI_EXPORT QgsLabelObstacleSettingsWidget : public QgsLabelSettingsWidgetB
     void updateDataDefinedProperties( QgsPropertyCollection &properties ) override;
 
   private:
+
     bool mBlockSignals = false;
+
 };
 
 #endif // QGSLABELOBSTACLESETTINGSWIDGET_H

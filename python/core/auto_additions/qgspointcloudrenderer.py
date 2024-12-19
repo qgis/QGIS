@@ -4,9 +4,9 @@ try:
     QgsPointCloudRenderer.pointXY = staticmethod(QgsPointCloudRenderer.pointXY)
     QgsPointCloudRenderer.pointZ = staticmethod(QgsPointCloudRenderer.pointZ)
     QgsPointCloudRenderer.__group__ = ['pointcloud']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsPointCloudRenderContext.__group__ = ['pointcloud']
-except (NameError, AttributeError):
+except NameError:
     pass

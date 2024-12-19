@@ -14,5 +14,5 @@ QgsRasterPipe.Property.__doc__ = """Data definable properties.
 try:
     QgsRasterPipe.propertyDefinitions = staticmethod(QgsRasterPipe.propertyDefinitions)
     QgsRasterPipe.__group__ = ['raster']
-except (NameError, AttributeError):
+except NameError:
     pass

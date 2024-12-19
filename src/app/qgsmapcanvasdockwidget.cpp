@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmapcanvasdockwidget.h"
-#include "moc_qgsmapcanvasdockwidget.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsexception.h"
 #include "qgsprojectionselectiondialog.h"
@@ -49,7 +48,7 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   setAttribute( Qt::WA_DeleteOnClose );
 
   layout()->setContentsMargins( 0, 0, 0, 0 );
-  qgis::down_cast<QVBoxLayout *>( layout() )->setSpacing( 0 );
+  qgis::down_cast< QVBoxLayout * >( layout() )->setSpacing( 0 );
 
   setWindowTitle( mCanvasName );
   mToolbar->setIconSize( QgisApp::instance()->iconSize( true ) );
@@ -101,8 +100,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasDockWidget::mapCrsChanged );
   connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, &QgsMapCanvasDockWidget::updateExtentRect );
   connect( mActionZoomFullExtent, &QAction::triggered, mMapCanvas, &QgsMapCanvas::zoomToProjectExtent );
-  connect( mActionZoomToLayers, &QAction::triggered, mMapCanvas, [=] { QgisApp::instance()->layerTreeView()->defaultActions()->zoomToLayers( mMapCanvas ); } );
-  connect( mActionZoomToSelected, &QAction::triggered, mMapCanvas, [=] { mMapCanvas->zoomToSelected(); } );
+  connect( mActionZoomToLayers, &QAction::triggered, mMapCanvas, [ = ] { QgisApp::instance()->layerTreeView()->defaultActions()->zoomToLayers( mMapCanvas ); } );
+  connect( mActionZoomToSelected, &QAction::triggered, mMapCanvas, [ = ] { mMapCanvas->zoomToSelected(); } );
   mapCrsChanged();
 
   QgsMapSettingsAction *settingsAction = new QgsMapSettingsAction( settingsMenu );
@@ -127,11 +126,11 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
 
   connect( mActionRename, &QAction::triggered, this, &QgsMapCanvasDockWidget::renameTriggered );
   mActionShowAnnotations->setChecked( mMapCanvas->annotationsVisible() );
-  connect( mActionShowAnnotations, &QAction::toggled, this, [=]( bool checked ) { mMapCanvas->setAnnotationsVisible( checked ); } );
+  connect( mActionShowAnnotations, &QAction::toggled, this, [ = ]( bool checked ) { mMapCanvas->setAnnotationsVisible( checked ); } );
   mActionShowCursor->setChecked( true );
-  connect( mActionShowCursor, &QAction::toggled, this, [=]( bool checked ) { mXyMarker->setVisible( checked ); } );
+  connect( mActionShowCursor, &QAction::toggled, this, [ = ]( bool checked ) { mXyMarker->setVisible( checked ); } );
   mActionShowExtent->setChecked( false );
-  connect( mActionShowExtent, &QAction::toggled, this, [=]( bool checked ) { mExtentRubberBand->setVisible( checked ); updateExtentRect(); } );
+  connect( mActionShowExtent, &QAction::toggled, this, [ = ]( bool checked ) { mExtentRubberBand->setVisible( checked ); updateExtentRect(); } );
   mActionShowLabels->setChecked( true );
   connect( mActionShowLabels, &QAction::toggled, this, &QgsMapCanvasDockWidget::showLabels );
 
@@ -143,7 +142,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   mSyncScaleCheckBox = settingsAction->syncScaleCheckBox();
   mScaleFactorWidget = settingsAction->scaleFactorSpinBox();
 
-  connect( mSyncSelectionCheck, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mSyncSelectionCheck, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
     autoZoomToSelection( checked );
     if ( checked )
     {
@@ -154,7 +154,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
     }
   } );
 
-  connect( mSyncExtentCheck, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mSyncExtentCheck, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
     if ( checked )
     {
       syncViewCenter( mMainCanvas );
@@ -164,7 +165,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
     }
   } );
 
-  connect( mScaleCombo, &QgsScaleComboBox::scaleChanged, this, [=]( double scale ) {
+  connect( mScaleCombo, &QgsScaleComboBox::scaleChanged, this, [ = ]( double scale )
+  {
     if ( !mBlockScaleUpdate )
     {
       mBlockScaleUpdate = true;
@@ -172,7 +174,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
       mBlockScaleUpdate = false;
     }
   } );
-  connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, [=]( double scale ) {
+  connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, [ = ]( double scale )
+  {
     if ( !mBlockScaleUpdate )
     {
       mBlockScaleUpdate = true;
@@ -181,7 +184,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
     }
   } );
 
-  connect( mRotationEdit, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mRotationEdit, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
     if ( !mBlockRotationUpdate )
     {
       mBlockRotationUpdate = true;
@@ -191,7 +195,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
     }
   } );
 
-  connect( mMapCanvas, &QgsMapCanvas::rotationChanged, this, [=]( double rotation ) {
+  connect( mMapCanvas, &QgsMapCanvas::rotationChanged, this, [ = ]( double rotation )
+  {
     if ( !mBlockRotationUpdate )
     {
       mBlockRotationUpdate = true;
@@ -200,7 +205,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
     }
   } );
 
-  connect( mMagnificationEdit, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [=]( double value ) {
+  connect( mMagnificationEdit, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double value )
+  {
     if ( !mBlockMagnificationUpdate )
     {
       mBlockMagnificationUpdate = true;
@@ -210,7 +216,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
     }
   } );
 
-  connect( mMapCanvas, &QgsMapCanvas::magnificationChanged, this, [=]( double factor ) {
+  connect( mMapCanvas, &QgsMapCanvas::magnificationChanged, this, [ = ]( double factor )
+  {
     if ( !mBlockMagnificationUpdate )
     {
       mBlockMagnificationUpdate = true;
@@ -219,14 +226,17 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
     }
   } );
 
-  connect( mScaleFactorWidget, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsMapCanvasDockWidget::mapScaleChanged );
-  connect( mSyncScaleCheckBox, &QCheckBox::toggled, this, [=]( bool checked ) {
+  connect( mScaleFactorWidget, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsMapCanvasDockWidget::mapScaleChanged );
+  connect( mSyncScaleCheckBox, &QCheckBox::toggled, this, [ = ]( bool checked )
+  {
     if ( checked )
       mapScaleChanged();
-  } );
+  }
+         );
 
   mResizeTimer.setSingleShot( true );
-  connect( &mResizeTimer, &QTimer::timeout, this, [=] {
+  connect( &mResizeTimer, &QTimer::timeout, this, [ = ]
+  {
     mBlockExtentSync = false;
 
     if ( mSyncScaleCheckBox->isChecked() )
@@ -247,7 +257,8 @@ QgsMapCanvasDockWidget::QgsMapCanvasDockWidget( const QString &name, QWidget *pa
   QToolButton *toggleButton = mDockableWidgetHelper->createDockUndockToolButton();
   toggleButton->setToolTip( tr( "Dock 2D Map View" ) );
   mToolbar->addWidget( toggleButton );
-  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [=]() {
+  connect( mDockableWidgetHelper, &QgsDockableWidgetHelper::closed, this, [ = ]()
+  {
     close();
   } );
 }
@@ -390,7 +401,8 @@ void QgsMapCanvasDockWidget::syncViewCenter( QgsMapCanvas *sourceCanvas )
   QgsMapCanvas *destCanvas = sourceCanvas == mMapCanvas ? mMainCanvas : mMapCanvas;
 
   // reproject extent
-  QgsCoordinateTransform ct( sourceCanvas->mapSettings().destinationCrs(), destCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+  QgsCoordinateTransform ct( sourceCanvas->mapSettings().destinationCrs(),
+                             destCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
   ct.setBallparkTransformsAreAppropriate( true );
   try
   {
@@ -420,7 +432,7 @@ void QgsMapCanvasDockWidget::mapExtentChanged()
   if ( mBlockExtentSync )
     return;
 
-  QgsMapCanvas *sourceCanvas = qobject_cast<QgsMapCanvas *>( sender() );
+  QgsMapCanvas *sourceCanvas = qobject_cast< QgsMapCanvas * >( sender() );
   if ( !sourceCanvas )
     return;
 
@@ -438,7 +450,9 @@ void QgsMapCanvasDockWidget::mapExtentChanged()
 
 void QgsMapCanvasDockWidget::mapCrsChanged()
 {
-  mActionSetCrs->setText( tr( "Change Map CRS (%1)…" ).arg( mMapCanvas->mapSettings().destinationCrs().isValid() ? mMapCanvas->mapSettings().destinationCrs().authid() : tr( "No projection" ) ) );
+  mActionSetCrs->setText( tr( "Change Map CRS (%1)…" ).arg( mMapCanvas->mapSettings().destinationCrs().isValid() ?
+                          mMapCanvas->mapSettings().destinationCrs().authid() :
+                          tr( "No projection" ) ) );
 }
 
 void QgsMapCanvasDockWidget::menuAboutToShow()
@@ -454,7 +468,8 @@ void QgsMapCanvasDockWidget::menuAboutToShow()
   {
     actionFollowMain->setChecked( true );
   }
-  connect( actionFollowMain, &QAction::triggered, this, [=] {
+  connect( actionFollowMain, &QAction::triggered, this, [ = ]
+  {
     mMapCanvas->setTheme( QString() );
     mMapCanvas->refresh();
   } );
@@ -469,7 +484,8 @@ void QgsMapCanvasDockWidget::menuAboutToShow()
     {
       a->setChecked( true );
     }
-    connect( a, &QAction::triggered, this, [a, this] {
+    connect( a, &QAction::triggered, this, [a, this]
+    {
       mMapCanvas->setTheme( a->text() );
       mMapCanvas->refresh();
     } );
@@ -497,7 +513,8 @@ void QgsMapCanvasDockWidget::syncMarker( const QgsPointXY &p )
     return;
 
   // reproject point
-  const QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+  const QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(),
+                                   mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
   QgsPointXY t = p;
   try
   {
@@ -530,10 +547,12 @@ void QgsMapCanvasDockWidget::updateExtentRect()
   // close polygon
   mainCanvasPoly << mainCanvasPoly.at( 0 );
   QgsGeometry g = QgsGeometry::fromQPolygonF( mainCanvasPoly );
-  if ( mMainCanvas->mapSettings().destinationCrs() != mMapCanvas->mapSettings().destinationCrs() )
+  if ( mMainCanvas->mapSettings().destinationCrs() !=
+       mMapCanvas->mapSettings().destinationCrs() )
   {
     // reproject extent
-    const QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(), mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
+    const QgsCoordinateTransform ct( mMainCanvas->mapSettings().destinationCrs(),
+                                     mMapCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
     g = g.densifyByCount( 5 );
     try
     {
@@ -552,7 +571,7 @@ void QgsMapCanvasDockWidget::showLabels( bool show )
   if ( show )
     flags = flags | Qgis::MapSettingsFlag::DrawLabeling;
   else
-    flags = flags & ~( static_cast<int>( Qgis::MapSettingsFlag::DrawLabeling ) );
+    flags = flags & ~( static_cast< int >( Qgis::MapSettingsFlag::DrawLabeling ) );
   mMapCanvas->setMapSettingsFlags( flags );
 }
 

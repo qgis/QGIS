@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsrenderingoptions.h"
-#include "moc_qgsrenderingoptions.cpp"
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgssettingsregistrycore.h"
@@ -83,7 +82,7 @@ void QgsRenderingOptionsWidget::apply()
 // QgsRenderingOptionsFactory
 //
 QgsRenderingOptionsFactory::QgsRenderingOptionsFactory()
-  : QgsOptionsWidgetFactory( tr( "Rendering" ), QIcon(), QStringLiteral( "rendering" ) )
+  : QgsOptionsWidgetFactory( tr( "Rendering" ), QIcon(),   QStringLiteral( "rendering" ) )
 {
 }
 

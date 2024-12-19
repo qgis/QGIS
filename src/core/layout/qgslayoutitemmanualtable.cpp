@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgslayoutitemmanualtable.h"
-#include "moc_qgslayoutitemmanualtable.cpp"
 #include "qgsconditionalstyle.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayouttablecolumn.h"

@@ -25,6 +25,7 @@ It will only be instantiated by {:py:class:`QgsEditorWidgetFactory`}
 #include "qgseditorconfigwidget.h"
 %End
   public:
+
     explicit QgsEditorConfigWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ );
 %Docstring
 Create a new configuration widget
@@ -73,6 +74,7 @@ Emitted when the configuration of the widget is changed.
 %End
 
   protected:
+
     void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsWidgetWrapper::Property key );
 %Docstring
 Registers a property override button, setting up its initial value, connections and description.

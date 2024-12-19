@@ -34,6 +34,7 @@ SIP_NO_FILE
 class GUI_EXPORT QgsGeometryWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
+
     /**
      * Constructor for QgsGeometryWidgetFactory, where \a name is a human-readable
      * name for the factory.
@@ -51,6 +52,7 @@ class GUI_EXPORT QgsGeometryWidgetFactory : public QgsEditorWidgetFactory
     unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;
 
   private:
+
     QgsMessageBar *mMessageBar = nullptr;
 };
 

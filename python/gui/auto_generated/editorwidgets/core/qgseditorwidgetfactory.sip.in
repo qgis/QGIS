@@ -25,6 +25,7 @@ and another factory method to create a configuration dialog.
 #include "qgseditorwidgetfactory.h"
 %End
   public:
+
     QgsEditorWidgetFactory( const QString &name );
 %Docstring
 Constructor

@@ -148,7 +148,8 @@ bool QgsMssqlConnection::dropTable( const QString &uri, QString *errorMessage )
   q.setForwardOnly( true );
   const QString sql = QString( "IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[%1].[%2]') AND type in (N'U')) DROP TABLE [%1].[%2]\n"
                                "DELETE FROM geometry_columns WHERE f_table_schema = '%1' AND f_table_name = '%2'" )
-                        .arg( schema, table );
+                      .arg( schema,
+                            table );
   if ( !q.exec( sql ) )
   {
     if ( errorMessage )
@@ -257,7 +258,8 @@ QStringList QgsMssqlConnection::schemas( std::shared_ptr<QgsMssqlDatabase> db, Q
 
 bool QgsMssqlConnection::isSystemSchema( const QString &schema )
 {
-  static const QSet<QString> sSystemSchemas {
+  static const QSet< QString > sSystemSchemas
+  {
     QStringLiteral( "db_owner" ),
     QStringLiteral( "db_securityadmin" ),
     QStringLiteral( "db_accessadmin" ),
@@ -310,7 +312,7 @@ QgsDataSourceUri QgsMssqlConnection::connUri( const QString &connName )
   {
     const bool saveUsername { settings.value( QStringLiteral( "saveUsername" ) ).toBool() };
     uri.setParam( QStringLiteral( "saveUsername" ), saveUsername ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-    if ( !saveUsername )
+    if ( ! saveUsername )
     {
       uri.setUsername( QString() );
     }
@@ -319,7 +321,7 @@ QgsDataSourceUri QgsMssqlConnection::connUri( const QString &connName )
   {
     const bool savePassword { settings.value( QStringLiteral( "savePassword" ) ).toBool() };
     uri.setParam( QStringLiteral( "savePassword" ), savePassword ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-    if ( !savePassword )
+    if ( ! savePassword )
     {
       uri.setPassword( QString() );
     }
@@ -365,7 +367,8 @@ QList<QgsVectorDataProvider::NativeType> QgsMssqlConnection::nativeTypes()
          << QgsVectorDataProvider::NativeType( QObject::tr( "Text, fixed length unicode (nchar)" ), QStringLiteral( "nchar" ), QMetaType::Type::QString, 1, 255 )
          << QgsVectorDataProvider::NativeType( QObject::tr( "Text, limited variable length unicode (nvarchar)" ), QStringLiteral( "nvarchar" ), QMetaType::Type::QString, 1, 255 )
          << QgsVectorDataProvider::NativeType( QObject::tr( "Text, unlimited length (text)" ), QStringLiteral( "text" ), QMetaType::Type::QString )
-         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, unlimited length unicode (ntext)" ), QStringLiteral( "text" ), QMetaType::Type::QString );
+         << QgsVectorDataProvider::NativeType( QObject::tr( "Text, unlimited length unicode (ntext)" ), QStringLiteral( "text" ), QMetaType::Type::QString )
+         ;
 }
 
 QStringList QgsMssqlConnection::excludedSchemasList( const QString &connName )

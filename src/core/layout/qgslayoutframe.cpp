@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgslayoutframe.h"
-#include "moc_qgslayoutframe.cpp"
 #include "qgslayoutmultiframe.h"
 #include "qgslayoutitemregistry.h"
 #include "qgslayout.h"

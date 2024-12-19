@@ -9,5 +9,5 @@ try:
     QgsMapToolEdit.digitizingStrokeWidth = staticmethod(QgsMapToolEdit.digitizingStrokeWidth)
     QgsMapToolEdit.digitizingFillColor = staticmethod(QgsMapToolEdit.digitizingFillColor)
     QgsMapToolEdit.__group__ = ['maptools']
-except (NameError, AttributeError):
+except NameError:
     pass

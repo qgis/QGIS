@@ -7,9 +7,9 @@
 
 """
 
-__author__ = "elpaso@itopen.it"
-__date__ = "2022-08-19"
-__copyright__ = "Copyright 2022, ItOpen"
+__author__ = 'elpaso@itopen.it'
+__date__ = '2022-08-19'
+__copyright__ = 'Copyright 2022, ItOpen'
 
 import os
 
@@ -19,49 +19,43 @@ from qgis.testing import unittest
 from qgslayermetadataprovidertestbase import LayerMetadataProviderTestBase
 
 
-class TestPostgresLayerMetadataProvider(
-    unittest.TestCase, LayerMetadataProviderTestBase
-):
+class TestPostgresLayerMetadataProvider(unittest.TestCase, LayerMetadataProviderTestBase):
 
     def getMetadataProviderId(self) -> str:
 
-        return "postgres"
+        return 'postgres'
 
     def getLayer(self):
 
-        return QgsVectorLayer(
-            f'{self.getConnectionUri()} type=Point table="qgis_test"."someData" (geom) sql=',
-            "someData",
-            "postgres",
-        )
+        return QgsVectorLayer(f'{self.getConnectionUri()} type=Point table="qgis_test"."someData" (geom) sql=', "someData", 'postgres')
 
     def getConnectionUri(self) -> str:
 
-        dbconn = "service=qgis_test"
+        dbconn = 'service=qgis_test'
 
-        if "QGIS_PGTEST_DB" in os.environ:
-            dbconn = os.environ["QGIS_PGTEST_DB"]
+        if 'QGIS_PGTEST_DB' in os.environ:
+            dbconn = os.environ['QGIS_PGTEST_DB']
 
         return dbconn
 
     def clearMetadataTable(self):
 
-        self.conn.execSql("DROP TABLE IF EXISTS qgis_test.qgis_layer_metadata")
-        self.conn.execSql("DROP TABLE IF EXISTS public.qgis_layer_metadata")
+        self.conn.execSql('DROP TABLE IF EXISTS qgis_test.qgis_layer_metadata')
+        self.conn.execSql('DROP TABLE IF EXISTS public.qgis_layer_metadata')
 
     def setUp(self):
 
         super().setUp()
 
-        dbconn = "service=qgis_test"
+        dbconn = 'service=qgis_test'
 
-        if "QGIS_PGTEST_DB" in os.environ:
-            dbconn = os.environ["QGIS_PGTEST_DB"]
+        if 'QGIS_PGTEST_DB' in os.environ:
+            dbconn = os.environ['QGIS_PGTEST_DB']
 
-        md = QgsProviderRegistry.instance().providerMetadata("postgres")
+        md = QgsProviderRegistry.instance().providerMetadata('postgres')
         conn = md.createConnection(self.getConnectionUri(), {})
-        conn.setConfiguration({"metadataInDatabase": True})
-        conn.store("PG Metadata Enabled Connection")
+        conn.setConfiguration({'metadataInDatabase': True})
+        conn.store('PG Metadata Enabled Connection')
         self.conn = conn
         self.clearMetadataTable()
 
@@ -71,5 +65,5 @@ class TestPostgresLayerMetadataProvider(
         self.clearMetadataTable()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

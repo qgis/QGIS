@@ -26,6 +26,7 @@ has support for table foreground and background colors, and numeric formats.
 #include "qgstableeditorwidget.h"
 %End
   public:
+
     QgsTableEditorWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsTableEditorWidget with the specified ``parent`` widget.
@@ -75,7 +76,7 @@ Returns ``True`` if the current selection has a mix of numeric formats.
 .. seealso:: :py:func:`selectionNumericFormat`
 %End
 
- QColor selectionForegroundColor() /Deprecated="Since 3.40. Use selectionTextFormat() instead."/;
+ QColor selectionForegroundColor() /Deprecated/;
 %Docstring
 Returns the foreground color for the currently selected cells.
 
@@ -295,7 +296,7 @@ current selected cells.
 Clears the contents of the currently selected cells.
 %End
 
- void setSelectionForegroundColor( const QColor &color ) /Deprecated="Since 3.40. Use setSelectionTextFormat() instead."/;
+ void setSelectionForegroundColor( const QColor &color ) /Deprecated/;
 %Docstring
 Sets the foreground color for the currently selected cells.
 

@@ -39,3 +39,4 @@ class QgsOfflineEditingProgressDialog : public QDialog, private Ui::QgsOfflineEd
 };
 
 #endif // QGS_OFFLINE_EDITING_PROGRESS_DIALOG_H
+

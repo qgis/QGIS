@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Tim Sutton"
-__date__ = "20/08/2012"
-__copyright__ = "Copyright 2012, The QGIS Project"
+__author__ = 'Tim Sutton'
+__date__ = '20/08/2012'
+__copyright__ = 'Copyright 2012, The QGIS Project'
 
 from qgis.PyQt.QtCore import QPointF
 from qgis.core import QgsPoint, QgsPointXY, QgsWkbTypes
@@ -33,7 +32,7 @@ class TestQgsPointXY(QgisTestCase):
         self.assertEqual(myExpectedValue, myActualValue)
 
     def test_pointToString(self):
-        myExpectedValue = "10, 10"
+        myExpectedValue = '10, 10'
         myActualValue = self.mPoint.toString()
         self.assertEqual(myExpectedValue, myActualValue)
 
@@ -51,76 +50,36 @@ class TestQgsPointXY(QgisTestCase):
 
     def test_issue_32443(self):
         p = QgsPoint()
-        self.assertTrue(
-            p.wkbType() == QgsWkbTypes.Type.Point and p.x() != p.x() and p.y() != p.y()
-        )
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.Point and p.x() != p.x() and p.y() != p.y())
 
         # ctor from QgsPointXY should be available
         p = QgsPoint(QgsPointXY(1, 2))
-        self.assertTrue(
-            p.wkbType() == QgsWkbTypes.Type.Point and p.x() == 1 and p.y() == 2
-        )
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.Point and p.x() == 1 and p.y() == 2)
 
         # ctor from QPointF should be available
         p = QgsPoint(QPointF(1, 2))
-        self.assertTrue(
-            p.wkbType() == QgsWkbTypes.Type.Point and p.x() == 1 and p.y() == 2
-        )
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.Point and p.x() == 1 and p.y() == 2)
 
         p = QgsPoint(1, 2)
-        self.assertTrue(
-            p.wkbType() == QgsWkbTypes.Type.Point and p.x() == 1 and p.y() == 2
-        )
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.Point and p.x() == 1 and p.y() == 2)
 
         p = QgsPoint(1, 2, 3)
-        self.assertTrue(
-            p.wkbType() == QgsWkbTypes.Type.PointZ
-            and p.x() == 1
-            and p.y() == 2
-            and p.z() == 3
-        )
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.PointZ and p.x() == 1 and p.y() == 2 and p.z() == 3)
 
         p = QgsPoint(1, 2, z=3)
-        self.assertTrue(
-            p.wkbType() == QgsWkbTypes.Type.PointZ
-            and p.x() == 1
-            and p.y() == 2
-            and p.z() == 3
-        )
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.PointZ and p.x() == 1 and p.y() == 2 and p.z() == 3)
 
         p = QgsPoint(1, 2, m=3)
-        self.assertTrue(
-            p.wkbType() == QgsWkbTypes.Type.PointM
-            and p.x() == 1
-            and p.y() == 2
-            and p.m() == 3
-        )
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.PointM and p.x() == 1 and p.y() == 2 and p.m() == 3)
 
         p = QgsPoint(1, 2, wkbType=QgsWkbTypes.Type.PointM)
-        self.assertTrue(
-            p.wkbType() == QgsWkbTypes.Type.PointM
-            and p.x() == 1
-            and p.y() == 2
-            and p.m() != p.m()
-        )
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.PointM and p.x() == 1 and p.y() == 2 and p.m() != p.m())
 
         p = QgsPoint(1, 2, 3, 4)
-        self.assertTrue(
-            p.wkbType() == QgsWkbTypes.Type.PointZM
-            and p.x() == 1
-            and p.y() == 2
-            and p.z() == 3
-            and p.m() == 4
-        )
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.PointZM and p.x() == 1 and p.y() == 2 and p.z() == 3 and p.m() == 4)
 
         p = QgsPoint(1, 2, m=4, z=3)
-        self.assertTrue(
-            p.wkbType() == QgsWkbTypes.Type.PointZM
-            and p.x() == 1
-            and p.y() == 2
-            and p.z() == 3
-            and p.m() == 4
-        )
+        self.assertTrue(p.wkbType() == QgsWkbTypes.Type.PointZM and p.x() == 1 and p.y() == 2 and p.z() == 3 and p.m() == 4)
 
     def test_empty_QgsPointXY(self):
         p = QgsPoint(QgsPointXY())
@@ -133,7 +92,7 @@ class TestQgsPoint(QgisTestCase):
         """Test GH #34557"""
 
         with self.assertRaises(TypeError):
-            point_0 = QgsPoint("a string")
+            point_0 = QgsPoint('a string')
 
         with self.assertRaises(TypeError):
             point_a = QgsPoint(10, 20)
@@ -213,11 +172,13 @@ class TestQgsPoint(QgisTestCase):
         test simplifyByDistance
         """
         # for points this is just a clone
-        p = QgsPoint(1.1, 2.2)
-        self.assertEqual(p.simplifyByDistance(0.5), QgsPoint(1.1, 2.2))
+        p = QgsPoint(1.1,
+                     2.2)
+        self.assertEqual(p.simplifyByDistance(0.5), QgsPoint(1.1,
+                                                             2.2))
         p = QgsPoint(1.1, 2.2, 3.3, 4.4)
         self.assertEqual(p.simplifyByDistance(0.5), QgsPoint(1.1, 2.2, 3.3, 4.4))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

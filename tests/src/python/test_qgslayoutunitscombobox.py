@@ -5,14 +5,16 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "18/07/2017"
-__copyright__ = "Copyright 2017, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '18/07/2017'
+__copyright__ = 'Copyright 2017, The QGIS Project'
 
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtWidgets import QDoubleSpinBox
-from qgis.core import QgsLayoutMeasurementConverter, QgsUnitTypes
+from qgis.core import (
+    QgsLayoutMeasurementConverter,
+    QgsUnitTypes
+)
 from qgis.gui import QgsLayoutUnitsComboBox
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -23,14 +25,14 @@ start_app()
 class TestQgsLayoutUnitsComboBox(QgisTestCase):
 
     def testGettersSetters(self):
-        """test widget getters/setters"""
+        """ test widget getters/setters """
         w = QgsLayoutUnitsComboBox()
 
         w.setUnit(QgsUnitTypes.LayoutUnit.LayoutPixels)
         self.assertEqual(w.unit(), QgsUnitTypes.LayoutUnit.LayoutPixels)
 
     def test_ChangedSignals(self):
-        """test that signals are correctly emitted when setting unit"""
+        """ test that signals are correctly emitted when setting unit"""
         w = QgsLayoutUnitsComboBox()
 
         spy = QSignalSpy(w.changed)
@@ -40,7 +42,7 @@ class TestQgsLayoutUnitsComboBox(QgisTestCase):
         self.assertEqual(spy[0][0], QgsUnitTypes.LayoutUnit.LayoutPixels)
 
     def testLinkedWidgets(self):
-        """test linking spin boxes to combobox"""
+        """ test linking spin boxes to combobox"""
         w = QgsLayoutUnitsComboBox()
         self.assertFalse(w.converter())
         c = QgsLayoutMeasurementConverter()
@@ -71,5 +73,5 @@ class TestQgsLayoutUnitsComboBox(QgisTestCase):
         self.assertAlmostEqual(spin2.value(), 0.05, 2)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

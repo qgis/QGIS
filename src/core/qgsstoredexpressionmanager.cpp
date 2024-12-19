@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsstoredexpressionmanager.h"
-#include "moc_qgsstoredexpressionmanager.cpp"
 #include "qgis.h"
 
 

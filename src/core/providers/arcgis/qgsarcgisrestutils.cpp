@@ -14,7 +14,6 @@
 ***************************************************************************/
 
 #include "qgsarcgisrestutils.h"
-#include "moc_qgsarcgisrestutils.cpp"
 #include "qgsfields.h"
 #include "qgslogger.h"
 #include "qgspropertytransformer.h"

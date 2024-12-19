@@ -6,5 +6,5 @@ try:
     QgsColorUtils.colorFromString = staticmethod(QgsColorUtils.colorFromString)
     QgsColorUtils.iccProfile = staticmethod(QgsColorUtils.iccProfile)
     QgsColorUtils.saveIccProfile = staticmethod(QgsColorUtils.saveIccProfile)
-except (NameError, AttributeError):
+except NameError:
     pass

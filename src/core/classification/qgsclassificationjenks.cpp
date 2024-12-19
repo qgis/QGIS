@@ -35,10 +35,10 @@ QString QgsClassificationJenks::id() const
   return QStringLiteral( "Jenks" );
 }
 
-std::unique_ptr<QgsClassificationMethod> QgsClassificationJenks::clone() const
+QgsClassificationMethod *QgsClassificationJenks::clone() const
 {
-  std::unique_ptr< QgsClassificationJenks > c = std::make_unique< QgsClassificationJenks >();
-  copyBase( c.get() );
+  QgsClassificationJenks *c = new QgsClassificationJenks();
+  copyBase( c );
   return c;
 }
 

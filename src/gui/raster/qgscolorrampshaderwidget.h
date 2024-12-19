@@ -42,11 +42,13 @@ class QgsLocaleAwareNumericLineEditDelegate;
  *
  * \since QGIS 3.4
  */
-class GUI_EXPORT QgsColorRampShaderWidget : public QWidget, protected Ui::QgsColorRampShaderWidgetBase
+class GUI_EXPORT QgsColorRampShaderWidget: public QWidget, protected Ui::QgsColorRampShaderWidgetBase
 {
+
     Q_OBJECT
 
   public:
+
     //! Creates new color ramp shader widget
     QgsColorRampShaderWidget( QWidget *parent = nullptr );
     ~QgsColorRampShaderWidget() override;
@@ -102,10 +104,12 @@ class GUI_EXPORT QgsColorRampShaderWidget : public QWidget, protected Ui::QgsCol
     void loadMinimumMaximumFromTree();
 
   protected:
+
     //! Populates color ramp tree from ramp items
     void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem> &colorRampItems );
 
   private:
+
     enum Column
     {
       ValueColumn = 0,
@@ -162,13 +166,15 @@ class GUI_EXPORT QgsColorRampShaderWidget : public QWidget, protected Ui::QgsCol
     double mMax = std::numeric_limits<double>::quiet_NaN();
 
     // For mode with raster layer
-    QPointer<QgsRasterDataProvider> mRasterDataProvider;
+    QPointer< QgsRasterDataProvider > mRasterDataProvider;
     int mBand = -1;
     QgsRectangle mExtent;
     QgsLocaleAwareNumericLineEditDelegate *mValueDelegate = nullptr;
     QgsColorRampLegendNodeSettings mLegendSettings;
 
     int mBlockChanges = 0;
+
+
 };
 
 #endif // QGSCOLORRAMPSHADERWIDGET_H

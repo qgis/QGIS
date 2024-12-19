@@ -14,15 +14,14 @@
  ***************************************************************************/
 
 #include "qgsrelation.h"
-#include "qgspolymorphicrelation.h"
 
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsrelation_p.h"
+#include "qgspolymorphicrelation.h"
 #include "qgsrelationmanager.h"
-#include "moc_qgsrelation.cpp"
 
 #include <QApplication>
 
@@ -276,7 +275,7 @@ QgsFeature QgsRelation::getReferencedFeature( const QgsFeature &feature ) const
   QgsFeatureRequest request = getReferencedFeatureRequest( feature );
 
   QgsFeature f;
-  ( void )d->mReferencedLayer->getFeatures( request ).nextFeature( f );
+  d->mReferencedLayer->getFeatures( request ).nextFeature( f );
   return f;
 }
 

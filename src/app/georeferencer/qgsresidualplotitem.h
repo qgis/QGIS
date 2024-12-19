@@ -24,7 +24,7 @@
  * A composer item to visualise the distribution of georeference residuals. For the visualisation,
  * the length of the residual arrows are scaled.
 */
-class QgsResidualPlotItem : public QgsLayoutItem
+class QgsResidualPlotItem: public QgsLayoutItem
 {
     Q_OBJECT
 
@@ -40,14 +40,13 @@ class QgsResidualPlotItem : public QgsLayoutItem
     void setGCPList( const QgsGCPList &list );
     const QgsGCPList &GCPList() const { return mGCPList; }
 
-    void setExtent( const QgsRectangle &rect ) { mExtent = rect; }
+    void setExtent( const QgsRectangle &rect ) { mExtent = rect;}
     QgsRectangle extent() const { return mExtent; }
 
     void setConvertScaleToMapUnits( bool convert ) { mConvertScaleToMapUnits = convert; }
     bool convertScaleToMapUnits() const { return mConvertScaleToMapUnits; }
 
     void draw( QgsLayoutItemRenderContext &context ) override;
-
   private:
     //gcp list
     QgsGCPList mGCPList;

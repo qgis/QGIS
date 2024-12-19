@@ -47,7 +47,7 @@ namespace QTest
     QByteArray ba = geom.asWkt().toLatin1();
     return qstrdup( ba.data() );
   }
-} // namespace QTest
+}
 
 
 /**
@@ -61,8 +61,8 @@ class TestQgsMapToolAddFeatureLineZ : public QObject
     TestQgsMapToolAddFeatureLineZ();
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void testZ();
     void testZSnapping();
@@ -115,7 +115,7 @@ void TestQgsMapToolAddFeatureLineZ::initTestCase()
   mLayerLine->startEditing();
   mLayerLine->addFeature( lineF1 );
   mFidLineF1 = lineF1.id();
-  QCOMPARE( mLayerLine->featureCount(), ( long ) 1 );
+  QCOMPARE( mLayerLine->featureCount(), ( long )1 );
 
   // just one added feature
   QCOMPARE( mLayerLine->undoStack()->index(), 1 );
@@ -132,7 +132,7 @@ void TestQgsMapToolAddFeatureLineZ::initTestCase()
 
   mLayerLineZ->startEditing();
   mLayerLineZ->addFeature( lineF2 );
-  QCOMPARE( mLayerLineZ->featureCount(), ( long ) 1 );
+  QCOMPARE( mLayerLineZ->featureCount(), ( long )1 );
 
   mCanvas->setFrameStyle( QFrame::NoFrame );
   mCanvas->resize( 512, 512 );
@@ -150,10 +150,10 @@ void TestQgsMapToolAddFeatureLineZ::initTestCase()
   mLayerTopoZ->startEditing();
   QgsFeature topoFeat;
   topoFeat.setGeometry( QgsGeometry::fromWkt( "MultiLineStringZ ("
-                                              "(10 0 0, 10 10 0),"
-                                              "(20 0 10, 20 10 10),"
-                                              "(30 0 0, 30 10 10)"
-                                              ")" ) );
+                        "(10 0 0, 10 10 0),"
+                        "(20 0 10, 20 10 10),"
+                        "(30 0 0, 30 10 10)"
+                        ")" ) );
 
   mLayerTopoZ->addFeature( topoFeat );
   QCOMPARE( mLayerTopoZ->featureCount(), ( long ) 1 );

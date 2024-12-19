@@ -26,10 +26,12 @@ QGS_ServiceModule_Init() entry point.
 #include "qgsservicemodule.h"
 %End
   public:
+
     QgsServiceModule();
     virtual ~QgsServiceModule();
 
-    virtual void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface = 0 ) = 0;
+    virtual void registerSelf( QgsServiceRegistry &registry,
+                               QgsServerInterface *serverIface = 0 ) = 0;
 %Docstring
 Asks the module to register all provided services.
 

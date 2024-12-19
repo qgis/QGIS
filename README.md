@@ -25,6 +25,10 @@ QGIS is a full-featured, user-friendly, free-and-open-source (FOSS) geographical
   - [Documentation](#documentation)
   - [Help and support channels](#help-and-support-channels)
 - [Get involved with the community](#get-involved-with-the-community)
+  - [Bug reporting and bug fixing](#bug-reporting-and-bug-fixing)
+  - [New features and enhancements](#new-features-and-enhancements)
+  - [Translations](#translations)
+  - [Other ways to contribute](#other-ways-to-contribute)
 
 ## Features
 
@@ -160,12 +164,12 @@ For installation of QGIS Server, see its [getting started documentation](https:/
 
 ### Documentation
 
-A range of [documentation](https://qgis.org/resources/hub/#documentation) is available. This includes:
+A range of [documentation](https://qgis.org/en/docs/index.html) is available. This includes:
 
 - [Training Manual](https://docs.qgis.org/latest/en/docs/training_manual/index.html)
 - [QGIS User Guide](https://docs.qgis.org/latest/en/docs/user_manual/index.html)
 - [QGIS Server Guide](https://docs.qgis.org/latest/en/docs/server_manual/index.html)
-- [Visual Changelog](https://qgis.org/project/visual-changelogs/)
+- [Visual Changelog](https://qgis.org/en/site/forusers/visualchangelogs.html)
 - [Documentation Guidelines](https://docs.qgis.org/latest/en/docs/documentation_guidelines/index.html)
 - [QGIS Python (PyQGIS) Cookbook](https://docs.qgis.org/latest/en/docs/pyqgis_developer_cookbook/index.html)
 - [QGIS Python (PyQGIS) API](https://qgis.org/pyqgis/)
@@ -183,7 +187,7 @@ There are several channels where you can find help and support for QGIS:
       [#qgis](https://web.libera.chat/?channels=#qgis) channel on irc.libera.chat.
     - Using a Matrix client and joining the [#qgis:osgeo.org](https://matrix.to/#/#qgis:osgeo.org) room.
  - At the [GIS stackexchange](https://gis.stackexchange.com/) or [r/QGIS reddit](https://www.reddit.com/r/QGIS/), which are not maintained by the QGIS team, but where the QGIS and broader GIS community provides lots of advice
-- [Other support channels](https://qgis.org/resources/support/)
+- [Other support channels](https://qgis.org/en/site/forusers/support.html)
 
 ## Get involved with the community
 

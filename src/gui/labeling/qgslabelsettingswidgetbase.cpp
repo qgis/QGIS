@@ -15,7 +15,6 @@
 
 
 #include "qgslabelsettingswidgetbase.h"
-#include "moc_qgslabelsettingswidgetbase.cpp"
 #include "qgsexpressioncontextutils.h"
 #include "qgsnewauxiliaryfielddialog.h"
 #include "qgsnewauxiliarylayerdialog.h"
@@ -42,6 +41,7 @@ QgsSymbolWidgetContext QgsLabelSettingsWidgetBase::context() const
 
 void QgsLabelSettingsWidgetBase::setGeometryType( Qgis::GeometryType )
 {
+
 }
 
 QgsExpressionContext QgsLabelSettingsWidgetBase::createExpressionContext() const
@@ -83,8 +83,8 @@ void QgsLabelSettingsWidgetBase::createAuxiliaryField()
     return;
 
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  const QgsPalLayerSettings::Property key = static_cast<QgsPalLayerSettings::Property>( button->propertyKey() );
-  QgsPropertyDefinition def = QgsPalLayerSettings::propertyDefinitions()[static_cast<int>( key )];
+  const QgsPalLayerSettings::Property key = static_cast<  QgsPalLayerSettings::Property >( button->propertyKey() );
+  QgsPropertyDefinition def = QgsPalLayerSettings::propertyDefinitions()[static_cast< int >( key )];
 
   // create property in auxiliary storage if necessary
   if ( !mVectorLayer->auxiliaryLayer()->exists( def ) )
@@ -115,7 +115,7 @@ void QgsLabelSettingsWidgetBase::createAuxiliaryField()
 void QgsLabelSettingsWidgetBase::updateDataDefinedProperty()
 {
   QgsPropertyOverrideButton *button = qobject_cast<QgsPropertyOverrideButton *>( sender() );
-  const QgsPalLayerSettings::Property key = static_cast<QgsPalLayerSettings::Property>( button->propertyKey() );
+  const QgsPalLayerSettings::Property key = static_cast<  QgsPalLayerSettings::Property >( button->propertyKey() );
   mDataDefinedProperties.setProperty( key, button->toProperty() );
   emit changed();
 }
@@ -132,18 +132,19 @@ void QgsLabelSettingsWidgetBase::setDataDefinedProperties( const QgsPropertyColl
   const auto overrideButtons = findChildren<QgsPropertyOverrideButton *>();
   for ( QgsPropertyOverrideButton *button : overrideButtons )
   {
-    const QgsPalLayerSettings::Property key = static_cast<QgsPalLayerSettings::Property>( button->propertyKey() );
+    const QgsPalLayerSettings::Property key = static_cast<  QgsPalLayerSettings::Property >( button->propertyKey() );
     button->setToProperty( mDataDefinedProperties.property( key ) );
   }
 }
 
 void QgsLabelSettingsWidgetBase::updateDataDefinedProperties( QgsPropertyCollection & )
 {
+
 }
 
 void QgsLabelSettingsWidgetBase::registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsPalLayerSettings::Property key )
 {
-  button->init( static_cast<int>( key ), mDataDefinedProperties, QgsPalLayerSettings::propertyDefinitions(), mVectorLayer, true );
+  button->init( static_cast< int >( key ), mDataDefinedProperties, QgsPalLayerSettings::propertyDefinitions(), mVectorLayer, true );
   connect( button, &QgsPropertyOverrideButton::changed, this, &QgsLabelSettingsWidgetBase::updateDataDefinedProperty );
   connect( button, &QgsPropertyOverrideButton::createAuxiliaryField, this, &QgsLabelSettingsWidgetBase::createAuxiliaryField );
 

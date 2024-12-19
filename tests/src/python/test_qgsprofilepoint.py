@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "18/03/2022"
-__copyright__ = "Copyright 2022, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '18/03/2022'
+__copyright__ = 'Copyright 2022, The QGIS Project'
 
 
 from qgis.core import QgsProfilePoint
@@ -23,7 +22,7 @@ class TestQgsProfilePoint(QgisTestCase):
     def testBasic(self):
         point = QgsProfilePoint()
         self.assertTrue(point.isEmpty())
-        self.assertEqual(str(point), "<QgsProfilePoint: EMPTY>")
+        self.assertEqual(str(point), '<QgsProfilePoint: EMPTY>')
 
         point.setDistance(1)
         self.assertFalse(point.isEmpty())
@@ -37,7 +36,7 @@ class TestQgsProfilePoint(QgisTestCase):
         point = QgsProfilePoint(1, 2)
         self.assertEqual(point.distance(), 1)
         self.assertEqual(point.elevation(), 2)
-        self.assertEqual(str(point), "<QgsProfilePoint: 1, 2>")
+        self.assertEqual(str(point), '<QgsProfilePoint: 1, 2>')
         self.assertEqual(point[0], 1)
         self.assertEqual(point[1], 2)
         self.assertEqual(len(point), 2)
@@ -69,5 +68,5 @@ class TestQgsProfilePoint(QgisTestCase):
         self.assertFalse(p1 != p2)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

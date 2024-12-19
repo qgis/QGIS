@@ -28,6 +28,7 @@ whenever this signal is emitted.
 #include "qgscreateannotationitemmaptool.h"
 %End
   public:
+
     QgsCreateAnnotationItemMapToolHandler( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, QObject *parent = 0 );
 %Docstring
 Constructor for QgsCreateAnnotationItemMapToolHandler, with the specified ``parent`` object.
@@ -83,6 +84,7 @@ whenever this signal is emitted.
 #include "qgscreateannotationitemmaptool.h"
 %End
   public:
+
 
     virtual ~QgsCreateAnnotationItemMapToolInterface();
 

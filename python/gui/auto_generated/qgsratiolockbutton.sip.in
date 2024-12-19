@@ -20,6 +20,7 @@ A cross platform button subclass used to represent a locked / unlocked ratio sta
 #include "qgsratiolockbutton.h"
 %End
   public:
+
     QgsRatioLockButton( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a new ratio lock button.
@@ -82,6 +83,7 @@ Emitted whenever the lock state changes.
 %End
 
   protected:
+
     virtual void changeEvent( QEvent *e );
 
     virtual void showEvent( QShowEvent *e );

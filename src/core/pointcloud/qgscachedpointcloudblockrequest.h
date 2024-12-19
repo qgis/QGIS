@@ -44,7 +44,7 @@ class CORE_EXPORT QgsCachedPointCloudBlockRequest : public QgsPointCloudBlockReq
      * QgsCachedPointCloudBlockRequest constructor using an existing \a block
      * Note: Ownership of \a block is transferred
      */
-    QgsCachedPointCloudBlockRequest( QgsPointCloudBlock *block, const QgsPointCloudNodeId &node, const QString &uri,
+    QgsCachedPointCloudBlockRequest( QgsPointCloudBlock *block, const IndexedPointCloudNode &node, const QString &uri,
                                      const QgsPointCloudAttributeCollection &attributes, const QgsPointCloudAttributeCollection &requestedAttributes,
                                      const QgsVector3D &scale, const QgsVector3D &offset, const QgsPointCloudExpression &filterExpression, const QgsRectangle &filterRect );
 

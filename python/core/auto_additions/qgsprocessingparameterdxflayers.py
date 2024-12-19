@@ -5,5 +5,5 @@ try:
     QgsProcessingParameterDxfLayers.variantMapAsLayer = staticmethod(QgsProcessingParameterDxfLayers.variantMapAsLayer)
     QgsProcessingParameterDxfLayers.layerAsVariantMap = staticmethod(QgsProcessingParameterDxfLayers.layerAsVariantMap)
     QgsProcessingParameterDxfLayers.__group__ = ['processing']
-except (NameError, AttributeError):
+except NameError:
     pass

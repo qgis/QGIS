@@ -22,7 +22,6 @@ email                : tim@linfiniti.com
 // includes
 
 #include "qgsdecorationcopyright.h"
-#include "moc_qgsdecorationcopyright.cpp"
 #include "qgsdecorationcopyrightdialog.h"
 
 #include "qgisapp.h"
@@ -199,3 +198,4 @@ void QgsDecorationCopyright::render( const QgsMapSettings &mapSettings, QgsRende
   //Paint label to canvas
   QgsTextRenderer::drawText( QPointF( xOffset, yOffset ), 0.0, horizontalAlignment, displayStringList, context, mTextFormat );
 }
+

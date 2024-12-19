@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgspostgrestransaction.h"
-#include "moc_qgspostgrestransaction.cpp"
 #include "qgspostgresconn.h"
 #include "qgslogger.h"
 #include "qgis.h"
@@ -25,6 +24,7 @@ QgsPostgresTransaction::QgsPostgresTransaction( const QString &connString )
   : QgsTransaction( connString )
 
 {
+
 }
 
 bool QgsPostgresTransaction::beginTransaction( QString &error, int statementTimeout )
@@ -73,7 +73,8 @@ bool QgsPostgresTransaction::executeSql( const QString &sql, QString &errorMsg, 
 
   QgsDebugMsgLevel( QStringLiteral( "Transaction sql: %1" ).arg( sql ), 2 );
   QgsPostgresResult r( mConn->LoggedPQexec( "QgsPostgresTransaction", sql ) );
-  if ( r.PQresultStatus() == PGRES_BAD_RESPONSE || r.PQresultStatus() == PGRES_FATAL_ERROR )
+  if ( r.PQresultStatus() == PGRES_BAD_RESPONSE ||
+       r.PQresultStatus() == PGRES_FATAL_ERROR )
   {
     errorMsg = QStringLiteral( "Status %1 (%2)" ).arg( r.PQresultStatus() ).arg( r.PQresultErrorMessage() );
     QgsDebugError( errorMsg );

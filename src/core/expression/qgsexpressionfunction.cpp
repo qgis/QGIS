@@ -1244,24 +1244,6 @@ static QVariant fcnCeil( const QVariantList &values, const QgsExpressionContext 
   return QVariant( std::ceil( x ) );
 }
 
-static QVariant fcnToBool( const QVariantList &values, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * )
-{
-  const QVariant value = values.at( 0 );
-  if ( QgsExpressionUtils::isNull( value.isValid() ) )
-  {
-    return QVariant( false );
-  }
-  else if ( value.userType() == QMetaType::QString )
-  {
-    // Capture strings to avoid a '0' string value casted to 0 and wrongly returning false
-    return QVariant( !value.toString().isEmpty() );
-  }
-  else if ( QgsExpressionUtils::isList( value ) )
-  {
-    return !value.toList().isEmpty();
-  }
-  return QVariant( value.toBool() );
-}
 static QVariant fcnToInt( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   return QVariant( QgsExpressionUtils::getIntValue( values.at( 0 ), parent ) );
@@ -1508,15 +1490,14 @@ static QVariant fcnWordwrap( const QVariantList &values, const QgsExpressionCont
 static QVariant fcnLength( const QVariantList &values, const QgsExpressionContext *, QgsExpression *parent, const QgsExpressionNodeFunction * )
 {
   // two variants, one for geometry, one for string
-
-  //geometry variant
-  QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent, true );
-  if ( !geom.isNull() )
+  if ( values.at( 0 ).userType() == qMetaTypeId< QgsGeometry>() )
   {
-    if ( geom.type() == Qgis::GeometryType::Line )
-      return QVariant( geom.length() );
-    else
+    //geometry variant
+    QgsGeometry geom = QgsExpressionUtils::getGeometry( values.at( 0 ), parent );
+    if ( geom.type() != Qgis::GeometryType::Line )
       return QVariant();
+
+    return QVariant( geom.length() );
   }
 
   //otherwise fall back to string variant
@@ -3715,10 +3696,15 @@ static QVariant fcnCollectGeometries( const QVariantList &values, const QgsExpre
   parts.reserve( list.size() );
   for ( const QVariant &value : std::as_const( list ) )
   {
-    QgsGeometry part = QgsExpressionUtils::getGeometry( value, parent );
-    if ( part.isNull() )
+    if ( value.userType() == qMetaTypeId< QgsGeometry>() )
+    {
+      parts << value.value<QgsGeometry>();
+    }
+    else
+    {
+      parent->setEvalErrorString( QStringLiteral( "Cannot convert to geometry" ) );
       return QgsGeometry();
-    parts << part;
+    }
   }
 
   return QgsGeometry::collectGeometry( parts );
@@ -7746,12 +7732,6 @@ typedef bool ( QgsGeometry::*RelationFunction )( const QgsGeometry &geometry ) c
 static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const RelationFunction &relationFunction, bool invert = false, double bboxGrow = 0, bool isNearestFunc = false, bool isIntersectsFunc = false )
 {
 
-  if ( ! context )
-  {
-    parent->setEvalErrorString( QStringLiteral( "This function was called without an expression context." ) );
-    return QVariant();
-  }
-
   const QVariant sourceLayerRef = context->variable( QStringLiteral( "layer" ) ); //used to detect if sourceLayer and targetLayer are the same
   // TODO this function is NOT thread safe
   Q_NOWARN_DEPRECATED_PUSH
@@ -7975,8 +7955,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
     bool testResult { false };
     // For return measures:
     QVector<double> overlapValues;
-    const QgsGeometry merged { intersection.mergeLines() };
-    for ( auto it = merged.const_parts_begin(); ! testResult && it != merged.const_parts_end(); ++it )
+    for ( auto it = intersection.const_parts_begin(); ! testResult && it != intersection.const_parts_end(); ++it )
     {
       const QgsCurve *geom = qgsgeometry_cast< const QgsCurve * >( *it );
       // Check min overlap for intersection (if set)
@@ -8084,68 +8063,7 @@ static QVariant executeGeomOverlay( const QVariantList &values, const QgsExpress
 
       if ( isIntersectsFunc && ( requireMeasures || overlapOrRadiusFilter ) )
       {
-
-        QgsGeometry intersection { geometry.intersection( feat2.geometry() ) };
-
-        // Pre-process collections: if the tested geometry is a polygon we take the polygons from the collection
-        if ( intersection.wkbType() == Qgis::WkbType::GeometryCollection )
-        {
-          const QVector<QgsGeometry> geometries { intersection.asGeometryCollection() };
-          intersection = QgsGeometry();
-          QgsMultiPolygonXY poly;
-          QgsMultiPolylineXY line;
-          QgsMultiPointXY point;
-          for ( const auto &geom : std::as_const( geometries ) )
-          {
-            switch ( geom.type() )
-            {
-              case Qgis::GeometryType::Polygon:
-              {
-                poly.append( geom.asPolygon() );
-                break;
-              }
-              case Qgis::GeometryType::Line:
-              {
-                line.append( geom.asPolyline() );
-                break;
-              }
-              case Qgis::GeometryType::Point:
-              {
-                point.append( geom.asPoint() );
-                break;
-              }
-              case Qgis::GeometryType::Unknown:
-              case Qgis::GeometryType::Null:
-              {
-                break;
-              }
-            }
-          }
-
-          switch ( geometry.type() )
-          {
-            case Qgis::GeometryType::Polygon:
-            {
-              intersection = QgsGeometry::fromMultiPolygonXY( poly );
-              break;
-            }
-            case Qgis::GeometryType::Line:
-            {
-              intersection = QgsGeometry::fromMultiPolylineXY( line );
-              break;
-            }
-            case Qgis::GeometryType::Point:
-            {
-              intersection = QgsGeometry::fromMultiPointXY( point );
-              break;
-            }
-            case Qgis::GeometryType::Unknown:
-            case Qgis::GeometryType::Null:
-            {
-              break;
-            }
-          }
-        }
+        const QgsGeometry intersection { geometry.intersection( feat2.geometry() ) };
 
         // Depending on the intersection geometry type and on the geometry type of
         // the tested geometry we can run different tests and collect different measures
@@ -8453,7 +8371,6 @@ const QList<QgsExpressionFunction *> &QgsExpression::Functions()
         << new QgsStaticExpressionFunction( QStringLiteral( "floor" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnFloor, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "ceil" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnCeil, QStringLiteral( "Math" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "pi" ), 0, fcnPi, QStringLiteral( "Math" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "$pi" ) )
-        << new QgsStaticExpressionFunction( QStringLiteral( "to_bool" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToBool, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "tobool" ), /* handlesNull = */ true )
         << new QgsStaticExpressionFunction( QStringLiteral( "to_int" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToInt, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "toint" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "to_real" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToReal, QStringLiteral( "Conversions" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "toreal" ) )
         << new QgsStaticExpressionFunction( QStringLiteral( "to_string" ), QgsExpressionFunction::ParameterList() << QgsExpressionFunction::Parameter( QStringLiteral( "value" ) ), fcnToString, QStringList() << QStringLiteral( "Conversions" ) << QStringLiteral( "String" ), QString(), false, QSet<QString>(), false, QStringList() << QStringLiteral( "tostring" ) )

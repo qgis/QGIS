@@ -123,7 +123,7 @@ Implementations should include a call to :py:func:`~QgsAnnotationItem.readCommon
 .. seealso:: :py:func:`readCommonProperties`
 %End
 
- virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) /Deprecated="Since 3.40. Use applyEditV2() instead."/;
+ virtual Qgis::AnnotationItemEditOperationResult applyEdit( QgsAbstractAnnotationItemEditOperation *operation ) /Deprecated/;
 %Docstring
 Applies an edit ``operation`` to the item.
 
@@ -189,7 +189,7 @@ Sets if the item will be rendered or not in the layer.
 .. versionadded:: 3.36
 %End
 
- virtual QList< QgsAnnotationItemNode > nodes() const /Deprecated="Since 3.40. Use nodesV2() instead."/;
+ virtual QList< QgsAnnotationItemNode > nodes() const /Deprecated/;
 %Docstring
 Returns the nodes for the item, used for editing the item.
 

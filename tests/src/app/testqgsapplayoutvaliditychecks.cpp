@@ -40,10 +40,10 @@ class TestQgsLayoutValidityChecks : public QObject
     TestQgsLayoutValidityChecks();
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init() {}          // will be called before each testfunction is executed.
-    void cleanup() {}       // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void testScaleBarValidity();
     void testNorthArrowValidity();
@@ -89,7 +89,7 @@ void TestQgsLayoutValidityChecks::testScaleBarValidity()
   // scalebar not linked to map
   QgsLayoutScaleBarValidityCheck check;
   QVERIFY( check.prepareCheck( &context, &f ) );
-  QList<QgsValidityCheckResult> res = check.runCheck( &context, &f );
+  QList< QgsValidityCheckResult > res = check.runCheck( &context, &f );
   QCOMPARE( res.size(), 1 );
   QCOMPARE( res.at( 0 ).type, QgsValidityCheckResult::Warning );
 
@@ -121,7 +121,7 @@ void TestQgsLayoutValidityChecks::testNorthArrowValidity()
   // scalebar not linked to map
   QgsLayoutNorthArrowValidityCheck check;
   QVERIFY( check.prepareCheck( &context, &f ) );
-  QList<QgsValidityCheckResult> res = check.runCheck( &context, &f );
+  QList< QgsValidityCheckResult > res = check.runCheck( &context, &f );
   QCOMPARE( res.size(), 1 );
   QCOMPARE( res.at( 0 ).type, QgsValidityCheckResult::Warning );
 
@@ -168,7 +168,7 @@ void TestQgsLayoutValidityChecks::testOverviewValidity()
   // no overviews
   QgsLayoutOverviewValidityCheck check;
   QVERIFY( check.prepareCheck( &context, &f ) );
-  QList<QgsValidityCheckResult> res = check.runCheck( &context, &f );
+  QList< QgsValidityCheckResult > res = check.runCheck( &context, &f );
   QCOMPARE( res.size(), 0 );
 
   // overview not linked to map
@@ -226,7 +226,7 @@ void TestQgsLayoutValidityChecks::testPictureValidity()
   picture->setPicturePath( QStringLiteral( "blaaaaaaaaaaaaaaaaah" ) );
   QgsLayoutPictureSourceValidityCheck check;
   QVERIFY( check.prepareCheck( &context, &f ) );
-  QList<QgsValidityCheckResult> res = check.runCheck( &context, &f );
+  QList< QgsValidityCheckResult > res = check.runCheck( &context, &f );
   QCOMPARE( res.size(), 1 );
   QCOMPARE( res.at( 0 ).type, QgsValidityCheckResult::Warning );
 
@@ -267,6 +267,7 @@ void TestQgsLayoutValidityChecks::testPictureValidity()
   res = check6.runCheck( &context, &f );
   QCOMPARE( res.size(), 0 );
 }
+
 
 
 QGSTEST_MAIN( TestQgsLayoutValidityChecks )

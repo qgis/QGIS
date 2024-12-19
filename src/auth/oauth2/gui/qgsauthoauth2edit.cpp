@@ -13,13 +13,14 @@
  ***************************************************************************/
 
 #include "qgsauthoauth2edit.h"
-#include "moc_qgsauthoauth2edit.cpp"
 #include "ui_qgsauthoauth2edit.h"
 
 #include <QDir>
 #include <QFileDialog>
 #include <QDesktopServices>
 #include <QUrl>
+
+#include "Json.h"
 
 #include "qgsapplication.h"
 #include "qgsauthguiutils.h"
@@ -28,9 +29,6 @@
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgssetrequestinitiator_p.h"
-#include "qgsjsonutils.h"
-
-#include <nlohmann/json.hpp>
 
 QgsAuthOAuth2Edit::QgsAuthOAuth2Edit( QWidget *parent )
   : QgsAuthMethodEdit( parent )
@@ -43,7 +41,7 @@ QgsAuthOAuth2Edit::QgsAuthOAuth2Edit( QWidget *parent )
   initConfigObjs();
 
   populateGrantFlows();
-  updateGrantFlow( static_cast<int>( QgsAuthOAuth2Config::GrantFlow::AuthCode ) ); // first index: Authorization Code
+  updateGrantFlow( static_cast<int>( QgsAuthOAuth2Config::AuthCode ) ); // first index: Authorization Code
 
   populateAccessMethods();
 
@@ -57,7 +55,8 @@ QgsAuthOAuth2Edit::QgsAuthOAuth2Edit( QWidget *parent )
   updatePredefinedLocationsTooltip();
 
   pteDefinedDesc->setOpenLinks( false );
-  connect( pteDefinedDesc, &QTextBrowser::anchorClicked, this, [=]( const QUrl &url ) {
+  connect( pteDefinedDesc, &QTextBrowser::anchorClicked, this, [ = ]( const QUrl & url )
+  {
     QDesktopServices::openUrl( url );
   } );
 }
@@ -164,22 +163,27 @@ void QgsAuthOAuth2Edit::setupConnections()
 
   connect( btnSoftStatementDir, &QToolButton::clicked, this, &QgsAuthOAuth2Edit::getSoftStatementDir );
   connect( leSoftwareStatementJwtPath, &QLineEdit::textChanged, this, &QgsAuthOAuth2Edit::softwareStatementJwtPathChanged );
-  connect( leSoftwareStatementConfigUrl, &QLineEdit::textChanged, this, [=]( const QString &txt ) {
-    btnRegister->setEnabled( !leSoftwareStatementJwtPath->text().isEmpty() && ( QUrl( txt ).isValid() || !mRegistrationEndpoint.isEmpty() ) );
+  connect( leSoftwareStatementConfigUrl, &QLineEdit::textChanged, this, [ = ]( const QString & txt )
+  {
+    btnRegister->setEnabled( ! leSoftwareStatementJwtPath->text().isEmpty()
+                             && ( QUrl( txt ).isValid() || ! mRegistrationEndpoint.isEmpty() ) );
   } );
   connect( btnRegister, &QPushButton::clicked, this, &QgsAuthOAuth2Edit::getSoftwareStatementConfig );
 
   // Custom config editing connections
-  connect( cmbbxGrantFlow, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAuthOAuth2Edit::updateGrantFlow ); // also updates GUI
+  connect( cmbbxGrantFlow, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+           this, &QgsAuthOAuth2Edit::updateGrantFlow ); // also updates GUI
   connect( pteDescription, &QPlainTextEdit::textChanged, this, &QgsAuthOAuth2Edit::descriptionChanged );
   connect( leRequestUrl, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRequestUrl );
   connect( leTokenUrl, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setTokenUrl );
   connect( leRefreshTokenUrl, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRefreshTokenUrl );
   connect( leRedirectUrl, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRedirectUrl );
-  connect( comboRedirectHost, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=] {
+  connect( comboRedirectHost, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]
+  {
     mOAuthConfigCustom->setRedirectHost( comboRedirectHost->currentData().toString() );
   } );
-  connect( spnbxRedirectPort, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRedirectPort );
+  connect( spnbxRedirectPort, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ),
+           mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRedirectPort );
   connect( leClientId, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setClientId );
   connect( leClientSecret, &QgsPasswordLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setClientSecret );
   connect( leUsername, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setUsername );
@@ -187,8 +191,10 @@ void QgsAuthOAuth2Edit::setupConnections()
   connect( leScope, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setScope );
   connect( leApiKey, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setApiKey );
   connect( chkbxTokenPersist, &QCheckBox::toggled, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setPersistToken );
-  connect( cmbbxAccessMethod, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAuthOAuth2Edit::updateConfigAccessMethod );
-  connect( spnbxRequestTimeout, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRequestTimeout );
+  connect( cmbbxAccessMethod, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+           this, &QgsAuthOAuth2Edit::updateConfigAccessMethod );
+  connect( spnbxRequestTimeout, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ),
+           mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setRequestTimeout );
 
   connect( mTokenHeaderLineEdit, &QLineEdit::textChanged, mOAuthConfigCustom.get(), &QgsAuthOAuth2Config::setCustomHeader );
 
@@ -234,7 +240,7 @@ QgsStringMap QgsAuthOAuth2Edit::configMap() const
 
     mOAuthConfigCustom->setQueryPairs( queryPairs() );
 
-    const QByteArray configtxt = mOAuthConfigCustom->saveConfigTxt( QgsAuthOAuth2Config::ConfigFormat::JSON, false, &ok );
+    const QByteArray configtxt = mOAuthConfigCustom->saveConfigTxt( QgsAuthOAuth2Config::JSON, false, &ok );
 
     if ( !ok )
     {
@@ -260,7 +266,9 @@ QgsStringMap QgsAuthOAuth2Edit::configMap() const
   {
     configmap.insert( QStringLiteral( "definedid" ), mDefinedId );
     configmap.insert( QStringLiteral( "defineddirpath" ), leDefinedDirPath->text() );
-    configmap.insert( QStringLiteral( "querypairs" ), QgsAuthOAuth2Config::serializeFromVariant( queryPairs(), QgsAuthOAuth2Config::ConfigFormat::JSON, false ) );
+    configmap.insert( QStringLiteral( "querypairs" ),
+                      QgsAuthOAuth2Config::serializeFromVariant(
+                        queryPairs(), QgsAuthOAuth2Config::JSON, false ) );
   }
 
   return configmap;
@@ -285,7 +293,7 @@ void QgsAuthOAuth2Edit::loadConfig( const QgsStringMap &configmap )
       //QgsDebugMsgLevel( QStringLiteral( "LOAD oauth2config configtxt: \n\n%1\n\n" ).arg( QString( configtxt ) ), 2 );
       //###################### DO NOT LEAVE ME UNCOMMENTED #####################
 
-      if ( !mOAuthConfigCustom->loadConfigTxt( configtxt, QgsAuthOAuth2Config::ConfigFormat::JSON ) )
+      if ( !mOAuthConfigCustom->loadConfigTxt( configtxt, QgsAuthOAuth2Config::JSON ) )
       {
         QgsDebugError( QStringLiteral( "FAILED to load OAuth2 config into object" ) );
       }
@@ -327,7 +335,8 @@ void QgsAuthOAuth2Edit::loadConfig( const QgsStringMap &configmap )
       const QByteArray querypairstxt = configmap.value( QStringLiteral( "querypairs" ) ).toUtf8();
       if ( !querypairstxt.isNull() && !querypairstxt.isEmpty() )
       {
-        const QVariantMap querypairsmap = QgsAuthOAuth2Config::variantFromSerialized( querypairstxt, QgsAuthOAuth2Config::ConfigFormat::JSON, &ok );
+        const QVariantMap querypairsmap =
+          QgsAuthOAuth2Config::variantFromSerialized( querypairstxt, QgsAuthOAuth2Config::JSON, &ok );
         if ( ok )
         {
           populateQueryPairs( querypairsmap );
@@ -382,7 +391,7 @@ void QgsAuthOAuth2Edit::loadFromOAuthConfig( const QgsAuthOAuth2Config *config )
   }
 
   // load relative to config type
-  if ( config->configType() == QgsAuthOAuth2Config::ConfigType::Custom )
+  if ( config->configType() == QgsAuthOAuth2Config::Custom )
   {
     if ( config->isValid() )
     {
@@ -494,10 +503,14 @@ void QgsAuthOAuth2Edit::tabIndexChanged( int indx )
 
 void QgsAuthOAuth2Edit::populateGrantFlows()
 {
-  cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::AuthCode ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::AuthCode ) );
-  cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::Implicit ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::Implicit ) );
-  cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::ResourceOwner ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::ResourceOwner ) );
-  cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::GrantFlow::Pkce ), static_cast<int>( QgsAuthOAuth2Config::GrantFlow::Pkce ) );
+  cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::AuthCode ),
+                           static_cast<int>( QgsAuthOAuth2Config::AuthCode ) );
+  cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::Implicit ),
+                           static_cast<int>( QgsAuthOAuth2Config::Implicit ) );
+  cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::ResourceOwner ),
+                           static_cast<int>( QgsAuthOAuth2Config::ResourceOwner ) );
+  cmbbxGrantFlow->addItem( QgsAuthOAuth2Config::grantFlowString( QgsAuthOAuth2Config::Pkce ),
+                           static_cast<int>( QgsAuthOAuth2Config::Pkce ) );
 }
 
 
@@ -579,7 +592,8 @@ void QgsAuthOAuth2Edit::selectCurrentDefinedConfig()
 
 void QgsAuthOAuth2Edit::getDefinedCustomDir()
 {
-  const QString extradir = QFileDialog::getExistingDirectory( this, tr( "Select extra directory to parse" ), QDir::homePath(), QFileDialog::DontResolveSymlinks );
+  const QString extradir = QFileDialog::getExistingDirectory( this, tr( "Select extra directory to parse" ),
+                           QDir::homePath(), QFileDialog::DontResolveSymlinks );
   this->raise();
   this->activateWindow();
 
@@ -592,7 +606,8 @@ void QgsAuthOAuth2Edit::getDefinedCustomDir()
 
 void QgsAuthOAuth2Edit::getSoftStatementDir()
 {
-  const QString softStatementFile = QFileDialog::getOpenFileName( this, tr( "Select software statement file" ), QDir::homePath(), tr( "JSON Web Token (*.jwt)" ) );
+  const QString softStatementFile = QFileDialog::getOpenFileName( this, tr( "Select software statement file" ),
+                                    QDir::homePath(), tr( "JSON Web Token (*.jwt)" ) );
   this->raise();
   this->activateWindow();
 
@@ -606,7 +621,7 @@ void QgsAuthOAuth2Edit::getSoftStatementDir()
 void QgsAuthOAuth2Edit::initConfigObjs()
 {
   mOAuthConfigCustom = std::make_unique<QgsAuthOAuth2Config>( nullptr );
-  mOAuthConfigCustom->setConfigType( QgsAuthOAuth2Config::ConfigType::Custom );
+  mOAuthConfigCustom->setConfigType( QgsAuthOAuth2Config::Custom );
   mOAuthConfigCustom->setToDefaults();
 }
 
@@ -620,7 +635,8 @@ bool QgsAuthOAuth2Edit::hasTokenCacheFile()
     return false;
   }
 
-  return ( QFile::exists( QgsAuthOAuth2Config::tokenCachePath( authcfg, false ) ) || QFile::exists( QgsAuthOAuth2Config::tokenCachePath( authcfg, true ) ) );
+  return ( QFile::exists( QgsAuthOAuth2Config::tokenCachePath( authcfg, false ) )
+           || QFile::exists( QgsAuthOAuth2Config::tokenCachePath( authcfg, true ) ) );
 }
 
 //slot
@@ -664,7 +680,7 @@ void QgsAuthOAuth2Edit::loadDefinedConfigs()
   while ( i != mDefinedConfigsCache.constEnd() )
   {
     QgsAuthOAuth2Config *config = new QgsAuthOAuth2Config( this );
-    if ( !config->loadConfigTxt( i.value().toUtf8(), QgsAuthOAuth2Config::ConfigFormat::JSON ) )
+    if ( !config->loadConfigTxt( i.value().toUtf8(), QgsAuthOAuth2Config::JSON ) )
     {
       QgsDebugError( QStringLiteral( "FAILED to load config for ID: %1" ).arg( i.key() ) );
       config->deleteLater();
@@ -674,10 +690,10 @@ void QgsAuthOAuth2Edit::loadDefinedConfigs()
     const QString grantflow = QgsAuthOAuth2Config::grantFlowString( config->grantFlow() );
 
     const QString name = QStringLiteral( "%1 (%2): %3" )
-                           .arg( config->name(), grantflow, config->description() );
+                         .arg( config->name(), grantflow, config->description() );
 
     const QString tip = tr( "ID: %1\nGrant flow: %2\nDescription: %3" )
-                          .arg( i.key(), grantflow, config->description() );
+                        .arg( i.key(), grantflow, config->description() );
 
     QListWidgetItem *itm = new QListWidgetItem( lstwdgDefinedConfigs );
     itm->setText( name );
@@ -726,7 +742,8 @@ void QgsAuthOAuth2Edit::updateGrantFlow( int indx )
     whileBlocking( cmbbxGrantFlow )->setCurrentIndex( indx );
   }
 
-  const QgsAuthOAuth2Config::GrantFlow flow = static_cast<QgsAuthOAuth2Config::GrantFlow>( cmbbxGrantFlow->itemData( indx ).toInt() );
+  const QgsAuthOAuth2Config::GrantFlow flow =
+    static_cast<QgsAuthOAuth2Config::GrantFlow>( cmbbxGrantFlow->itemData( indx ).toInt() );
   mOAuthConfigCustom->setGrantFlow( flow );
 
   // bool authcode = ( flow == QgsAuthOAuth2Config::AuthCode );
@@ -776,8 +793,7 @@ void QgsAuthOAuth2Edit::exportOAuthConfig()
   QSettings settings;
   const QString recentdir = settings.value( QStringLiteral( "UI/lastAuthSaveFileDir" ), QDir::homePath() ).toString();
   const QString configpath = QFileDialog::getSaveFileName(
-    this, tr( "Save OAuth2 Config File" ), recentdir, QStringLiteral( "OAuth2 config files (*.json)" )
-  );
+                               this, tr( "Save OAuth2 Config File" ), recentdir, QStringLiteral( "OAuth2 config files (*.json)" ) );
   this->raise();
   this->activateWindow();
 
@@ -797,7 +813,8 @@ void QgsAuthOAuth2Edit::exportOAuthConfig()
     mOAuthConfigCustom->setName( mParentName->text() );
   }
 
-  if ( !QgsAuthOAuth2Config::writeOAuth2Config( configpath, mOAuthConfigCustom.get(), QgsAuthOAuth2Config::ConfigFormat::JSON, true ) )
+  if ( !QgsAuthOAuth2Config::writeOAuth2Config( configpath, mOAuthConfigCustom.get(),
+       QgsAuthOAuth2Config::JSON, true ) )
   {
     QgsDebugError( QStringLiteral( "FAILED to export OAuth2 config file" ) );
   }
@@ -814,7 +831,8 @@ void QgsAuthOAuth2Edit::importOAuthConfig()
     return;
   }
 
-  const QString configfile = QgsAuthGuiUtils::getOpenFileName( this, tr( "Select OAuth2 Config File" ), QStringLiteral( "OAuth2 config files (*.json)" ) );
+  const QString configfile =
+    QgsAuthGuiUtils::getOpenFileName( this, tr( "Select OAuth2 Config File" ), QStringLiteral( "OAuth2 config files (*.json)" ) );
   this->raise();
   this->activateWindow();
 
@@ -859,9 +877,12 @@ void QgsAuthOAuth2Edit::descriptionChanged()
 
 void QgsAuthOAuth2Edit::populateAccessMethods()
 {
-  cmbbxAccessMethod->addItem( QgsAuthOAuth2Config::accessMethodString( QgsAuthOAuth2Config::AccessMethod::Header ), static_cast<int>( QgsAuthOAuth2Config::AccessMethod::Header ) );
-  cmbbxAccessMethod->addItem( QgsAuthOAuth2Config::accessMethodString( QgsAuthOAuth2Config::AccessMethod::Form ), static_cast<int>( QgsAuthOAuth2Config::AccessMethod::Form ) );
-  cmbbxAccessMethod->addItem( QgsAuthOAuth2Config::accessMethodString( QgsAuthOAuth2Config::AccessMethod::Query ), static_cast<int>( QgsAuthOAuth2Config::AccessMethod::Query ) );
+  cmbbxAccessMethod->addItem( QgsAuthOAuth2Config::accessMethodString( QgsAuthOAuth2Config::Header ),
+                              static_cast<int>( QgsAuthOAuth2Config::Header ) );
+  cmbbxAccessMethod->addItem( QgsAuthOAuth2Config::accessMethodString( QgsAuthOAuth2Config::Form ),
+                              static_cast<int>( QgsAuthOAuth2Config::Form ) );
+  cmbbxAccessMethod->addItem( QgsAuthOAuth2Config::accessMethodString( QgsAuthOAuth2Config::Query ),
+                              static_cast<int>( QgsAuthOAuth2Config::Query ) );
 }
 
 
@@ -870,12 +891,12 @@ void QgsAuthOAuth2Edit::updateConfigAccessMethod( int indx )
   mOAuthConfigCustom->setAccessMethod( static_cast<QgsAuthOAuth2Config::AccessMethod>( indx ) );
   switch ( static_cast<QgsAuthOAuth2Config::AccessMethod>( indx ) )
   {
-    case QgsAuthOAuth2Config::AccessMethod::Header:
+    case QgsAuthOAuth2Config::Header:
       mTokenHeaderLineEdit->setVisible( true );
       mTokenHeaderLabel->setVisible( true );
       break;
-    case QgsAuthOAuth2Config::AccessMethod::Form:
-    case QgsAuthOAuth2Config::AccessMethod::Query:
+    case QgsAuthOAuth2Config::Form:
+    case QgsAuthOAuth2Config::Query:
       mTokenHeaderLineEdit->setVisible( false );
       mTokenHeaderLabel->setVisible( false );
       break;
@@ -936,7 +957,8 @@ QVariantMap QgsAuthOAuth2Edit::queryPairs() const
     {
       continue;
     }
-    querypairs.insert( tblwdgQueryPairs->item( i, 0 )->text(), QVariant( tblwdgQueryPairs->item( i, 1 )->text() ) );
+    querypairs.insert( tblwdgQueryPairs->item( i, 0 )->text(),
+                       QVariant( tblwdgQueryPairs->item( i, 1 )->text() ) );
   }
   return querypairs;
 }
@@ -959,7 +981,7 @@ void QgsAuthOAuth2Edit::removeQueryPair()
 
 void QgsAuthOAuth2Edit::clearQueryPairs()
 {
-  for ( int i = tblwdgQueryPairs->rowCount(); i > 0; --i )
+  for ( int i = tblwdgQueryPairs->rowCount(); i > 0 ; --i )
   {
     tblwdgQueryPairs->removeRow( i - 1 );
   }
@@ -989,32 +1011,33 @@ void QgsAuthOAuth2Edit::parseSoftwareStatement( const QString &path )
     return;
   }
   const QByteArray payload = payloadParts[1];
-  QByteArray decoded = QByteArray::fromBase64( payload /*, QByteArray::Base64UrlEncoding*/ );
-  QString errStr;
-  const QVariantMap jsonData = QgsJsonUtils::parseJson( decoded.toStdString(), errStr ).toMap();
-  if ( !errStr.isEmpty() )
+  QByteArray decoded = QByteArray::fromBase64( payload/*, QByteArray::Base64UrlEncoding*/ );
+  QByteArray errStr;
+  bool res = false;
+  const QMap<QString, QVariant> jsonData = QJsonWrapper::parseJson( decoded, &res, &errStr ).toMap();
+  if ( !res )
   {
     QgsDebugError( QStringLiteral( "Error parsing JSON: %1" ).arg( QString( errStr ) ) );
     return;
   }
   if ( jsonData.contains( QStringLiteral( "grant_types" ) ) && jsonData.contains( QStringLiteral( "redirect_uris" ) ) )
   {
-    const QStringList grantTypes( jsonData[QStringLiteral( "grant_types" )].toStringList() );
-    if ( !grantTypes.isEmpty() )
+    const QStringList grantTypes( jsonData[QStringLiteral( "grant_types" ) ].toStringList() );
+    if ( !grantTypes.isEmpty( ) )
     {
       const QString grantType = grantTypes[0];
       if ( grantType == QLatin1String( "authorization_code" ) )
       {
-        updateGrantFlow( static_cast<int>( QgsAuthOAuth2Config::GrantFlow::AuthCode ) );
+        updateGrantFlow( static_cast<int>( QgsAuthOAuth2Config::AuthCode ) );
       }
       else
       {
-        updateGrantFlow( static_cast<int>( QgsAuthOAuth2Config::GrantFlow::ResourceOwner ) );
+        updateGrantFlow( static_cast<int>( QgsAuthOAuth2Config::ResourceOwner ) );
       }
     }
     //Set redirect_uri
-    const QStringList redirectUris( jsonData[QStringLiteral( "redirect_uris" )].toStringList() );
-    if ( !redirectUris.isEmpty() )
+    const QStringList  redirectUris( jsonData[QStringLiteral( "redirect_uris" ) ].toStringList() );
+    if ( !redirectUris.isEmpty( ) )
     {
       const QString redirectUri = redirectUris[0];
       leRedirectUrl->setText( redirectUri );
@@ -1040,10 +1063,11 @@ void QgsAuthOAuth2Edit::configReplyFinished()
   if ( configReply->error() == QNetworkReply::NoError )
   {
     const QByteArray replyData = configReply->readAll();
-    QString errStr;
-    const QVariantMap config = QgsJsonUtils::parseJson( replyData.toStdString(), errStr ).toMap();
+    QByteArray errStr;
+    bool res = false;
+    const QVariantMap config = QJsonWrapper::parseJson( replyData, &res, &errStr ).toMap();
 
-    if ( !errStr.isEmpty() )
+    if ( !res )
     {
       QgsDebugError( QStringLiteral( "Error parsing JSON: %1" ).arg( QString( errStr ) ) );
       return;
@@ -1079,8 +1103,9 @@ void QgsAuthOAuth2Edit::registerReplyFinished()
   if ( registerReply->error() == QNetworkReply::NoError )
   {
     const QByteArray replyData = registerReply->readAll();
-    QString errStr;
-    const QVariantMap clientInfo = QgsJsonUtils::parseJson( replyData.toStdString(), errStr ).toMap();
+    QByteArray errStr;
+    bool res = false;
+    const QVariantMap clientInfo = QJsonWrapper::parseJson( replyData, &res, &errStr ).toMap();
 
     // According to RFC 7591 sec. 3.2.1.  Client Information Response the only
     // required field is client_id
@@ -1123,8 +1148,9 @@ void QgsAuthOAuth2Edit::registerSoftStatement( const QString &registrationUrl )
     qWarning() << "Registration url is not valid";
     return;
   }
-
-  const QByteArray json = QByteArray::fromStdString( QgsJsonUtils::jsonFromVariant( QVariant( mSoftwareStatement ) ).dump() );
+  QByteArray errStr;
+  bool res = false;
+  const QByteArray json = QJsonWrapper::toJson( QVariant( mSoftwareStatement ), &res, &errStr );
   QNetworkRequest registerRequest( regUrl );
   QgsSetRequestInitiatorClass( registerRequest, QStringLiteral( "QgsAuthOAuth2Edit" ) );
   registerRequest.setHeader( QNetworkRequest::ContentTypeHeader, QLatin1String( "application/json" ) );
@@ -1176,11 +1202,12 @@ void QgsAuthOAuth2Edit::updatePredefinedLocationsTooltip()
     locationListHtml += QLatin1String( "</ul>" );
 
   const QString tip = QStringLiteral( "<p>" ) + tr( "Defined configurations are JSON-formatted files, with a single configuration per file. "
-                                                    "This allows configurations to be swapped out via filesystem tools without affecting user "
-                                                    "configurations. It is recommended to use the Configure tab’s export function, then edit the "
-                                                    "resulting file. See QGIS documentation for further details." )
-                      + QStringLiteral( "</p><p>" ) + tr( "Configurations files can be placed in the directories:" ) + QStringLiteral( "</p>" ) + locationListHtml;
+                      "This allows configurations to be swapped out via filesystem tools without affecting user "
+                      "configurations. It is recommended to use the Configure tab’s export function, then edit the "
+                      "resulting file. See QGIS documentation for further details." ) + QStringLiteral( "</p><p>" ) +
+                      tr( "Configurations files can be placed in the directories:" ) + QStringLiteral( "</p>" ) + locationListHtml;
   pteDefinedDesc->setHtml( tip );
 
   lstwdgDefinedConfigs->setToolTip( tr( "Configuration files can be placed in the directories:\n\n%1" ).arg( locationList ) );
 }
+

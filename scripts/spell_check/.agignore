@@ -23,7 +23,6 @@ tests/testdata/newsfeed/
 .agignore
 
 #Specific files
-.clang-format
 ChangeLog
 doc/NEWS.html
 debian/qgis.desktop

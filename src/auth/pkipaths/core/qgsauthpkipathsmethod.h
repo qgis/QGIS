@@ -30,6 +30,7 @@ class QgsAuthPkiPathsMethod : public QgsAuthMethod
     Q_OBJECT
 
   public:
+
     static const QString AUTH_METHOD_KEY;
     static const QString AUTH_METHOD_DESCRIPTION;
     static const QString AUTH_METHOD_DISPLAY_DESCRIPTION;
@@ -44,19 +45,22 @@ class QgsAuthPkiPathsMethod : public QgsAuthMethod
 
     QString displayDescription() const override;
 
-    bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider = QString() ) override;
+    bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
+                               const QString &dataprovider = QString() ) override;
 
-    bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg, const QString &dataprovider = QString() ) override;
+    bool updateDataSourceUriItems( QStringList &connectionItems, const QString &authcfg,
+                                   const QString &dataprovider = QString() ) override;
 
     void clearCachedConfig( const QString &authcfg ) override;
 
     void updateMethodConfig( QgsAuthMethodConfig &mconfig ) override;
 
 #ifdef HAVE_GUI
-    QWidget *editWidget( QWidget *parent ) const override;
+    QWidget *editWidget( QWidget *parent )const override;
 #endif
 
   private:
+
 #ifndef QT_NO_SSL
     QgsPkiConfigBundle *getPkiConfigBundle( const QString &authcfg );
 
@@ -66,6 +70,7 @@ class QgsAuthPkiPathsMethod : public QgsAuthMethod
 
     static QMap<QString, QgsPkiConfigBundle *> sPkiConfigBundleCache;
 #endif
+
 };
 
 
@@ -75,7 +80,7 @@ class QgsAuthPkiPathsMethodMetadata : public QgsAuthMethodMetadata
     QgsAuthPkiPathsMethodMetadata()
       : QgsAuthMethodMetadata( QgsAuthPkiPathsMethod::AUTH_METHOD_KEY, QgsAuthPkiPathsMethod::AUTH_METHOD_DESCRIPTION )
     {}
-    QgsAuthPkiPathsMethod *createAuthMethod() const override { return new QgsAuthPkiPathsMethod; }
+    QgsAuthPkiPathsMethod *createAuthMethod() const override {return new QgsAuthPkiPathsMethod;}
     //QStringList supportedDataProviders() const override;
 };
 

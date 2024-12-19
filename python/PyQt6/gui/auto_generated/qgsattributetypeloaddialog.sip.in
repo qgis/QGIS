@@ -10,7 +10,7 @@
 
 
 
-class QgsAttributeTypeLoadDialog : QDialog
+class QgsAttributeTypeLoadDialog: QDialog
 {
 
 %TypeHeaderCode

@@ -21,21 +21,23 @@
 #include "qgsannotationitemregistry.h"
 #include <QSignalSpy>
 
-class TestQgsAnnotationItemGuiRegistry : public QObject
+class TestQgsAnnotationItemGuiRegistry: public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
+    void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void init(); // will be called before each testfunction is executed.
+    void cleanup(); // will be called after every testfunction.
     void guiRegistry();
 
   private:
+
 };
 
 void TestQgsAnnotationItemGuiRegistry::initTestCase()
 {
+
 }
 
 void TestQgsAnnotationItemGuiRegistry::cleanupTestCase()
@@ -54,30 +56,32 @@ void TestQgsAnnotationItemGuiRegistry::cleanup()
 class TestItem : public QgsAnnotationItem // clazy:exclude=missing-qobject-macro
 {
   public:
-    TestItem()
-      : QgsAnnotationItem() {}
+
+    TestItem() : QgsAnnotationItem() {}
 
     int mFlag = 0;
 
     //implement pure virtual methods
     QString type() const override { return QStringLiteral( "mytype" ); }
     TestItem *clone() const override { return new TestItem(); }
-    QgsRectangle boundingBox() const override { return QgsRectangle(); }
+    QgsRectangle boundingBox() const override { return QgsRectangle();}
     void render( QgsRenderContext &, QgsFeedback * ) override {}
     bool writeXml( QDomElement &, QDomDocument &, const QgsReadWriteContext & ) const override { return true; }
     bool readXml( const QDomElement &, const QgsReadWriteContext & ) override { return true; }
 };
 
-class TestItemWidget : public QgsAnnotationItemBaseWidget
+class TestItemWidget: public QgsAnnotationItemBaseWidget
 {
     Q_OBJECT
   public:
+
     TestItemWidget( QWidget *parent )
       : QgsAnnotationItemBaseWidget( parent )
     {}
 
     QgsAnnotationItem *createItem() override { return nullptr; }
     void updateItem( QgsAnnotationItem * ) override {}
+
 };
 
 void TestQgsAnnotationItemGuiRegistry::guiRegistry()
@@ -91,13 +95,14 @@ void TestQgsAnnotationItemGuiRegistry::guiRegistry()
   QCOMPARE( registry.metadataIdForItemType( QString() ), -1 );
   QVERIFY( !registry.createItemWidget( nullptr ) );
   QVERIFY( !registry.createItemWidget( nullptr ) );
-  const std::unique_ptr<TestItem> testItem = std::make_unique<TestItem>();
+  const std::unique_ptr< TestItem > testItem = std::make_unique< TestItem >();
   QVERIFY( !registry.createItemWidget( testItem.get() ) ); // not in registry
 
   const QSignalSpy spyTypeAdded( &registry, &QgsAnnotationItemGuiRegistry::typeAdded );
 
   // add a dummy item to registry
-  auto createWidget = []( QgsAnnotationItem * ) -> QgsAnnotationItemBaseWidget * {
+  auto createWidget = []( QgsAnnotationItem * )->QgsAnnotationItemBaseWidget *
+  {
     return new TestItemWidget( nullptr );
   };
 
@@ -133,19 +138,21 @@ void TestQgsAnnotationItemGuiRegistry::guiRegistry()
   //creating item
   QgsAnnotationItem *item = registry.createItem( uuid );
   QVERIFY( !item );
-  QgsApplication::annotationItemRegistry()->addItemType( new QgsAnnotationItemMetadata( QStringLiteral( "mytype" ), QStringLiteral( "My Type" ), QStringLiteral( "My Types" ), []() -> QgsAnnotationItem * {
+  QgsApplication::annotationItemRegistry()->addItemType( new QgsAnnotationItemMetadata( QStringLiteral( "mytype" ), QStringLiteral( "My Type" ), QStringLiteral( "My Types" ), []( )->QgsAnnotationItem*
+  {
     return new TestItem();
   } ) );
 
   item = registry.createItem( uuid );
   QVERIFY( item );
   QCOMPARE( item->type(), QStringLiteral( "mytype" ) );
-  QCOMPARE( static_cast<TestItem *>( item )->mFlag, 0 );
+  QCOMPARE( static_cast< TestItem * >( item )->mFlag, 0 );
   delete item;
 
   // override create func
   metadata = new QgsAnnotationItemGuiMetadata( QStringLiteral( "mytype" ), QStringLiteral( "mytype" ), QIcon(), createWidget );
-  metadata->setItemCreationFunction( []() -> QgsAnnotationItem * {
+  metadata->setItemCreationFunction( []()->QgsAnnotationItem*
+  {
     TestItem *item = new TestItem();
     item->mFlag = 2;
     return item;
@@ -155,7 +162,7 @@ void TestQgsAnnotationItemGuiRegistry::guiRegistry()
   item = registry.createItem( uuid );
   QVERIFY( item );
   QCOMPARE( item->type(), QStringLiteral( "mytype" ) );
-  QCOMPARE( static_cast<TestItem *>( item )->mFlag, 2 );
+  QCOMPARE( static_cast< TestItem * >( item )->mFlag, 2 );
   delete item;
 }
 

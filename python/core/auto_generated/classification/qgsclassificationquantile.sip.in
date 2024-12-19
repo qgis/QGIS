@@ -28,7 +28,7 @@ based on quantiles
 
     virtual QString id() const;
 
-    virtual std::unique_ptr< QgsClassificationMethod > clone() const;
+    virtual QgsClassificationMethod *clone() const;
 
     virtual QIcon icon() const;
 

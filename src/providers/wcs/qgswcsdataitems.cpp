@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgswcsdataitems.h"
-#include "moc_qgswcsdataitems.cpp"
 #include "qgslogger.h"
 #include "qgsdatasourceuri.h"
 #include "qgsowsconnection.h"
@@ -186,7 +185,7 @@ QgsWCSRootItem::QgsWCSRootItem( QgsDataItem *parent, QString name, QString path 
   populate();
 }
 
-QVector<QgsDataItem *> QgsWCSRootItem::createChildren()
+QVector<QgsDataItem *>QgsWCSRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
   const QStringList list = QgsOwsConnection::connectionList( "WCS" );

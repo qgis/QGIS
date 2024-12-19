@@ -26,6 +26,7 @@
 QgsInterpolator::QgsInterpolator( const QList<LayerData> &layerData )
   : mLayerData( layerData )
 {
+
 }
 
 QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )

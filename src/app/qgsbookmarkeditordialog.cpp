@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsbookmarkeditordialog.h"
-#include "moc_qgsbookmarkeditordialog.cpp"
 
 #include "qgis.h"
 #include "qgisapp.h"
@@ -107,3 +106,4 @@ void QgsBookmarkEditorDialog::onAccepted()
       QgsProject::instance()->bookmarkManager()->moveBookmark( bookmark.id(), QgsApplication::bookmarkManager() );
   }
 }
+

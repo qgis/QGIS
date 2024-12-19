@@ -63,7 +63,7 @@ void QgsPdalTileAlgorithm::initAlgorithm( const QVariantMap & )
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), Qgis::ProcessingSourceType::PointCloud ) );
   addParameter( new QgsProcessingParameterNumber( QStringLiteral( "LENGTH" ), QObject::tr( "Tile length" ), Qgis::ProcessingNumberParameterType::Double, 1000.0, false, 1 ) );
 
-  std::unique_ptr<QgsProcessingParameterCrs> paramCrs = std::make_unique<QgsProcessingParameterCrs>( QStringLiteral( "CRS" ), QObject::tr( "Assign CRS" ), QVariant(), true );
+  std::unique_ptr< QgsProcessingParameterCrs > paramCrs = std::make_unique< QgsProcessingParameterCrs >( QStringLiteral( "CRS" ), QObject::tr( "Assign CRS" ), QVariant(), true );
   paramCrs->setFlags( paramCrs->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( paramCrs.release() );
 
@@ -74,7 +74,7 @@ QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parame
 {
   Q_UNUSED( feedback );
 
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
+  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context, QgsProcessing::LayerOptionsFlag::SkipIndexGeneration );
   if ( layers.empty() )
   {
     feedback->reportError( QObject::tr( "No layers selected" ), true );
@@ -114,7 +114,7 @@ QStringList QgsPdalTileAlgorithm::createArgumentLists( const QVariantMap &parame
   }
 
   QTextStream out( &listFile );
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   out.setCodec( "UTF-8" );
 #endif
   for ( const QgsMapLayer *layer : std::as_const( layers ) )

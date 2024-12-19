@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsmapcanvassnappingutils.h"
-#include "moc_qgsmapcanvassnappingutils.cpp"
 
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"

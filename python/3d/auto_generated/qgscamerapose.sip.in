@@ -30,6 +30,7 @@ The pose is defined with the following parameters:
 #include "qgscamerapose.h"
 %End
   public:
+
     QgsVector3D centerPoint() const;
 %Docstring
 Returns center point (towards which point the camera is looking)

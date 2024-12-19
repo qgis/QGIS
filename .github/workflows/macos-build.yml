@@ -108,8 +108,6 @@ jobs:
           mkdir -p ${CCACHE_DIR}
           brew install ccache
           ccache --set-config=max_size=2.0G
-          # To make ccache work properly with precompiled headers
-          ccache --set-config sloppiness=pch_defines,time_macros,include_file_mtime,include_file_ctime
           ccache -s
 
       - name: Run cmake

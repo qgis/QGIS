@@ -52,8 +52,8 @@ class GRASS_LIB_EXPORT QgsGrassFeatureSource : public QgsAbstractFeatureSource
 
     struct Map_info *map();
     QgsGrassVectorMapLayer *mLayer = nullptr;
-    int mLayerType; // layer type POINT, LINE, ...
-    int mGrassType; // grass feature type: GV_POINT, GV_LINE | GV_BOUNDARY, GV_AREA,
+    int mLayerType;     // layer type POINT, LINE, ...
+    int mGrassType;     // grass feature type: GV_POINT, GV_LINE | GV_BOUNDARY, GV_AREA,
 
     Qgis::WkbType mQgisType; // WKBPoint, WKBLineString, ...
 
@@ -111,6 +111,7 @@ class GRASS_LIB_EXPORT QgsGrassFeatureIterator : public QObject, public QgsAbstr
     void doClose();
 
   private:
+
     // create QgsFeatureId from GRASS geometry object id, cat and layer number (editing)
     static QgsFeatureId makeFeatureId( int grassId, int cat, int layer = 0 );
 

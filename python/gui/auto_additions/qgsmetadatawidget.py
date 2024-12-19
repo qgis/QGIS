@@ -7,5 +7,5 @@ try:
     QgsMetadataWidget.parseMimeTypes = staticmethod(QgsMetadataWidget.parseMimeTypes)
     QgsMetadataWidget.parseTypes = staticmethod(QgsMetadataWidget.parseTypes)
     QgsMetadataWidget.__signal_arguments__ = {'titleChanged': ['title: str']}
-except (NameError, AttributeError):
+except NameError:
     pass

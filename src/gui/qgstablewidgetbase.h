@@ -29,10 +29,11 @@
  * Child classes must call init(QAbstractTableModel*) from their constructor.
  *
  */
-class GUI_EXPORT QgsTableWidgetBase : public QWidget, protected Ui::QgsTableWidgetUiBase
+class GUI_EXPORT QgsTableWidgetBase: public QWidget, protected Ui::QgsTableWidgetUiBase
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor.
      */
@@ -57,6 +58,7 @@ class GUI_EXPORT QgsTableWidgetBase : public QWidget, protected Ui::QgsTableWidg
     virtual void setReadOnly( bool readOnly );
 
   protected:
+
     /**
      * Initialize the table with the given model.
      * Must be called once in the child class' constructor.
@@ -88,10 +90,12 @@ class GUI_EXPORT QgsTableWidgetBase : public QWidget, protected Ui::QgsTableWidg
     void onSelectionChanged();
 
   private:
+
     bool mReadOnly = false;
 
     friend class TestQgsKeyValueWidget;
     friend class TestQgsListWidget;
+
 };
 
 

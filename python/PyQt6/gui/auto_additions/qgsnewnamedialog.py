@@ -4,5 +4,5 @@ try:
     QgsNewNameDialog.exists = staticmethod(QgsNewNameDialog.exists)
     QgsNewNameDialog.fullNames = staticmethod(QgsNewNameDialog.fullNames)
     QgsNewNameDialog.matching = staticmethod(QgsNewNameDialog.matching)
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -42,6 +42,7 @@ class QgsCheckableItemModel : public QStandardItemModel
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsCheckableItemModel.
      * \param parent parent object
@@ -94,6 +95,7 @@ class QgsCheckBoxDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsCheckBoxDelegate.
      * \param parent parent object
@@ -125,6 +127,7 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
     Q_PROPERTY( QStringList checkedItems READ checkedItems WRITE setCheckedItems )
 
   public:
+
     /**
      * Constructor for QgsCheckableComboBox.
      */
@@ -209,10 +212,7 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
      * \see QgsCheckableItemModel
      * \since QGIS 3.16
      */
-    QgsCheckableItemModel *model() const SIP_SKIP
-    {
-      return mModel;
-    }
+    QgsCheckableItemModel *model() const SIP_SKIP {return mModel;}
 
     /**
      * Hides the list of items in the combobox if it is currently
@@ -242,6 +242,7 @@ class GUI_EXPORT QgsCheckableComboBox : public QComboBox
     void setCheckedItems( const QStringList &items );
 
   protected:
+
     /**
      * Handler for widget resizing
      */

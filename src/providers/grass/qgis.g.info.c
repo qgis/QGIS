@@ -32,7 +32,7 @@
 #include <grass/gis.h>
 #include <grass/raster.h>
 #include <grass/display.h>
-#if defined( _MSC_VER ) && defined( M_PI_4 )
+#if defined(_MSC_VER) && defined(M_PI_4)
 #undef M_PI_4 //avoid redefinition warning
 #endif
 #include <grass/gprojects.h>
@@ -301,10 +301,10 @@ int main( int argc, char **argv )
       double min = DBL_MAX;
       double max = -DBL_MAX;
       double sum = 0; // sum of values
-      int count = 0;  // count of non null values
+      int count = 0; // count of non null values
       double mean = 0;
       double squares_sum = 0; // sum of squares
-      double stdev = 0;       // standard deviation
+      double stdev = 0; // standard deviation
 
       Rast_get_cellhd( rast_opt->answer, "", &window );
       window.north = atof( north_opt->answer );
@@ -350,12 +350,10 @@ int main( int argc, char **argv )
             val = dcell[col];
             ptr = &( dcell[col] );
           }
-          if ( !Rast_is_null_value( ptr, rast_type ) )
+          if ( ! Rast_is_null_value( ptr, rast_type ) )
           {
-            if ( val < min )
-              min = val;
-            if ( val > max )
-              max = val;
+            if ( val < min ) min = val;
+            if ( val > max ) max = val;
             sum += val;
             count++;
             squares_sum += val * val;
@@ -384,3 +382,4 @@ int main( int argc, char **argv )
 
   exit( EXIT_SUCCESS );
 }
+

@@ -33,17 +33,8 @@ from qgis.core import (
 )
 from qgis.gui import QgsMessageBar
 
-from ..plugin import (
-    DBPlugin,
-    Database,
-    Table,
-    VectorTable,
-    RasterTable,
-    TableField,
-    TableIndex,
-    TableTrigger,
-    InvalidDataException,
-)
+from ..plugin import DBPlugin, Database, Table, VectorTable, RasterTable, TableField, TableIndex, TableTrigger, \
+    InvalidDataException
 
 
 def classFactory():
@@ -58,19 +49,19 @@ class GPKGDBPlugin(DBPlugin):
 
     @classmethod
     def typeName(self):
-        return "gpkg"
+        return 'gpkg'
 
     @classmethod
     def typeNameString(self):
-        return QCoreApplication.translate("db_manager", "GeoPackage")
+        return QCoreApplication.translate('db_manager', 'GeoPackage')
 
     @classmethod
     def providerName(self):
-        return "ogr"
+        return 'ogr'
 
     @classmethod
     def connectionSettingsKey(self):
-        return "providers/ogr/GPKG/connections"
+        return 'providers/ogr/GPKG/connections'
 
     def databasesFactory(self, connection, uri):
         return GPKGDatabase(connection, uri)
@@ -82,11 +73,7 @@ class GPKGDBPlugin(DBPlugin):
         conn = md.findConnection(conn_name)
 
         if conn is None:  # non-existent entry?
-            raise InvalidDataException(
-                self.tr('There is no defined database connection "{0}".').format(
-                    conn_name
-                )
-            )
+            raise InvalidDataException(self.tr('There is no defined database connection "{0}".').format(conn_name))
 
         uri = QgsDataSourceUri()
         uri.setDatabase(conn.uri())
@@ -103,9 +90,8 @@ class GPKGDBPlugin(DBPlugin):
     def addConnectionActionSlot(self, item, action, parent, index):
         QApplication.restoreOverrideCursor()
         try:
-            filename, selected_filter = QFileDialog.getOpenFileName(
-                parent, parent.tr("Choose GeoPackage file"), None, "GeoPackage (*.gpkg)"
-            )
+            filename, selected_filter = QFileDialog.getOpenFileName(parent,
+                                                                    parent.tr("Choose GeoPackage file"), None, "GeoPackage (*.gpkg)")
             if not filename:
                 return
         finally:
@@ -152,9 +138,7 @@ class GPKGDatabase(Database):
 
     def registerDatabaseActions(self, mainWindow):
         action = QAction(self.tr("Run &Vacuum"), self)
-        mainWindow.registerAction(
-            action, self.tr("&Database"), self.runVacuumActionSlot
-        )
+        mainWindow.registerAction(action, self.tr("&Database"), self.runVacuumActionSlot)
 
         Database.registerDatabaseActions(self, mainWindow)
 
@@ -162,11 +146,8 @@ class GPKGDatabase(Database):
         QApplication.restoreOverrideCursor()
         try:
             if not isinstance(item, (DBPlugin, Table)) or item.database() is None:
-                parent.infoBar.pushMessage(
-                    self.tr("No database selected or you are not connected to it."),
-                    Qgis.MessageLevel.Info,
-                    parent.iface.messageTimeout(),
-                )
+                parent.infoBar.pushMessage(self.tr("No database selected or you are not connected to it."),
+                                           Qgis.MessageLevel.Info, parent.iface.messageTimeout())
                 return
         finally:
             QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
@@ -191,19 +172,10 @@ class GPKGDatabase(Database):
     def uniqueIdFunction(self):
         return None
 
-    def toSqlLayer(
-        self,
-        sql,
-        geomCol,
-        uniqueCol,
-        layerName="QueryLayer",
-        layerType=None,
-        avoidSelectById=False,
-        filter="",
-    ):
+    def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False, filter=""):
         from qgis.core import QgsVectorLayer
 
-        vl = QgsVectorLayer(self.uri().database() + "|subset=" + sql, layerName, "ogr")
+        vl = QgsVectorLayer(self.uri().database() + '|subset=' + sql, layerName, 'ogr')
         return vl
 
     def supportsComment(self):
@@ -227,12 +199,12 @@ class GPKGTable(Table):
         self.name, self.isView, self.isSysTable = row
 
     def ogrUri(self):
-        ogrUri = f"{self.uri().database()}|layername={self.name}"
+        ogrUri = "%s|layername=%s" % (self.uri().database(), self.name)
         return ogrUri
 
     def mimeUri(self):
         # QGIS has no provider to load Geopackage vectors, let's use OGR
-        return f"vector:ogr:{self.name}:{self.ogrUri()}"
+        return "vector:ogr:%s:%s" % (self.name, self.ogrUri())
 
     def toMapLayer(self, geometryType=None, crs=None):
         from qgis.core import QgsVectorLayer
@@ -242,12 +214,12 @@ class GPKGTable(Table):
 
         if geometryType:
             geom_mapping = {
-                "POINT": "Point",
-                "LINESTRING": "LineString",
-                "POLYGON": "Polygon",
+                'POINT': 'Point',
+                'LINESTRING': 'LineString',
+                'POLYGON': 'Polygon',
             }
             geometryType = geom_mapping[geometryType]
-            uri = f"{uri}|geometrytype={geometryType}"
+            uri = "{}|geometrytype={}".format(uri, geometryType)
 
         return QgsVectorLayer(uri, self.name, provider)
 
@@ -274,23 +246,17 @@ class GPKGVectorTable(GPKGTable, VectorTable):
         # GPKG does case-insensitive checks for table names, but the
         # GPKG provider didn't do the same in QGIS < 1.9, so self.geomTableName
         # stores the table name like stored in the geometry_columns table
-        self.geomTableName, self.geomColumn, self.geomType, self.geomDim, self.srid = (
-            row[-5:]
-        )
-        self.extent = self.database().connector.getTableExtent(
-            (self.schemaName(), self.name), self.geomColumn, force=False
-        )
+        self.geomTableName, self.geomColumn, self.geomType, self.geomDim, self.srid = row[-5:]
+        self.extent = self.database().connector.getTableExtent((self.schemaName(), self.name), self.geomColumn, force=False)
 
     def uri(self):
         uri = self.database().uri()
-        uri.setDataSource("", self.geomTableName, self.geomColumn)
+        uri.setDataSource('', self.geomTableName, self.geomColumn)
         return uri
 
     def hasSpatialIndex(self, geom_column=None):
         geom_column = geom_column if geom_column is not None else self.geomColumn
-        return self.database().connector.hasSpatialIndex(
-            (self.schemaName(), self.name), geom_column
-        )
+        return self.database().connector.hasSpatialIndex((self.schemaName(), self.name), geom_column)
 
     def createSpatialIndex(self, geom_column=None):
         self.aboutToChange.emit()
@@ -311,9 +277,7 @@ class GPKGVectorTable(GPKGTable, VectorTable):
 
     def refreshTableExtent(self):
         prevExtent = self.extent
-        self.extent = self.database().connector.getTableExtent(
-            (self.schemaName(), self.name), self.geomColumn, force=True
-        )
+        self.extent = self.database().connector.getTableExtent((self.schemaName(), self.name), self.geomColumn, force=True)
         if self.extent != prevExtent:
             self.refresh()
 
@@ -329,18 +293,16 @@ class GPKGRasterTable(GPKGTable, RasterTable):
         GPKGTable.__init__(self, row[:-3], db, schema)
         RasterTable.__init__(self, db, schema)
         self.prefixName, self.geomColumn, self.srid = row[-3:]
-        self.geomType = "RASTER"
-        self.extent = self.database().connector.getTableExtent(
-            (self.schemaName(), self.name), self.geomColumn
-        )
+        self.geomType = 'RASTER'
+        self.extent = self.database().connector.getTableExtent((self.schemaName(), self.name), self.geomColumn)
 
     def gpkgGdalUri(self):
-        gdalUri = f"GPKG:{self.uri().database()}:{self.prefixName}"
+        gdalUri = 'GPKG:%s:%s' % (self.uri().database(), self.prefixName)
         return gdalUri
 
     def mimeUri(self):
         # QGIS has no provider to load rasters, let's use GDAL
-        uri = f"raster:gdal:{self.name}:{self.uri().database()}"
+        uri = "raster:gdal:%s:%s" % (self.name, self.uri().database())
         return uri
 
     def toMapLayer(self, geometryType=None, crs=None):
@@ -350,9 +312,7 @@ class GPKGRasterTable(GPKGTable, RasterTable):
         uri = self.gpkgGdalUri()
         rl = QgsRasterLayer(uri, self.name)
         if rl.isValid():
-            rl.setContrastEnhancement(
-                QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum
-            )
+            rl.setContrastEnhancement(QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum)
         return rl
 
 
@@ -360,14 +320,7 @@ class GPKGTableField(TableField):
 
     def __init__(self, row, table):
         TableField.__init__(self, table)
-        (
-            self.num,
-            self.name,
-            self.dataType,
-            self.notNull,
-            self.default,
-            self.primaryKey,
-        ) = row
+        self.num, self.name, self.dataType, self.notNull, self.default, self.primaryKey = row
         self.hasDefault = self.default
 
 

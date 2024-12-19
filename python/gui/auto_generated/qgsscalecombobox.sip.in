@@ -20,6 +20,7 @@ and highlights nearest to current scale value
 #include "qgsscalecombobox.h"
 %End
   public:
+
     QgsScaleComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsScaleComboBox.
@@ -111,7 +112,7 @@ Returns ``True`` if the combobox can be set to a NULL value.
 .. versionadded:: 3.8
 %End
 
-    void setPredefinedScales( const QVector<double> &scales );
+    void setPredefinedScales( const QVector< double > &scales );
 %Docstring
 Sets the list of predefined ``scales`` to show in the combobox. List elements
 are expected to be scale denominators, e.g. 1000.0 for a 1:1000 map.

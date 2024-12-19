@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Even Rouault"
-__date__ = "2016-03-25"
-__copyright__ = "Copyright 2016, Even Rouault"
+__author__ = 'Even Rouault'
+__date__ = '2016-03-25'
+__copyright__ = 'Copyright 2016, Even Rouault'
 
 import hashlib
 import shutil
@@ -34,13 +33,7 @@ from qgis.testing import start_app, QgisTestCase
 def sanitize(endpoint, x):
     if len(endpoint + x) > 256:
         return endpoint + hashlib.md5(x.encode()).hexdigest()
-    return endpoint + x.replace("?", "_").replace("&", "_").replace("<", "_").replace(
-        ">", "_"
-    ).replace('"', "_").replace("'", "_").replace(" ", "_").replace(":", "_").replace(
-        "/", "_"
-    ).replace(
-        "\n", "_"
-    )
+    return endpoint + x.replace('?', '_').replace('&', '_').replace('<', '_').replace('>', '_').replace('"', '_').replace("'", '_').replace(' ', '_').replace(':', '_').replace('/', '_').replace('\n', '_')
 
 
 def find_window(name):
@@ -62,7 +55,7 @@ class TestPyQgsWFSProviderGUI(QgisTestCase):
         QgsSettings().clear()
         start_app()
 
-        cls.basetestpath = tempfile.mkdtemp().replace("\\", "/")
+        cls.basetestpath = tempfile.mkdtemp().replace('\\', '/')
 
     @classmethod
     def tearDownClass(cls):
@@ -104,11 +97,7 @@ class TestPyQgsWFSProviderGUI(QgisTestCase):
         # if 'TRAVIS_OS_NAME' in os.environ and os.environ['TRAVIS_OS_NAME'] == 'osx':
         #    return
 
-        main_dialog = (
-            QgsGui.providerGuiRegistry()
-            .sourceSelectProviders("WFS")[0]
-            .createDataSourceWidget()
-        )
+        main_dialog = QgsGui.providerGuiRegistry().sourceSelectProviders("WFS")[0].createDataSourceWidget()
         main_dialog.setProperty("hideDialogs", True)
 
         self.assertIsNotNone(main_dialog)
@@ -117,7 +106,7 @@ class TestPyQgsWFSProviderGUI(QgisTestCase):
         btnNew = main_dialog.findChild(QWidget, "btnNew")
         self.assertIsNotNone(btnNew)
         QTest.mouseClick(btnNew, Qt.MouseButton.LeftButton)
-        new_conn = find_window("QgsNewHttpConnectionBase")
+        new_conn = find_window('QgsNewHttpConnectionBase')
         self.assertIsNotNone(new_conn)
         txtName = new_conn.findChild(QLineEdit, "txtName")
         self.assertIsNotNone(txtName)
@@ -138,7 +127,7 @@ class TestPyQgsWFSProviderGUI(QgisTestCase):
         QApplication.processEvents()
         # Second attempt for OAPIF request
         QApplication.processEvents()
-        error_box = find_window("WFSCapabilitiesErrorBox")
+        error_box = find_window('WFSCapabilitiesErrorBox')
         self.assertIsNotNone(error_box)
         # Close error box
         error_box.accept()
@@ -150,9 +139,7 @@ class TestPyQgsWFSProviderGUI(QgisTestCase):
         btnEdit = main_dialog.findChild(QWidget, "btnEdit")
         self.assertIsNotNone(btnEdit)
         QTest.mouseClick(btnEdit, Qt.MouseButton.LeftButton)
-        new_conn = find_window(
-            "QgsNewHttpConnectionBase",
-        )
+        new_conn = find_window('QgsNewHttpConnectionBase',)
         self.assertIsNotNone(new_conn)
         txtName = new_conn.findChild(QLineEdit, "txtName")
         self.assertIsNotNone(txtName)
@@ -160,19 +147,12 @@ class TestPyQgsWFSProviderGUI(QgisTestCase):
         txtUrl = new_conn.findChild(QLineEdit, "txtUrl")
         self.assertIsNotNone(txtUrl)
 
-        endpoint = self.basetestpath + "/fake_qgis_http_endpoint"
+        endpoint = self.basetestpath + '/fake_qgis_http_endpoint'
         expected_endpoint = endpoint
-        if sys.platform == "win32" and expected_endpoint[1] == ":":
+        if sys.platform == 'win32' and expected_endpoint[1] == ':':
             expected_endpoint = expected_endpoint[0] + expected_endpoint[2:]
-        with open(
-            sanitize(
-                endpoint,
-                "?SERVICE=WFS?REQUEST=GetCapabilities?ACCEPTVERSIONS=2.0.0,1.1.0,1.0.0",
-            ),
-            "wb",
-        ) as f:
-            f.write(
-                b"""
+        with open(sanitize(endpoint, '?SERVICE=WFS?REQUEST=GetCapabilities?ACCEPTVERSIONS=2.0.0,1.1.0,1.0.0'), 'wb') as f:
+            f.write(b"""
 <wfs:WFS_Capabilities version="2.0.0" xmlns="http://www.opengis.net/wfs/2.0" xmlns:wfs="http://www.opengis.net/wfs/2.0" xmlns:ows="http://www.opengis.net/ows/1.1" xmlns:gml="http://schemas.opengis.net/gml/3.2" xmlns:fes="http://www.opengis.net/fes/2.0">
   <FeatureTypeList>
     <FeatureType>
@@ -223,8 +203,7 @@ class TestPyQgsWFSProviderGUI(QgisTestCase):
       </fes:Function>
     </fes:Functions>
   </fes:Filter_Capabilities>
-</wfs:WFS_Capabilities>"""
-            )
+</wfs:WFS_Capabilities>""")
 
         txtUrl.setText("http://" + endpoint)
         new_conn.accept()
@@ -249,20 +228,14 @@ class TestPyQgsWFSProviderGUI(QgisTestCase):
         self.addWfsLayer_layer_name = None
         main_dialog.addVectorLayer.connect(self.slotAddWfsLayer)
         QTest.mouseClick(buttonAdd, Qt.MouseButton.LeftButton)
-        self.assertEqual(
-            self.addWfsLayer_uri,
-            " pagingEnabled='default' preferCoordinatesForWfsT11='false' restrictToRequestBBOX='1' srsname='EPSG:4326' typename='my:typename' url='"
-            + "http://"
-            + expected_endpoint
-            + "' version='auto'",
-        )
-        self.assertEqual(self.addWfsLayer_layer_name, "my:typename")
+        self.assertEqual(self.addWfsLayer_uri, ' pagingEnabled=\'default\' preferCoordinatesForWfsT11=\'false\' restrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\'')
+        self.assertEqual(self.addWfsLayer_layer_name, 'my:typename')
 
         # Click on Build Query
         buttonBuildQuery = self.get_button_build_query(main_dialog)
         self.assertTrue(buttonBuildQuery.isEnabled())
         QTest.mouseClick(buttonBuildQuery, Qt.MouseButton.LeftButton)
-        error_box = find_window("WFSFeatureTypeErrorBox")
+        error_box = find_window('WFSFeatureTypeErrorBox')
         self.assertIsNotNone(error_box)
         # Close error box
         error_box.accept()
@@ -271,15 +244,8 @@ class TestPyQgsWFSProviderGUI(QgisTestCase):
 
         # Click again but with valid DescribeFeatureType
 
-        with open(
-            sanitize(
-                endpoint,
-                "?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename",
-            ),
-            "wb",
-        ) as f:
-            f.write(
-                b"""
+        with open(sanitize(endpoint, '?SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=2.0.0&TYPENAMES=my:typename&TYPENAME=my:typename'), 'wb') as f:
+            f.write(b"""
 <xsd:schema xmlns:my="http://my" xmlns:gml="http://www.opengis.net/gml/3.2" xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://my">
   <xsd:import namespace="http://www.opengis.net/gml/3.2"/>
   <xsd:complexType name="typenameType">
@@ -294,41 +260,34 @@ class TestPyQgsWFSProviderGUI(QgisTestCase):
   </xsd:complexType>
   <xsd:element name="typename" substitutionGroup="gml:_Feature" type="my:typenameType"/>
 </xsd:schema>
-"""
-            )
+""")
         QTest.mouseClick(buttonBuildQuery, Qt.MouseButton.LeftButton)
 
         # Check that the combos are properly initialized
-        dialog = find_window("QgsSQLComposerDialogBase")
+        dialog = find_window('QgsSQLComposerDialogBase')
         self.assertIsNotNone(dialog)
 
         mTablesCombo = dialog.findChild(QComboBox, "mTablesCombo")
         self.assertIsNotNone(mTablesCombo)
-        self.assertEqual(mTablesCombo.itemText(1), "typename (Title)")
+        self.assertEqual(mTablesCombo.itemText(1), 'typename (Title)')
 
         mColumnsCombo = dialog.findChild(QComboBox, "mColumnsCombo")
         self.assertIsNotNone(mColumnsCombo)
-        self.assertEqual(mColumnsCombo.itemText(1), "intfield (int)")
-        self.assertEqual(
-            mColumnsCombo.itemText(mColumnsCombo.count() - 2),
-            "geometryProperty (geometry)",
-        )
-        self.assertEqual(mColumnsCombo.itemText(mColumnsCombo.count() - 1), "*")
+        self.assertEqual(mColumnsCombo.itemText(1), 'intfield (int)')
+        self.assertEqual(mColumnsCombo.itemText(mColumnsCombo.count() - 2), 'geometryProperty (geometry)')
+        self.assertEqual(mColumnsCombo.itemText(mColumnsCombo.count() - 1), '*')
 
         mFunctionsCombo = dialog.findChild(QComboBox, "mFunctionsCombo")
         self.assertIsNotNone(mFunctionsCombo)
-        self.assertEqual(mFunctionsCombo.itemText(1), "abs(param: int): int")
+        self.assertEqual(mFunctionsCombo.itemText(1), 'abs(param: int): int')
 
         mSpatialPredicatesCombo = dialog.findChild(QComboBox, "mSpatialPredicatesCombo")
         self.assertIsNotNone(mSpatialPredicatesCombo)
-        self.assertEqual(
-            mSpatialPredicatesCombo.itemText(1),
-            "ST_Disjoint(geometry, geometry): boolean",
-        )
+        self.assertEqual(mSpatialPredicatesCombo.itemText(1), 'ST_Disjoint(geometry, geometry): boolean')
 
         mWhereEditor = dialog.findChild(QTextEdit, "mWhereEditor")
         self.assertIsNotNone(mWhereEditor)
-        mWhereEditor.setText("1 = 1")
+        mWhereEditor.setText('1 = 1')
 
         dialog.accept()
         # Wait for object to be destroyed
@@ -342,14 +301,8 @@ class TestPyQgsWFSProviderGUI(QgisTestCase):
         self.addWfsLayer_layer_name = None
         main_dialog.addVectorLayer.connect(self.slotAddWfsLayer)
         QTest.mouseClick(buttonAdd, Qt.MouseButton.LeftButton)
-        self.assertEqual(
-            self.addWfsLayer_uri,
-            " pagingEnabled='default' preferCoordinatesForWfsT11='false' restrictToRequestBBOX='1' srsname='EPSG:4326' typename='my:typename' url='"
-            + "http://"
-            + expected_endpoint
-            + "' version='auto' sql=SELECT * FROM typename WHERE 1 = 1",
-        )
-        self.assertEqual(self.addWfsLayer_layer_name, "my:typename")
+        self.assertEqual(self.addWfsLayer_uri, ' pagingEnabled=\'default\' preferCoordinatesForWfsT11=\'false\' restrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\' sql=SELECT * FROM typename WHERE 1 = 1')
+        self.assertEqual(self.addWfsLayer_layer_name, 'my:typename')
 
         # main_dialog.setProperty("hideDialogs", None)
         # main_dialog.exec_()
@@ -359,5 +312,5 @@ class TestPyQgsWFSProviderGUI(QgisTestCase):
         self.addWfsLayer_layer_name = layer_name
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

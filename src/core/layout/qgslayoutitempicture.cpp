@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgslayoutitempicture.h"
-#include "moc_qgslayoutitempicture.cpp"
 #include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
 #include "qgslayoutrendercontext.h"
@@ -575,11 +574,9 @@ void QgsLayoutItemPicture::loadPicture( const QVariant &data )
     loadPictureUsingCache( mEvaluatedPath );
   }
 
-  mLoaded = false;
   if ( mMode != Qgis::PictureFormat::Unknown ) //make sure we start with a new QImage
   {
     recalculateSize();
-    mLoaded = true;
   }
   else if ( mHasExpressionError || !mEvaluatedPath.isEmpty() )
   {
@@ -664,15 +661,11 @@ void QgsLayoutItemPicture::setPictureRotation( double rotation )
 {
   const double oldRotation = mPictureRotation;
   mPictureRotation = rotation;
-  const QSizeF currentPictureSize = pictureSize();
-
-  // If the picture is not loaded yet, do not compute its rotated size
-  if ( !mLoaded || currentPictureSize == QSizeF( 0, 0 ) )
-    return;
 
   if ( mResizeMode == Zoom )
   {
     //find largest scaling of picture with this rotation which fits in item
+    const QSizeF currentPictureSize = pictureSize();
     const QRectF rotatedImageRect = QgsLayoutUtils::largestRotatedRectWithinBounds( QRectF( 0, 0, currentPictureSize.width(), currentPictureSize.height() ), rect(), mPictureRotation );
     mPictureWidth = rotatedImageRect.width();
     mPictureHeight = rotatedImageRect.height();
@@ -680,6 +673,7 @@ void QgsLayoutItemPicture::setPictureRotation( double rotation )
   }
   else if ( mResizeMode == ZoomResizeFrame )
   {
+    const QSizeF currentPictureSize = pictureSize();
     const QRectF oldRect = QRectF( pos().x(), pos().y(), rect().width(), rect().height() );
 
     //calculate actual size of image inside frame

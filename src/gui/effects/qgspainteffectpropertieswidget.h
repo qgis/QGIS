@@ -35,6 +35,7 @@ class GUI_EXPORT QgsPaintEffectPropertiesWidget : public QWidget, private Ui::Ef
     Q_OBJECT
 
   public:
+
     /**
      * QgsPaintEffectPropertiesWidget constructor
      * \param effect QgsPaintEffect to modify in the widget
@@ -67,10 +68,12 @@ class GUI_EXPORT QgsPaintEffectPropertiesWidget : public QWidget, private Ui::Ef
     void changeEffect( QgsPaintEffect *effect );
 
   private:
+
     QgsPaintEffect *mEffect = nullptr;
 
     void populateEffectTypes();
     void updateEffectWidget( QgsPaintEffect *effect );
+
 };
 
 #endif //QGSPAINTEFFECTPROPERTIESWIDGET_H

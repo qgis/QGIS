@@ -38,15 +38,16 @@ class TestQgsDataDefinedSizeLegend : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsDataDefinedSizeLegend()
-      : QgsTest( QStringLiteral( "Data Defined Size Legend Tests" ), QStringLiteral( "data_defined_size_legend" ) ) {}
+
+    TestQgsDataDefinedSizeLegend() : QgsTest( QStringLiteral( "Data Defined Size Legend Tests" ), QStringLiteral( "data_defined_size_legend" ) ) {}
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void testBasic();
     void testCrowded();
+
 };
 
 void TestQgsDataDefinedSizeLegend::initTestCase()
@@ -70,7 +71,7 @@ void TestQgsDataDefinedSizeLegend::testBasic()
   settings.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
 
   QList<QgsDataDefinedSizeLegend::SizeClass> classes;
-  classes << QgsDataDefinedSizeLegend::SizeClass( 3., QStringLiteral( "3" ) );
+  classes << QgsDataDefinedSizeLegend::SizeClass( 3.,  QStringLiteral( "3" ) );
   classes << QgsDataDefinedSizeLegend::SizeClass( 15., QStringLiteral( "15" ) );
   classes << QgsDataDefinedSizeLegend::SizeClass( 30., QStringLiteral( "30" ) );
   settings.setClasses( classes );
@@ -80,7 +81,7 @@ void TestQgsDataDefinedSizeLegend::testBasic()
   props[QStringLiteral( "color" )] = QStringLiteral( "200,255,200" );
   props[QStringLiteral( "outline_color" )] = QStringLiteral( "0,255,0" );
 
-  settings.setSymbol( QgsMarkerSymbol::createSimple( props ) ); // takes ownership
+  settings.setSymbol( QgsMarkerSymbol::createSimple( props ) );  // takes ownership
 
   QgsRenderContext context( _createRenderContext( 100, 96, 100 ) );
 
@@ -100,8 +101,8 @@ void TestQgsDataDefinedSizeLegend::testCrowded()
   settings.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
 
   QList<QgsDataDefinedSizeLegend::SizeClass> classes;
-  classes << QgsDataDefinedSizeLegend::SizeClass( 2., QStringLiteral( "2" ) );
-  classes << QgsDataDefinedSizeLegend::SizeClass( 5., QStringLiteral( "5" ) );
+  classes << QgsDataDefinedSizeLegend::SizeClass( 2.,  QStringLiteral( "2" ) );
+  classes << QgsDataDefinedSizeLegend::SizeClass( 5.,  QStringLiteral( "5" ) );
   classes << QgsDataDefinedSizeLegend::SizeClass( 10., QStringLiteral( "10" ) );
   classes << QgsDataDefinedSizeLegend::SizeClass( 12., QStringLiteral( "12" ) );
   classes << QgsDataDefinedSizeLegend::SizeClass( 15., QStringLiteral( "15" ) );
@@ -113,7 +114,7 @@ void TestQgsDataDefinedSizeLegend::testCrowded()
   props[QStringLiteral( "color" )] = QStringLiteral( "200,255,200" );
   props[QStringLiteral( "outline_color" )] = QStringLiteral( "0,255,0" );
 
-  settings.setSymbol( QgsMarkerSymbol::createSimple( props ) ); // takes ownership
+  settings.setSymbol( QgsMarkerSymbol::createSimple( props ) );  // takes ownership
 
   QgsRenderContext context( _createRenderContext( 100, 96, 100 ) );
 

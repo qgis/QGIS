@@ -57,7 +57,6 @@ jobs:
             with-compile-commands: ON
             # LD_PRELOAD: /lib/x86_64-linux-gnu/libSegFault.so
             experimental: false
-            unity-builds: ON
 
           - distro-version: '39'
             qt-version: 6
@@ -74,7 +73,6 @@ jobs:
             with-compile-commands: OFF
             LD_PRELOAD: ''
             experimental: false
-            unity-builds: ON
 
 
       fail-fast: false
@@ -167,7 +165,6 @@ jobs:
                      --env LD_PRELOAD=${{ matrix.LD_PRELOAD }} \
                      --env WITH_CLAZY=${{ matrix.with-clazy }} \
                      --env WITH_COMPILE_COMMANDS=${{ matrix.with-compile-commands }} \
-                     --env ENABLE_UNITY_BUILDS=${{ matrix.unity-builds }} \
                      qgis3-build-deps \
                      /root/QGIS/.docker/docker-qgis-build.sh
 

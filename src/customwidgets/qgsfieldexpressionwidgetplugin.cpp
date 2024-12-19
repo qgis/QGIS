@@ -15,7 +15,6 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsfieldexpressionwidgetplugin.h"
-#include "moc_qgsfieldexpressionwidgetplugin.cpp"
 #include "qgsfieldexpressionwidget.h"
 
 
@@ -94,5 +93,5 @@ QString QgsFieldExpressionWidgetPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-    .arg( name() );
+         .arg( name() );
 }

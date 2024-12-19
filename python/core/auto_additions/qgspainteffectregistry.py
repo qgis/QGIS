@@ -3,9 +3,9 @@ try:
     QgsPaintEffectRegistry.defaultStack = staticmethod(QgsPaintEffectRegistry.defaultStack)
     QgsPaintEffectRegistry.isDefaultStack = staticmethod(QgsPaintEffectRegistry.isDefaultStack)
     QgsPaintEffectRegistry.__group__ = ['effects']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsPaintEffectAbstractMetadata.__group__ = ['effects']
-except (NameError, AttributeError):
+except NameError:
     pass

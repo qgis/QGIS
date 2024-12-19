@@ -27,7 +27,7 @@
 /**
  * \ingroup core
  * \class QgsProjectMetadata
- * \brief A structured metadata store for a project.
+ * \brief A structured metadata store for a map layer.
  *
  * QgsProjectMetadata handles storage and management of the metadata
  * for a QgsProject. This class is an internal QGIS format with a common

@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "25/07/2014"
-__copyright__ = "Copyright 2014, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '25/07/2014'
+__copyright__ = 'Copyright 2014, The QGIS Project'
 
 
 from qgis.core import (
@@ -60,9 +59,7 @@ class TestQgsColorSchemeRegistry(QgisTestCase):
         registry = QgsColorSchemeRegistry()
         self.assertEqual(len(registry.schemes()), 0)
         registry.populateFromInstance()
-        self.assertEqual(
-            len(registry.schemes()), len(QgsApplication.colorSchemeRegistry().schemes())
-        )
+        self.assertEqual(len(registry.schemes()), len(QgsApplication.colorSchemeRegistry().schemes()))
 
     def testRemoveScheme(self):
         """Test removing a scheme from a registry"""
@@ -83,7 +80,6 @@ class TestQgsColorSchemeRegistry(QgisTestCase):
         They should be parented to the registry (on transfer) and even if there's no reference
         to the registry around (see the `del` below) this childship should continue to exist.
         """
-
         class TestColorScheme(QgsColorScheme):
 
             def schemeName(self):
@@ -104,7 +100,7 @@ class TestQgsColorSchemeRegistry(QgisTestCase):
 
         reg = QgsApplication.instance().colorSchemeRegistry()
 
-        self.assertIn("TestScheme", [scheme.schemeName() for scheme in reg.schemes()])
+        self.assertIn('TestScheme', [scheme.schemeName() for scheme in reg.schemes()])
 
 
 if __name__ == "__main__":

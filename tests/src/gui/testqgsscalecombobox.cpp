@@ -32,10 +32,10 @@ class TestQgsScaleComboBox : public QObject
     TestQgsScaleComboBox() = default;
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init();// will be called before each testfunction is executed.
+    void cleanup();// will be called after every testfunction.
     void basic();
     void slot_test();
     void min_test();
@@ -54,6 +54,7 @@ void TestQgsScaleComboBox::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
+
 }
 
 void TestQgsScaleComboBox::cleanupTestCase()
@@ -129,6 +130,7 @@ void TestQgsScaleComboBox::basic()
   s->setScaleString( QStringLiteral( "1:2" ) + QLocale().decimalPoint() + "4" );
   QCOMPARE( s->scaleString(), QString( "1:%1" ).arg( QLocale().toString( 240 ) ) );
   QCOMPARE( s->scale(), 240.0 );
+
 }
 
 void TestQgsScaleComboBox::slot_test()
@@ -166,7 +168,7 @@ void TestQgsScaleComboBox::toString()
   QCOMPARE( QgsScaleComboBox::toString( 100.02134234 ), QStringLiteral( "1:100" ) );
   QCOMPARE( QgsScaleComboBox::toString( 1 ), QStringLiteral( "1:1" ) );
   QCOMPARE( QgsScaleComboBox::toString( 1.0 / 100 ), QStringLiteral( "100:1" ) );
-  QCOMPARE( QgsScaleComboBox::toString( std::numeric_limits<double>::quiet_NaN() ), QString() );
+  QCOMPARE( QgsScaleComboBox::toString( std::numeric_limits< double >::quiet_NaN() ), QString() );
 }
 
 void TestQgsScaleComboBox::toDouble()

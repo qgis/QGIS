@@ -5,7 +5,6 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
 __author__ = "(C) 2017 by Nyall Dawson"
 __date__ = "20/10/2017"
 __copyright__ = "Copyright 2012, The QGIS Project"
@@ -24,7 +23,7 @@ from qgis.core import (
     QgsProject,
     QgsProperty,
     QgsRectangle,
-    QgsTextFormat,
+    QgsTextFormat
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -68,28 +67,22 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setAnnotationTextFormat(format)
         map.grid().setAnnotationPrecision(0)
         map.grid().setAnnotationDisplay(
-            QgsLayoutItemMapGrid.DisplayMode.HideAll,
-            QgsLayoutItemMapGrid.BorderSide.Left,
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Left
         )
         map.grid().setAnnotationPosition(
-            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
-            QgsLayoutItemMapGrid.BorderSide.Right,
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Right
         )
         map.grid().setAnnotationDisplay(
-            QgsLayoutItemMapGrid.DisplayMode.HideAll,
-            QgsLayoutItemMapGrid.BorderSide.Top,
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Top
         )
         map.grid().setAnnotationPosition(
-            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
-            QgsLayoutItemMapGrid.BorderSide.Bottom,
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
         map.grid().setAnnotationDirection(
-            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal,
-            QgsLayoutItemMapGrid.BorderSide.Right,
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Right
         )
         map.grid().setAnnotationDirection(
-            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal,
-            QgsLayoutItemMapGrid.BorderSide.Bottom,
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
         map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
@@ -215,9 +208,8 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.updateBoundingRect()
 
         self.assertTrue(
-            self.render_layout_check(
-                "composermap_zebrastyle", layout, allowed_mismatch=100
-            )
+            self.render_layout_check("composermap_zebrastyle", layout,
+                                     allowed_mismatch=100)
         )
 
     def testZebraStyleSides(self):
@@ -246,40 +238,31 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setEnabled(True)
 
         map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameSideFlag.FrameLeft, True)
-        map.grid().setFrameSideFlag(
-            QgsLayoutItemMapGrid.FrameSideFlag.FrameRight, False
-        )
+        map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameSideFlag.FrameRight, False)
         map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameSideFlag.FrameTop, False)
-        map.grid().setFrameSideFlag(
-            QgsLayoutItemMapGrid.FrameSideFlag.FrameBottom, False
-        )
+        map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameSideFlag.FrameBottom, False)
         map.updateBoundingRect()
 
         self.assertTrue(
-            self.render_layout_check(
-                "composermap_zebrastyle_left", layout, allowed_mismatch=100
-            )
+            self.render_layout_check("composermap_zebrastyle_left", layout,
+                                     allowed_mismatch=100)
         )
 
         map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameSideFlag.FrameTop, True)
         map.updateBoundingRect()
         self.assertTrue(
-            self.render_layout_check(
-                "composermap_zebrastyle_lefttop", layout, allowed_mismatch=100
-            )
+            self.render_layout_check("composermap_zebrastyle_lefttop", layout,
+                                     allowed_mismatch=100)
         )
 
         map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameSideFlag.FrameRight, True)
         map.updateBoundingRect()
         self.assertTrue(
-            self.render_layout_check(
-                "composermap_zebrastyle_lefttopright", layout, allowed_mismatch=100
-            )
+            self.render_layout_check("composermap_zebrastyle_lefttopright", layout,
+                                     allowed_mismatch=100)
         )
 
-        map.grid().setFrameSideFlag(
-            QgsLayoutItemMapGrid.FrameSideFlag.FrameBottom, True
-        )
+        map.grid().setFrameSideFlag(QgsLayoutItemMapGrid.FrameSideFlag.FrameBottom, True)
         map.grid().setFrameStyle(QgsLayoutItemMapGrid.FrameStyle.NoFrame)
 
     def testInteriorTicks(self):
@@ -306,9 +289,8 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.updateBoundingRect()
 
         self.assertTrue(
-            self.render_layout_check(
-                "composermap_interiorticks", layout, allowed_mismatch=100
-            )
+            self.render_layout_check("composermap_interiorticks", layout,
+                                     allowed_mismatch=100)
         )
 
     def testAnnotationsVariations(self):
@@ -398,32 +380,27 @@ class TestQgsLayoutMapGrid(QgisTestCase):
 
             map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Top)
             map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Right)
-            map.grid().setAnnotationPosition(
-                pos, QgsLayoutItemMapGrid.BorderSide.Bottom
-            )
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Bottom)
             map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Left)
 
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.AnnotationDirection.Vertical,
-                QgsLayoutItemMapGrid.BorderSide.Top,
+                QgsLayoutItemMapGrid.AnnotationDirection.Vertical, QgsLayoutItemMapGrid.BorderSide.Top
             )
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.AnnotationDirection.Horizontal,
-                QgsLayoutItemMapGrid.BorderSide.Right,
+                QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Right
             )
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.AnnotationDirection.BoundaryDirection,
-                QgsLayoutItemMapGrid.BorderSide.Bottom,
+                QgsLayoutItemMapGrid.AnnotationDirection.BoundaryDirection, QgsLayoutItemMapGrid.BorderSide.Bottom
             )
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.AnnotationDirection.VerticalDescending,
-                QgsLayoutItemMapGrid.BorderSide.Left,
+                QgsLayoutItemMapGrid.AnnotationDirection.VerticalDescending, QgsLayoutItemMapGrid.BorderSide.Left
             )
 
             map.updateBoundingRect()
 
         self.assertTrue(
-            self.render_layout_check("composermap_annotations_variations", layout)
+            self.render_layout_check("composermap_annotations_variations",
+                                     layout)
         )
 
     def testAnnotationsVariationsRotated(self):
@@ -516,34 +493,27 @@ class TestQgsLayoutMapGrid(QgisTestCase):
 
             map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Top)
             map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Right)
-            map.grid().setAnnotationPosition(
-                pos, QgsLayoutItemMapGrid.BorderSide.Bottom
-            )
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Bottom)
             map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Left)
 
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.AnnotationDirection.AboveTick,
-                QgsLayoutItemMapGrid.BorderSide.Top,
+                QgsLayoutItemMapGrid.AnnotationDirection.AboveTick, QgsLayoutItemMapGrid.BorderSide.Top
             )
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.AnnotationDirection.OnTick,
-                QgsLayoutItemMapGrid.BorderSide.Right,
+                QgsLayoutItemMapGrid.AnnotationDirection.OnTick, QgsLayoutItemMapGrid.BorderSide.Right
             )
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.AnnotationDirection.UnderTick,
-                QgsLayoutItemMapGrid.BorderSide.Bottom,
+                QgsLayoutItemMapGrid.AnnotationDirection.UnderTick, QgsLayoutItemMapGrid.BorderSide.Bottom
             )
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.AnnotationDirection.BoundaryDirection,
-                QgsLayoutItemMapGrid.BorderSide.Left,
+                QgsLayoutItemMapGrid.AnnotationDirection.BoundaryDirection, QgsLayoutItemMapGrid.BorderSide.Left
             )
 
             map.updateBoundingRect()
 
         self.assertTrue(
-            self.render_layout_check(
-                "composermap_annotations_variations_rotated", layout
-            )
+            self.render_layout_check("composermap_annotations_variations_rotated",
+                                     layout)
         )
 
     def testAnnotationsVariationsRotatedThresholds(self):
@@ -608,9 +578,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
             map.grid().setAnnotationEnabled(True)
             map.grid().setGridLineColor(QColor(0, 255, 0))
             map.grid().setGridLineWidth(0.5)
-            map.grid().setRotatedTicksLengthMode(
-                QgsLayoutItemMapGrid.TickLengthMode.NormalizedTicks
-            )
+            map.grid().setRotatedTicksLengthMode(QgsLayoutItemMapGrid.TickLengthMode.NormalizedTicks)
             map.grid().setAnnotationFont(getTestFont("Bold", 15))
             map.grid().setAnnotationFontColor(QColor(0, 0, 255, 150))
             map.grid().setAnnotationPrecision(0)
@@ -620,26 +588,20 @@ class TestQgsLayoutMapGrid(QgisTestCase):
 
             map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Top)
             map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Right)
-            map.grid().setAnnotationPosition(
-                pos, QgsLayoutItemMapGrid.BorderSide.Bottom
-            )
+            map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Bottom)
             map.grid().setAnnotationPosition(pos, QgsLayoutItemMapGrid.BorderSide.Left)
 
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.AnnotationDirection.OnTick,
-                QgsLayoutItemMapGrid.BorderSide.Top,
+                QgsLayoutItemMapGrid.AnnotationDirection.OnTick, QgsLayoutItemMapGrid.BorderSide.Top
             )
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.AnnotationDirection.OnTick,
-                QgsLayoutItemMapGrid.BorderSide.Right,
+                QgsLayoutItemMapGrid.AnnotationDirection.OnTick, QgsLayoutItemMapGrid.BorderSide.Right
             )
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.AnnotationDirection.OnTick,
-                QgsLayoutItemMapGrid.BorderSide.Bottom,
+                QgsLayoutItemMapGrid.AnnotationDirection.OnTick, QgsLayoutItemMapGrid.BorderSide.Bottom
             )
             map.grid().setAnnotationDirection(
-                QgsLayoutItemMapGrid.AnnotationDirection.OnTick,
-                QgsLayoutItemMapGrid.BorderSide.Left,
+                QgsLayoutItemMapGrid.AnnotationDirection.OnTick, QgsLayoutItemMapGrid.BorderSide.Left
             )
 
             if limit_rot:
@@ -653,9 +615,8 @@ class TestQgsLayoutMapGrid(QgisTestCase):
             map.updateBoundingRect()
 
         self.assertTrue(
-            self.render_layout_check(
-                "composermap_annotations_variations_rotated_thresholds", layout
-            )
+            self.render_layout_check("composermap_annotations_variations_rotated_thresholds",
+                                     layout)
         )
 
     def testExpressionContext(self):
@@ -698,48 +659,44 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grid().setAnnotationTextFormat(format)
         map.grid().setAnnotationPrecision(0)
         map.grid().setAnnotationDisplay(
-            QgsLayoutItemMapGrid.DisplayMode.HideAll,
-            QgsLayoutItemMapGrid.BorderSide.Left,
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Left
         )
         map.grid().setAnnotationPosition(
-            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
-            QgsLayoutItemMapGrid.BorderSide.Right,
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Right
         )
         map.grid().setAnnotationDisplay(
-            QgsLayoutItemMapGrid.DisplayMode.HideAll,
-            QgsLayoutItemMapGrid.BorderSide.Top,
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Top
         )
         map.grid().setAnnotationPosition(
-            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
-            QgsLayoutItemMapGrid.BorderSide.Bottom,
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
         map.grid().setAnnotationDirection(
-            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal,
-            QgsLayoutItemMapGrid.BorderSide.Right,
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Right
         )
         map.grid().setAnnotationDirection(
-            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal,
-            QgsLayoutItemMapGrid.BorderSide.Bottom,
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
         map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapGridEnabled,
-            QgsProperty.fromValue(True),
-        )
-        map.grid().refresh()
-
-        self.assertTrue(self.render_layout_check("composermap_grid", layout))
-
-        map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapGridEnabled,
-            QgsProperty.fromValue(False),
+            QgsLayoutObject.DataDefinedProperty.MapGridEnabled, QgsProperty.fromValue(True)
         )
         map.grid().refresh()
 
         self.assertTrue(
-            self.render_layout_check("composermap_datadefined_disabled", layout)
+            self.render_layout_check("composermap_grid",
+                                     layout)
+        )
+
+        map.grid().dataDefinedProperties().setProperty(
+            QgsLayoutObject.DataDefinedProperty.MapGridEnabled, QgsProperty.fromValue(False)
+        )
+        map.grid().refresh()
+
+        self.assertTrue(
+            self.render_layout_check("composermap_datadefined_disabled",
+                                     layout)
         )
 
     def testDataDefinedIntervalOffset(self):
@@ -762,25 +719,22 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.updateBoundingRect()
 
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapGridIntervalX,
-            QgsProperty.fromValue(1500),
+            QgsLayoutObject.DataDefinedProperty.MapGridIntervalX, QgsProperty.fromValue(1500)
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapGridIntervalY,
-            QgsProperty.fromValue(2500),
+            QgsLayoutObject.DataDefinedProperty.MapGridIntervalY, QgsProperty.fromValue(2500)
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapGridOffsetX,
-            QgsProperty.fromValue(500),
+            QgsLayoutObject.DataDefinedProperty.MapGridOffsetX, QgsProperty.fromValue(500)
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapGridOffsetY,
-            QgsProperty.fromValue(250),
+            QgsLayoutObject.DataDefinedProperty.MapGridOffsetY, QgsProperty.fromValue(250)
         )
         map.grid().refresh()
 
         self.assertTrue(
-            self.render_layout_check("composermap_datadefined_intervaloffset", layout)
+            self.render_layout_check("composermap_datadefined_intervaloffset",
+                                     layout)
         )
 
     def testDataDefinedFrameSize(self):
@@ -810,17 +764,16 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.updateBoundingRect()
 
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapGridFrameSize,
-            QgsProperty.fromValue(20),
+            QgsLayoutObject.DataDefinedProperty.MapGridFrameSize, QgsProperty.fromValue(20)
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapGridFrameMargin,
-            QgsProperty.fromValue(10),
+            QgsLayoutObject.DataDefinedProperty.MapGridFrameMargin, QgsProperty.fromValue(10)
         )
         map.grid().refresh()
 
         self.assertTrue(
-            self.render_layout_check("composermap_datadefined_framesizemargin", layout)
+            self.render_layout_check("composermap_datadefined_framesizemargin",
+                                     layout)
         )
 
     def testDataDefinedCrossSize(self):
@@ -847,13 +800,13 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.updateBoundingRect()
 
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapGridCrossSize,
-            QgsProperty.fromValue(4),
+            QgsLayoutObject.DataDefinedProperty.MapGridCrossSize, QgsProperty.fromValue(4)
         )
         map.grid().refresh()
 
         self.assertTrue(
-            self.render_layout_check("composermap_datadefined_crosssize", layout)
+            self.render_layout_check("composermap_datadefined_crosssize",
+                                     layout)
         )
 
     def testDataDefinedFrameThickness(self):
@@ -883,13 +836,13 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.updateBoundingRect()
 
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapGridFrameLineThickness,
-            QgsProperty.fromValue(4),
+            QgsLayoutObject.DataDefinedProperty.MapGridFrameLineThickness, QgsProperty.fromValue(4)
         )
         map.grid().refresh()
 
         self.assertTrue(
-            self.render_layout_check("composermap_datadefined_framethickness", layout)
+            self.render_layout_check("composermap_datadefined_framethickness",
+                                     layout)
         )
 
     def testDataDefinedAnnotationDistance(self):
@@ -916,42 +869,34 @@ class TestQgsLayoutMapGrid(QgisTestCase):
 
         map.grid().setAnnotationPrecision(0)
         map.grid().setAnnotationDisplay(
-            QgsLayoutItemMapGrid.DisplayMode.HideAll,
-            QgsLayoutItemMapGrid.BorderSide.Left,
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Left
         )
         map.grid().setAnnotationPosition(
-            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
-            QgsLayoutItemMapGrid.BorderSide.Right,
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Right
         )
         map.grid().setAnnotationDisplay(
-            QgsLayoutItemMapGrid.DisplayMode.HideAll,
-            QgsLayoutItemMapGrid.BorderSide.Top,
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Top
         )
         map.grid().setAnnotationPosition(
-            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
-            QgsLayoutItemMapGrid.BorderSide.Bottom,
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
         map.grid().setAnnotationDirection(
-            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal,
-            QgsLayoutItemMapGrid.BorderSide.Right,
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Right
         )
         map.grid().setAnnotationDirection(
-            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal,
-            QgsLayoutItemMapGrid.BorderSide.Bottom,
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
         map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapGridLabelDistance,
-            QgsProperty.fromValue(10),
+            QgsLayoutObject.DataDefinedProperty.MapGridLabelDistance, QgsProperty.fromValue(10)
         )
         map.grid().refresh()
 
         self.assertTrue(
-            self.render_layout_check(
-                "composermap_datadefined_annotationdistance", layout
-            )
+            self.render_layout_check("composermap_datadefined_annotationdistance",
+                                     layout)
         )
 
     def testDataDefinedTicksAndAnnotationDisplay(self):
@@ -985,9 +930,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
 
         map.grid().setRotatedTicksEnabled(True)
         map.grid().setRotatedAnnotationsEnabled(True)
-        map.grid().setAnnotationDirection(
-            QgsLayoutItemMapGrid.AnnotationDirection.OnTick
-        )
+        map.grid().setAnnotationDirection(QgsLayoutItemMapGrid.AnnotationDirection.OnTick)
 
         map.grid().dataDefinedProperties().setProperty(
             QgsLayoutObject.DataDefinedProperty.MapGridAnnotationDisplayLeft,
@@ -1002,32 +945,26 @@ class TestQgsLayoutMapGrid(QgisTestCase):
             QgsProperty.fromValue("disabled"),
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapGridAnnotationDisplayBottom,
-            QgsProperty.fromValue("ALL"),
+            QgsLayoutObject.DataDefinedProperty.MapGridAnnotationDisplayBottom, QgsProperty.fromValue("ALL")
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapGridFrameDivisionsLeft,
-            QgsProperty.fromValue("X_ONLY"),
+            QgsLayoutObject.DataDefinedProperty.MapGridFrameDivisionsLeft, QgsProperty.fromValue("X_ONLY")
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapGridFrameDivisionsRight,
-            QgsProperty.fromValue("y_only"),
+            QgsLayoutObject.DataDefinedProperty.MapGridFrameDivisionsRight, QgsProperty.fromValue("y_only")
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapGridFrameDivisionsTop,
-            QgsProperty.fromValue("DISABLED"),
+            QgsLayoutObject.DataDefinedProperty.MapGridFrameDivisionsTop, QgsProperty.fromValue("DISABLED")
         )
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapGridFrameDivisionsBottom,
-            QgsProperty.fromValue("all"),
+            QgsLayoutObject.DataDefinedProperty.MapGridFrameDivisionsBottom, QgsProperty.fromValue("all")
         )
 
         map.grid().refresh()
 
         self.assertTrue(
-            self.render_layout_check(
-                "composermap_datadefined_ticksandannotationdisplay", layout
-            )
+            self.render_layout_check("composermap_datadefined_ticksandannotationdisplay",
+                                     layout)
         )
 
     def testDynamicInterval(self):
@@ -1055,49 +992,55 @@ class TestQgsLayoutMapGrid(QgisTestCase):
 
         map.grid().setAnnotationPrecision(0)
         map.grid().setAnnotationDisplay(
-            QgsLayoutItemMapGrid.DisplayMode.HideAll,
-            QgsLayoutItemMapGrid.BorderSide.Left,
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Left
         )
         map.grid().setAnnotationPosition(
-            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
-            QgsLayoutItemMapGrid.BorderSide.Right,
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Right
         )
         map.grid().setAnnotationDisplay(
-            QgsLayoutItemMapGrid.DisplayMode.HideAll,
-            QgsLayoutItemMapGrid.BorderSide.Top,
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Top
         )
         map.grid().setAnnotationPosition(
-            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
-            QgsLayoutItemMapGrid.BorderSide.Bottom,
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
         map.grid().setAnnotationDirection(
-            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal,
-            QgsLayoutItemMapGrid.BorderSide.Right,
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Right
         )
         map.grid().setAnnotationDirection(
-            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal,
-            QgsLayoutItemMapGrid.BorderSide.Bottom,
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
         map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         map.grid().refresh()
 
-        self.assertTrue(self.render_layout_check("composermap_dynamic_5_10", layout))
+        self.assertTrue(
+            self.render_layout_check("composermap_dynamic_5_10",
+                                     layout)
+        )
 
         map.setScale(map.scale() * 1.1)
 
-        self.assertTrue(self.render_layout_check("composermap_dynamic_5_10_2", layout))
+        self.assertTrue(
+            self.render_layout_check("composermap_dynamic_5_10_2",
+                                     layout)
+        )
 
         map.setScale(map.scale() * 1.8)
 
-        self.assertTrue(self.render_layout_check("composermap_dynamic_5_10_3", layout))
+        self.assertTrue(
+            self.render_layout_check("composermap_dynamic_5_10_3",
+                                     layout)
+        )
 
         map.grid().setMinimumIntervalWidth(10)
         map.grid().setMaximumIntervalWidth(40)
         map.grid().refresh()
 
-        self.assertTrue(self.render_layout_check("composermap_dynamic_5_10_4", layout))
+        self.assertTrue(
+            self.render_layout_check("composermap_dynamic_5_10_4",
+                                     layout)
+        )
 
     def testCrsChanged(self):
         """
@@ -1135,8 +1078,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         self.assertEqual(len(spy), 6)
         # data defined crs
         map.dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapCrs,
-            QgsProperty.fromValue("EPSG:4283"),
+            QgsLayoutObject.DataDefinedProperty.MapCrs, QgsProperty.fromValue("EPSG:4283")
         )
         self.assertEqual(len(spy), 6)
         map.refresh()
@@ -1148,8 +1090,7 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         grid.setCrs(QgsCoordinateReferenceSystem("EPSG:3857"))
         self.assertEqual(len(spy), 8)
         map.dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapCrs,
-            QgsProperty.fromValue("EPSG:3111"),
+            QgsLayoutObject.DataDefinedProperty.MapCrs, QgsProperty.fromValue("EPSG:3111")
         )
         map.refresh()
         self.assertEqual(len(spy), 8)
@@ -1180,35 +1121,28 @@ class TestQgsLayoutMapGrid(QgisTestCase):
 
         map.grid().setAnnotationPrecision(0)
         map.grid().setAnnotationDisplay(
-            QgsLayoutItemMapGrid.DisplayMode.HideAll,
-            QgsLayoutItemMapGrid.BorderSide.Left,
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Left
         )
         map.grid().setAnnotationPosition(
-            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
-            QgsLayoutItemMapGrid.BorderSide.Right,
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Right
         )
         map.grid().setAnnotationDisplay(
-            QgsLayoutItemMapGrid.DisplayMode.HideAll,
-            QgsLayoutItemMapGrid.BorderSide.Top,
+            QgsLayoutItemMapGrid.DisplayMode.HideAll, QgsLayoutItemMapGrid.BorderSide.Top
         )
         map.grid().setAnnotationPosition(
-            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame,
-            QgsLayoutItemMapGrid.BorderSide.Bottom,
+            QgsLayoutItemMapGrid.AnnotationPosition.OutsideMapFrame, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
         map.grid().setAnnotationDirection(
-            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal,
-            QgsLayoutItemMapGrid.BorderSide.Right,
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Right
         )
         map.grid().setAnnotationDirection(
-            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal,
-            QgsLayoutItemMapGrid.BorderSide.Bottom,
+            QgsLayoutItemMapGrid.AnnotationDirection.Horizontal, QgsLayoutItemMapGrid.BorderSide.Bottom
         )
         map.grid().setBlendMode(QPainter.CompositionMode.CompositionMode_Overlay)
         map.updateBoundingRect()
 
         map.grid().dataDefinedProperties().setProperty(
-            QgsLayoutObject.DataDefinedProperty.MapGridLabelDistance,
-            QgsProperty.fromValue(10),
+            QgsLayoutObject.DataDefinedProperty.MapGridLabelDistance, QgsProperty.fromValue(10)
         )
         map.grid().refresh()
 
@@ -1220,9 +1154,8 @@ class TestQgsLayoutMapGrid(QgisTestCase):
         map.grids().addGrid(grid)
         map.grid().refresh()
         self.assertTrue(
-            self.render_layout_check(
-                "composermap_datadefined_annotationdistance", layout
-            )
+            self.render_layout_check("composermap_datadefined_annotationdistance",
+                                     layout)
         )
 
 

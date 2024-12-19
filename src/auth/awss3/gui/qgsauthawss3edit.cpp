@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsauthawss3edit.h"
-#include "moc_qgsauthawss3edit.cpp"
 #include "ui_qgsauthawss3edit.h"
 
 

@@ -30,7 +30,7 @@ class QgsRasterFormatOptionsWidget;
  * \ingroup gui
  * \class QgsRasterLayerSaveAsDialog
  */
-class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRasterLayerSaveAsDialogBase
+class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRasterLayerSaveAsDialogBase
 {
     Q_OBJECT
   public:
@@ -52,7 +52,13 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     };
 
     //! Constructor for QgsRasterLayerSaveAsDialog
-    QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer, QgsRasterDataProvider *sourceProvider, const QgsRectangle &currentExtent, const QgsCoordinateReferenceSystem &layerCrs, const QgsCoordinateReferenceSystem &currentCrs, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
+    QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer,
+                                QgsRasterDataProvider *sourceProvider,
+                                const QgsRectangle &currentExtent,
+                                const QgsCoordinateReferenceSystem &layerCrs,
+                                const QgsCoordinateReferenceSystem &currentCrs,
+                                QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                                Qt::WindowFlags f = Qt::WindowFlags() );
 
     Mode mode() const;
     int nColumns() const;
@@ -91,7 +97,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     QgsRectangle outputRectangle() const;
     QgsRasterRangeList noData() const;
 
-    QList<int> pyramidsList() const;
+    QList< int > pyramidsList() const;
 
     /**
      * Returns the pyramid building option.
@@ -118,28 +124,12 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
     void mFormatComboBox_currentIndexChanged( const QString &text );
     void mResolutionRadioButton_toggled( bool ) { toggleResolutionSize(); }
     void mOriginalResolutionPushButton_clicked() { setOriginalResolution(); }
-    void mXResolutionLineEdit_textEdited( const QString & )
-    {
-      mResolutionState = UserResolution;
-      recalcSize();
-    }
-    void mYResolutionLineEdit_textEdited( const QString & )
-    {
-      mResolutionState = UserResolution;
-      recalcSize();
-    }
+    void mXResolutionLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcSize(); }
+    void mYResolutionLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcSize(); }
 
     void mOriginalSizePushButton_clicked() { setOriginalSize(); }
-    void mColumnsLineEdit_textEdited( const QString & )
-    {
-      mResolutionState = UserResolution;
-      recalcResolution();
-    }
-    void mRowsLineEdit_textEdited( const QString & )
-    {
-      mResolutionState = UserResolution;
-      recalcResolution();
-    }
+    void mColumnsLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcResolution(); }
+    void mRowsLineEdit_textEdited( const QString & ) { mResolutionState = UserResolution; recalcResolution(); }
 
     void mAddNoDataManuallyToolButton_clicked();
     void mLoadTransparentNoDataToolButton_clicked();
@@ -188,3 +178,4 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog : public QDialog, private Ui::QgsRas
 
 
 #endif // QGSRASTERLAYERSAVEASDIALOG_H
+

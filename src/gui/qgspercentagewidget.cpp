@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgspercentagewidget.h"
-#include "moc_qgspercentagewidget.cpp"
 #include "qgsdoublespinbox.h"
 #include "qgis.h"
 #include <QHBoxLayout>
@@ -49,9 +48,9 @@ QgsPercentageWidget::QgsPercentageWidget( QWidget *parent )
 
   setFocusProxy( mSpinBox );
 
-  connect( mSlider, &QSlider::valueChanged, this, [=]( int value ) { mSpinBox->setValue( value / 10.0 ); } );
-  connect( mSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, [=]( double value ) { whileBlocking( mSlider )->setValue( static_cast<int>( std::lround( value * 10 ) ) ); } );
-  connect( mSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsPercentageWidget::spinChanged );
+  connect( mSlider, &QSlider::valueChanged, this, [ = ]( int value ) { mSpinBox->setValue( value / 10.0 ); } );
+  connect( mSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, [ = ]( double value ) { whileBlocking( mSlider )->setValue( static_cast< int >( std::lround( value * 10 ) ) ); } );
+  connect( mSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this,  &QgsPercentageWidget::spinChanged );
 }
 
 double QgsPercentageWidget::value() const
@@ -68,3 +67,4 @@ void QgsPercentageWidget::spinChanged( double value )
 {
   emit valueChanged( value / 100.0 );
 }
+

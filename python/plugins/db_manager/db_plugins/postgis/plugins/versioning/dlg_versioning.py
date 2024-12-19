@@ -28,7 +28,7 @@ from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox, QMessageBox, QApplica
 from .....dlg_db_error import DlgDbError
 from ....plugin import BaseError, Table
 
-Ui_DlgVersioning, _ = uic.loadUiType(Path(__file__).parent / "DlgVersioining.ui")
+Ui_DlgVersioning, _ = uic.loadUiType(Path(__file__).parent / 'DlgVersioining.ui')
 
 
 class DlgVersioning(QDialog, Ui_DlgVersioning):
@@ -75,7 +75,7 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         index = -1
         for schema in self.schemas:
             self.cboSchema.addItem(schema.name)
-            if hasattr(self.item, "schema") and schema.name == self.item.schema().name:
+            if hasattr(self.item, 'schema') and schema.name == self.item.schema().name:
                 index = self.cboSchema.count() - 1
         self.cboSchema.setCurrentIndex(index)
 
@@ -100,15 +100,12 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
                 self.cboTable.addItem(table.name)
 
     def get_escaped_name(self, schema, table, suffix):
-        name = self.db.connector.quoteId(f"{table}{suffix}")
+        name = self.db.connector.quoteId("%s%s" % (table, suffix))
         schema_name = self.db.connector.quoteId(schema) if schema else None
-        return f"{schema_name}.{name}" if schema_name else name
+        return "%s.%s" % (schema_name, name) if schema_name else name
 
     def updateSql(self):
-        if (
-            self.cboTable.currentIndex() < 0
-            or len(self.tables) < self.cboTable.currentIndex()
-        ):
+        if self.cboTable.currentIndex() < 0 or len(self.tables) < self.cboTable.currentIndex():
             return
 
         self.table = self.tables[self.cboTable.currentIndex()]
@@ -127,10 +124,7 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         for constr in self.table.constraints():
             if constr.type == constr.TypePrimaryKey:
                 self.origPkeyName = self.db.connector.quoteId(constr.name)
-                self.colOrigPkey = [
-                    self.db.connector.quoteId(x_y[1].name)
-                    for x_y in iter(list(constr.fields().items()))
-                ]
+                self.colOrigPkey = [self.db.connector.quoteId(x_y[1].name) for x_y in iter(list(constr.fields().items()))]
                 break
 
         if self.colOrigPkey is None:
@@ -146,19 +140,11 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         self.colOrigPkey = self.colOrigPkey[0]
 
         # define view, function, rule and trigger names
-        self.view = self.get_escaped_name(
-            self.table.schemaName(), self.table.name, "_current"
-        )
+        self.view = self.get_escaped_name(self.table.schemaName(), self.table.name, "_current")
 
-        self.func_at_time = self.get_escaped_name(
-            self.table.schemaName(), self.table.name, "_at_time"
-        )
-        self.func_update = self.get_escaped_name(
-            self.table.schemaName(), self.table.name, "_update"
-        )
-        self.func_insert = self.get_escaped_name(
-            self.table.schemaName(), self.table.name, "_insert"
-        )
+        self.func_at_time = self.get_escaped_name(self.table.schemaName(), self.table.name, "_at_time")
+        self.func_update = self.get_escaped_name(self.table.schemaName(), self.table.name, "_update")
+        self.func_insert = self.get_escaped_name(self.table.schemaName(), self.table.name, "_insert")
 
         self.rule_del = self.get_escaped_name(None, self.table.name, "_del")
         self.trigger_update = self.get_escaped_name(None, self.table.name, "_update")
@@ -180,7 +166,7 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         # if self.current:
         sql.append(self.sql_updatesView())
 
-        self.txtSql.setPlainText("\n\n".join(sql))
+        self.txtSql.setPlainText('\n\n'.join(sql))
         self.buttonBox.button(QDialogButtonBox.StandardButton.Ok).setEnabled(True)
 
         return sql
@@ -190,27 +176,18 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         QMessageBox.information(self, "Help", helpText)
 
     def sql_alterTable(self):
-        return "ALTER TABLE {} ADD {} serial, ADD {} timestamp default '-infinity', ADD {} timestamp, ADD {} varchar;".format(
-            self.schematable, self.colPkey, self.colStart, self.colEnd, self.colUser
-        )
+        return "ALTER TABLE %s ADD %s serial, ADD %s timestamp default '-infinity', ADD %s timestamp, ADD %s varchar;" % (
+            self.schematable, self.colPkey, self.colStart, self.colEnd, self.colUser)
 
     def sql_setPkey(self):
-        return "ALTER TABLE {} DROP CONSTRAINT {}, ADD PRIMARY KEY ({});".format(
-            self.schematable, self.origPkeyName, self.colPkey
-        )
+        return "ALTER TABLE %s DROP CONSTRAINT %s, ADD PRIMARY KEY (%s);" % (
+            self.schematable, self.origPkeyName, self.colPkey)
 
     def sql_currentView(self):
         cols = self.colPkey + "," + ",".join(self.columns)
 
-        return (
-            "CREATE VIEW %(view)s AS SELECT %(cols)s FROM %(schematable)s WHERE %(end)s IS NULL;"
-            % {
-                "view": self.view,
-                "cols": cols,
-                "schematable": self.schematable,
-                "end": self.colEnd,
-            }
-        )
+        return "CREATE VIEW %(view)s AS SELECT %(cols)s FROM %(schematable)s WHERE %(end)s IS NULL;" % \
+               {'view': self.view, 'cols': cols, 'schematable': self.schematable, 'end': self.colEnd}
 
     def sql_functions(self):
         cols = ",".join(self.columns)
@@ -218,99 +195,80 @@ class DlgVersioning(QDialog, Ui_DlgVersioning):
         old_cols = ",".join("OLD." + x for x in self.columns)
 
         sql = """
-CREATE OR REPLACE FUNCTION {func_at_time}(timestamp)
-RETURNS SETOF {view} AS
+CREATE OR REPLACE FUNCTION %(func_at_time)s(timestamp)
+RETURNS SETOF %(view)s AS
 $$
-SELECT {all_cols} FROM {schematable} WHERE
-  ( SELECT CASE WHEN {end} IS NULL THEN ({start} <= $1) ELSE ({start} <= $1 AND {end} > $1) END );
+SELECT %(all_cols)s FROM %(schematable)s WHERE
+  ( SELECT CASE WHEN %(end)s IS NULL THEN (%(start)s <= $1) ELSE (%(start)s <= $1 AND %(end)s > $1) END );
 $$
 LANGUAGE 'sql';
 
-CREATE OR REPLACE FUNCTION {func_update}()
+CREATE OR REPLACE FUNCTION %(func_update)s()
 RETURNS TRIGGER AS
 $$
 BEGIN
-  IF OLD.{end} IS NOT NULL THEN
+  IF OLD.%(end)s IS NOT NULL THEN
     RETURN NULL;
   END IF;
-  IF NEW.{end} IS NULL THEN
-    INSERT INTO {schematable} ({cols}, {start}, {end}) VALUES ({oldcols}, OLD.{start}, current_timestamp);
-    NEW.{start} = current_timestamp;
-    NEW.{user} = current_user;
+  IF NEW.%(end)s IS NULL THEN
+    INSERT INTO %(schematable)s (%(cols)s, %(start)s, %(end)s) VALUES (%(oldcols)s, OLD.%(start)s, current_timestamp);
+    NEW.%(start)s = current_timestamp;
+    NEW.%(user)s = current_user;
   END IF;
   RETURN NEW;
 END;
 $$
 LANGUAGE 'plpgsql';
 
-CREATE OR REPLACE FUNCTION {func_insert}()
+CREATE OR REPLACE FUNCTION %(func_insert)s()
 RETURNS trigger AS
 $$
 BEGIN
-  if NEW.{start} IS NULL then
-    NEW.{start} = now();
-    NEW.{end} = null;
-    NEW.{user} = current_user;
+  if NEW.%(start)s IS NULL then
+    NEW.%(start)s = now();
+    NEW.%(end)s = null;
+    NEW.%(user)s = current_user;
   end if;
   RETURN NEW;
 END;
 $$
-LANGUAGE 'plpgsql';""".format(
-            view=self.view,
-            schematable=self.schematable,
-            cols=cols,
-            oldcols=old_cols,
-            start=self.colStart,
-            end=self.colEnd,
-            user=self.colUser,
-            func_at_time=self.func_at_time,
-            all_cols=all_cols,
-            func_update=self.func_update,
-            func_insert=self.func_insert,
-        )
+LANGUAGE 'plpgsql';""" % {'view': self.view, 'schematable': self.schematable, 'cols': cols, 'oldcols': old_cols,
+                          'start': self.colStart, 'end': self.colEnd, 'user': self.colUser, 'func_at_time': self.func_at_time,
+                          'all_cols': all_cols, 'func_update': self.func_update, 'func_insert': self.func_insert}
         return sql
 
     def sql_triggers(self):
         return """
-CREATE RULE {rule_del} AS ON DELETE TO {schematable}
-DO INSTEAD UPDATE {schematable} SET {end} = current_timestamp WHERE {pkey} = OLD.{pkey} AND {end} IS NULL;
+CREATE RULE %(rule_del)s AS ON DELETE TO %(schematable)s
+DO INSTEAD UPDATE %(schematable)s SET %(end)s = current_timestamp WHERE %(pkey)s = OLD.%(pkey)s AND %(end)s IS NULL;
 
-CREATE TRIGGER {trigger_update} BEFORE UPDATE ON {schematable}
-FOR EACH ROW EXECUTE PROCEDURE {func_update}();
+CREATE TRIGGER %(trigger_update)s BEFORE UPDATE ON %(schematable)s
+FOR EACH ROW EXECUTE PROCEDURE %(func_update)s();
 
-CREATE TRIGGER {trigger_insert} BEFORE INSERT ON {schematable}
-FOR EACH ROW EXECUTE PROCEDURE {func_insert}();""".format(
-            rule_del=self.rule_del,
-            trigger_update=self.trigger_update,
-            trigger_insert=self.trigger_insert,
-            func_update=self.func_update,
-            func_insert=self.func_insert,
-            schematable=self.schematable,
-            pkey=self.colPkey,
-            end=self.colEnd,
-        )
+CREATE TRIGGER %(trigger_insert)s BEFORE INSERT ON %(schematable)s
+FOR EACH ROW EXECUTE PROCEDURE %(func_insert)s();""" % \
+               {'rule_del': self.rule_del, 'trigger_update': self.trigger_update, 'trigger_insert': self.trigger_insert,
+                'func_update': self.func_update, 'func_insert': self.func_insert, 'schematable': self.schematable,
+                'pkey': self.colPkey, 'end': self.colEnd}
 
     def sql_updatesView(self):
         cols = ",".join(self.columns)
         return_cols = self.colPkey + "," + ",".join(self.columns)
         new_cols = ",".join("NEW." + x for x in self.columns)
-        assign_cols = ",".join(f"{x} = NEW.{x}" for x in self.columns)
+        assign_cols = ",".join("%s = NEW.%s" % (x, x) for x in self.columns)
 
         return """
-CREATE OR REPLACE RULE "_DELETE" AS ON DELETE TO {view} DO INSTEAD
-  DELETE FROM {schematable} WHERE {origpkey} = old.{origpkey};
-CREATE OR REPLACE RULE "_INSERT" AS ON INSERT TO {view} DO INSTEAD
-  INSERT INTO {schematable} ({cols}) VALUES ({newcols}) RETURNING {return_cols};
-CREATE OR REPLACE RULE "_UPDATE" AS ON UPDATE TO {view} DO INSTEAD
-  UPDATE {schematable} SET {assign} WHERE {origpkey} = NEW.{origpkey};""".format(
-            view=self.view,
-            schematable=self.schematable,
-            cols=cols,
-            newcols=new_cols,
-            return_cols=return_cols,
-            assign=assign_cols,
-            origpkey=self.colOrigPkey,
-        )
+CREATE OR REPLACE RULE "_DELETE" AS ON DELETE TO %(view)s DO INSTEAD
+  DELETE FROM %(schematable)s WHERE %(origpkey)s = old.%(origpkey)s;
+CREATE OR REPLACE RULE "_INSERT" AS ON INSERT TO %(view)s DO INSTEAD
+  INSERT INTO %(schematable)s (%(cols)s) VALUES (%(newcols)s) RETURNING %(return_cols)s;
+CREATE OR REPLACE RULE "_UPDATE" AS ON UPDATE TO %(view)s DO INSTEAD
+  UPDATE %(schematable)s SET %(assign)s WHERE %(origpkey)s = NEW.%(origpkey)s;""" % {'view': self.view,
+                                                                                     'schematable': self.schematable,
+                                                                                     'cols': cols, 'newcols': new_cols,
+                                                                                     'return_cols': return_cols,
+                                                                                     'assign': assign_cols,
+                                                                                     'origpkey': self.colOrigPkey}
 
     def onOK(self):
         # execute and commit the code
@@ -326,7 +284,5 @@ CREATE OR REPLACE RULE "_UPDATE" AS ON UPDATE TO {view} DO INSTEAD
         finally:
             QApplication.restoreOverrideCursor()
 
-        QMessageBox.information(
-            self, "DB Manager", "Versioning was successfully created."
-        )
+        QMessageBox.information(self, "DB Manager", "Versioning was successfully created.")
         self.accept()

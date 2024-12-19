@@ -184,7 +184,7 @@ QgsQuantizedMeshTile::QgsQuantizedMeshTile( const QByteArray &data )
     std::vector<char> data( length );
     const char *dataPtr = reinterpret_cast<const char *>( stream.read( length ) );
     std::copy( dataPtr, dataPtr + length, data.begin() );
-    mExtensions[extensionId] = std::move( data );
+    mExtensions[extensionId] = data;
   }
 }
 

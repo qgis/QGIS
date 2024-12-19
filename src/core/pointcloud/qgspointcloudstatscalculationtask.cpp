@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgspointcloudstatscalculationtask.h"
-#include "moc_qgspointcloudstatscalculationtask.cpp"
 
 #include "qgspointcloudindex.h"
 #include "qgspointcloudrenderer.h"

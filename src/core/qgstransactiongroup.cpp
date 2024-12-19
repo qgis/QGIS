@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstransactiongroup.h"
-#include "moc_qgstransactiongroup.cpp"
 
 #include "qgstransaction.h"
 #include "qgsvectorlayer.h"

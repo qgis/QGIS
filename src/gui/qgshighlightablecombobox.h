@@ -35,6 +35,7 @@ class GUI_EXPORT QgsHighlightableComboBox : public QComboBox
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsHighlightableComboBox with the specified parent widget.
      */
@@ -56,7 +57,9 @@ class GUI_EXPORT QgsHighlightableComboBox : public QComboBox
     void paintEvent( QPaintEvent *e ) override;
 
   private:
+
     bool mHighlight = false;
+
 };
 
 #endif // QGSHIGHLIGHTABLECOMBOBOX_H

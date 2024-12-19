@@ -37,13 +37,15 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsModelDesignerFlatButtonGraphicItem, with the specified \a parent item.
      *
      * The \a picture argument specifies a QPicture object containing the graphic to render
      * for the button. The button will be rendered at the specified \a position and \a size.
      */
-    QgsModelDesignerFlatButtonGraphicItem( QGraphicsItem *parent SIP_TRANSFERTHIS, const QPicture &picture, const QPointF &position, const QSizeF &size = QSizeF( 16, 16 ) );
+    QgsModelDesignerFlatButtonGraphicItem( QGraphicsItem *parent SIP_TRANSFERTHIS, const QPicture &picture, const QPointF &position,
+                                           const QSizeF &size = QSizeF( 16, 16 ) );
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
     QRectF boundingRect() const override;
@@ -87,6 +89,7 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
     void clicked();
 
   protected:
+
     /**
      * Sets the \a picture to render for the button graphics.
      */
@@ -108,8 +111,10 @@ class GUI_EXPORT QgsModelDesignerFlatButtonGraphicItem : public QGraphicsObject
  */
 class GUI_EXPORT QgsModelDesignerFoldButtonGraphicItem : public QgsModelDesignerFlatButtonGraphicItem
 {
+
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsModelDesignerFoldButtonGraphicItem, with the specified \a parent item.
      *
@@ -118,7 +123,8 @@ class GUI_EXPORT QgsModelDesignerFoldButtonGraphicItem : public QgsModelDesigner
      *
      * The button will be rendered at the specified \a position and \a size.
      */
-    QgsModelDesignerFoldButtonGraphicItem( QGraphicsItem *parent SIP_TRANSFERTHIS, bool folded, const QPointF &position, const QSizeF &size = QSizeF( 11, 11 ) );
+    QgsModelDesignerFoldButtonGraphicItem( QGraphicsItem *parent SIP_TRANSFERTHIS, bool folded, const QPointF &position,
+                                           const QSizeF &size = QSizeF( 11, 11 ) );
 
     void mousePressEvent( QGraphicsSceneMouseEvent *event ) override;
 #ifndef SIP_RUN
@@ -135,6 +141,7 @@ class GUI_EXPORT QgsModelDesignerFoldButtonGraphicItem : public QgsModelDesigner
     void folded( bool folded );
 
   private:
+
     QPicture mPlusPicture;
     QPicture mMinusPicture;
     bool mFolded = false;

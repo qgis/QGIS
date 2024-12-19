@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsprocessingfeedback.h"
-#include "moc_qgsprocessingfeedback.cpp"
 #include "qgsgeos.h"
 #include "qgsprocessingprovider.h"
 #include "qgsmessagelog.h"

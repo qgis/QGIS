@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsludialog.h"
-#include "moc_qgsludialog.cpp"
 
 
 QgsLUDialog::QgsLUDialog( QWidget *parent, Qt::WindowFlags fl )
@@ -24,8 +23,8 @@ QgsLUDialog::QgsLUDialog( QWidget *parent, Qt::WindowFlags fl )
 {
   setupUi( this );
 
-  connect( mLowerEdit, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double value ) { setDecimalPlaces( mLowerEdit, value ); } );
-  connect( mUpperEdit, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [this]( double value ) { setDecimalPlaces( mUpperEdit, value ); } );
+  connect( mLowerEdit, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [ this ]( double value ) { setDecimalPlaces( mLowerEdit, value ); } );
+  connect( mUpperEdit, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, [ this ]( double value ) { setDecimalPlaces( mUpperEdit, value ); } );
 }
 
 QString QgsLUDialog::lowerValue() const
@@ -51,7 +50,7 @@ double QgsLUDialog::upperValueDouble() const
 void QgsLUDialog::setLowerValue( const QString &val )
 {
   bool ok;
-  const double value { QLocale().toDouble( val, &ok ) };
+  const double value { QLocale().toDouble( val, &ok )};
   mLowerEdit->setValue( value );
   if ( ok )
   {
@@ -62,7 +61,7 @@ void QgsLUDialog::setLowerValue( const QString &val )
 void QgsLUDialog::setUpperValue( const QString &val )
 {
   bool ok;
-  const double value { QLocale().toDouble( val, &ok ) };
+  const double value { QLocale().toDouble( val, &ok )};
   mUpperEdit->setValue( value );
   if ( ok )
   {
@@ -74,7 +73,7 @@ void QgsLUDialog::setDecimalPlaces( QgsDoubleSpinBox *widget, double value ) con
 {
   const QString strVal { QVariant( value ).toString() };
   const int dotPosition( strVal.indexOf( '.' ) );
-  int decimals { 2 };
+  int decimals {2};
   if ( dotPosition >= 0 )
   {
     decimals = std::max<int>( 2, strVal.length() - dotPosition - 1 );

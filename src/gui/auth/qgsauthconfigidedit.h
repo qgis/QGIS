@@ -35,6 +35,7 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
     Q_OBJECT
 
   public:
+
     /**
      * Widget to unlock and edit an authentication configuration ID
      * \param parent Parent widget
@@ -47,7 +48,7 @@ class GUI_EXPORT QgsAuthConfigIdEdit : public QWidget, private Ui::QgsAuthConfig
     QString const configId();
 
     //! Whether to allow no ID to be set
-    bool allowEmptyId() { return mAllowEmpty; }
+    bool allowEmptyId() { return mAllowEmpty;}
 
     //! Validate the widget state and ID
     bool validate();

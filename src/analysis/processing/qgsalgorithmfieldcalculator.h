@@ -32,7 +32,9 @@
  */
 class QgsFieldCalculatorAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
+
   public:
+
     QgsFieldCalculatorAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -51,7 +53,7 @@ class QgsFieldCalculatorAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     QgsFields mFields;

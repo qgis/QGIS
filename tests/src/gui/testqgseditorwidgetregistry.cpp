@@ -20,11 +20,11 @@
 #include "qgsrelationmanager.h"
 #include "qgsgui.h"
 
-class TestQgsEditorWidgetRegistry : public QObject
+class TestQgsEditorWidgetRegistry: public QObject
 {
     Q_OBJECT
 
-    class DummyPlugin : public QgsEditorWidgetAutoConfPlugin
+    class DummyPlugin: public QgsEditorWidgetAutoConfPlugin
     {
       public:
         QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score ) const override
@@ -148,6 +148,7 @@ class TestQgsEditorWidgetRegistry : public QObject
     }
 
   private:
+
     static void checkSimple( const QString &dataType, const QString &widgetType )
     {
       const QgsVectorLayer vl( "LineString?crs=epsg:3111&field=pk:int&field=col1:" + dataType, QStringLiteral( "vl" ), QStringLiteral( "memory" ) );

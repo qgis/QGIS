@@ -40,7 +40,7 @@ class QgsMessageBar;
  *     dialog.exec()
  * \endcode
  */
-class GUI_EXPORT QgsFieldCalculator : public QDialog, private Ui::QgsFieldCalculatorBase
+class GUI_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
 {
     Q_OBJECT
   public:
@@ -62,7 +62,6 @@ class GUI_EXPORT QgsFieldCalculator : public QDialog, private Ui::QgsFieldCalcul
     void mCreateVirtualFieldCheckbox_stateChanged( int state );
     void mOutputFieldNameLineEdit_textChanged( const QString &text );
     void mOutputFieldTypeComboBox_activated( int index );
-    void mExistingFieldComboBox_currentIndexChanged( const int index );
 
     //! Sets the dialog buttons (Ok and Apply) enabled / disabled
     void setDialogButtonState();

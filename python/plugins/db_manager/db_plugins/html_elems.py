@@ -26,12 +26,12 @@ class HtmlContent:
 
     def toHtml(self):
         if isinstance(self.data, list) or isinstance(self.data, tuple):
-            html = ""
+            html = ''
             for item in self.data:
                 html += HtmlContent(item).toHtml()
             return html
 
-        if hasattr(self.data, "toHtml"):
+        if hasattr(self.data, 'toHtml'):
             return self.data.toHtml()
 
         html = str(self.data).replace("\n", "<br>")
@@ -46,7 +46,7 @@ class HtmlContent:
                     break
             return not empty
 
-        if hasattr(self.data, "hasContents"):
+        if hasattr(self.data, 'hasContents'):
             return self.data.hasContents()
 
         return len(self.data) > 0
@@ -58,9 +58,9 @@ class HtmlElem:
         self.tag = tag
         self.data = data if isinstance(data, HtmlContent) else HtmlContent(data)
         self.attrs = attrs if attrs is not None else dict()
-        if "tag" in self.attrs:
-            self.setTag(self.attrs["tag"])
-            del self.attrs["tag"]
+        if 'tag' in self.attrs:
+            self.setTag(self.attrs['tag'])
+            del self.attrs['tag']
 
     def setTag(self, tag):
         self.tag = tag
@@ -72,21 +72,19 @@ class HtmlElem:
         self.attrs[name] = value
 
     def getAttrsHtml(self):
-        html = ""
+        html = ''
         for k, v in self.attrs.items():
-            html += f' {k}="{v}"'
+            html += ' %s="%s"' % (k, v)
         return html
 
     def openTagHtml(self):
-        return f"<{self.tag}{self.getAttrsHtml()}>"
+        return "<%s%s>" % (self.tag, self.getAttrsHtml())
 
     def closeTagHtml(self):
         return "</%s>" % self.tag
 
     def toHtml(self):
-        return "{}{}{}".format(
-            self.openTagHtml(), self.data.toHtml(), self.closeTagHtml()
-        )
+        return "%s%s%s" % (self.openTagHtml(), self.data.toHtml(), self.closeTagHtml())
 
     def hasContents(self):
         return self.data.toHtml() != ""
@@ -95,13 +93,13 @@ class HtmlElem:
 class HtmlParagraph(HtmlElem):
 
     def __init__(self, data, attrs=None):
-        HtmlElem.__init__(self, "p", data, attrs)
+        HtmlElem.__init__(self, 'p', data, attrs)
 
 
 class HtmlListItem(HtmlElem):
 
     def __init__(self, data, attrs=None):
-        HtmlElem.__init__(self, "li", data, attrs)
+        HtmlElem.__init__(self, 'li', data, attrs)
 
 
 class HtmlList(HtmlElem):
@@ -112,13 +110,13 @@ class HtmlList(HtmlElem):
         for i, item in enumerate(items):
             if not isinstance(item, HtmlListItem):
                 items[i] = HtmlListItem(item)
-        HtmlElem.__init__(self, "ul", items, attrs)
+        HtmlElem.__init__(self, 'ul', items, attrs)
 
 
 class HtmlTableCol(HtmlElem):
 
     def __init__(self, data, attrs=None):
-        HtmlElem.__init__(self, "td", data, attrs)
+        HtmlElem.__init__(self, 'td', data, attrs)
 
     def closeTagHtml(self):
         # FIX INVALID BEHAVIOR: an empty cell as last table's cell break margins
@@ -133,7 +131,7 @@ class HtmlTableRow(HtmlElem):
         for i, c in enumerate(cols):
             if not isinstance(c, HtmlTableCol):
                 cols[i] = HtmlTableCol(c)
-        HtmlElem.__init__(self, "tr", cols, attrs)
+        HtmlElem.__init__(self, 'tr', cols, attrs)
 
 
 class HtmlTableHeader(HtmlTableRow):
@@ -141,7 +139,7 @@ class HtmlTableHeader(HtmlTableRow):
     def __init__(self, cols, attrs=None):
         HtmlTableRow.__init__(self, cols, attrs)
         for c in self.getOriginalData():
-            c.setTag("th")
+            c.setTag('th')
 
 
 class HtmlTable(HtmlElem):
@@ -152,14 +150,14 @@ class HtmlTable(HtmlElem):
         for i, r in enumerate(rows):
             if not isinstance(r, HtmlTableRow):
                 rows[i] = HtmlTableRow(r)
-        HtmlElem.__init__(self, "table", rows, attrs)
+        HtmlElem.__init__(self, 'table', rows, attrs)
 
 
 class HtmlSection(HtmlContent):
 
     def __init__(self, title, content=None):
-        data = ['<div class="section"><h2>', title, "</h2>"]
+        data = ['<div class="section"><h2>', title, '</h2>']
         if content is not None:
-            data.extend(["<div>", content, "</div>"])
-        data.append("</div>")
+            data.extend(['<div>', content, '</div>'])
+        data.append('</div>')
         HtmlContent.__init__(self, data)

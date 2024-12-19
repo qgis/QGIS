@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Chris Crook"
-__date__ = "3/10/2014"
-__copyright__ = "Copyright 2014, The QGIS Project"
+__author__ = 'Chris Crook'
+__date__ = '3/10/2014'
+__copyright__ = 'Copyright 2014, The QGIS Project'
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QColor
@@ -25,7 +24,6 @@ from qgis.core import (
     QgsRendererRange,
     QgsRendererRangeLabelFormat,
     QgsVectorLayer,
-    QgsFillSymbol,
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -38,21 +36,17 @@ start_app()
 
 
 def createMarkerSymbol():
-    symbol = QgsMarkerSymbol.createSimple(
-        {"color": "100,150,50", "name": "square", "size": "3.0"}
-    )
-    return symbol
-
-
-def createFillSymbol():
-    symbol = QgsFillSymbol.createSimple({"color": "100,150,50"})
+    symbol = QgsMarkerSymbol.createSimple({
+        "color": "100,150,50",
+        "name": "square",
+        "size": "3.0"
+    })
     return symbol
 
 
 def createMemoryLayer(values):
-    ml = QgsVectorLayer(
-        "Point?crs=epsg:4236&field=id:integer&field=value:double", "test_data", "memory"
-    )
+    ml = QgsVectorLayer("Point?crs=epsg:4236&field=id:integer&field=value:double",
+                        "test_data", "memory")
     # Data as list of x, y, id, value
     assert ml.isValid()
     pr = ml.dataProvider()
@@ -60,8 +54,8 @@ def createMemoryLayer(values):
     for id, value in enumerate(values):
         x = id * 10.0
         feat = QgsFeature(fields)
-        feat["id"] = id
-        feat["value"] = value
+        feat['id'] = id
+        feat['value'] = value
         g = QgsGeometry.fromPointXY(QgsPointXY(x, x))
         feat.setGeometry(g)
         pr.addFeatures([feat])
@@ -70,7 +64,10 @@ def createMemoryLayer(values):
 
 
 def createColorRamp():
-    return QgsGradientColorRamp(QColor(255, 0, 0), QColor(0, 0, 255))
+    return QgsGradientColorRamp(
+        QColor(255, 0, 0),
+        QColor(0, 0, 255)
+    )
 
 
 def createLabelFormat():
@@ -98,36 +95,28 @@ def dumpRangeLabels(ranges):
 
 def dumpLabelFormat(format):
     return (
-        ":"
-        + format.format()
-        + ":"
-        + str(format.precision())
-        + ":"
-        + str(format.trimTrailingZeroes())
-        + ":"
-    )
+        ':' + format.format() +
+        ':' + str(format.precision()) +
+        ':' + str(format.trimTrailingZeroes()) +
+        ':')
 
 
 def dumpRangeList(rlist, breaksOnly=False, labelsOnly=False):
-    rstr = "("
+    rstr = '('
     format = "{0:.4f}-{1:.4f}"
     if not breaksOnly:
         format = format + ":{2}:{3}:{4}:"
     if labelsOnly:
-        format = "{2}"
+        format = '{2}'
     for r in rlist:
-        rstr = (
-            rstr
-            + format.format(
-                r.lowerValue(),
-                r.upperValue(),
-                r.label(),
-                r.symbol().dump(),
-                r.renderState(),
-            )
-            + ","
-        )
-    return rstr + ")"
+        rstr = rstr + format.format(
+            r.lowerValue(),
+            r.upperValue(),
+            r.label(),
+            r.symbol().dump(),
+            r.renderState(),
+        ) + ","
+    return rstr + ')'
 
 
 # Crude dump for deterministic ramp - just dumps colors at a range of values
@@ -135,22 +124,22 @@ def dumpRangeList(rlist, breaksOnly=False, labelsOnly=False):
 
 def dumpColorRamp(ramp):
     if ramp is None:
-        return ":None:"
-    rampstr = ":"
+        return ':None:'
+    rampstr = ':'
     for x in (0.0, 0.33, 0.66, 1.0):
-        rampstr = rampstr + ramp.color(x).name() + ":"
+        rampstr = rampstr + ramp.color(x).name() + ':'
     return rampstr
 
 
 def dumpGraduatedRenderer(r):
-    rstr = ":"
-    rstr = rstr + r.classAttribute() + ":"
-    rstr = rstr + str(r.mode()) + ":"
+    rstr = ':'
+    rstr = rstr + r.classAttribute() + ':'
+    rstr = rstr + str(r.mode()) + ':'
     symbol = r.sourceSymbol()
     if symbol is None:
-        rstr = rstr + "None" + ":"
+        rstr = rstr + 'None' + ':'
     else:
-        rstr = rstr + symbol.dump() + ":"
+        rstr = rstr + symbol.dump() + ':'
     rstr = rstr + dumpColorRamp(r.sourceColorRamp())
     rstr = rstr + dumpRangeList(r.ranges())
     return rstr
@@ -187,20 +176,12 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
         range.setRenderState(False)
         self.assertFalse(range.renderState(), "Render state getter/setter failed")
         range.setSymbol(symbol.clone())
-        self.assertEqual(
-            symbol.dump(), range.symbol().dump(), "Symbol getter/setter failed"
-        )
+        self.assertEqual(symbol.dump(), range.symbol().dump(), "Symbol getter/setter failed")
         range2 = QgsRendererRange(lower, upper, symbol.clone(), label, False)
-        self.assertEqual(
-            range2.lowerValue(), lower, "Lower value from constructor failed"
-        )
-        self.assertEqual(
-            range2.upperValue(), upper, "Upper value from constructor failed"
-        )
+        self.assertEqual(range2.lowerValue(), lower, "Lower value from constructor failed")
+        self.assertEqual(range2.upperValue(), upper, "Upper value from constructor failed")
         self.assertEqual(range2.label(), label, "Label from constructor failed")
-        self.assertEqual(
-            range2.symbol().dump(), symbol.dump(), "Symbol from constructor failed"
-        )
+        self.assertEqual(range2.symbol().dump(), symbol.dump(), "Symbol from constructor failed")
         self.assertFalse(range2.renderState(), "Render state getter/setter failed")
 
     def testQgsRendererRangeLabelFormat_1(self):
@@ -212,37 +193,19 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
         format.setFormat(template)
         self.assertEqual(format.format(), template, "Format getter/setter failed")
         format.setPrecision(precision)
-        self.assertEqual(
-            format.precision(), precision, "Precision getter/setter failed"
-        )
+        self.assertEqual(format.precision(), precision, "Precision getter/setter failed")
         format.setTrimTrailingZeroes(True)
-        self.assertTrue(
-            format.trimTrailingZeroes(), "TrimTrailingZeroes getter/setter failed"
-        )
+        self.assertTrue(format.trimTrailingZeroes(), "TrimTrailingZeroes getter/setter failed")
         format.setTrimTrailingZeroes(False)
-        self.assertFalse(
-            format.trimTrailingZeroes(), "TrimTrailingZeroes getter/setter failed"
-        )
+        self.assertFalse(format.trimTrailingZeroes(), "TrimTrailingZeroes getter/setter failed")
         minprecision = -6
         maxprecision = 15
-        self.assertEqual(
-            QgsRendererRangeLabelFormat.MIN_PRECISION,
-            minprecision,
-            "Minimum precision != -6",
-        )
-        self.assertEqual(
-            QgsRendererRangeLabelFormat.MAX_PRECISION,
-            maxprecision,
-            "Maximum precision != 15",
-        )
+        self.assertEqual(QgsRendererRangeLabelFormat.MIN_PRECISION, minprecision, "Minimum precision != -6")
+        self.assertEqual(QgsRendererRangeLabelFormat.MAX_PRECISION, maxprecision, "Maximum precision != 15")
         format.setPrecision(-10)
-        self.assertEqual(
-            format.precision(), minprecision, "Minimum precision not enforced"
-        )
+        self.assertEqual(format.precision(), minprecision, "Minimum precision not enforced")
         format.setPrecision(20)
-        self.assertEqual(
-            format.precision(), maxprecision, "Maximum precision not enforced"
-        )
+        self.assertEqual(format.precision(), maxprecision, "Maximum precision not enforced")
 
     def testQgsRendererRangeLabelFormat_2(self):
         """Test QgsRendererRangeLabelFormat number format"""
@@ -250,36 +213,32 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
         # Tests have precision, trim, value, expected
         # (Note: Not sure what impact of locale is on these tests)
         tests = (
-            (2, False, 1.0, "1.00"),
-            (2, True, 1.0, "1"),
-            (2, False, 1.234, "1.23"),
-            (2, True, 1.234, "1.23"),
-            (2, False, 1.236, "1.24"),
-            (2, False, -1.236, "-1.24"),
-            (2, False, -0.004, "0.00"),
-            (2, True, 1.002, "1"),
-            (2, True, 1.006, "1.01"),
-            (2, True, 1.096, "1.1"),
-            (3, True, 1.096, "1.096"),
-            (-2, True, 1496.45, "1500"),
-            (-2, True, 149.45, "100"),
-            (-2, True, 79.45, "100"),
-            (-2, True, 49.45, "0"),
-            (-2, True, -49.45, "0"),
-            (-2, True, -149.45, "-100"),
+            (2, False, 1.0, '1.00'),
+            (2, True, 1.0, '1'),
+            (2, False, 1.234, '1.23'),
+            (2, True, 1.234, '1.23'),
+            (2, False, 1.236, '1.24'),
+            (2, False, -1.236, '-1.24'),
+            (2, False, -0.004, '0.00'),
+            (2, True, 1.002, '1'),
+            (2, True, 1.006, '1.01'),
+            (2, True, 1.096, '1.1'),
+            (3, True, 1.096, '1.096'),
+            (-2, True, 1496.45, '1500'),
+            (-2, True, 149.45, '100'),
+            (-2, True, 79.45, '100'),
+            (-2, True, 49.45, '0'),
+            (-2, True, -49.45, '0'),
+            (-2, True, -149.45, '-100'),
         )
         for f in tests:
             precision, trim, value, expected = f
             format.setPrecision(precision)
             format.setTrimTrailingZeroes(trim)
             result = format.formatNumber(value)
-            self.assertEqual(
-                result,
-                expected,
-                "Number format error {}:{}:{} => {}".format(
-                    precision, trim, value, result
-                ),
-            )
+            self.assertEqual(result, expected,
+                             "Number format error {}:{}:{} => {}".format(
+                                 precision, trim, value, result))
 
         # Label tests - label format, expected result.
         # Labels will be evaluated with lower=1.23 upper=2.34, precision=2
@@ -301,9 +260,8 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
             label, expected = t
             format.setFormat(label)
             result = format.labelForLowerUpper(lower, upper)
-            self.assertEqual(
-                result, expected, f"Label format error {label} => {result}"
-            )
+            self.assertEqual(result, expected, "Label format error {} => {}".format(
+                label, result))
 
         range = QgsRendererRange()
         range.setLowerValue(lower)
@@ -311,29 +269,22 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
         label = ltests[0][0]
         format.setFormat(label)
         result = format.labelForRange(range)
-        self.assertEqual(
-            result, ltests[0][1], f"Label for range error {label} => {result}"
-        )
+        self.assertEqual(result, ltests[0][1], "Label for range error {} => {}".format(
+            label, result))
 
     def testQgsGraduatedSymbolRenderer_1(self):
-        """Test QgsGraduatedSymbolRenderer: Basic get/set functions"""
+        """Test QgsGraduatedSymbolRenderer: Basic get/set functions """
 
         # Create a renderer
         renderer = QgsGraduatedSymbolRenderer()
 
         symbol = createMarkerSymbol()
         renderer.setSourceSymbol(symbol.clone())
-        self.assertEqual(
-            symbol.dump(),
-            renderer.sourceSymbol().dump(),
-            "Get/set renderer source symbol",
-        )
+        self.assertEqual(symbol.dump(), renderer.sourceSymbol().dump(), "Get/set renderer source symbol")
 
         attr = '"value"*"value"'
         renderer.setClassAttribute(attr)
-        self.assertEqual(
-            attr, renderer.classAttribute(), "Get/set renderer class attribute"
-        )
+        self.assertEqual(attr, renderer.classAttribute(), "Get/set renderer class attribute")
 
         for m in (
             QgsGraduatedSymbolRenderer.Mode.Custom,
@@ -351,28 +302,23 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
         self.assertEqual(
             dumpLabelFormat(format),
             dumpLabelFormat(renderer.labelFormat()),
-            "Get/set renderer label format",
-        )
+            "Get/set renderer label format")
 
         ramp = createColorRamp()
         renderer.setSourceColorRamp(ramp)
         self.assertEqual(
             dumpColorRamp(ramp),
             dumpColorRamp(renderer.sourceColorRamp()),
-            "Get/set renderer color ramp",
-        )
+            "Get/set renderer color ramp")
 
         renderer.setSourceColorRamp(ramp)
         self.assertEqual(
             dumpColorRamp(ramp),
             dumpColorRamp(renderer.sourceColorRamp()),
-            "Get/set renderer color ramp",
-        )
+            "Get/set renderer color ramp")
 
         # test for classificatio with varying size
-        renderer.setGraduatedMethod(
-            QgsGraduatedSymbolRenderer.GraduatedMethod.GraduatedSize
-        )
+        renderer.setGraduatedMethod(QgsGraduatedSymbolRenderer.GraduatedMethod.GraduatedSize)
         renderer.setSourceColorRamp(None)
         renderer.addClassLowerUpper(0, 2)
         renderer.addClassLowerUpper(2, 4)
@@ -380,13 +326,13 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
         renderer.setSymbolSizes(2, 13)
         self.assertEqual(renderer.maxSymbolSize(), 13)
         self.assertEqual(renderer.minSymbolSize(), 2)
-        refSizes = [2, (13 + 2) * 0.5, 13]
+        refSizes = [2, (13 + 2) * .5, 13]
         ctx = QgsRenderContext()
         for idx, symbol in enumerate(renderer.symbols(ctx)):
             self.assertEqual(symbol.size(), refSizes[idx])
 
     def testQgsGraduatedSymbolRenderer_2(self):
-        """Test QgsGraduatedSymbolRenderer: Adding /removing/editing classes"""
+        """Test QgsGraduatedSymbolRenderer: Adding /removing/editing classes """
         # Create a renderer
         renderer = QgsGraduatedSymbolRenderer()
         symbol = createMarkerSymbol()
@@ -397,7 +343,7 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
 
         renderer.addClass(symbol.clone())
         renderer.addClass(symbol.clone())
-        renderer.updateRangeLabel(1, "Second range")
+        renderer.updateRangeLabel(1, 'Second range')
         renderer.updateRangeLowerValue(1, 10.0)
         renderer.updateRangeUpperValue(1, 25.0)
         renderer.updateRangeRenderState(1, False)
@@ -406,7 +352,7 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
 
         # Add as a rangeobject
         symbol.setColor(QColor(0, 255, 0))
-        range = QgsRendererRange(20.0, 25.5, symbol.clone(), "Third range", False)
+        range = QgsRendererRange(20.0, 25.5, symbol.clone(), 'Third range', False)
         renderer.addClassRange(range)
 
         # Add classification method label and precision
@@ -416,18 +362,16 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
         # Add class by lower and upper
         renderer.addClassLowerUpper(25.5, 30.5)
         # (Update label for sorting tests)
-        renderer.updateRangeLabel(3, "Another range")
+        renderer.updateRangeLabel(3, 'Another range')
 
         self.assertEqual(
             dumpRangeLabels(renderer.ranges()),
-            "(0.0 - 0.0,Second range,Third range,Another range,)",
-            "Added ranges labels not correct",
-        )
+            '(0.0 - 0.0,Second range,Third range,Another range,)',
+            'Added ranges labels not correct')
         self.assertEqual(
             dumpRangeBreaks(renderer.ranges()),
-            "(0.0000-0.0000,10.0000-25.0000,20.0000-25.5000,25.5000-30.5000,)",
-            "Added ranges lower/upper values not correct",
-        )
+            '(0.0000-0.0000,10.0000-25.0000,20.0000-25.5000,25.5000-30.5000,)',
+            'Added ranges lower/upper values not correct')
 
         # Check that clone function works
 
@@ -435,7 +379,7 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
         self.assertEqual(
             dumpGraduatedRenderer(renderer),
             dumpGraduatedRenderer(renderer2),
-            "clone function doesn't replicate renderer properly",
+            "clone function doesn't replicate renderer properly"
         )
 
         # Check save and reload from Dom works
@@ -446,7 +390,7 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
         self.assertEqual(
             dumpGraduatedRenderer(renderer),
             dumpGraduatedRenderer(renderer2),
-            "Save/create from DOM doesn't replicate renderer properly",
+            "Save/create from DOM doesn't replicate renderer properly"
         )
 
         # Check classification method label and precision properly created from DOM
@@ -458,35 +402,29 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
         renderer.sortByLabel()
         self.assertEqual(
             dumpRangeList(renderer.ranges(), labelsOnly=True),
-            "(0.0 - 0.0,Another range,Second range,Third range,)",
-            "sortByLabel not correct",
-        )
+            '(0.0 - 0.0,Another range,Second range,Third range,)',
+            'sortByLabel not correct')
         renderer.sortByValue()
         self.assertEqual(
             dumpRangeBreaks(renderer.ranges()),
-            "(0.0000-0.0000,10.0000-25.0000,20.0000-25.5000,25.5000-30.5000,)",
-            "sortByValue not correct",
-        )
+            '(0.0000-0.0000,10.0000-25.0000,20.0000-25.5000,25.5000-30.5000,)',
+            'sortByValue not correct')
         renderer.sortByValue(Qt.SortOrder.DescendingOrder)
         self.assertEqual(
             dumpRangeBreaks(renderer.ranges()),
-            "(25.5000-30.5000,20.0000-25.5000,10.0000-25.0000,0.0000-0.0000,)",
-            "sortByValue descending not correct",
-        )
+            '(25.5000-30.5000,20.0000-25.5000,10.0000-25.0000,0.0000-0.0000,)',
+            'sortByValue descending not correct')
 
         # Check deleting
 
         renderer.deleteClass(2)
         self.assertEqual(
             dumpRangeBreaks(renderer.ranges()),
-            "(25.5000-30.5000,20.0000-25.5000,0.0000-0.0000,)",
-            "deleteClass not correct",
-        )
+            '(25.5000-30.5000,20.0000-25.5000,0.0000-0.0000,)',
+            'deleteClass not correct')
 
         renderer.deleteAllClasses()
-        self.assertEqual(
-            len(renderer.ranges()), 0, "deleteAllClasses didn't delete all"
-        )
+        self.assertEqual(len(renderer.ranges()), 0, "deleteAllClasses didn't delete all")
 
     #    void addClass( QgsSymbol* symbol );
     #    //! \note available in python bindings as addClassRange
@@ -497,7 +435,7 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
     #    void deleteAllClasses();
 
     def testQgsGraduatedSymbolRenderer_3(self):
-        """Test QgsGraduatedSymbolRenderer: Reading attribute data, calculating classes"""
+        """Test QgsGraduatedSymbolRenderer: Reading attribute data, calculating classes """
 
         # Create a renderer
         renderer = QgsGraduatedSymbolRenderer()
@@ -512,23 +450,20 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
         renderer.updateClasses(ml, renderer.EqualInterval, 3)
         self.assertEqual(
             dumpRangeBreaks(renderer.ranges()),
-            "(0.5000-2.0000,2.0000-3.5000,3.5000-5.0000,)",
-            "Equal interval classification not correct",
-        )
+            '(0.5000-2.0000,2.0000-3.5000,3.5000-5.0000,)',
+            'Equal interval classification not correct')
 
         # Quantile classes
         renderer.updateClasses(ml, renderer.Quantile, 3)
         self.assertEqual(
             dumpRangeBreaks(renderer.ranges()),
-            "(0.5000-1.0000,1.0000-1.2000,1.2000-5.0000,)",
-            "Quantile classification not correct",
-        )
+            '(0.5000-1.0000,1.0000-1.2000,1.2000-5.0000,)',
+            'Quantile classification not correct')
         renderer.updateClasses(ml, renderer.Quantile, 4)
         self.assertEqual(
             dumpRangeBreaks(renderer.ranges()),
-            "(0.5000-1.0000,1.0000-1.1000,1.1000-1.2000,1.2000-5.0000,)",
-            "Quantile classification not correct",
-        )
+            '(0.5000-1.0000,1.0000-1.1000,1.1000-1.2000,1.2000-5.0000,)',
+            'Quantile classification not correct')
 
     def testUsedAttributes(self):
         renderer = QgsGraduatedSymbolRenderer()
@@ -543,9 +478,7 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
         renderer.setClassAttribute("value - 1")
         self.assertEqual(renderer.usedAttributes(ctx), {"value", "value - 1"})
         renderer.setClassAttribute("valuea - valueb")
-        self.assertEqual(
-            renderer.usedAttributes(ctx), {"valuea", "valuea - valueb", "valueb"}
-        )
+        self.assertEqual(renderer.usedAttributes(ctx), {"valuea", "valuea - valueb", "valueb"})
 
     def testFilterNeedsGeometry(self):
         renderer = QgsGraduatedSymbolRenderer()
@@ -559,216 +492,76 @@ class TestQgsGraduatedSymbolRenderer(QgisTestCase):
 
     def test_legend_keys(self):
         renderer = QgsGraduatedSymbolRenderer()
-        renderer.setClassAttribute("field_name")
+        renderer.setClassAttribute('field_name')
 
         self.assertFalse(renderer.legendKeys())
 
         symbol_a = createMarkerSymbol()
-        renderer.addClassRange(QgsRendererRange(1, 2, symbol_a, "a", True, "0"))
+        renderer.addClassRange(QgsRendererRange(1, 2, symbol_a, 'a', True, '0'))
         symbol_b = createMarkerSymbol()
-        renderer.addClassRange(QgsRendererRange(5, 6, symbol_b, "b", True, "1"))
+        renderer.addClassRange(QgsRendererRange(5, 6, symbol_b, 'b', True, '1'))
         symbol_c = createMarkerSymbol()
-        renderer.addClassRange(QgsRendererRange(15.5, 16.5, symbol_c, "c", False, "2"))
+        renderer.addClassRange(QgsRendererRange(15.5, 16.5, symbol_c, 'c', False, '2'))
 
-        self.assertEqual(renderer.legendKeys(), {"0", "1", "2"})
+        self.assertEqual(renderer.legendKeys(), {'0', '1', '2'})
 
     def test_legend_key_to_expression(self):
         renderer = QgsGraduatedSymbolRenderer()
-        renderer.setClassAttribute("field_name")
+        renderer.setClassAttribute('field_name')
 
-        exp, ok = renderer.legendKeyToExpression("xxxx", None)
+        exp, ok = renderer.legendKeyToExpression('xxxx', None)
         self.assertFalse(ok)
 
         # no categories
-        exp, ok = renderer.legendKeyToExpression("0", None)
+        exp, ok = renderer.legendKeyToExpression('0', None)
         self.assertFalse(ok)
 
         symbol_a = createMarkerSymbol()
-        renderer.addClassRange(QgsRendererRange(1, 2, symbol_a, "a", True, "0"))
+        renderer.addClassRange(QgsRendererRange(1, 2, symbol_a, 'a', True, '0'))
         symbol_b = createMarkerSymbol()
-        renderer.addClassRange(QgsRendererRange(5, 6, symbol_b, "b", True, "1"))
+        renderer.addClassRange(QgsRendererRange(5, 6, symbol_b, 'b', True, '1'))
         symbol_c = createMarkerSymbol()
-        renderer.addClassRange(QgsRendererRange(15.5, 16.5, symbol_c, "c", False, "2"))
+        renderer.addClassRange(QgsRendererRange(15.5, 16.5, symbol_c, 'c', False, '2'))
 
-        exp, ok = renderer.legendKeyToExpression("0", None)
+        exp, ok = renderer.legendKeyToExpression('0', None)
         self.assertTrue(ok)
         self.assertEqual(exp, "(field_name >= 1) AND (field_name <= 2)")
 
-        exp, ok = renderer.legendKeyToExpression("1", None)
+        exp, ok = renderer.legendKeyToExpression('1', None)
         self.assertTrue(ok)
         self.assertEqual(exp, "(field_name >= 5) AND (field_name <= 6)")
 
-        exp, ok = renderer.legendKeyToExpression("2", None)
+        exp, ok = renderer.legendKeyToExpression('2', None)
         self.assertTrue(ok)
         self.assertEqual(exp, "(field_name >= 15.5) AND (field_name <= 16.5)")
 
-        exp, ok = renderer.legendKeyToExpression("3", None)
+        exp, ok = renderer.legendKeyToExpression('3', None)
         self.assertFalse(ok)
 
-        layer = QgsVectorLayer(
-            "Point?field=field_name:double&field=fldint:integer", "addfeat", "memory"
-        )
+        layer = QgsVectorLayer("Point?field=field_name:double&field=fldint:integer", "addfeat", "memory")
         # with layer
-        exp, ok = renderer.legendKeyToExpression("2", layer)
+        exp, ok = renderer.legendKeyToExpression('2', layer)
         self.assertTrue(ok)
         self.assertEqual(exp, """("field_name" >= 15.5) AND ("field_name" <= 16.5)""")
 
         # with expression as attribute
         renderer.setClassAttribute('log("field_name")')
 
-        exp, ok = renderer.legendKeyToExpression("0", None)
+        exp, ok = renderer.legendKeyToExpression('0', None)
         self.assertTrue(ok)
-        self.assertEqual(
-            exp, """(log("field_name") >= 1) AND (log("field_name") <= 2)"""
-        )
+        self.assertEqual(exp, """(log("field_name") >= 1) AND (log("field_name") <= 2)""")
 
-        exp, ok = renderer.legendKeyToExpression("1", None)
+        exp, ok = renderer.legendKeyToExpression('1', None)
         self.assertTrue(ok)
-        self.assertEqual(
-            exp, """(log("field_name") >= 5) AND (log("field_name") <= 6)"""
-        )
+        self.assertEqual(exp, """(log("field_name") >= 5) AND (log("field_name") <= 6)""")
 
-        exp, ok = renderer.legendKeyToExpression("2", None)
+        exp, ok = renderer.legendKeyToExpression('2', None)
         self.assertTrue(ok)
-        self.assertEqual(
-            exp, """(log("field_name") >= 15.5) AND (log("field_name") <= 16.5)"""
-        )
+        self.assertEqual(exp, """(log("field_name") >= 15.5) AND (log("field_name") <= 16.5)""")
 
-        exp, ok = renderer.legendKeyToExpression("2", layer)
+        exp, ok = renderer.legendKeyToExpression('2', layer)
         self.assertTrue(ok)
-        self.assertEqual(
-            exp, """(log("field_name") >= 15.5) AND (log("field_name") <= 16.5)"""
-        )
-
-    def test_to_sld(self):
-        renderer = QgsGraduatedSymbolRenderer()
-        renderer.setClassAttribute("field_name")
-
-        symbol_a = createMarkerSymbol()
-        renderer.addClassRange(QgsRendererRange(1, 2, symbol_a, "a", True, "0"))
-        symbol_b = createMarkerSymbol()
-        renderer.addClassRange(QgsRendererRange(5, 6, symbol_b, "b", True, "1"))
-        symbol_c = createMarkerSymbol()
-        renderer.addClassRange(QgsRendererRange(15.5, 16.5, symbol_c, "c", False, "2"))
-
-        # this category should NOT be included in the SLD, as it would otherwise result
-        # in an invalid se:rule with no symbolizer element
-        symbol_which_is_empty_in_sld = createFillSymbol()
-        symbol_which_is_empty_in_sld[0].setBrushStyle(Qt.BrushStyle.NoBrush)
-        symbol_which_is_empty_in_sld[0].setStrokeStyle(Qt.PenStyle.NoPen)
-        renderer.addClassRange(
-            QgsRendererRange(25.5, 26.5, symbol_which_is_empty_in_sld, "d", False, "2")
-        )
-
-        dom = QDomDocument()
-        root = dom.createElement("FakeRoot")
-        dom.appendChild(root)
-        renderer.toSld(dom, root, {})
-
-        expected = """<FakeRoot>
- <se:Rule>
-  <se:Name>a</se:Name>
-  <se:Description>
-   <se:Title>a</se:Title>
-  </se:Description>
-  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
-   <ogc:And>
-    <ogc:PropertyIsGreaterThanOrEqualTo>
-     <ogc:PropertyName>field_name</ogc:PropertyName>
-     <ogc:Literal>1</ogc:Literal>
-    </ogc:PropertyIsGreaterThanOrEqualTo>
-    <ogc:PropertyIsLessThanOrEqualTo>
-     <ogc:PropertyName>field_name</ogc:PropertyName>
-     <ogc:Literal>2</ogc:Literal>
-    </ogc:PropertyIsLessThanOrEqualTo>
-   </ogc:And>
-  </ogc:Filter>
-  <se:PointSymbolizer>
-   <se:Graphic>
-    <se:Mark>
-     <se:WellKnownName>square</se:WellKnownName>
-     <se:Fill>
-      <se:SvgParameter name="fill">#649632</se:SvgParameter>
-     </se:Fill>
-     <se:Stroke>
-      <se:SvgParameter name="stroke">#232323</se:SvgParameter>
-      <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
-     </se:Stroke>
-    </se:Mark>
-    <se:Size>11</se:Size>
-   </se:Graphic>
-  </se:PointSymbolizer>
- </se:Rule>
- <se:Rule>
-  <se:Name>b</se:Name>
-  <se:Description>
-   <se:Title>b</se:Title>
-  </se:Description>
-  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
-   <ogc:And>
-    <ogc:PropertyIsGreaterThan>
-     <ogc:PropertyName>field_name</ogc:PropertyName>
-     <ogc:Literal>5</ogc:Literal>
-    </ogc:PropertyIsGreaterThan>
-    <ogc:PropertyIsLessThanOrEqualTo>
-     <ogc:PropertyName>field_name</ogc:PropertyName>
-     <ogc:Literal>6</ogc:Literal>
-    </ogc:PropertyIsLessThanOrEqualTo>
-   </ogc:And>
-  </ogc:Filter>
-  <se:PointSymbolizer>
-   <se:Graphic>
-    <se:Mark>
-     <se:WellKnownName>square</se:WellKnownName>
-     <se:Fill>
-      <se:SvgParameter name="fill">#649632</se:SvgParameter>
-     </se:Fill>
-     <se:Stroke>
-      <se:SvgParameter name="stroke">#232323</se:SvgParameter>
-      <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
-     </se:Stroke>
-    </se:Mark>
-    <se:Size>11</se:Size>
-   </se:Graphic>
-  </se:PointSymbolizer>
- </se:Rule>
- <se:Rule>
-  <se:Name>c</se:Name>
-  <se:Description>
-   <se:Title>c</se:Title>
-  </se:Description>
-  <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc">
-   <ogc:And>
-    <ogc:PropertyIsGreaterThan>
-     <ogc:PropertyName>field_name</ogc:PropertyName>
-     <ogc:Literal>15.5</ogc:Literal>
-    </ogc:PropertyIsGreaterThan>
-    <ogc:PropertyIsLessThanOrEqualTo>
-     <ogc:PropertyName>field_name</ogc:PropertyName>
-     <ogc:Literal>16.5</ogc:Literal>
-    </ogc:PropertyIsLessThanOrEqualTo>
-   </ogc:And>
-  </ogc:Filter>
-  <se:PointSymbolizer>
-   <se:Graphic>
-    <se:Mark>
-     <se:WellKnownName>square</se:WellKnownName>
-     <se:Fill>
-      <se:SvgParameter name="fill">#649632</se:SvgParameter>
-     </se:Fill>
-     <se:Stroke>
-      <se:SvgParameter name="stroke">#232323</se:SvgParameter>
-      <se:SvgParameter name="stroke-width">0.5</se:SvgParameter>
-     </se:Stroke>
-    </se:Mark>
-    <se:Size>11</se:Size>
-   </se:Graphic>
-  </se:PointSymbolizer>
- </se:Rule>
-</FakeRoot>
-"""
-
-        self.assertEqual(dom.toString(), expected)
+        self.assertEqual(exp, """(log("field_name") >= 15.5) AND (log("field_name") <= 16.5)""")
 
 
 if __name__ == "__main__":

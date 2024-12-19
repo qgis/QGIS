@@ -62,7 +62,7 @@ Factory method to create a new renderer
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QVariantMap &props = QVariantMap() ) const;
 
 
- int band() const /Deprecated="Since 3.38. Use inputBand() instead."/;
+ int band() const /Deprecated/;
 %Docstring
 Returns the band used by the renderer
 
@@ -71,7 +71,7 @@ Returns the band used by the renderer
    Use :py:func:`~QgsHillshadeRenderer.inputBand` instead.
 %End
 
- void setBand( int bandNo ) /Deprecated="Since 3.38. Use setInputBand() instead."/;
+ void setBand( int bandNo ) /Deprecated/;
 %Docstring
 Sets the band used by the renderer.
 

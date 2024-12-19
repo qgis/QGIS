@@ -68,47 +68,32 @@ def run(item, action, mainwindow):
     # check if the selected item is a topology schema
     isTopoSchema = False
 
-    if not hasattr(item, "schema"):
-        mainwindow.infoBar.pushMessage(
-            "Invalid topology",
-            "Select a topology schema to continue.",
-            Qgis.MessageLevel.Info,
-            mainwindow.iface.messageTimeout(),
-        )
+    if not hasattr(item, 'schema'):
+        mainwindow.infoBar.pushMessage("Invalid topology", 'Select a topology schema to continue.', Qgis.MessageLevel.Info,
+                                       mainwindow.iface.messageTimeout())
         return False
 
     if item.schema() is not None:
-        sql = "SELECT srid FROM topology.topology WHERE name = %s" % quoteStr(
-            item.schema().name
-        )
+        sql = "SELECT srid FROM topology.topology WHERE name = %s" % quoteStr(item.schema().name)
         res = db.executeSql(sql)
         isTopoSchema = len(res) > 0
 
     if not isTopoSchema:
-        mainwindow.infoBar.pushMessage(
-            "Invalid topology",
-            'Schema "{}" is not registered in topology.topology.'.format(
-                item.schema().name
-            ),
-            Qgis.MessageLevel.Warning,
-            mainwindow.iface.messageTimeout(),
-        )
+        mainwindow.infoBar.pushMessage("Invalid topology",
+                                       'Schema "{}" is not registered in topology.topology.'.format(
+                                           item.schema().name), Qgis.MessageLevel.Warning,
+                                       mainwindow.iface.messageTimeout())
         return False
 
-    if res[0][0] < 0:
-        mainwindow.infoBar.pushMessage(
-            "WARNING",
-            f'Topology "{item.schema().name}" is registered as having a srid of {res[0]} in topology.topology, we will assume 0 (for unknown)',
-            Qgis.MessageLevel.Warning,
-            mainwindow.iface.messageTimeout(),
-        )
-        toposrid = "0"
+    if (res[0][0] < 0):
+        mainwindow.infoBar.pushMessage("WARNING", 'Topology "{}" is registered as having a srid of {} in topology.topology, we will assume 0 (for unknown)'.format(item.schema().name, res[0]), Qgis.MessageLevel.Warning, mainwindow.iface.messageTimeout())
+        toposrid = '0'
     else:
         toposrid = str(res[0][0])
 
     # load layers into the current project
     toponame = item.schema().name
-    template_dir = os.path.join(current_path, "templates")
+    template_dir = os.path.join(current_path, 'templates')
 
     # do not refresh the canvas until all the layers are added
     wasFrozen = iface.mapCanvas().isFrozen()
@@ -123,164 +108,134 @@ def run(item, action, mainwindow):
         # FACES
 
         # face mbr
-        uri.setDataSource(toponame, "face", "mbr", "", "face_id")
+        uri.setDataSource(toponame, 'face', 'mbr', '', 'face_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.Type.Polygon)
-        layerFaceMbr = QgsVectorLayer(
-            uri.uri(False), "%s.face_mbr" % toponame, provider
-        )
-        layerFaceMbr.loadNamedStyle(os.path.join(template_dir, "face_mbr.qml"))
+        layerFaceMbr = QgsVectorLayer(uri.uri(False), '%s.face_mbr' % toponame, provider)
+        layerFaceMbr.loadNamedStyle(os.path.join(template_dir, 'face_mbr.qml'))
 
         face_extent = layerFaceMbr.extent()
 
         # face geometry
-        sql = (
-            "SELECT face_id, mbr, topology.ST_GetFaceGeometry(%s,"
-            "face_id)::geometry(polygon, %s) as geom "
-            "FROM %s.face WHERE face_id > 0"
-            % (quoteStr(toponame), toposrid, quoteId(toponame))
-        )
-        uri.setDataSource("", "(%s\n)" % sql, "geom", "", "face_id")
-        uri.setParam("bbox", "mbr")
-        uri.setParam("checkPrimaryKeyUnicity", "0")
+        sql = 'SELECT face_id, mbr, topology.ST_GetFaceGeometry(%s,' \
+              'face_id)::geometry(polygon, %s) as geom ' \
+              'FROM %s.face WHERE face_id > 0' % \
+              (quoteStr(toponame), toposrid, quoteId(toponame))
+        uri.setDataSource('', '(%s\n)' % sql, 'geom', '', 'face_id')
+        uri.setParam('bbox', 'mbr')
+        uri.setParam('checkPrimaryKeyUnicity', '0')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.Type.Polygon)
-        layerFaceGeom = QgsVectorLayer(uri.uri(False), "%s.face" % toponame, provider)
+        layerFaceGeom = QgsVectorLayer(uri.uri(False), '%s.face' % toponame, provider)
         layerFaceGeom.setExtent(face_extent)
-        layerFaceGeom.loadNamedStyle(os.path.join(template_dir, "face.qml"))
+        layerFaceGeom.loadNamedStyle(os.path.join(template_dir, 'face.qml'))
 
         # face_seed
-        sql = (
-            "SELECT face_id, mbr, ST_PointOnSurface("
-            "topology.ST_GetFaceGeometry(%s,"
-            "face_id))::geometry(point, %s) as geom "
-            "FROM %s.face WHERE face_id > 0"
-            % (quoteStr(toponame), toposrid, quoteId(toponame))
-        )
-        uri.setDataSource("", "(%s)" % sql, "geom", "", "face_id")
-        uri.setParam("bbox", "mbr")
-        uri.setParam("checkPrimaryKeyUnicity", "0")
+        sql = 'SELECT face_id, mbr, ST_PointOnSurface(' \
+              'topology.ST_GetFaceGeometry(%s,' \
+              'face_id))::geometry(point, %s) as geom ' \
+              'FROM %s.face WHERE face_id > 0' % \
+              (quoteStr(toponame), toposrid, quoteId(toponame))
+        uri.setDataSource('', '(%s)' % sql, 'geom', '', 'face_id')
+        uri.setParam('bbox', 'mbr')
+        uri.setParam('checkPrimaryKeyUnicity', '0')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.Type.Point)
-        layerFaceSeed = QgsVectorLayer(
-            uri.uri(False), "%s.face_seed" % toponame, provider
-        )
+        layerFaceSeed = QgsVectorLayer(uri.uri(False), '%s.face_seed' % toponame, provider)
         layerFaceSeed.setExtent(face_extent)
-        layerFaceSeed.loadNamedStyle(os.path.join(template_dir, "face_seed.qml"))
+        layerFaceSeed.loadNamedStyle(os.path.join(template_dir, 'face_seed.qml'))
 
         # TODO: add polygon0, polygon1 and polygon2 ?
 
         # NODES
 
         # node
-        uri.setDataSource(toponame, "node", "geom", "", "node_id")
-        uri.removeParam("bbox")
+        uri.setDataSource(toponame, 'node', 'geom', '', 'node_id')
+        uri.removeParam('bbox')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.Type.Point)
-        layerNode = QgsVectorLayer(uri.uri(False), "%s.node" % toponame, provider)
-        layerNode.loadNamedStyle(os.path.join(template_dir, "node.qml"))
+        layerNode = QgsVectorLayer(uri.uri(False), '%s.node' % toponame, provider)
+        layerNode.loadNamedStyle(os.path.join(template_dir, 'node.qml'))
         node_extent = layerNode.extent()
 
         # node labels
-        uri.setDataSource(toponame, "node", "geom", "", "node_id")
+        uri.setDataSource(toponame, 'node', 'geom', '', 'node_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.Type.Point)
-        uri.removeParam("bbox")
-        layerNodeLabel = QgsVectorLayer(
-            uri.uri(False), "%s.node_id" % toponame, provider
-        )
+        uri.removeParam('bbox')
+        layerNodeLabel = QgsVectorLayer(uri.uri(False), '%s.node_id' % toponame, provider)
         layerNodeLabel.setExtent(node_extent)
-        layerNodeLabel.loadNamedStyle(os.path.join(template_dir, "node_label.qml"))
+        layerNodeLabel.loadNamedStyle(os.path.join(template_dir, 'node_label.qml'))
 
         # EDGES
 
         # edge
-        uri.setDataSource(toponame, "edge_data", "geom", "", "edge_id")
+        uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.Type.LineString)
-        uri.removeParam("bbox")
-        layerEdge = QgsVectorLayer(uri.uri(False), "%s.edge" % toponame, provider)
+        uri.removeParam('bbox')
+        layerEdge = QgsVectorLayer(uri.uri(False), '%s.edge' % toponame, provider)
         edge_extent = layerEdge.extent()
 
         # directed edge
-        uri.setDataSource(toponame, "edge_data", "geom", "", "edge_id")
+        uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.Type.LineString)
-        uri.removeParam("bbox")
-        layerDirectedEdge = QgsVectorLayer(
-            uri.uri(False), "%s.directed_edge" % toponame, provider
-        )
+        uri.removeParam('bbox')
+        layerDirectedEdge = QgsVectorLayer(uri.uri(False), '%s.directed_edge' % toponame, provider)
         layerDirectedEdge.setExtent(edge_extent)
-        layerDirectedEdge.loadNamedStyle(os.path.join(template_dir, "edge.qml"))
+        layerDirectedEdge.loadNamedStyle(os.path.join(template_dir, 'edge.qml'))
 
         # edge labels
-        uri.setDataSource(toponame, "edge_data", "geom", "", "edge_id")
+        uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.Type.LineString)
-        uri.removeParam("bbox")
-        layerEdgeLabel = QgsVectorLayer(
-            uri.uri(False), "%s.edge_id" % toponame, provider
-        )
+        uri.removeParam('bbox')
+        layerEdgeLabel = QgsVectorLayer(uri.uri(False), '%s.edge_id' % toponame, provider)
         layerEdgeLabel.setExtent(edge_extent)
-        layerEdgeLabel.loadNamedStyle(os.path.join(template_dir, "edge_label.qml"))
+        layerEdgeLabel.loadNamedStyle(os.path.join(template_dir, 'edge_label.qml'))
 
         # face_left
-        uri.setDataSource(toponame, "edge_data", "geom", "", "edge_id")
+        uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.Type.LineString)
-        uri.removeParam("bbox")
-        layerFaceLeft = QgsVectorLayer(
-            uri.uri(False), "%s.face_left" % toponame, provider
-        )
+        uri.removeParam('bbox')
+        layerFaceLeft = QgsVectorLayer(uri.uri(False), '%s.face_left' % toponame, provider)
         layerFaceLeft.setExtent(edge_extent)
-        layerFaceLeft.loadNamedStyle(os.path.join(template_dir, "face_left.qml"))
+        layerFaceLeft.loadNamedStyle(os.path.join(template_dir, 'face_left.qml'))
 
         # face_right
-        uri.setDataSource(toponame, "edge_data", "geom", "", "edge_id")
+        uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.Type.LineString)
-        uri.removeParam("bbox")
-        layerFaceRight = QgsVectorLayer(
-            uri.uri(False), "%s.face_right" % toponame, provider
-        )
+        uri.removeParam('bbox')
+        layerFaceRight = QgsVectorLayer(uri.uri(False), '%s.face_right' % toponame, provider)
         layerFaceRight.setExtent(edge_extent)
-        layerFaceRight.loadNamedStyle(os.path.join(template_dir, "face_right.qml"))
+        layerFaceRight.loadNamedStyle(os.path.join(template_dir, 'face_right.qml'))
 
         # next_left
-        uri.setDataSource(toponame, "edge_data", "geom", "", "edge_id")
+        uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.Type.LineString)
-        uri.removeParam("bbox")
-        layerNextLeft = QgsVectorLayer(
-            uri.uri(False), "%s.next_left" % toponame, provider
-        )
+        uri.removeParam('bbox')
+        layerNextLeft = QgsVectorLayer(uri.uri(False), '%s.next_left' % toponame, provider)
         layerNextLeft.setExtent(edge_extent)
-        layerNextLeft.loadNamedStyle(os.path.join(template_dir, "next_left.qml"))
+        layerNextLeft.loadNamedStyle(os.path.join(template_dir, 'next_left.qml'))
 
         # next_right
-        uri.setDataSource(toponame, "edge_data", "geom", "", "edge_id")
+        uri.setDataSource(toponame, 'edge_data', 'geom', '', 'edge_id')
         uri.setSrid(toposrid)
         uri.setWkbType(QgsWkbTypes.Type.LineString)
-        uri.removeParam("bbox")
-        layerNextRight = QgsVectorLayer(
-            uri.uri(False), "%s.next_right" % toponame, provider
-        )
+        uri.removeParam('bbox')
+        layerNextRight = QgsVectorLayer(uri.uri(False), '%s.next_right' % toponame, provider)
         layerNextRight.setExtent(edge_extent)
-        layerNextRight.loadNamedStyle(os.path.join(template_dir, "next_right.qml"))
+        layerNextRight.loadNamedStyle(os.path.join(template_dir, 'next_right.qml'))
 
         # Add layers to the layer tree
 
         faceLayers = [layerFaceMbr, layerFaceGeom, layerFaceSeed]
         nodeLayers = [layerNode, layerNodeLabel]
-        edgeLayers = [
-            layerEdge,
-            layerDirectedEdge,
-            layerEdgeLabel,
-            layerFaceLeft,
-            layerFaceRight,
-            layerNextLeft,
-            layerNextRight,
-        ]
+        edgeLayers = [layerEdge, layerDirectedEdge, layerEdgeLabel, layerFaceLeft, layerFaceRight, layerNextLeft, layerNextRight]
 
         QgsProject.instance().addMapLayers(faceLayers, False)
         QgsProject.instance().addMapLayers(nodeLayers, False)
@@ -288,19 +243,19 @@ def run(item, action, mainwindow):
 
         # Organize layers in groups
 
-        groupFaces = QgsLayerTreeGroup("Faces")
+        groupFaces = QgsLayerTreeGroup('Faces')
         for layer in faceLayers:
             nodeLayer = groupFaces.addLayer(layer)
             nodeLayer.setItemVisibilityChecked(False)
             nodeLayer.setExpanded(False)
 
-        groupNodes = QgsLayerTreeGroup("Nodes")
+        groupNodes = QgsLayerTreeGroup('Nodes')
         for layer in nodeLayers:
             nodeLayer = groupNodes.addLayer(layer)
             nodeLayer.setItemVisibilityChecked(False)
             nodeLayer.setExpanded(False)
 
-        groupEdges = QgsLayerTreeGroup("Edges")
+        groupEdges = QgsLayerTreeGroup('Edges')
         for layer in edgeLayers:
             nodeLayer = groupEdges.addLayer(layer)
             nodeLayer.setItemVisibilityChecked(False)
@@ -340,7 +295,7 @@ def run(item, action, mainwindow):
 
         # Set canvas extent to topology extent, if not yet initialized
         canvas = iface.mapCanvas()
-        if canvas.fullExtent().isNull():
+        if (canvas.fullExtent().isNull()):
             ext = node_extent
             ext.combineExtentWith(edge_extent)
             # Grow by 1/20 of largest side

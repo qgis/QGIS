@@ -48,13 +48,15 @@ class APP_EXPORT QgsMapToolShapeRectangle3PointsMetadata : public QgsMapToolShap
 
   private:
     CreateMode mCreateMode;
+
 };
 
-class APP_EXPORT QgsMapToolShapeRectangle3Points : public QgsMapToolShapeRectangleAbstract
+class APP_EXPORT QgsMapToolShapeRectangle3Points: public QgsMapToolShapeRectangleAbstract
 {
     Q_OBJECT
 
   public:
+
     QgsMapToolShapeRectangle3Points( const QString &id, QgsMapToolShapeRectangle3PointsMetadata::CreateMode createMode, QgsMapToolCapture *parentTool );
 
     bool cadCanvasReleaseEvent( QgsMapMouseEvent *e, QgsMapToolCapture::CaptureMode mode ) override;

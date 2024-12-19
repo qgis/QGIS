@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsarcgisvectortileservicedataprovider.h"
-#include "moc_qgsarcgisvectortileservicedataprovider.cpp"
 #include "qgsthreadingutils.h"
 #include "qgsapplication.h"
 #include "qgsblockingnetworkrequest.h"

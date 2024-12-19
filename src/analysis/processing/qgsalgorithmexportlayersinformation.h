@@ -30,7 +30,9 @@
  */
 class QgsExportLayersInformationAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
+
     QgsExportLayersInformationAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -42,12 +44,17 @@ class QgsExportLayersInformationAlgorithm : public QgsProcessingAlgorithm
     QgsExportLayersInformationAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    bool prepareAlgorithm( const QVariantMap &parameters,
+                           QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    std::vector<std::unique_ptr<QgsMapLayer>> mLayers;
+
+    std::vector< std::unique_ptr< QgsMapLayer> > mLayers;
     QgsCoordinateReferenceSystem mCrs;
+
 };
 
 ///@endcond PRIVATE

@@ -30,7 +30,7 @@ QGIS interface.
  QgsRasterFileWriterTask( const QgsRasterFileWriter &writer, QgsRasterPipe *pipe /Transfer/,
         int columns, int rows,
         const QgsRectangle &outputExtent,
-        const QgsCoordinateReferenceSystem &crs ) /Deprecated="Since 3.8. Use version with transformContext instead."/;
+        const QgsCoordinateReferenceSystem &crs ) /Deprecated/;
 %Docstring
 Constructor for QgsRasterFileWriterTask. Takes a source ``writer``,
 ``columns``, ``rows``, ``outputExtent`` and destination ``crs``.

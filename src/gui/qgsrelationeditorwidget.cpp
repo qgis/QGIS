@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsrelationeditorwidget.h"
-#include "moc_qgsrelationeditorwidget.cpp"
 
 #include "qgsapplication.h"
 #include "qgsfeatureiterator.h"
@@ -45,7 +44,7 @@ QgsFilteredSelectionManager::QgsFilteredSelectionManager( QgsVectorLayer *layer,
   : QgsVectorLayerSelectionManager( layer, parent )
   , mRequest( request )
 {
-  if ( !layer )
+  if ( ! layer )
     return;
 
   for ( const auto fid : layer->selectedFeatureIds() )
@@ -222,7 +221,8 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( const QVariantMap &config, QWi
 
   rootLayout->addWidget( mStackedWidget );
 
-  connect( mViewModeButtonGroup, &QButtonGroup::idClicked, this, static_cast<void ( QgsRelationEditorWidget::* )( int )>( &QgsRelationEditorWidget::setViewMode ) );
+  connect( mViewModeButtonGroup, &QButtonGroup::idClicked,
+           this, static_cast<void ( QgsRelationEditorWidget::* )( int )>( &QgsRelationEditorWidget::setViewMode ) );
   connect( mToggleEditingButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::toggleEditing );
   connect( mSaveEditsButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::saveEdits );
   connect( mAddFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::addFeature );
@@ -336,7 +336,7 @@ void QgsRelationEditorWidget::updateButtons()
   const bool selectionNotEmpty = mFeatureSelectionMgr ? mFeatureSelectionMgr->selectedFeatureCount() : false;
   if ( multiEditModeActive() )
   {
-    const bool multieditLinkedChildSelected = !selectedChildFeatureIds().isEmpty();
+    const bool multieditLinkedChildSelected = ! selectedChildFeatureIds().isEmpty();
 
     canAddGeometry = false;
 
@@ -437,7 +437,7 @@ void QgsRelationEditorWidget::addFeatureGeometry()
 
     const QString title = tr( "Create child feature for parent %1 \"%2\"" ).arg( mRelation.referencedLayer()->name(), displayString );
     const QString msg = tr( "Digitize the geometry for the new feature on layer %1. Press &lt;ESC&gt; to cancel." )
-                          .arg( layer->name() );
+                        .arg( layer->name() );
     mMessageBarItem = QgsMessageBar::createMessage( title, msg, this );
     lMainMessageBar->pushItem( mMessageBarItem );
   }
@@ -481,7 +481,7 @@ void QgsRelationEditorWidget::multiEditItemSelectionChanged()
         }
         else
         {
-          if ( !mMultiEdit1NJustAddedIds.contains( featureIdSelectedItem ) )
+          if ( ! mMultiEdit1NJustAddedIds.contains( featureIdSelectedItem ) )
             break;
 
           if ( mMultiEdit1NJustAddedIds.contains( featureIdCurrentItem ) )
@@ -562,13 +562,13 @@ void QgsRelationEditorWidget::showContextMenu( QgsActionMenu *menu, const QgsFea
 
     if ( mButtonsVisibility.testFlag( QgsRelationEditorWidget::Button::DeleteChildFeature ) )
     {
-      qAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ), tr( "Delete Feature" ) );
+      qAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteSelected.svg" ) ),  tr( "Delete Feature" ) );
       connect( qAction, &QAction::triggered, this, [this, fid]() { deleteFeature( fid ); } );
     }
 
     if ( mButtonsVisibility.testFlag( QgsRelationEditorWidget::Button::Unlink ) )
     {
-      qAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUnlink.svg" ) ), tr( "Unlink Feature" ) );
+      qAction = menu->addAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionUnlink.svg" ) ),  tr( "Unlink Feature" ) );
       connect( qAction, &QAction::triggered, this, [this, fid]() { unlinkFeature( fid ); } );
     }
   }
@@ -625,10 +625,8 @@ void QgsRelationEditorWidget::updateUiSingleEdit()
   QgsVectorLayer *layer = nullptr;
   if ( mNmRelation.isValid() )
   {
-    QgsFeature fet;
-    QgsFeatureRequest nmRequest;
-
     QgsFeatureIterator it = mRelation.referencingLayer()->getFeatures( request );
+    QgsFeature fet;
     QStringList filters;
 
     while ( it.nextFeature( fet ) )
@@ -637,15 +635,8 @@ void QgsRelationEditorWidget::updateUiSingleEdit()
       filters << filter.prepend( '(' ).append( ')' );
     }
 
-    QString reducedExpression;
-    if ( QgsExpression::attemptReduceToInClause( filters, reducedExpression ) )
-    {
-      nmRequest.setFilterExpression( reducedExpression );
-    }
-    else
-    {
-      nmRequest.setFilterExpression( filters.join( QLatin1String( " OR " ) ) );
-    }
+    QgsFeatureRequest nmRequest;
+    nmRequest.setFilterExpression( filters.join( QLatin1String( " OR " ) ) );
 
     request = nmRequest;
     layer = mNmRelation.referencedLayer();
@@ -682,7 +673,7 @@ void QgsRelationEditorWidget::updateUiMultiEdit()
   mTableViewButton->setVisible( false );
   mMultiEditInfoLabel->setVisible( true );
 
-  mStackedWidget->setCurrentWidget( mMultiEditStackedWidgetPage );
+  mStackedWidget->setCurrentWidget( mMultiEditStackedWidgetPage ) ;
 
   QList<QTreeWidgetItem *> parentTreeWidgetItems;
 
@@ -752,7 +743,7 @@ void QgsRelationEditorWidget::updateUiMultiEdit()
       bool mixedValues = false;
       for ( QTreeWidgetItem *parentTreeWidgetItem : parentTreeWidgetItems )
       {
-        if ( !multimapChildFeatures.values( parentTreeWidgetItem ).contains( *iterator ) )
+        if ( ! multimapChildFeatures.values( parentTreeWidgetItem ).contains( *iterator ) )
         {
           mixedValues = true;
           break;
@@ -773,13 +764,15 @@ void QgsRelationEditorWidget::updateUiMultiEdit()
   if ( featureIdsMixedValues.isEmpty() )
   {
     QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "/multieditSameValues.svg" ) );
-    mMultiEditInfoLabel->setPixmap( icon.pixmap( mMultiEditInfoLabel->height(), mMultiEditInfoLabel->height() ) );
+    mMultiEditInfoLabel->setPixmap( icon.pixmap( mMultiEditInfoLabel->height(),
+                                    mMultiEditInfoLabel->height() ) );
     mMultiEditInfoLabel->setToolTip( tr( "All features in selection have equal relations" ) );
   }
   else
   {
     QIcon icon = QgsApplication::getThemeIcon( QStringLiteral( "/multieditMixedValues.svg" ) );
-    mMultiEditInfoLabel->setPixmap( icon.pixmap( mMultiEditInfoLabel->height(), mMultiEditInfoLabel->height() ) );
+    mMultiEditInfoLabel->setPixmap( icon.pixmap( mMultiEditInfoLabel->height(),
+                                    mMultiEditInfoLabel->height() ) );
     mMultiEditInfoLabel->setToolTip( tr( "Some features in selection have different relations" ) );
 
     // Set italic font for mixed values
@@ -808,12 +801,12 @@ QTreeWidgetItem *QgsRelationEditorWidget::createMultiEditTreeWidgetItem( const Q
   return treeWidgetItem;
 }
 
-void QgsRelationEditorWidget::onDigitizingCanceled()
+void QgsRelationEditorWidget::onDigitizingCanceled( )
 {
   digitizingFinished();
 }
 
-void QgsRelationEditorWidget::digitizingFinished()
+void QgsRelationEditorWidget::digitizingFinished( )
 {
   window()->setVisible( true );
   window()->raise();
@@ -832,7 +825,11 @@ void QgsRelationEditorWidget::mapToolDeactivated()
 
 QVariantMap QgsRelationEditorWidget::config() const
 {
-  return QVariantMap( { { "buttons", qgsFlagValueToKeys( visibleButtons() ) }, { "show_first_feature", mShowFirstFeature }, { "allow_add_child_feature_with_no_geometry", mAllowAddChildFeatureWithNoGeometry }, { "filter_expression", mFilterExpression } } );
+  return QVariantMap( {{"buttons", qgsFlagValueToKeys( visibleButtons() )},
+    {"show_first_feature", mShowFirstFeature},
+    {"allow_add_child_feature_with_no_geometry", mAllowAddChildFeatureWithNoGeometry },
+    {"filter_expression", mFilterExpression }
+  } );
 }
 
 void QgsRelationEditorWidget::setConfig( const QVariantMap &config )
@@ -849,7 +846,7 @@ void QgsRelationEditorWidget::beforeSetRelationFeature( const QgsRelation &newRe
   Q_UNUSED( newRelation );
   Q_UNUSED( newFeature );
 
-  if ( !mRelation.isValid() )
+  if ( ! mRelation.isValid() )
     return;
 
   disconnect( mRelation.referencingLayer(), &QgsVectorLayer::editingStarted, this, &QgsRelationEditorWidget::updateButtons );
@@ -858,7 +855,7 @@ void QgsRelationEditorWidget::beforeSetRelationFeature( const QgsRelation &newRe
 
 void QgsRelationEditorWidget::afterSetRelationFeature()
 {
-  if ( !mRelation.isValid()
+  if ( ! mRelation.isValid()
        || mFeatureList.isEmpty() )
   {
     updateButtons();
@@ -1006,12 +1003,12 @@ QVariantMap QgsRelationEditorConfigWidget::config()
   buttons.setFlag( QgsRelationEditorWidget::Button::SaveChildEdits, mRelationShowSaveChildEditsCheckBox->isChecked() );
 
   return QVariantMap(
-    { { "buttons", qgsFlagValueToKeys( buttons ) },
-      { "show_first_feature", mShowFirstFeature->isChecked() },
-      { "allow_add_child_feature_with_no_geometry", mAllowAddChildFeatureWithNoGeometry->isChecked() },
-      { "filter_expression", mFilterExpression->toPlainText() }
-    }
-  );
+  {
+    {"buttons", qgsFlagValueToKeys( buttons )},
+    {"show_first_feature", mShowFirstFeature->isChecked()},
+    {"allow_add_child_feature_with_no_geometry", mAllowAddChildFeatureWithNoGeometry->isChecked()},
+    {"filter_expression", mFilterExpression->toPlainText()}
+  } );
 }
 
 void QgsRelationEditorConfigWidget::setConfig( const QVariantMap &config )
@@ -1037,6 +1034,7 @@ void QgsRelationEditorConfigWidget::setConfig( const QVariantMap &config )
 #ifndef SIP_RUN
 QgsRelationEditorWidgetFactory::QgsRelationEditorWidgetFactory()
 {
+
 }
 
 QString QgsRelationEditorWidgetFactory::type() const

@@ -18,7 +18,6 @@
  ***************************************************************************/
 
 #include "qgswmsrequest.h"
-#include "moc_qgswmsrequest.cpp"
 
 namespace QgsWms
 {
@@ -55,4 +54,4 @@ namespace QgsWms
   {
     mWmsParams = QgsWmsParameters( serverParameters() );
   }
-} // namespace QgsWms
+}

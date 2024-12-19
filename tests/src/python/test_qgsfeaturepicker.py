@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Denis Rouzaud"
-__date__ = "24/04/2020"
-__copyright__ = "Copyright 2015, The QGIS Project"
+__author__ = 'Denis Rouzaud'
+__date__ = '24/04/2020'
+__copyright__ = 'Copyright 2015, The QGIS Project'
 
 from qgis.PyQt.QtTest import QSignalSpy, QTest
 from qgis.PyQt.QtWidgets import QComboBox
@@ -27,9 +26,8 @@ start_app()
 
 
 def createLayer(manyFeatures: bool = False):
-    layer = QgsVectorLayer(
-        "Point?field=fldtxt:string&field=fldint:integer", "test layer", "memory"
-    )
+    layer = QgsVectorLayer("Point?field=fldtxt:string&field=fldint:integer",
+                           "test layer", "memory")
     pr = layer.dataProvider()
     f = QgsFeature()
     f.setAttributes(["test1", 123])
@@ -62,9 +60,7 @@ class TestQgsRelationEditWidget(QgisTestCase):
         spy = QSignalSpy(w.currentFeatureChanged)
         spy.wait()
         self.assertEqual(w.findChild(QComboBox).lineEdit().text(), "test2")
-        self.assertTrue(
-            w.feature().geometry().equals(QgsGeometry.fromPointXY(QgsPointXY(200, 200)))
-        )
+        self.assertTrue(w.feature().geometry().equals(QgsGeometry.fromPointXY(QgsPointXY(200, 200))))
 
     def testSetAllowNull(self):
         layer = createLayer()
@@ -73,10 +69,7 @@ class TestQgsRelationEditWidget(QgisTestCase):
         w.setAllowNull(True)
         spy = QSignalSpy(w.featureChanged)
         spy.wait()
-        self.assertEqual(
-            w.findChild(QComboBox).lineEdit().text(),
-            QgsApplication.nullRepresentation(),
-        )
+        self.assertEqual(w.findChild(QComboBox).lineEdit().text(), QgsApplication.nullRepresentation())
         w.setAllowNull(False)
         spy.wait()
         self.assertEqual(w.findChild(QComboBox).lineEdit().text(), "test1")
@@ -105,5 +98,5 @@ class TestQgsRelationEditWidget(QgisTestCase):
         self.assertEqual(w.feature().id(), 99)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

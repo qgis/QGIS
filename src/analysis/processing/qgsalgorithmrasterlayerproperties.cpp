@@ -47,8 +47,10 @@ QString QgsRasterLayerPropertiesAlgorithm::groupId() const
 
 void QgsRasterLayerPropertiesAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ), QObject::tr( "Band number" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
+  addParameter( new QgsProcessingParameterRasterLayer( QStringLiteral( "INPUT" ),
+                QObject::tr( "Input layer" ) ) );
+  addParameter( new QgsProcessingParameterBand( QStringLiteral( "BAND" ),
+                QObject::tr( "Band number" ), QVariant(), QStringLiteral( "INPUT" ), true ) );
 
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "X_MIN" ), QObject::tr( "Minimum x-coordinate" ) ) );
   addOutput( new QgsProcessingOutputNumber( QStringLiteral( "X_MAX" ), QObject::tr( "Maximum x-coordinate" ) ) );
@@ -89,7 +91,8 @@ bool QgsRasterLayerPropertiesAlgorithm::prepareAlgorithm( const QVariantMap &par
   {
     const int band = parameterAsInt( parameters, QStringLiteral( "BAND" ), context );
     if ( band < 1 || band > mBandCount )
-      throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( band ).arg( layer->bandCount() ) );
+      throw QgsProcessingException( QObject::tr( "Invalid band number for BAND (%1): Valid values for input raster are 1 to %2" ).arg( band )
+                                    .arg( layer->bandCount() ) );
     mHasNoDataValue = layer->dataProvider()->sourceHasNoDataValue( band );
     if ( mHasNoDataValue )
       mNoDataValue = layer->dataProvider()->sourceNoDataValue( band );
@@ -131,3 +134,6 @@ QVariantMap QgsRasterLayerPropertiesAlgorithm::processAlgorithm( const QVariantM
 
 
 ///@endcond
+
+
+

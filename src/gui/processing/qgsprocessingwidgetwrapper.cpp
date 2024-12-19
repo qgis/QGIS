@@ -17,7 +17,6 @@
 
 
 #include "qgsprocessingwidgetwrapper.h"
-#include "moc_qgsprocessingwidgetwrapper.cpp"
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingmodelerparameterwidget.h"
 #include "qgspropertyoverridebutton.h"
@@ -150,7 +149,7 @@ QWidget *QgsAbstractProcessingParameterWidgetWrapper::createWrappedWidget( QgsPr
     wrappedWidget->setLayout( hLayout );
   }
 
-  if ( !dynamic_cast<const QgsProcessingDestinationParameter *>( mParameterDefinition ) )
+  if ( !dynamic_cast<const QgsProcessingDestinationParameter * >( mParameterDefinition ) )
   {
     // an exception -- output widgets handle this themselves
     setWidgetValue( mParameterDefinition->defaultValueForGui(), context );
@@ -187,7 +186,7 @@ void QgsAbstractProcessingParameterWidgetWrapper::setParameterValue( const QVari
 {
   if ( mPropertyButton && value.userType() == qMetaTypeId<QgsProperty>() )
   {
-    mPropertyButton->setToProperty( value.value<QgsProperty>() );
+    mPropertyButton->setToProperty( value.value< QgsProperty >() );
   }
   else
   {
@@ -234,7 +233,7 @@ QLabel *QgsAbstractProcessingParameterWidgetWrapper::createLabel()
       QString description = mParameterDefinition->description();
       if ( parameterDefinition()->flags() & Qgis::ProcessingParameterFlag::Optional )
         description = QObject::tr( "%1 [optional]" ).arg( description );
-      std::unique_ptr<QLabel> label = std::make_unique<QLabel>( description );
+      std::unique_ptr< QLabel > label = std::make_unique< QLabel >( description );
       label->setToolTip( mParameterDefinition->toolTip() );
       label->setWordWrap( true );
       return label.release();
@@ -287,7 +286,7 @@ QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressi
   QgsExpressionContext context = QgsProcessingGuiUtils::createExpressionContext( mProcessingContextGenerator, mWidgetContext, mParameterDefinition ? mParameterDefinition->algorithm() : nullptr, linkedVectorLayer() );
   if ( mParameterDefinition && !mParameterDefinition->additionalExpressionContextVariables().isEmpty() )
   {
-    std::unique_ptr<QgsExpressionContextScope> paramScope = std::make_unique<QgsExpressionContextScope>();
+    std::unique_ptr< QgsExpressionContextScope > paramScope = std::make_unique< QgsExpressionContextScope >();
     const QStringList additional = mParameterDefinition->additionalExpressionContextVariables();
     for ( const QString &var : additional )
     {
@@ -305,6 +304,7 @@ QgsExpressionContext QgsAbstractProcessingParameterWidgetWrapper::createExpressi
 
 void QgsAbstractProcessingParameterWidgetWrapper::setDialog( QDialog * )
 {
+
 }
 
 void QgsAbstractProcessingParameterWidgetWrapper::parentLayerChanged( QgsAbstractProcessingParameterWidgetWrapper *wrapper )
@@ -321,13 +321,13 @@ void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter
   {
     // evaluate value to layer
     QgsProcessingContext *context = nullptr;
-    std::unique_ptr<QgsProcessingContext> tmpContext;
+    std::unique_ptr< QgsProcessingContext > tmpContext;
     if ( mProcessingContextGenerator )
       context = mProcessingContextGenerator->processingContext();
 
     if ( !context )
     {
-      tmpContext = std::make_unique<QgsProcessingContext>();
+      tmpContext = std::make_unique< QgsProcessingContext >();
       context = tmpContext.get();
     }
 
@@ -348,10 +348,10 @@ void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter
 
     // need to grab ownership of layer if required - otherwise layer may be deleted when context
     // goes out of scope
-    std::unique_ptr<QgsMapLayer> ownedLayer( context->takeResultLayer( layer->id() ) );
+    std::unique_ptr< QgsMapLayer > ownedLayer( context->takeResultLayer( layer->id() ) );
     if ( ownedLayer && ownedLayer->type() == Qgis::LayerType::Vector )
     {
-      mDynamicLayer.reset( qobject_cast<QgsVectorLayer *>( ownedLayer.release() ) );
+      mDynamicLayer.reset( qobject_cast< QgsVectorLayer * >( ownedLayer.release() ) );
       layer = mDynamicLayer.get();
     }
     else
@@ -365,7 +365,7 @@ void QgsAbstractProcessingParameterWidgetWrapper::setDynamicParentLayerParameter
 
 QgsProcessingModelerParameterWidget *QgsProcessingParameterWidgetFactoryInterface::createModelerWidgetWrapper( QgsProcessingModelAlgorithm *model, const QString &childId, const QgsProcessingParameterDefinition *parameter, QgsProcessingContext &context )
 {
-  std::unique_ptr<QgsProcessingModelerParameterWidget> widget = std::make_unique<QgsProcessingModelerParameterWidget>( model, childId, parameter, context );
+  std::unique_ptr< QgsProcessingModelerParameterWidget > widget = std::make_unique< QgsProcessingModelerParameterWidget >( model, childId, parameter, context );
   widget->populateSources( compatibleParameterTypes(), compatibleOutputTypes(), compatibleDataTypes( parameter ) );
   widget->setExpressionHelpText( modelerExpressionFormatString() );
 
@@ -377,14 +377,16 @@ QgsProcessingModelerParameterWidget *QgsProcessingParameterWidgetFactoryInterfac
   return widget.release();
 }
 
-QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingParameterWidgetFactoryInterface::createParameterDefinitionWidget( QgsProcessingContext &, const QgsProcessingParameterWidgetContext &, const QgsProcessingParameterDefinition *, const QgsProcessingAlgorithm * )
+QgsProcessingAbstractParameterDefinitionWidget *QgsProcessingParameterWidgetFactoryInterface::createParameterDefinitionWidget( QgsProcessingContext &,
+    const QgsProcessingParameterWidgetContext &, const QgsProcessingParameterDefinition *,
+    const QgsProcessingAlgorithm * )
 {
   return nullptr;
 }
 
 QList<int> QgsProcessingParameterWidgetFactoryInterface::compatibleDataTypes( const QgsProcessingParameterDefinition * ) const
 {
-  return QList<int>();
+  return QList< int >();
 }
 
 QString QgsProcessingParameterWidgetFactoryInterface::modelerExpressionFormatString() const
@@ -406,13 +408,13 @@ QgsExpressionContext QgsProcessingGuiUtils::createExpressionContext( QgsProcessi
 {
   // Get a processing context to start with
   QgsProcessingContext *context = nullptr;
-  std::unique_ptr<QgsProcessingContext> tmpContext;
+  std::unique_ptr< QgsProcessingContext > tmpContext;
   if ( processingContextGenerator )
     context = processingContextGenerator->processingContext();
 
   if ( !context )
   {
-    tmpContext = std::make_unique<QgsProcessingContext>();
+    tmpContext = std::make_unique< QgsProcessingContext >();
     context = tmpContext.get();
   }
 
@@ -455,6 +457,7 @@ QgsExpressionContext QgsProcessingGuiUtils::createExpressionContext( QgsProcessi
 QgsProcessingHiddenWidgetWrapper::QgsProcessingHiddenWidgetWrapper( const QgsProcessingParameterDefinition *parameter, QgsProcessingGui::WidgetType type, QObject *parent )
   : QgsAbstractProcessingParameterWidgetWrapper( parameter, type, parent )
 {
+
 }
 
 void QgsProcessingHiddenWidgetWrapper::setWidgetValue( const QVariant &value, QgsProcessingContext & )
@@ -484,6 +487,7 @@ void QgsProcessingHiddenWidgetWrapper::setLinkedVectorLayer( const QgsVectorLaye
 QWidget *QgsProcessingHiddenWidgetWrapper::createWidget()
 {
   return nullptr;
+
 }
 
 QLabel *QgsProcessingHiddenWidgetWrapper::createLabel()

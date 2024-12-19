@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsdatetimeeditconfig.h"
-#include "moc_qgsdatetimeeditconfig.cpp"
 #include "qgsdatetimeeditfactory.h"
 #include "qgsvectorlayer.h"
 #include "qgsdatetimefieldformatter.h"
@@ -38,8 +37,7 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
       "<table border=\"0\" style=\"margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;\" cellspacing=\"2\" cellpadding=\"0\" bgcolor=\"#f6f6f6\">"
       "<thead><tr>"
       "<td style=\"vertical-align:top; padding-left:10; padding-right:15; padding-top:5; padding-bottom:5;\">"
-      "<p align=\"left\"><span style=\"font-family:'Open Sans,sans-serif'; font-size:12px; font-weight:600; color:#363534;\">"
-    )
+      "<p align=\"left\"><span style=\"font-family:'Open Sans,sans-serif'; font-size:12px; font-weight:600; color:#363534;\">" )
     + tr( "Qt ISO Date format" )
     + QStringLiteral( "</span></p>"
                       "</td>"
@@ -47,7 +45,7 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
                       "<tr>"
                       "<td bgcolor=\"#ffffff\" style=\"vertical-align:top; padding-left:10; padding-right:10; padding-top:3; padding-bottom:3;\">"
                       "<p><span style=\"font-family:'Open Sans,sans-serif'; font-size:11px; color:#66666e; background-color:#ffffff;\">"
-                      "<a href=\"http://www.iso.org/iso/catalogue_detail?csnumber=40874\">" ) //#spellok
+                      "<a href=\"http://www.iso.org/iso/catalogue_detail?csnumber=40874\">" )  //#spellok
     + tr( "ISO 8601" )
     + QStringLiteral( "</a> " )
     + tr( "extended format: either <code>yyyy-MM-dd</code> for dates or <code>yyyy-MM-ddTHH:mm:ss</code> (e.g. 2017-07-24T15:46:29), or with a time-zone suffix (Z for UTC otherwise an offset as [+|-]HH:mm) where appropriate for combined dates and times." )
@@ -60,8 +58,7 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
       "<table border=\"0\" style=\"margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px;\" cellspacing=\"2\" cellpadding=\"0\" bgcolor=\"#f6f6f6\">"
       "<thead><tr>"
       "<td style=\"vertical-align:top; padding-left:10; padding-right:15; padding-top:5; padding-bottom:5;\">"
-      "<p align=\"center\"><span style=\"font-family:'Open Sans,sans-serif'; font-size:12px; font-weight:600; color:#363534;\">"
-    )
+      "<p align=\"center\"><span style=\"font-family:'Open Sans,sans-serif'; font-size:12px; font-weight:600; color:#363534;\">" )
     + tr( "Format" )
     + QStringLiteral( "</span></p>"
                       "</td>"
@@ -395,7 +392,8 @@ QgsDateTimeEditConfig::QgsDateTimeEditConfig( QgsVectorLayer *vl, int fieldIdx, 
   connect( mDisplayFormatEdit, &QLineEdit::textChanged, this, &QgsEditorConfigWidget::changed );
   connect( mCalendarPopupCheckBox, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
   connect( mAllowNullCheckBox, &QAbstractButton::toggled, this, &QgsEditorConfigWidget::changed );
-  connect( mFieldFormatGroupBox, &QGroupBox::toggled, this, [=]( bool checked ) {
+  connect( mFieldFormatGroupBox, &QGroupBox::toggled, this, [ = ]( bool checked )
+  {
     //reset to default value when unchecking
     if ( !checked )
     {

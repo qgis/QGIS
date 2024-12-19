@@ -70,13 +70,6 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
      * \since QGIS 3.18
      */
     void showIdentifyResults( const QList<IdentifyResult> &identifyResults );
-
-    /**
-     * Returns a pointer to the identify results dialog for name/value pairs
-     * \since QGIS 3.42
-     */
-    QgsIdentifyResultsDialog *resultsDialog();
-
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
     void handleChangedRasterResults( QList<QgsMapToolIdentify::IdentifyResult> &results );
@@ -97,6 +90,7 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     QgsMapToolSelectionHandler *mSelectionHandler = nullptr;
     bool mShowExtendedMenu = false;
 
+    QgsIdentifyResultsDialog *resultsDialog();
 
     Qgis::DistanceUnit displayDistanceUnits() const override;
     Qgis::AreaUnit displayAreaUnits() const override;

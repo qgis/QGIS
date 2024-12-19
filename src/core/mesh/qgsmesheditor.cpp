@@ -16,7 +16,6 @@
 
 #include "qgis.h"
 #include "qgsmesheditor.h"
-#include "moc_qgsmesheditor.cpp"
 #include "qgsmeshdataprovider.h"
 #include "qgstriangularmesh.h"
 #include "qgsmeshlayer.h"

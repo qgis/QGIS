@@ -25,6 +25,12 @@ namespace QgsWms
   /**
    * Output GetPrint response
    */
-  void writeGetPrint( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response );
+  void writeGetPrint( QgsServerInterface *serverIface, const QgsProject *project,
+                      const QgsWmsRequest &request,
+                      QgsServerResponse &response );
 
 } // namespace QgsWms
+
+
+
+

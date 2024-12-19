@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Nyall Dawson"
-__date__ = "May 2013"
-__copyright__ = "(C) 2013, Nyall Dawson, Massimo Endrighi"
+__author__ = 'Nyall Dawson'
+__date__ = 'May 2013'
+__copyright__ = '(C) 2013, Nyall Dawson, Massimo Endrighi'
 
 import os
 import unittest
@@ -49,35 +49,31 @@ class TestQgsBlendModes(QgisTestCase):
         QgisTestCase.__init__(self, methodName)
 
         # create point layer
-        shp_file = os.path.join(TEST_DATA_DIR, "points.shp")
-        self.point_layer = QgsVectorLayer(shp_file, "Points", "ogr")
+        shp_file = os.path.join(TEST_DATA_DIR, 'points.shp')
+        self.point_layer = QgsVectorLayer(shp_file, 'Points', 'ogr')
 
         simplify_method = QgsVectorSimplifyMethod()
-        simplify_method.setSimplifyHints(
-            QgsVectorSimplifyMethod.SimplifyHint.NoSimplification
-        )
+        simplify_method.setSimplifyHints(QgsVectorSimplifyMethod.SimplifyHint.NoSimplification)
 
         # create polygon layer
-        shp_file = os.path.join(TEST_DATA_DIR, "polys.shp")
-        self.polygon_layer = QgsVectorLayer(shp_file, "Polygons", "ogr")
+        shp_file = os.path.join(TEST_DATA_DIR, 'polys.shp')
+        self.polygon_layer = QgsVectorLayer(shp_file, 'Polygons', 'ogr')
         self.polygon_layer.setSimplifyMethod(simplify_method)
 
         # create line layer
-        shp_file = os.path.join(TEST_DATA_DIR, "lines.shp")
-        self.line_layer = QgsVectorLayer(shp_file, "Lines", "ogr")
+        shp_file = os.path.join(TEST_DATA_DIR, 'lines.shp')
+        self.line_layer = QgsVectorLayer(shp_file, 'Lines', 'ogr')
         self.line_layer.setSimplifyMethod(simplify_method)
 
         # create two raster layers
-        raster_file = os.path.join(TEST_DATA_DIR, "rgb256x256.png")
+        raster_file = os.path.join(TEST_DATA_DIR, 'rgb256x256.png')
         self.raster_layer1 = QgsRasterLayer(raster_file, "raster1")
         self.raster_layer2 = QgsRasterLayer(raster_file, "raster2")
-        multi_band_renderer1 = QgsMultiBandColorRenderer(
-            self.raster_layer1.dataProvider(), 1, 2, 3
-        )
+        multi_band_renderer1 = QgsMultiBandColorRenderer(self.raster_layer1.dataProvider(), 1, 2,
+                                                         3)
         self.raster_layer1.setRenderer(multi_band_renderer1)
-        multi_band_renderer2 = QgsMultiBandColorRenderer(
-            self.raster_layer2.dataProvider(), 1, 2, 3
-        )
+        multi_band_renderer2 = QgsMultiBandColorRenderer(self.raster_layer2.dataProvider(), 1, 2,
+                                                         3)
         self.raster_layer2.setRenderer(multi_band_renderer2)
 
         # to match blend modes test comparisons background
@@ -87,12 +83,8 @@ class TestQgsBlendModes(QgisTestCase):
         self.map_settings.setOutputSize(QSize(400, 400))
         self.map_settings.setOutputDpi(96)
 
-        self.extent = QgsRectangle(
-            -118.8888888888887720,
-            22.8002070393376783,
-            -83.3333333333331581,
-            46.8719806763287536,
-        )
+        self.extent = QgsRectangle(-118.8888888888887720, 22.8002070393376783,
+                                   -83.3333333333331581, 46.8719806763287536)
 
     def testVectorBlending(self):
         """Test that blend modes work for vector layers."""
@@ -102,28 +94,20 @@ class TestQgsBlendModes(QgisTestCase):
         self.map_settings.setExtent(self.extent)
 
         # Set blending modes for both layers
-        self.line_layer.setBlendMode(
-            QPainter.CompositionMode.CompositionMode_Difference
-        )
-        self.polygon_layer.setBlendMode(
-            QPainter.CompositionMode.CompositionMode_Difference
-        )
+        self.line_layer.setBlendMode(QPainter.CompositionMode.CompositionMode_Difference)
+        self.polygon_layer.setBlendMode(QPainter.CompositionMode.CompositionMode_Difference)
 
         result = self.render_map_settings_check(
-            "vector_blendmodes",
-            "vector_blendmodes",
+            'vector_blendmodes',
+            'vector_blendmodes',
             self.map_settings,
             allowed_mismatch=20,
-            color_tolerance=1,
+            color_tolerance=1
         )
 
         # Reset layers
-        self.line_layer.setBlendMode(
-            QPainter.CompositionMode.CompositionMode_SourceOver
-        )
-        self.polygon_layer.setBlendMode(
-            QPainter.CompositionMode.CompositionMode_SourceOver
-        )
+        self.line_layer.setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
+        self.polygon_layer.setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
 
         self.assertTrue(result)
 
@@ -135,22 +119,18 @@ class TestQgsBlendModes(QgisTestCase):
         self.map_settings.setExtent(self.extent)
 
         # Set feature blending for line layer
-        self.line_layer.setFeatureBlendMode(
-            QPainter.CompositionMode.CompositionMode_Plus
-        )
+        self.line_layer.setFeatureBlendMode(QPainter.CompositionMode.CompositionMode_Plus)
 
         result = self.render_map_settings_check(
-            "vector_featureblendmodes",
-            "vector_featureblendmodes",
+            'vector_featureblendmodes',
+            'vector_featureblendmodes',
             self.map_settings,
             allowed_mismatch=20,
-            color_tolerance=1,
+            color_tolerance=1
         )
 
         # Reset layers
-        self.line_layer.setFeatureBlendMode(
-            QPainter.CompositionMode.CompositionMode_SourceOver
-        )
+        self.line_layer.setFeatureBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
 
         self.assertTrue(result)
 
@@ -165,11 +145,11 @@ class TestQgsBlendModes(QgisTestCase):
         self.line_layer.setOpacity(0.5)
 
         result = self.render_map_settings_check(
-            "vector_layertransparency",
-            "vector_layertransparency",
+            'vector_layertransparency',
+            'vector_layertransparency',
             self.map_settings,
             allowed_mismatch=20,
-            color_tolerance=1,
+            color_tolerance=1
         )
 
         self.line_layer.setOpacity(1)
@@ -182,21 +162,17 @@ class TestQgsBlendModes(QgisTestCase):
         self.map_settings.setExtent(self.raster_layer1.extent())
 
         # Set blending mode for top layer
-        self.raster_layer1.setBlendMode(
-            QPainter.CompositionMode.CompositionMode_Difference
-        )
+        self.raster_layer1.setBlendMode(QPainter.CompositionMode.CompositionMode_Difference)
 
         result = self.render_map_settings_check(
-            "raster_blendmodes",
-            "raster_blendmodes",
+            'raster_blendmodes',
+            'raster_blendmodes',
             self.map_settings,
             allowed_mismatch=20,
-            color_tolerance=1,
+            color_tolerance=1
         )
 
-        self.raster_layer1.setBlendMode(
-            QPainter.CompositionMode.CompositionMode_SourceOver
-        )
+        self.raster_layer1.setBlendMode(QPainter.CompositionMode.CompositionMode_SourceOver)
 
         self.assertTrue(result)
 
@@ -211,5 +187,5 @@ class TestQgsBlendModes(QgisTestCase):
         self.assertTrue(QgsPainting.isClippingMode(Qgis.BlendMode.DestinationAtop))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

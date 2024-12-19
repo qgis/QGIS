@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgs3dviewsmanagerdialog.h"
-#include "moc_qgs3dviewsmanagerdialog.cpp"
 
 #include "qgisapp.h"
 #include "qgsnewnamedialog.h"

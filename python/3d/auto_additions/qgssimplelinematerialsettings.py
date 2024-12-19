@@ -3,5 +3,5 @@ try:
     QgsSimpleLineMaterialSettings.supportsTechnique = staticmethod(QgsSimpleLineMaterialSettings.supportsTechnique)
     QgsSimpleLineMaterialSettings.create = staticmethod(QgsSimpleLineMaterialSettings.create)
     QgsSimpleLineMaterialSettings.__group__ = ['materials']
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -36,6 +36,7 @@ class APP_EXPORT QgsUserProfileSelectionDialog : public QDialog, private Ui::Qgs
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsUserProfileSelectionDialog.
      * \param manager QgsUserProfileManager manager that will be used to fill the list of profiles
@@ -56,6 +57,8 @@ class APP_EXPORT QgsUserProfileSelectionDialog : public QDialog, private Ui::Qgs
 
   private:
     QgsUserProfileManager *mManager = nullptr;
+
+
 };
 
 #endif // QGSUSERPROFILESELECTIONDIALOG_H

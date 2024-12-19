@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsbrowserproxymodel.h"
-#include "moc_qgsbrowserproxymodel.cpp"
 #include "qgsbrowsermodel.h"
 #include "qgslayeritem.h"
 #include "qgsdatacollectionitem.h"

@@ -5,9 +5,9 @@ try:
     QgsDataItem.pathComponent = staticmethod(QgsDataItem.pathComponent)
     QgsDataItem.__signal_arguments__ = {'beginInsertItems': ['parent: QgsDataItem', 'first: int', 'last: int'], 'beginRemoveItems': ['parent: QgsDataItem', 'first: int', 'last: int'], 'dataChanged': ['item: QgsDataItem'], 'stateChanged': ['item: QgsDataItem', 'oldState: Qgis.BrowserItemState'], 'connectionsChanged': ['providerKey: Optional[str] = None']}
     QgsDataItem.__group__ = ['browser']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsErrorItem.__group__ = ['browser']
-except (NameError, AttributeError):
+except NameError:
     pass

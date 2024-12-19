@@ -129,6 +129,7 @@ class CORE_EXPORT QgsNetworkContentFetcherTask : public QgsTask
     QString mAuthcfg;
     QgsNetworkContentFetcher *mFetcher = nullptr;
     QString mMode;
+    QIODevice *mContent = nullptr;
 };
 
 #endif //QGSNETWORKCONTENTFETCHERTASK_H

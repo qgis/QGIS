@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Nyall Dawson"
-__date__ = "September 2020"
-__copyright__ = "(C) 2020, Nyall Dawson"
+__author__ = 'Nyall Dawson'
+__date__ = 'September 2020'
+__copyright__ = '(C) 2020, Nyall Dawson'
 
 import os
 
@@ -54,34 +54,30 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
 
     def testRender(self):
         # rendering test
-        s = QgsFillSymbol.createSimple(
-            {"outline_color": "#ff0000", "outline_width": "2", "color": "#ff5588"}
-        )
+        s = QgsFillSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2', 'color': '#ff5588'})
 
-        g = QgsGeometry.fromWkt("Polygon((0 0, 10 0, 10 10, 0 0))")
+        g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 0))')
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(
-            self.image_check("simplefill_render", "simplefill_render", rendered_image)
+            self.image_check('simplefill_render', 'simplefill_render', rendered_image)
         )
 
     def testRenderWithOffset(self):
         # rendering test with offset
-        s = QgsFillSymbol.createSimple(
-            {"outline_color": "#ff0000", "outline_width": "2", "color": "#ff5588"}
-        )
+        s = QgsFillSymbol.createSimple({'outline_color': '#ff0000', 'outline_width': '2', 'color': '#ff5588'})
         s[0].setOffset(QPointF(5, 3))
 
-        g = QgsGeometry.fromWkt("Polygon((0 0, 10 0, 10 10, 0 0))")
+        g = QgsGeometry.fromWkt('Polygon((0 0, 10 0, 10 10, 0 0))')
         rendered_image = self.renderGeometry(s, g)
         self.assertTrue(
-            self.image_check("simplefill_offset", "simplefill_offset", rendered_image)
+            self.image_check('simplefill_offset', 'simplefill_offset', rendered_image)
         )
 
     def testDataDefinedOffset(self):
-        """test that rendering a fill symbol with data defined offset works"""
+        """ test that rendering a fill symbol with data defined offset works"""
 
-        polys_shp = os.path.join(TEST_DATA_DIR, "polys.shp")
-        polys_layer = QgsVectorLayer(polys_shp, "Polygons", "ogr")
+        polys_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
+        polys_layer = QgsVectorLayer(polys_shp, 'Polygons', 'ogr')
 
         # lets render two layers, to make comparison easier
         layer = QgsSimpleFillSymbolLayer()
@@ -92,12 +88,7 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
         symbol.changeSymbolLayer(0, layer)
 
         layer = QgsSimpleFillSymbolLayer()
-        layer.setDataDefinedProperty(
-            QgsSymbolLayer.Property.PropertyOffset,
-            QgsProperty.fromExpression(
-                "array(-(x_min($geometry)+100)/5, (y_min($geometry)-35)/5)"
-            ),
-        )
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyOffset, QgsProperty.fromExpression("array(-(x_min($geometry)+100)/5, (y_min($geometry)-35)/5)"))
         layer.setStrokeStyle(Qt.PenStyle.NoPen)
         layer.setColor(QColor(100, 150, 150))
 
@@ -113,27 +104,21 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
 
         # Test rendering
         self.assertTrue(
-            self.render_map_settings_check(
-                "simplefill_ddoffset", "simplefill_ddoffset", ms
-            )
+            self.render_map_settings_check('simplefill_ddoffset', 'simplefill_ddoffset', ms)
         )
 
     def testOpacityWithDataDefinedColor(self):
-        poly_shp = os.path.join(TEST_DATA_DIR, "polys.shp")
-        poly_layer = QgsVectorLayer(poly_shp, "Polys", "ogr")
+        poly_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
+        poly_layer = QgsVectorLayer(poly_shp, 'Polys', 'ogr')
         self.assertTrue(poly_layer.isValid())
 
         layer = QgsSimpleFillSymbolLayer()
         layer.setStrokeStyle(Qt.PenStyle.NoPen)
         layer.setColor(QColor(200, 250, 50))
-        layer.setDataDefinedProperty(
-            QgsSymbolLayer.Property.PropertyFillColor,
-            QgsProperty.fromExpression("if(Name='Dam', 'red', 'green')"),
-        )
-        layer.setDataDefinedProperty(
-            QgsSymbolLayer.Property.PropertyStrokeColor,
-            QgsProperty.fromExpression("if(Name='Dam', 'magenta', 'blue')"),
-        )
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyFillColor, QgsProperty.fromExpression(
+            "if(Name='Dam', 'red', 'green')"))
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeColor, QgsProperty.fromExpression(
+            "if(Name='Dam', 'magenta', 'blue')"))
 
         symbol = QgsFillSymbol()
         symbol.changeSymbolLayer(0, layer)
@@ -150,35 +135,26 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
 
         # Test rendering
         self.assertTrue(
-            self.render_map_settings_check(
-                "simplefill_opacityddcolor", "simplefill_opacityddcolor", ms
-            )
+            self.render_map_settings_check('simplefill_opacityddcolor', 'simplefill_opacityddcolor', ms)
         )
 
     def testDataDefinedOpacity(self):
-        poly_shp = os.path.join(TEST_DATA_DIR, "polys.shp")
-        poly_layer = QgsVectorLayer(poly_shp, "Polys", "ogr")
+        poly_shp = os.path.join(TEST_DATA_DIR, 'polys.shp')
+        poly_layer = QgsVectorLayer(poly_shp, 'Polys', 'ogr')
         self.assertTrue(poly_layer.isValid())
 
         layer = QgsSimpleFillSymbolLayer()
         layer.setStrokeStyle(Qt.PenStyle.NoPen)
         layer.setColor(QColor(200, 250, 50))
-        layer.setDataDefinedProperty(
-            QgsSymbolLayer.Property.PropertyFillColor,
-            QgsProperty.fromExpression("if(Name='Dam', 'red', 'green')"),
-        )
-        layer.setDataDefinedProperty(
-            QgsSymbolLayer.Property.PropertyStrokeColor,
-            QgsProperty.fromExpression("if(Name='Dam', 'magenta', 'blue')"),
-        )
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyFillColor, QgsProperty.fromExpression(
+            "if(Name='Dam', 'red', 'green')"))
+        layer.setDataDefinedProperty(QgsSymbolLayer.Property.PropertyStrokeColor, QgsProperty.fromExpression(
+            "if(Name='Dam', 'magenta', 'blue')"))
 
         symbol = QgsFillSymbol()
         symbol.changeSymbolLayer(0, layer)
 
-        symbol.setDataDefinedProperty(
-            QgsSymbol.Property.PropertyOpacity,
-            QgsProperty.fromExpression('if("Value" >10, 25, 50)'),
-        )
+        symbol.setDataDefinedProperty(QgsSymbol.Property.PropertyOpacity, QgsProperty.fromExpression("if(\"Value\" >10, 25, 50)"))
 
         poly_layer.setRenderer(QgsSingleSymbolRenderer(symbol))
 
@@ -190,9 +166,7 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
 
         # Test rendering
         self.assertTrue(
-            self.render_map_settings_check(
-                "simplefill_ddopacity", "simplefill_ddopacity", ms
-            )
+            self.render_map_settings_check('simplefill_ddopacity', 'simplefill_ddopacity', ms)
         )
 
     def renderGeometry(self, symbol, geom):
@@ -228,5 +202,5 @@ class TestQgsSimpleFillSymbolLayer(QgisTestCase):
         return image
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

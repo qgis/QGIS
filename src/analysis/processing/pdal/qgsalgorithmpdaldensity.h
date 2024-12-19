@@ -30,7 +30,9 @@
  */
 class QgsPdalDensityAlgorithm : public QgsPdalAlgorithmBase
 {
+
   public:
+
     QgsPdalDensityAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -41,7 +43,8 @@ class QgsPdalDensityAlgorithm : public QgsPdalAlgorithmBase
     QString shortHelpString() const override;
     QgsPdalDensityAlgorithm *createInstance() const override SIP_FACTORY;
 
-    QStringList createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QStringList createArgumentLists( const QVariantMap &parameters,
+                                     QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
     friend class TestQgsProcessingPdalAlgs;
 };

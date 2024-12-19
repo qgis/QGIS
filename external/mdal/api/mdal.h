@@ -443,14 +443,6 @@ MDAL_EXPORT MDAL_DatasetGroupH MDAL_M_addDatasetGroup(
   const char *datasetGroupFile );
 
 /**
- * Removes DatasetGroup from Mesh based on it's index. On error see MDAL_LastStatus
- * for error type.
- *
- * \since MDAL 1.3.0
- */
-MDAL_EXPORT void MDAL_M_RemoveDatasetGroup( MDAL_MeshH mesh, int index );
-
-/**
  * Returns name of MDAL driver
  * not thread-safe and valid only till next call
  */
@@ -594,13 +586,6 @@ MDAL_EXPORT void MDAL_G_setMetadata( MDAL_DatasetGroupH group, const char *key, 
  * not thread-safe and valid only till next call
  */
 MDAL_EXPORT const char *MDAL_G_name( MDAL_DatasetGroupH group );
-
-/**
- * Sets dataset group name
- *
- * \since MDAL 1.3.0
- */
-MDAL_EXPORT void MDAL_G_setName( MDAL_DatasetGroupH group, const char *name );
 
 /**
  * Returns name of MDAL driver

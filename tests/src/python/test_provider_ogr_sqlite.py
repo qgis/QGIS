@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Even Rouault"
-__date__ = "2016-06-01"
-__copyright__ = "Copyright 2016, Even Rouault"
+__author__ = 'Even Rouault'
+__date__ = '2016-06-01'
+__copyright__ = 'Copyright 2016, Even Rouault'
 
 import os
 import shutil
@@ -34,7 +33,7 @@ start_app()
 
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
-    return (maj) * 1000000 + (min) * 10000 + (rev) * 100
+    return ((maj) * 1000000 + (min) * 10000 + (rev) * 100)
 
 
 class TestPyQgsOGRProviderSqlite(QgisTestCase):
@@ -53,125 +52,72 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
         super().tearDownClass()
 
     def testFidSupport(self):
-        tmpfile = os.path.join(self.basetestpath, "testFidSupport.sqlite")
-        ds = ogr.GetDriverByName("SQLite").CreateDataSource(tmpfile)
-        lyr = ds.CreateLayer("test", geom_type=ogr.wkbPoint, options=["FID=fid"])
-        lyr.CreateField(ogr.FieldDefn("strfield", ogr.OFTString))
-        lyr.CreateField(ogr.FieldDefn("intfield", ogr.OFTInteger))
+        tmpfile = os.path.join(self.basetestpath, 'testFidSupport.sqlite')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['FID=fid'])
+        lyr.CreateField(ogr.FieldDefn('strfield', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('intfield', ogr.OFTInteger))
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(12)
-        f.SetField(0, "foo")
+        f.SetField(0, 'foo')
         f.SetField(1, 123)
         lyr.CreateFeature(f)
         f = None
         ds = None
 
-        vl = QgsVectorLayer(f"{tmpfile}", "test", "ogr")
+        vl = QgsVectorLayer(f'{tmpfile}', 'test', 'ogr')
         self.assertEqual(len(vl.fields()), 3)
-        got = [
-            (f.attribute("fid"), f.attribute("strfield"), f.attribute("intfield"))
-            for f in vl.getFeatures()
-        ]
-        self.assertEqual(got, [(12, "foo", 123)])
+        got = [(f.attribute('fid'), f.attribute('strfield'), f.attribute('intfield')) for f in vl.getFeatures()]
+        self.assertEqual(got, [(12, 'foo', 123)])
 
-        got = [
-            (f.attribute("fid"), f.attribute("strfield"))
-            for f in vl.getFeatures(
-                QgsFeatureRequest().setFilterExpression("strfield = 'foo'")
-            )
-        ]
-        self.assertEqual(got, [(12, "foo")])
+        got = [(f.attribute('fid'), f.attribute('strfield')) for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression("strfield = 'foo'"))]
+        self.assertEqual(got, [(12, 'foo')])
 
-        got = [
-            (f.attribute("fid"), f.attribute("strfield"))
-            for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression("fid = 12"))
-        ]
-        self.assertEqual(got, [(12, "foo")])
+        got = [(f.attribute('fid'), f.attribute('strfield')) for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression("fid = 12"))]
+        self.assertEqual(got, [(12, 'foo')])
 
-        result = [
-            f["strfield"]
-            for f in vl.dataProvider().getFeatures(
-                QgsFeatureRequest().setSubsetOfAttributes(
-                    ["strfield"], vl.dataProvider().fields()
-                )
-            )
-        ]
-        self.assertEqual(result, ["foo"])
+        result = [f['strfield'] for f in vl.dataProvider().getFeatures(QgsFeatureRequest().setSubsetOfAttributes(['strfield'], vl.dataProvider().fields()))]
+        self.assertEqual(result, ['foo'])
 
-        result = [
-            f["fid"]
-            for f in vl.dataProvider().getFeatures(
-                QgsFeatureRequest().setSubsetOfAttributes(
-                    ["fid"], vl.dataProvider().fields()
-                )
-            )
-        ]
+        result = [f['fid'] for f in vl.dataProvider().getFeatures(QgsFeatureRequest().setSubsetOfAttributes(['fid'], vl.dataProvider().fields()))]
         self.assertEqual(result, [12])
 
         # Test that when the 'fid' field is not set, regular insertion is done
         f = QgsFeature()
         f.setFields(vl.fields())
-        f.setAttributes([None, "automatic_id"])
+        f.setAttributes([None, 'automatic_id'])
         (res, out_f) = vl.dataProvider().addFeatures([f])
         self.assertEqual(out_f[0].id(), 13)
-        self.assertEqual(out_f[0].attribute("fid"), 13)
-        self.assertEqual(out_f[0].attribute("strfield"), "automatic_id")
+        self.assertEqual(out_f[0].attribute('fid'), 13)
+        self.assertEqual(out_f[0].attribute('strfield'), 'automatic_id')
 
         # Test that when the 'fid' field is set, it is really used to set the id
         f = QgsFeature()
         f.setFields(vl.fields())
-        f.setAttributes([9876543210, "bar"])
+        f.setAttributes([9876543210, 'bar'])
         (res, out_f) = vl.dataProvider().addFeatures([f])
         self.assertEqual(out_f[0].id(), 9876543210)
-        self.assertEqual(out_f[0].attribute("fid"), 9876543210)
-        self.assertEqual(out_f[0].attribute("strfield"), "bar")
+        self.assertEqual(out_f[0].attribute('fid'), 9876543210)
+        self.assertEqual(out_f[0].attribute('strfield'), 'bar')
 
-        got = [
-            (f.attribute("fid"), f.attribute("strfield"))
-            for f in vl.getFeatures(
-                QgsFeatureRequest().setFilterExpression("fid = 9876543210")
-            )
-        ]
-        self.assertEqual(got, [(9876543210, "bar")])
+        got = [(f.attribute('fid'), f.attribute('strfield')) for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression("fid = 9876543210"))]
+        self.assertEqual(got, [(9876543210, 'bar')])
 
-        self.assertTrue(
-            vl.dataProvider().changeAttributeValues({9876543210: {1: "baz"}})
-        )
+        self.assertTrue(vl.dataProvider().changeAttributeValues({9876543210: {1: 'baz'}}))
 
-        got = [
-            (f.attribute("fid"), f.attribute("strfield"))
-            for f in vl.getFeatures(
-                QgsFeatureRequest().setFilterExpression("fid = 9876543210")
-            )
-        ]
-        self.assertEqual(got, [(9876543210, "baz")])
+        got = [(f.attribute('fid'), f.attribute('strfield')) for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression("fid = 9876543210"))]
+        self.assertEqual(got, [(9876543210, 'baz')])
 
-        self.assertTrue(
-            vl.dataProvider().changeAttributeValues(
-                {9876543210: {0: 9876543210, 1: "baw"}}
-            )
-        )
+        self.assertTrue(vl.dataProvider().changeAttributeValues({9876543210: {0: 9876543210, 1: 'baw'}}))
 
-        got = [
-            (f.attribute("fid"), f.attribute("strfield"))
-            for f in vl.getFeatures(
-                QgsFeatureRequest().setFilterExpression("fid = 9876543210")
-            )
-        ]
-        self.assertEqual(got, [(9876543210, "baw")])
+        got = [(f.attribute('fid'), f.attribute('strfield')) for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression("fid = 9876543210"))]
+        self.assertEqual(got, [(9876543210, 'baw')])
 
         # Not allowed: changing the fid regular field
-        self.assertFalse(
-            vl.dataProvider().changeAttributeValues({9876543210: {0: 12, 1: "baw"}})
-        )
+        self.assertFalse(vl.dataProvider().changeAttributeValues({9876543210: {0: 12, 1: 'baw'}}))
 
-        got = [
-            (f.attribute("fid"), f.attribute("strfield"))
-            for f in vl.getFeatures(
-                QgsFeatureRequest().setFilterExpression("fid = 9876543210")
-            )
-        ]
-        self.assertEqual(got, [(9876543210, "baw")])
+        got = [(f.attribute('fid'), f.attribute('strfield')) for f in vl.getFeatures(QgsFeatureRequest().setFilterExpression("fid = 9876543210"))]
+        self.assertEqual(got, [(9876543210, 'baw')])
 
         # Cannot delete fid
         self.assertFalse(vl.dataProvider().deleteAttributes([0]))
@@ -179,97 +125,65 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
         # Delete first "genuine" attribute
         self.assertTrue(vl.dataProvider().deleteAttributes([1]))
 
-        got = [
-            (f.attribute("fid"), f.attribute("intfield"))
-            for f in vl.dataProvider().getFeatures(
-                QgsFeatureRequest().setFilterExpression("fid = 12")
-            )
-        ]
+        got = [(f.attribute('fid'), f.attribute('intfield')) for f in vl.dataProvider().getFeatures(QgsFeatureRequest().setFilterExpression("fid = 12"))]
         self.assertEqual(got, [(12, 123)])
 
     def testNotNullConstraint(self):
-        """test detection of not null constraint on OGR layer"""
+        """ test detection of not null constraint on OGR layer """
 
-        tmpfile = os.path.join(self.basetestpath, "testNotNullConstraint.sqlite")
-        ds = ogr.GetDriverByName("SQLite").CreateDataSource(tmpfile)
-        lyr = ds.CreateLayer("test", geom_type=ogr.wkbPoint, options=["FID=fid"])
-        lyr.CreateField(ogr.FieldDefn("field1", ogr.OFTInteger))
-        fld2 = ogr.FieldDefn("field2", ogr.OFTInteger)
+        tmpfile = os.path.join(self.basetestpath, 'testNotNullConstraint.sqlite')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['FID=fid'])
+        lyr.CreateField(ogr.FieldDefn('field1', ogr.OFTInteger))
+        fld2 = ogr.FieldDefn('field2', ogr.OFTInteger)
         fld2.SetNullable(False)
         lyr.CreateField(fld2)
         ds = None
 
-        vl = QgsVectorLayer(f"{tmpfile}", "test", "ogr")
+        vl = QgsVectorLayer(f'{tmpfile}', 'test', 'ogr')
         self.assertTrue(vl.isValid())
 
         # test some bad indexes
-        self.assertEqual(
-            vl.dataProvider().fieldConstraints(-1), QgsFieldConstraints.Constraints()
-        )
-        self.assertEqual(
-            vl.dataProvider().fieldConstraints(1001), QgsFieldConstraints.Constraints()
-        )
+        self.assertEqual(vl.dataProvider().fieldConstraints(-1), QgsFieldConstraints.Constraints())
+        self.assertEqual(vl.dataProvider().fieldConstraints(1001), QgsFieldConstraints.Constraints())
 
-        self.assertTrue(
-            vl.dataProvider().fieldConstraints(0)
-            & QgsFieldConstraints.Constraint.ConstraintNotNull
-        )
-        self.assertFalse(
-            vl.dataProvider().fieldConstraints(1)
-            & QgsFieldConstraints.Constraint.ConstraintNotNull
-        )
-        self.assertTrue(
-            vl.dataProvider().fieldConstraints(2)
-            & QgsFieldConstraints.Constraint.ConstraintNotNull
-        )
+        self.assertTrue(vl.dataProvider().fieldConstraints(0) & QgsFieldConstraints.Constraint.ConstraintNotNull)
+        self.assertFalse(vl.dataProvider().fieldConstraints(1) & QgsFieldConstraints.Constraint.ConstraintNotNull)
+        self.assertTrue(vl.dataProvider().fieldConstraints(2) & QgsFieldConstraints.Constraint.ConstraintNotNull)
 
         # test that constraints have been saved to fields correctly
         fields = vl.fields()
-        self.assertTrue(
-            fields.at(0).constraints().constraints()
-            & QgsFieldConstraints.Constraint.ConstraintNotNull
-        )
-        self.assertFalse(
-            fields.at(1).constraints().constraints()
-            & QgsFieldConstraints.Constraint.ConstraintNotNull
-        )
-        self.assertTrue(
-            fields.at(2).constraints().constraints()
-            & QgsFieldConstraints.Constraint.ConstraintNotNull
-        )
-        self.assertEqual(
-            fields.at(2)
-            .constraints()
-            .constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull),
-            QgsFieldConstraints.ConstraintOrigin.ConstraintOriginProvider,
-        )
+        self.assertTrue(fields.at(0).constraints().constraints() & QgsFieldConstraints.Constraint.ConstraintNotNull)
+        self.assertFalse(fields.at(1).constraints().constraints() & QgsFieldConstraints.Constraint.ConstraintNotNull)
+        self.assertTrue(fields.at(2).constraints().constraints() & QgsFieldConstraints.Constraint.ConstraintNotNull)
+        self.assertEqual(fields.at(2).constraints().constraintOrigin(QgsFieldConstraints.Constraint.ConstraintNotNull), QgsFieldConstraints.ConstraintOrigin.ConstraintOriginProvider)
 
     def testDefaultValues(self):
-        """test detection of defaults on OGR layer"""
+        """ test detection of defaults on OGR layer """
 
-        tmpfile = os.path.join(self.basetestpath, "testDefaults.sqlite")
-        ds = ogr.GetDriverByName("SQLite").CreateDataSource(tmpfile)
-        lyr = ds.CreateLayer("test", geom_type=ogr.wkbPoint, options=["FID=fid"])
-        lyr.CreateField(ogr.FieldDefn("field1", ogr.OFTInteger))
-        fld2 = ogr.FieldDefn("field2", ogr.OFTInteger)
-        fld2.SetDefault("5")
+        tmpfile = os.path.join(self.basetestpath, 'testDefaults.sqlite')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['FID=fid'])
+        lyr.CreateField(ogr.FieldDefn('field1', ogr.OFTInteger))
+        fld2 = ogr.FieldDefn('field2', ogr.OFTInteger)
+        fld2.SetDefault('5')
         lyr.CreateField(fld2)
-        fld3 = ogr.FieldDefn("field3", ogr.OFTString)
+        fld3 = ogr.FieldDefn('field3', ogr.OFTString)
         fld3.SetDefault("'some ''default'")
         lyr.CreateField(fld3)
-        fld4 = ogr.FieldDefn("field4", ogr.OFTDate)
+        fld4 = ogr.FieldDefn('field4', ogr.OFTDate)
         fld4.SetDefault("CURRENT_DATE")
         lyr.CreateField(fld4)
-        fld5 = ogr.FieldDefn("field5", ogr.OFTTime)
+        fld5 = ogr.FieldDefn('field5', ogr.OFTTime)
         fld5.SetDefault("CURRENT_TIME")
         lyr.CreateField(fld5)
-        fld6 = ogr.FieldDefn("field6", ogr.OFTDateTime)
+        fld6 = ogr.FieldDefn('field6', ogr.OFTDateTime)
         fld6.SetDefault("CURRENT_TIMESTAMP")
         lyr.CreateField(fld6)
 
         ds = None
 
-        vl = QgsVectorLayer(f"{tmpfile}", "test", "ogr")
+        vl = QgsVectorLayer(f'{tmpfile}', 'test', 'ogr')
         self.assertTrue(vl.isValid())
 
         # test some bad indexes
@@ -282,73 +196,69 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
         self.assertEqual(vl.dataProvider().defaultValue(3), "some 'default")
         self.assertEqual(vl.dataProvider().defaultValue(4), QDate.currentDate())
         # time may pass, so we allow 1 second difference here
-        self.assertLess(
-            vl.dataProvider().defaultValue(5).secsTo(QTime.currentTime()), 1
-        )
-        self.assertLess(
-            vl.dataProvider().defaultValue(6).secsTo(QDateTime.currentDateTime()), 1
-        )
+        self.assertLess(vl.dataProvider().defaultValue(5).secsTo(QTime.currentTime()), 1)
+        self.assertLess(vl.dataProvider().defaultValue(6).secsTo(QDateTime.currentDateTime()), 1)
 
     def testSubsetStringFids(self):
         """
-        - tests that feature ids are stable even if a subset string is set
-        - tests that the subset string is correctly set on the ogr layer event when reloading the data source (issue #17122)
+          - tests that feature ids are stable even if a subset string is set
+          - tests that the subset string is correctly set on the ogr layer event when reloading the data source (issue #17122)
         """
 
-        tmpfile = os.path.join(self.basetestpath, "subsetStringFids.sqlite")
-        ds = ogr.GetDriverByName("SQLite").CreateDataSource(tmpfile)
-        lyr = ds.CreateLayer("test", geom_type=ogr.wkbPoint, options=["FID=fid"])
-        lyr.CreateField(ogr.FieldDefn("type", ogr.OFTInteger))
-        lyr.CreateField(ogr.FieldDefn("value", ogr.OFTInteger))
+        tmpfile = os.path.join(self.basetestpath, 'subsetStringFids.sqlite')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['FID=fid'])
+        lyr.CreateField(ogr.FieldDefn('type', ogr.OFTInteger))
+        lyr.CreateField(ogr.FieldDefn('value', ogr.OFTInteger))
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(0)
         f.SetField(0, 1)
         f.SetField(1, 11)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point (0 0)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (0 0)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(1)
         f.SetField(0, 1)
         f.SetField(1, 12)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point (1 1)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (1 1)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(2)
         f.SetField(0, 1)
         f.SetField(1, 13)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point (2 2)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (2 2)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(3)
         f.SetField(0, 2)
         f.SetField(1, 14)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point (3 3)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (3 3)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(4)
         f.SetField(0, 2)
         f.SetField(1, 15)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point (4 4)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (4 4)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(5)
         f.SetField(0, 2)
         f.SetField(1, 16)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point (5 5)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (5 5)'))
         lyr.CreateFeature(f)
         f = None
         ds = None
 
-        vl = QgsVectorLayer(tmpfile, "test", "ogr")
+        vl = QgsVectorLayer(tmpfile, 'test', 'ogr')
         self.assertTrue(vl.isValid())
-        self.assertEqual([f.name() for f in vl.fields()], ["fid", "type", "value"])
+        self.assertEqual([f.name() for f in vl.fields()], ['fid', 'type', 'value'])
         original_fields = vl.fields()
 
-        vl = QgsVectorLayer(tmpfile + "|subset=type=2", "test", "ogr")
+        vl = QgsVectorLayer(tmpfile + "|subset=type=2", 'test', 'ogr')
         self.assertTrue(vl.isValid())
 
         def run_checks():
-            self.assertEqual([f.name() for f in vl.fields()], ["fid", "type", "value"])
+            self.assertEqual([f.name() for f in vl.fields()], ['fid', 'type', 'value'])
 
             # expression
             req = QgsFeatureRequest()
@@ -358,10 +268,8 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
             self.assertTrue(it.nextFeature(f))
             self.assertEqual(f.id(), 5)
             self.assertEqual(f.attributes(), [5, 2, 16])
-            self.assertEqual(
-                [field.name() for field in f.fields()], ["fid", "type", "value"]
-            )
-            self.assertEqual(f.geometry().asWkt(), "Point (5 5)")
+            self.assertEqual([field.name() for field in f.fields()], ['fid', 'type', 'value'])
+            self.assertEqual(f.geometry().asWkt(), 'Point (5 5)')
 
             # filter fid
             req = QgsFeatureRequest()
@@ -371,10 +279,8 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
             self.assertTrue(it.nextFeature(f))
             self.assertEqual(f.id(), 5)
             self.assertEqual(f.attributes(), [5, 2, 16])
-            self.assertEqual(
-                [field.name() for field in f.fields()], ["fid", "type", "value"]
-            )
-            self.assertEqual(f.geometry().asWkt(), "Point (5 5)")
+            self.assertEqual([field.name() for field in f.fields()], ['fid', 'type', 'value'])
+            self.assertEqual(f.geometry().asWkt(), 'Point (5 5)')
 
             # filter fids
             req = QgsFeatureRequest()
@@ -384,10 +290,8 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
             self.assertTrue(it.nextFeature(f))
             self.assertEqual(f.id(), 5)
             self.assertEqual(f.attributes(), [5, 2, 16])
-            self.assertEqual(
-                [field.name() for field in f.fields()], ["fid", "type", "value"]
-            )
-            self.assertEqual(f.geometry().asWkt(), "Point (5 5)")
+            self.assertEqual([field.name() for field in f.fields()], ['fid', 'type', 'value'])
+            self.assertEqual(f.geometry().asWkt(), 'Point (5 5)')
 
             # check with subset of attributes
             req = QgsFeatureRequest()
@@ -398,10 +302,8 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
             self.assertTrue(it.nextFeature(f))
             self.assertEqual(f.id(), 5)
             self.assertEqual(f.attributes()[2], 16)
-            self.assertEqual(
-                [field.name() for field in f.fields()], ["fid", "type", "value"]
-            )
-            self.assertEqual(f.geometry().asWkt(), "Point (5 5)")
+            self.assertEqual([field.name() for field in f.fields()], ['fid', 'type', 'value'])
+            self.assertEqual(f.geometry().asWkt(), 'Point (5 5)')
 
             # filter rect and expression
             req = QgsFeatureRequest()
@@ -412,10 +314,8 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
             self.assertTrue(it.nextFeature(f))
             self.assertEqual(f.id(), 5)
             self.assertEqual(f.attributes(), [5, 2, 16])
-            self.assertEqual(
-                [field.name() for field in f.fields()], ["fid", "type", "value"]
-            )
-            self.assertEqual(f.geometry().asWkt(), "Point (5 5)")
+            self.assertEqual([field.name() for field in f.fields()], ['fid', 'type', 'value'])
+            self.assertEqual(f.geometry().asWkt(), 'Point (5 5)')
 
             # filter rect and fids
             req = QgsFeatureRequest()
@@ -426,10 +326,8 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
             self.assertTrue(it.nextFeature(f))
             self.assertEqual(f.id(), 5)
             self.assertEqual(f.attributes(), [5, 2, 16])
-            self.assertEqual(
-                [field.name() for field in f.fields()], ["fid", "type", "value"]
-            )
-            self.assertEqual(f.geometry().asWkt(), "Point (5 5)")
+            self.assertEqual([field.name() for field in f.fields()], ['fid', 'type', 'value'])
+            self.assertEqual(f.geometry().asWkt(), 'Point (5 5)')
 
             # Ensure that orig_ogc_fid is still retrieved even if attribute subset is passed
             req = QgsFeatureRequest()
@@ -441,9 +339,7 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
                 ids.append(f.id())
                 geoms[f.id()] = f.geometry().asWkt()
             self.assertCountEqual(ids, [3, 4, 5])
-            self.assertEqual(
-                geoms, {3: "Point (3 3)", 4: "Point (4 4)", 5: "Point (5 5)"}
-            )
+            self.assertEqual(geoms, {3: 'Point (3 3)', 4: 'Point (4 4)', 5: 'Point (5 5)'})
 
         run_checks()
         # Check that subset string is correctly set on reload
@@ -452,61 +348,47 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
 
     def test_SplitFeature(self):
         """Test sqlite feature can be split"""
-        tmpfile = os.path.join(self.basetestpath, "testGeopackageSplitFeatures.sqlite")
-        ds = ogr.GetDriverByName("SQlite").CreateDataSource(tmpfile)
-        lyr = ds.CreateLayer("test", geom_type=ogr.wkbPolygon)
-        lyr.CreateField(ogr.FieldDefn("str_field", ogr.OFTString))
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageSplitFeatures.sqlite')
+        ds = ogr.GetDriverByName('SQlite').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
         f = ogr.Feature(lyr.GetLayerDefn())
-        f.SetGeometry(ogr.CreateGeometryFromWkt("POLYGON ((0 0,0 1,1 1,1 0,0 0))"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POLYGON ((0 0,0 1,1 1,1 0,0 0))'))
         lyr.CreateFeature(f)
         f = None
         ds = None
 
-        layer = QgsVectorLayer(f"{tmpfile}" + "|layername=" + "test", "test", "ogr")
+        layer = QgsVectorLayer(f'{tmpfile}' + "|layername=" + "test", 'test', 'ogr')
 
         # Check that pk field has unique constraint
         fields = layer.fields()
         pkfield = fields.at(0)
-        self.assertTrue(
-            pkfield.constraints().constraints()
-            & QgsFieldConstraints.Constraint.ConstraintUnique
-        )
+        self.assertTrue(pkfield.constraints().constraints() & QgsFieldConstraints.Constraint.ConstraintUnique)
 
         self.assertTrue(layer.isValid())
         self.assertTrue(layer.isSpatial())
-        self.assertEqual(
-            [f for f in layer.getFeatures()][0].geometry().asWkt(),
-            "Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))",
-        )
+        self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(), 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))')
         layer.startEditing()
-        self.assertEqual(
-            layer.splitFeatures([QgsPointXY(0.5, 0), QgsPointXY(0.5, 1)], 0), 0
-        )
+        self.assertEqual(layer.splitFeatures([QgsPointXY(0.5, 0), QgsPointXY(0.5, 1)], 0), 0)
         self.assertTrue(layer.commitChanges())
         self.assertEqual(layer.featureCount(), 2)
 
-        layer = QgsVectorLayer(f"{tmpfile}" + "|layername=" + "test", "test", "ogr")
+        layer = QgsVectorLayer(f'{tmpfile}' + "|layername=" + "test", 'test', 'ogr')
         self.assertEqual(layer.featureCount(), 2)
-        self.assertEqual(
-            [f for f in layer.getFeatures()][0].geometry().asWkt(),
-            "Polygon ((0.5 0, 0.5 1, 1 1, 1 0, 0.5 0))",
-        )
-        self.assertEqual(
-            [f for f in layer.getFeatures()][1].geometry().asWkt(),
-            "Polygon ((0.5 1, 0.5 0, 0 0, 0 1, 0.5 1))",
-        )
+        self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(), 'Polygon ((0.5 0, 0.5 1, 1 1, 1 0, 0.5 0))')
+        self.assertEqual([f for f in layer.getFeatures()][1].geometry().asWkt(), 'Polygon ((0.5 1, 0.5 0, 0 0, 0 1, 0.5 1))')
 
     def testBlob(self):
         """
         Test binary blob field
         """
-        tmpfile = os.path.join(self.basetestpath, "binaryfield.sqlite")
-        ds = ogr.GetDriverByName("SQLite").CreateDataSource(tmpfile)
-        lyr = ds.CreateLayer("test", geom_type=ogr.wkbPoint, options=["FID=fid"])
-        lyr.CreateField(ogr.FieldDefn("strfield", ogr.OFTString))
-        lyr.CreateField(ogr.FieldDefn("intfield", ogr.OFTInteger))
-        lyr.CreateField(ogr.FieldDefn("binfield", ogr.OFTBinary))
-        lyr.CreateField(ogr.FieldDefn("binfield2", ogr.OFTBinary))
+        tmpfile = os.path.join(self.basetestpath, 'binaryfield.sqlite')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['FID=fid'])
+        lyr.CreateField(ogr.FieldDefn('strfield', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('intfield', ogr.OFTInteger))
+        lyr.CreateField(ogr.FieldDefn('binfield', ogr.OFTBinary))
+        lyr.CreateField(ogr.FieldDefn('binfield2', ogr.OFTBinary))
         f = None
         ds = None
 
@@ -514,210 +396,184 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
         self.assertTrue(vl.isValid())
 
         fields = vl.fields()
-        bin1_field = fields[fields.lookupField("binfield")]
+        bin1_field = fields[fields.lookupField('binfield')]
         self.assertEqual(bin1_field.type(), QVariant.ByteArray)
-        self.assertEqual(bin1_field.typeName(), "Binary")
-        bin2_field = fields[fields.lookupField("binfield2")]
+        self.assertEqual(bin1_field.typeName(), 'Binary')
+        bin2_field = fields[fields.lookupField('binfield2')]
         self.assertEqual(bin2_field.type(), QVariant.ByteArray)
-        self.assertEqual(bin2_field.typeName(), "Binary")
+        self.assertEqual(bin2_field.typeName(), 'Binary')
 
         dp = vl.dataProvider()
         f = QgsFeature(fields)
-        bin_1 = b"xxx"
-        bin_2 = b"yyy"
+        bin_1 = b'xxx'
+        bin_2 = b'yyy'
         bin_val1 = QByteArray(bin_1)
         bin_val2 = QByteArray(bin_2)
-        f.setAttributes([1, "str", 100, bin_val1, bin_val2])
+        f.setAttributes([1, 'str', 100, bin_val1, bin_val2])
         self.assertTrue(dp.addFeature(f))
 
         f2 = next(dp.getFeatures())
-        self.assertEqual(
-            f2.attributes(), [1, "str", 100, QByteArray(bin_1), QByteArray(bin_2)]
-        )
+        self.assertEqual(f2.attributes(), [1, 'str', 100, QByteArray(bin_1), QByteArray(bin_2)])
 
-        bin_3 = b"zzz"
-        bin_4 = b"aaa"
+        bin_3 = b'zzz'
+        bin_4 = b'aaa'
         bin_val3 = QByteArray(bin_3)
         bin_val4 = QByteArray(bin_4)
-        self.assertTrue(
-            dp.changeAttributeValues(
-                {
-                    f2.id(): {
-                        fields.lookupField("intfield"): 200,
-                        fields.lookupField("binfield"): bin_val4,
-                        fields.lookupField("binfield2"): bin_val3,
-                    }
-                }
-            )
-        )
+        self.assertTrue(dp.changeAttributeValues({f2.id(): {fields.lookupField('intfield'): 200,
+                                                            fields.lookupField('binfield'): bin_val4,
+                                                            fields.lookupField('binfield2'): bin_val3}}))
 
         f5 = next(dp.getFeatures())
-        self.assertEqual(
-            f5.attributes(), [1, "str", 200, QByteArray(bin_4), QByteArray(bin_3)]
-        )
+        self.assertEqual(f5.attributes(), [1, 'str', 200, QByteArray(bin_4), QByteArray(bin_3)])
 
     def testUniqueValuesOnFidColumn(self):
         """Test regression #21311 OGR provider returns an empty set for sqlite uniqueValues"""
 
-        tmpfile = os.path.join(
-            self.basetestpath, "testSQLiteUniqueValuesOnFidColumn.db"
-        )
-        ds = ogr.GetDriverByName("SQLite").CreateDataSource(tmpfile)
-        lyr = ds.CreateLayer("test", geom_type=ogr.wkbPolygon)
-        lyr.CreateField(ogr.FieldDefn("str_field", ogr.OFTString))
+        tmpfile = os.path.join(self.basetestpath, 'testSQLiteUniqueValuesOnFidColumn.db')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
         f = ogr.Feature(lyr.GetLayerDefn())
-        f.SetGeometry(ogr.CreateGeometryFromWkt("POLYGON ((0 0,0 1,1 1,1 0,0 0))"))
-        f.SetField("str_field", "one")
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POLYGON ((0 0,0 1,1 1,1 0,0 0))'))
+        f.SetField('str_field', 'one')
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
-        f.SetGeometry(ogr.CreateGeometryFromWkt("POLYGON ((0 0,0 2,2 2,2 0,0 0))"))
-        f.SetField("str_field", "two")
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POLYGON ((0 0,0 2,2 2,2 0,0 0))'))
+        f.SetField('str_field', 'two')
         lyr.CreateFeature(f)
         f = None
         ds = None
         vl1 = QgsVectorLayer(tmpfile)
         self.assertTrue(vl1.isValid())
         self.assertEqual(vl1.uniqueValues(0), {1, 2})
-        self.assertEqual(vl1.uniqueValues(1), {"one", "two"})
+        self.assertEqual(vl1.uniqueValues(1), {'one', 'two'})
 
     def testSpatialIndexCapability(self):
-        """Test https://github.com/qgis/QGIS/issues/44513"""
+        """ Test https://github.com/qgis/QGIS/issues/44513 """
 
-        tmpfile = os.path.join(self.basetestpath, "testSpatialIndexCapability.db")
-        ds = ogr.GetDriverByName("SQLite").CreateDataSource(tmpfile)
-        ds.CreateLayer("test", geom_type=ogr.wkbPolygon)
+        tmpfile = os.path.join(self.basetestpath, 'testSpatialIndexCapability.db')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
         ds = None
 
-        vl = QgsVectorLayer(f"{tmpfile}|layerid=0", "test", "ogr")
+        vl = QgsVectorLayer(f'{tmpfile}|layerid=0', 'test', 'ogr')
         caps = vl.dataProvider().capabilities()
         self.assertFalse(caps & QgsVectorDataProvider.Capability.CreateSpatialIndex)
 
     def testSpatialIndexCapabilitySpatialite(self):
-        """Test https://github.com/qgis/QGIS/issues/44513"""
+        """ Test https://github.com/qgis/QGIS/issues/44513 """
 
-        tmpfile = os.path.join(
-            self.basetestpath, "testSpatialIndexCapabilitySpatialite.db"
-        )
-        ds = ogr.GetDriverByName("SQLite").CreateDataSource(
-            tmpfile, options=["SPATIALITE=YES"]
-        )
-        ds.CreateLayer("test", geom_type=ogr.wkbPolygon)
+        tmpfile = os.path.join(self.basetestpath, 'testSpatialIndexCapabilitySpatialite.db')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile, options=['SPATIALITE=YES'])
+        ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
         ds = None
 
-        vl = QgsVectorLayer(f"{tmpfile}|layerid=0", "test", "ogr")
+        vl = QgsVectorLayer(f'{tmpfile}|layerid=0', 'test', 'ogr')
         caps = vl.dataProvider().capabilities()
         self.assertTrue(caps & QgsVectorDataProvider.Capability.CreateSpatialIndex)
 
     def testExtentSqlite(self):
         # create 2D dataset
-        tmpfile = os.path.join(self.basetestpath, "points.sqlite")
-        ds = ogr.GetDriverByName("SQLite").CreateDataSource(tmpfile)
-        lyr = ds.CreateLayer("test", geom_type=ogr.wkbPoint, options=["FID=fid"])
+        tmpfile = os.path.join(self.basetestpath, 'points.sqlite')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['FID=fid'])
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(0)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point (0 0)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (0 0)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(1)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point (1 1)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (1 1)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(2)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point (2 2)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (2 2)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(3)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point (3 3)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (3 3)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(4)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point (4 4)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (4 4)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(5)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point (5 5)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (5 5)'))
         lyr.CreateFeature(f)
         f = None
         ds = None
 
         # create 3D 2.5d dataset
-        tmpfile = os.path.join(self.basetestpath, "points_with_z.sqlite")
-        ds = ogr.GetDriverByName("SQLite").CreateDataSource(
-            tmpfile, options=["SPATIALITE=YES"]
-        )
-        lyr = ds.CreateLayer("test", geom_type=ogr.wkbPoint25D, options=["FID=fid"])
+        tmpfile = os.path.join(self.basetestpath, 'points_with_z.sqlite')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile, options=['SPATIALITE=YES'])
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint25D, options=['FID=fid'])
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(0)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point Z (0 0 -5)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point Z (0 0 -5)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(1)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point Z (1 1 -10)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point Z (1 1 -10)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(2)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point Z (2 2 -15)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point Z (2 2 -15)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(3)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point Z (3 3 5)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point Z (3 3 5)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(4)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point Z (4 4 10)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point Z (4 4 10)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(5)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point Z (5 5 15)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point Z (5 5 15)'))
         lyr.CreateFeature(f)
         f = None
         ds = None
 
         # create 3D ZM dataset
-        tmpfile = os.path.join(self.basetestpath, "points_with_zm.sqlite")
-        ds = ogr.GetDriverByName("SQLite").CreateDataSource(
-            tmpfile, options=["SPATIALITE=YES"]
-        )
-        lyr = ds.CreateLayer("test", geom_type=ogr.wkbPointZM, options=["FID=fid"])
+        tmpfile = os.path.join(self.basetestpath, 'points_with_zm.sqlite')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile, options=['SPATIALITE=YES'])
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPointZM, options=['FID=fid'])
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(0)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point ZM (0 0 -5 1)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point ZM (0 0 -5 1)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(1)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point ZM (1 1 -10 2)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point ZM (1 1 -10 2)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(2)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point ZM (2 2 -15 3)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point ZM (2 2 -15 3)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(3)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point ZM (3 3 5 4)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point ZM (3 3 5 4)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(4)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point ZM (4 4 10 5)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point ZM (4 4 10 5)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(5)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point ZM (5 5 15 6)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point ZM (5 5 15 6)'))
         lyr.CreateFeature(f)
         f = None
         ds = None
 
         # create empty 3D dataset
-        tmpfile = os.path.join(self.basetestpath, "points_z_empty.sqlite")
-        ds = ogr.GetDriverByName("SQLite").CreateDataSource(
-            tmpfile, options=["SPATIALITE=YES"]
-        )
-        lyr = ds.CreateLayer("test", geom_type=ogr.wkbPointZM, options=["FID=fid"])
+        tmpfile = os.path.join(self.basetestpath, 'points_z_empty.sqlite')
+        ds = ogr.GetDriverByName('SQLite').CreateDataSource(tmpfile, options=['SPATIALITE=YES'])
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPointZM, options=['FID=fid'])
         ds = None
 
         # 2D points
-        vl = QgsVectorLayer(
-            os.path.join(self.basetestpath, "points.sqlite"), "test", "ogr"
-        )
+        vl = QgsVectorLayer(os.path.join(self.basetestpath, 'points.sqlite'), 'test', 'ogr')
         self.assertTrue(vl.isValid())
 
         self.assertAlmostEqual(vl.extent().xMinimum(), 0, places=3)
@@ -734,9 +590,7 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
         del vl
 
         # 3D points
-        vl = QgsVectorLayer(
-            os.path.join(self.basetestpath, "points_with_z.sqlite"), "test", "ogr"
-        )
+        vl = QgsVectorLayer(os.path.join(self.basetestpath, 'points_with_z.sqlite'), 'test', 'ogr')
         self.assertTrue(vl.isValid())
 
         self.assertAlmostEqual(vl.extent().xMinimum(), 0, places=3)
@@ -752,9 +606,7 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
         self.assertAlmostEqual(vl.extent3D().zMaximum(), 15.0, places=3)
         del vl
 
-        vl = QgsVectorLayer(
-            os.path.join(self.basetestpath, "points_with_zm.sqlite"), "test", "ogr"
-        )
+        vl = QgsVectorLayer(os.path.join(self.basetestpath, 'points_with_zm.sqlite'), 'test', 'ogr')
         self.assertTrue(vl.isValid())
 
         self.assertAlmostEqual(vl.extent().xMinimum(), 0, places=3)
@@ -770,9 +622,7 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
         self.assertAlmostEqual(vl.extent3D().zMaximum(), 15.0, places=3)
         del vl
 
-        vl = QgsVectorLayer(
-            os.path.join(self.basetestpath, "points_z_empty.sqlite"), "test", "ogr"
-        )
+        vl = QgsVectorLayer(os.path.join(self.basetestpath, 'points_z_empty.sqlite'), 'test', 'ogr')
         self.assertTrue(vl.isValid())
 
         self.assertTrue(math.isnan(vl.extent().xMinimum()))
@@ -790,71 +640,69 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
 
     def testExtentGpkg(self):
         # create 2D dataset
-        tmpfile = os.path.join(self.basetestpath, "points.gpkg")
-        ds = ogr.GetDriverByName("GPKG").CreateDataSource(tmpfile)
-        lyr = ds.CreateLayer("test", geom_type=ogr.wkbPoint, options=["FID=fid"])
+        tmpfile = os.path.join(self.basetestpath, 'points.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPoint, options=['FID=fid'])
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(0)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point (0 0)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (0 0)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(1)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point (1 1)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (1 1)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(2)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point (2 2)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (2 2)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(3)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point (3 3)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (3 3)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(4)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point (4 4)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (4 4)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(5)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point (5 5)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point (5 5)'))
         lyr.CreateFeature(f)
         f = None
         ds = None
 
         # create 3D dataset
-        tmpfile = os.path.join(self.basetestpath, "points_with_z.gpkg")
-        ds = ogr.GetDriverByName("GPKG").CreateDataSource(tmpfile)
-        lyr = ds.CreateLayer("test", geom_type=ogr.wkbPointZM, options=["FID=fid"])
+        tmpfile = os.path.join(self.basetestpath, 'points_with_z.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPointZM, options=['FID=fid'])
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(0)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point Z (0 0 -5)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point Z (0 0 -5)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(1)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point Z (1 1 -10)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point Z (1 1 -10)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(2)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point Z (2 2 -15)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point Z (2 2 -15)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(3)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point Z (3 3 5)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point Z (3 3 5)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(4)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point Z (4 4 10)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point Z (4 4 10)'))
         lyr.CreateFeature(f)
         f = ogr.Feature(lyr.GetLayerDefn())
         f.SetFID(5)
-        f.SetGeometry(ogr.CreateGeometryFromWkt("Point Z (5 5 15)"))
+        f.SetGeometry(ogr.CreateGeometryFromWkt('Point Z (5 5 15)'))
         lyr.CreateFeature(f)
         f = None
         ds = None
 
         # 2D points
-        vl = QgsVectorLayer(
-            os.path.join(self.basetestpath, "points.gpkg"), "test", "ogr"
-        )
+        vl = QgsVectorLayer(os.path.join(self.basetestpath, 'points.gpkg'), 'test', 'ogr')
         self.assertTrue(vl.isValid())
 
         self.assertAlmostEqual(vl.extent().xMinimum(), 0, places=3)
@@ -871,9 +719,7 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
         del vl
 
         # 3D points
-        vl = QgsVectorLayer(
-            os.path.join(self.basetestpath, "points_with_z.gpkg"), "test", "ogr"
-        )
+        vl = QgsVectorLayer(os.path.join(self.basetestpath, 'points_with_z.gpkg'), 'test', 'ogr')
         self.assertTrue(vl.isValid())
 
         self.assertAlmostEqual(vl.extent().xMinimum(), 0, places=3)
@@ -890,5 +736,5 @@ class TestPyQgsOGRProviderSqlite(QgisTestCase):
         del vl
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

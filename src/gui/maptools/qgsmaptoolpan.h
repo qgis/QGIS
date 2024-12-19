@@ -68,6 +68,7 @@ class GUI_EXPORT QgsMapToolPan : public QgsMapTool
     void panDistanceBearingChanged( double distance, Qgis::DistanceUnit unit, double bearing );
 
   private:
+
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
     //! Flag to indicate a pinch gesture is taking place

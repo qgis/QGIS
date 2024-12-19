@@ -31,16 +31,15 @@ class SLDatabaseInfo(DatabaseInfo):
 
     def connectionDetails(self):
         tbl = [
-            (
-                QApplication.translate("DBManagerPlugin", "Filename:"),
-                self.db.connector.dbname,
-            )
+            (QApplication.translate("DBManagerPlugin", "Filename:"), self.db.connector.dbname)
         ]
         return HtmlTable(tbl)
 
     def generalInfo(self):
         info = self.db.connector.getInfo()
-        tbl = [(QApplication.translate("DBManagerPlugin", "SQLite version:"), info[0])]
+        tbl = [
+            (QApplication.translate("DBManagerPlugin", "SQLite version:"), info[0])
+        ]
         return HtmlTable(tbl)
 
     def spatialInfo(self):
@@ -53,20 +52,14 @@ class SLDatabaseInfo(DatabaseInfo):
         tbl = [
             (QApplication.translate("DBManagerPlugin", "Library:"), info[0]),
             ("GEOS:", info[1]),
-            ("Proj:", info[2]),
+            ("Proj:", info[2])
         ]
         ret.append(HtmlTable(tbl))
 
         if not self.db.connector.has_geometry_columns:
-            ret.append(
-                HtmlParagraph(
-                    QApplication.translate(
-                        "DBManagerPlugin",
-                        "<warning> geometry_columns table doesn't exist!\n"
-                        "This table is essential for many GIS applications for enumeration of tables.",
-                    )
-                )
-            )
+            ret.append(HtmlParagraph(
+                QApplication.translate("DBManagerPlugin", "<warning> geometry_columns table doesn't exist!\n"
+                                                          "This table is essential for many GIS applications for enumeration of tables.")))
 
         return ret
 

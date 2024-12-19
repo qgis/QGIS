@@ -37,6 +37,7 @@ class GUI_EXPORT QgsBrushStyleComboBox : public QComboBox
 
   protected:
     QIcon iconForBrush( Qt::BrushStyle style );
+
 };
 
 #endif

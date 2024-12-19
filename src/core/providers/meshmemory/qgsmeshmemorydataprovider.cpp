@@ -17,7 +17,6 @@
 ///@cond PRIVATE
 
 #include "qgsmeshmemorydataprovider.h"
-#include "moc_qgsmeshmemorydataprovider.cpp"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsapplication.h"
 
@@ -430,26 +429,6 @@ bool QgsMeshMemoryDataProvider::addDataset( const QString &uri )
   return valid;
 }
 
-bool QgsMeshMemoryDataProvider::removeDatasetGroup( int index )
-{
-  if ( index < 0 && index > datasetGroupCount() - 1 )
-  {
-    return false;
-  }
-  else
-  {
-    const QgsMeshDatasetGroupMetadata datasetGroupMeta = datasetGroupMetadata( index );
-
-    mDatasetGroups.removeAt( index );
-
-    if ( !mExtraDatasetUris.contains( datasetGroupMeta.uri() ) )
-      mExtraDatasetUris.removeAll( datasetGroupMeta.uri() );
-
-    emit dataChanged();
-    return true;
-  }
-}
-
 QStringList QgsMeshMemoryDataProvider::extraDatasets() const
 {
   return mExtraDatasetUris;
@@ -648,8 +627,5 @@ QList<Qgis::LayerType> QgsMeshMemoryProviderMetadata::supportedLayerTypes() cons
 {
   return { Qgis::LayerType::Mesh };
 }
-
-#undef TEXT_PROVIDER_KEY
-#undef TEXT_PROVIDER_DESCRIPTION
 
 ///@endcond

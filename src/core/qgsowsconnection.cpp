@@ -23,7 +23,6 @@
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"
 #include "qgsowsconnection.h"
-#include "moc_qgsowsconnection.cpp"
 #include "qgssettings.h"
 #include "qgshttpheaders.h"
 #include "qgssettingsentryimpl.h"

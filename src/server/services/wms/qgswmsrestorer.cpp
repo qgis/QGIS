@@ -28,8 +28,9 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
 {
   for ( QgsMapLayer *layer : layers )
   {
+
     mLayerSettings.emplace( layer, QgsLayerSettings() );
-    QgsLayerSettings &settings = mLayerSettings[layer];
+    QgsLayerSettings &settings = mLayerSettings[layer ];
 
     settings.name = layer->name();
     settings.mNamedStyle = layer->styleManager()->currentStyle();
@@ -73,6 +74,7 @@ QgsLayerRestorer::QgsLayerRestorer( const QList<QgsMapLayer *> &layers )
       case Qgis::LayerType::TiledScene:
         break;
     }
+
   }
 }
 
@@ -142,4 +144,4 @@ namespace QgsWms
     : mLayerRestorer( context.layers() )
   {
   }
-} // namespace QgsWms
+}

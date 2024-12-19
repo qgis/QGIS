@@ -28,6 +28,7 @@ class QgsProfilerProxyModel : public QSortFilterProxyModel
     Q_OBJECT
 
   public:
+
     QgsProfilerProxyModel( QgsRuntimeProfiler *profiler, QObject *parent );
 
     void setGroup( const QString &group );
@@ -36,7 +37,11 @@ class QgsProfilerProxyModel : public QSortFilterProxyModel
     bool filterAcceptsRow( int row, const QModelIndex &source_parent ) const override;
 
   private:
+
     QString mGroup;
+
+
+
 };
 
 /**
@@ -51,14 +56,17 @@ class QgsProfilerPanelWidget : public QgsDevToolWidget, private Ui::QgsProfilerP
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProfilerPanelWidget.
      */
     QgsProfilerPanelWidget( QgsRuntimeProfiler *profiler, QWidget *parent );
 
   private:
+
     QgsRuntimeProfiler *mProfiler = nullptr;
     QgsProfilerProxyModel *mProxyModel = nullptr;
+
 };
 
 // adapted from KDAB's "hotspot"

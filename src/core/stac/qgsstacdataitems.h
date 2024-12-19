@@ -25,7 +25,6 @@
 #include <QUrl>
 
 class QgsStacController;
-class QgsStacCollection;
 
 ///@cond PRIVATE
 #define SIP_NO_FILE
@@ -109,7 +108,6 @@ class CORE_EXPORT QgsStacCatalogItem : public QgsDataCollectionItem
   private:
     //! takes ownership
     QVector< QgsDataItem * > createItems( const QVector<QgsStacItem *> items );
-    QVector< QgsDataItem * > createCollections( const QVector<QgsStacCollection *> collections );
 
     //! The URI
     QString mUri;

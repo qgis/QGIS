@@ -2,8 +2,13 @@
 #include <string>
 #include <mutex>
 
+#ifndef _WIN32
+#include <unistd.h>
+#else
+#include <Windows.h>
+#endif
+
 #include "ProgressWriter.hpp"
-#include "progress.hpp"
 
 namespace untwine
 {
@@ -66,8 +71,27 @@ void ProgressWriter::writeMessage(uint32_t percent, const std::string& message)
         return;
 
     const int32_t msgId = 1000;
-    if (!os::writeMessage(m_fd, msgId, percent, message))
+#ifndef _WIN32
+    bool err = false;
+    err = (::write(m_fd, &msgId, sizeof(msgId)) == -1);
+    err |= (::write(m_fd, &percent, sizeof(percent)) == -1);
+    uint32_t ssize = (uint32_t)message.size();
+    err |= (::write(m_fd, &ssize, sizeof(ssize)) == -1);
+    err |= (::write(m_fd, message.data(), ssize) == -1);
+    if (err)
+    {
+        ::close(m_fd);
         m_fd = -1;
+    }
+#else
+    DWORD numWritten;
+    HANDLE h = reinterpret_cast<HANDLE>((intptr_t)m_fd);
+    WriteFile(h, &msgId, sizeof(msgId), &numWritten, NULL);
+    WriteFile(h, &percent, sizeof(percent), &numWritten, NULL);
+    uint32_t ssize = (uint32_t)message.size();
+    WriteFile(h, &ssize, sizeof(ssize), &numWritten, NULL);
+    WriteFile(h, message.data(), ssize, &numWritten, NULL);
+#endif
 }
 
 void ProgressWriter::writeErrorMessage(const std::string& message)
@@ -79,8 +103,25 @@ void ProgressWriter::writeErrorMessage(const std::string& message)
     }
 
     const int32_t msgId = 1001;
-    if (!os::writeErrorMessage(m_fd, msgId, message))
+#ifndef _WIN32
+    bool err = false;
+    err = (::write(m_fd, &msgId, sizeof(msgId)) == -1);
+    uint32_t ssize = (uint32_t)message.size();
+    err |= (::write(m_fd, &ssize, sizeof(ssize)) == -1);
+    err |= (::write(m_fd, message.data(), ssize) == -1);
+    if (err)
+    {
+        ::close(m_fd);
         m_fd = -1;
+    }
+#else
+    DWORD numWritten;
+    HANDLE h = reinterpret_cast<HANDLE>((intptr_t)m_fd);
+    WriteFile(h, &msgId, sizeof(msgId), &numWritten, NULL);
+    uint32_t ssize = (uint32_t)message.size();
+    WriteFile(h, &ssize, sizeof(ssize), &numWritten, NULL);
+    WriteFile(h, message.data(), ssize, &numWritten, NULL);
+#endif
 }
 
 // Determine the point increment and reset the counters.

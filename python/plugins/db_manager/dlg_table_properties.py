@@ -26,11 +26,7 @@ from qgis.PyQt.QtWidgets import QDialog, QMessageBox, QApplication
 
 from qgis.utils import OverrideCursor
 
-from .db_plugins.data_model import (
-    TableFieldsModel,
-    TableConstraintsModel,
-    TableIndexesModel,
-)
+from .db_plugins.data_model import TableFieldsModel, TableConstraintsModel, TableIndexesModel
 from .db_plugins.plugin import BaseError, DbError
 from .dlg_db_error import DlgDbError
 
@@ -41,7 +37,7 @@ from .dlg_create_index import DlgCreateIndex
 from .gui_utils import GuiUtils
 
 
-Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path("DlgTableProperties.ui"))
+Ui_Dialog, _ = uic.loadUiType(GuiUtils.get_ui_file_path('DlgTableProperties.ui'))
 
 
 class DlgTableProperties(QDialog, Ui_Dialog):
@@ -69,7 +65,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
 
         # Display comment in line edit
         m = self.table.comment
-        self.viewComment.setPlainText(m)
+        self.viewComment.setText(m)
 
         self.btnAddColumn.clicked.connect(self.addColumn)
         self.btnAddGeometryColumn.clicked.connect(self.addGeometryColumn)
@@ -99,16 +95,8 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         self.btnEditColumn.setEnabled(allowEditColumns)
         self.btnDeleteColumn.setEnabled(allowEditColumns)
 
-        self.btnAddGeometryColumn.setEnabled(
-            self.db.connector.canAddGeometryColumn(
-                (self.table.schemaName(), self.table.name)
-            )
-        )
-        self.btnAddSpatialIndex.setEnabled(
-            self.db.connector.canAddSpatialIndex(
-                (self.table.schemaName(), self.table.name)
-            )
-        )
+        self.btnAddGeometryColumn.setEnabled(self.db.connector.canAddGeometryColumn((self.table.schemaName(), self.table.name)))
+        self.btnAddSpatialIndex.setEnabled(self.db.connector.canAddSpatialIndex((self.table.schemaName(), self.table.name)))
 
     def populateViews(self):
         self.populateFields()
@@ -116,7 +104,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         self.populateIndexes()
 
     def populateFields(self):
-        """load field information from database"""
+        """ load field information from database """
         m = self.viewFields.model()
         m.clear()
 
@@ -127,18 +115,16 @@ class DlgTableProperties(QDialog, Ui_Dialog):
             self.viewFields.resizeColumnToContents(col)
 
     def currentColumn(self):
-        """returns row index of selected column"""
+        """ returns row index of selected column """
         sel = self.viewFields.selectionModel()
         indexes = sel.selectedRows()
         if len(indexes) == 0:
-            QMessageBox.information(
-                self, self.tr("DB Manager"), self.tr("No columns were selected.")
-            )
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("No columns were selected."))
             return -1
         return indexes[0].row()
 
     def addColumn(self):
-        """open dialog to set column info and add column to table"""
+        """ open dialog to set column info and add column to table """
         dlg = DlgFieldProperties(self, None, self.table)
         if not dlg.exec():
             return
@@ -154,14 +140,14 @@ class DlgTableProperties(QDialog, Ui_Dialog):
                 DlgDbError.showError(e, self)
 
     def addGeometryColumn(self):
-        """open dialog to add geometry column"""
+        """ open dialog to add geometry column """
         dlg = DlgAddGeometryColumn(self, self.table)
         if not dlg.exec():
             return
         self.refresh()
 
     def editColumn(self):
-        """open dialog to change column info and alter table appropriately"""
+        """ open dialog to change column info and alter table appropriately """
         index = self.currentColumn()
         if index == -1:
             return
@@ -179,19 +165,13 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         with OverrideCursor(Qt.CursorShape.WaitCursor):
             self.aboutToChangeTable.emit()
             try:
-                fld.update(
-                    new_fld.name,
-                    new_fld.type2String(),
-                    new_fld.notNull,
-                    new_fld.default2String(),
-                    new_fld.comment,
-                )
+                fld.update(new_fld.name, new_fld.type2String(), new_fld.notNull, new_fld.default2String(), new_fld.comment)
                 self.refresh()
             except BaseError as e:
                 DlgDbError.showError(e, self)
 
     def deleteColumn(self):
-        """Deletes currently selected column"""
+        """Deletes currently selected column """
         index = self.currentColumn()
         if index == -1:
             return
@@ -199,12 +179,9 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         m = self.viewFields.model()
         fld = m.getObject(index)
 
-        res = QMessageBox.question(
-            self,
-            self.tr("Delete Column"),
-            self.tr("Are you sure you want to delete column '{0}'?").format(fld.name),
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-        )
+        res = QMessageBox.question(self, self.tr("Delete Column"),
+                                   self.tr("Are you sure you want to delete column '{0}'?").format(fld.name),
+                                   QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if res != QMessageBox.StandardButton.Yes:
             return
 
@@ -237,7 +214,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
             self.tabs.setTabEnabled(index, False)
 
     def addConstraint(self):
-        """Adds primary key or unique constraint"""
+        """Adds primary key or unique constraint """
 
         dlg = DlgCreateConstraint(self, self.table)
         if not dlg.exec():
@@ -245,7 +222,7 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         self.refresh()
 
     def deleteConstraint(self):
-        """Deletes a constraint"""
+        """Deletes a constraint """
 
         index = self.currentConstraint()
         if index == -1:
@@ -254,14 +231,9 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         m = self.viewConstraints.model()
         constr = m.getObject(index)
 
-        res = QMessageBox.question(
-            self,
-            self.tr("Delete Constraint"),
-            self.tr("Are you sure you want to delete constraint '{0}'?").format(
-                constr.name
-            ),
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-        )
+        res = QMessageBox.question(self, self.tr("Delete Constraint"),
+                                   self.tr("Are you sure you want to delete constraint '{0}'?").format(constr.name),
+                                   QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if res != QMessageBox.StandardButton.Yes:
             return
 
@@ -274,13 +246,11 @@ class DlgTableProperties(QDialog, Ui_Dialog):
                 DlgDbError.showError(e, self)
 
     def currentConstraint(self):
-        """returns row index of selected index"""
+        """ returns row index of selected index """
         sel = self.viewConstraints.selectionModel()
         indexes = sel.selectedRows()
         if len(indexes) == 0:
-            QMessageBox.information(
-                self, self.tr("DB Manager"), self.tr("No constraints were selected.")
-            )
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("No constraints were selected."))
             return -1
         return indexes[0].row()
 
@@ -305,30 +275,21 @@ class DlgTableProperties(QDialog, Ui_Dialog):
             self.tabs.setTabEnabled(index, False)
 
     def createIndex(self):
-        """Creates an index"""
+        """Creates an index """
         dlg = DlgCreateIndex(self, self.table)
         if not dlg.exec():
             return
         self.refresh()
 
     def createSpatialIndex(self):
-        """Creates spatial index for the geometry column"""
+        """Creates spatial index for the geometry column """
         if self.table.type != self.table.VectorType:
-            QMessageBox.information(
-                self,
-                self.tr("DB Manager"),
-                self.tr("The selected table has no geometry."),
-            )
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("The selected table has no geometry."))
             return
 
-        res = QMessageBox.question(
-            self,
-            self.tr("Create Spatial Index"),
-            self.tr("Create spatial index for field {0}?").format(
-                self.table.geomColumn
-            ),
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-        )
+        res = QMessageBox.question(self, self.tr("Create Spatial Index"),
+                                   self.tr("Create spatial index for field {0}?").format(self.table.geomColumn),
+                                   QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if res != QMessageBox.StandardButton.Yes:
             return
 
@@ -343,18 +304,16 @@ class DlgTableProperties(QDialog, Ui_Dialog):
                 DlgDbError.showError(e, self)
 
     def currentIndex(self):
-        """returns row index of selected index"""
+        """ returns row index of selected index """
         sel = self.viewIndexes.selectionModel()
         indexes = sel.selectedRows()
         if len(indexes) == 0:
-            QMessageBox.information(
-                self, self.tr("DB Manager"), self.tr("No indices were selected.")
-            )
+            QMessageBox.information(self, self.tr("DB Manager"), self.tr("No indices were selected."))
             return -1
         return indexes[0].row()
 
     def deleteIndex(self):
-        """Deletes currently selected index"""
+        """Deletes currently selected index """
         index = self.currentIndex()
         if index == -1:
             return
@@ -362,12 +321,9 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         m = self.viewIndexes.model()
         idx = m.getObject(index)
 
-        res = QMessageBox.question(
-            self,
-            self.tr("Delete Index"),
-            self.tr("Are you sure you want to delete index '{0}'?").format(idx.name),
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-        )
+        res = QMessageBox.question(self, self.tr("Delete Index"),
+                                   self.tr("Are you sure you want to delete index '{0}'?").format(idx.name),
+                                   QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
         if res != QMessageBox.StandardButton.Yes:
             return
 
@@ -384,17 +340,14 @@ class DlgTableProperties(QDialog, Ui_Dialog):
         try:
             schem = self.table.schema().name
             tab = self.table.name
-            com = self.viewComment.toPlainText()
+            com = self.viewComment.text()
             self.db.connector.commentTable(schem, tab, com)
-            self.table.comment = com
         except DbError as e:
             DlgDbError.showError(e, self)
             return
         self.refresh()
         # Display successful message
-        QMessageBox.information(
-            self, self.tr("Add comment"), self.tr("Table successfully commented")
-        )
+        QMessageBox.information(self, self.tr("Add comment"), self.tr("Table successfully commented"))
 
     def deleteComment(self):
         """Drops the comment on the selected table"""
@@ -407,9 +360,6 @@ class DlgTableProperties(QDialog, Ui_Dialog):
             return
         self.refresh()
         # Refresh line edit, put a void comment
-        self.viewComment.setPlainText("")
-        self.table.comment = ""
+        self.viewComment.setText('')
         # Display successful message
-        QMessageBox.information(
-            self, self.tr("Delete comment"), self.tr("Comment deleted")
-        )
+        QMessageBox.information(self, self.tr("Delete comment"), self.tr("Comment deleted"))

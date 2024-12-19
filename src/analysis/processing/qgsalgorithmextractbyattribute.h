@@ -30,7 +30,9 @@
  */
 class QgsExtractByAttributeAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
+
     enum Operation
     {
       Equals,
@@ -57,9 +59,14 @@ class QgsExtractByAttributeAlgorithm : public QgsProcessingAlgorithm
     QgsExtractByAttributeAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMEXTRACTBYATTRIBUTE_H
+
+

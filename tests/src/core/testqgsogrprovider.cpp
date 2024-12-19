@@ -42,12 +42,11 @@ class TestQgsOgrProvider : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsOgrProvider()
-      : QgsTest( QStringLiteral( "OGR Provider Tests" ) ) {}
+    TestQgsOgrProvider() : QgsTest( QStringLiteral( "OGR Provider Tests" ) ) {}
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void setupProxy();
     void decodeUri();
@@ -65,6 +64,7 @@ class TestQgsOgrProvider : public QgsTest
 
   public slots:
 };
+
 
 
 //runs before all tests
@@ -92,6 +92,7 @@ void TestQgsOgrProvider::cleanupTestCase()
 
 void TestQgsOgrProvider::setupProxy()
 {
+
   QgsSettings settings;
   {
     settings.setValue( QStringLiteral( "proxy/proxyEnabled" ), true );
@@ -307,12 +308,13 @@ class ReadVectorLayer : public QThread
 {
     Q_OBJECT
 
-  public:
+  public :
     ReadVectorLayer( const QString &filePath, QMutex &mutex, QWaitCondition &waitForVlCreation, QWaitCondition &waitForProcessEvents )
       : _filePath( filePath ), _mutex( mutex ), _waitForVlCreation( waitForVlCreation ), _waitForProcessEvents( waitForProcessEvents ) {}
 
     void run() override
     {
+
       QgsVectorLayer *vl2 = new QgsVectorLayer( _filePath, QStringLiteral( "thread_test" ), QLatin1String( "ogr" ) );
 
       QgsFeature f;
@@ -334,6 +336,7 @@ class ReadVectorLayer : public QThread
     QMutex &_mutex;
     QWaitCondition &_waitForVlCreation;
     QWaitCondition &_waitForProcessEvents;
+
 };
 
 void failOnWarning( QtMsgType type, const QMessageLogContext &context, const QString &msg )
@@ -386,6 +389,7 @@ void TestQgsOgrProvider::testThread()
 
   thread->wait();
   qInstallMessageHandler( 0 );
+
 }
 
 void TestQgsOgrProvider::testCsvFeatureAddition()
@@ -495,12 +499,12 @@ void TestQgsOgrProvider::testExtent()
 
 void TestQgsOgrProvider::testVsiCredentialOptions()
 {
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 6, 0)
   // test that credential options are correctly set when layer URI specifies them
 
   // if actual aws dataset proves flaky, use this instead:
   // std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "/vsis3/testbucket/test|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-1|credential:AWS_S3_ENDPOINT=localhost" ), QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
-  std::unique_ptr<QgsVectorLayer> vl = std::make_unique<QgsVectorLayer>( QStringLiteral( "/vsis3/cdn.proj.org/files.geojson|credential:AWS_NO_SIGN_REQUEST=YES" ), QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
+  std::unique_ptr< QgsVectorLayer > vl = std::make_unique< QgsVectorLayer >( QStringLiteral( "/vsis3/cdn.proj.org/files.geojson|credential:AWS_NO_SIGN_REQUEST=YES" ), QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
 
   // confirm that GDAL VSI configuration options are set
   QString noSign( VSIGetPathSpecificOption( "/vsis3/cdn.proj.org", "AWS_NO_SIGN_REQUEST", nullptr ) );
@@ -517,7 +521,7 @@ void TestQgsOgrProvider::testVsiCredentialOptions()
   QCOMPARE( vl->dataProvider()->dataSourceUri(), QStringLiteral( "/vsis3/cdn.proj.org/files.geojson|credential:AWS_NO_SIGN_REQUEST=YES" ) );
 
   // credentials should be bucket specific
-  std::unique_ptr<QgsVectorLayer> vl2 = std::make_unique<QgsVectorLayer>( QStringLiteral( "/vsis3/ogranother/subfolder/subfolder2/test|credential:AWS_NO_SIGN_REQUEST=NO|credential:AWS_REGION=eu-central-2|credential:AWS_S3_ENDPOINT=localhost" ), QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
+  std::unique_ptr< QgsVectorLayer > vl2 = std::make_unique< QgsVectorLayer >( QStringLiteral( "/vsis3/ogranother/subfolder/subfolder2/test|credential:AWS_NO_SIGN_REQUEST=NO|credential:AWS_REGION=eu-central-2|credential:AWS_S3_ENDPOINT=localhost" ), QStringLiteral( "test" ), QStringLiteral( "ogr" ) );
   noSign = QString( VSIGetPathSpecificOption( "/vsis3/cdn.proj.org", "AWS_NO_SIGN_REQUEST", nullptr ) );
   QCOMPARE( noSign, QStringLiteral( "YES" ) );
   region = QString( VSIGetPathSpecificOption( "/vsis3/cdn.proj.org", "AWS_REGION", nullptr ) );
@@ -541,7 +545,7 @@ void TestQgsOgrProvider::testVsiCredentialOptions()
 
 void TestQgsOgrProvider::testVsiCredentialOptionsQuerySublayers()
 {
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 6, 0)
   QgsProviderMetadata *ogrMetadata = QgsProviderRegistry::instance()->providerMetadata( "ogr" );
   QVERIFY( ogrMetadata );
 
@@ -549,7 +553,7 @@ void TestQgsOgrProvider::testVsiCredentialOptionsQuerySublayers()
 
   // if actual aws dataset proves flaky, use this instead:
   // QList< QgsProviderSublayerDetails> subLayers = ogrMetadata->querySublayers( QStringLiteral( "/vsis3/sublayerstestbucket/test.shp|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-3|credential:AWS_S3_ENDPOINT=localhost" ) );
-  QList<QgsProviderSublayerDetails> subLayers = ogrMetadata->querySublayers( QStringLiteral( "/vsis3/cdn.proj.org/files.geojson|credential:AWS_NO_SIGN_REQUEST=YES" ) );
+  QList< QgsProviderSublayerDetails> subLayers = ogrMetadata->querySublayers( QStringLiteral( "/vsis3/cdn.proj.org/files.geojson|credential:AWS_NO_SIGN_REQUEST=YES" ) );
 
   QCOMPARE( subLayers.size(), 1 );
   QCOMPARE( subLayers.at( 0 ).name(), QStringLiteral( "files" ) );

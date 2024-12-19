@@ -56,8 +56,6 @@ endif()
 # Static
 add_library(provider_wfs_a STATIC ${WFS_SRCS})
 
-set_target_properties(provider_wfs_a PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
-
 target_include_directories(provider_wfs_a PUBLIC
   ${CMAKE_SOURCE_DIR}/src/providers/wfs
   ${CMAKE_SOURCE_DIR}/src/providers/wfs/oapif
@@ -84,8 +82,6 @@ if (WITH_GUI)
   endif()
 
   add_library(provider_wfs_gui_a STATIC ${WFS_GUI_SRCS} ${WFS_UIS_H})
-
-  set_target_properties(provider_wfs_gui_a PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
   target_include_directories(provider_wfs_gui_a PUBLIC
     ${CMAKE_SOURCE_DIR}/src/providers/wfs
@@ -120,8 +116,6 @@ if (FORCE_STATIC_LIBS)
   endif()
 else()
   add_library(provider_wfs MODULE ${WFS_SRCS} ${WFS_GUI_SRCS})
-
-  set_target_properties(provider_wfs PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
   # require c++17
   target_compile_features(provider_wfs PRIVATE cxx_std_17)

@@ -15,12 +15,12 @@
 ***************************************************************************
 """
 
-__author__ = "Médéric Ribreux"
-__date__ = "April 2016"
-__copyright__ = "(C) 2016, Médéric Ribreux"
+__author__ = 'Médéric Ribreux'
+__date__ = 'April 2016'
+__copyright__ = '(C) 2016, Médéric Ribreux'
 
 import os
-from processing.tools.system import isWindows, getTempFilename
+from processing.tools.system import (isWindows, getTempFilename)
 from grassprovider.grass_utils import GrassUtils
 from qgis.PyQt.QtCore import QDir
 from qgis.core import QgsProcessingParameterString
@@ -36,11 +36,10 @@ def orderedInput(alg, parameters, context, src, tgt, numSeq=None):
     :param tgt: Name of a new input parameter.
     :param numSeq: List of a sequence for naming layers.
     """
-    rootFilename = f"rast_{os.path.basename(getTempFilename(context=context))}."
+    rootFilename = 'rast_{}.'.format(os.path.basename(getTempFilename(context=context)))
     # parameters[tgt] = rootFilename
-    param = QgsProcessingParameterString(
-        tgt, "virtual input", rootFilename, False, False
-    )
+    param = QgsProcessingParameterString(tgt, 'virtual input',
+                                         rootFilename, False, False)
     alg.addParameter(param)
 
     rasters = alg.parameterAsLayerList(parameters, src, context)
@@ -49,7 +48,7 @@ def orderedInput(alg, parameters, context, src, tgt, numSeq=None):
         numSeq = list(range(1, len(rasters) + 1))
 
     for idx, raster in enumerate(rasters):
-        rasterName = f"{rootFilename}{numSeq[idx]}"
+        rasterName = '{}{}'.format(rootFilename, numSeq[idx])
         alg.loadRasterLayer(rasterName, raster, context, False, None, rasterName)
 
     # Don't forget to remove the old input parameter
@@ -70,35 +69,32 @@ def regroupRasters(alg, parameters, context, src, group, subgroup=None, extFile=
     :param extFile: dict : parameterName:directory name
     """
     # Create a group parameter
-    groupName = f"group_{os.path.basename(getTempFilename(context=context))}"
-    param = QgsProcessingParameterString(
-        group, "virtual group", groupName, False, False
-    )
+    groupName = 'group_{}'.format(os.path.basename(getTempFilename(context=context)))
+    param = QgsProcessingParameterString(group, 'virtual group',
+                                         groupName, False, False)
     alg.addParameter(param)
 
     # Create a subgroup
     subgroupName = None
     if subgroup:
-        subgroupName = f"subgroup_{os.path.basename(getTempFilename(context=context))}"
-        param = QgsProcessingParameterString(
-            subgroup, "virtual subgroup", subgroupName, False, False
-        )
+        subgroupName = 'subgroup_{}'.format(os.path.basename(getTempFilename(context=context)))
+        param = QgsProcessingParameterString(subgroup, 'virtual subgroup',
+                                             subgroupName, False, False)
         alg.addParameter(param)
 
     # Compute raster names
     rasters = alg.parameterAsLayerList(parameters, src, context)
     rasterNames = []
     for idx, raster in enumerate(rasters):
-        name = f"{src}_{idx}"
+        name = '{}_{}'.format(src, idx)
         if name in alg.exportedLayers:
             rasterNames.append(alg.exportedLayers[name])
 
     # Insert a i.group command
-    command = "i.group group={}{} input={}".format(
+    command = 'i.group group={}{} input={}'.format(
         groupName,
-        f" subgroup={subgroupName}" if subgroup else "",
-        ",".join(rasterNames),
-    )
+        ' subgroup={}'.format(subgroupName) if subgroup else '',
+        ','.join(rasterNames))
     alg.commands.append(command)
 
     # Handle external files
@@ -119,54 +115,35 @@ def regroupRasters(alg, parameters, context, src, group, subgroup=None, extFile=
     return groupName, subgroupName
 
 
-def importSigFile(alg, group, subgroup, src, sigDir="sig"):
+def importSigFile(alg, group, subgroup, src, sigDir='sig'):
     """
     Import a signature file into an
     internal GRASSDB folder
     """
     shortSigFile = os.path.basename(src)
-    interSig = os.path.join(
-        GrassUtils.grassMapsetFolder(),
-        "PERMANENT",
-        "group",
-        group,
-        "subgroup",
-        subgroup,
-        sigDir,
-        shortSigFile,
-    )
+    interSig = os.path.join(GrassUtils.grassMapsetFolder(),
+                            'PERMANENT', 'group', group, 'subgroup',
+                            subgroup, sigDir, shortSigFile)
     copyFile(alg, src, interSig)
     return shortSigFile
 
 
-def exportSigFile(alg, group, subgroup, dest, sigDir="sig"):
+def exportSigFile(alg, group, subgroup, dest, sigDir='sig'):
     """
     Export a signature file from internal GRASSDB
     to final destination
     """
     shortSigFile = os.path.basename(dest)
 
-    grass_version = int(GrassUtils.installedVersion().split(".")[0])
+    grass_version = int(GrassUtils.installedVersion().split('.')[0])
     if grass_version >= 8:
-        interSig = os.path.join(
-            GrassUtils.grassMapsetFolder(),
-            "PERMANENT",
-            "signatures",
-            sigDir,
-            shortSigFile,
-            "sig",
-        )
+        interSig = os.path.join(GrassUtils.grassMapsetFolder(),
+                                'PERMANENT', 'signatures',
+                                sigDir, shortSigFile, 'sig')
     else:
-        interSig = os.path.join(
-            GrassUtils.grassMapsetFolder(),
-            "PERMANENT",
-            "group",
-            group,
-            "subgroup",
-            subgroup,
-            sigDir,
-            shortSigFile,
-        )
+        interSig = os.path.join(GrassUtils.grassMapsetFolder(),
+                                'PERMANENT', 'group', group, 'subgroup',
+                                subgroup, sigDir, shortSigFile)
     moveFile(alg, interSig, dest)
     return interSig
 
@@ -183,8 +160,7 @@ def exportInputRasters(alg, parameters, context, rasterDic):
     # Get inputs and outputs
     for inputName, outputName in rasterDic.items():
         fileName = os.path.normpath(
-            alg.parameterAsOutputLayer(parameters, outputName, context)
-        )
+            alg.parameterAsOutputLayer(parameters, outputName, context))
         grassName = alg.exportedLayers[inputName]
         outFormat = GrassUtils.getRasterFormatFromFilename(fileName)
         alg.exportRasterLayer(grassName, fileName, True, outFormat, createOpt, metaOpt)
@@ -194,15 +170,9 @@ def verifyRasterNum(alg, parameters, context, rasters, mini, maxi=None):
     """Verify that we have at least n rasters in multipleInput"""
     num = len(alg.parameterAsLayerList(parameters, rasters, context))
     if num < mini:
-        return (
-            False,
-            f"You need to set at least {mini} input rasters for this algorithm!",
-        )
+        return False, 'You need to set at least {} input rasters for this algorithm!'.format(mini)
     if maxi and num > maxi:
-        return (
-            False,
-            f"You need to set a maximum of {maxi} input rasters for this algorithm!",
-        )
+        return False, 'You need to set a maximum of {} input rasters for this algorithm!'.format(maxi)
     return True, None
 
 
@@ -221,32 +191,31 @@ def verifyRasterNum(alg, parameters, context, rasters, mini, maxi=None):
 
 
 def createDestDir(alg, toFile):
-    """Generates an mkdir command for GRASS script"""
+    """ Generates an mkdir command for GRASS script """
     # Creates the destination directory
-    command = '{} "{}"'.format(
+    command = "{} \"{}\"".format(
         "MD" if isWindows() else "mkdir -p",
-        QDir.toNativeSeparators(os.path.dirname(toFile)),
+        QDir.toNativeSeparators(os.path.dirname(toFile))
     )
     alg.commands.append(command)
 
 
 def moveFile(alg, fromFile, toFile):
-    """Generates a move command for GRASS script"""
+    """ Generates a move command for GRASS script """
     createDestDir(alg, toFile)
-    command = '{} "{}" "{}"'.format(
+    command = "{} \"{}\" \"{}\"".format(
         "MOVE /Y" if isWindows() else "mv -f",
         QDir.toNativeSeparators(fromFile),
-        QDir.toNativeSeparators(toFile),
+        QDir.toNativeSeparators(toFile)
     )
     alg.commands.append(command)
 
 
 def copyFile(alg, fromFile, toFile):
-    """Generates a copy command for GRASS script"""
+    """ Generates a copy command for GRASS script """
     createDestDir(alg, toFile)
-    command = '{} "{}" "{}"'.format(
+    command = "{} \"{}\" \"{}\"".format(
         "COPY /Y" if isWindows() else "cp -f",
         QDir.toNativeSeparators(fromFile),
-        QDir.toNativeSeparators(toFile),
-    )
+        QDir.toNativeSeparators(toFile))
     alg.commands.append(command)

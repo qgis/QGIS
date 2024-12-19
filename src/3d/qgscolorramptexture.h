@@ -35,15 +35,16 @@
 
 #define SIP_NO_FILE
 
-class QgsColorRampTextureGenerator : public Qt3DRender::QTextureImageDataGenerator
+class QgsColorRampTextureGenerator: public Qt3DRender::QTextureImageDataGenerator
 {
+
   public:
     QgsColorRampTextureGenerator( const QgsColorRampShader &colorRampShader, double verticalScale = 1 );
 
   public:
     Qt3DRender::QTextureImageDataPtr operator()() override;
 
-    bool operator==( const Qt3DRender::QTextureImageDataGenerator &other ) const override;
+    bool operator ==( const Qt3DRender::QTextureImageDataGenerator &other ) const override;
 
     // marked as deprecated in 5.15, but undeprecated for Qt 6.0. TODO -- remove when we require 6.0
     Q_NOWARN_DEPRECATED_PUSH
@@ -56,7 +57,7 @@ class QgsColorRampTextureGenerator : public Qt3DRender::QTextureImageDataGenerat
 };
 
 
-class QgsColorRampTexture : public Qt3DRender::QAbstractTextureImage
+class QgsColorRampTexture: public Qt3DRender::QAbstractTextureImage
 {
     Q_OBJECT
 

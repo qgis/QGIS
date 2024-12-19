@@ -25,11 +25,12 @@
 class QRadioButton;
 class QgsFieldProxyModel;
 
-class QgsGpsMapRotationAction : public QWidgetAction
+class QgsGpsMapRotationAction: public QWidgetAction
 {
     Q_OBJECT
 
   public:
+
     QgsGpsMapRotationAction( QWidget *parent = nullptr );
 
     QRadioButton *radioAlwaysRecenter() { return mRadioAlwaysRecenter; }
@@ -40,6 +41,7 @@ class QgsGpsMapRotationAction : public QWidgetAction
     QRadioButton *mRadioAlwaysRecenter = nullptr;
     QRadioButton *mRadioRecenterWhenOutside = nullptr;
     QRadioButton *mRadioNeverRecenter = nullptr;
+
 };
 
 class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
@@ -47,6 +49,7 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
     Q_OBJECT
 
   public:
+
     QgsAppGpsSettingsMenu( QWidget *parent );
 
     bool locationMarkerVisible() const;
@@ -73,6 +76,7 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
     void timeStampMenuAboutToShow();
 
   private:
+
     QAction *mShowLocationMarkerAction = nullptr;
     QAction *mShowBearingLineAction = nullptr;
     QAction *mRotateMapAction = nullptr;
@@ -89,6 +93,7 @@ class APP_EXPORT QgsAppGpsSettingsMenu : public QMenu
     QMenu *mTimeStampDestinationFieldMenu = nullptr;
 
     friend class TestQgsGpsIntegration;
+
 };
 
 #endif // QGSAPPGPSSETTINGSMANAGER_H

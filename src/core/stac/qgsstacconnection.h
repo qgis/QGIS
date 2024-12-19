@@ -99,7 +99,7 @@ class CORE_EXPORT QgsStacConnection : public QgsAbstractProviderConnection
     //! Removes a connection from the list
     static void deleteConnection( const QString &name );
     //! Adds a new connection to the list
-    static void addConnection( const QString &name, const Data &conn );
+    static void addConnection( const QString &name, Data conn );
     //! Returns last used connection
     static QString selectedConnection();
     //! Saves name of the last used connection

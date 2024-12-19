@@ -55,22 +55,6 @@ class CORE_EXPORT QgsTessellator
     QgsTessellator( const QgsRectangle &bounds, bool addNormals, bool invertNormals = false, bool addBackFaces = false, bool noZ = false,
                     bool addTextureCoords = false, int facade = 3, float textureRotation = 0.0f );
 
-    /**
-     * Sets whether the "up" direction should be the Z axis on output (TRUE),
-     * otherwise the "up" direction will be the Y axis (FALSE). The default
-     * value is FALSE (to keep compatibility for existing tessellator use cases).
-     * \since QGIS 3.42
-     */
-    void setOutputZUp( bool zUp ) { mOutputZUp = zUp; }
-
-    /**
-     * Returns whether the "up" direction should be the Z axis on output (TRUE),
-     * otherwise the "up" direction will be the Y axis (FALSE). The default
-     * value is FALSE (to keep compatibility for existing tessellator use cases).
-     * \since QGIS 3.42
-     */
-    bool isOutputZUp() const { return mOutputZUp; }
-
     //! Tessellates a triangle and adds its vertex entries to the output data array
     void addPolygon( const QgsPolygon &polygon, float extrusionHeight );
 
@@ -120,7 +104,6 @@ class CORE_EXPORT QgsTessellator
     bool mInvertNormals = false;
     bool mAddBackFaces = false;
     bool mAddTextureCoords = false;
-    bool mOutputZUp = false;
     QVector<float> mData;
     int mStride;
     bool mNoZ = false;

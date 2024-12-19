@@ -11,7 +11,7 @@
 
 
 
-class QgsListWidget : QgsTableWidgetBase
+class QgsListWidget: QgsTableWidgetBase
 {
 %Docstring(signature="appended")
 Widget allowing to edit a QVariantList, using a table.
@@ -21,6 +21,7 @@ Widget allowing to edit a QVariantList, using a table.
 #include "qgslistwidget.h"
 %End
   public:
+
     explicit QgsListWidget( QMetaType::Type subType, QWidget *parent = 0 );
 %Docstring
 Constructor.

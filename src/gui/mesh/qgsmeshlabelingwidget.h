@@ -77,6 +77,7 @@ class GUI_EXPORT QgsMeshLabelingWidget : public QgsMapLayerConfigWidget, private
     void labelModeChanged( int index );
 
   private:
+
     enum Mode
     {
       ModeNone,
@@ -89,8 +90,8 @@ class GUI_EXPORT QgsMeshLabelingWidget : public QgsMapLayerConfigWidget, private
     QgsMessageBar *mMessageBar = nullptr;
 
     QWidget *mWidget = nullptr;
-    std::unique_ptr<QgsPalLayerSettings> mSettings;
-    std::unique_ptr<QgsAbstractMeshLayerLabeling> mOldSettings;
+    std::unique_ptr< QgsPalLayerSettings > mSettings;
+    std::unique_ptr< QgsAbstractMeshLayerLabeling > mOldSettings;
     bool mOldLabelsEnabled = false;
 };
 

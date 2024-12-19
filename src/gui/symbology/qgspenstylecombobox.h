@@ -37,6 +37,7 @@ class GUI_EXPORT QgsPenStyleComboBox : public QComboBox
 
   protected:
     QIcon iconForPen( Qt::PenStyle style );
+
 };
 
 /**

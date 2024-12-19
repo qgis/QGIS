@@ -15,11 +15,12 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "February 2013"
-__copyright__ = "(C) 2013, Victor Olaya"
+__author__ = 'Victor Olaya'
+__date__ = 'February 2013'
+__copyright__ = '(C) 2013, Victor Olaya'
 
-from qgis.core import NULL, QgsFeatureRequest
+from qgis.core import (NULL,
+                       QgsFeatureRequest)
 
 
 def resolveFieldIndex(source, attr):
@@ -38,7 +39,7 @@ def resolveFieldIndex(source, attr):
     else:
         index = source.fields().lookupField(attr)
         if index == -1:
-            raise ValueError("Wrong field name")
+            raise ValueError('Wrong field name')
         return index
 
 
@@ -62,11 +63,7 @@ def values(source, *attributes):
         attr_keys[index] = attr
 
     # use an optimised feature request
-    request = (
-        QgsFeatureRequest()
-        .setSubsetOfAttributes(indices)
-        .setFlags(QgsFeatureRequest.Flag.NoGeometry)
-    )
+    request = QgsFeatureRequest().setSubsetOfAttributes(indices).setFlags(QgsFeatureRequest.Flag.NoGeometry)
 
     for feature in source.getFeatures(request):
         for i in indices:

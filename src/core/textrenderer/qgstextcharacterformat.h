@@ -23,7 +23,6 @@
 #include <QFont>
 #include <QColor>
 #include <QSizeF>
-#include <QBrush>
 
 class QTextCharFormat;
 class QgsRenderContext;
@@ -352,56 +351,6 @@ class CORE_EXPORT QgsTextCharacterFormat
     void setVerticalAlignment( Qgis::TextCharacterVerticalAlignment alignment ) { mVerticalAlign = alignment; }
 
     /**
-     * Returns TRUE if the fragment has a background set.
-     *
-     * \see backgroundBrush()
-     * \since QGIS 3.42
-     */
-    bool hasBackground() const;
-
-    /**
-     * Returns the brush used for rendering the background of the fragment.
-     *
-     * Alternatively, the format may have a backgroundImagePath() set.
-     *
-     * \see hasBackground()
-     * \see setBackgroundBrush()
-     * \since QGIS 3.42
-     */
-    QBrush backgroundBrush() const;
-
-    /**
-     * Sets the \a brush used for rendering the background of the fragment.
-     *
-     * Alternatively, the format may have a backgroundImagePath() set.
-     *
-     * \see backgroundBrush()
-     * \since QGIS 3.42
-     */
-    void setBackgroundBrush( const QBrush &brush );
-
-    /**
-     * Returns the path for the image to be used for rendering the background of the fragment.
-     *
-     * Alternatively, the format may have a backgroundBrush() set.
-     *
-     * \see hasBackground()
-     * \see setBackgroundImagePath()
-     * \since QGIS 3.42
-     */
-    QString backgroundImagePath() const;
-
-    /**
-     * Sets the \a path for the image to be used for rendering the background of the fragment.
-     *
-     * Alternatively, the format may have a backgroundBrush() set.
-     *
-     * \see backgroundImagePath()
-     * \since QGIS 3.42
-     */
-    void setBackgroundImagePath( const QString &path );
-
-    /**
      * Updates the specified \a font in place, applying character formatting options which
      * are applicable on a font level when rendered in the given \a context.
      *
@@ -432,10 +381,6 @@ class CORE_EXPORT QgsTextCharacterFormat
     BooleanValue mStrikethrough = BooleanValue::NotSet;
     BooleanValue mUnderline = BooleanValue::NotSet;
     BooleanValue mOverline = BooleanValue::NotSet;
-
-    QBrush mBackgroundBrush;
-    QString mBackgroundPath;
-
 };
 
 #endif // QGSTEXTCHARACTERFORMAT_H

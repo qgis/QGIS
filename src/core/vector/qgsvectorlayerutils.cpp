@@ -127,12 +127,13 @@ QList<double> QgsVectorLayerUtils::getDoubleValues( const QgsVectorLayer *layer,
   if ( nullCount )
     *nullCount = 0;
 
-  const QList<QVariant> variantValues = getValues( layer, fieldOrExpression, ok, selectedOnly, feedback );
+  QList<QVariant> variantValues = getValues( layer, fieldOrExpression, ok, selectedOnly, feedback );
   if ( !ok )
     return values;
 
   bool convertOk;
-  for ( const QVariant &value : variantValues )
+  const auto constVariantValues = variantValues;
+  for ( const QVariant &value : constVariantValues )
   {
     double val = value.toDouble( &convertOk );
     if ( convertOk )

@@ -40,6 +40,7 @@ class GUI_EXPORT QgsLayoutAddPagesDialog : public QDialog, private Ui::QgsLayout
     Q_OBJECT
 
   public:
+
     //! Page insertion positions
     enum PagePosition
     {
@@ -89,9 +90,11 @@ class GUI_EXPORT QgsLayoutAddPagesDialog : public QDialog, private Ui::QgsLayout
     void showHelp();
 
   private:
+
     bool mSettingPresetSize = false;
 
     QgsLayoutMeasurementConverter mConverter;
+
 };
 
 #endif // QGSLAYOUTADDPAGESDIALOG_H

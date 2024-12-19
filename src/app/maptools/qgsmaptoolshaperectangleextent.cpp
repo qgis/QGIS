@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshaperectangleextent.h"
-#include "moc_qgsmaptoolshaperectangleextent.cpp"
 #include "qgsgeometryrubberband.h"
 #include "qgspoint.h"
 #include "qgsmapmouseevent.h"

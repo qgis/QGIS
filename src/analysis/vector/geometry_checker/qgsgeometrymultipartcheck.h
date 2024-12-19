@@ -29,8 +29,9 @@ class ANALYSIS_EXPORT QgsGeometryMultipartCheck : public QgsSingleGeometryCheck
     Q_DECLARE_TR_FUNCTIONS( QgsGeometryMultipartCheck )
   public:
     explicit QgsGeometryMultipartCheck( QgsGeometryCheckContext *context, const QVariantMap &configuration )
-      : QgsSingleGeometryCheck( context, configuration ) {}
-    static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() { return { Qgis::GeometryType::Point, Qgis::GeometryType::Line, Qgis::GeometryType::Polygon }; }
+      : QgsSingleGeometryCheck( context,
+                                configuration ) {}
+    static QList<Qgis::GeometryType> factoryCompatibleGeometryTypes() {return {Qgis::GeometryType::Point, Qgis::GeometryType::Line, Qgis::GeometryType::Polygon}; }
     static bool factoryIsCompatible( QgsVectorLayer *layer ) SIP_SKIP { return factoryCompatibleGeometryTypes().contains( layer->geometryType() ); }
     QList<Qgis::GeometryType> compatibleGeometryTypes() const override { return factoryCompatibleGeometryTypes(); }
     QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const override;
@@ -43,12 +44,7 @@ class ANALYSIS_EXPORT QgsGeometryMultipartCheck : public QgsSingleGeometryCheck
     QgsGeometryCheck::CheckType checkType() const override { return factoryCheckType(); }
     static QgsGeometryCheck::CheckType factoryCheckType() { return QgsGeometryCheck::FeatureCheck; }
 
-    enum ResolutionMethod
-    {
-      ConvertToSingle,
-      RemoveObject,
-      NoChange
-    };
+    enum ResolutionMethod { ConvertToSingle, RemoveObject, NoChange };
 };
 
 #endif // QGS_GEOMETRY_MULTIPART_CHECK_H

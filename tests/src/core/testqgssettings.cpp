@@ -45,7 +45,7 @@ void TestQgsSettings::enumValue()
   QVERIFY( static_cast<int>( Qgis::LayoutUnit::Meters ) != -1 );
 
   // standard method returns invalid value
-  const int v1 = settings.value( QStringLiteral( "qgis/testing/my_value_for_units" ), static_cast<int>( Qgis::LayoutUnit::Meters ) ).toInt();
+  const int v1 = settings.value( QStringLiteral( "qgis/testing/my_value_for_units" ), static_cast< int >( Qgis::LayoutUnit::Meters ) ).toInt();
   QCOMPARE( v1, -1 );
 
   // enum method returns default value if current setting is incorrect
@@ -55,7 +55,7 @@ void TestQgsSettings::enumValue()
   QCOMPARE( v2s, Qgis::LayoutUnit::Meters );
 
   // test a different value than default
-  settings.setValue( QStringLiteral( "qgis/testing/my_value_for_units" ), static_cast<int>( Qgis::LayoutUnit::Centimeters ) );
+  settings.setValue( QStringLiteral( "qgis/testing/my_value_for_units" ), static_cast< int >( Qgis::LayoutUnit::Centimeters ) );
   const Qgis::LayoutUnit v3 = settings.enumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), Qgis::LayoutUnit::Meters );
   QCOMPARE( v3, Qgis::LayoutUnit::Centimeters );
   settings.setEnumValue( QStringLiteral( "qgis/testing/my_value_for_units" ), Qgis::LayoutUnit::Centimeters );

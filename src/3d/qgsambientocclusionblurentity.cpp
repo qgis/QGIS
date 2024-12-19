@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsambientocclusionblurentity.h"
-#include "moc_qgsambientocclusionblurentity.cpp"
 
 #include <Qt3DRender/QParameter>
 

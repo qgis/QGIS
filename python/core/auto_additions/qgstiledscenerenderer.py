@@ -2,9 +2,9 @@
 try:
     QgsTiledSceneRenderer.load = staticmethod(QgsTiledSceneRenderer.load)
     QgsTiledSceneRenderer.__group__ = ['tiledscene']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsTiledSceneRenderContext.__group__ = ['tiledscene']
-except (NameError, AttributeError):
+except NameError:
     pass

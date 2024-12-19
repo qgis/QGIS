@@ -30,7 +30,9 @@
  */
 class QgsAlgorithmRemoveDuplicateVertices : public QgsProcessingFeatureBasedAlgorithm
 {
+
   public:
+
     QgsAlgorithmRemoveDuplicateVertices() = default;
     QString name() const override;
     QString displayName() const override;
@@ -45,9 +47,10 @@ class QgsAlgorithmRemoveDuplicateVertices : public QgsProcessingFeatureBasedAlgo
     QString outputName() const override;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
 
   private:
+
     double mTolerance = 1.0;
     bool mDynamicTolerance = false;
     QgsProperty mToleranceProperty;
@@ -61,3 +64,5 @@ class QgsAlgorithmRemoveDuplicateVertices : public QgsProcessingFeatureBasedAlgo
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMREMOVEDUPLICATEVERTICES_H
+
+

@@ -44,8 +44,7 @@ class TestQgsRenderers : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsRenderers()
-      : QgsTest( QStringLiteral( "Vector Renderer Tests" ) ) {}
+    TestQgsRenderers() : QgsTest( QStringLiteral( "Vector Renderer Tests" ) ) {}
 
     ~TestQgsRenderers() override
     {
@@ -53,17 +52,17 @@ class TestQgsRenderers : public QgsTest
     }
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void singleSymbol();
     void emptyGeometry();
-    //    void uniqueValue();
-    //    void graduatedSymbol();
-    //    void continuousSymbol();
+//    void uniqueValue();
+//    void graduatedSymbol();
+//    void continuousSymbol();
   private:
-    bool mTestHasError = false;
-    bool setQml( const QString &type );     //uniquevalue / continuous / single /
+    bool mTestHasError =  false ;
+    bool setQml( const QString &type ); //uniquevalue / continuous / single /
     bool imageCheck( const QString &type ); //as above
     bool checkEmptyRender( const QString &name, QgsVectorLayer *layer );
     QgsMapSettings *mMapSettings = nullptr;
@@ -94,22 +93,22 @@ void TestQgsRenderers::initTestCase()
   mTestDataDir = myDataDir + '/';
   const QString myPointsFileName = mTestDataDir + "points.shp";
   const QFileInfo myPointFileInfo( myPointsFileName );
-  mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
+                                      myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer
-  );
+    QList<QgsMapLayer *>() << mpPointsLayer );
 
   //
   //create a poly layer that will be used in all tests...
   //
   const QString myPolysFileName = mTestDataDir + "polys.shp";
   const QFileInfo myPolyFileInfo( myPolysFileName );
-  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(), myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpPolysLayer = new QgsVectorLayer( myPolyFileInfo.filePath(),
+                                     myPolyFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPolysLayer
-  );
+    QList<QgsMapLayer *>() << mpPolysLayer );
 
 
   //
@@ -117,19 +116,18 @@ void TestQgsRenderers::initTestCase()
   //
   const QString myLinesFileName = mTestDataDir + "lines.shp";
   const QFileInfo myLineFileInfo( myLinesFileName );
-  mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(), myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpLinesLayer = new QgsVectorLayer( myLineFileInfo.filePath(),
+                                     myLineFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpLinesLayer
-  );
+    QList<QgsMapLayer *>() << mpLinesLayer );
   //
   // We only need maprender instead of mapcanvas
   // since maprender does not require a qui
   // and is more light weight
   //
   mMapSettings->setLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer << mpPolysLayer << mpLinesLayer
-  );
+    QList<QgsMapLayer *>() << mpPointsLayer << mpPolysLayer << mpLinesLayer );
 }
 void TestQgsRenderers::cleanupTestCase()
 {
@@ -156,7 +154,7 @@ void TestQgsRenderers::emptyGeometry()
   QgsProject::instance()->addMapLayer( vl );
 
   QgsFeature f;
-  std::unique_ptr<QgsMultiPolygon> mp = std::make_unique<QgsMultiPolygon>();
+  std::unique_ptr< QgsMultiPolygon > mp = std::make_unique< QgsMultiPolygon >();
   mp->addGeometry( new QgsPolygon() );
   f.setGeometry( QgsGeometry( std::move( mp ) ) );
   QVERIFY( vl->dataProvider()->addFeature( f ) );
@@ -182,7 +180,7 @@ void TestQgsRenderers::emptyGeometry()
   vl = new QgsVectorLayer( QStringLiteral( "MultiLineString?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QVERIFY( vl->isValid() );
   QgsProject::instance()->addMapLayer( vl );
-  std::unique_ptr<QgsMultiLineString> mls = std::make_unique<QgsMultiLineString>();
+  std::unique_ptr< QgsMultiLineString > mls = std::make_unique< QgsMultiLineString >();
   mls->addGeometry( new QgsLineString() );
   f.setGeometry( QgsGeometry( std::move( mls ) ) );
   QVERIFY( vl->dataProvider()->addFeature( f ) );
@@ -192,7 +190,7 @@ void TestQgsRenderers::emptyGeometry()
   vl = new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
   QVERIFY( vl->isValid() );
   QgsProject::instance()->addMapLayer( vl );
-  std::unique_ptr<QgsMultiPoint> mlp = std::make_unique<QgsMultiPoint>();
+  std::unique_ptr< QgsMultiPoint > mlp = std::make_unique< QgsMultiPoint >();
   f.setGeometry( QgsGeometry( std::move( mlp ) ) );
   QVERIFY( vl->dataProvider()->addFeature( f ) );
   QVERIFY( checkEmptyRender( "MultiPoint", vl ) );
@@ -205,7 +203,7 @@ bool TestQgsRenderers::checkEmptyRender( const QString &testName, QgsVectorLayer
   ms.setExtent( extent );
   ms.setFlag( Qgis::MapSettingsFlag::ForceVectorOutput );
   ms.setOutputDpi( 96 );
-  ms.setLayers( QList<QgsMapLayer *>() << layer );
+  ms.setLayers( QList< QgsMapLayer * >() << layer );
   QgsMultiRenderChecker myChecker;
   myChecker.setControlName( "expected_emptygeometry" );
   myChecker.setMapSettings( ms );
@@ -225,7 +223,7 @@ bool TestQgsRenderers::setQml( const QString &type )
   //load a qml style and apply to our layer
   //the style will correspond to the renderer
   //type we are testing
-  if ( !mpPointsLayer->isValid() )
+  if ( ! mpPointsLayer->isValid() )
   {
     return false;
   }

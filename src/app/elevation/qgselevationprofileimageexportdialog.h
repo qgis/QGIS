@@ -32,6 +32,7 @@ class QgsElevationProfileImageExportDialog : public QDialog, private Ui::QgsElev
 {
     Q_OBJECT
   public:
+
     QgsElevationProfileImageExportDialog( QWidget *parent = nullptr );
 
     /**
@@ -48,6 +49,7 @@ class QgsElevationProfileImageExportDialog : public QDialog, private Ui::QgsElev
     QSize imageSize() const;
 
   private:
+
     QgsElevationProfileExportSettingsWidget *mProfileSettingsWidget = nullptr;
 };
 

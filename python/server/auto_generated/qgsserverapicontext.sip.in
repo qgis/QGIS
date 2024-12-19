@@ -25,7 +25,9 @@ request handlers chain.
 #include "qgsserverapicontext.h"
 %End
   public:
-    QgsServerApiContext( const QString &apiRootPath, const QgsServerRequest *request, QgsServerResponse *response, const QgsProject *project, QgsServerInterface *serverInterface );
+
+    QgsServerApiContext( const QString &apiRootPath, const QgsServerRequest *request, QgsServerResponse *response,
+                         const QgsProject *project, QgsServerInterface *serverInterface );
 %Docstring
 QgsServerApiContext constructor
 
@@ -66,7 +68,7 @@ Sets the project to ``project``
 Returns the server interface
 %End
 
-    const QString matchedPath() const;
+    const QString matchedPath( ) const;
 %Docstring
 Returns the initial part of the incoming request URL path that matches the
 API root path.
@@ -87,7 +89,7 @@ Returns the API root path
 Sets context request to ``request``
 %End
 
-    QString handlerPath() const;
+    QString handlerPath( ) const;
 %Docstring
 Returns the handler component of the URL path, i.e. the part of the path that comes
 after the API path.

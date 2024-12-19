@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgslayertreeviewtemporalindicator.h"
-#include "moc_qgslayertreeviewtemporalindicator.cpp"
 #include "qgslayertreeview.h"
 #include "qgslayertree.h"
 #include "qgsmaplayertemporalproperties.h"
@@ -32,7 +31,7 @@ void QgsLayerTreeViewTemporalIndicatorProvider::connectSignals( QgsMapLayer *lay
   if ( !layer || !layer->temporalProperties() )
     return;
 
-  connect( layer->temporalProperties(), &QgsMapLayerTemporalProperties::changed, this, [this, layer]() { this->onLayerChanged( layer ); } );
+  connect( layer->temporalProperties(), &QgsMapLayerTemporalProperties::changed, this, [ this, layer ]( ) { this->onLayerChanged( layer ); } );
 }
 
 void QgsLayerTreeViewTemporalIndicatorProvider::onIndicatorClicked( const QModelIndex &index )
@@ -70,7 +69,8 @@ bool QgsLayerTreeViewTemporalIndicatorProvider::acceptLayer( QgsMapLayer *layer 
 {
   if ( !layer )
     return false;
-  if ( layer->temporalProperties() && layer->temporalProperties()->isActive() )
+  if ( layer->temporalProperties() &&
+       layer->temporalProperties()->isActive() )
     return true;
   return false;
 }

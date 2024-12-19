@@ -62,6 +62,7 @@ class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
     void onHeightMapReady( int jobId, const QByteArray &heightMap );
 
   private:
+
     int mHeightMapJobId;
     QByteArray mHeightMap;
     int mResolution;
@@ -79,6 +80,7 @@ class QgsDemHeightMapGenerator : public QObject
 {
     Q_OBJECT
   public:
+
     /**
      * Constructs height map generator based on a raster layer with elevation model,
      * terrain's tiling scheme and height map resolution (number of height values on each side of tile)
@@ -122,14 +124,14 @@ class QgsDemHeightMapGenerator : public QObject
 
     struct JobData
     {
-        int jobId;
-        QgsChunkNodeId tileId;
-        QgsRectangle extent;
-        QFuture<QByteArray> future;
-        QElapsedTimer timer;
+      int jobId;
+      QgsChunkNodeId tileId;
+      QgsRectangle extent;
+      QFuture<QByteArray> future;
+      QElapsedTimer timer;
     };
 
-    QHash<QFutureWatcher<QByteArray> *, JobData> mJobs;
+    QHash<QFutureWatcher<QByteArray>*, JobData> mJobs;
 
     void lazyLoadDtmCoarseData( int res, const QgsRectangle &rect );
     mutable QMutex mLazyLoadDtmCoarseDataMutex;

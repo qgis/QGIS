@@ -39,6 +39,7 @@ class QgsProviderGuiRegistry;
 class GUI_EXPORT QgsProviderSourceWidgetProviderRegistry
 {
   public:
+
     QgsProviderSourceWidgetProviderRegistry();
     ~QgsProviderSourceWidgetProviderRegistry();
 
@@ -46,7 +47,7 @@ class GUI_EXPORT QgsProviderSourceWidgetProviderRegistry
     QgsProviderSourceWidgetProviderRegistry &operator=( const QgsProviderSourceWidgetProviderRegistry &rh ) = delete;
 
     //! Gets list of available providers
-    QList<QgsProviderSourceWidgetProvider *> providers();
+    QList< QgsProviderSourceWidgetProvider *> providers();
 
     //! Add a \a provider implementation. Takes ownership of the object.
     void addProvider( QgsProviderSourceWidgetProvider *provider SIP_TRANSFER );

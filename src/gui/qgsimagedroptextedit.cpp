@@ -29,7 +29,6 @@
 ****************************************************************************/
 
 #include "qgsimagedroptextedit.h"
-#include "moc_qgsimagedroptextedit.cpp"
 #include "qgsguiutils.h"
 
 #include <QMimeData>
@@ -211,7 +210,7 @@ void QgsImageDropTextEdit::mouseMoveEvent( QMouseEvent *e )
   QTextEdit::mouseMoveEvent( e );
   mActiveAnchor = anchorAt( e->pos() );
   if ( !mActiveAnchor.isEmpty() && !mCursorOverride )
-    mCursorOverride = std::make_unique<QgsTemporaryCursorOverride>( Qt::PointingHandCursor );
+    mCursorOverride = std::make_unique< QgsTemporaryCursorOverride >( Qt::PointingHandCursor );
   else if ( mActiveAnchor.isEmpty() && mCursorOverride )
     mCursorOverride.reset();
 }
@@ -254,8 +253,9 @@ void QgsImageDropTextEdit::dropImage( const QImage &image, const QString &format
   imageFormat.setWidth( image.width() );
   imageFormat.setHeight( image.height() );
   imageFormat.setName( QStringLiteral( "data:image/%1;base64,%2" )
-                         .arg( QStringLiteral( "%1.%2" ).arg( rand() ).arg( format ), base64l.data() )
-  );
+                       .arg( QStringLiteral( "%1.%2" ).arg( rand() ).arg( format ),
+                             base64l.data() )
+                     );
   cursor.insertImage( imageFormat );
 }
 

@@ -66,16 +66,14 @@ class APP_EXPORT QgsIdentifyResultsWebView : public QgsWebView
     void print();
     void downloadRequested( const QNetworkRequest &request );
     void unsupportedContent( QNetworkReply *reply );
-
   protected:
     void contextMenuEvent( QContextMenuEvent * ) override;
     QgsWebView *createWindow( QWebPage::WebWindowType type ) override;
-
   private:
     void handleDownload( QUrl url );
 };
 
-class APP_EXPORT QgsIdentifyResultsFeatureItem : public QTreeWidgetItem
+class APP_EXPORT QgsIdentifyResultsFeatureItem: public QTreeWidgetItem
 {
   public:
     QgsIdentifyResultsFeatureItem( const QgsFields &fields, const QgsFeature &feature, const QgsCoordinateReferenceSystem &crs, const QStringList &strings = QStringList() );
@@ -90,7 +88,7 @@ class APP_EXPORT QgsIdentifyResultsFeatureItem : public QTreeWidgetItem
 };
 
 //! Tree widget item being the parent item of a referenced or referencing relation
-class APP_EXPORT QgsIdentifyResultsRelationItem : public QTreeWidgetItem
+class APP_EXPORT QgsIdentifyResultsRelationItem: public QTreeWidgetItem
 {
   public:
     //! Constructor
@@ -114,7 +112,7 @@ class APP_EXPORT QgsIdentifyResultsRelationItem : public QTreeWidgetItem
     QgsFeature mTopFeature;
 };
 
-class APP_EXPORT QgsIdentifyResultsWebViewItem : public QObject, public QTreeWidgetItem
+class APP_EXPORT QgsIdentifyResultsWebViewItem: public QObject, public QTreeWidgetItem
 {
     Q_OBJECT
 
@@ -134,8 +132,10 @@ class APP_EXPORT QgsIdentifyResultsWebViewItem : public QObject, public QTreeWid
 class APP_EXPORT QgsIdentifyPlotCurve
 {
   public:
+
     QgsIdentifyPlotCurve() { mPlotCurve = nullptr; }
-    QgsIdentifyPlotCurve( const QMap<QString, QString> &attributes, QwtPlot *plot, const QString &title = QString(), QColor color = QColor() );
+    QgsIdentifyPlotCurve( const QMap<QString, QString> &attributes,
+                          QwtPlot *plot, const QString &title = QString(), QColor color = QColor() );
     ~QgsIdentifyPlotCurve();
 
     QgsIdentifyPlotCurve( const QgsIdentifyPlotCurve &rh ) = delete;
@@ -143,13 +143,15 @@ class APP_EXPORT QgsIdentifyPlotCurve
 
   private:
     QwtPlotCurve *mPlotCurve = nullptr;
+
 };
 
-class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdentifyResultsBase
+class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdentifyResultsBase
 {
     Q_OBJECT
 
   public:
+
     /**
      * Constructor
      */
@@ -161,34 +163,55 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
     static const QgsSettingsEntryBool *settingShowRelations;
 
     //! Adds feature from vector layer
-    void addFeature( QgsVectorLayer *layer, const QgsFeature &f, const QMap<QString, QString> &derivedAttributes );
+    void addFeature( QgsVectorLayer *layer,
+                     const QgsFeature &f,
+                     const QMap< QString, QString > &derivedAttributes );
 
     //! Adds feature from raster layer
-    void addFeature( QgsRasterLayer *layer, const QString &label, const QMap<QString, QString> &attributes, const QMap<QString, QString> &derivedAttributes, const QgsFields &fields = QgsFields(), const QgsFeature &feature = QgsFeature(), const QMap<QString, QVariant> &params = ( QMap<QString, QVariant>() ) );
+    void addFeature( QgsRasterLayer *layer,
+                     const QString &label,
+                     const QMap< QString, QString > &attributes,
+                     const QMap< QString, QString > &derivedAttributes,
+                     const QgsFields &fields = QgsFields(),
+                     const QgsFeature &feature = QgsFeature(),
+                     const QMap<QString, QVariant> &params = ( QMap<QString, QVariant>() ) );
 
     /**
      * Adds results from mesh layer
      * \since QGIS 3.6
      */
-    void addFeature( QgsMeshLayer *layer, const QString &label, const QMap<QString, QString> &attributes, const QMap<QString, QString> &derivedAttributes );
+    void addFeature( QgsMeshLayer *layer,
+                     const QString &label,
+                     const QMap< QString, QString > &attributes,
+                     const QMap< QString, QString > &derivedAttributes );
 
     /**
      * Adds results from vector tile layer
      * \since QGIS 3.14
      */
-    void addFeature( QgsVectorTileLayer *layer, const QString &label, const QgsFields &fields, const QgsFeature &feature, const QMap<QString, QString> &derivedAttributes );
+    void addFeature( QgsVectorTileLayer *layer,
+                     const QString &label,
+                     const QgsFields &fields,
+                     const QgsFeature &feature,
+                     const QMap< QString, QString > &derivedAttributes );
 
     /**
      * Adds results from point cloud layer
      * \since QGIS 3.18
      */
-    void addFeature( QgsPointCloudLayer *layer, const QString &label, const QMap<QString, QString> &attributes, const QMap<QString, QString> &derivedAttributes );
+    void addFeature( QgsPointCloudLayer *layer,
+                     const QString &label,
+                     const QMap< QString, QString > &attributes,
+                     const QMap< QString, QString > &derivedAttributes );
 
     /**
      * Adds results from tiled scene layer
      * \since QGIS 3.34
      */
-    void addFeature( QgsTiledSceneLayer *layer, const QString &label, const QMap<QString, QString> &attributes, const QMap<QString, QString> &derivedAttributes );
+    void addFeature( QgsTiledSceneLayer *layer,
+                     const QString &label,
+                     const QMap< QString, QString > &attributes,
+                     const QMap< QString, QString > &derivedAttributes );
 
     //! Adds feature from identify results
     void addFeature( const QgsMapToolIdentify::IdentifyResult &result );
@@ -226,12 +249,6 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
     void activateLayer( QgsMapLayer * );
 
     void selectionModeChanged();
-
-    //! Emitted when a feature gets highlighted
-    void featureHighlighted( const QgsFeature &feature, QgsMapLayer *layer );
-
-    //! Emitted when all feature highlights are removed
-    void highlightsCleared();
 
   public slots:
     //! Remove results
@@ -290,16 +307,8 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
 
     void mActionShowRelations_toggled( bool checked );
 
-    void mExpandAction_triggered( bool checked )
-    {
-      Q_UNUSED( checked )
-      expandAll();
-    }
-    void mCollapseAction_triggered( bool checked )
-    {
-      Q_UNUSED( checked )
-      collapseAll();
-    }
+    void mExpandAction_triggered( bool checked ) { Q_UNUSED( checked ) expandAll(); }
+    void mCollapseAction_triggered( bool checked ) { Q_UNUSED( checked ) collapseAll(); }
 
     void mActionCopy_triggered( bool checked );
 
@@ -321,10 +330,10 @@ class APP_EXPORT QgsIdentifyResultsDialog : public QDialog, private Ui::QgsIdent
     };
 
     QMenu *mActionPopup = nullptr;
-    QHash<QTreeWidgetItem *, QgsHighlight *> mHighlights;
+    QHash<QTreeWidgetItem *, QgsHighlight * > mHighlights;
     QgsMapCanvas *mCanvas = nullptr;
     QList<QgsFeature> mFeatures;
-    QMap<QString, QMap<QString, QVariant>> mWidgetCaches;
+    QMap< QString, QMap< QString, QVariant > > mWidgetCaches;
     QgsExpressionContextScope mExpressionContextScope;
     QToolButton *mSelectModeButton = nullptr;
 

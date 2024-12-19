@@ -216,7 +216,7 @@ and generate a proper subclass.
 :return: A copy of this renderer
 %End
 
-    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( const QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) throw( QgsCsException );
 %Docstring
 Render a feature using this renderer in the given context.
 Must be called between :py:func:`~QgsFeatureRenderer.startRender` and :py:func:`~QgsFeatureRenderer.stopRender` calls.
@@ -630,21 +630,10 @@ Currently clones
 .. versionadded:: 3.22
 %End
 
-    double maximumExtentBuffer( QgsRenderContext &context ) const;
-%Docstring
-Returns the maximum extent buffer found in this renderer's symbols.
-
-.. note::
-
-   Returns 0 if the renderer doesn't have any symbols.
-
-.. versionadded:: 3.42
-%End
-
   protected:
     QgsFeatureRenderer( const QString &type );
 
-    void renderFeatureWithSymbol( const QgsFeature &feature, QgsSymbol *symbol, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker );
+    void renderFeatureWithSymbol( const QgsFeature &feature, QgsSymbol *symbol, QgsRenderContext &context, int layer, bool selected, bool drawVertexMarker ) throw( QgsCsException );
 %Docstring
 Render the ``feature`` with the ``symbol`` using ``context``.
 Use ``layer`` to specify the symbol layer, ``selected`` to

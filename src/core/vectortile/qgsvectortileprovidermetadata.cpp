@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsvectortileprovidermetadata.h"
-#include "moc_qgsvectortileprovidermetadata.cpp"
 
 #include "qgsvectortileconnection.h"
 #include "qgsvectortiledataitems.h"

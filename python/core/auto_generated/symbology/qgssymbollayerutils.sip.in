@@ -60,13 +60,6 @@ Contains utility functions for working with symbols and symbol layers.
     static QString encodeSldBrushStyle( Qt::BrushStyle style );
     static Qt::BrushStyle decodeSldBrushStyle( const QString &str );
 
-    static bool hasSldSymbolizer( const QDomElement &element );
-%Docstring
-Returns ``True`` if a DOM ``element`` contains an SLD Symbolizer element.
-
-.. versionadded:: 3.42
-%End
-
     static Qgis::SymbolCoordinateReference decodeCoordinateReference( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
 Decodes a ``string`` representing a symbol coordinate reference mode.

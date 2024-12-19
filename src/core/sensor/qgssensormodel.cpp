@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgssensormodel.h"
-#include "moc_qgssensormodel.cpp"
 
 #include "qgis.h"
 #include "qgssensormanager.h"

@@ -30,10 +30,11 @@
  * \brief A widget to enter a custom dash space pattern for lines
  * \since QGIS 3.8
 */
-class GUI_EXPORT QgsDashSpaceWidget : public QgsPanelWidget, private Ui::QgsDashSpaceWidgetBase
+class GUI_EXPORT QgsDashSpaceWidget: public QgsPanelWidget, private Ui::QgsDashSpaceWidgetBase
 {
     Q_OBJECT
   public:
+
     //! Constructor for QgsDashSpaceWidget
     QgsDashSpaceWidget( const QVector<qreal> &vectorPattern, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -49,6 +50,7 @@ class GUI_EXPORT QgsDashSpaceWidget : public QgsPanelWidget, private Ui::QgsDash
   private slots:
     void mAddButton_clicked();
     void mRemoveButton_clicked();
+
 };
 
 /**
@@ -59,6 +61,7 @@ class GUI_EXPORT QgsDashSpaceDialog : public QDialog
 {
     Q_OBJECT
   public:
+
     //! Constructor for QgsDashSpaceDialog
     QgsDashSpaceDialog( const QVector<qreal> &v, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
 
@@ -73,7 +76,9 @@ class GUI_EXPORT QgsDashSpaceDialog : public QDialog
     void setUnit( Qgis::RenderUnit unit );
 
   private:
+
     QgsDashSpaceWidget *mWidget = nullptr;
+
 };
 
 #endif // QGSDASHSPACEDIALOG_H

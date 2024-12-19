@@ -32,6 +32,7 @@ class GUI_EXPORT QgsPlaybackControllerWidget : public QWidget, private Ui::QgsPl
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPlaybackControllerWidget, with the specified \a parent widget.
      */
@@ -72,6 +73,7 @@ class GUI_EXPORT QgsPlaybackControllerWidget : public QWidget, private Ui::QgsPl
     void rewindToStart();
 
   private:
+
     Qgis::AnimationState mAnimationState = Qgis::AnimationState::Idle;
     bool mPlayingForward = true;
 };

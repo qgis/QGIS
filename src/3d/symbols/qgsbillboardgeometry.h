@@ -17,7 +17,7 @@
 #define QGSBILLBOARDGEOMETRY_H
 
 #include <QObject>
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QGeometry>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QAttribute>
@@ -37,7 +37,7 @@
  *
  * \since QGIS 3.10
  */
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 class QgsBillboardGeometry : public Qt3DRender::QGeometry
 #else
 class QgsBillboardGeometry : public Qt3DCore::QGeometry
@@ -60,7 +60,7 @@ class QgsBillboardGeometry : public Qt3DCore::QGeometry
     void countChanged( int count );
 
   private:
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
     Qt3DRender::QBuffer *mVertexBuffer = nullptr;
 #else

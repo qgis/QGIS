@@ -23,6 +23,7 @@
 class QgsOracleExpressionCompiler : public QgsSqlExpressionCompiler
 {
   public:
+
     explicit QgsOracleExpressionCompiler( QgsOracleFeatureSource *source, bool ignoreStaticNodes = false );
 
   protected:

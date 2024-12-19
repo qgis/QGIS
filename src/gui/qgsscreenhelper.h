@@ -37,6 +37,7 @@ class GUI_EXPORT QgsScreenHelper : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsScreenHelper for the specified parent \a widget.
      */
@@ -93,6 +94,7 @@ class GUI_EXPORT QgsScreenHelper : public QObject
     void updateAvailableGeometryFromScreen();
 
   private:
+
     QWidget *mWidget = nullptr;
 
     double mScreenDpi = 96.0;
@@ -100,6 +102,7 @@ class GUI_EXPORT QgsScreenHelper : public QObject
 
     QRect mAvailableGeometry;
     QMetaObject::Connection mAvailableGeometryChangedConnection;
+
 };
 
 

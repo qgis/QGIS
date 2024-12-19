@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsqtlocationconnection.h"
-#include "moc_qgsqtlocationconnection.cpp"
 #include "qgslogger.h"
 
 #include <QLocalSocket>

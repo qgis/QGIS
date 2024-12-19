@@ -216,7 +216,7 @@ Aborts the network request immediately.
 Emitted when when data arrives during a request.
 %End
 
- void downloadFinished() /Deprecated="Since 3.40. Use the finished() signal instead."/;
+ void downloadFinished() /Deprecated/;
 %Docstring
 Emitted once a request has finished downloading.
 

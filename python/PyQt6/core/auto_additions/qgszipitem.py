@@ -4,5 +4,5 @@ try:
     QgsZipItem.itemFromPath = staticmethod(QgsZipItem.itemFromPath)
     QgsZipItem.iconZip = staticmethod(QgsZipItem.iconZip)
     QgsZipItem.__group__ = ['browser']
-except (NameError, AttributeError):
+except NameError:
     pass

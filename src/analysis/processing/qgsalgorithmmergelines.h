@@ -34,7 +34,9 @@
  */
 class QgsMergeLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
+
   public:
+
     QgsMergeLinesAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -49,9 +51,12 @@ class QgsMergeLinesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString outputName() const override;
     Qgis::ProcessingSourceType outputLayerType() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType ) const override;
-    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMMERGELINES_H
+
+

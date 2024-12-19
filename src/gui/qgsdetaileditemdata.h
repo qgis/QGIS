@@ -31,6 +31,7 @@
 class GUI_EXPORT QgsDetailedItemData
 {
   public:
+
     QgsDetailedItemData() = default;
 
     /**

@@ -27,6 +27,7 @@ class QgsPointCloud3DSymbol : QgsAbstract3DSymbol /Abstract/
 #include "qgspointcloud3dsymbol.h"
 %End
   public:
+
     enum RenderingStyle
     {
       // Do not render anything

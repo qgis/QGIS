@@ -54,7 +54,7 @@ QVector<QgsPointXY> QgsRasterChangeCoords::getPixelCoords( const QVector<QgsPoin
 
 QgsRectangle QgsRasterChangeCoords::transformExtent( const QgsRectangle &rect, bool toPixel ) const
 {
-  if ( !mHasExistingGeoreference )
+  if ( ! mHasExistingGeoreference )
     return rect;
 
   QgsRectangle rectReturn;
@@ -69,7 +69,7 @@ QgsRectangle QgsRasterChangeCoords::transformExtent( const QgsRectangle &rect, b
 
 QgsPointXY QgsRasterChangeCoords::toColumnLine( const QgsPointXY &pntMap ) const
 {
-  if ( !mHasExistingGeoreference )
+  if ( ! mHasExistingGeoreference )
     return QgsPointXY( pntMap.x(), pntMap.y() );
 
   const double col = ( pntMap.x() - mUL_X ) / mResX;
@@ -79,10 +79,10 @@ QgsPointXY QgsRasterChangeCoords::toColumnLine( const QgsPointXY &pntMap ) const
 
 QgsPointXY QgsRasterChangeCoords::toXY( const QgsPointXY &pntPixel ) const
 {
-  if ( !mHasExistingGeoreference )
+  if ( ! mHasExistingGeoreference )
     return QgsPointXY( pntPixel.x(), pntPixel.y() );
 
-  const double x = mUL_X + ( pntPixel.x() * mResX );
+  const double x = mUL_X + ( pntPixel.x() *  mResX );
   const double y = mUL_Y + ( pntPixel.y() * -mResY );
   return QgsPointXY( x, y );
 }

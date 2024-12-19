@@ -53,17 +53,19 @@ class QgsConditionalBranchAlgorithm : public QgsProcessingAlgorithm
     QgsConditionalBranchAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     struct Output
     {
-        Output( const QString &name, const QString &expression )
-          : name( name )
-          , expression( expression )
-        {}
-        QString name;
-        QgsExpression expression;
+      Output( const QString &name, const QString &expression )
+        : name( name )
+        , expression( expression )
+      {}
+      QString name;
+      QgsExpression expression;
     };
 
     QList<Output *> mOutputs;

@@ -34,6 +34,7 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
     Q_OBJECT
 
   public:
+
     //! Construct a QgsAuthOAuth2Edit instance
     explicit QgsAuthOAuth2Edit( QWidget *parent = nullptr );
 
@@ -41,25 +42,25 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
      * Validate current configuration
      * \return TRUE if current configuration is valid
      */
-    bool validateConfig() final;
+    bool validateConfig() override;
 
     /**
      * Current configuration
      * \return current configuration map
      */
-    QgsStringMap configMap() const final;
+    QgsStringMap configMap() const override;
 
 
   public slots:
 
     //! Load the configuration from \a configMap
-    void loadConfig( const QgsStringMap &configmap ) final;
+    void loadConfig( const QgsStringMap &configmap ) override;
 
     //! Reset configuration to defaults
-    void resetConfig() final;
+    void resetConfig() override;
 
     //! Clear configuration
-    void clearConfig() final;
+    void clearConfig() override;
 
   private slots:
     void setupConnections();
@@ -125,6 +126,7 @@ class QgsAuthOAuth2Edit : public QgsAuthMethodEdit, private Ui::QgsAuthOAuth2Edi
     void networkError( QNetworkReply::NetworkError error );
 
   private:
+
     void initGui();
     void parseSoftwareStatement( const QString &path );
 

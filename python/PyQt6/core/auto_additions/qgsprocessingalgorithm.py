@@ -5,7 +5,7 @@ try:
 
 .. versionadded:: 3.14"""
     QgsProcessingAlgorithm.VectorProperties.__group__ = ['processing']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsProcessingAlgorithm.invalidSourceError = staticmethod(QgsProcessingAlgorithm.invalidSourceError)
@@ -14,9 +14,9 @@ try:
     QgsProcessingAlgorithm.invalidPointCloudError = staticmethod(QgsProcessingAlgorithm.invalidPointCloudError)
     QgsProcessingAlgorithm.writeFeatureError = staticmethod(QgsProcessingAlgorithm.writeFeatureError)
     QgsProcessingAlgorithm.__group__ = ['processing']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsProcessingFeatureBasedAlgorithm.__group__ = ['processing']
-except (NameError, AttributeError):
+except NameError:
     pass

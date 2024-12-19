@@ -24,8 +24,10 @@ class QgsSettingsRegistryGui : QgsSettingsRegistry
 #include "qgssettingsregistrygui.h"
 %End
   public:
+
     QgsSettingsRegistryGui();
     virtual ~QgsSettingsRegistryGui();
+
 
 };
 

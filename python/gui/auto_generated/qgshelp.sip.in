@@ -32,6 +32,7 @@ help system will be shown.
 #include "qgshelp.h"
 %End
   public:
+
     static void openHelp( const QString &key );
 %Docstring
 Opens help topic for the given help key using default system

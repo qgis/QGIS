@@ -29,6 +29,7 @@ The :py:class:`QgsDateTimeEdit` class is a QDateTimeEdit with the capability of 
 #include "qgsdatetimeedit.h"
 %End
   public:
+
     explicit QgsDateTimeEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDateTimeEdit.
@@ -201,6 +202,7 @@ The :py:class:`QgsTimeEdit` class is a QTimeEdit widget with the capability of s
 #include "qgsdatetimeedit.h"
 %End
   public:
+
     explicit QgsTimeEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsTimeEdit.
@@ -228,6 +230,7 @@ Signal emitted whenever the time changes.
   protected:
     virtual void emitValueChanged( const QVariant &value );
 
+
 };
 
 class QgsDateEdit : QgsDateTimeEdit
@@ -253,6 +256,7 @@ The :py:class:`QgsDateEdit` class is a QDateEdit widget with the capability of s
 #include "qgsdatetimeedit.h"
 %End
   public:
+
     explicit QgsDateEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDateEdit.
@@ -279,6 +283,7 @@ Signal emitted whenever the date changes.
 
   protected:
     virtual void emitValueChanged( const QVariant &value );
+
 
 };
 

@@ -32,58 +32,60 @@ class QgsPostgresConn;
  */
 class QgsPostgresRasterSharedData
 {
+
   public:
+
     //! Type for tile IDs, must be in sync with DB tile id extraction logic
     using TileIdType = QString;
 
     //! Tile data and metadata for a single band
     struct TileBand
     {
-        TileIdType tileId;
-        int srid;
-        QgsRectangle extent;
-        double upperLeftX;
-        double upperLeftY;
-        long int width;
-        long int height;
-        double scaleX;
-        double scaleY;
-        double skewX;
-        double skewY;
-        QByteArray data;
+      TileIdType tileId;
+      int srid;
+      QgsRectangle extent;
+      double upperLeftX;
+      double upperLeftY;
+      long int width;
+      long int height;
+      double scaleX;
+      double scaleY;
+      double skewX;
+      double skewY;
+      QByteArray data;
     };
 
     //! A tiles request
     struct TilesRequest
     {
-        //! Band number
-        int bandNo;
-        QgsRectangle extent;
-        unsigned int overviewFactor;
-        //! PK
-        QString pk;
-        //! raster column
-        QString rasterColumn;
-        //! table name
-        QString tableToQuery;
-        //! SRID
-        QString srid;
-        //! where clause
-        QString whereClause;
-        //! RO DB connection
-        QgsPostgresConn *conn;
+      //! Band number
+      int bandNo;
+      QgsRectangle extent;
+      unsigned int overviewFactor;
+      //! PK
+      QString pk;
+      //! raster column
+      QString rasterColumn;
+      //! table name
+      QString tableToQuery;
+      //! SRID
+      QString srid;
+      //! where clause
+      QString whereClause;
+      //! RO DB connection
+      QgsPostgresConn *conn;
     };
 
     //! A tiles response
     struct TilesResponse
     {
-        //! Extent of the tiles in the response
-        QgsRectangle extent;
-        //! Tiles data
-        QList<TileBand> tiles;
+      //! Extent of the tiles in the response
+      QgsRectangle extent;
+      //! Tiles data
+      QList<TileBand> tiles;
     };
 
-    ~QgsPostgresRasterSharedData();
+    ~QgsPostgresRasterSharedData( );
 
     /**
      * Returns tiles (possibly with NULL data) for a given \a request
@@ -99,6 +101,7 @@ class QgsPostgresRasterSharedData
     static QString keyFromRequest( const TilesRequest &request );
 
   private:
+
     //! Protect access to tiles
     QMutex mMutex;
 
@@ -107,7 +110,18 @@ class QgsPostgresRasterSharedData
      */
     struct Tile
     {
-        Tile( TileIdType tileId, int srid, QgsRectangle extent, double upperLeftX, double upperLeftY, long int width, long int height, double scaleX, double scaleY, double skewX, double skewY, int numBands );
+        Tile( TileIdType tileId,
+              int srid,
+              QgsRectangle extent,
+              double upperLeftX,
+              double upperLeftY,
+              long int width,
+              long int height,
+              double scaleX,
+              double scaleY,
+              double skewX,
+              double skewY,
+              int numBands );
 
         TileIdType tileId;
         int srid;
@@ -116,7 +130,7 @@ class QgsPostgresRasterSharedData
         double upperLeftY;
         long int width;
         long int height;
-        double scaleX;
+        double scaleX ;
         double scaleY;
         double skewX;
         double skewY;
@@ -128,9 +142,11 @@ class QgsPostgresRasterSharedData
         const QByteArray bandData( int bandNo ) const;
 
       private:
+
         std::vector<QByteArray> data;
 
         friend class QgsPostgresRasterSharedData;
+
     };
 
     bool fetchTilesData( unsigned int overviewFactor, const QList<TileIdType> &tileIds );
@@ -144,13 +160,14 @@ class QgsPostgresRasterSharedData
     * and the where clause
     * \note cannot be a smart pointer because spatial index cannot be copied
     */
-    std::map<QString, QgsGenericSpatialIndex<Tile> *> mSpatialIndexes;
+    std::map<QString, QgsGenericSpatialIndex<Tile>*> mSpatialIndexes;
 
     //! Memory manager for owned tiles (and for tileId access)
     std::map<QString, std::map<TileIdType, std::unique_ptr<Tile>>> mTiles;
 
     //! Keeps track of loaded index bounds
     std::map<QString, QgsGeometry> mLoadedIndexBounds;
+
 };
 
 #endif // QGSPOSTGRESRASTERSHAREDDATA_H

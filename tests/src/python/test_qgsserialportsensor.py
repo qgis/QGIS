@@ -5,23 +5,14 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "(C) 2023 by Mathieu Pellerin"
-__date__ = "19/03/2023"
-__copyright__ = "Copyright 2023, The QGIS Project"
+__author__ = '(C) 2023 by Mathieu Pellerin'
+__date__ = '19/03/2023'
+__copyright__ = 'Copyright 2023, The QGIS Project'
 
 import os
 import posix
 
-from qgis.PyQt.QtCore import (
-    QCoreApplication,
-    QEvent,
-    QLocale,
-    QTemporaryDir,
-    QIODevice,
-    QBuffer,
-    QByteArray,
-)
+from qgis.PyQt.QtCore import QCoreApplication, QEvent, QLocale, QTemporaryDir, QIODevice, QBuffer, QByteArray
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.core import (
@@ -29,7 +20,7 @@ from qgis.core import (
     QgsApplication,
     QgsProject,
     QgsSerialPortSensor,
-    QgsSensorManager,
+    QgsSensorManager
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -69,9 +60,9 @@ class TestQgsSerialPortSensor(QgisTestCase):
         fd_file = os.fdopen(fd1, "wb")
 
         serial_port_sensor = QgsSerialPortSensor()
-        serial_port_sensor.setName("serial port sensor")
+        serial_port_sensor.setName('serial port sensor')
         serial_port_sensor.setPortName(os.ttyname(fd2))
-        serial_port_sensor.setDelimiter(b"\n")
+        serial_port_sensor.setDelimiter(b'\n')
 
         serial_port_sensor_id = serial_port_sensor.id()
 
@@ -81,12 +72,10 @@ class TestQgsSerialPortSensor(QgisTestCase):
         manager_spy = QSignalSpy(self.manager.sensorDataCaptured)
 
         serial_port_sensor.connectSensor()
-        self.assertEqual(
-            serial_port_sensor.status(), Qgis.DeviceConnectionStatus.Connected
-        )
+        self.assertEqual(serial_port_sensor.status(), Qgis.DeviceConnectionStatus.Connected)
 
         QCoreApplication.processEvents()
-        fd_file.write(b"test 1\nfull ")
+        fd_file.write(b'test 1\nfull ')
         fd_file.flush()
         QCoreApplication.processEvents()
 
@@ -95,21 +84,17 @@ class TestQgsSerialPortSensor(QgisTestCase):
         self.assertEqual(len(manager_spy), 0)
 
         QCoreApplication.processEvents()
-        fd_file.write(b"test 2\n")
+        fd_file.write(b'test 2\n')
         fd_file.flush()
         QCoreApplication.processEvents()
 
         self.assertEqual(len(sensor_spy), 1)
         self.assertEqual(len(manager_spy), 1)
-        self.assertEqual(
-            serial_port_sensor.data().lastValue, QByteArray(b"full test 2")
-        )
-        self.assertEqual(
-            self.manager.sensorData("serial port sensor").lastValue, b"full test 2"
-        )
+        self.assertEqual(serial_port_sensor.data().lastValue, QByteArray(b'full test 2'))
+        self.assertEqual(self.manager.sensorData('serial port sensor').lastValue, b'full test 2')
 
         self.manager.removeSensor(serial_port_sensor_id)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

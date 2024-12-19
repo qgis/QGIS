@@ -5,9 +5,9 @@ try:
     QgsCategorizedSymbolRenderer.createCategories = staticmethod(QgsCategorizedSymbolRenderer.createCategories)
     QgsCategorizedSymbolRenderer.displayString = staticmethod(QgsCategorizedSymbolRenderer.displayString)
     QgsCategorizedSymbolRenderer.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsRendererCategory.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmaptooloffsetpointsymbol.h"
-#include "moc_qgsmaptooloffsetpointsymbol.cpp"
 #include "qgsmapcanvas.h"
 #include "qgspointmarkeritem.h"
 #include "qgssymbol.h"
@@ -196,7 +195,7 @@ void QgsMapToolOffsetPointSymbol::createPreviewItem( QgsMarkerSymbol *markerSymb
 
   mOffsetItem = new QgsMapCanvasMarkerSymbolItem( mCanvas );
   mOffsetItem->setOpacity( 0.7 );
-  mOffsetItem->setSymbol( std::unique_ptr<QgsSymbol>( markerSymbol->clone() ) );
+  mOffsetItem->setSymbol( std::unique_ptr< QgsSymbol >( markerSymbol->clone() ) );
 }
 
 QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( const QgsPointXY &startPoint, const QgsPointXY &endPoint ) const
@@ -212,14 +211,14 @@ QMap<int, QVariant> QgsMapToolOffsetPointSymbol::calculateNewOffsetAttributes( c
     if ( ddOffset.propertyType() != Qgis::PropertyType::Field )
       continue;
 
-    QgsMarkerSymbolLayer *ml = dynamic_cast<QgsMarkerSymbolLayer *>( layer );
+    QgsMarkerSymbolLayer *ml = dynamic_cast< QgsMarkerSymbolLayer * >( layer );
     if ( !ml )
       continue;
 
     const QPointF offset = calculateOffset( startPoint, endPoint, ml->offsetUnit() );
     const int fieldIdx = mActiveLayer->fields().indexFromName( ddOffset.field() );
     if ( fieldIdx >= 0 )
-      newAttrValues[fieldIdx] = QgsSymbolLayerUtils::encodePoint( offset );
+      newAttrValues[ fieldIdx ] = QgsSymbolLayerUtils::encodePoint( offset );
   }
   return newAttrValues;
 }
@@ -295,3 +294,4 @@ QPointF QgsMapToolOffsetPointSymbol::rotatedOffset( QPointF offset, double angle
   double c = std::cos( angle ), s = std::sin( angle );
   return QPointF( offset.x() * c - offset.y() * s, offset.x() * s + offset.y() * c );
 }
+

@@ -35,7 +35,9 @@ class QgsEmbeddedLayerSelectDialog : public QDialog, private Ui::QgsEmbeddedLaye
     QStringList layers() const;
 
   private:
+
     QgsMapLayerProxyModel *mLayerProxyModel = nullptr;
+
 };
 
 #endif

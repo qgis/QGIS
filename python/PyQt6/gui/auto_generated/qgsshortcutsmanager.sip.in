@@ -23,6 +23,7 @@ that have been registered and their shortcuts can be changed.
 #include "qgsshortcutsmanager.h"
 %End
   public:
+
     QgsShortcutsManager( QObject *parent /TransferThis/ = 0, const QString &settingsRoot = "/shortcuts/" );
 %Docstring
 Constructor for QgsShortcutsManager.

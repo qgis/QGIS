@@ -86,10 +86,10 @@ class Qgs3DMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     int mDecimalPlaces = 3;
 
     //! Distance unit of the map
-    Qgis::DistanceUnit mMapDistanceUnit = Qgis::DistanceUnit::Unknown;
+    Qgis::DistanceUnit mMapDistanceUnit  = Qgis::DistanceUnit::Unknown;
 
     //! Distance unit of the displayed value
-    Qgis::DistanceUnit mDisplayedDistanceUnit = Qgis::DistanceUnit::Unknown;
+    Qgis::DistanceUnit mDisplayedDistanceUnit  = Qgis::DistanceUnit::Unknown;
 
     //! Convert from mMapDistanceUnit to mDisplayedDistanceUnit
     double convertLength( double length, Qgis::DistanceUnit toUnit ) const;

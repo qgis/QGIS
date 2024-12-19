@@ -32,7 +32,9 @@
  */
 class QgsCalculateVectorOverlapsAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
+
     QgsCalculateVectorOverlapsAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override;
@@ -46,20 +48,26 @@ class QgsCalculateVectorOverlapsAlgorithm : public QgsProcessingAlgorithm
     QgsCalculateVectorOverlapsAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
+
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
-    std::unique_ptr<QgsProcessingFeatureSource> mSource;
+
+    std::unique_ptr< QgsProcessingFeatureSource > mSource;
     QStringList mLayerNames;
-    std::vector<std::unique_ptr<QgsVectorLayerFeatureSource>> mOverlayerSources;
+    std::vector< std::unique_ptr< QgsVectorLayerFeatureSource > > mOverlayerSources;
     QgsFields mOutputFields;
     Qgis::WkbType mOutputType = Qgis::WkbType::Unknown;
     QgsCoordinateReferenceSystem mCrs;
     QgsFeatureIterator mInputFeatures;
     long mInputCount = 0;
+
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMCALCULATEOVERLAPS_H
+
+

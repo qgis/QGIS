@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgstreewidgetitem.h"
-#include "moc_qgstreewidgetitem.cpp"
 #include "qgsvariantutils.h"
 #include "qgis.h"
 

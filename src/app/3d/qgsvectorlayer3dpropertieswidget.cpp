@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsvectorlayer3dpropertieswidget.h"
-#include "moc_qgsvectorlayer3dpropertieswidget.cpp"
 
 #include "qgsabstractvectorlayer3drenderer.h"
 

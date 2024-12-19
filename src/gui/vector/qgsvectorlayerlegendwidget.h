@@ -74,6 +74,7 @@ class GUI_EXPORT QgsVectorLayerLegendWidget : public QWidget
     QgsFontButton *mTextOnSymbolFormatButton = nullptr;
     QPushButton *mTextOnSymbolFromExpressionButton = nullptr;
     QgsCollapsibleGroupBox *mTextOnSymbolGroupBox = nullptr;
+    QLabel *mTextOnSymbolLabel = nullptr;
     QgsCollapsibleGroupBox *mLabelLegendGroupBox = nullptr;
     QTreeWidget *mLabelLegendTreeWidget = nullptr;
     QLabel *mPlaceholderImageLabel = nullptr;

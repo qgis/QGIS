@@ -26,6 +26,7 @@ after selecting a point, performs the identification:
 #include "qgsmaptoolidentify.h"
 %End
   public:
+
     enum IdentifyMode /BaseType=IntEnum/
     {
       DefaultQgsSetting,
@@ -49,18 +50,19 @@ after selecting a point, performs the identification:
 
     struct IdentifyResult
     {
-        IdentifyResult();
 
-        IdentifyResult( QgsMapLayer *layer, const QgsFeature &feature, const QMap<QString, QString> &derivedAttributes );
-        IdentifyResult( QgsMapLayer *layer, const QString &label, const QMap<QString, QString> &attributes, const QMap<QString, QString> &derivedAttributes );
-        IdentifyResult( QgsMapLayer *layer, const QString &label, const QgsFields &fields, const QgsFeature &feature, const QMap<QString, QString> &derivedAttributes );
-        QgsMapLayer *mLayer;
-        QString mLabel;
-        QgsFields mFields;
-        QgsFeature mFeature;
-        QMap<QString, QString> mAttributes;
-        QMap<QString, QString> mDerivedAttributes;
-        QMap<QString, QVariant> mParams;
+      IdentifyResult();
+
+      IdentifyResult( QgsMapLayer *layer, const QgsFeature &feature, const QMap< QString, QString > &derivedAttributes );
+      IdentifyResult( QgsMapLayer *layer, const QString &label, const QMap< QString, QString > &attributes, const QMap< QString, QString > &derivedAttributes );
+      IdentifyResult( QgsMapLayer *layer, const QString &label, const QgsFields &fields, const QgsFeature &feature, const QMap< QString, QString > &derivedAttributes );
+      QgsMapLayer *mLayer;
+      QString mLabel;
+      QgsFields mFields;
+      QgsFeature mFeature;
+      QMap< QString, QString > mAttributes;
+      QMap< QString, QString > mDerivedAttributes;
+      QMap< QString, QVariant > mParams;
     };
 
     QgsMapToolIdentify( QgsMapCanvas *canvas );
@@ -154,7 +156,8 @@ Emitted when the format of raster ``results`` is changed and need to be updated 
 %End
 
   protected:
-    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode, const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
+
+    QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, IdentifyMode mode,  const QList<QgsMapLayer *> &layerList, LayerType layerType = AllLayers, const QgsIdentifyContext &identifyContext = QgsIdentifyContext() );
 %Docstring
 Performs the identification.
 To avoid being forced to specify IdentifyMode with a list of layers
@@ -207,7 +210,7 @@ Works only if layer was already rendered (triangular mesh is created)
 .. versionadded:: 3.6
 %End
 
-    QMap<QString, QString> derivedAttributesForPoint( const QgsPoint &point );
+    QMap< QString, QString > derivedAttributesForPoint( const QgsPoint &point );
 %Docstring
 Returns derived attributes map for a clicked point in map coordinates. May be 2D or 3D point.
 %End

@@ -31,7 +31,7 @@ A delegate for showing a color swatch in a list
 };
 
 
-class QgsColorSchemeModel : QAbstractItemModel
+class QgsColorSchemeModel: QAbstractItemModel
 {
 %Docstring(signature="appended")
 A model for colors in a color scheme
@@ -43,6 +43,7 @@ A model for colors in a color scheme
 #include "qgscolorschemelist.h"
 %End
   public:
+
     explicit QgsColorSchemeModel( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor(), QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
@@ -134,7 +135,7 @@ Returns whether the color scheme model has been modified
 
 };
 
-class QgsColorSchemeList : QTreeView
+class QgsColorSchemeList: QTreeView
 {
 %Docstring(signature="appended")
 An editable list of color swatches, taken from an associated :py:class:`QgsColorScheme`.
@@ -146,6 +147,7 @@ An editable list of color swatches, taken from an associated :py:class:`QgsColor
 #include "qgscolorschemelist.h"
 %End
   public:
+
     QgsColorSchemeList( QWidget *parent /TransferThis/ = 0, QgsColorScheme *scheme = 0, const QString &context = QString(), const QColor &baseColor = QColor() );
 %Docstring
 Construct a new color swatch grid.
@@ -263,6 +265,7 @@ Emitted when a color is selected from the list
 %End
 
   protected:
+
     virtual void keyPressEvent( QKeyEvent *event );
 
 

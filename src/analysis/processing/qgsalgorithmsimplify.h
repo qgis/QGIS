@@ -33,7 +33,9 @@ class QgsMapToPixelSimplifier;
  */
 class QgsSimplifyAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
+
   public:
+
     QgsSimplifyAlgorithm() = default;
     ~QgsSimplifyAlgorithm() override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmSimplify.svg" ) ); }
@@ -51,18 +53,21 @@ class QgsSimplifyAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   protected:
     QString outputName() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
-
   private:
+
     double mTolerance = 1.0;
     bool mDynamicTolerance = false;
     QgsProperty mToleranceProperty;
     Qgis::VectorSimplificationAlgorithm mMethod = Qgis::VectorSimplificationAlgorithm::Distance;
-    std::unique_ptr<QgsMapToPixelSimplifier> mSimplifier;
+    std::unique_ptr< QgsMapToPixelSimplifier > mSimplifier;
+
 };
 
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMSIMPLIFY_H
+
+

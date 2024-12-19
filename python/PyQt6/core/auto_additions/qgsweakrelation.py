@@ -4,5 +4,5 @@ QgsWeakRelation.Referenced = QgsWeakRelation.WeakRelationType.Referenced
 try:
     QgsWeakRelation.readXml = staticmethod(QgsWeakRelation.readXml)
     QgsWeakRelation.writeXml = staticmethod(QgsWeakRelation.writeXml)
-except (NameError, AttributeError):
+except NameError:
     pass

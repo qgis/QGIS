@@ -37,6 +37,7 @@ class GUI_EXPORT QgsLayoutItemPropertiesDialog : public QDialog, private Ui::Qgs
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutNewItemPropertiesDialog.
      */
@@ -91,10 +92,12 @@ class GUI_EXPORT QgsLayoutItemPropertiesDialog : public QDialog, private Ui::Qgs
     void setLayout( QgsLayout *layout );
 
   private:
+
     QgsLayout *mLayout = nullptr;
 
   private slots:
     void showHelp();
+
 };
 
 #endif // QGSLAYOUTNEWITEMPROPERTIESDIALOG_H

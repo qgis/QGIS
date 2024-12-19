@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgstiledscenelayer3drendererwidget.h"
-#include "moc_qgstiledscenelayer3drendererwidget.cpp"
 
 #include "qgstiledscenelayer.h"
 #include "qgstiledscenelayer3drenderer.h"

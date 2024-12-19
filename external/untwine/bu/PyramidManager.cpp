@@ -79,8 +79,7 @@ void PyramidManager::run()
 
             if (m_error.size())
             {
-                lock.unlock();
-                m_pool.join();
+                std::cerr << "Exception: " << m_error << "\n";
                 throw FatalError(m_error);
             }
         }

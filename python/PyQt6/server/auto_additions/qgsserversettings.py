@@ -39,5 +39,5 @@ QgsServerSettingsEnv.QGIS_SERVER_CAPABILITIES_CACHE_SIZE = QgsServerSettingsEnv.
 QgsServerSettingsEnv.EnvVar.baseClass = QgsServerSettingsEnv
 try:
     QgsServerSettings.name = staticmethod(QgsServerSettings.name)
-except (NameError, AttributeError):
+except NameError:
     pass

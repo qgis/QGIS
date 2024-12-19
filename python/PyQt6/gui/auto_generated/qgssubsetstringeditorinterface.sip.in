@@ -8,7 +8,7 @@
 
 
 
-class QgsSubsetStringEditorInterface : QDialog
+class QgsSubsetStringEditorInterface: QDialog
 {
 %Docstring(signature="appended")
 Interface for a dialog that can edit subset strings
@@ -20,7 +20,8 @@ Interface for a dialog that can edit subset strings
 #include "qgssubsetstringeditorinterface.h"
 %End
   public:
-    QgsSubsetStringEditorInterface( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsSubsetStringEditorInterface( QWidget *parent /TransferThis/ = 0,
+                                    Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor
 %End

@@ -30,7 +30,7 @@ from qgis.PyQt.QtWidgets import QDialog
 
 from MetaSearch.util import get_ui_class
 
-BASE_CLASS = get_ui_class("recorddialog.ui")
+BASE_CLASS = get_ui_class('recorddialog.ui')
 
 
 class RecordDialog(QDialog, BASE_CLASS):

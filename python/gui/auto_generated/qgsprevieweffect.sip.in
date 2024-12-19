@@ -10,7 +10,7 @@
 
 
 
-class QgsPreviewEffect : QGraphicsEffect
+class QgsPreviewEffect: QGraphicsEffect
 {
 %Docstring(signature="appended")
 A graphics effect which can be applied to a widget to simulate various printing and

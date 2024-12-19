@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgscheckboxconfigdlg.h"
-#include "moc_qgscheckboxconfigdlg.cpp"
 #include "qgscheckboxwidgetwrapper.h"
 #include "qgscheckboxfieldformatter.h"
 
@@ -60,6 +59,6 @@ void QgsCheckBoxConfigDlg::setConfig( const QVariantMap &config )
     leCheckedState->setText( config.value( QStringLiteral( "CheckedState" ) ).toString() );
     leUncheckedState->setText( config.value( QStringLiteral( "UncheckedState" ) ).toString() );
   }
-  mDisplayAsTextComboBox->setCurrentIndex( mDisplayAsTextComboBox->findData( config.value( QStringLiteral( "TextDisplayMethod" ), QString::number( static_cast<int>( QgsCheckBoxFieldFormatter::ShowTrueFalse ) ) ).toInt() ) );
+  mDisplayAsTextComboBox->setCurrentIndex( mDisplayAsTextComboBox->findData( config.value( QStringLiteral( "TextDisplayMethod" ), QString::number( static_cast< int >( QgsCheckBoxFieldFormatter::ShowTrueFalse ) ) ).toInt() ) );
   mAllowNullState->setChecked( config.value( QStringLiteral( "AllowNullState" ) ).toBool() );
 }

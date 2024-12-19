@@ -20,6 +20,7 @@ Encapsulates a history entry.
 #include "qgshistoryentry.h"
 %End
   public:
+
     QgsHistoryEntry();
 %Docstring
 Constructor for an invalid entry.
@@ -57,6 +58,7 @@ Returns ``True`` if the entry is valid.
     const QString str = QStringLiteral( "<QgsHistoryEntry: %1 %2>" ).arg( sipCpp->providerId, sipCpp->timestamp.toString( Qt::ISODate ) );
     sipRes = PyUnicode_FromString( str.toUtf8().constData() );
 %End
+
 };
 
 

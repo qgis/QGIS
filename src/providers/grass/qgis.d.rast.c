@@ -39,10 +39,10 @@
 #include <grass/raster.h>
 #include <grass/display.h>
 
-#if defined( _MSC_VER ) && _MSC_VER < 1900
+#if defined(_MSC_VER) && _MSC_VER < 1900
 #include <float.h>
-#define INFINITY ( DBL_MAX + DBL_MAX )
-#define NAN ( INFINITY - INFINITY )
+#define INFINITY (DBL_MAX+DBL_MAX)
+#define NAN (INFINITY-INFINITY)
 #endif
 
 int display( char *name, char *mapset, RASTER_MAP_TYPE data_type, char *format );
@@ -109,7 +109,10 @@ int main( int argc, char **argv )
 
 static int cell_draw( char *, char *, struct Colors *, RASTER_MAP_TYPE, char *format );
 
-int display( char *name, char *mapset, RASTER_MAP_TYPE data_type, char *format )
+int display( char *name,
+             char *mapset,
+             RASTER_MAP_TYPE data_type,
+             char *format )
 {
   struct Colors colors;
 
@@ -127,7 +130,11 @@ int display( char *name, char *mapset, RASTER_MAP_TYPE data_type, char *format )
   return 0;
 }
 
-static int cell_draw( char *name, char *mapset, struct Colors *colors, RASTER_MAP_TYPE data_type, char *format )
+static int cell_draw( char *name,
+                      char *mapset,
+                      struct Colors *colors,
+                      RASTER_MAP_TYPE data_type,
+                      char *format )
 {
   int cellfile;
   void *xarray = 0;
@@ -142,7 +149,7 @@ static int cell_draw( char *name, char *mapset, struct Colors *colors, RASTER_MA
   size_t raster_size;
 #ifdef NAN
   double dnul = NAN;
-  float fnul = ( float ) ( NAN );
+  float fnul = ( float )( NAN );
 #else
   double dnul = strtod( "NAN", 0 );
   float fnul = strtof( "NAN", 0 );
@@ -153,7 +160,7 @@ static int cell_draw( char *name, char *mapset, struct Colors *colors, RASTER_MA
   assert( dnul != dnul );
   assert( fnul != fnul );
 
-  big_endian = !( *( ( char * ) ( &one ) ) );
+  big_endian = !( *( ( char * )( &one ) ) );
 
   ncols = Rast_window_cols();
   nrows = Rast_window_rows();
@@ -187,7 +194,8 @@ static int cell_draw( char *name, char *mapset, struct Colors *colors, RASTER_MA
     Rast_get_row( cellfile, xarray, row, data_type );
     ptr = xarray;
 
-    Rast_lookup_colors( xarray, red, grn, blu, set, ncols, colors, data_type );
+    Rast_lookup_colors( xarray, red, grn, blu, set, ncols, colors,
+                        data_type );
 
     for ( i = 0; i < ncols; i++ )
     {

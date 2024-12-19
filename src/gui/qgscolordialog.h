@@ -34,16 +34,19 @@ class QColor;
 
 class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
 {
+
     Q_OBJECT
 
   public:
+
     /**
      * Create a new color picker dialog
      * \param parent parent widget
      * \param fl window flags
      * \param color initial color for dialog
      */
-    QgsColorDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, const QColor &color = QColor() );
+    QgsColorDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
+                    const QColor &color = QColor() );
 
     /**
      * Returns the current color for the dialog
@@ -72,7 +75,8 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
      * \param allowOpacity set to TRUE to allow modification of color opacity value (transparency)
      * \returns Selected color on accepted() or initialColor on rejected().
      */
-    static QColor getColor( const QColor &initialColor, QWidget *parent, const QString &title = QString(), bool allowOpacity = false );
+    static QColor getColor( const QColor &initialColor, QWidget *parent, const QString &title = QString(),
+                            bool allowOpacity = false );
 
   signals:
 
@@ -91,6 +95,7 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
     void setColor( const QColor &color );
 
   protected:
+
     void closeEvent( QCloseEvent *e ) override;
 
   private slots:
@@ -102,9 +107,11 @@ class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
     void showHelp();
 
   private:
+
     QColor mPreviousColor;
 
     bool mAllowOpacity = true;
+
 };
 
 #endif // #ifndef QGSCOLORDIALOG_H

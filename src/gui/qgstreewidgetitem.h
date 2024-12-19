@@ -35,6 +35,7 @@
 class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
 {
   public:
+
     /**
      * Constructor for QgsTreeWidgetItem
      * \param view parent QTreeWidget view
@@ -142,11 +143,13 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
     bool operator>=( const QTreeWidgetItem &other ) const { return !( *this < other ); }
 
   private:
+
     enum ItemDataRole
     {
       CustomSortRole = Qt::UserRole + 1001,
       AlwaysOnTopPriorityRole = Qt::UserRole + 1002,
     };
+
 };
 
 /**
@@ -154,11 +157,12 @@ class GUI_EXPORT QgsTreeWidgetItem : public QTreeWidgetItem
  * \class QgsTreeWidgetItemObject
  * \brief Custom QgsTreeWidgetItem with extra signals when item is edited.
  */
-class GUI_EXPORT QgsTreeWidgetItemObject : public QObject, public QgsTreeWidgetItem
+class GUI_EXPORT QgsTreeWidgetItemObject: public QObject, public QgsTreeWidgetItem
 {
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsTreeWidgetItemObject
      * \param type item type

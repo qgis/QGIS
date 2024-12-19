@@ -59,10 +59,10 @@ void QgsClassificationMethod::copyBase( QgsClassificationMethod *c ) const
   c->setParameterValues( mParameterValues );
 }
 
-std::unique_ptr< QgsClassificationMethod > QgsClassificationMethod::create( const QDomElement &element, const QgsReadWriteContext &context )
+QgsClassificationMethod *QgsClassificationMethod::create( const QDomElement &element, const QgsReadWriteContext &context )
 {
   const QString methodId = element.attribute( QStringLiteral( "id" ) );
-  std::unique_ptr< QgsClassificationMethod > method = QgsApplication::classificationMethodRegistry()->method( methodId );
+  QgsClassificationMethod *method = QgsApplication::classificationMethodRegistry()->method( methodId );
 
   // symmetric
   QDomElement symmetricModeElem = element.firstChildElement( QStringLiteral( "symmetricMode" ) );

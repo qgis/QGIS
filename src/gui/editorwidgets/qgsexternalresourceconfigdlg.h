@@ -34,6 +34,7 @@ class GUI_EXPORT QgsExternalResourceConfigDlg : public QgsEditorConfigWidget, pr
     Q_OBJECT
 
   public:
+
     //! Constructor for QgsExternalResourceConfigDlg
     explicit QgsExternalResourceConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
 
@@ -56,6 +57,7 @@ class GUI_EXPORT QgsExternalResourceConfigDlg : public QgsEditorConfigWidget, pr
 
     //! change storage type according to index from storage type combo box
     void changeStorageType( int storageTypeIndex );
+
 };
 
 #endif // QGSEXTERNALRESOURCECONFIGDLG_H

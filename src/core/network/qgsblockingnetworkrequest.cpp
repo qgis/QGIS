@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsblockingnetworkrequest.h"
-#include "moc_qgsblockingnetworkrequest.cpp"
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsnetworkaccessmanager.h"

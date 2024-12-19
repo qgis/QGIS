@@ -6,9 +6,10 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-__author__ = "Nyall Dawson"
-__date__ = "29/03/2018"
-__copyright__ = "Copyright 2018, The QGIS Project"
+
+__author__ = 'Nyall Dawson'
+__date__ = '29/03/2018'
+__copyright__ = 'Copyright 2018, The QGIS Project'
 
 import http.server
 import os
@@ -35,10 +36,10 @@ class TestQgsNetworkContentFetcherTask(QgisTestCase):
     def setUpClass(cls):
         super().setUpClass()
         # Bring up a simple HTTP server
-        os.chdir(unitTestDataPath() + "")
+        os.chdir(unitTestDataPath() + '')
         handler = http.server.SimpleHTTPRequestHandler
 
-        cls.httpd = socketserver.TCPServer(("localhost", 0), handler)
+        cls.httpd = socketserver.TCPServer(('localhost', 0), handler)
         cls.port = cls.httpd.server_address[1]
 
         cls.httpd_thread = threading.Thread(target=cls.httpd.serve_forever)
@@ -55,7 +56,7 @@ class TestQgsNetworkContentFetcherTask(QgisTestCase):
         self.loaded = True
 
     def testFetchBadUrl(self):
-        fetcher = QgsNetworkContentFetcherTask(QUrl("http://x"))
+        fetcher = QgsNetworkContentFetcherTask(QUrl('http://x'))
         self.loaded = False
 
         def check_reply():
@@ -70,15 +71,14 @@ class TestQgsNetworkContentFetcherTask(QgisTestCase):
 
     def testFetchUrlContent(self):
         fetcher = QgsNetworkContentFetcherTask(
-            QUrl("http://localhost:" + str(self.port) + "/qgis_local_server/index.html")
-        )
+            QUrl('http://localhost:' + str(self.port) + '/qgis_local_server/index.html'))
         self.loaded = False
 
         def check_reply():
             r = fetcher.reply()
             assert r.error() == QNetworkReply.NetworkError.NoError, r.error()
 
-            assert b"QGIS" in r.readAll()
+            assert b'QGIS' in r.readAll()
             self.loaded = True
 
         fetcher.fetched.connect(check_reply)

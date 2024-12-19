@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerelevationproperties.h"
-#include "moc_qgsvectorlayerelevationproperties.cpp"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsmarkersymbol.h"

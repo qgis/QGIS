@@ -36,7 +36,7 @@ Adds a method to the registry
 Returns ``False`` if a method with same id already exists.
 %End
 
-    std::unique_ptr< QgsClassificationMethod > method( const QString &id );
+    QgsClassificationMethod *method( const QString &id ) /Factory/;
 %Docstring
 Returns a new instance of the method for the given id
 %End

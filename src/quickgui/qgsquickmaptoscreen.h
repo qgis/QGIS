@@ -49,6 +49,7 @@ class QUICK_EXPORT QgsQuickMapToScreen : public QObject
     Q_PROPERTY( double screenDistance READ screenDistance NOTIFY screenDistanceChanged )
 
   public:
+
     //! Creates a map to screen object
     explicit QgsQuickMapToScreen( QObject *parent = nullptr );
 

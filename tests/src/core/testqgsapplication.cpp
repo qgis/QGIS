@@ -15,19 +15,21 @@ Email                : sherman at mrcc dot com
 #include "qgstest.h"
 #include <QPixmap>
 
-#define CPL_SUPRESS_CPLUSPLUS //#spellok
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
 
 //header for class being tested
 #include <qgsapplication.h>
 
-class TestQgsApplication : public QgsTest
+class TestQgsApplication: public QgsTest
 {
     Q_OBJECT
 
   public:
+
     TestQgsApplication()
-      : QgsTest( QStringLiteral( "QgsApplication Tests" ), QStringLiteral( "application" ) )
+      : QgsTest( QStringLiteral( "QgsApplication Tests" ),
+                 QStringLiteral( "application" ) )
     {}
 
   private slots:
@@ -44,6 +46,7 @@ class TestQgsApplication : public QgsTest
 
   private:
     QString getQgisPath();
+
 };
 
 
@@ -112,7 +115,7 @@ void TestQgsApplication::themeIcon()
   // with colors
   icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderParams.svg" ), QColor( 255, 100, 100 ), QColor( 255, 0, 0 ) );
   im = QImage( icon.pixmap( 16, 16 ).toImage() );
-  QVERIFY( QGSIMAGECHECK( QStringLiteral( "theme_icon_colors_1" ), QStringLiteral( "theme_icon_colors_1" ), im, QString(), 0 ) );
+  QVERIFY( QGSIMAGECHECK( QStringLiteral( "theme_icon_colors_1" ), QStringLiteral( "theme_icon_colors_1" ), im, QString(),  0 ) );
 
   // different colors
   icon = QgsApplication::getThemeIcon( QStringLiteral( "/mIconFolderParams.svg" ), QColor( 170, 255, 170 ), QColor( 0, 255, 0 ) );

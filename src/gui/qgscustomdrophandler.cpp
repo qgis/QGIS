@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgscustomdrophandler.h"
-#include "moc_qgscustomdrophandler.cpp"
 
 QString QgsCustomDropHandler::customUriProviderKey() const
 {

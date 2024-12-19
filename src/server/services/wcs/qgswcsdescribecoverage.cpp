@@ -30,7 +30,8 @@ namespace QgsWcs
   /**
    * Output WCS DescribeCoverage response
    */
-  void writeDescribeCoverage( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response )
+  void writeDescribeCoverage( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+                              const QgsServerRequest &request, QgsServerResponse &response )
   {
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
@@ -63,7 +64,8 @@ namespace QgsWcs
   }
 
 
-  QDomDocument createDescribeCoverageDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request )
+  QDomDocument createDescribeCoverageDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
+      const QgsServerRequest &request )
   {
     Q_UNUSED( version )
 
@@ -74,11 +76,11 @@ namespace QgsWcs
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
 #else
-    ( void ) serverIface;
+    ( void )serverIface;
 #endif
 
     //wcs:WCS_Capabilities element
-    QDomElement coveDescElement = doc.createElement( QStringLiteral( "CoverageDescription" ) /*wcs:CoverageDescription*/ );
+    QDomElement coveDescElement = doc.createElement( QStringLiteral( "CoverageDescription" )/*wcs:CoverageDescription*/ );
     coveDescElement.setAttribute( QStringLiteral( "xmlns" ), WCS_NAMESPACE );
     coveDescElement.setAttribute( QStringLiteral( "xmlns:xsi" ), QStringLiteral( "http://www.w3.org/2001/XMLSchema-instance" ) );
     coveDescElement.setAttribute( QStringLiteral( "xsi:schemaLocation" ), WCS_NAMESPACE + " http://schemas.opengis.net/wcs/1.0.0/describeCoverage.xsd" );
@@ -148,3 +150,6 @@ namespace QgsWcs
   }
 
 } // namespace QgsWcs
+
+
+

@@ -105,7 +105,9 @@ namespace QgsWmts
       * \param type Type of the parameter
       * \param defaultValue Default value of the parameter
        */
-      QgsWmtsParameter( const QgsWmtsParameter::Name name = QgsWmtsParameter::UNKNOWN, const QMetaType::Type type = QMetaType::Type::QString, const QVariant defaultValue = QVariant( "" ) );
+      QgsWmtsParameter( const QgsWmtsParameter::Name name = QgsWmtsParameter::UNKNOWN,
+                        const QMetaType::Type type = QMetaType::Type::QString,
+                        const QVariant defaultValue = QVariant( "" ) );
 
       /**
        * Default destructor for QgsWmtsParameter.
@@ -151,6 +153,7 @@ namespace QgsWmts
       Q_GADGET
 
     public:
+
       //! Output format for the response
       enum Format
       {
@@ -319,6 +322,6 @@ namespace QgsWmts
       QList<QgsProjectVersion> mVersions;
       QMap<QgsWmtsParameter::Name, QgsWmtsParameter> mWmtsParameters;
   };
-} // namespace QgsWmts
+}
 
 #endif

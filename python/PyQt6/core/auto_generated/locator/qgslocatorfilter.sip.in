@@ -21,9 +21,6 @@ Encapsulates properties of an individual matching result found by a :py:class:`Q
 #include "qgslocatorfilter.h"
 %End
   public:
-    static const QMetaObject staticMetaObject;
-
-  public:
 
     QgsLocatorResult();
 

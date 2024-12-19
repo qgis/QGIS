@@ -7,9 +7,9 @@
 
 """
 
-__author__ = "elpaso@itopen.it"
-__date__ = "2022-08-19"
-__copyright__ = "Copyright 2022, ItOpen"
+__author__ = 'elpaso@itopen.it'
+__date__ = '2022-08-19'
+__copyright__ = 'Copyright 2022, ItOpen'
 
 import os
 import shutil
@@ -24,19 +24,15 @@ from qgslayermetadataprovidertestbase import (
 )
 
 
-class TestPostgresLayerMetadataProvider(
-    unittest.TestCase, LayerMetadataProviderTestBase
-):
+class TestPostgresLayerMetadataProvider(unittest.TestCase, LayerMetadataProviderTestBase):
 
     def getMetadataProviderId(self) -> str:
 
-        return "ogr"
+        return 'ogr'
 
     def getLayer(self) -> QgsVectorLayer:
 
-        return QgsVectorLayer(
-            f"{self.getConnectionUri()}|layername=geopackage", "someData", "ogr"
-        )
+        return QgsVectorLayer(f'{self.getConnectionUri()}|layername=geopackage', "someData", 'ogr')
 
     def getConnectionUri(self) -> str:
 
@@ -47,13 +43,13 @@ class TestPostgresLayerMetadataProvider(
         super().setUp()
         self.temp_dir = QTemporaryDir()
         self.temp_path = self.temp_dir.path()
-        srcpath = os.path.join(TEST_DATA_DIR, "provider")
-        shutil.copy(os.path.join(srcpath, "geopackage.gpkg"), self.temp_path)
-        self.conn = os.path.join(self.temp_path, "geopackage.gpkg")
-        md = QgsProviderRegistry.instance().providerMetadata("ogr")
+        srcpath = os.path.join(TEST_DATA_DIR, 'provider')
+        shutil.copy(os.path.join(srcpath, 'geopackage.gpkg'), self.temp_path)
+        self.conn = os.path.join(self.temp_path, 'geopackage.gpkg')
+        md = QgsProviderRegistry.instance().providerMetadata('ogr')
         conn = md.createConnection(self.getConnectionUri(), {})
-        conn.store("OGR Metadata Enabled Connection")
+        conn.store('OGR Metadata Enabled Connection')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

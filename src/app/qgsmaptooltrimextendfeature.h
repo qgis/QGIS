@@ -40,11 +40,11 @@ class APP_EXPORT QgsMapToolTrimExtendFeature : public QgsMapToolEdit
 
   private:
     //!  Rubberband that shows the limit
-    std::unique_ptr<QgsRubberBand> mRubberBandLimit;
+    std::unique_ptr<QgsRubberBand>mRubberBandLimit;
     //! Rubberband that shows the feature being extended
-    std::unique_ptr<QgsRubberBand> mRubberBandExtend;
+    std::unique_ptr<QgsRubberBand>mRubberBandExtend;
     //!  Rubberband that shows the intersection point
-    std::unique_ptr<QgsRubberBand> mRubberBandIntersection;
+    std::unique_ptr<QgsRubberBand>mRubberBandIntersection;
     //!  Points for the limit
     QgsPoint pLimit1, pLimit2;
     //!  Points for extend

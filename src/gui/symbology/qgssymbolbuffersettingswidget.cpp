@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgssymbolbuffersettingswidget.h"
-#include "moc_qgssymbolbuffersettingswidget.cpp"
 #include "qgssymbol.h"
 #include "qgsfillsymbol.h"
 #include "qgsfillsymbollayer.h"
@@ -34,7 +33,13 @@ QgsSymbolBufferSettingsWidget::QgsSymbolBufferSettingsWidget( QWidget *parent )
 
   mEnabledGroup->setChecked( false );
 
-  mSizeUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters, Qgis::RenderUnit::MetersInMapUnits, Qgis::RenderUnit::MapUnits, Qgis::RenderUnit::Pixels, Qgis::RenderUnit::Points, Qgis::RenderUnit::Inches } );
+  mSizeUnitWidget->setUnits( { Qgis::RenderUnit::Millimeters,
+                               Qgis::RenderUnit::MetersInMapUnits,
+                               Qgis::RenderUnit::MapUnits,
+                               Qgis::RenderUnit::Pixels,
+                               Qgis::RenderUnit::Points,
+                               Qgis::RenderUnit::Inches
+                             } );
   mSizeUnitWidget->setUnit( Qgis::RenderUnit::Millimeters );
 
   mFillSymbolButton->setSymbolType( Qgis::SymbolType::Fill );
@@ -45,8 +50,8 @@ QgsSymbolBufferSettingsWidget::QgsSymbolBufferSettingsWidget( QWidget *parent )
   mComboJoinStyle->setPenJoinStyle( Qt::RoundJoin );
 
   connect( mEnabledGroup, &QGroupBox::toggled, this, &QgsSymbolBufferSettingsWidget::onWidgetChanged );
-  connect( mSpinWidth, qOverload<double>( &QgsDoubleSpinBox::valueChanged ), this, &QgsSymbolBufferSettingsWidget::onWidgetChanged );
-  connect( mComboJoinStyle, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsSymbolBufferSettingsWidget::onWidgetChanged );
+  connect( mSpinWidth, qOverload< double >( &QgsDoubleSpinBox::valueChanged ), this, &QgsSymbolBufferSettingsWidget::onWidgetChanged );
+  connect( mComboJoinStyle, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsSymbolBufferSettingsWidget::onWidgetChanged );
   connect( mSizeUnitWidget, &QgsUnitSelectionWidget::changed, this, &QgsSymbolBufferSettingsWidget::onWidgetChanged );
   connect( mFillSymbolButton, &QgsSymbolButton::changed, this, &QgsSymbolBufferSettingsWidget::onWidgetChanged );
 }
@@ -73,7 +78,7 @@ QgsSymbolBufferSettings QgsSymbolBufferSettingsWidget::bufferSettings() const
   settings.setSizeUnit( mSizeUnitWidget->unit() );
   settings.setSizeMapUnitScale( mSizeUnitWidget->getMapUnitScale() );
   settings.setJoinStyle( mComboJoinStyle->penJoinStyle() );
-  settings.setFillSymbol( mFillSymbolButton->clonedSymbol<QgsFillSymbol>() );
+  settings.setFillSymbol( mFillSymbolButton->clonedSymbol< QgsFillSymbol >() );
   return settings;
 }
 
@@ -92,7 +97,7 @@ QgsSymbolBufferSettingsDialog::QgsSymbolBufferSettingsDialog( QWidget *parent, Q
   : QDialog( parent, f )
 {
   QVBoxLayout *vLayout = new QVBoxLayout();
-  mWidget = new QgsSymbolBufferSettingsWidget();
+  mWidget = new QgsSymbolBufferSettingsWidget( );
   vLayout->addWidget( mWidget );
   QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
   connect( bbox, &QDialogButtonBox::accepted, this, &QgsSymbolBufferSettingsDialog::accept );
@@ -111,3 +116,4 @@ QgsSymbolBufferSettings QgsSymbolBufferSettingsDialog::bufferSettings() const
 {
   return mWidget->bufferSettings();
 }
+

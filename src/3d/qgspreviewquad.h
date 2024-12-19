@@ -40,12 +40,12 @@ class QgsPreviewQuadMaterial : public Qt3DRender::QMaterial
 
     //! Sets the view port of the quad
     void setViewPort( QVector2D centerTexCoords, QVector2D sizeTexCoords );
-
   private:
     Qt3DRender::QEffect *mEffect = nullptr;
     Qt3DRender::QParameter *mTextureParameter = nullptr;
     Qt3DRender::QParameter *mCenterTextureCoords = nullptr;
     Qt3DRender::QParameter *mSizeTextureCoords = nullptr;
+
 };
 
 /**
@@ -60,6 +60,7 @@ class QgsPreviewQuad : public Qt3DCore::QEntity
     Q_OBJECT
 
   public:
+
     /**
      * \brief Construct an object that displays a texture for debugging purposes (example: depth buffer)
      * \param texture The texture to be rendered
@@ -73,7 +74,6 @@ class QgsPreviewQuad : public Qt3DCore::QEntity
 
     //! Sets where the quad will be located on the scene
     void setViewPort( const QPointF &centerNDC, const QSizeF &size );
-
   private:
     QgsPreviewQuadMaterial *mMaterial = nullptr;
 };

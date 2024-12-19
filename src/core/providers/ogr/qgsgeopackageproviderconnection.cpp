@@ -283,7 +283,7 @@ QList<QgsGeoPackageProviderConnection::TableProperty> QgsGeoPackageProviderConne
         property.addGeometryColumnType( QgsWkbTypes::parseType( row.at( 4 ).toString() ),  crs );
       }
 
-      property.setComment( row.at( 2 ).toString() );
+      property.setComment( row.at( 4 ).toString() );
       tableInfo.push_back( property );
     }
 

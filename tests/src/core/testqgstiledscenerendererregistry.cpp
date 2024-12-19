@@ -33,6 +33,7 @@ class DummyRenderer : public QgsTiledSceneRenderer
     QDomElement save( QDomDocument &doc, const QgsReadWriteContext & ) const override { return doc.createElement( QStringLiteral( "test" ) ); }
     void renderTriangle( QgsTiledSceneRenderContext &, const QPolygonF & ) override {};
     void renderLine( QgsTiledSceneRenderContext &, const QPolygonF & ) override {};
+
 };
 
 class TestQgsTiledSceneRendererRegistry : public QObject
@@ -51,6 +52,7 @@ class TestQgsTiledSceneRendererRegistry : public QObject
     void fetchTypes();
 
   private:
+
 };
 
 void TestQgsTiledSceneRendererRegistry::initTestCase()
@@ -66,10 +68,12 @@ void TestQgsTiledSceneRendererRegistry::cleanupTestCase()
 
 void TestQgsTiledSceneRendererRegistry::init()
 {
+
 }
 
 void TestQgsTiledSceneRendererRegistry::cleanup()
 {
+
 }
 
 void TestQgsTiledSceneRendererRegistry::metadata()
@@ -80,7 +84,7 @@ void TestQgsTiledSceneRendererRegistry::metadata()
 
   //test creating renderer from metadata
   QDomElement elem;
-  const std::unique_ptr<QgsTiledSceneRenderer> renderer( metadata.createRenderer( elem, QgsReadWriteContext() ) );
+  const std::unique_ptr< QgsTiledSceneRenderer > renderer( metadata.createRenderer( elem, QgsReadWriteContext() ) );
   QVERIFY( renderer );
   DummyRenderer *dummyRenderer = dynamic_cast<DummyRenderer *>( renderer.get() );
   QVERIFY( dummyRenderer );
@@ -109,7 +113,7 @@ void TestQgsTiledSceneRendererRegistry::addRenderer()
   QCOMPARE( registry->renderersList().length(), previousCount + 1 );
   //try adding again, should have no effect
   QgsTiledSceneRendererMetadata *dupe = new QgsTiledSceneRendererMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy callout" ), DummyRenderer::create, QIcon() );
-  QVERIFY( !registry->addRenderer( dupe ) );
+  QVERIFY( ! registry->addRenderer( dupe ) );
   QCOMPARE( registry->renderersList().length(), previousCount + 1 );
   delete dupe;
 

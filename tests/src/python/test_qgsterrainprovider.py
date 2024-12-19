@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "17/03/2022"
-__copyright__ = "Copyright 2022, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '17/03/2022'
+__copyright__ = 'Copyright 2022, The QGIS Project'
 
 import math
 import os
@@ -39,7 +38,7 @@ class TestQgsTerrainProviders(QgisTestCase):
         Test QgsFlatTerrainProvider
         """
         provider = QgsFlatTerrainProvider()
-        self.assertEqual(provider.type(), "flat")
+        self.assertEqual(provider.type(), 'flat')
         self.assertFalse(provider.crs().isValid())
 
         self.assertEqual(provider.heightAt(1, 2), 0)
@@ -55,7 +54,7 @@ class TestQgsTerrainProviders(QgisTestCase):
         doc = QDomDocument("testdoc")
 
         context = QgsReadWriteContext()
-        parent_elem = doc.createElement("test")
+        parent_elem = doc.createElement('test')
         element = provider.writeXml(doc, context)
         parent_elem.appendChild(element)
 
@@ -79,7 +78,7 @@ class TestQgsTerrainProviders(QgisTestCase):
         Test QgsRasterDemTerrainProvider
         """
         provider = QgsRasterDemTerrainProvider()
-        self.assertEqual(provider.type(), "raster")
+        self.assertEqual(provider.type(), 'raster')
 
         # without layer assigned
         self.assertFalse(provider.crs().isValid())
@@ -87,14 +86,14 @@ class TestQgsTerrainProviders(QgisTestCase):
 
         # add raster layer to project
         p = QgsProject()
-        rl = QgsRasterLayer(os.path.join(unitTestDataPath(), "float1-16.tif"), "rl")
+        rl = QgsRasterLayer(os.path.join(unitTestDataPath(), 'float1-16.tif'), 'rl')
         self.assertTrue(rl.isValid())
         p.addMapLayer(rl)
 
         provider.setLayer(rl)
         self.assertEqual(provider.layer(), rl)
 
-        self.assertEqual(provider.crs().authid(), "EPSG:4326")
+        self.assertEqual(provider.crs().authid(), 'EPSG:4326')
         self.assertEqual(provider.heightAt(106.4105, -6.6341), 11.0)
         # outside of raster extent
         self.assertTrue(math.isnan(provider.heightAt(1, 2)))
@@ -115,7 +114,7 @@ class TestQgsTerrainProviders(QgisTestCase):
         doc = QDomDocument("testdoc")
 
         context = QgsReadWriteContext()
-        parent_elem = doc.createElement("test")
+        parent_elem = doc.createElement('test')
         element = provider.writeXml(doc, context)
         parent_elem.appendChild(element)
 
@@ -153,7 +152,7 @@ class TestQgsTerrainProviders(QgisTestCase):
         Test QgsMeshTerrainProvider
         """
         provider = QgsMeshTerrainProvider()
-        self.assertEqual(provider.type(), "mesh")
+        self.assertEqual(provider.type(), 'mesh')
 
         # without layer assigned
         self.assertFalse(provider.crs().isValid())
@@ -161,21 +160,17 @@ class TestQgsTerrainProviders(QgisTestCase):
 
         # add mesh layer to project
         p = QgsProject()
-        mesh_layer = QgsMeshLayer(
-            os.path.join(unitTestDataPath(), "3d", "elev_mesh.2dm"), "mdal", "mdal"
-        )
-        mesh_layer.setCrs(QgsCoordinateReferenceSystem("EPSG:27700"))
+        mesh_layer = QgsMeshLayer(os.path.join(unitTestDataPath(), '3d', 'elev_mesh.2dm'), 'mdal', 'mdal')
+        mesh_layer.setCrs(QgsCoordinateReferenceSystem('EPSG:27700'))
         self.assertTrue(mesh_layer.isValid())
         p.addMapLayer(mesh_layer)
 
         provider.setLayer(mesh_layer)
         self.assertEqual(provider.layer(), mesh_layer)
-        self.assertEqual(provider.crs().authid(), "EPSG:27700")
+        self.assertEqual(provider.crs().authid(), 'EPSG:27700')
 
         self.assertTrue(math.isnan(provider.heightAt(1, 2)))
-        self.assertAlmostEqual(
-            provider.heightAt(321695.2, 129990.5), 89.49743150684921, 5
-        )
+        self.assertAlmostEqual(provider.heightAt(321695.2, 129990.5), 89.49743150684921, 5)
 
         provider.setOffset(5)
         self.assertEqual(provider.offset(), 5)
@@ -192,7 +187,7 @@ class TestQgsTerrainProviders(QgisTestCase):
         doc = QDomDocument("testdoc")
 
         context = QgsReadWriteContext()
-        parent_elem = doc.createElement("test")
+        parent_elem = doc.createElement('test')
         element = provider.writeXml(doc, context)
         parent_elem.appendChild(element)
 
@@ -226,5 +221,5 @@ class TestQgsTerrainProviders(QgisTestCase):
         self.assertTrue(provider1.equals(provider2))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

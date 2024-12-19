@@ -25,6 +25,7 @@ QgsRasterCalcNode::QgsRasterCalcNode( QgsRasterMatrix *matrix )
   : mType( tMatrix )
   , mMatrix( matrix )
 {
+
 }
 
 QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsRasterCalcNode *right )
@@ -35,7 +36,7 @@ QgsRasterCalcNode::QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsR
 {
 }
 
-QgsRasterCalcNode::QgsRasterCalcNode( QString functionName, QVector<QgsRasterCalcNode *> functionArgs )
+QgsRasterCalcNode::QgsRasterCalcNode( QString functionName, QVector <QgsRasterCalcNode *> functionArgs )
   : mType( tFunction )
   , mFunctionName( functionName )
   , mFunctionArgs( functionArgs )
@@ -61,7 +62,7 @@ QgsRasterCalcNode::~QgsRasterCalcNode()
   }
 }
 
-bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock *> &rasterData, QgsRasterMatrix &result, int row ) const
+bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock * > &rasterData, QgsRasterMatrix &result, int row ) const
 {
   //if type is raster ref: return a copy of the corresponding matrix
 
@@ -86,12 +87,12 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock *> &rasterData, 
 
     int outRow = 0;
     bool isNoData = false;
-    for ( int dataRow = startRow; dataRow < endRow; ++dataRow, ++outRow )
+    for ( int dataRow = startRow; dataRow < endRow ; ++dataRow, ++outRow )
     {
       for ( int dataCol = 0; dataCol < nCols; ++dataCol )
       {
         const double value = ( *it )->valueAndNoData( dataRow, dataCol, isNoData );
-        data[dataCol + nCols * outRow] = isNoData ? result.nodataValue() : value;
+        data[ dataCol + nCols * outRow] = isNoData ? result.nodataValue() : value;
       }
     }
     result.setData( nCols, nRows, data, result.nodataValue() );
@@ -202,7 +203,7 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock *> &rasterData, 
   else if ( mType == tNumber )
   {
     const size_t nEntries = static_cast<size_t>( result.nColumns() * result.nRows() );
-    double *data = new double[nEntries];
+    double *data = new double[ nEntries ];
     std::fill( data, data + nEntries, mNumber );
     result.setData( result.nColumns(), 1, data, result.nodataValue() );
 
@@ -221,10 +222,10 @@ bool QgsRasterCalcNode::calculate( QMap<QString, QgsRasterBlock *> &rasterData, 
   }
   else if ( mType == tFunction )
   {
-    std::vector<std::unique_ptr<QgsRasterMatrix>> matrixContainer;
+    std::vector< std::unique_ptr< QgsRasterMatrix > > matrixContainer;
     for ( int i = 0; i < mFunctionArgs.size(); ++i )
     {
-      std::unique_ptr<QgsRasterMatrix> singleMatrix = std::make_unique<QgsRasterMatrix>( result.nColumns(), result.nRows(), nullptr, result.nodataValue() );
+      std::unique_ptr< QgsRasterMatrix > singleMatrix = std::make_unique< QgsRasterMatrix >( result.nColumns(), result.nRows(), nullptr, result.nodataValue() );
       if ( !mFunctionArgs.at( i ) || !mFunctionArgs.at( i )->calculate( rasterData, *singleMatrix, row ) )
       {
         return false;
@@ -393,7 +394,7 @@ QString QgsRasterCalcNode::toString( bool cStyle ) const
         const QString argTwo = mFunctionArgs.at( 1 )->toString( cStyle );
         const QString argThree = mFunctionArgs.at( 2 )->toString( cStyle );
         if ( cStyle )
-          result = QStringLiteral( " ( %1 ) ? ( %2 ) : ( %3 ) " ).arg( argOne, argTwo, argThree );
+          result =  QStringLiteral( " ( %1 ) ? ( %2 ) : ( %3 ) " ).arg( argOne, argTwo, argThree );
         else
           result = QStringLiteral( "if( %1 , %2 , %3 )" ).arg( argOne, argTwo, argThree );
       }
@@ -420,7 +421,7 @@ QList<const QgsRasterCalcNode *> QgsRasterCalcNode::findNodes( const QgsRasterCa
 
 QgsRasterCalcNode *QgsRasterCalcNode::parseRasterCalcString( const QString &str, QString &parserErrorMsg )
 {
-  extern QgsRasterCalcNode *localParseRasterCalcString( const QString &str, QString &parserErrorMsg );
+  extern QgsRasterCalcNode *localParseRasterCalcString( const QString & str, QString & parserErrorMsg );
   return localParseRasterCalcString( str, parserErrorMsg );
 }
 
@@ -431,8 +432,7 @@ QStringList QgsRasterCalcNode::referencedLayerNames() const
   QStringList rasterRef = this->cleanRasterReferences();
   for ( const auto &i : rasterRef )
   {
-    if ( referencedRasters.contains( i.mid( 0, i.lastIndexOf( "@" ) ) ) )
-      continue;
+    if ( referencedRasters.contains( i.mid( 0, i.lastIndexOf( "@" ) ) ) ) continue;
     referencedRasters << i.mid( 0, i.lastIndexOf( "@" ) );
   }
 
@@ -442,15 +442,17 @@ QStringList QgsRasterCalcNode::referencedLayerNames() const
 QStringList QgsRasterCalcNode::cleanRasterReferences() const
 {
   QStringList rasterReferences;
-  const QList<const QgsRasterCalcNode *> rasterRefNodes = this->findNodes( QgsRasterCalcNode::Type::tRasterRef );
+  const QList<const QgsRasterCalcNode *> rasterRefNodes =  this->findNodes( QgsRasterCalcNode::Type::tRasterRef );
 
   for ( const QgsRasterCalcNode *r : rasterRefNodes )
   {
+
     QString layerRef( r->toString() );
     if ( layerRef.at( 0 ) == QLatin1String( "\"" ) && layerRef.at( layerRef.size() - 1 ) == QLatin1String( "\"" ) )
     {
       layerRef.remove( 0, 1 );
       layerRef.chop( 1 );
+
     }
     layerRef.remove( QChar( '\\' ), Qt::CaseInsensitive );
     rasterReferences << layerRef;
@@ -459,21 +461,22 @@ QStringList QgsRasterCalcNode::cleanRasterReferences() const
   return rasterReferences;
 }
 
-QgsRasterMatrix QgsRasterCalcNode::evaluateFunction( const std::vector<std::unique_ptr<QgsRasterMatrix>> &matrixVector, QgsRasterMatrix &result ) const
+QgsRasterMatrix QgsRasterCalcNode::evaluateFunction( const std::vector< std::unique_ptr< QgsRasterMatrix > > &matrixVector, QgsRasterMatrix &result ) const
 {
+
   if ( mFunctionName == "if" )
   {
     //scalar condition
     if ( matrixVector.at( 0 )->isNumber() )
     {
-      result = ( matrixVector.at( 0 )->data() ? *matrixVector.at( 1 ) : *matrixVector.at( 2 ) );
+      result = ( matrixVector.at( 0 )->data() ? * matrixVector.at( 1 ) : * matrixVector.at( 2 ) );
       return result;
     }
     int nCols = matrixVector.at( 0 )->nColumns();
     int nRows = matrixVector.at( 0 )->nRows();
     int nEntries = nCols * nRows;
-    std::unique_ptr<double[]> dataResult = std::make_unique<double[]>( nEntries );
-    double *dataResultRawPtr = dataResult.get();
+    std::unique_ptr< double[] > dataResult = std::make_unique< double[] >( nEntries );
+    double *dataResultRawPtr =  dataResult.get();
 
     double *condition = matrixVector.at( 0 )->data();
     double *firstOption = matrixVector.at( 1 )->data();

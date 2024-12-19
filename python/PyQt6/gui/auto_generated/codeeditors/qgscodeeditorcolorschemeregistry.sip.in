@@ -24,6 +24,7 @@ A registry of color schemes for use in :py:class:`QgsCodeEditor` widgets.
 #include "qgscodeeditorcolorschemeregistry.h"
 %End
   public:
+
     QgsCodeEditorColorSchemeRegistry();
 %Docstring
 Constructor for a color scheme registry.

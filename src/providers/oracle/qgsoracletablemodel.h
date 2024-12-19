@@ -69,6 +69,7 @@ class QgsOracleTableModel : public QgsAbstractDbTableModel
     //! Number of tables in the model
     int mTableCount = 0;
     QStringList mColumns;
+
 };
 
 #endif // QGSORACLETABLEMODEL_H

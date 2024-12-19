@@ -18,6 +18,7 @@ Layout view tool for adding node based items to a layout.
 #include "qgslayoutviewtooladdnodeitem.h"
 %End
   public:
+
     QgsLayoutViewToolAddNodeItem( QgsLayoutView *view /TransferThis/ );
 %Docstring
 Constructs a QgsLayoutViewToolAddNodeItem for the given layout ``view``.

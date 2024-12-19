@@ -2,5 +2,5 @@
 try:
     QgsHtmlAnnotation.create = staticmethod(QgsHtmlAnnotation.create)
     QgsHtmlAnnotation.__group__ = ['annotations']
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -11,7 +11,7 @@
 
 
 
-class QgsColorRampLegendNodeWidget : QgsPanelWidget
+class QgsColorRampLegendNodeWidget: QgsPanelWidget
 {
 %Docstring(signature="appended")
 A widget for properties relating to a :py:class:`QgsColorRampLegendNode` (:py:class:`QgsColorRampLegendNodeSettings`).
@@ -28,6 +28,7 @@ When changes are made the to settings by a user the :py:func:`~widgetChanged` si
 #include "qgscolorramplegendnodewidget.h"
 %End
   public:
+
     enum class Capability /BaseType=IntFlag/
     {
       Prefix,
@@ -87,6 +88,7 @@ A dialog for configuring a :py:class:`QgsColorRampLegendNode` (:py:class:`QgsCol
 #include "qgscolorramplegendnodewidget.h"
 %End
   public:
+
     QgsColorRampLegendNodeDialog( const QgsColorRampLegendNodeSettings &settings, QWidget *parent /TransferThis/ = 0, QgsColorRampLegendNodeWidget::Capabilities capabilities = QgsColorRampLegendNodeWidget::Capability::AllCapabilities );
 %Docstring
 Constructor for QgsColorRampLegendNodeDialog, initially showing the specified ``settings``.
@@ -114,6 +116,7 @@ when using single band gray renderer).
 %End
 
 };
+
 
 
 /************************************************************************

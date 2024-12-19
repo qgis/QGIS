@@ -4,5 +4,5 @@ QgsBearingNumericFormat.UseRangeNegative180ToPositive180 = QgsBearingNumericForm
 QgsBearingNumericFormat.UseRange0To360 = QgsBearingNumericFormat.FormatDirectionOption.UseRange0To360
 try:
     QgsBearingNumericFormat.__group__ = ['numericformats']
-except (NameError, AttributeError):
+except NameError:
     pass

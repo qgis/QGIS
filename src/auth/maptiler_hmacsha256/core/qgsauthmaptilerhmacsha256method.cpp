@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsauthmaptilerhmacsha256method.h"
-#include "moc_qgsauthmaptilerhmacsha256method.cpp"
 
 #include <QMessageAuthenticationCode>
 #include <QUrlQuery>
@@ -40,7 +39,11 @@ QgsAuthMapTilerHmacSha256Method::QgsAuthMapTilerHmacSha256Method()
 {
   setVersion( 1 );
   setExpansions( QgsAuthMethod::NetworkRequest );
-  setDataProviders( QStringList() << QStringLiteral( "wms" ) << QStringLiteral( "vectortile" ) << QStringLiteral( "xyzvectortiles" ) );
+  setDataProviders( QStringList()
+                    << QStringLiteral( "wms" )
+                    << QStringLiteral( "vectortile" )
+                    << QStringLiteral( "xyzvectortiles" ) );
+
 }
 
 QString QgsAuthMapTilerHmacSha256Method::key() const
@@ -58,7 +61,8 @@ QString QgsAuthMapTilerHmacSha256Method::displayDescription() const
   return AUTH_METHOD_DISPLAY_DESCRIPTION;
 }
 
-bool QgsAuthMapTilerHmacSha256Method::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider )
+bool QgsAuthMapTilerHmacSha256Method::updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
+    const QString &dataprovider )
 {
   Q_UNUSED( dataprovider )
   const QgsAuthMethodConfig config = getMethodConfig( authcfg );
@@ -84,9 +88,9 @@ bool QgsAuthMapTilerHmacSha256Method::updateNetworkRequest( QNetworkRequest &req
   QUrlQuery query( url.query() );
   query.removeQueryItem( QStringLiteral( "key" ) );
 
-  QList<QPair<QString, QString>> queryItems = query.queryItems();
+  QList<QPair<QString, QString> > queryItems = query.queryItems();
 
-  queryItems.append( { QStringLiteral( "key" ), key } );
+  queryItems.append( {QStringLiteral( "key" ), key} );
 
   query.setQueryItems( queryItems );
   url.setQuery( query );

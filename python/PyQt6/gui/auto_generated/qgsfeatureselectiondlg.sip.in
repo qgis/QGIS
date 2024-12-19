@@ -28,6 +28,7 @@ class QgsFeatureSelectionDlg : QDialog
       sipType = 0;
 %End
   public:
+
     explicit QgsFeatureSelectionDlg( QgsVectorLayer *vl, const QgsAttributeEditorContext &context, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFeatureSelectionDlg
@@ -53,6 +54,7 @@ Set form filter expression
 %End
 
   protected:
+
     virtual void keyPressEvent( QKeyEvent *evt );
 
 

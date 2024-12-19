@@ -388,13 +388,6 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      */
     SIP_SKIP const QgsLayoutGuideCollection &guides() const;
 
-    /**
-     * Apply the source page properties (size & background color) to all other pages
-     *
-     * \since QGIS 3.42
-     */
-    void applyPropertiesToAllOtherPages( int sourcePage );
-
   public slots:
 
     /**

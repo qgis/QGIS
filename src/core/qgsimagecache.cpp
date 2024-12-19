@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsimagecache.h"
-#include "moc_qgsimagecache.cpp"
 
 #include "qgis.h"
 #include "qgsimageoperation.h"

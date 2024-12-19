@@ -3,5 +3,5 @@ try:
     QgsRelation.createFromXml = staticmethod(QgsRelation.createFromXml)
     QgsRelation.cardinalityToDisplayString = staticmethod(QgsRelation.cardinalityToDisplayString)
     QgsRelation.strengthToDisplayString = staticmethod(QgsRelation.strengthToDisplayString)
-except (NameError, AttributeError):
+except NameError:
     pass

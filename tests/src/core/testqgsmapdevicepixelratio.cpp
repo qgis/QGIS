@@ -47,8 +47,8 @@ class TestQgsMapDevicePixelRatio : public QgsTest
     ~TestQgsMapDevicePixelRatio() override;
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void pointsLayer();
 
@@ -72,7 +72,8 @@ void TestQgsMapDevicePixelRatio::initTestCase()
   //create a point layer that will be used in all tests...
   const QString myPointsFileName = mTestDataDir + "points.shp";
   const QFileInfo myPointFileInfo( myPointsFileName );
-  mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(), myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mPointsLayer = new QgsVectorLayer( myPointFileInfo.filePath(),
+                                     myPointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 }

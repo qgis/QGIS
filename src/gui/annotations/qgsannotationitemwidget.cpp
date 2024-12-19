@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsannotationitemwidget.h"
-#include "moc_qgsannotationitemwidget.cpp"
 #include "qgsmapcanvas.h"
 #include "qgsrendereditemdetails.h"
 #include "qgsrendereditemresults.h"
@@ -24,6 +23,7 @@
 QgsAnnotationItemBaseWidget::QgsAnnotationItemBaseWidget( QWidget *parent )
   : QgsPanelWidget( parent )
 {
+
 }
 
 bool QgsAnnotationItemBaseWidget::setItem( QgsAnnotationItem *item )
@@ -92,8 +92,9 @@ const QgsRenderedAnnotationItemDetails *QgsAnnotationItemBaseWidget::renderedIte
 
   const QList<QgsRenderedItemDetails *> items = renderedItemResults->renderedItems();
   const QString annotationId = mItemId;
-  auto it = std::find_if( items.begin(), items.end(), [layerId, annotationId]( const QgsRenderedItemDetails *item ) {
-    if ( const QgsRenderedAnnotationItemDetails *annotationItem = dynamic_cast<const QgsRenderedAnnotationItemDetails *>( item ) )
+  auto it = std::find_if( items.begin(), items.end(), [layerId, annotationId]( const QgsRenderedItemDetails * item )
+  {
+    if ( const QgsRenderedAnnotationItemDetails *annotationItem = dynamic_cast< const QgsRenderedAnnotationItemDetails *>( item ) )
     {
       if ( annotationItem->itemId() == annotationId && annotationItem->layerId() == layerId )
         return true;
@@ -102,7 +103,7 @@ const QgsRenderedAnnotationItemDetails *QgsAnnotationItemBaseWidget::renderedIte
   } );
   if ( it != items.end() )
   {
-    return dynamic_cast<const QgsRenderedAnnotationItemDetails *>( *it );
+    return dynamic_cast< const QgsRenderedAnnotationItemDetails *>( *it );
   }
   return nullptr;
 }

@@ -31,7 +31,9 @@
  */
 class QgsExtractSpecificVerticesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
+
   public:
+
     QgsExtractSpecificVerticesAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -44,6 +46,7 @@ class QgsExtractSpecificVerticesAlgorithm : public QgsProcessingFeatureBasedAlgo
     QgsExtractSpecificVerticesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
+
     QString outputName() const override;
     QgsFields outputFields( const QgsFields &inputFields ) const override;
     Qgis::ProcessingSourceType outputLayerType() const override;
@@ -52,11 +55,11 @@ class QgsExtractSpecificVerticesAlgorithm : public QgsProcessingFeatureBasedAlgo
     QgsFeatureSink::SinkFlags sinkFlags() const override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     Qgis::GeometryType mGeometryType;
-    QList<int> mIndices;
+    QList< int > mIndices;
 };
 
 ///@endcond PRIVATE

@@ -26,36 +26,41 @@ class TestQgsPageSizeRegistry : public QObject
     Q_OBJECT
 
   private slots:
-    void initTestCase();            // will be called before the first testfunction is executed.
-    void cleanupTestCase();         // will be called after the last testfunction was executed.
-    void init();                    // will be called before each testfunction is executed.
-    void cleanup();                 // will be called after every testfunction.
-    void pageSizeEquality();        //test equality of QgsPageSize
-    void pageCopyConstructor();     //test copy constructor of QgsPageSize
-    void createInstance();          // create global instance of QgsPageSizeRegistry
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init();// will be called before each testfunction is executed.
+    void cleanup();// will be called after every testfunction.
+    void pageSizeEquality(); //test equality of QgsPageSize
+    void pageCopyConstructor(); //test copy constructor of QgsPageSize
+    void createInstance(); // create global instance of QgsPageSizeRegistry
     void instanceHasDefaultSizes(); // check that global instance is populated with default page sizes
-    void addSize();                 // check adding a size to the registry
-    void findSize();                //find a size in the registry
-    void findBySize();              //find a matching size in the registry
-    void decodePageSize();          //test decoding a page size string
+    void addSize(); // check adding a size to the registry
+    void findSize(); //find a size in the registry
+    void findBySize(); //find a matching size in the registry
+    void decodePageSize(); //test decoding a page size string
 
   private:
+
 };
 
 void TestQgsPageSizeRegistry::initTestCase()
 {
+
 }
 
 void TestQgsPageSizeRegistry::cleanupTestCase()
 {
+
 }
 
 void TestQgsPageSizeRegistry::init()
 {
+
 }
 
 void TestQgsPageSizeRegistry::cleanup()
 {
+
 }
 
 void TestQgsPageSizeRegistry::pageSizeEquality()
@@ -109,11 +114,11 @@ void TestQgsPageSizeRegistry::findSize()
   QgsPageSizeRegistry *registry = QgsApplication::pageSizeRegistry();
   const QgsPageSize newSize( QStringLiteral( "test size" ), QgsLayoutSize( 1, 2 ) );
   registry->add( newSize );
-  const QList<QgsPageSize> results = registry->find( QStringLiteral( "test size" ) );
+  const QList< QgsPageSize > results = registry->find( QStringLiteral( "test size" ) );
   QVERIFY( results.length() > 0 );
   QCOMPARE( results.at( 0 ), newSize );
   //check that match is case insensitive
-  const QList<QgsPageSize> results2 = registry->find( QStringLiteral( "tEsT Size" ) );
+  const QList< QgsPageSize > results2 = registry->find( QStringLiteral( "tEsT Size" ) );
   QVERIFY( results2.length() > 0 );
   QCOMPARE( results2.at( 0 ), newSize );
 }
@@ -144,13 +149,13 @@ void TestQgsPageSizeRegistry::decodePageSize()
   QVERIFY( registry->decodePageSize( QStringLiteral( "a4" ), result ) );
   QCOMPARE( result.size.width(), 210.0 );
   QCOMPARE( result.size.height(), 297.0 );
-  QVERIFY( registry->decodePageSize( QStringLiteral( "B0" ), result ) );
+  QVERIFY( registry->decodePageSize( QStringLiteral( "B0" ),  result ) );
   QCOMPARE( result.size.width(), 1000.0 );
   QCOMPARE( result.size.height(), 1414.0 );
-  QVERIFY( registry->decodePageSize( QStringLiteral( "letter" ), result ) );
+  QVERIFY( registry->decodePageSize( QStringLiteral( "letter" ),  result ) );
   QCOMPARE( result.size.width(), 215.9 );
   QCOMPARE( result.size.height(), 279.4 );
-  QVERIFY( registry->decodePageSize( QStringLiteral( "LEGAL" ), result ) );
+  QVERIFY( registry->decodePageSize( QStringLiteral( "LEGAL" ),  result ) );
   QCOMPARE( result.size.width(), 215.9 );
   QCOMPARE( result.size.height(), 355.6 );
 

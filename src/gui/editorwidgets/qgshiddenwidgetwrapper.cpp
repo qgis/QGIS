@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgshiddenwidgetwrapper.h"
-#include "moc_qgshiddenwidgetwrapper.cpp"
 
 #include <QWidget>
 

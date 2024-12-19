@@ -16,7 +16,6 @@
 #include "qgiscustomwidgets.h"
 #include "qgscollapsiblegroupbox.h"
 #include "qgscollapsiblegroupboxplugin.h"
-#include "moc_qgscollapsiblegroupboxplugin.cpp"
 
 
 QgsCollapsibleGroupBoxPlugin::QgsCollapsibleGroupBoxPlugin( QObject *parent )
@@ -94,5 +93,5 @@ QString QgsCollapsibleGroupBoxPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-    .arg( name() );
+         .arg( name() );
 }

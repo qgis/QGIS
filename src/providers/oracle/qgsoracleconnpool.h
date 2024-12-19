@@ -52,8 +52,7 @@ class QgsOracleConnPoolGroup : public QObject, public QgsConnectionPoolGroup<Qgs
     Q_OBJECT
 
   public:
-    explicit QgsOracleConnPoolGroup( QString name )
-      : QgsConnectionPoolGroup<QgsOracleConn *>( name ) { initTimer( this ); }
+    explicit QgsOracleConnPoolGroup( QString name ) : QgsConnectionPoolGroup<QgsOracleConn*>( name ) { initTimer( this ); }
 
   protected slots:
     void handleConnectionExpired() { onConnectionExpired(); }
@@ -62,6 +61,7 @@ class QgsOracleConnPoolGroup : public QObject, public QgsConnectionPoolGroup<Qgs
 
   protected:
     Q_DISABLE_COPY( QgsOracleConnPoolGroup )
+
 };
 
 //! Oracle connection pool - singleton

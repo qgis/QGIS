@@ -51,15 +51,6 @@ QgsNullMaterialSettings *QgsNullMaterialSettings::clone() const
   return new QgsNullMaterialSettings( *this );
 }
 
-bool QgsNullMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
-{
-  const QgsNullMaterialSettings *otherNull = dynamic_cast<const QgsNullMaterialSettings *>( other );
-  if ( !otherNull )
-    return false;
-
-  return true;
-}
-
 QgsMaterial *QgsNullMaterialSettings::toMaterial( QgsMaterialSettingsRenderingTechnique, const QgsMaterialContext & ) const
 {
   return nullptr;

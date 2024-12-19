@@ -80,7 +80,12 @@ QStringList QgsPdalThinByDecimateAlgorithm::createArgumentLists( const QVariantM
 
   int step = parameterAsInt( parameters, QStringLiteral( "POINTS_NUMBER" ), context );
 
-  QStringList args = { QStringLiteral( "thin" ), QStringLiteral( "--input=%1" ).arg( layer->source() ), QStringLiteral( "--output=%1" ).arg( outputFile ), QStringLiteral( "--mode=every-nth" ), QStringLiteral( "--step-every-nth=%1" ).arg( step ) };
+  QStringList args = { QStringLiteral( "thin" ),
+                       QStringLiteral( "--input=%1" ).arg( layer->source() ),
+                       QStringLiteral( "--output=%1" ).arg( outputFile ),
+                       QStringLiteral( "--mode=every-nth" ),
+                       QStringLiteral( "--step-every-nth=%1" ).arg( step )
+                     };
 
   applyCommonParameters( args, layer->crs(), parameters, context );
   applyThreadsParameter( args, context );

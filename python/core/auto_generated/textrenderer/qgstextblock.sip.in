@@ -65,26 +65,6 @@ Reserves the specified ``count`` of fragments for optimised fragment appending.
 Appends a ``fragment`` to the block.
 %End
 
-    void insert( int index, const QgsTextFragment &fragment );
-%Docstring
-Inserts a ``fragment`` into the block, at the specified index.
-
-:raises IndexError: if no fragment exists at the specified index.
-
-.. versionadded:: 3.40
-%End
-%MethodCode
-    if ( a0 < 0 || a0 > sipCpp->size() )
-    {
-      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
-      sipIsErr = 1;
-    }
-    else
-    {
-      sipCpp->insert( a0, *a1 );
-    }
-%End
-
 
     void clear();
 %Docstring
@@ -124,13 +104,6 @@ Sets the block ``format`` for the fragment.
 Applies a ``capitalization`` style to the block's text.
 
 .. versionadded:: 3.16
-%End
-
-    bool hasBackgrounds() const;
-%Docstring
-Returns ``True`` if the block or any of the fragments in the block have background brushes set.
-
-.. versionadded:: 3.42
 %End
 
     int __len__() const;

@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsstylesavedialog.h"
-#include "moc_qgsstylesavedialog.cpp"
 
 #include "qgis.h"
 #include "qgsstyle.h"
@@ -40,7 +39,7 @@ QgsStyleSaveDialog::QgsStyleSaveDialog( QWidget *parent, QgsStyle::StyleEntity t
   defaultTags.sort( Qt::CaseInsensitive );
   mTags->addItems( defaultTags );
 
-  QList<QgsStyle::StyleEntity> possibleEntities;
+  QList< QgsStyle::StyleEntity > possibleEntities;
   switch ( type )
   {
     case QgsStyle::SymbolEntity:
@@ -160,14 +159,14 @@ bool QgsStyleSaveDialog::isFavorite() const
 QgsStyle::StyleEntity QgsStyleSaveDialog::selectedType() const
 {
   if ( mComboSaveAs->count() > 0 )
-    return static_cast<QgsStyle::StyleEntity>( mComboSaveAs->currentData().toInt() );
+    return static_cast< QgsStyle::StyleEntity >( mComboSaveAs->currentData().toInt() );
   else
     return mType;
 }
 
 QgsStyle *QgsStyleSaveDialog::destinationStyle()
 {
-  if ( QgsStyle *style = qobject_cast<QgsStyle *>( mComboBoxDestination->model()->data( mComboBoxDestination->model()->index( mComboBoxDestination->currentIndex(), 0, QModelIndex() ), static_cast<int>( QgsProjectStyleDatabaseModel::CustomRole::Style ) ).value<QObject *>() ) )
+  if ( QgsStyle *style = qobject_cast< QgsStyle * >( mComboBoxDestination->model()->data( mComboBoxDestination->model()->index( mComboBoxDestination->currentIndex(), 0, QModelIndex() ), static_cast< int >( QgsProjectStyleDatabaseModel::CustomRole::Style ) ).value< QObject * >() ) )
   {
     return style;
   }

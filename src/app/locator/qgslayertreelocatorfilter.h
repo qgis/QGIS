@@ -22,11 +22,15 @@
 #include "qgslocatorfilter.h"
 
 
+
+
+
 class APP_EXPORT QgsLayerTreeLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT
 
   public:
+
     QgsLayerTreeLocatorFilter( QObject *parent = nullptr );
     QgsLayerTreeLocatorFilter *clone() const override;
     QString name() const override { return QStringLiteral( "layertree" ); }
@@ -37,6 +41,7 @@ class APP_EXPORT QgsLayerTreeLocatorFilter : public QgsLocatorFilter
 
     void fetchResults( const QString &string, const QgsLocatorContext &context, QgsFeedback *feedback ) override;
     void triggerResult( const QgsLocatorResult &result ) override;
+
 };
 
 #endif // QGSLAYERTREELOCATORFILTERS_H

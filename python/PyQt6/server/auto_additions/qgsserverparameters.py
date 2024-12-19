@@ -8,9 +8,9 @@ QgsServerParameter.FILE_NAME = QgsServerParameter.Name.FILE_NAME
 QgsServerParameter.Name.baseClass = QgsServerParameter
 try:
     QgsServerParameterDefinition.raiseError = staticmethod(QgsServerParameterDefinition.raiseError)
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsServerParameter.name = staticmethod(QgsServerParameter.name)
-except (NameError, AttributeError):
+except NameError:
     pass

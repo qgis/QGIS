@@ -19,5 +19,5 @@ QgsAuthMethod.Expansion.__or__ = lambda flag1, flag2: QgsAuthMethod.Expansion(_f
 try:
     QgsAuthMethod.authMethodTag = staticmethod(QgsAuthMethod.authMethodTag)
     QgsAuthMethod.__group__ = ['auth']
-except (NameError, AttributeError):
+except NameError:
     pass

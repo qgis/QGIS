@@ -11,7 +11,6 @@
  ***************************************************************************/
 
 #include "qgsdecorationnortharrowdialog.h"
-#include "moc_qgsdecorationnortharrowdialog.cpp"
 #include "qgsdecorationnortharrow.h"
 #include "qgshelp.h"
 #include "qgsproject.h"
@@ -52,11 +51,12 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   spinAngle->setEnabled( !mDeco.mAutomatic );
   sliderRotation->setEnabled( !mDeco.mAutomatic );
 
-  connect( cboxAutomatic, &QAbstractButton::toggled, this, [=]( bool checked ) {
+  connect( cboxAutomatic, &QAbstractButton::toggled, this, [ = ]( bool checked )
+  {
     spinAngle->setEnabled( !checked );
     sliderRotation->setEnabled( !checked );
   } );
-  connect( spinAngle, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsDecorationNorthArrowDialog::spinAngle_valueChanged );
+  connect( spinAngle, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsDecorationNorthArrowDialog::spinAngle_valueChanged );
   connect( sliderRotation, &QSlider::valueChanged, this, &QgsDecorationNorthArrowDialog::sliderRotation_valueChanged );
 
   // placement
@@ -66,7 +66,8 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   cboPlacement->addItem( tr( "Bottom Left" ), QgsDecorationItem::BottomLeft );
   cboPlacement->addItem( tr( "Bottom Center" ), QgsDecorationItem::BottomCenter );
   cboPlacement->addItem( tr( "Bottom Right" ), QgsDecorationItem::BottomRight );
-  connect( cboPlacement, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( cboPlacement, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
     spinHorizontal->setMinimum( cboPlacement->currentData() == QgsDecorationItem::TopCenter || cboPlacement->currentData() == QgsDecorationItem::BottomCenter ? -100 : 0 );
   } );
   cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
@@ -75,11 +76,11 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   spinHorizontal->setValue( mDeco.mMarginHorizontal );
   spinVertical->setValue( mDeco.mMarginVertical );
   wgtUnitSelection->setUnits(
-    { Qgis::RenderUnit::Millimeters,
-      Qgis::RenderUnit::Percentage,
-      Qgis::RenderUnit::Pixels
-    }
-  );
+  {
+    Qgis::RenderUnit::Millimeters,
+    Qgis::RenderUnit::Percentage,
+    Qgis::RenderUnit::Pixels
+  } );
   wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
   // enabled
@@ -87,7 +88,8 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 
   mSvgPathLineEdit->setText( mDeco.mSvgPath );
   connect( mSvgPathLineEdit, &QLineEdit::textChanged, this, &QgsDecorationNorthArrowDialog::updateSvgPath );
-  connect( mSvgSelectorBtn, &QPushButton::clicked, this, [=] {
+  connect( mSvgSelectorBtn, &QPushButton::clicked, this, [ = ]
+  {
     QgsSvgSelectorDialog svgDlg( this );
     svgDlg.setWindowTitle( tr( "Select SVG file" ) );
     svgDlg.svgSelector()->setSvgPath( mSvgPathLineEdit->text().trimmed() );
@@ -109,8 +111,8 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
   pbnChangeOutlineColor->setColor( mDeco.mOutlineColor );
   pbnChangeOutlineColor->setContext( QStringLiteral( "gui" ) );
   pbnChangeOutlineColor->setColorDialogTitle( tr( "Select North Arrow Outline Color" ) );
-  connect( pbnChangeColor, &QgsColorButton::colorChanged, this, [=]( QColor ) { drawNorthArrow(); } );
-  connect( pbnChangeOutlineColor, &QgsColorButton::colorChanged, this, [=]( QColor ) { drawNorthArrow(); } );
+  connect( pbnChangeColor, &QgsColorButton::colorChanged, this, [ = ]( QColor ) { drawNorthArrow(); } );
+  connect( pbnChangeOutlineColor, &QgsColorButton::colorChanged, this, [ = ]( QColor ) { drawNorthArrow(); } );
 
   drawNorthArrow();
 }
@@ -150,7 +152,7 @@ void QgsDecorationNorthArrowDialog::apply()
   mDeco.mOutlineColor = pbnChangeOutlineColor->color();
   mDeco.mSize = spinSize->value();
   mDeco.mRotationInt = sliderRotation->value();
-  mDeco.setPlacement( static_cast<QgsDecorationItem::Placement>( cboPlacement->currentData().toInt() ) );
+  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->currentData().toInt() ) );
   mDeco.mMarginUnit = wgtUnitSelection->unit();
   mDeco.setEnabled( grpEnable->isChecked() );
   mDeco.mAutomatic = cboxAutomatic->isChecked();
@@ -199,7 +201,7 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
       size.setHeight( maxLength * viewBox.height() / viewBox.width() );
     }
 
-    QPixmap myPainterPixmap( maxLength, maxLength );
+    QPixmap  myPainterPixmap( maxLength, maxLength );
     myPainterPixmap.fill( Qt::transparent );
 
     QPainter myQPainter;
@@ -218,8 +220,14 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
     //work out how to shift the image so that it appears in the center of the canvas
     //(x cos a + y sin a - x, -x sin a + y cos a - y)
     const double myRadiansDouble = ( M_PI / 180 ) * rotation;
-    const int xShift = static_cast<int>( ( ( centerXDouble * std::cos( myRadiansDouble ) ) + ( centerYDouble * std::sin( myRadiansDouble ) ) ) - centerXDouble );
-    const int yShift = static_cast<int>( ( ( -centerXDouble * std::sin( myRadiansDouble ) ) + ( centerYDouble * std::cos( myRadiansDouble ) ) ) - centerYDouble );
+    const int xShift = static_cast<int>( (
+                                           ( centerXDouble * std::cos( myRadiansDouble ) ) +
+                                           ( centerYDouble * std::sin( myRadiansDouble ) )
+                                         ) - centerXDouble );
+    const int yShift = static_cast<int>( (
+                                           ( -centerXDouble * std::sin( myRadiansDouble ) ) +
+                                           ( centerYDouble * std::cos( myRadiansDouble ) )
+                                         ) - centerYDouble );
 
     //draw the pixmap in the proper position
     myQPainter.translate( xShift, yShift );
@@ -233,7 +241,7 @@ void QgsDecorationNorthArrowDialog::drawNorthArrow()
   }
   else
   {
-    QPixmap myPainterPixmap( 200, 200 );
+    QPixmap  myPainterPixmap( 200, 200 );
     myPainterPixmap.fill( Qt::transparent );
     QPainter myQPainter;
     myQPainter.begin( &myPainterPixmap );

@@ -24,6 +24,7 @@ Base class for light sources in 3d scenes.
 #include "qgslightsource.h"
 %End
   public:
+
     virtual ~QgsLightSource();
 
     virtual Qgis::LightSourceType type() const = 0;

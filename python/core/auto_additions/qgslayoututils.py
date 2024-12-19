@@ -23,5 +23,5 @@ try:
     QgsLayoutUtils.itemIsAClippingSource = staticmethod(QgsLayoutUtils.itemIsAClippingSource)
     QgsLayoutUtils.predefinedScales = staticmethod(QgsLayoutUtils.predefinedScales)
     QgsLayoutUtils.__group__ = ['layout']
-except (NameError, AttributeError):
+except NameError:
     pass

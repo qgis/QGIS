@@ -13,7 +13,7 @@ from qgis.core import (
     QgsProject,
     QgsRasterLayer,
     QgsElevationUtils,
-    QgsDoubleRange,
+    QgsDoubleRange
 )
 import unittest
 from qgis.testing import start_app, QgisTestCase
@@ -34,130 +34,99 @@ class TestQgsElevationUtils(QgisTestCase):
         """
         project = QgsProject()
         self.assertEqual(
-            QgsElevationUtils.calculateZRangeForProject(project), QgsDoubleRange()
-        )
+            QgsElevationUtils.calculateZRangeForProject(project),
+            QgsDoubleRange())
 
-        raster_layer = QgsRasterLayer(
-            os.path.join(unitTestDataPath(), "landsat_4326.tif")
-        )
+        raster_layer = QgsRasterLayer(os.path.join(unitTestDataPath(), 'landsat_4326.tif'))
         self.assertTrue(raster_layer.isValid())
         project.addMapLayer(raster_layer)
         self.assertEqual(
-            QgsElevationUtils.calculateZRangeForProject(project), QgsDoubleRange()
-        )
+            QgsElevationUtils.calculateZRangeForProject(project),
+            QgsDoubleRange())
 
         props = raster_layer.elevationProperties()
         props.setEnabled(True)
         props.setMode(Qgis.RasterElevationMode.FixedRangePerBand)
-        props.setFixedRangePerBand(
-            {
-                1: QgsDoubleRange(103.1, 106.8),
-                2: QgsDoubleRange(106.8, 116.8),
-                3: QgsDoubleRange(116.8, 126.8),
-            }
-        )
+        props.setFixedRangePerBand({1: QgsDoubleRange(103.1, 106.8),
+                                   2: QgsDoubleRange(106.8, 116.8),
+                                   3: QgsDoubleRange(116.8, 126.8)})
         self.assertEqual(
             QgsElevationUtils.calculateZRangeForProject(project),
-            QgsDoubleRange(103.1, 126.8),
-        )
+            QgsDoubleRange(103.1, 126.8))
 
-        raster_layer2 = QgsRasterLayer(
-            os.path.join(unitTestDataPath(), "landsat_4326.tif")
-        )
+        raster_layer2 = QgsRasterLayer(os.path.join(unitTestDataPath(), 'landsat_4326.tif'))
         self.assertTrue(raster_layer2.isValid())
         project.addMapLayer(raster_layer2)
         self.assertEqual(
             QgsElevationUtils.calculateZRangeForProject(project),
-            QgsDoubleRange(103.1, 126.8),
-        )
+            QgsDoubleRange(103.1, 126.8))
 
         props = raster_layer2.elevationProperties()
         props.setEnabled(True)
         props.setMode(Qgis.RasterElevationMode.FixedRangePerBand)
-        props.setFixedRangePerBand(
-            {
-                1: QgsDoubleRange(103.1, 106.8),
-                2: QgsDoubleRange(106.8, 116.8),
-                3: QgsDoubleRange(126.8, 136.8),
-            }
-        )
+        props.setFixedRangePerBand({1: QgsDoubleRange(103.1, 106.8),
+                                   2: QgsDoubleRange(106.8, 116.8),
+                                   3: QgsDoubleRange(126.8, 136.8)})
         self.assertEqual(
             QgsElevationUtils.calculateZRangeForProject(project),
-            QgsDoubleRange(103.1, 136.8),
-        )
+            QgsDoubleRange(103.1, 136.8))
 
     def test_significant_z_values_for_project(self):
         """
         Test calculating significant z values for a project
         """
         project = QgsProject()
-        self.assertFalse(QgsElevationUtils.significantZValuesForProject(project))
-        self.assertFalse(QgsElevationUtils.significantZValuesForLayers([]))
+        self.assertFalse(
+            QgsElevationUtils.significantZValuesForProject(project))
+        self.assertFalse(
+            QgsElevationUtils.significantZValuesForLayers([]))
 
-        raster_layer = QgsRasterLayer(
-            os.path.join(unitTestDataPath(), "landsat_4326.tif")
-        )
+        raster_layer = QgsRasterLayer(os.path.join(unitTestDataPath(), 'landsat_4326.tif'))
         self.assertTrue(raster_layer.isValid())
         project.addMapLayer(raster_layer)
-        self.assertFalse(QgsElevationUtils.significantZValuesForProject(project))
-        self.assertFalse(QgsElevationUtils.significantZValuesForLayers([raster_layer]))
+        self.assertFalse(
+            QgsElevationUtils.significantZValuesForProject(project))
+        self.assertFalse(
+            QgsElevationUtils.significantZValuesForLayers([raster_layer]))
 
         props = raster_layer.elevationProperties()
         props.setEnabled(True)
         props.setMode(Qgis.RasterElevationMode.FixedRangePerBand)
-        props.setFixedRangePerBand(
-            {
-                1: QgsDoubleRange(103.1, 106.8),
-                2: QgsDoubleRange(106.8, 116.8),
-                3: QgsDoubleRange(116.8, 126.8),
-            }
-        )
+        props.setFixedRangePerBand({1: QgsDoubleRange(103.1, 106.8),
+                                   2: QgsDoubleRange(106.8, 116.8),
+                                   3: QgsDoubleRange(116.8, 126.8)})
         self.assertEqual(
             QgsElevationUtils.significantZValuesForProject(project),
-            [103.1, 106.8, 116.8, 126.8],
-        )
+            [103.1, 106.8, 116.8, 126.8])
         self.assertEqual(
             QgsElevationUtils.significantZValuesForLayers([raster_layer]),
-            [103.1, 106.8, 116.8, 126.8],
-        )
+            [103.1, 106.8, 116.8, 126.8])
 
-        raster_layer2 = QgsRasterLayer(
-            os.path.join(unitTestDataPath(), "landsat_4326.tif")
-        )
+        raster_layer2 = QgsRasterLayer(os.path.join(unitTestDataPath(), 'landsat_4326.tif'))
         self.assertTrue(raster_layer2.isValid())
         project.addMapLayer(raster_layer2)
         self.assertEqual(
             QgsElevationUtils.significantZValuesForProject(project),
-            [103.1, 106.8, 116.8, 126.8],
-        )
+            [103.1, 106.8, 116.8, 126.8])
         self.assertEqual(
-            QgsElevationUtils.significantZValuesForLayers(
-                [raster_layer, raster_layer2]
-            ),
-            [103.1, 106.8, 116.8, 126.8],
-        )
+            QgsElevationUtils.significantZValuesForLayers([raster_layer,
+                                                           raster_layer2]),
+            [103.1, 106.8, 116.8, 126.8])
 
         props = raster_layer2.elevationProperties()
         props.setEnabled(True)
         props.setMode(Qgis.RasterElevationMode.FixedRangePerBand)
-        props.setFixedRangePerBand(
-            {
-                1: QgsDoubleRange(103.1, 106.8),
-                2: QgsDoubleRange(106.8, 116.8),
-                3: QgsDoubleRange(126.8, 136.8),
-            }
-        )
+        props.setFixedRangePerBand({1: QgsDoubleRange(103.1, 106.8),
+                                   2: QgsDoubleRange(106.8, 116.8),
+                                   3: QgsDoubleRange(126.8, 136.8)})
         self.assertEqual(
             QgsElevationUtils.significantZValuesForProject(project),
-            [103.1, 106.8, 116.8, 126.8, 136.8],
-        )
+            [103.1, 106.8, 116.8, 126.8, 136.8])
         self.assertEqual(
-            QgsElevationUtils.significantZValuesForLayers(
-                [raster_layer, raster_layer2]
-            ),
-            [103.1, 106.8, 116.8, 126.8, 136.8],
-        )
+            QgsElevationUtils.significantZValuesForLayers([raster_layer,
+                                                           raster_layer2]),
+            [103.1, 106.8, 116.8, 126.8, 136.8])
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

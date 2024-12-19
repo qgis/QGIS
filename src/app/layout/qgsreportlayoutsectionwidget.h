@@ -23,7 +23,7 @@ class QgsLayoutDesignerDialog;
 class QgsReportSectionLayout;
 class QgsReportOrganizerWidget;
 
-class QgsReportLayoutSectionWidget : public QWidget, private Ui::QgsReportWidgetLayoutSectionBase
+class QgsReportLayoutSectionWidget: public QWidget, private Ui::QgsReportWidgetLayoutSectionBase
 {
     Q_OBJECT
   public:
@@ -35,9 +35,11 @@ class QgsReportLayoutSectionWidget : public QWidget, private Ui::QgsReportWidget
     void editBody();
 
   private:
+
     QgsReportOrganizerWidget *mOrganizer = nullptr;
     QgsReportSectionLayout *mSection = nullptr;
     QgsLayoutDesignerDialog *mDesigner = nullptr;
+
 };
 
 #endif // QGSREPORTLAYOUTSECTIONWIDGET_H

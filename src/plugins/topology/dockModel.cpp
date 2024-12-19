@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "dockModel.h"
-#include "moc_dockModel.cpp"
 #include "topolError.h"
 #include "qgsvectorlayer.h"
 #include <qlogging.h>
@@ -25,6 +24,7 @@ DockModel::DockModel( QObject *parent )
 {
   Q_UNUSED( parent )
   mHeader << QObject::tr( "Error" ) << QObject::tr( "Layer" ) << QObject::tr( "Feature ID" );
+
 }
 
 void DockModel::setErrors( const ErrorList &errorList )
@@ -69,10 +69,10 @@ QVariant DockModel::data( const QModelIndex &index, int role ) const
     return QVariant();
 
   const int row = index.row();
-  //  if(!row)
-  //    {
-  //      return QVariant();
-  //    }
+//  if(!row)
+//    {
+//      return QVariant();
+//    }
   const int column = index.column();
 
   if ( role == Qt::TextAlignmentRole )

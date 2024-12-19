@@ -26,6 +26,7 @@ to the layer tree cause refresh of the list.
 #include "qgscustomlayerorderwidget.h"
 %End
   public:
+
     explicit QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge *bridge, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCustomLayerOrderWidget

@@ -32,18 +32,20 @@ class QgsFeatureRequest;
 #ifdef SIP_RUN
 % ModuleHeaderCode
 #include "qgsserverfeatureid.h"
-  % End
+% End
 #endif
 
 
-  /**
+
+/**
  * \ingroup server
  * \brief The QgsServerFeatureId namespace provides a way to use primary keys for
  * feature id.
  * \since QGIS 3.4.9
  */
-  namespace QgsServerFeatureId
+namespace QgsServerFeatureId
 {
+
   /**
    * Returns the feature id based on primary keys.
    * \param feature the feature
@@ -61,7 +63,7 @@ class QgsFeatureRequest;
    * \returns the feature request updated
    * \since QGIS 3.4.9
    */
-  SERVER_EXPORT QgsFeatureRequest updateFeatureRequestFromServerFids( QgsFeatureRequest & featureRequest, const QStringList &serverFids, const QgsVectorDataProvider *provider );
+  SERVER_EXPORT QgsFeatureRequest updateFeatureRequestFromServerFids( QgsFeatureRequest &featureRequest, const QStringList &serverFids, const QgsVectorDataProvider *provider );
 
   /**
    * Returns the expression feature id based on primary keys.
@@ -78,6 +80,7 @@ class QgsFeatureRequest;
    * \since QGIS 3.4.9
    */
   SERVER_EXPORT QString pkSeparator();
+
 };
 
 #endif

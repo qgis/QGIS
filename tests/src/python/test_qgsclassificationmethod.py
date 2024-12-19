@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Denis Rouzaud"
-__date__ = "3/09/2019"
-__copyright__ = "Copyright 2019, The QGIS Project"
+__author__ = 'Denis Rouzaud'
+__date__ = '3/09/2019'
+__copyright__ = 'Copyright 2019, The QGIS Project'
 
 import random
 
@@ -34,9 +33,8 @@ start_app()
 
 
 def createMemoryLayer(values):
-    ml = QgsVectorLayer(
-        "Point?crs=epsg:4236&field=id:integer&field=value:double", "test_data", "memory"
-    )
+    ml = QgsVectorLayer("Point?crs=epsg:4236&field=id:integer&field=value:double",
+                        "test_data", "memory")
     # Data as list of x, y, id, value
     assert ml.isValid()
     pr = ml.dataProvider()
@@ -45,8 +43,8 @@ def createMemoryLayer(values):
     for value in values:
         id += 1
         feat = QgsFeature(fields)
-        feat["id"] = id
-        feat["value"] = value
+        feat['id'] = id
+        feat['value'] = value
         g = QgsGeometry.fromPointXY(QgsPointXY(id / 100, id / 100))
         feat.setGeometry(g)
         pr.addFeatures([feat])
@@ -57,48 +55,42 @@ def createMemoryLayer(values):
 class TestQgsClassificationMethods(QgisTestCase):
 
     def testQgsClassificationLogarithmic(self):
-        values = [
-            2746.71,
-            66667.49,
-            77282.52,
-            986567.01,
-            1729508.41,
-            9957836.86,
-            35419826.29,
-            52584164.80,
-            296572842.00,
-        ]
+        values = [2746.71,
+                  66667.49,
+                  77282.52,
+                  986567.01,
+                  1729508.41,
+                  9957836.86,
+                  35419826.29,
+                  52584164.80,
+                  296572842.00]
 
         vl = createMemoryLayer(values)
 
         m = QgsClassificationLogarithmic()
-        r = m.classes(vl, "value", 8)
+        r = m.classes(vl, 'value', 8)
 
         self.assertEqual(len(r), 6)
-        self.assertEqual(r[0].label(), f"{QLocale().toString(2746.71)} - 10^4")
-        self.assertEqual(
-            QgsClassificationMethod.rangesToBreaks(r),
-            [10000.0, 100000.0, 1000000.0, 10000000.0, 100000000.0, 1000000000.0],
-        )
+        self.assertEqual(r[0].label(), f'{QLocale().toString(2746.71)} - 10^4')
+        self.assertEqual(QgsClassificationMethod.rangesToBreaks(r),
+                         [10000.0, 100000.0, 1000000.0, 10000000.0, 100000000.0, 1000000000.0])
 
-        self.assertEqual(len(m.classes(vl, "value", 4)), 4)
+        self.assertEqual(len(m.classes(vl, 'value', 4)), 4)
 
     def testQgsClassificationLogarithmicCloseMinimum(self):
         """See issue GH #45454: Incorrect scale range legend after applying
         logarithmic graduated symbology to a vector layer"""
 
-        values = [
-            0.009900019065438,
-            0.010851322017611,
-            0.01755707784994,
-            0.031925433036994,
-            0.046422733606398,
-        ]
+        values = [0.009900019065438,
+                  0.010851322017611,
+                  0.01755707784994,
+                  0.031925433036994,
+                  0.046422733606398]
 
         vl = createMemoryLayer(values)
 
         m = QgsClassificationLogarithmic()
-        r = m.classes(vl, "value", 4)
+        r = m.classes(vl, 'value', 4)
 
         classes = [(c.lowerBound(), c.upperBound()) for c in r]
 
@@ -110,29 +102,16 @@ class TestQgsClassificationMethods(QgisTestCase):
         vl = createMemoryLayer(values)
         m = QgsClassificationLogarithmic()
 
-        m.setParameterValues(
-            {
-                "ZERO_NEG_VALUES_HANDLE": QgsClassificationLogarithmic.NegativeValueHandling.Discard
-            }
-        )
-        r = m.classes(vl, "value", 4)
+        m.setParameterValues({'ZERO_NEG_VALUES_HANDLE': QgsClassificationLogarithmic.NegativeValueHandling.Discard})
+        r = m.classes(vl, 'value', 4)
         self.assertEqual(len(r), 4)
-        self.assertEqual(r[0].label(), "1 - 10^1")
-        self.assertEqual(
-            QgsClassificationMethod.rangesToBreaks(r), [10.0, 100.0, 1000.0, 10000.0]
-        )
+        self.assertEqual(r[0].label(), '1 - 10^1')
+        self.assertEqual(QgsClassificationMethod.rangesToBreaks(r), [10.0, 100.0, 1000.0, 10000.0])
 
-        m.setParameterValues(
-            {
-                "ZERO_NEG_VALUES_HANDLE": QgsClassificationLogarithmic.NegativeValueHandling.PrependBreak
-            }
-        )
-        r = m.classes(vl, "value", 4)
-        self.assertEqual(r[0].label(), "-2 - 10^0")
-        self.assertEqual(
-            QgsClassificationMethod.rangesToBreaks(r),
-            [1.0, 10.0, 100.0, 1000.0, 10000.0],
-        )
+        m.setParameterValues({'ZERO_NEG_VALUES_HANDLE': QgsClassificationLogarithmic.NegativeValueHandling.PrependBreak})
+        r = m.classes(vl, 'value', 4)
+        self.assertEqual(r[0].label(), '-2 - 10^0')
+        self.assertEqual(QgsClassificationMethod.rangesToBreaks(r), [1.0, 10.0, 100.0, 1000.0, 10000.0])
 
     def testQgsClassificationJenksSimple(self):
         # This is a simple Natural Breaks Jenks test checking if simple calculation can be done
@@ -142,11 +121,10 @@ class TestQgsClassificationMethods(QgisTestCase):
         vl = createMemoryLayer(values)
         m = QgsClassificationJenks()
 
-        r = m.classes(vl, "value", 4)
+        r = m.classes(vl, 'value', 4)
         self.assertEqual(len(r), 4)
-        self.assertEqual(
-            QgsClassificationMethod.rangesToBreaks(r), [-30.0, 16.0, 29.0, 57.0]
-        )
+        self.assertEqual(QgsClassificationMethod.rangesToBreaks(r),
+                         [-30.0, 16.0, 29.0, 57.0])
 
     def testQgsClassificationJenksHighNumber(self):
         # This test checks if Jenkis classification does not crash when number of
@@ -157,34 +135,32 @@ class TestQgsClassificationMethods(QgisTestCase):
         vl = createMemoryLayer(values)
         m = QgsClassificationJenks()
 
-        r = m.classes(vl, "value", 4)
+        r = m.classes(vl, 'value', 4)
         self.assertEqual(len(r), 4)
-        self.assertEqual(
-            QgsClassificationMethod.rangesToBreaks(r), [-506.0, -4.0, 499.0, 1000.0]
-        )
+        self.assertEqual(QgsClassificationMethod.rangesToBreaks(r),
+                         [-506.0, -4.0, 499.0, 1000.0])
 
     def testQgsClassificationFixedInterval(self):
         values = [-33, -41, -43, 16, 29, 9, -35, 56, 26, -30]
         vl = createMemoryLayer(values)
         m = QgsClassificationFixedInterval()
-        m.setParameterValues({"INTERVAL": 10})
+        m.setParameterValues({'INTERVAL': 10})
 
-        r = m.classes(vl, "value", 4)
+        r = m.classes(vl, 'value', 4)
         self.assertEqual(len(r), 10)
-        self.assertEqual(
-            QgsClassificationMethod.rangesToBreaks(r),
-            [-33.0, -23.0, -13.0, -3.0, 7.0, 17.0, 27.0, 37.0, 47.0, 57.0],
-        )
+        self.assertEqual(QgsClassificationMethod.rangesToBreaks(r),
+                         [-33.0, -23.0, -13.0, -3.0, 7.0, 17.0, 27.0, 37.0, 47.0, 57.0])
 
     def testQgsClassificationFixedIntervalInvalidInterval(self):
         values = [-33, -41, -43, 16, 29, 9, -35, 57, 26, -30]
         vl = createMemoryLayer(values)
         m = QgsClassificationFixedInterval()
-        m.setParameterValues({"INTERVAL": 0})
+        m.setParameterValues({'INTERVAL': 0})
 
-        r = m.classes(vl, "value", 4)
+        r = m.classes(vl, 'value', 4)
         self.assertEqual(len(r), 1)
-        self.assertEqual(QgsClassificationMethod.rangesToBreaks(r), [57.0])
+        self.assertEqual(QgsClassificationMethod.rangesToBreaks(r),
+                         [57.0])
 
     def testQgsClassificationFixedIntervalLabelForRange(self):
 
@@ -192,9 +168,9 @@ class TestQgsClassificationMethods(QgisTestCase):
 
         # lowerValue, upperValue, labelFormat, expected
         cases = (
-            (1, 2, "%1 - %2", "1 - 2"),
-            (1, 2, "%1", "1"),
-            (1, 2, "%2", "2"),
+            (1, 2, '%1 - %2', '1 - 2'),
+            (1, 2, '%1', '1'),
+            (1, 2, '%2', '2'),
         )
 
         for lowerValue, upperValue, labelFormat, expected in cases:

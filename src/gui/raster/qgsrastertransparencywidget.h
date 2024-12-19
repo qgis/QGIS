@@ -39,6 +39,7 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
 {
     Q_OBJECT
   public:
+
     /**
      * \brief Widget to control a layers transparency and related options
      */
@@ -97,6 +98,7 @@ class GUI_EXPORT QgsRasterTransparencyWidget : public QgsMapLayerConfigWidget, p
     void apply() override;
 
   protected:
+
 #ifndef SIP_RUN
 
     // TODO -- consider moving these to a common raster widget base class

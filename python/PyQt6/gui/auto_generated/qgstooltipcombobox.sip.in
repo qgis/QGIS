@@ -24,12 +24,14 @@ The tooltip string is taken from the current item's Qt.ToolTipRole data.
 #include "qgstooltipcombobox.h"
 %End
   public:
+
     QgsToolTipComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsToolTipComboBox.
 %End
 
     virtual bool event( QEvent *event );
+
 
 };
 

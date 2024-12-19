@@ -70,7 +70,7 @@ class _3D_EXPORT QgsVectorLayer3DRenderer : public QgsAbstractVectorLayer3DRende
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context ) override;
 
   private:
-    std::unique_ptr<QgsAbstract3DSymbol> mSymbol; //!< 3D symbol that defines appearance
+    std::unique_ptr<QgsAbstract3DSymbol> mSymbol;  //!< 3D symbol that defines appearance
 
   private:
 #ifdef SIP_RUN

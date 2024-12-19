@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "(C) 2017 by Nyall Dawson"
-__date__ = "26/04/2017"
-__copyright__ = "Copyright 2017, The QGIS Project"
+__author__ = '(C) 2017 by Nyall Dawson'
+__date__ = '26/04/2017'
+__copyright__ = 'Copyright 2017, The QGIS Project'
 
 
 from qgis.core import (
@@ -28,11 +27,8 @@ start_app()
 
 
 def createLayerWithFivePoints():
-    layer = QgsVectorLayer(
-        "Point?crs=EPSG:4326&field=id:integer&field=fldtxt:string&field=fldint:integer",
-        "addfeat",
-        "memory",
-    )
+    layer = QgsVectorLayer("Point?crs=EPSG:4326&field=id:integer&field=fldtxt:string&field=fldint:integer",
+                           "addfeat", "memory")
     pr = layer.dataProvider()
     f = QgsFeature()
     f.setAttributes([1, "test", 1])
@@ -65,9 +61,7 @@ class TestQgsFeatureSource(QgisTestCase):
         layer = createLayerWithFivePoints()
         self.assertFalse(layer.dataProvider().uniqueValues(-1))
         self.assertFalse(layer.dataProvider().uniqueValues(100))
-        self.assertEqual(
-            layer.dataProvider().uniqueValues(1), {"test", "test2", "test3", "test4"}
-        )
+        self.assertEqual(layer.dataProvider().uniqueValues(1), {'test', 'test2', 'test3', 'test4'})
         self.assertEqual(layer.dataProvider().uniqueValues(2), {1, 3, 3, 4})
 
     def testMinValues(self):
@@ -79,7 +73,7 @@ class TestQgsFeatureSource(QgisTestCase):
         layer = createLayerWithFivePoints()
         self.assertFalse(layer.dataProvider().minimumValue(-1))
         self.assertFalse(layer.dataProvider().minimumValue(100))
-        self.assertEqual(layer.dataProvider().minimumValue(1), "test")
+        self.assertEqual(layer.dataProvider().minimumValue(1), 'test')
         self.assertEqual(layer.dataProvider().minimumValue(2), 1)
 
     def testMaxValues(self):
@@ -91,7 +85,7 @@ class TestQgsFeatureSource(QgisTestCase):
         layer = createLayerWithFivePoints()
         self.assertFalse(layer.dataProvider().maximumValue(-1))
         self.assertFalse(layer.dataProvider().maximumValue(100))
-        self.assertEqual(layer.dataProvider().maximumValue(1), "test4")
+        self.assertEqual(layer.dataProvider().maximumValue(1), 'test4')
         self.assertEqual(layer.dataProvider().maximumValue(2), 4)
 
     def testMaterialize(self):
@@ -127,29 +121,22 @@ class TestQgsFeatureSource(QgisTestCase):
             self.assertEqual(new_features[id].attributes(), f.attributes())
 
         # materialize with reprojection
-        request = QgsFeatureRequest().setDestinationCrs(
-            QgsCoordinateReferenceSystem("EPSG:3785"),
-            QgsProject.instance().transformContext(),
-        )
+        request = QgsFeatureRequest().setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3785'), QgsProject.instance().transformContext())
         new_layer = layer.materialize(request)
         self.assertEqual(new_layer.fields(), layer.fields())
-        self.assertEqual(new_layer.crs().authid(), "EPSG:3785")
+        self.assertEqual(new_layer.crs().authid(), 'EPSG:3785')
         self.assertEqual(new_layer.featureCount(), 5)
         self.assertEqual(new_layer.wkbType(), QgsWkbTypes.Type.Point)
         new_features = {f[0]: f for f in new_layer.getFeatures()}
 
-        expected_geometry = {
-            1: "Point (111319 222684)",
-            2: "Point (222639 222684)",
-            3: "Point (333958 222684)",
-            4: "Point (445278 334111)",
-            5: "Point (0 0)",
-        }
+        expected_geometry = {1: 'Point (111319 222684)',
+                             2: 'Point (222639 222684)',
+                             3: 'Point (333958 222684)',
+                             4: 'Point (445278 334111)',
+                             5: 'Point (0 0)'}
         for id, f in original_features.items():
             self.assertEqual(new_features[id].attributes(), f.attributes())
-            self.assertEqual(
-                new_features[id].geometry().asWkt(0), expected_geometry[id]
-            )
+            self.assertEqual(new_features[id].geometry().asWkt(0), expected_geometry[id])
 
         # materialize with attribute subset
         request = QgsFeatureRequest().setSubsetOfAttributes([0, 2])
@@ -184,5 +171,5 @@ class TestQgsFeatureSource(QgisTestCase):
             self.assertEqual(new_features[id].attributes()[0], f.attributes()[0])
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

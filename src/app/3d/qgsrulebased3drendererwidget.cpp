@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsrulebased3drendererwidget.h"
-#include "moc_qgsrulebased3drendererwidget.cpp"
 
 #include "qgs3dutils.h"
 #include "qgsexpressionbuilderdialog.h"
@@ -58,6 +57,7 @@ QgsRuleBased3DRendererWidget::QgsRuleBased3DRendererWidget( QWidget *parent )
   connect( mCopyAction, &QAction::triggered, this, &QgsRuleBased3DRendererWidget::copy );
   connect( mPasteAction, &QAction::triggered, this, &QgsRuleBased3DRendererWidget::paste );
   connect( mDeleteAction, &QAction::triggered, this, &QgsRuleBased3DRendererWidget::removeRule );
+
 }
 
 QgsRuleBased3DRendererWidget::~QgsRuleBased3DRendererWidget()
@@ -107,7 +107,7 @@ void QgsRuleBased3DRendererWidget::setDockMode( bool dockMode )
 
 void QgsRuleBased3DRendererWidget::addRule()
 {
-  std::unique_ptr<QgsAbstract3DSymbol> newSymbol( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( mLayer->geometryType() ) );
+  std::unique_ptr< QgsAbstract3DSymbol > newSymbol( QgsApplication::symbol3DRegistry()->defaultSymbolForGeometryType( mLayer->geometryType() ) );
   newSymbol->setDefaultPropertiesFromLayer( mLayer );
   QgsRuleBased3DRenderer::Rule *newrule = new QgsRuleBased3DRenderer::Rule( newSymbol.release() );
 
@@ -229,7 +229,9 @@ Qt::ItemFlags QgsRuleBased3DRendererModel::flags( const QModelIndex &index ) con
 
   const Qt::ItemFlag checkable = ( index.column() == 0 ? Qt::ItemIsUserCheckable : Qt::NoItemFlags );
 
-  return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable | checkable | Qt::ItemIsDragEnabled | drop;
+  return Qt::ItemIsEnabled | Qt::ItemIsSelectable |
+         Qt::ItemIsEditable | checkable |
+         Qt::ItemIsDragEnabled | drop;
 }
 
 QVariant QgsRuleBased3DRendererModel::data( const QModelIndex &index, int role ) const
@@ -540,7 +542,8 @@ void QgsRuleBased3DRendererModel::insertRule( const QModelIndex &parent, int bef
 
 void QgsRuleBased3DRendererModel::updateRule( const QModelIndex &parent, int row )
 {
-  emit dataChanged( index( row, 0, parent ), index( row, columnCount( parent ), parent ) );
+  emit dataChanged( index( row, 0, parent ),
+                    index( row, columnCount( parent ), parent ) );
 }
 
 
@@ -584,8 +587,8 @@ Qgs3DRendererRulePropsWidget::Qgs3DRendererRulePropsWidget( QgsRuleBased3DRender
   connect( editDescription, &QLineEdit::textChanged, this, &Qgs3DRendererRulePropsWidget::widgetChanged );
   connect( groupSymbol, &QGroupBox::toggled, this, &Qgs3DRendererRulePropsWidget::widgetChanged );
   connect( mSymbolWidget, &QgsSymbol3DWidget::widgetChanged, this, &Qgs3DRendererRulePropsWidget::widgetChanged );
-  connect( mFilterRadio, &QRadioButton::toggled, this, [=]( bool toggled ) { filterFrame->setEnabled( toggled ); } );
-  connect( mElseRadio, &QRadioButton::toggled, this, [=]( bool toggled ) { if ( toggled ) editFilter->setText( QStringLiteral( "ELSE" ) ); } );
+  connect( mFilterRadio, &QRadioButton::toggled, this, [ = ]( bool toggled ) { filterFrame->setEnabled( toggled ) ; } );
+  connect( mElseRadio, &QRadioButton::toggled, this, [ = ]( bool toggled ) { if ( toggled ) editFilter->setText( QStringLiteral( "ELSE" ) );} );
 }
 
 Qgs3DRendererRulePropsWidget::~Qgs3DRendererRulePropsWidget() = default;
@@ -598,7 +601,7 @@ void Qgs3DRendererRulePropsWidget::testFilter()
   QgsExpression filter( editFilter->text() );
   if ( filter.hasParserError() )
   {
-    QMessageBox::critical( this, tr( "Test Filter" ), tr( "Filter expression parsing error:\n" ) + filter.parserErrorString() );
+    QMessageBox::critical( this, tr( "Test Filter" ),  tr( "Filter expression parsing error:\n" ) + filter.parserErrorString() );
     return;
   }
 
@@ -648,7 +651,7 @@ void Qgs3DRendererRulePropsWidget::apply()
   const QString filter = mElseRadio->isChecked() ? QStringLiteral( "ELSE" ) : editFilter->text();
   mRule->setFilterExpression( filter );
   mRule->setDescription( editDescription->text() );
-  std::unique_ptr<QgsAbstract3DSymbol> newSymbol;
+  std::unique_ptr< QgsAbstract3DSymbol > newSymbol;
   if ( groupSymbol->isChecked() )
     newSymbol = mSymbolWidget->symbol();
   mRule->setSymbol( newSymbol.release() );

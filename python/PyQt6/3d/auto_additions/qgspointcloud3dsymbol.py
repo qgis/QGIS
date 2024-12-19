@@ -6,21 +6,21 @@ QgsPointCloud3DSymbol.RgbRendering = QgsPointCloud3DSymbol.RenderingStyle.RgbRen
 QgsPointCloud3DSymbol.Classification = QgsPointCloud3DSymbol.RenderingStyle.Classification
 try:
     QgsPointCloud3DSymbol.__group__ = ['symbols']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsSingleColorPointCloud3DSymbol.__group__ = ['symbols']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsColorRampPointCloud3DSymbol.__group__ = ['symbols']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsRgbPointCloud3DSymbol.__group__ = ['symbols']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsClassificationPointCloud3DSymbol.__group__ = ['symbols']
-except (NameError, AttributeError):
+except NameError:
     pass

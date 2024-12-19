@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsshadowrenderingsettingswidget.h"
-#include "moc_qgsshadowrenderingsettingswidget.cpp"
 
 #include <QCheckBox>
 #include <QLineEdit>

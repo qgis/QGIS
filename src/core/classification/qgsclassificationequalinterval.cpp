@@ -91,10 +91,10 @@ QList<double> QgsClassificationEqualInterval::calculateBreaks( double &minimum, 
 }
 
 
-std::unique_ptr< QgsClassificationMethod > QgsClassificationEqualInterval::clone() const
+QgsClassificationMethod *QgsClassificationEqualInterval::clone() const
 {
-  std::unique_ptr< QgsClassificationEqualInterval > c = std::make_unique< QgsClassificationEqualInterval >();
-  copyBase( c.get() );
+  QgsClassificationEqualInterval *c = new QgsClassificationEqualInterval();
+  copyBase( c );
   return c;
 }
 

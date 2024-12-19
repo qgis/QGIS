@@ -20,6 +20,7 @@ A button for creating and modifying :py:class:`QgsLegendPatchShape` settings.
 #include "qgslegendpatchshapebutton.h"
 %End
   public:
+
     QgsLegendPatchShapeButton( QWidget *parent /TransferThis/ = 0, const QString &dialogTitle = QString() );
 %Docstring
 Construct a new patch shape button with the specified ``parent`` widget.
@@ -126,6 +127,7 @@ Emitted when the shape's settings are changed.
 %End
 
   protected:
+
     virtual void changeEvent( QEvent *e );
 
     virtual void showEvent( QShowEvent *e );

@@ -41,7 +41,9 @@ namespace QgsWfs
     // Build default url
     if ( href.isEmpty() )
     {
-      static QSet<QString> sFilter {
+
+      static QSet<QString> sFilter
+      {
         QStringLiteral( "REQUEST" ),
         QStringLiteral( "VERSION" ),
         QStringLiteral( "SERVICE" ),
@@ -60,7 +62,7 @@ namespace QgsWfs
       href.setQuery( q );
     }
 
-    return href.toString();
+    return  href.toString();
   }
 
   QString layerTypeName( const QgsMapLayer *layer )
@@ -198,7 +200,8 @@ namespace QgsWfs
       return request;
     }
     // Apply BBOX through filterRect even inside an And to use spatial index
-    else if ( filterElem.firstChildElement().tagName() == QLatin1String( "And" ) && !filterElem.firstChildElement().firstChildElement( QLatin1String( "BBOX" ) ).isNull() )
+    else if ( filterElem.firstChildElement().tagName() == QLatin1String( "And" ) &&
+              !filterElem.firstChildElement().firstChildElement( QLatin1String( "BBOX" ) ).isNull() )
     {
       int nbChildElem = filterElem.firstChildElement().childNodes().size();
 
@@ -293,3 +296,5 @@ namespace QgsWfs
   }
 
 } // namespace QgsWfs
+
+

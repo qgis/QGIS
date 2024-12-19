@@ -16,5 +16,5 @@ QgsRichTextEditor.Mode.__doc__ = """Widget modes.
 QgsRichTextEditor.Mode.baseClass = QgsRichTextEditor
 try:
     QgsRichTextEditor.__attribute_docs__ = {'textChanged': 'Emitted when the text contents are changed.\n\n.. versionadded:: 3.26\n'}
-except (NameError, AttributeError):
+except NameError:
     pass

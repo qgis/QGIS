@@ -27,14 +27,14 @@ class QgsAbstractDatabaseProviderConnection;
 
 ///@cond PRIVATE
 #ifndef SIP_RUN
-class GUI_EXPORT QgsDatabaseSchemaComboBoxSortModel : public QSortFilterProxyModel
+class GUI_EXPORT QgsDatabaseSchemaComboBoxSortModel: public QSortFilterProxyModel
 {
     Q_OBJECT
   public:
     explicit QgsDatabaseSchemaComboBoxSortModel( QObject *parent = nullptr );
-
   protected:
     bool lessThan( const QModelIndex &source_left, const QModelIndex &source_right ) const override;
+
 };
 #endif
 ///@endcond
@@ -53,6 +53,7 @@ class GUI_EXPORT QgsDatabaseSchemaComboBox : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsDatabaseSchemaComboBox, for the specified \a provider and \a connection.
      *

@@ -25,9 +25,9 @@ class QgsVectorLayerSelectionManager;
 #ifdef SIP_RUN
 // This is required for the ConvertToSubClassCode to work properly
 // so RTTI for casting is available in the whole module.
-//%ModuleCode
+% ModuleCode
 #include "qgsfeatureselectiondlg.h"
-//%End
+% End
 #endif
 
 /**
@@ -36,6 +36,7 @@ class QgsVectorLayerSelectionManager;
  */
 class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeatureSelectionDlg
 {
+
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
     if ( qobject_cast<QgsFeatureSelectionDlg *>( sipCpp ) )
@@ -48,6 +49,7 @@ class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeature
     Q_OBJECT
 
   public:
+
     //! Constructor for QgsFeatureSelectionDlg
     explicit QgsFeatureSelectionDlg( QgsVectorLayer *vl, const QgsAttributeEditorContext &context, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -70,6 +72,7 @@ class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeature
     void setFilterExpression( const QString &filter, QgsAttributeForm::FilterType type );
 
   protected:
+
     void keyPressEvent( QKeyEvent *evt ) override;
 
     //! Make sure the dialog does not grow too much
@@ -113,6 +116,7 @@ class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeature
     void viewModeChanged( QgsAttributeEditorContext::Mode mode );
 
   private:
+
     QgsVectorLayerSelectionManager *mFeatureSelection = nullptr;
     QgsVectorLayer *mVectorLayer = nullptr;
     QgsAttributeEditorContext mContext;

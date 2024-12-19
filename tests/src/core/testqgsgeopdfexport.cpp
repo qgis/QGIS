@@ -23,7 +23,9 @@
 
 class TestGeospatialPdfExporter : public QgsAbstractGeospatialPdfExporter
 {
+
   private:
+
     VectorComponentDetail componentDetailForLayerId( const QString &layerId ) override
     {
       Q_UNUSED( layerId );
@@ -33,6 +35,7 @@ class TestGeospatialPdfExporter : public QgsAbstractGeospatialPdfExporter
       detail.displayAttribute = QStringLiteral( "attr %1" ).arg( layerId );
       return detail;
     }
+
 };
 
 class TestQgsGeospatialPdfExport : public QgsTest
@@ -40,12 +43,11 @@ class TestQgsGeospatialPdfExport : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsGeospatialPdfExport()
-      : QgsTest( QStringLiteral( "Geospatial PDF Export Testss" ) ) {}
+    TestQgsGeospatialPdfExport() : QgsTest( QStringLiteral( "Geospatial PDF Export Testss" ) ) {}
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
     void testCollectingFeatures();
     void testComposition();
     void testMetadata();
@@ -114,7 +116,7 @@ void TestQgsGeospatialPdfExport::testCollectingFeatures()
   QCOMPARE( component.mapLayerId, QStringLiteral( "layer1" ) );
   QCOMPARE( component.name, QStringLiteral( "name layer1" ) );
   // check that temporary layers were correctly written
-  std::unique_ptr<QgsVectorLayer> layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layerName=%2" ).arg( component.sourceVectorPath, component.sourceVectorLayer ), QStringLiteral( "layer" ), QStringLiteral( "ogr" ) );
+  std::unique_ptr< QgsVectorLayer > layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layerName=%2" ).arg( component.sourceVectorPath, component.sourceVectorLayer ), QStringLiteral( "layer" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( layer->featureCount(), 2L );
   QCOMPARE( layer->wkbType(), Qgis::WkbType::Polygon );
@@ -140,7 +142,7 @@ void TestQgsGeospatialPdfExport::testCollectingFeatures()
   }
   QCOMPARE( component.mapLayerId, QStringLiteral( "layer2" ) );
   QCOMPARE( component.name, QStringLiteral( "name layer2" ) );
-  layer = std::make_unique<QgsVectorLayer>( QStringLiteral( "%1|layerName=%2" ).arg( component.sourceVectorPath, component.sourceVectorLayer ), QStringLiteral( "layer" ), QStringLiteral( "ogr" ) );
+  layer = std::make_unique< QgsVectorLayer >( QStringLiteral( "%1|layerName=%2" ).arg( component.sourceVectorPath, component.sourceVectorLayer ), QStringLiteral( "layer" ), QStringLiteral( "ogr" ) );
   QVERIFY( layer->isValid() );
   QCOMPARE( layer->featureCount(), 1L );
   QCOMPARE( layer->wkbType(), Qgis::WkbType::LineString );
@@ -196,7 +198,7 @@ void TestQgsGeospatialPdfExport::testComposition()
   }
 
   // test creation of the composition xml
-  QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail> renderedLayers;
+  QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > renderedLayers;
   QgsAbstractGeospatialPdfExporter::ComponentLayerDetail detail;
   detail.mapLayerId = QStringLiteral( "layer3" );
   detail.name = QStringLiteral( "xxx" );
@@ -233,12 +235,12 @@ void TestQgsGeospatialPdfExport::testComposition()
   QDomNodeList ifLayerOnList = doc.elementsByTagName( QStringLiteral( "IfLayerOn" ) );
   QCOMPARE( ifLayerOnList.count(), 3 );
 
-  int layer1Idx = ifLayerOnList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QLatin1String( "layer1" ) ? 0 : ifLayerOnList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QLatin1String( "layer1" ) ? 1
-                                                                                                                                                                                                                                        : 2;
-  int layer2Idx = ifLayerOnList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QLatin1String( "layer2" ) ? 0 : ifLayerOnList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QLatin1String( "layer2" ) ? 1
-                                                                                                                                                                                                                                        : 2;
-  int layer3Idx = ifLayerOnList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QLatin1String( "layer3" ) ? 0 : ifLayerOnList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QLatin1String( "layer3" ) ? 1
-                                                                                                                                                                                                                                        : 2;
+  int layer1Idx = ifLayerOnList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QLatin1String( "layer1" ) ? 0 :
+                  ifLayerOnList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QLatin1String( "layer1" ) ? 1 : 2;
+  int layer2Idx = ifLayerOnList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QLatin1String( "layer2" ) ? 0 :
+                  ifLayerOnList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QLatin1String( "layer2" ) ? 1 : 2;
+  int layer3Idx = ifLayerOnList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QLatin1String( "layer3" ) ? 0 :
+                  ifLayerOnList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == QLatin1String( "layer3" ) ? 1 : 2;
   QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().attribute( QStringLiteral( "layerId" ) ), QStringLiteral( "layer1" ) );
   QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "dataset" ) ), layer1Path );
   QCOMPARE( ifLayerOnList.at( layer1Idx ).toElement().elementsByTagName( QStringLiteral( "Vector" ) ).at( 0 ).toElement().attribute( QStringLiteral( "layer" ) ), layer1Layer );
@@ -257,6 +259,7 @@ void TestQgsGeospatialPdfExport::testComposition()
   QCOMPARE( ifLayerOnList.at( layer3Idx ).toElement().elementsByTagName( QStringLiteral( "PDF" ) ).at( 0 ).toElement().attribute( QStringLiteral( "dataset" ) ), QStringLiteral( "a pdf.pdf" ) );
   QCOMPARE( ifLayerOnList.at( layer3Idx ).toElement().elementsByTagName( QStringLiteral( "PDF" ) ).at( 0 ).toElement().elementsByTagName( QStringLiteral( "Blending" ) ).at( 0 ).toElement().attribute( QStringLiteral( "opacity" ) ).toDouble(), 0.7 );
   QCOMPARE( ifLayerOnList.at( layer3Idx ).toElement().elementsByTagName( QStringLiteral( "PDF" ) ).at( 0 ).toElement().elementsByTagName( QStringLiteral( "Blending" ) ).at( 0 ).toElement().attribute( QStringLiteral( "function" ) ), QStringLiteral( "Screen" ) );
+
 }
 
 void TestQgsGeospatialPdfExport::testMetadata()
@@ -264,7 +267,7 @@ void TestQgsGeospatialPdfExport::testMetadata()
   TestGeospatialPdfExporter geospatialPdfExporter;
   // test creation of the composition xml with metadata
 
-  QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail> renderedLayers;
+  QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > renderedLayers;
   QgsAbstractGeospatialPdfExporter::ExportDetails details;
   QString composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
@@ -297,6 +300,7 @@ void TestQgsGeospatialPdfExport::testMetadata()
   QCOMPARE( doc.elementsByTagName( QStringLiteral( "Subject" ) ).at( 0 ).toElement().text(), QStringLiteral( "my subject" ) );
   QCOMPARE( doc.elementsByTagName( QStringLiteral( "Title" ) ).at( 0 ).toElement().text(), QStringLiteral( "my title" ) );
   QCOMPARE( doc.elementsByTagName( QStringLiteral( "Keywords" ) ).at( 0 ).toElement().text(), QStringLiteral( "k1: v1,v2" ) );
+
 }
 
 void TestQgsGeospatialPdfExport::testGeoref()
@@ -304,7 +308,7 @@ void TestQgsGeospatialPdfExport::testGeoref()
   TestGeospatialPdfExporter geospatialPdfExporter;
   // test creation of the composition xml with georeferencing
 
-  QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail> renderedLayers;
+  QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > renderedLayers;
   QgsAbstractGeospatialPdfExporter::ExportDetails details;
   QString composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
@@ -354,7 +358,7 @@ void TestQgsGeospatialPdfExport::testGeorefPolygon()
   // test georeferencing a region using polygon bounds
   TestGeospatialPdfExporter geospatialPdfExporter;
 
-  QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail> renderedLayers;
+  QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > renderedLayers;
   QgsAbstractGeospatialPdfExporter::ExportDetails details;
 
   // with points
@@ -438,7 +442,7 @@ void TestQgsGeospatialPdfExport::testGroups()
   }
 
   // test creation of the composition xml
-  QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail> renderedLayers; // no extra layers for now
+  QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > renderedLayers; // no extra layers for now
   QgsAbstractGeospatialPdfExporter::ExportDetails details;
   QString composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
@@ -476,6 +480,7 @@ void TestQgsGeospatialPdfExport::testGroups()
   QCOMPARE( layerTreeList.at( layer2Idx ).toElement().attribute( QStringLiteral( "id" ) ), QStringLiteral( "layer2" ) );
   QCOMPARE( layerTreeList.at( layer2Idx ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "name layer2" ) );
   QCOMPARE( layerTreeList.at( layer2Idx ).toElement().attribute( QStringLiteral( "initiallyVisible" ) ), QStringLiteral( "true" ) );
+
 }
 
 void TestQgsGeospatialPdfExport::testCustomGroups()
@@ -518,7 +523,7 @@ void TestQgsGeospatialPdfExport::testCustomGroups()
   }
 
   // test creation of the composition xml
-  QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail> renderedLayers; // no extra layers for now
+  QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > renderedLayers; // no extra layers for now
   QgsAbstractGeospatialPdfExporter::ExportDetails details;
   details.customLayerTreeGroups.insert( QStringLiteral( "layer1" ), QStringLiteral( "my group" ) );
   details.customLayerTreeGroups.insert( QStringLiteral( "layer2" ), QStringLiteral( "my group2" ) );
@@ -613,12 +618,12 @@ void TestQgsGeospatialPdfExport::testGroupOrder()
   }
 
   // test creation of the composition xml
-  QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail> renderedLayers; // no extra layers for now
+  QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > renderedLayers; // no extra layers for now
   QgsAbstractGeospatialPdfExporter::ExportDetails details;
   details.customLayerTreeGroups.insert( QStringLiteral( "layer1" ), QStringLiteral( "my group" ) );
   details.customLayerTreeGroups.insert( QStringLiteral( "layer2" ), QStringLiteral( "my group2" ) );
 
-  details.layerTreeGroupOrder = QStringList { QStringLiteral( "my group2" ), QStringLiteral( "my group" ) };
+  details.layerTreeGroupOrder = QStringList{ QStringLiteral( "my group2" ), QStringLiteral( "my group" )};
 
   QString composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
@@ -630,7 +635,7 @@ void TestQgsGeospatialPdfExport::testGroupOrder()
   QCOMPARE( layerTreeList.at( 0 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my group2" ) );
   QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my group" ) );
 
-  details.layerTreeGroupOrder = QStringList { QStringLiteral( "my group" ), QStringLiteral( "my group2" ) };
+  details.layerTreeGroupOrder = QStringList{ QStringLiteral( "my group" ), QStringLiteral( "my group2" )};
 
   composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
@@ -642,7 +647,7 @@ void TestQgsGeospatialPdfExport::testGroupOrder()
   QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my group2" ) );
 
   // incomplete list
-  details.layerTreeGroupOrder = QStringList { QStringLiteral( "my group2" ) };
+  details.layerTreeGroupOrder = QStringList{ QStringLiteral( "my group2" )};
 
   composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
@@ -654,7 +659,7 @@ void TestQgsGeospatialPdfExport::testGroupOrder()
   QCOMPARE( layerTreeList.at( 1 ).toElement().attribute( QStringLiteral( "name" ) ), QStringLiteral( "my group" ) );
 
   // list with extra groups which don't have content
-  details.layerTreeGroupOrder = QStringList { QStringLiteral( "aaa" ), QStringLiteral( "my group" ) };
+  details.layerTreeGroupOrder = QStringList{ QStringLiteral( "aaa" ), QStringLiteral( "my group" )};
 
   composition = geospatialPdfExporter.createCompositionXml( renderedLayers, details );
   QgsDebugMsgLevel( composition, 1 );
@@ -717,7 +722,7 @@ void TestQgsGeospatialPdfExport::testMutuallyExclusiveGroupsLayers()
   }
 
   // test creation of the composition xml
-  QList<QgsAbstractGeospatialPdfExporter::ComponentLayerDetail> renderedLayers; // no extra layers for now
+  QList< QgsAbstractGeospatialPdfExporter::ComponentLayerDetail > renderedLayers; // no extra layers for now
   QgsAbstractGeospatialPdfExporter::ExportDetails details;
   details.customLayerTreeGroups.insert( QStringLiteral( "layer1" ), QStringLiteral( "my group" ) );
   details.customLayerTreeGroups.insert( QStringLiteral( "layer2" ), QStringLiteral( "my group2" ) );
@@ -764,15 +769,12 @@ void TestQgsGeospatialPdfExport::testMutuallyExclusiveGroupsLayers()
   QDomNodeList contentList = doc.documentElement().firstChildElement( QStringLiteral( "Page" ) ).firstChildElement( QStringLiteral( "Content" ) ).childNodes();
   QCOMPARE( contentList.count(), 3 );
 
-  int layer1Idx = contentList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group1Id   ? 0
-                  : contentList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group1Id ? 1
-                                                                                                         : 2;
-  int layer2Idx = contentList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group2Id   ? 0
-                  : contentList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group2Id ? 1
-                                                                                                         : 2;
-  int layer3Idx = contentList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group3Id   ? 0
-                  : contentList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group3Id ? 1
-                                                                                                         : 2;
+  int layer1Idx = contentList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group1Id ? 0
+                  : contentList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group1Id ? 1 : 2;
+  int layer2Idx = contentList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group2Id ? 0
+                  : contentList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group2Id ? 1 : 2;
+  int layer3Idx = contentList.at( 0 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group3Id ? 0
+                  : contentList.at( 1 ).toElement().attribute( QStringLiteral( "layerId" ) ) == group3Id ? 1 : 2;
   QCOMPARE( contentList.at( layer1Idx ).toElement().attribute( QStringLiteral( "layerId" ) ), group1Id );
   QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().tagName(), QStringLiteral( "IfLayerOn" ) );
   QCOMPARE( contentList.at( layer1Idx ).toElement().firstChildElement().attribute( QStringLiteral( "layerId" ) ), QStringLiteral( "my group_layer1" ) );
@@ -808,15 +810,15 @@ void TestQgsGeospatialPdfExport::testMutuallyExclusiveGroupsCustom()
   // test creation of the composition xml
   QgsAbstractGeospatialPdfExporter::ComponentLayerDetail group1;
   group1.group = QStringLiteral( "my group" );
-  group1.sourcePdfPath = QStringLiteral( "group1.pdf" );
+  group1.sourcePdfPath =  QStringLiteral( "group1.pdf" );
   QgsAbstractGeospatialPdfExporter::ComponentLayerDetail group2;
   group2.group = QStringLiteral( "my group2" );
-  group2.sourcePdfPath = QStringLiteral( "group2.pdf" );
+  group2.sourcePdfPath =  QStringLiteral( "group2.pdf" );
   QgsAbstractGeospatialPdfExporter::ComponentLayerDetail group3;
   group3.group = QStringLiteral( "my group3" );
-  group3.sourcePdfPath = QStringLiteral( "group3.pdf" );
+  group3.sourcePdfPath =  QStringLiteral( "group3.pdf" );
   QgsAbstractGeospatialPdfExporter::ComponentLayerDetail object4;
-  object4.sourcePdfPath = QStringLiteral( "object4.pdf" );
+  object4.sourcePdfPath =  QStringLiteral( "object4.pdf" );
 
   QgsAbstractGeospatialPdfExporter::ExportDetails details;
   // groups 1 & 2 should be mutually exclusive

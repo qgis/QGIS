@@ -27,6 +27,7 @@
 class QgsGrassEditRenderer : public QgsFeatureRenderer
 {
   public:
+
     QgsGrassEditRenderer();
 
     ~QgsGrassEditRenderer() override;

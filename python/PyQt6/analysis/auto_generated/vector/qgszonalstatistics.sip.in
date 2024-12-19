@@ -22,7 +22,12 @@ A class that calculates raster statistics (count, sum, mean) for a polygon or mu
 #include "qgszonalstatistics.h"
 %End
   public:
-    QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterLayer *rasterLayer, const QString &attributePrefix = QString(), int rasterBand = 1, Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default );
+
+    QgsZonalStatistics( QgsVectorLayer *polygonLayer,
+                        QgsRasterLayer *rasterLayer,
+                        const QString &attributePrefix = QString(),
+                        int rasterBand = 1,
+                        Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default );
 %Docstring
 Convenience constructor for QgsZonalStatistics, using an input raster layer.
 
@@ -34,7 +39,14 @@ The raster layer must exist for the lifetime of the zonal statistics calculation
    the constructor which accepts a :py:class:`QgsRasterInterface` should be used instead.
 %End
 
-    QgsZonalStatistics( QgsVectorLayer *polygonLayer, QgsRasterInterface *rasterInterface, const QgsCoordinateReferenceSystem &rasterCrs, double rasterUnitsPerPixelX, double rasterUnitsPerPixelY, const QString &attributePrefix = QString(), int rasterBand = 1, Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default );
+    QgsZonalStatistics( QgsVectorLayer *polygonLayer,
+                        QgsRasterInterface *rasterInterface,
+                        const QgsCoordinateReferenceSystem &rasterCrs,
+                        double rasterUnitsPerPixelX,
+                        double rasterUnitsPerPixelY,
+                        const QString &attributePrefix = QString(),
+                        int rasterBand = 1,
+                        Qgis::ZonalStatistics stats = Qgis::ZonalStatistic::Default );
 %Docstring
 Constructor for QgsZonalStatistics, using a QgsRasterInterface.
 

@@ -23,7 +23,6 @@
  ***************************************************************************/
 
 #include "qgsactionmanager.h"
-#include "moc_qgsactionmanager.cpp"
 #include "qgsrunprocess.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"

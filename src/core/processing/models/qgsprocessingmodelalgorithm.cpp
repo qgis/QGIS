@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsprocessingmodelalgorithm.h"
-#include "moc_qgsprocessingmodelalgorithm.cpp"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingfeedback.h"
 #include "qgsprocessingutils.h"
@@ -114,7 +113,7 @@ QString QgsProcessingModelAlgorithm::helpUrl() const
 QVariantMap QgsProcessingModelAlgorithm::parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext, QString &error, const QgsProcessingContext *context ) const
 {
   error.clear();
-  auto evaluateSources = [&child, &modelParameters, &results, &error, &expressionContext]( const QgsProcessingParameterDefinition * def )->QVariant
+  auto evaluateSources = [ =, &error ]( const QgsProcessingParameterDefinition * def )->QVariant
   {
     const QgsProcessingModelChildParameterSources paramSources = child.parameterSources().value( def->name() );
 
@@ -771,13 +770,10 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
     {
       // add specific parameter type imports
       const auto params = parameterDefinitions();
-      importLines.reserve( params.count() + 6 );
-      importLines << QStringLiteral( "from typing import Any, Optional" );
-      importLines << QString();
+      importLines.reserve( params.count() + 3 );
       importLines << QStringLiteral( "from qgis.core import QgsProcessing" );
       importLines << QStringLiteral( "from qgis.core import QgsProcessingAlgorithm" );
-      importLines << QStringLiteral( "from qgis.core import QgsProcessingContext" );
-      importLines << QStringLiteral( "from qgis.core import QgsProcessingFeedback, QgsProcessingMultiStepFeedback" );
+      importLines << QStringLiteral( "from qgis.core import QgsProcessingMultiStepFeedback" );
 
       bool hasAdvancedParams = false;
       for ( const QgsProcessingParameterDefinition *def : params )
@@ -793,14 +789,14 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
       if ( hasAdvancedParams )
         importLines << QStringLiteral( "from qgis.core import QgsProcessingParameterDefinition" );
 
-      lines << QStringLiteral( "from qgis import processing" );
+      lines << QStringLiteral( "import processing" );
       lines << QString() << QString();
 
       lines << QStringLiteral( "class %1(QgsProcessingAlgorithm):" ).arg( algorithmClassName );
       lines << QString();
 
       // initAlgorithm, parameter definitions
-      lines << indent + QStringLiteral( "def initAlgorithm(self, config: Optional[dict[str, Any]] = None):" );
+      lines << indent + QStringLiteral( "def initAlgorithm(self, config=None):" );
       if ( params.empty() )
       {
         lines << indent + indent + QStringLiteral( "pass" );
@@ -845,7 +841,7 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
       }
 
       lines << QString();
-      lines << indent + QStringLiteral( "def processAlgorithm(self, parameters: dict[str, Any], context: QgsProcessingContext, model_feedback: QgsProcessingFeedback) -> dict[str, Any]:" );
+      lines << indent + QStringLiteral( "def processAlgorithm(self, parameters, context, model_feedback):" );
       currentIndent = indent + indent;
 
       lines << currentIndent + QStringLiteral( "# Use a multi-step feedback, so that individual child algorithm progress reports are adjusted for the" );
@@ -991,38 +987,38 @@ QStringList QgsProcessingModelAlgorithm::asPythonCode( const QgsProcessing::Pyth
       lines << QString();
 
       // name, displayName
-      lines << indent + QStringLiteral( "def name(self) -> str:" );
+      lines << indent + QStringLiteral( "def name(self):" );
       lines << indent + indent + QStringLiteral( "return '%1'" ).arg( mModelName );
       lines << QString();
-      lines << indent + QStringLiteral( "def displayName(self) -> str:" );
+      lines << indent + QStringLiteral( "def displayName(self):" );
       lines << indent + indent + QStringLiteral( "return '%1'" ).arg( mModelName );
       lines << QString();
 
       // group, groupId
-      lines << indent + QStringLiteral( "def group(self) -> str:" );
+      lines << indent + QStringLiteral( "def group(self):" );
       lines << indent + indent + QStringLiteral( "return '%1'" ).arg( mModelGroup );
       lines << QString();
-      lines << indent + QStringLiteral( "def groupId(self) -> str:" );
+      lines << indent + QStringLiteral( "def groupId(self):" );
       lines << indent + indent + QStringLiteral( "return '%1'" ).arg( mModelGroupId );
       lines << QString();
 
       // help
       if ( !shortHelpString().isEmpty() )
       {
-        lines << indent + QStringLiteral( "def shortHelpString(self) -> str:" );
+        lines << indent + QStringLiteral( "def shortHelpString(self):" );
         lines << indent + indent + QStringLiteral( "return \"\"\"%1\"\"\"" ).arg( shortHelpString() );
         lines << QString();
       }
       if ( !helpUrl().isEmpty() )
       {
-        lines << indent + QStringLiteral( "def helpUrl(self) -> str:" );
+        lines << indent + QStringLiteral( "def helpUrl(self):" );
         lines << indent + indent + QStringLiteral( "return '%1'" ).arg( helpUrl() );
         lines << QString();
       }
 
       // createInstance
       lines << indent + QStringLiteral( "def createInstance(self):" );
-      lines << indent + indent + QStringLiteral( "return self.__class__()" );
+      lines << indent + indent + QStringLiteral( "return %1()" ).arg( algorithmClassName );
 
       // additional import lines
       static QMap< QString, QString > sAdditionalImports

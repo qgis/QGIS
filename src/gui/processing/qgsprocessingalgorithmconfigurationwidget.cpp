@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsprocessingalgorithmconfigurationwidget.h"
-#include "moc_qgsprocessingalgorithmconfigurationwidget.cpp"
 
 QgsProcessingAlgorithmConfigurationWidget::QgsProcessingAlgorithmConfigurationWidget( QWidget *parent )
   : QWidget( parent )

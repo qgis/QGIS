@@ -41,12 +41,12 @@ class QgsMapTool;
 class QgsMapToolDigitizeFeature;
 
 #ifdef SIP_RUN
-//%ModuleHeaderCode
+% ModuleHeaderCode
 // fix to allow compilation with sip that for some reason
 // doesn't add this include to the file where the code from
 // ConvertToSubClassCode goes.
 #include <qgsrelationeditorwidget.h>
-//%End
+% End
 #endif
 
 
@@ -72,6 +72,7 @@ class QgsFilteredSelectionManager : public QgsVectorLayerSelectionManager
     void onSelectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, bool clearAndSelect ) override;
 
   private:
+
     QgsFeatureRequest mRequest;
     QgsFeatureIds mSelectedFeatureIds;
 };
@@ -87,25 +88,27 @@ class QgsFilteredSelectionManager : public QgsVectorLayerSelectionManager
  */
 class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidget
 {
+
     Q_OBJECT
     Q_PROPERTY( QgsDualView::ViewMode viewMode READ viewMode WRITE setViewMode )
     Q_PROPERTY( Buttons visibleButtons READ visibleButtons WRITE setVisibleButtons )
 
   public:
+
     /**
      * Possible buttons shown in the relation editor
      * \since QGIS 3.18
      */
     enum Button SIP_ENUM_BASETYPE( IntFlag )
     {
-      NoButton = 0,                                                                                                                   //!< No button \since QGIS 3.20
-      Link = 1 << 1,                                                                                                                  //!< Link button
-      Unlink = 1 << 2,                                                                                                                //!< Unlink button
-      SaveChildEdits = 1 << 3,                                                                                                        //!< Save child edits button
-      AddChildFeature = 1 << 4,                                                                                                       //!< Add child feature (as in some projects we only want to allow linking/unlinking existing features)
-      DuplicateChildFeature = 1 << 5,                                                                                                 //!< Duplicate child feature
-      DeleteChildFeature = 1 << 6,                                                                                                    //!< Delete child feature button
-      ZoomToChildFeature = 1 << 7,                                                                                                    //!< Zoom to child feature
+      NoButton = 0, //!< No button \since QGIS 3.20
+      Link = 1 << 1, //!< Link button
+      Unlink = 1 << 2, //!< Unlink button
+      SaveChildEdits = 1 << 3, //!< Save child edits button
+      AddChildFeature = 1 << 4, //!< Add child feature (as in some projects we only want to allow linking/unlinking existing features)
+      DuplicateChildFeature = 1 << 5, //!< Duplicate child feature
+      DeleteChildFeature = 1 << 6, //!< Delete child feature button
+      ZoomToChildFeature = 1 << 7, //!< Zoom to child feature
       AllButtons = Link | Unlink | SaveChildEdits | AddChildFeature | DuplicateChildFeature | DeleteChildFeature | ZoomToChildFeature //!< All buttons
     };
     Q_ENUM( Button )
@@ -123,7 +126,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     void setViewMode( QgsDualView::ViewMode mode );
 
     //! Gets the view mode for the dual view
-    QgsDualView::ViewMode viewMode() { return mViewMode; }
+    QgsDualView::ViewMode viewMode() {return mViewMode;}
 
     /**
      * The feature selection manager is responsible for the selected features
@@ -196,7 +199,7 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     void afterSetRelations() override;
 
   private slots:
-    void setViewMode( int mode ) { setViewMode( static_cast<QgsDualView::ViewMode>( mode ) ); }
+    void setViewMode( int mode ) {setViewMode( static_cast<QgsDualView::ViewMode>( mode ) );}
     void updateButtons();
 
     void addFeature();
@@ -208,12 +211,13 @@ class GUI_EXPORT QgsRelationEditorWidget : public QgsAbstractRelationEditorWidge
     void showContextMenu( QgsActionMenu *menu, QgsFeatureId fid );
     void mapToolDeactivated();
     void onDigitizingCompleted( const QgsFeature &feature );
-    void onDigitizingCanceled();
+    void onDigitizingCanceled( );
     void multiEditItemSelectionChanged();
     void linkFeature();
 
   private:
-    void digitizingFinished();
+
+    void digitizingFinished( );
 
     enum class MultiEditFeatureType : int
     {
@@ -281,6 +285,7 @@ class GUI_EXPORT QgsRelationEditorConfigWidget : public QgsAbstractRelationEdito
     Q_OBJECT
 
   public:
+
     /**
      * Create a new configuration widget
      *
@@ -331,6 +336,7 @@ class GUI_EXPORT QgsRelationEditorWidgetFactory : public QgsAbstractRelationEdit
     QgsAbstractRelationEditorWidget *create( const QVariantMap &config, QWidget *parent = nullptr ) const override;
 
     QgsAbstractRelationEditorConfigWidget *configWidget( const QgsRelation &relation, QWidget *parent ) const override;
+
 };
 #endif
 

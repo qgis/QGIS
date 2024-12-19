@@ -34,7 +34,6 @@
 #include "qgslayoutreportsectionlabel.h"
 #include "qgsreadwritecontext.h"
 #include "qgsscreenhelper.h"
-#include "moc_qgslayoutview.cpp"
 
 #include <memory>
 #include <QMenu>
@@ -108,17 +107,17 @@ void QgsLayoutView::setCurrentLayout( QgsLayout *layout )
 
   if ( mHorizontalRuler )
   {
-    connect( &layout->guides(), &QAbstractItemModel::dataChanged, mHorizontalRuler, [=] { mHorizontalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, mHorizontalRuler, [=] { mHorizontalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, mHorizontalRuler, [=] { mHorizontalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::modelReset, mHorizontalRuler, [=] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::dataChanged, mHorizontalRuler, [ = ] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, mHorizontalRuler, [ = ] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, mHorizontalRuler, [ = ] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::modelReset, mHorizontalRuler, [ = ] { mHorizontalRuler->update(); } );
   }
   if ( mVerticalRuler )
   {
-    connect( &layout->guides(), &QAbstractItemModel::dataChanged, mVerticalRuler, [=] { mVerticalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, mVerticalRuler, [=] { mVerticalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, mVerticalRuler, [=] { mVerticalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::modelReset, mVerticalRuler, [=] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::dataChanged, mVerticalRuler, [ = ] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, mVerticalRuler, [ = ] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, mVerticalRuler, [ = ] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::modelReset, mVerticalRuler, [ = ] { mVerticalRuler->update(); } );
   }
 
   //emit layoutSet, so that designer dialogs can update for the new layout
@@ -224,10 +223,10 @@ void QgsLayoutView::setHorizontalRuler( QgsLayoutRuler *ruler )
   ruler->setLayoutView( this );
   if ( QgsLayout *layout = currentLayout() )
   {
-    connect( &layout->guides(), &QAbstractItemModel::dataChanged, ruler, [=] { mHorizontalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, ruler, [=] { mHorizontalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, ruler, [=] { mHorizontalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::modelReset, ruler, [=] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::dataChanged, ruler, [ = ] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, ruler, [ = ] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, ruler, [ = ] { mHorizontalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::modelReset, ruler, [ = ] { mHorizontalRuler->update(); } );
   }
   viewChanged();
 }
@@ -238,10 +237,10 @@ void QgsLayoutView::setVerticalRuler( QgsLayoutRuler *ruler )
   ruler->setLayoutView( this );
   if ( QgsLayout *layout = currentLayout() )
   {
-    connect( &layout->guides(), &QAbstractItemModel::dataChanged, ruler, [=] { mVerticalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, ruler, [=] { mVerticalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, ruler, [=] { mVerticalRuler->update(); } );
-    connect( &layout->guides(), &QAbstractItemModel::modelReset, ruler, [=] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::dataChanged, ruler, [ = ] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsInserted, ruler, [ = ] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::rowsRemoved, ruler, [ = ] { mVerticalRuler->update(); } );
+    connect( &layout->guides(), &QAbstractItemModel::modelReset, ruler, [ = ] { mVerticalRuler->update(); } );
   }
   viewChanged();
 }
@@ -259,7 +258,7 @@ QgsLayoutViewMenuProvider *QgsLayoutView::menuProvider() const
 QList<QgsLayoutItemPage *> QgsLayoutView::visiblePages() const
 {
   if ( !currentLayout() )
-    return QList<QgsLayoutItemPage *>();
+    return QList< QgsLayoutItemPage *>();
 
   //get current visible part of scene
   QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
@@ -270,7 +269,7 @@ QList<QgsLayoutItemPage *> QgsLayoutView::visiblePages() const
 QList<int> QgsLayoutView::visiblePageNumbers() const
 {
   if ( !currentLayout() )
-    return QList<int>();
+    return QList< int >();
 
   //get current visible part of scene
   QRect viewportRect( 0, 0, viewport()->width(), viewport()->height() );
@@ -321,7 +320,7 @@ void QgsLayoutView::copyItems( const QList<QgsLayoutItem *> &items, QgsLayoutVie
   if ( operation == ClipboardCut )
     currentLayout()->undoStack()->beginMacro( tr( "Cut Items" ) );
 
-  QSet<QgsLayoutMultiFrame *> copiedMultiFrames;
+  QSet< QgsLayoutMultiFrame * > copiedMultiFrames;
 
   for ( QgsLayoutItem *item : items )
   {
@@ -390,12 +389,12 @@ void QgsLayoutView::copyItems( const QList<QgsLayoutItem *> &items, QgsLayoutVie
   clipboard->setMimeData( mimeData );
 }
 
-QList<QgsLayoutItem *> QgsLayoutView::pasteItems( QgsLayoutView::PasteMode mode )
+QList< QgsLayoutItem * > QgsLayoutView::pasteItems( QgsLayoutView::PasteMode mode )
 {
   if ( !currentLayout() )
-    return QList<QgsLayoutItem *>();
+    return QList< QgsLayoutItem * >();
 
-  QList<QgsLayoutItem *> pastedItems;
+  QList< QgsLayoutItem * > pastedItems;
   QDomDocument doc;
   QClipboard *clipboard = QApplication::clipboard();
   if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )
@@ -436,7 +435,7 @@ QList<QgsLayoutItem *> QgsLayoutView::pasteItems( QPointF layoutPoint )
   if ( !currentLayout() )
     return QList<QgsLayoutItem *>();
 
-  QList<QgsLayoutItem *> pastedItems;
+  QList< QgsLayoutItem * > pastedItems;
   QDomDocument doc;
   QClipboard *clipboard = QApplication::clipboard();
   if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )
@@ -556,7 +555,10 @@ void QgsLayoutView::zoomWidth()
   // note that we can't have a 0 height rect - fitInView doesn't handle that
   // so we just set a very small height instead.
   const double tinyHeight = 0.01;
-  QRectF targetRect( scene()->sceneRect().left(), verticalCenter - tinyHeight, scene()->sceneRect().width(), tinyHeight * 2 );
+  QRectF targetRect( scene()->sceneRect().left(),
+                     verticalCenter - tinyHeight,
+                     scene()->sceneRect().width(),
+                     tinyHeight * 2 );
 
   fitInView( targetRect, Qt::KeepAspectRatio );
   emit zoomLevelChanged();
@@ -734,7 +736,7 @@ void QgsLayoutView::lowerSelectedItems()
   bool itemsLowered = false;
   for ( QgsLayoutItem *item : selectedItems )
   {
-    itemsLowered = itemsLowered | currentLayout()->lowerItem( item, true );
+    itemsLowered  = itemsLowered  | currentLayout()->lowerItem( item, true );
   }
 
   if ( !itemsLowered )
@@ -898,7 +900,7 @@ void QgsLayoutView::ungroupSelectedItems()
     return;
   }
 
-  QList<QgsLayoutItem *> ungroupedItems;
+  QList< QgsLayoutItem * > ungroupedItems;
   //hunt through selection for any groups, and ungroup them
   const QList<QgsLayoutItem *> selectionList = currentLayout()->selectedLayoutItems();
   for ( QgsLayoutItem *item : selectionList )
@@ -1064,7 +1066,7 @@ void QgsLayoutView::keyPressEvent( QKeyEvent *event )
   if ( mTool && event->isAccepted() )
     return;
 
-  if ( event->key() == Qt::Key_Space && !event->isAutoRepeat() )
+  if ( event->key() == Qt::Key_Space && ! event->isAutoRepeat() )
   {
     if ( !( event->modifiers() & Qt::ControlModifier ) )
     {
@@ -1154,7 +1156,7 @@ void QgsLayoutView::invalidateCachedRenders()
     return;
 
   //redraw cached map items
-  QList<QgsLayoutItem *> items;
+  QList< QgsLayoutItem *> items;
   currentLayout()->layoutItems( items );
 
   for ( QgsLayoutItem *item : std::as_const( items ) )
@@ -1220,7 +1222,7 @@ void QgsLayoutView::wheelZoom( QWheelEvent *event )
   QgsRectangle visibleRect = QgsRectangle( mapToScene( viewportRect ).boundingRect() );
 
   //transform the mouse pos to scene coordinates
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   QPointF scenePoint = mapToScene( event->pos() );
 #else
   QPointF scenePoint = mapToScene( event->position().x(), event->position().y() );
@@ -1228,7 +1230,8 @@ void QgsLayoutView::wheelZoom( QWheelEvent *event )
 
   //adjust view center
   QgsPointXY oldCenter( visibleRect.center() );
-  QgsPointXY newCenter( scenePoint.x() + ( ( oldCenter.x() - scenePoint.x() ) * scaleFactor ), scenePoint.y() + ( ( oldCenter.y() - scenePoint.y() ) * scaleFactor ) );
+  QgsPointXY newCenter( scenePoint.x() + ( ( oldCenter.x() - scenePoint.x() ) * scaleFactor ),
+                        scenePoint.y() + ( ( oldCenter.y() - scenePoint.y() ) * scaleFactor ) );
   centerOn( newCenter.x(), newCenter.y() );
 
   //zoom layout
@@ -1244,7 +1247,7 @@ void QgsLayoutView::wheelZoom( QWheelEvent *event )
 
 QGraphicsLineItem *QgsLayoutView::createSnapLine() const
 {
-  std::unique_ptr<QGraphicsLineItem> item( new QGraphicsLineItem( nullptr ) );
+  std::unique_ptr< QGraphicsLineItem>  item( new QGraphicsLineItem( nullptr ) );
   QPen pen = QPen( QColor( Qt::blue ) );
   pen.setStyle( Qt::DotLine );
   pen.setWidthF( 0.0 );

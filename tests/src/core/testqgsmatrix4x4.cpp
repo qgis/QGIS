@@ -27,8 +27,8 @@ class TestQgsMatrix4x4 : public QObject
     TestQgsMatrix4x4() = default;
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void testData();
     void testIdentity();
@@ -51,7 +51,10 @@ void TestQgsMatrix4x4::cleanupTestCase()
 void TestQgsMatrix4x4::testData()
 {
   // Initialization - row-major order
-  QgsMatrix4x4 m1( 10., 20., 30., 40., 50., 60., 70., 80., 90., 100., 110., 120., 130., 140., 150., 160. );
+  QgsMatrix4x4 m1( 10., 20., 30., 40.,
+                   50., 60., 70., 80.,
+                   90., 100., 110., 120.,
+                   130., 140., 150., 160. );
 
   // Access through data() / constData() - column-major order
   const double *m1data = m1.constData();
@@ -106,8 +109,11 @@ void TestQgsMatrix4x4::testIdentity()
 
 void TestQgsMatrix4x4::testVectorMultiply()
 {
-  double sa = 0.5, ca = sqrt( 3. ) / 2.;                                             // sin(30 deg) and cos(30 deg)
-  QgsMatrix4x4 m( ca, -sa, 0., 0., sa, ca, 0., 0., 0., 0., 1., 0., 0., 0., 0., 1. ); // CCW rotation around Z axis
+  double sa = 0.5, ca = sqrt( 3. ) / 2.; // sin(30 deg) and cos(30 deg)
+  QgsMatrix4x4 m( ca, -sa, 0., 0.,
+                  sa, ca, 0., 0.,
+                  0., 0., 1., 0.,
+                  0., 0., 0., 1. );  // CCW rotation around Z axis
 
   QgsVector3D v1( 5., 0., 1. );
   QgsVector3D v1rot = m.map( v1 );
@@ -122,7 +128,10 @@ void TestQgsMatrix4x4::testVectorMultiply()
   QCOMPARE( v2rot.z(), 1. );
 
   // translation by a large vector
-  QgsMatrix4x4 mTr( 1., 0., 0., 123456789., 0., 1., 0., 234567890., 0., 0., 1., 345678901., 0., 0., 0., 1. );
+  QgsMatrix4x4 mTr( 1., 0., 0., 123456789.,
+                    0., 1., 0., 234567890.,
+                    0., 0., 1., 345678901.,
+                    0., 0., 0., 1. );
 
   QgsVector3D v1tr = mTr.map( v1 );
   QCOMPARE( v1tr.x(), 123456794. );
@@ -132,9 +141,15 @@ void TestQgsMatrix4x4::testVectorMultiply()
 
 void TestQgsMatrix4x4::testMatrixMultiply()
 {
-  QgsMatrix4x4 mTr( 1., 0., 0., 123456789., 0., 1., 0., 234567890., 0., 0., 1., 345678901., 0., 0., 0., 1. );
+  QgsMatrix4x4 mTr( 1., 0., 0., 123456789.,
+                    0., 1., 0., 234567890.,
+                    0., 0., 1., 345678901.,
+                    0., 0., 0., 1. );
 
-  QgsMatrix4x4 mTr2( 1., 0., 0., -123456790., 0., 1., 0., -234567892., 0., 0., 1., -345678904., 0., 0., 0., 1. );
+  QgsMatrix4x4 mTr2( 1., 0., 0., -123456790.,
+                     0., 1., 0., -234567892.,
+                     0., 0., 1., -345678904.,
+                     0., 0., 0., 1. );
 
   QgsMatrix4x4 m = mTr * mTr2;
   const double *mdata = m.constData();

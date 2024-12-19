@@ -20,6 +20,7 @@
 
 #include <QColor>
 #include <QDomElement>
+#include <limits>
 
 #include "qgis_core.h"
 #include "qgis.h"
@@ -175,55 +176,12 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
      */
     void setEdgeStrokeWidthUnit( Qgis::RenderUnit edgeStrokeWidthUnit );
 
-    /**
-     * Sets the range limits type for minimum maximum calculation
-     *
-     * \since QGIS 3.42
-     */
-    void setLimits( Qgis::MeshRangeLimit limits ) { mRangeLimit = limits; }
-
-    /**
-     * Returns the range limits type for minimum maximum calculation
-     *
-     * \since QGIS 3.42
-     */
-    Qgis::MeshRangeLimit limits() const { return mRangeLimit; }
-
-    /**
-     * Sets the mesh extent for minimum maximum calculation
-     *
-     * \since QGIS 3.42
-     */
-    void setExtent( Qgis::MeshRangeExtent extent ) { mRangeExtent = extent; }
-
-    /**
-     * Returns the mesh extent for minimum maximum calculation
-     *
-     * \since QGIS 3.42
-     */
-    Qgis::MeshRangeExtent extent() const { return mRangeExtent; }
-
     //! Writes configuration to a new DOM element
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context = QgsReadWriteContext() ) const;
     //! Reads configuration from the given DOM element
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context = QgsReadWriteContext() );
 
   private:
-    void updateShader();
-
-    //! Returns a string to serialize Limits
-    static QString limitsString( Qgis::MeshRangeLimit limits );
-
-    //! \brief Deserialize Limits
-    static Qgis::MeshRangeLimit limitsFromString( const QString &limits );
-
-    //! Returns a string to serialize Extent
-    static QString extentString( Qgis::MeshRangeExtent extent );
-
-    //! \brief Deserialize Extent
-    static Qgis::MeshRangeExtent extentFromString( const QString &extent );
-
-
     QgsColorRampShader mColorRampShader;
     DataResamplingMethod mDataResamplingMethod = DataResamplingMethod::NoResampling;
     double mClassificationMinimum = 0;
@@ -232,9 +190,6 @@ class CORE_EXPORT QgsMeshRendererScalarSettings
 
     QgsInterpolatedLineWidth mEdgeStrokeWidth;
     Qgis::RenderUnit mEdgeStrokeWidthUnit = Qgis::RenderUnit::Millimeters;
-
-    Qgis::MeshRangeExtent mRangeExtent = Qgis::MeshRangeExtent::WholeMesh;
-    Qgis::MeshRangeLimit mRangeLimit = Qgis::MeshRangeLimit::NotSet;
 };
 
 /**

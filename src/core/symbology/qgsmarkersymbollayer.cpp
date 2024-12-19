@@ -2100,20 +2100,6 @@ QgsSvgMarkerSymbolLayer::QgsSvgMarkerSymbolLayer( const QString &path, double si
   setPath( path );
 }
 
-QgsSvgMarkerSymbolLayer::QgsSvgMarkerSymbolLayer( const QgsSvgMarkerSymbolLayer &other )
-  : QgsMarkerSymbolLayer( other )
-  , mPath( other.mPath )
-  , mDefaultAspectRatio( other.mDefaultAspectRatio )
-  , mFixedAspectRatio( other.mFixedAspectRatio )
-  , mHasFillParam( other.mHasFillParam )
-  , mStrokeColor( other.mStrokeColor )
-  , mStrokeWidth( other.mStrokeWidth )
-  , mParameters( other.mParameters )
-  , mStrokeWidthUnit( other.mStrokeWidthUnit )
-  , mStrokeWidthMapUnitScale( other.mStrokeWidthMapUnitScale )
-{
-}
-
 QgsSvgMarkerSymbolLayer::~QgsSvgMarkerSymbolLayer() = default;
 
 QgsSymbolLayer *QgsSvgMarkerSymbolLayer::create( const QVariantMap &props )
@@ -2629,7 +2615,25 @@ bool QgsSvgMarkerSymbolLayer::usesMapUnits() const
 
 QgsSvgMarkerSymbolLayer *QgsSvgMarkerSymbolLayer::clone() const
 {
-  return new QgsSvgMarkerSymbolLayer( *this );
+  QgsSvgMarkerSymbolLayer *m = new QgsSvgMarkerSymbolLayer( mPath, mSize, mAngle );
+  m->setFixedAspectRatio( mFixedAspectRatio );
+  m->setColor( mColor );
+  m->setStrokeColor( mStrokeColor );
+  m->setStrokeWidth( mStrokeWidth );
+  m->setStrokeWidthUnit( mStrokeWidthUnit );
+  m->setStrokeWidthMapUnitScale( mStrokeWidthMapUnitScale );
+  m->setOffset( mOffset );
+  m->setOffsetUnit( mOffsetUnit );
+  m->setOffsetMapUnitScale( mOffsetMapUnitScale );
+  m->setSizeUnit( mSizeUnit );
+  m->setSizeMapUnitScale( mSizeMapUnitScale );
+  m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
+  m->setVerticalAnchorPoint( mVerticalAnchorPoint );
+  m->setParameters( mParameters );
+
+  copyDataDefinedProperties( m );
+  copyPaintEffect( m );
+  return m;
 }
 
 void QgsSvgMarkerSymbolLayer::setOutputUnit( Qgis::RenderUnit unit )

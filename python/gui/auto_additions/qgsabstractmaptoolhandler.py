@@ -4,5 +4,5 @@ try:
     QgsAbstractMapToolHandler.Context.__doc__ = """Context of a QgsAbstractMapToolHandler call.
 
 .. versionadded:: 3.16"""
-except (NameError, AttributeError):
+except NameError:
     pass

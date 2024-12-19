@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapeellipseextent.h"
-#include "moc_qgsmaptoolshapeellipseextent.cpp"
 #include "qgsgeometryrubberband.h"
 #include "qgsmapcanvas.h"
 #include "qgspoint.h"

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgslayoutmultiframe.h"
-#include "moc_qgslayoutmultiframe.cpp"
 #include "qgslayoutmultiframeundocommand.h"
 #include "qgslayoutframe.h"
 #include "qgslayout.h"

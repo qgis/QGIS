@@ -2,15 +2,13 @@
 
 # Generates random shapefile which may be used for benchmarks
 
-import math
 import os
+import sys
 import random
 import string
-import sys
-
-from optparse import OptionParser
-
+import math
 from osgeo import ogr
+from optparse import OptionParser
 
 
 def error(msg):
@@ -19,47 +17,11 @@ def error(msg):
 
 
 parser = OptionParser("usage: %prog [options] output")
-parser.add_option(
-    "-t",
-    "--type",
-    dest="type",
-    type="choice",
-    choices=("point", "line", "polygon"),
-    default="point",
-    help="Geometry type",
-)
-parser.add_option(
-    "-f",
-    "--features",
-    dest="features",
-    type="int",
-    default=1000,
-    help="Number of features",
-)
-parser.add_option(
-    "-c",
-    "--coordinates",
-    dest="coordinates",
-    type="int",
-    default=10,
-    help="Number of coordinates per feature (lines and polygons)",
-)
-parser.add_option(
-    "-a",
-    "--attributes",
-    dest="attributes",
-    type="int",
-    default=10,
-    help="Number of attributes",
-)
-parser.add_option(
-    "-e",
-    "--extent",
-    dest="extent",
-    type="string",
-    default="-180,-90,180,90",
-    help="Extent",
-)
+parser.add_option("-t", "--type", dest="type", type="choice", choices=("point", "line", "polygon"), default="point", help="Geometry type")
+parser.add_option("-f", "--features", dest="features", type="int", default=1000, help="Number of features")
+parser.add_option("-c", "--coordinates", dest="coordinates", type="int", default=10, help="Number of coordinates per feature (lines and polygons)")
+parser.add_option("-a", "--attributes", dest="attributes", type="int", default=10, help="Number of attributes")
+parser.add_option("-e", "--extent", dest="extent", type="string", default="-180,-90,180,90", help="Extent")
 
 (options, args) = parser.parse_args()
 if len(args) != 1:
@@ -145,10 +107,7 @@ for f in range(options.features):
         limit = 10000000
         if field_defn.GetType() == ogr.OFTString:
             nChars = random.randint(0, stringWidth)
-            val = "".join(
-                random.choice(string.ascii_letters + string.digits)
-                for x in range(nChars)
-            )
+            val = ''.join(random.choice(string.ascii_letters + string.digits) for x in range(nChars))
         elif field_defn.GetType() == ogr.OFTInteger:
             val = random.randint(-limit, limit)
         elif field_defn.GetType() == ogr.OFTReal:

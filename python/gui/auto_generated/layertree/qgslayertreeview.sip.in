@@ -25,6 +25,7 @@ private layers and text filtering.
 #include "qgslayertreeview.h"
 %End
   public:
+
     QgsLayerTreeProxyModel( QgsLayerTreeModel *treeModel, QObject *parent );
 %Docstring
 Constructs QgsLayerTreeProxyModel with source model ``treeModel`` and a ``parent``
@@ -64,6 +65,7 @@ Sets whether valid layers should be hidden (i.e. only invalid layers are shown).
 %End
 
   protected:
+
     virtual bool filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const;
 
 
@@ -97,6 +99,7 @@ with a set of default actions that can be used when building context menu.
       sipType = 0;
 %End
   public:
+
     explicit QgsLayerTreeView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLayerTreeView

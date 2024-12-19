@@ -18,7 +18,6 @@
  ***************************************************************************/
 
 #include "qgsserverrequest.h"
-#include "moc_qgsserverrequest.cpp"
 #include "qgsstringutils.h"
 #include <QUrlQuery>
 
@@ -51,7 +50,7 @@ QgsServerRequest::QgsServerRequest( const QgsServerRequest &other )
 QString QgsServerRequest::methodToString( const QgsServerRequest::Method &method )
 {
   static const QMetaEnum metaEnum = QMetaEnum::fromType<QgsServerRequest::Method>();
-  return QString( metaEnum.valueToKey( method ) ).remove( QStringLiteral( "Method" ) ).toUpper();
+  return QString( metaEnum.valueToKey( method ) ).remove( QStringLiteral( "Method" ) ).toUpper( );
 }
 
 QString QgsServerRequest::header( const QString &name ) const
@@ -65,8 +64,7 @@ QString QgsServerRequest::header( const QgsServerRequest::RequestHeader &headerE
   const QString headerKey = QString( qgsEnumValueToKey<QgsServerRequest::RequestHeader>( headerEnum ) );
   const QString headerName = QgsStringUtils::capitalize(
                                QString( headerKey ).replace( QLatin1Char( '_' ), QLatin1Char( ' ' ) ), Qgis::Capitalization::TitleCase
-  )
-                               .replace( QLatin1Char( ' ' ), QLatin1Char( '-' ) );
+                             ).replace( QLatin1Char( ' ' ), QLatin1Char( '-' ) );
   return header( headerName );
 }
 

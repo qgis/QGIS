@@ -32,7 +32,7 @@ void QgsExpressionFinder::findExpressionAtPos( const QString &text, int startSel
 
   // When the expression is selected including the opening and closing brackets,
   // we still want it to be matched
-  if ( startSelectionPos != endSelectionPos )
+  if ( startSelectionPos !=  endSelectionPos )
   {
     startSelectionPos++;
     endSelectionPos--;
@@ -71,7 +71,7 @@ QString QgsExpressionFinder::findAndSelectActiveExpression( QgsCodeEditor *edito
   int newSelectionStart, newSelectionEnd;
   findExpressionAtPos( editor->text(), startPosition, endPosition, newSelectionStart, newSelectionEnd, res, pattern );
 
-  editor->setLinearSelection( newSelectionStart, newSelectionEnd );
+  editor->setLinearSelection( newSelectionStart,  newSelectionEnd );
 
   return res;
 }

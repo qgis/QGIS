@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "August 2012"
-__copyright__ = "(C) 2012, Victor Olaya"
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 import warnings
@@ -33,8 +33,7 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
     WIDGET, BASE = uic.loadUiType(
-        os.path.join(pluginPath, "ui", "widgetRangeSelector.ui")
-    )
+        os.path.join(pluginPath, 'ui', 'widgetRangeSelector.ui'))
 
 
 class RangePanel(BASE, WIDGET):
@@ -71,16 +70,16 @@ class RangePanel(BASE, WIDGET):
             self.hasChanged.emit()
 
     def getValue(self):
-        return f"{self.spnMin.value()},{self.spnMax.value()}"
+        return f'{self.spnMin.value()},{self.spnMax.value()}'
 
     def getValues(self):
         value = self.getValue()
         if value:
-            return [float(a) for a in value.split(",")]
+            return [float(a) for a in value.split(',')]
 
     def setValue(self, value):
         try:
-            values = value.split(",")
+            values = value.split(',')
             minVal = float(values[0])
             maxVal = float(values[1])
             self.spnMin.setValue(float(minVal))

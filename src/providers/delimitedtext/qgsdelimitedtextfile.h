@@ -74,9 +74,11 @@ class QTextCodec;
 
 class QgsDelimitedTextFile : public QObject
 {
+
     Q_OBJECT
 
   public:
+
     enum Status
     {
       RecordOk,
@@ -353,6 +355,7 @@ class QgsDelimitedTextFile : public QObject
     void updateFile();
 
   private:
+
     /**
      * Open the file
      *
@@ -395,7 +398,7 @@ class QgsDelimitedTextFile : public QObject
     void appendField( QStringList &record, QString field, bool quoted = false );
 
     // Pointer to the currently selected parser
-    Status ( QgsDelimitedTextFile::*mParser )( QString &buffer, QStringList &fields );
+    Status( QgsDelimitedTextFile::*mParser )( QString &buffer, QStringList &fields );
 
     QString mFileName;
     QString mEncoding;

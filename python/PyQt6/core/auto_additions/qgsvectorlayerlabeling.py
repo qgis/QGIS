@@ -3,10 +3,10 @@ try:
     QgsAbstractVectorLayerLabeling.create = staticmethod(QgsAbstractVectorLayerLabeling.create)
     QgsAbstractVectorLayerLabeling.defaultSettingsForLayer = staticmethod(QgsAbstractVectorLayerLabeling.defaultSettingsForLayer)
     QgsAbstractVectorLayerLabeling.__group__ = ['labeling']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsVectorLayerSimpleLabeling.create = staticmethod(QgsVectorLayerSimpleLabeling.create)
     QgsVectorLayerSimpleLabeling.__group__ = ['labeling']
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Nyall Dawson"
-__date__ = "March 2018"
-__copyright__ = "(C) 2018, Nyall Dawson"
+__author__ = 'Nyall Dawson'
+__date__ = 'March 2018'
+__copyright__ = '(C) 2018, Nyall Dawson'
 
 import AlgorithmsTestBase
 
@@ -27,23 +27,24 @@ import os
 import tempfile
 import re
 
-from qgis.core import (
-    QgsVectorLayer,
-    QgsApplication,
-    QgsFeature,
-    QgsGeometry,
-    QgsPointXY,
-    QgsProcessingContext,
-    QgsProject,
-    QgsProcessingFeedback,
-    QgsProcessingFeatureSourceDefinition,
+from qgis.core import (QgsVectorLayer,
+                       QgsApplication,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsPointXY,
+                       QgsProcessingContext,
+                       QgsProject,
+                       QgsProcessingFeedback,
+                       QgsProcessingFeatureSourceDefinition)
+from qgis.testing import (
+    QgisTestCase,
+    start_app
 )
-from qgis.testing import QgisTestCase, start_app
 from grassprovider.grass_provider import GrassProvider
 from grassprovider.grass_utils import GrassUtils
 
 
-testDataPath = os.path.join(os.path.dirname(__file__), "testdata")
+testDataPath = os.path.join(os.path.dirname(__file__), 'testdata')
 
 
 class TestGrassAlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsTest):
@@ -67,15 +68,12 @@ class TestGrassAlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsT
             shutil.rmtree(path)
 
     def definition_file(self):
-        return "grass_algorithms_vector_tests.yaml"
+        return 'grass_algorithms_vector_tests.yaml'
 
     def testMemoryLayerInput(self):
         # create a memory layer and add to project and context
-        layer = QgsVectorLayer(
-            "Point?crs=epsg:3857&field=fldtxt:string&field=fldint:integer",
-            "testmem",
-            "memory",
-        )
+        layer = QgsVectorLayer("Point?crs=epsg:3857&field=fldtxt:string&field=fldint:integer",
+                               "testmem", "memory")
         self.assertTrue(layer.isValid())
         pr = layer.dataProvider()
         f = QgsFeature()
@@ -90,32 +88,30 @@ class TestGrassAlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsT
         context = QgsProcessingContext()
         context.setProject(QgsProject.instance())
 
-        alg = QgsApplication.processingRegistry().createAlgorithmById("grass:v.buffer")
+        alg = QgsApplication.processingRegistry().createAlgorithmById('grass:v.buffer')
         self.assertIsNotNone(alg)
 
-        temp_file = os.path.join(self.temp_dir, "grass_output.shp")
-        parameters = {
-            "input": "testmem",
-            "cats": "",
-            "where": "",
-            "type": [0, 1, 4],
-            "distance": 1,
-            "minordistance": None,
-            "angle": 0,
-            "column": None,
-            "scale": 1,
-            "tolerance": 0.01,
-            "-s": False,
-            "-c": False,
-            "-t": False,
-            "output": temp_file,
-            "GRASS_REGION_PARAMETER": None,
-            "GRASS_SNAP_TOLERANCE_PARAMETER": -1,
-            "GRASS_MIN_AREA_PARAMETER": 0.0001,
-            "GRASS_OUTPUT_TYPE_PARAMETER": 0,
-            "GRASS_VECTOR_DSCO": "",
-            "GRASS_VECTOR_LCO": "",
-        }
+        temp_file = os.path.join(self.temp_dir, 'grass_output.shp')
+        parameters = {'input': 'testmem',
+                      'cats': '',
+                      'where': '',
+                      'type': [0, 1, 4],
+                      'distance': 1,
+                      'minordistance': None,
+                      'angle': 0,
+                      'column': None,
+                      'scale': 1,
+                      'tolerance': 0.01,
+                      '-s': False,
+                      '-c': False,
+                      '-t': False,
+                      'output': temp_file,
+                      'GRASS_REGION_PARAMETER': None,
+                      'GRASS_SNAP_TOLERANCE_PARAMETER': -1,
+                      'GRASS_MIN_AREA_PARAMETER': 0.0001,
+                      'GRASS_OUTPUT_TYPE_PARAMETER': 0,
+                      'GRASS_VECTOR_DSCO': '',
+                      'GRASS_VECTOR_LCO': ''}
         feedback = QgsProcessingFeedback()
 
         results, ok = alg.run(parameters, context, feedback)
@@ -123,7 +119,7 @@ class TestGrassAlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsT
         self.assertTrue(os.path.exists(temp_file))
 
         # make sure that layer has correct features
-        res = QgsVectorLayer(temp_file, "res")
+        res = QgsVectorLayer(temp_file, 'res')
         self.assertTrue(res.isValid())
         self.assertEqual(res.featureCount(), 2)
 
@@ -131,11 +127,8 @@ class TestGrassAlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsT
 
     def testFeatureSourceInput(self):
         # create a memory layer and add to project and context
-        layer = QgsVectorLayer(
-            "Point?crs=epsg:3857&field=fldtxt:string&field=fldint:integer",
-            "testmem",
-            "memory",
-        )
+        layer = QgsVectorLayer("Point?crs=epsg:3857&field=fldtxt:string&field=fldint:integer",
+                               "testmem", "memory")
         self.assertTrue(layer.isValid())
         pr = layer.dataProvider()
         f = QgsFeature()
@@ -155,31 +148,29 @@ class TestGrassAlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsT
         context = QgsProcessingContext()
         context.setProject(QgsProject.instance())
 
-        alg = QgsApplication.processingRegistry().createAlgorithmById("grass:v.buffer")
+        alg = QgsApplication.processingRegistry().createAlgorithmById('grass:v.buffer')
         self.assertIsNotNone(alg)
-        temp_file = os.path.join(self.temp_dir, "grass_output_sel.shp")
-        parameters = {
-            "input": QgsProcessingFeatureSourceDefinition("testmem", True),
-            "cats": "",
-            "where": "",
-            "type": [0, 1, 4],
-            "distance": 1,
-            "minordistance": None,
-            "angle": 0,
-            "column": None,
-            "scale": 1,
-            "tolerance": 0.01,
-            "-s": False,
-            "-c": False,
-            "-t": False,
-            "output": temp_file,
-            "GRASS_REGION_PARAMETER": None,
-            "GRASS_SNAP_TOLERANCE_PARAMETER": -1,
-            "GRASS_MIN_AREA_PARAMETER": 0.0001,
-            "GRASS_OUTPUT_TYPE_PARAMETER": 0,
-            "GRASS_VECTOR_DSCO": "",
-            "GRASS_VECTOR_LCO": "",
-        }
+        temp_file = os.path.join(self.temp_dir, 'grass_output_sel.shp')
+        parameters = {'input': QgsProcessingFeatureSourceDefinition('testmem', True),
+                      'cats': '',
+                      'where': '',
+                      'type': [0, 1, 4],
+                      'distance': 1,
+                      'minordistance': None,
+                      'angle': 0,
+                      'column': None,
+                      'scale': 1,
+                      'tolerance': 0.01,
+                      '-s': False,
+                      '-c': False,
+                      '-t': False,
+                      'output': temp_file,
+                      'GRASS_REGION_PARAMETER': None,
+                      'GRASS_SNAP_TOLERANCE_PARAMETER': -1,
+                      'GRASS_MIN_AREA_PARAMETER': 0.0001,
+                      'GRASS_OUTPUT_TYPE_PARAMETER': 0,
+                      'GRASS_VECTOR_DSCO': '',
+                      'GRASS_VECTOR_LCO': ''}
         feedback = QgsProcessingFeedback()
 
         results, ok = alg.run(parameters, context, feedback)
@@ -187,7 +178,7 @@ class TestGrassAlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsT
         self.assertTrue(os.path.exists(temp_file))
 
         # make sure that layer has correct features
-        res = QgsVectorLayer(temp_file, "res")
+        res = QgsVectorLayer(temp_file, 'res')
         self.assertTrue(res.isValid())
         self.assertEqual(res.featureCount(), 1)
 
@@ -195,11 +186,8 @@ class TestGrassAlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsT
 
     def testOutputToGeopackage(self):
         # create a memory layer and add to project and context
-        layer = QgsVectorLayer(
-            "Point?crs=epsg:3857&field=fldtxt:string&field=fldint:integer",
-            "testmem",
-            "memory",
-        )
+        layer = QgsVectorLayer("Point?crs=epsg:3857&field=fldtxt:string&field=fldint:integer",
+                               "testmem", "memory")
         self.assertTrue(layer.isValid())
         pr = layer.dataProvider()
         f = QgsFeature()
@@ -214,32 +202,30 @@ class TestGrassAlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsT
         context = QgsProcessingContext()
         context.setProject(QgsProject.instance())
 
-        alg = QgsApplication.processingRegistry().createAlgorithmById("grass:v.buffer")
+        alg = QgsApplication.processingRegistry().createAlgorithmById('grass:v.buffer')
         self.assertIsNotNone(alg)
 
-        temp_file = os.path.join(self.temp_dir, "grass_output.gpkg")
-        parameters = {
-            "input": "testmem",
-            "cats": "",
-            "where": "",
-            "type": [0, 1, 4],
-            "distance": 1,
-            "minordistance": None,
-            "angle": 0,
-            "column": None,
-            "scale": 1,
-            "tolerance": 0.01,
-            "-s": False,
-            "-c": False,
-            "-t": False,
-            "output": temp_file,
-            "GRASS_REGION_PARAMETER": None,
-            "GRASS_SNAP_TOLERANCE_PARAMETER": -1,
-            "GRASS_MIN_AREA_PARAMETER": 0.0001,
-            "GRASS_OUTPUT_TYPE_PARAMETER": 0,
-            "GRASS_VECTOR_DSCO": "",
-            "GRASS_VECTOR_LCO": "",
-        }
+        temp_file = os.path.join(self.temp_dir, 'grass_output.gpkg')
+        parameters = {'input': 'testmem',
+                      'cats': '',
+                      'where': '',
+                      'type': [0, 1, 4],
+                      'distance': 1,
+                      'minordistance': None,
+                      'angle': 0,
+                      'column': None,
+                      'scale': 1,
+                      'tolerance': 0.01,
+                      '-s': False,
+                      '-c': False,
+                      '-t': False,
+                      'output': temp_file,
+                      'GRASS_REGION_PARAMETER': None,
+                      'GRASS_SNAP_TOLERANCE_PARAMETER': -1,
+                      'GRASS_MIN_AREA_PARAMETER': 0.0001,
+                      'GRASS_OUTPUT_TYPE_PARAMETER': 0,
+                      'GRASS_VECTOR_DSCO': '',
+                      'GRASS_VECTOR_LCO': ''}
         feedback = QgsProcessingFeedback()
 
         results, ok = alg.run(parameters, context, feedback)
@@ -247,7 +233,7 @@ class TestGrassAlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsT
         self.assertTrue(os.path.exists(temp_file))
 
         # make sure that layer has correct features
-        res = QgsVectorLayer(temp_file, "res")
+        res = QgsVectorLayer(temp_file, 'res')
         self.assertTrue(res.isValid())
         self.assertEqual(res.featureCount(), 2)
 
@@ -255,109 +241,73 @@ class TestGrassAlgorithmsVectorTest(QgisTestCase, AlgorithmsTestBase.AlgorithmsT
 
     def testVectorLayerInput(self):
         context = QgsProcessingContext()
-        alg = QgsApplication.processingRegistry().createAlgorithmById("grass7:v.buffer")
+        alg = QgsApplication.processingRegistry().createAlgorithmById('grass7:v.buffer')
         self.assertIsNotNone(alg)
         self.assertFalse(alg.commands)
 
         def get_command(alg):
             command = alg.commands[-1]
             command = re.sub(r'output=".*?"', 'output="###"', command)
-            command = command.replace(testDataPath, "testdata")
+            command = command.replace(testDataPath, 'testdata')
             return command
 
         # GML source
-        source = os.path.join(testDataPath, "points.gml")
+        source = os.path.join(testDataPath, 'points.gml')
         vl = QgsVectorLayer(source)
         self.assertTrue(vl.isValid())
-        alg.loadVectorLayer("test_layer", vl, context, external=False)
-        self.assertEqual(
-            get_command(alg),
-            'v.in.ogr min_area=None snap=None input="testdata/points.gml" output="###" --overwrite -o',
-        )
+        alg.loadVectorLayer('test_layer', vl, context, external=False)
+        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/points.gml" output="###" --overwrite -o')
         # try with external -- not support for GML, so should fall back to v.in.ogr
-        alg.loadVectorLayer("test_layer", vl, context, external=True)
-        self.assertEqual(
-            get_command(alg),
-            'v.in.ogr min_area=None snap=None input="testdata/points.gml" output="###" --overwrite -o',
-        )
+        alg.loadVectorLayer('test_layer', vl, context, external=True)
+        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/points.gml" output="###" --overwrite -o')
 
         # SHP source
-        source = os.path.join(testDataPath, "lines_z.shp")
+        source = os.path.join(testDataPath, 'lines_z.shp')
         vl = QgsVectorLayer(source)
         self.assertTrue(vl.isValid())
-        alg.loadVectorLayer("test_layer", vl, context, external=False)
-        self.assertEqual(
-            get_command(alg),
-            'v.in.ogr min_area=None snap=None input="testdata/lines_z.shp" output="###" --overwrite -o',
-        )
+        alg.loadVectorLayer('test_layer', vl, context, external=False)
+        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/lines_z.shp" output="###" --overwrite -o')
         # try with external -- should work for shapefile
-        alg.loadVectorLayer("test_layer", vl, context, external=True)
-        self.assertEqual(
-            get_command(alg),
-            'v.external input="testdata/lines_z.shp" output="###" --overwrite -o',
-        )
+        alg.loadVectorLayer('test_layer', vl, context, external=True)
+        self.assertEqual(get_command(alg), 'v.external input="testdata/lines_z.shp" output="###" --overwrite -o')
 
         # GPKG source
-        source = os.path.join(testDataPath, "pol.gpkg")
-        vl = QgsVectorLayer(source + "|layername=pol2")
+        source = os.path.join(testDataPath, 'pol.gpkg')
+        vl = QgsVectorLayer(source + '|layername=pol2')
         self.assertTrue(vl.isValid())
-        alg.loadVectorLayer("test_layer", vl, context, external=False)
-        self.assertEqual(
-            get_command(alg),
-            'v.in.ogr min_area=None snap=None input="testdata/pol.gpkg" layer="pol2" output="###" --overwrite -o',
-        )
+        alg.loadVectorLayer('test_layer', vl, context, external=False)
+        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/pol.gpkg" layer="pol2" output="###" --overwrite -o')
         # try with external -- should work for Geopackage (although grass itself tends to crash here!)
-        alg.loadVectorLayer("test_layer", vl, context, external=True)
-        self.assertEqual(
-            get_command(alg),
-            'v.external input="testdata/pol.gpkg" layer="pol2" output="###" --overwrite -o',
-        )
+        alg.loadVectorLayer('test_layer', vl, context, external=True)
+        self.assertEqual(get_command(alg), 'v.external input="testdata/pol.gpkg" layer="pol2" output="###" --overwrite -o')
 
         # different layer
-        source = os.path.join(testDataPath, "pol.gpkg")
-        vl = QgsVectorLayer(source + "|layername=pol3")
+        source = os.path.join(testDataPath, 'pol.gpkg')
+        vl = QgsVectorLayer(source + '|layername=pol3')
         self.assertTrue(vl.isValid())
-        alg.loadVectorLayer("test_layer", vl, context, external=False)
-        self.assertEqual(
-            get_command(alg),
-            'v.in.ogr min_area=None snap=None input="testdata/pol.gpkg" layer="pol3" output="###" --overwrite -o',
-        )
-        alg.loadVectorLayer("test_layer", vl, context, external=True)
-        self.assertEqual(
-            get_command(alg),
-            'v.external input="testdata/pol.gpkg" layer="pol3" output="###" --overwrite -o',
-        )
+        alg.loadVectorLayer('test_layer', vl, context, external=False)
+        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/pol.gpkg" layer="pol3" output="###" --overwrite -o')
+        alg.loadVectorLayer('test_layer', vl, context, external=True)
+        self.assertEqual(get_command(alg), 'v.external input="testdata/pol.gpkg" layer="pol3" output="###" --overwrite -o')
 
         # GPKG no layer: you get what you get and you don't get upset
-        source = os.path.join(testDataPath, "pol.gpkg")
+        source = os.path.join(testDataPath, 'pol.gpkg')
         vl = QgsVectorLayer(source)
         self.assertTrue(vl.isValid())
-        alg.loadVectorLayer("test_layer", vl, context, external=False)
-        self.assertEqual(
-            get_command(alg),
-            'v.in.ogr min_area=None snap=None input="testdata/pol.gpkg" output="###" --overwrite -o',
-        )
-        alg.loadVectorLayer("test_layer", vl, context, external=True)
-        self.assertEqual(
-            get_command(alg),
-            'v.external input="testdata/pol.gpkg" output="###" --overwrite -o',
-        )
+        alg.loadVectorLayer('test_layer', vl, context, external=False)
+        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/pol.gpkg" output="###" --overwrite -o')
+        alg.loadVectorLayer('test_layer', vl, context, external=True)
+        self.assertEqual(get_command(alg), 'v.external input="testdata/pol.gpkg" output="###" --overwrite -o')
 
         # layer with filter
-        vl = QgsVectorLayer(source + "|layername=pol3")
+        vl = QgsVectorLayer(source + '|layername=pol3')
         self.assertTrue(vl.isValid())
-        vl.setSubsetString("\"field\"='value'")
-        alg.loadVectorLayer("test_layer", vl, context, external=False)
-        self.assertEqual(
-            get_command(alg),
-            'v.in.ogr min_area=None snap=None input="testdata/pol.gpkg" layer="pol3" output="###" --overwrite -o where="\\"field\\"=\'value\'"',
-        )
-        alg.loadVectorLayer("test_layer", vl, context, external=True)
-        self.assertEqual(
-            get_command(alg),
-            'v.external input="testdata/pol.gpkg" layer="pol3" output="###" --overwrite -o where="\\"field\\"=\'value\'"',
-        )
+        vl.setSubsetString('"field"=\'value\'')
+        alg.loadVectorLayer('test_layer', vl, context, external=False)
+        self.assertEqual(get_command(alg), 'v.in.ogr min_area=None snap=None input="testdata/pol.gpkg" layer="pol3" output="###" --overwrite -o where="\\"field\\"=\'value\'"')
+        alg.loadVectorLayer('test_layer', vl, context, external=True)
+        self.assertEqual(get_command(alg), 'v.external input="testdata/pol.gpkg" layer="pol3" output="###" --overwrite -o where="\\"field\\"=\'value\'"')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     nose2.main()

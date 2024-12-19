@@ -2,11 +2,12 @@
 #include <QMap>
 #include <QString>
 #include <QStringList>
-#if QT_VERSION >= QT_VERSION_CHECK(5,0,0)
+#if QT_VERSION >= 0x050000
 #include <QUrlQuery>
 #endif
 
 #include "o2surveymonkey.h"
+#include "o2globals.h"
 
 static const char *SMEndpoint = "https://api.surveymonkey.net/oauth/authorize";
 static const char *SMTokenUrl = "https://api.surveymonkey.net/oauth/token";

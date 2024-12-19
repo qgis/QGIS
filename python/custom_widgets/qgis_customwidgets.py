@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 ***************************************************************************
     customwidgets.py
@@ -48,9 +50,8 @@ pluginType = MODULE  # noqa
 def moduleInformation():
     try:
         import qgis.gui
-
         widget_list = dir(qgis.gui)
-        widget_list.remove("QgsScrollArea")
+        widget_list.remove('QgsScrollArea')
         return "qgis.gui", widget_list
     except ImportError:
         return "", []

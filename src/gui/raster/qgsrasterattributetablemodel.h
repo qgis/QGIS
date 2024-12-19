@@ -33,10 +33,11 @@ class GUI_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
     Q_OBJECT
 
   public:
+
     /**
      * Creates a new QgsRasterAttributeTableModel from raster attribute table \a rat and optional \a parent.
      */
-    explicit QgsRasterAttributeTableModel( QgsRasterAttributeTable *rat, QObject *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsRasterAttributeTableModel( QgsRasterAttributeTable *rat, QObject *parent  SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns true if the Raster Attribute Table is editable.
@@ -61,7 +62,7 @@ class GUI_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
     /**
      * Returns all the header names, including the "virtual" color header if the Raster Attribute Table has color or ramp.
      */
-    QStringList headerNames() const;
+    QStringList headerNames( ) const;
 
     /**
      * Returns the tooltip for the given \a section.
@@ -76,7 +77,7 @@ class GUI_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
     /**
      * Returns TRUE if the Raster Attribute Table was modified since it was last saved or read.
      */
-    bool isDirty();
+    bool isDirty( );
 
     // Raster Attribute Table operations
 
@@ -134,13 +135,14 @@ class GUI_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
     bool removeRow( const int position, QString *errorMessage SIP_OUT = nullptr );
 
   private:
+
     QgsRasterAttributeTable *mRat = nullptr;
     bool mEditable = false;
 
     // Checks for rat not nullptr and editable state
     bool editChecks( QString *errorMessage = nullptr );
 
-    QString ratColorHeaderName() const;
+    QString ratColorHeaderName( ) const;
 
     // QAbstractItemModel interface
   public:
@@ -150,6 +152,8 @@ class GUI_EXPORT QgsRasterAttributeTableModel : public QAbstractTableModel
     bool setData( const QModelIndex &index, const QVariant &value, int role ) override;
     QVariant headerData( int section, Qt::Orientation orientation, int role ) const override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
+
+
 };
 
 #endif // QGSRASTERATTRIBUTETABLEMODEL_H

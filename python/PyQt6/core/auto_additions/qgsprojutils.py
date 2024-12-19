@@ -10,5 +10,5 @@ try:
     QgsProjUtils.ignfDatabaseDate = staticmethod(QgsProjUtils.ignfDatabaseDate)
     QgsProjUtils.searchPaths = staticmethod(QgsProjUtils.searchPaths)
     QgsProjUtils.__group__ = ['proj']
-except (NameError, AttributeError):
+except NameError:
     pass

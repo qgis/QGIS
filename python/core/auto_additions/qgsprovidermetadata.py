@@ -8,9 +8,9 @@ try:
     QgsProviderMetadata.boolParameter = staticmethod(QgsProviderMetadata.boolParameter)
     QgsProviderMetadata.__signal_arguments__ = {'connectionCreated': ['name: str'], 'connectionDeleted': ['name: str'], 'connectionChanged': ['name: str']}
     QgsProviderMetadata.__group__ = ['providers']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMeshDriverMetadata.__group__ = ['providers']
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsvectorlayergpslogger.h"
-#include "moc_qgsvectorlayergpslogger.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerutils.h"
 #include "qgsgpsconnection.h"

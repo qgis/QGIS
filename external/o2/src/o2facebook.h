@@ -9,13 +9,11 @@ class O0_EXPORT O2Facebook: public O2 {
     Q_OBJECT
 
 public:
-    explicit O2Facebook(QObject *parent = nullptr);
-
-public Q_SLOTS:
-    void onVerificationReceived(QMap<QString, QString>) override;
+    explicit O2Facebook(QObject *parent = 0);
 
 protected Q_SLOTS:
-    void onTokenReplyFinished() override;
+    void onVerificationReceived(QMap<QString, QString>);
+    virtual void onTokenReplyFinished();
 };
 
 #endif // O2FACEBOOK_H

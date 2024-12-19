@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Alexander Bruy"
-__date__ = "October 2014"
-__copyright__ = "(C) 2014, Alexander Bruy"
+__author__ = 'Alexander Bruy'
+__date__ = 'October 2014'
+__copyright__ = '(C) 2014, Alexander Bruy'
 
 import os
 import warnings
@@ -31,7 +31,8 @@ from qgis.utils import iface
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 with warnings.catch_warnings():
     warnings.filterwarnings("ignore", category=DeprecationWarning)
-    WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, "ui", "DlgMessage.ui"))
+    WIDGET, BASE = uic.loadUiType(
+        os.path.join(pluginPath, 'ui', 'DlgMessage.ui'))
 
 
 class MessageDialog(BASE, WIDGET):
@@ -51,7 +52,7 @@ class MessageDialog(BASE, WIDGET):
     def openLink(self, url):
         if url.toString() == "log":
             self.close()
-            logDock = iface.mainWindow().findChild(QDockWidget, "MessageLog")
+            logDock = iface.mainWindow().findChild(QDockWidget, 'MessageLog')
             logDock.show()
         else:
             QDesktopServices.openUrl(url)

@@ -27,9 +27,7 @@ from qgis.PyQt.Qsci import QsciAPIs, QsciLexerPython
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 from qgis.PyQt.QtCore import QCoreApplication
 
-Ui_APIsDialogPythonConsole, _ = uic.loadUiType(
-    Path(__file__).parent / "console_compile_apis.ui"
-)
+Ui_APIsDialogPythonConsole, _ = uic.loadUiType(Path(__file__).parent / 'console_compile_apis.ui')
 
 
 class PrepareAPIDialog(QDialog):
@@ -63,24 +61,21 @@ class PrepareAPIDialog(QDialog):
         self._clearLexer()
         if os.path.exists(self._pap_file):
             os.remove(self._pap_file)
-        self.ui.label.setText(
-            QCoreApplication.translate("PythonConsole", "Saving prepared file…")
-        )
+        self.ui.label.setText(QCoreApplication.translate("PythonConsole", "Saving prepared file…"))
         prepd = self._api.savePrepared(self._pap_file)
         rslt = self.tr("Error")
         if prepd:
             rslt = QCoreApplication.translate("PythonConsole", "Saved")
-        self.ui.label.setText(f"{self.ui.label.text()} {rslt}")
+        self.ui.label.setText('{0} {1}'.format(self.ui.label.text(), rslt))
         self._api = None
         self.ui.progressBar.setVisible(False)
         self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Cancel).setText(
-            QCoreApplication.translate("PythonConsole", "Done")
-        )
+            QCoreApplication.translate("PythonConsole", "Done"))
         self.adjustSize()
 
     def prepareAPI(self):
         # self.ui.textEdit_Qsci.setLexer(0)
-        exec(f"self.qlexer = {self._api_lexer}(self.ui.textEdit_Qsci)")
+        exec('self.qlexer = {0}(self.ui.textEdit_Qsci)'.format(self._api_lexer))
         # self.ui.textEdit_Qsci.setLexer(self.qlexer)
         self._api = QsciAPIs(self.qlexer)
         self._api.apiPreparationFinished.connect(self._preparationFinished)
@@ -91,13 +86,9 @@ class PrepareAPIDialog(QDialog):
         except Exception as err:
             self._api = None
             self._clearLexer()
-            self.ui.label.setText(
-                QCoreApplication.translate("PythonConsole", "Error preparing file…")
-            )
+            self.ui.label.setText(QCoreApplication.translate("PythonConsole", "Error preparing file…"))
             self.ui.progressBar.setVisible(False)
             self.ui.plainTextEdit.setVisible(True)
             self.ui.plainTextEdit.insertPlainText(err)
-            self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Cancel).setText(
-                self.tr("Done")
-            )
+            self.ui.buttonBox.button(QDialogButtonBox.StandardButton.Cancel).setText(self.tr("Done"))
             self.adjustSize()

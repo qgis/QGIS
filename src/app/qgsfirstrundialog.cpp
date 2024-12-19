@@ -14,11 +14,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsfirstrundialog.h"
-#include "moc_qgsfirstrundialog.cpp"
 #include "qgis.h"
 
-QgsFirstRunDialog::QgsFirstRunDialog( QWidget *parent )
-  : QDialog( parent )
+QgsFirstRunDialog::QgsFirstRunDialog( QWidget *parent ) : QDialog( parent )
 {
   setupUi( this );
   mWelcomeDevLabel->hide();
@@ -41,9 +39,11 @@ QgsFirstRunDialog::QgsFirstRunDialog( QWidget *parent )
     mWelcomeProdLabel->setText( mWelcomeProdLabel->text().replace( QLatin1String( "VERSION_TOKEN" ), major.append( minor ) ) );
     mWelcomeDevLabel->hide();
   }
+
 }
 
 bool QgsFirstRunDialog::migrateSettings()
 {
   return ( mImportSettingsYes->isChecked() );
 }
+

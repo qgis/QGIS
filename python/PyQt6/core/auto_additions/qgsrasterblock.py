@@ -8,5 +8,5 @@ try:
     QgsRasterBlock.printValue = staticmethod(QgsRasterBlock.printValue)
     QgsRasterBlock.subRect = staticmethod(QgsRasterBlock.subRect)
     QgsRasterBlock.__group__ = ['raster']
-except (NameError, AttributeError):
+except NameError:
     pass

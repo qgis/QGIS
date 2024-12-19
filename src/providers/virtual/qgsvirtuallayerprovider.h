@@ -28,10 +28,11 @@ email                : hugo dot mercier at oslandia dot com
 
 class QgsVirtualLayerFeatureIterator;
 
-class QgsVirtualLayerProvider final : public QgsVectorDataProvider
+class QgsVirtualLayerProvider final: public QgsVectorDataProvider
 {
     Q_OBJECT
   public:
+
     static const QString VIRTUAL_LAYER_KEY;
     static const QString VIRTUAL_LAYER_DESCRIPTION;
     static const QString VIRTUAL_LAYER_QUERY_VIEW;
@@ -67,6 +68,7 @@ class QgsVirtualLayerProvider final : public QgsVectorDataProvider
     static QString providerKey();
 
   private:
+
     // file on disk
     QString mPath;
 
@@ -75,24 +77,24 @@ class QgsVirtualLayerProvider final : public QgsVectorDataProvider
     // underlying vector layers
     struct SourceLayer
     {
-        SourceLayer() = default;
-        SourceLayer( QgsVectorLayer *l, const QString &n = QString() )
-          : layer( l )
-          , name( n )
-        {}
-        SourceLayer( const QString &p, const QString &s, const QString &n, const QString &e = QStringLiteral( "UTF-8" ) )
-          : name( n )
-          , source( s )
-          , provider( p )
-          , encoding( e )
-        {}
-        // non-null if it refers to a live layer
-        QgsVectorLayer *layer = nullptr;
-        QString name;
-        // non-empty if it is an embedded layer
-        QString source;
-        QString provider;
-        QString encoding;
+      SourceLayer() = default;
+      SourceLayer( QgsVectorLayer *l, const QString &n = QString() )
+        : layer( l )
+        , name( n )
+      {}
+      SourceLayer( const QString &p, const QString &s, const QString &n, const QString &e = QStringLiteral( "UTF-8" ) )
+        : name( n )
+        , source( s )
+        , provider( p )
+        , encoding( e )
+      {}
+      // non-null if it refers to a live layer
+      QgsVectorLayer *layer = nullptr;
+      QString name;
+      // non-empty if it is an embedded layer
+      QString source;
+      QString provider;
+      QString encoding;
     };
     typedef QVector<SourceLayer> SourceLayers;
     SourceLayers mLayers;
@@ -130,9 +132,10 @@ class QgsVirtualLayerProvider final : public QgsVectorDataProvider
 
   private slots:
     void invalidateStatistics();
+
 };
 
-class QgsVirtualLayerProviderMetadata final : public QgsProviderMetadata
+class QgsVirtualLayerProviderMetadata final: public QgsProviderMetadata
 {
     Q_OBJECT
   public:
@@ -141,7 +144,7 @@ class QgsVirtualLayerProviderMetadata final : public QgsProviderMetadata
     QgsVirtualLayerProvider *createProvider( const QString &uri, const QgsDataProvider::ProviderOptions &options, Qgis::DataProviderReadFlags flags = Qgis::DataProviderReadFlags() ) override;
     QString absoluteToRelativeUri( const QString &uri, const QgsReadWriteContext &context ) const override;
     QString relativeToAbsoluteUri( const QString &uri, const QgsReadWriteContext &context ) const override;
-    QList<Qgis::LayerType> supportedLayerTypes() const override;
+    QList< Qgis::LayerType > supportedLayerTypes() const override;
 };
 
 // clazy:excludeall=qstring-allocations

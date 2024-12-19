@@ -4,5 +4,5 @@ try:
     QgsLayerDefinition.exportLayerDefinition = staticmethod(QgsLayerDefinition.exportLayerDefinition)
     QgsLayerDefinition.exportLayerDefinitionLayers = staticmethod(QgsLayerDefinition.exportLayerDefinitionLayers)
     QgsLayerDefinition.loadLayerDefinitionLayers = staticmethod(QgsLayerDefinition.loadLayerDefinitionLayers)
-except (NameError, AttributeError):
+except NameError:
     pass

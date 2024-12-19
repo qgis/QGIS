@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgstaskmanager.h"
-#include "moc_qgstaskmanager.cpp"
 #include "qgsproject.h"
 #include "qgsmaplayerlistutils_p.h"
 #include <mutex>

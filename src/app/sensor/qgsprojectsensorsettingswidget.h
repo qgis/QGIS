@@ -25,6 +25,7 @@ class QgsProjectSensorSettingsWidget : public QgsOptionsPageWidget, private Ui::
 {
     Q_OBJECT
   public:
+
     QgsProjectSensorSettingsWidget( QWidget *parent = nullptr );
 
   public slots:
@@ -34,6 +35,7 @@ class QgsProjectSensorSettingsWidget : public QgsOptionsPageWidget, private Ui::
     void cancel() override;
 
   private:
+
     QDomDocument mPreviousSensors;
     QStringList mConnectedSensors;
 };
@@ -47,6 +49,7 @@ class QgsProjectSensorSettingsWidgetFactory : public QgsOptionsWidgetFactory
 
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
 };
+
 
 
 #endif // QGSPROJECTSENSORSETTINGSWIDGET_H

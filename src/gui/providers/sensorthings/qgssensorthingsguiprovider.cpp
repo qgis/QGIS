@@ -70,6 +70,7 @@ QgsAbstractDataSourceWidget *QgsSensorThingsSourceSelectProvider::createDataSour
 
 QgsSensorThingsSourceWidgetProvider::QgsSensorThingsSourceWidgetProvider()
 {
+
 }
 
 QString QgsSensorThingsSourceWidgetProvider::providerKey() const
@@ -94,8 +95,8 @@ QgsProviderSourceWidget *QgsSensorThingsSourceWidgetProvider::createWidget( QgsM
 //
 // QgsSensorThingsProviderGuiMetadata
 //
-QgsSensorThingsProviderGuiMetadata::QgsSensorThingsProviderGuiMetadata()
-  : QgsProviderGuiMetadata( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY )
+QgsSensorThingsProviderGuiMetadata::QgsSensorThingsProviderGuiMetadata():
+  QgsProviderGuiMetadata( QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY )
 {
 }
 
@@ -114,15 +115,16 @@ QList<QgsDataItemGuiProvider *> QgsSensorThingsProviderGuiMetadata::dataItemGuiP
   return { new QgsSensorThingsDataItemGuiProvider() };
 }
 
-class QgsSensorThingsSubsetStringEditorProvider : public QgsSubsetStringEditorProvider
+class QgsSensorThingsSubsetStringEditorProvider: public QgsSubsetStringEditorProvider
 {
   public:
+
     QString providerKey() const override { return QgsSensorThingsProvider::SENSORTHINGS_PROVIDER_KEY; }
 
     bool canHandleLayer( QgsVectorLayer *layer ) const override
     {
       QgsDataProvider *provider = layer->dataProvider();
-      return static_cast<bool>( qobject_cast<QgsSensorThingsProvider *>( provider ) );
+      return static_cast< bool >( qobject_cast<QgsSensorThingsProvider *>( provider ) );
     }
 
     QgsSubsetStringEditorInterface *createDialog( QgsVectorLayer *layer, QWidget *parent, Qt::WindowFlags fl ) override

@@ -39,12 +39,12 @@ class QgsRasterFrequencyByComparisonOperatorBase : public QgsProcessingAlgorithm
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
     QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    virtual int applyComparisonOperator( double value, std::vector<double> cellValueStack ) = 0;
+    virtual int applyComparisonOperator( double value, std::vector<double>cellValueStack ) = 0;
 
   private:
-    std::unique_ptr<QgsRasterInterface> mInputValueRasterInterface;
+    std::unique_ptr< QgsRasterInterface > mInputValueRasterInterface;
     int mInputValueRasterBand = 1;
-    std::vector<QgsRasterAnalysisUtils::RasterLogicInput> mInputs;
+    std::vector< QgsRasterAnalysisUtils::RasterLogicInput > mInputs;
     bool mIgnoreNoData = false;
     double mNoDataValue = -9999;
     int mLayerWidth = 0;
@@ -66,7 +66,7 @@ class QgsRasterFrequencyByEqualOperatorAlgorithm : public QgsRasterFrequencyByCo
     QgsRasterFrequencyByEqualOperatorAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    int applyComparisonOperator( double searchValue, std::vector<double> cellValueStack ) override;
+    int applyComparisonOperator( double searchValue, std::vector<double>cellValueStack ) override;
 };
 
 class QgsRasterFrequencyByGreaterThanOperatorAlgorithm : public QgsRasterFrequencyByComparisonOperatorBase
@@ -80,7 +80,7 @@ class QgsRasterFrequencyByGreaterThanOperatorAlgorithm : public QgsRasterFrequen
     QgsRasterFrequencyByGreaterThanOperatorAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    int applyComparisonOperator( double value, std::vector<double> cellValueStack ) override;
+    int applyComparisonOperator( double value, std::vector<double>cellValueStack ) override;
 };
 
 class QgsRasterFrequencyByLessThanOperatorAlgorithm : public QgsRasterFrequencyByComparisonOperatorBase
@@ -94,9 +94,10 @@ class QgsRasterFrequencyByLessThanOperatorAlgorithm : public QgsRasterFrequencyB
     QgsRasterFrequencyByLessThanOperatorAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    int applyComparisonOperator( double value, std::vector<double> cellValueStack ) override;
+    int applyComparisonOperator( double value, std::vector<double>cellValueStack ) override;
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMRASTERFREQUENCYBYCOMPARISON_H
+

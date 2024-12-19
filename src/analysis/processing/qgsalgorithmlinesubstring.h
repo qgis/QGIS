@@ -30,7 +30,9 @@
  */
 class QgsLineSubstringAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
+
   public:
+
     QgsLineSubstringAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -48,9 +50,10 @@ class QgsLineSubstringAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString outputName() const override;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
 
   private:
+
     double mStartDistance = 0.0;
     bool mDynamicStartDistance = false;
     QgsProperty mStartDistanceProperty;
@@ -64,3 +67,5 @@ class QgsLineSubstringAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 ///@endcond PRIVATE
 
 #endif // QGSLINESUBSTRINGALGORITHM_H
+
+

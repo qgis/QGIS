@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgscodeeditorcss.h"
-#include "moc_qgscodeeditorcss.cpp"
 
 #include <QWidget>
 #include <QString>
@@ -23,7 +22,11 @@
 
 
 QgsCodeEditorCSS::QgsCodeEditorCSS( QWidget *parent )
-  : QgsCodeEditor( parent, QString(), false, false, QgsCodeEditor::Flag::CodeFolding )
+  : QgsCodeEditor( parent,
+                   QString(),
+                   false,
+                   false,
+                   QgsCodeEditor::Flag::CodeFolding )
 {
   if ( !parent )
   {
@@ -84,6 +87,7 @@ void QgsCodeEditorCSS::initializeLexer()
 QgsQsciLexerCSS::QgsQsciLexerCSS( QObject *parent )
   : QsciLexerCSS( parent )
 {
+
 }
 
 QString QgsQsciLexerCSS::description( int style ) const

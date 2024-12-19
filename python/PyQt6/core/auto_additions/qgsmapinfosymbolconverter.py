@@ -4,9 +4,9 @@ try:
     QgsMapInfoSymbolConverter.convertFillSymbol = staticmethod(QgsMapInfoSymbolConverter.convertFillSymbol)
     QgsMapInfoSymbolConverter.convertMarkerSymbol = staticmethod(QgsMapInfoSymbolConverter.convertMarkerSymbol)
     QgsMapInfoSymbolConverter.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMapInfoSymbolConversionContext.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

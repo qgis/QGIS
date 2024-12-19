@@ -284,9 +284,9 @@ void QgsHanaSettings::save()
   settings.setValue( key + QStringLiteral( "/schema" ), mSchema );
   settings.setValue( key + QStringLiteral( "/authcfg" ), mAuthcfg );
   settings.setValue( key + QStringLiteral( "/saveUsername" ), mSaveUserName );
-  settings.setValue( key + QStringLiteral( "/username" ), mSaveUserName ? mUserName : QString() );
+  settings.setValue( key + QStringLiteral( "/username" ), mSaveUserName ? mUserName : QString( ) );
   settings.setValue( key + QStringLiteral( "/savePassword" ), mSavePassword );
-  settings.setValue( key + QStringLiteral( "/password" ), mSavePassword ? mPassword : QString() );
+  settings.setValue( key + QStringLiteral( "/password" ), mSavePassword ? mPassword : QString( ) );
   settings.setValue( key + QStringLiteral( "/userTablesOnly" ), mUserTablesOnly );
   settings.setValue( key + QStringLiteral( "/allowGeometrylessTables" ), mAllowGeometrylessTables );
   settings.setValue( key + QStringLiteral( "/estimatedMetadata" ), mUseEstimatedMetadata );

@@ -22,6 +22,7 @@ Base class for widgets which allow control over the properties of sensors.
 #include "qgssensorwidget.h"
 %End
   public:
+
     QgsAbstractSensorWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsAbstractSensorWidget.

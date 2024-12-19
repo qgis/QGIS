@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgspointcloudlayer3drendererwidget.h"
-#include "moc_qgspointcloudlayer3drendererwidget.cpp"
 
 #include "qgspointcloud3dsymbolwidget.h"
 #include "qgspointcloudlayer3drenderer.h"
@@ -105,8 +104,8 @@ void QgsPointCloudLayer3DRendererWidget::setDockMode( bool dockMode )
     mWidgetPointCloudSymbol->setDockMode( dockMode );
 }
 
-QgsPointCloudLayer3DRendererWidgetFactory::QgsPointCloudLayer3DRendererWidgetFactory( QObject *parent )
-  : QObject( parent )
+QgsPointCloudLayer3DRendererWidgetFactory::QgsPointCloudLayer3DRendererWidgetFactory( QObject *parent ):
+  QObject( parent )
 {
   setIcon( QIcon( ":/images/themes/default/3d.svg" ) );
   setTitle( tr( "3D View" ) );

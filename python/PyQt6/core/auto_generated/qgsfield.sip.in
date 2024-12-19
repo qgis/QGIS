@@ -65,7 +65,7 @@ Constructor. Constructs a new QgsField object.
                                 int len = 0,
                                 int prec = 0,
                                 const QString &comment = QString(),
-                                QVariant::Type subType = QVariant::Invalid ) /HoldGIL,Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
+                                QVariant::Type subType = QVariant::Invalid ) /HoldGIL,Deprecated/;
 %Docstring
 Constructor. Constructs a new QgsField object.
 
@@ -262,7 +262,7 @@ Set the field name.
 Set variant ``type``.
 %End
 
- void setType( QVariant::Type type ) /HoldGIL,Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
+ void setType( QVariant::Type type ) /HoldGIL,Deprecated/;
 %Docstring
 Set variant ``type``.
 
@@ -278,7 +278,7 @@ When all the elements don't need to have the same type, set this to
 QVariant.Invalid.
 %End
 
- void setSubType( QVariant::Type subType ) /HoldGIL,Deprecated="Since 3.38. Use the method with a QMetaType.Type argument instead."/;
+ void setSubType( QVariant::Type subType ) /HoldGIL,Deprecated/;
 %Docstring
 If the field is a collection, set its element's type.
 When all the elements don't need to have the same type, set this to

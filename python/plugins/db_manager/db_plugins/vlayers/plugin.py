@@ -22,12 +22,7 @@ from .connector import VLayerConnector
 
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtGui import QIcon
-from qgis.core import (
-    QgsApplication,
-    QgsVectorLayer,
-    QgsProject,
-    QgsVirtualLayerDefinition,
-)
+from qgis.core import QgsApplication, QgsVectorLayer, QgsProject, QgsVirtualLayerDefinition
 
 from ..plugin import DBPlugin, Database, Table, VectorTable, TableField
 
@@ -47,25 +42,23 @@ class VLayerDBPlugin(DBPlugin):
 
     @classmethod
     def typeName(self):
-        return "vlayers"
+        return 'vlayers'
 
     @classmethod
     def typeNameString(self):
-        return QCoreApplication.translate("db_manager", "Virtual Layers")
+        return QCoreApplication.translate('db_manager', 'Virtual Layers')
 
     @classmethod
     def providerName(self):
-        return "virtual"
+        return 'virtual'
 
     @classmethod
     def connectionSettingsKey(self):
-        return "vlayers"
+        return 'vlayers'
 
     @classmethod
     def connections(self):
-        return [
-            VLayerDBPlugin(QCoreApplication.translate("db_manager", "Project layers"))
-        ]
+        return [VLayerDBPlugin(QCoreApplication.translate('db_manager', 'Project layers'))]
 
     def databasesFactory(self, connection, uri):
         return FakeDatabase(connection, uri)
@@ -99,29 +92,17 @@ class FakeDatabase(Database):
 
     def info(self):
         from .info_model import LDatabaseInfo
-
         return LDatabaseInfo(self)
 
     def sqlResultModel(self, sql, parent):
         from .data_model import LSqlResultModel
-
         return LSqlResultModel(self, sql, parent)
 
     def sqlResultModelAsync(self, sql, parent):
         from .data_model import LSqlResultModelAsync
-
         return LSqlResultModelAsync(self, sql, parent)
 
-    def toSqlLayer(
-        self,
-        sql,
-        geomCol,
-        uniqueCol,
-        layerName="QueryLayer",
-        layerType=None,
-        avoidSelectById=False,
-        _filter="",
-    ):
+    def toSqlLayer(self, sql, geomCol, uniqueCol, layerName="QueryLayer", layerType=None, avoidSelectById=False, _filter=""):
         df = QgsVirtualLayerDefinition()
         df.setQuery(sql)
         if uniqueCol is not None:
@@ -147,9 +128,7 @@ class FakeDatabase(Database):
         return True
 
     def spatialIndexClause(self, src_table, src_column, dest_table, dest_column):
-        return '"{}"._search_frame_ = "{}"."{}"'.format(
-            src_table, dest_table, dest_column
-        )
+        return '"%s"._search_frame_ = "%s"."%s"' % (src_table, dest_table, dest_column)
 
     def supportsComment(self):
         return False
@@ -166,7 +145,6 @@ class LTable(Table):
 
     def tableDataModel(self, parent):
         from .data_model import LTableDataModel
-
         return LTableDataModel(self, parent)
 
     def canBeAddedToCanvas(self):
@@ -181,13 +159,12 @@ class LVectorTable(LTable, VectorTable):
         # SpatiaLite does case-insensitive checks for table names, but the
         # SL provider didn't do the same in QGIS < 1.9, so self.geomTableName
         # stores the table name like stored in the geometry_columns table
-        self.geomTableName, self.geomColumn, self.geomType, self.geomDim, self.srid = (
-            row[-5:]
-        )
+        self.geomTableName, self.geomColumn, self.geomType, self.geomDim, self.srid = row[
+            -5:]
 
     def uri(self):
         uri = self.database().uri()
-        uri.setDataSource("", self.geomTableName, self.geomColumn)
+        uri.setDataSource('', self.geomTableName, self.geomColumn)
         return uri
 
     def hasSpatialIndex(self, geom_column=None):
@@ -201,8 +178,7 @@ class LVectorTable(LTable, VectorTable):
 
     def refreshTableEstimatedExtent(self):
         self.extent = self.database().connector.getTableExtent(
-            ("id", self.geomTableName), None
-        )
+            ("id", self.geomTableName), None)
 
     def runAction(self, action):
         return
@@ -215,12 +191,5 @@ class LTableField(TableField):
 
     def __init__(self, row, table):
         TableField.__init__(self, table)
-        (
-            self.num,
-            self.name,
-            self.dataType,
-            self.notNull,
-            self.default,
-            self.primaryKey,
-        ) = row
+        self.num, self.name, self.dataType, self.notNull, self.default, self.primaryKey = row
         self.hasDefault = self.default

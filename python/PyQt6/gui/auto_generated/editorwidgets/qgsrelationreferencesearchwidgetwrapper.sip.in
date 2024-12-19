@@ -22,6 +22,7 @@ Wraps a relation reference search widget.
 #include "qgsrelationreferencesearchwidgetwrapper.h"
 %End
   public:
+
     explicit QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QgsMapCanvas *canvas, QWidget *parent = 0 );
 %Docstring
 Constructor for QgsRelationReferenceSearchWidgetWrapper
@@ -69,7 +70,7 @@ Returns the default flags (equalTo)
 
   public slots:
 
- void onValueChanged( const QVariant &value ) /Deprecated="Since 3.10. Made private."/;
+ void onValueChanged( const QVariant &value ) /Deprecated/;
 %Docstring
 Called when current value of search widget changes
 

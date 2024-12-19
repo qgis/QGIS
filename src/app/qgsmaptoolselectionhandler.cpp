@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmaptoolselectionhandler.h"
-#include "moc_qgsmaptoolselectionhandler.cpp"
 
 #include <QBoxLayout>
 #include <QKeyEvent>
@@ -57,7 +56,7 @@ QgsDistanceWidget::QgsDistanceWidget( const QString &label, QWidget *parent )
 
   // connect signals
   mDistanceSpinBox->installEventFilter( this );
-  connect( mDistanceSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsDistanceWidget::distanceChanged );
+  connect( mDistanceSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsDistanceWidget::distanceChanged );
 
   // config focus
   setFocusProxy( mDistanceSpinBox );
@@ -97,10 +96,11 @@ bool QgsDistanceWidget::eventFilter( QObject *obj, QEvent *ev )
 /// @endcond
 
 
+
 QgsMapToolSelectionHandler::QgsMapToolSelectionHandler( QgsMapCanvas *canvas, QgsMapToolSelectionHandler::SelectionMode selectionMode )
   : mCanvas( canvas )
   , mSelectionMode( selectionMode )
-  , mSnapIndicator( std::make_unique<QgsSnapIndicator>( canvas ) )
+  , mSnapIndicator( std::make_unique< QgsSnapIndicator >( canvas ) )
   , mIdentifyMenu( new QgsIdentifyMenu( mCanvas ) )
 {
   mIdentifyMenu->setAllowMultipleReturn( false );
@@ -195,6 +195,7 @@ void QgsMapToolSelectionHandler::selectFeaturesPressEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolSelectionHandler::selectFeaturesMoveEvent( QgsMapMouseEvent *e )
 {
+
   if ( mSelectionMode == QgsMapToolSelectionHandler::SelectOnMouseOver && mCanvas->underMouse() )
   {
     mMoveLastCursorPos = e->pos();
@@ -202,13 +203,14 @@ void QgsMapToolSelectionHandler::selectFeaturesMoveEvent( QgsMapMouseEvent *e )
     // I tried all possible NOLINT placements without success, this
     // ugly ifdef seems to do the trick with silencing the warning.
 #ifndef __clang_analyzer__
-    if ( !mOnMouseMoveDelayTimer || !mOnMouseMoveDelayTimer->isActive() )
+    if ( ! mOnMouseMoveDelayTimer || ! mOnMouseMoveDelayTimer->isActive() )
     {
       setSelectedGeometry( QgsGeometry::fromPointXY( toMapCoordinates( e->pos() ) ), e->modifiers() );
-      mOnMouseMoveDelayTimer = std::make_unique<QTimer>();
+      mOnMouseMoveDelayTimer = std::make_unique<QTimer>( );
       mOnMouseMoveDelayTimer->setSingleShot( true );
-      connect( mOnMouseMoveDelayTimer.get(), &QTimer::timeout, this, [=] {
-        if ( !mMoveLastCursorPos.isNull() )
+      connect( mOnMouseMoveDelayTimer.get(), &QTimer::timeout, this, [ = ]
+      {
+        if ( ! mMoveLastCursorPos.isNull() )
         {
           setSelectedGeometry( QgsGeometry::fromPointXY( toMapCoordinates( mMoveLastCursorPos ) ), e->modifiers() );
         }
@@ -465,7 +467,8 @@ void QgsMapToolSelectionHandler::updateRadiusRubberband( double radius )
   for ( int i = 0; i <= RADIUS_SEGMENTS; ++i )
   {
     const double theta = i * ( 2.0 * M_PI / RADIUS_SEGMENTS );
-    const QgsPointXY radiusPoint( mRadiusCenter.x() + radius * std::cos( theta ), mRadiusCenter.y() + radius * std::sin( theta ) );
+    const QgsPointXY radiusPoint( mRadiusCenter.x() + radius * std::cos( theta ),
+                                  mRadiusCenter.y() + radius * std::sin( theta ) );
     mSelectionRubberBand->addPoint( radiusPoint, false );
   }
   mSelectionRubberBand->closePoints( true );

@@ -125,8 +125,7 @@ class QgsRuleBasedChunkedEntity : public QgsChunkedEntity
 
     ~QgsRuleBasedChunkedEntity();
   private slots:
-    void onTerrainElevationOffsetChanged();
-
+    void onTerrainElevationOffsetChanged( float newOffset );
   private:
     Qt3DCore::QTransform *mTransform = nullptr;
 

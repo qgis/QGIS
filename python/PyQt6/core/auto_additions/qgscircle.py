@@ -9,5 +9,5 @@ try:
     QgsCircle.fromExtent = staticmethod(QgsCircle.fromExtent)
     QgsCircle.minimalCircleFrom3Points = staticmethod(QgsCircle.minimalCircleFrom3Points)
     QgsCircle.__group__ = ['geometry']
-except (NameError, AttributeError):
+except NameError:
     pass

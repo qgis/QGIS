@@ -29,6 +29,7 @@ class QgsAnnotationItemPropertiesWidget : public QgsMapLayerConfigWidget, public
 {
     Q_OBJECT
   public:
+
     QgsAnnotationItemPropertiesWidget( QgsAnnotationLayer *layer, QgsMapCanvas *canvas, QWidget *parent );
     ~QgsAnnotationItemPropertiesWidget() override;
 
@@ -44,16 +45,17 @@ class QgsAnnotationItemPropertiesWidget : public QgsMapLayerConfigWidget, public
 
     void onChanged();
     void onLayerPropertyChanged();
-
   private:
+
     void setItemId( const QString &itemId );
 
-    QPointer<QgsAnnotationLayer> mLayer;
-    QPointer<QgsAnnotationItemBaseWidget> mItemWidget;
+    QPointer< QgsAnnotationLayer > mLayer;
+    QPointer< QgsAnnotationItemBaseWidget > mItemWidget;
     QWidget *mPageNoItem = nullptr;
     bool mBlockLayerUpdates = false;
 
-    std::unique_ptr<QgsPaintEffect> mPaintEffect;
+    std::unique_ptr< QgsPaintEffect > mPaintEffect;
+
 };
 
 
@@ -68,6 +70,7 @@ class QgsAnnotationItemPropertiesWidgetFactory : public QObject, public QgsMapLa
     bool supportsStyleDock() const override;
     bool supportsLayer( QgsMapLayer *layer ) const override;
 };
+
 
 
 #endif // QGSANNOTATIONITEMPROPERTIESWIDGET_H

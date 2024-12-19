@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsmessagebar.h"
-#include "moc_qgsmessagebar.cpp"
 #include "qgsmessagebaritem.h"
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
@@ -86,8 +85,7 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mCloseBtn->setMinimumWidth( QgsGuiUtils::scaleIconSize( 44 ) );
   mCloseBtn->setStyleSheet(
     "QToolButton { border:none; background-color: rgba(0, 0, 0, 0); }"
-    "QToolButton::menu-button { border:none; background-color: rgba(0, 0, 0, 0); }"
-  );
+    "QToolButton::menu-button { border:none; background-color: rgba(0, 0, 0, 0); }" );
   mCloseBtn->setCursor( Qt::PointingHandCursor );
   mCloseBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClose.svg" ) ) );
 
@@ -96,7 +94,7 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mCloseBtn->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum );
   mCloseBtn->setMenu( mCloseMenu );
   mCloseBtn->setPopupMode( QToolButton::MenuButtonPopup );
-  connect( mCloseBtn, &QAbstractButton::clicked, this, static_cast<bool ( QgsMessageBar::* )()>( &QgsMessageBar::popWidget ) );
+  connect( mCloseBtn, &QAbstractButton::clicked, this, static_cast < bool ( QgsMessageBar::* )() > ( &QgsMessageBar::popWidget ) );
   mLayout->addWidget( mCloseBtn, 0, 3, 1, 1 );
 
   mCountdownTimer = new QTimer( this );
@@ -374,8 +372,7 @@ void QgsMessageBar::pushMessage( const QString &title, const QString &text, cons
     text,
     showMoreButton,
     level,
-    duration
-  );
+    duration );
   pushItem( item );
 }
 

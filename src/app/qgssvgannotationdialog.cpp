@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgssvgannotationdialog.h"
-#include "moc_qgssvgannotationdialog.cpp"
 #include "qgsannotationwidget.h"
 #include "qgssvgannotation.h"
 #include "qgsmapcanvasannotationitem.h"
@@ -53,7 +52,7 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item
 
   if ( mItem && mItem->annotation() )
   {
-    QgsSvgAnnotation *annotation = static_cast<QgsSvgAnnotation *>( mItem->annotation() );
+    QgsSvgAnnotation *annotation = static_cast< QgsSvgAnnotation * >( mItem->annotation() );
     mFileLineEdit->setText( annotation->filePath() );
   }
 
@@ -99,11 +98,12 @@ void QgsSvgAnnotationDialog::applySettingsToItem()
   {
     if ( !mFileLineEdit->text().isEmpty() )
     {
-      QgsSvgAnnotation *annotation = static_cast<QgsSvgAnnotation *>( mItem->annotation() );
+      QgsSvgAnnotation *annotation = static_cast< QgsSvgAnnotation * >( mItem->annotation() );
       annotation->setFilePath( mFileLineEdit->text() );
       mItem->update();
     }
   }
+
 }
 
 void QgsSvgAnnotationDialog::deleteItem()

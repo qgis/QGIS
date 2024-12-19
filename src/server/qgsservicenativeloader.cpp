@@ -38,6 +38,7 @@ typedef void unloadHook_t( QgsServiceModule * );
 class QgsServiceNativeModuleEntry
 {
   public:
+
     /**
      * Constructor for QgsServiceNativeModuleEntry.
      * \param location Relative path of the module
@@ -51,13 +52,14 @@ class QgsServiceNativeModuleEntry
     unloadHook_t *mUnloadHook = nullptr;
 };
 
-void QgsServiceNativeLoader::loadModules( const QString &modulePath, QgsServiceRegistry &registrar, QgsServerInterface *serverIface )
+void QgsServiceNativeLoader::loadModules( const QString &modulePath, QgsServiceRegistry &registrar,
+    QgsServerInterface *serverIface )
 {
   QDir moduleDir( modulePath );
   moduleDir.setSorting( QDir::Name | QDir::IgnoreCase );
   moduleDir.setFilter( QDir::Files );
 
-#if defined( Q_OS_WIN ) || defined( __CYGWIN__ )
+#if defined(Q_OS_WIN) || defined(__CYGWIN__)
   moduleDir.setNameFilters( QStringList( "*.dll" ) );
 #else
   moduleDir.setNameFilters( QStringList( "*.so" ) );
@@ -98,8 +100,7 @@ QgsServiceModule *QgsServiceNativeLoader::loadNativeModule( const QString &locat
   }
   // Load entry point
   serviceEntryPoint_t *
-    entryPointFunc
-    = reinterpret_cast<serviceEntryPoint_t *>( cast_to_fptr( lib.resolve( "QGS_ServiceModule_Init" ) ) );
+  entryPointFunc = reinterpret_cast<serviceEntryPoint_t *>( cast_to_fptr( lib.resolve( "QGS_ServiceModule_Init" ) ) );
 
   if ( entryPointFunc )
   {
@@ -107,7 +108,7 @@ QgsServiceModule *QgsServiceNativeLoader::loadNativeModule( const QString &locat
     if ( module )
     {
       entry = new QgsServiceNativeModuleEntry( location );
-      entry->mModule = module;
+      entry->mModule     = module;
       entry->mUnloadHook = reinterpret_cast<unloadHook_t *>( cast_to_fptr( lib.resolve( "QGS_ServiceModule_Exit" ) ) );
 
       // Add entry
@@ -131,7 +132,7 @@ QgsServiceModule *QgsServiceNativeLoader::loadNativeModule( const QString &locat
 
 void QgsServiceNativeLoader::unloadModules()
 {
-  ModuleTable::iterator it = mModules.begin();
+  ModuleTable::iterator it  = mModules.begin();
   const ModuleTable::iterator end = mModules.end();
 
   while ( it != end )

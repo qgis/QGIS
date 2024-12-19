@@ -31,14 +31,14 @@ class TestQgsCompoundColorWidget : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsCompoundColorWidget()
-      : QgsTest( QStringLiteral( "Compound color widget Tests" ) ) {}
+
+    TestQgsCompoundColorWidget() : QgsTest( QStringLiteral( "Compound color widget Tests" ) ) {}
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init();// will be called before each testfunction is executed.
+    void cleanup();// will be called after every testfunction.
     void testCmykConversion();
     void testComponentChange();
     void testComponentSettings_data();
@@ -105,7 +105,7 @@ void TestQgsCompoundColorWidget::testCmykConversion()
   QCOMPARE( w.color(), QColor::fromCmyk( 120, 85, 0, 225, 50 ) );
 
   // edit color in RGB, the returned color is still CMYK
-  w.mColorWheel->setColor( QColor( 10, 20, 30, 50 ), true );
+  w.mColorWheel->setColor( QColor( 10, 20, 30, 50 ),  true );
   QCOMPARE( w.color(), QColor::fromCmyk( 170, 85, 0, 225, 50 ) );
 }
 
@@ -135,9 +135,11 @@ void TestQgsCompoundColorWidget::testComponentSettings()
   QFETCH( QgsColorWidget::ColorComponent, newComponent );
   QFETCH( int, newSettingsComponent );
 
-  QgsSettings().setValue( QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ? QStringLiteral( "Windows/ColorDialog/activeCmykComponent" ) : QStringLiteral( "Windows/ColorDialog/activeComponent" ), settingsComponent );
+  QgsSettings().setValue( QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ?
+                          QStringLiteral( "Windows/ColorDialog/activeCmykComponent" ) : QStringLiteral( "Windows/ColorDialog/activeComponent" ), settingsComponent );
 
-  QgsCompoundColorWidget w( nullptr, QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ? QColor::fromCmyk( 1, 2, 3, 4 ) : QColor( 10, 20, 30, 50 ) );
+  QgsCompoundColorWidget w( nullptr, QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ?
+                            QColor::fromCmyk( 1, 2, 3, 4 ) : QColor( 10, 20, 30, 50 ) );
   w.setVisible( true );
 
   QCOMPARE( w.mColorBox->component(), expectedComponent );
@@ -148,7 +150,8 @@ void TestQgsCompoundColorWidget::testComponentSettings()
   QCOMPARE( w.mVerticalRamp->component(), newComponent );
 
   w.saveSettings();
-  const int newValue = QgsSettings().value( QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ? QStringLiteral( "Windows/ColorDialog/activeCmykComponent" ) : QStringLiteral( "Windows/ColorDialog/activeComponent" ), -1 ).toInt();
+  const int newValue = QgsSettings().value( QgsColorWidget::colorSpec( expectedComponent ) == QColor::Cmyk ?
+                       QStringLiteral( "Windows/ColorDialog/activeCmykComponent" ) : QStringLiteral( "Windows/ColorDialog/activeComponent" ), -1 ).toInt();
   QCOMPARE( newValue, newSettingsComponent );
 }
 
@@ -160,9 +163,10 @@ void TestQgsCompoundColorWidget::testComponentChange()
   w.setVisible( true );
 
   QCOMPARE( w.mColorBox->component(), QgsColorWidget::Red );
-  QCOMPARE( w.mVerticalRamp->component(), QgsColorWidget::Red );
+  QCOMPARE( w.mVerticalRamp->component(),  QgsColorWidget::Red );
 
-  const QList<QPair<QRadioButton *, QgsColorWidget::ColorComponent>> colors = {
+  const QList<QPair<QRadioButton *, QgsColorWidget::ColorComponent>> colors =
+  {
     { w.mHueRadio, QgsColorWidget::Hue },
     { w.mSaturationRadio, QgsColorWidget::Saturation },
     { w.mValueRadio, QgsColorWidget::Value },
@@ -182,7 +186,7 @@ void TestQgsCompoundColorWidget::testComponentChange()
 
     color.first->setChecked( true );
     QCOMPARE( w.mColorBox->component(), color.second );
-    QCOMPARE( w.mVerticalRamp->component(), color.second );
+    QCOMPARE( w.mVerticalRamp->component(),  color.second );
   }
 }
 

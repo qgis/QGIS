@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsvectorlayerjoinbuffer.h"
-#include "moc_qgsvectorlayerjoinbuffer.cpp"
 
 #include "qgsfeatureiterator.h"
 #include "qgslogger.h"

@@ -18,6 +18,7 @@ Layout view tool for temporarily zooming a layout while a key is depressed.
 #include "qgslayoutviewtooltemporarykeyzoom.h"
 %End
   public:
+
     QgsLayoutViewToolTemporaryKeyZoom( QgsLayoutView *view /TransferThis/ );
 %Docstring
 Constructor for QgsLayoutViewToolTemporaryKeyZoom.

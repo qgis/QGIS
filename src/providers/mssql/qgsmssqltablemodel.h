@@ -24,16 +24,16 @@
 //! Layer Property structure
 struct QgsMssqlLayerProperty
 {
-    // MSSQL layer properties
-    QString type;
-    QString schemaName;
-    QString tableName;
-    QString geometryColName;
-    QStringList pkCols;
-    QString srid;
-    bool isGeography;
-    QString sql;
-    bool isView;
+  // MSSQL layer properties
+  QString     type;
+  QString     schemaName;
+  QString     tableName;
+  QString     geometryColName;
+  QStringList pkCols;
+  QString     srid;
+  bool        isGeography;
+  QString     sql;
+  bool        isView;
 };
 
 

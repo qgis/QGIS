@@ -22,6 +22,7 @@ output from/to a wms request mechanism.
 #include "qgsrequesthandler.h"
 %End
   public:
+
     explicit QgsRequestHandler( QgsServerRequest &request, QgsServerResponse &response );
 %Docstring
 Constructor

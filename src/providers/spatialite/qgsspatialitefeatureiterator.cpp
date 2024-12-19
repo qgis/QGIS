@@ -31,8 +31,9 @@
 QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeatureSource *source, bool ownSource, const QgsFeatureRequest &request )
   : QgsAbstractFeatureIteratorFromSource<QgsSpatiaLiteFeatureSource>( source, ownSource, request )
 {
+
   mSqliteHandle = source->transactionHandle();
-  if ( !mSqliteHandle )
+  if ( ! mSqliteHandle )
   {
     mHandle = QgsSpatiaLiteConnPool::instance()->acquireConnection( mSource->mSqlitePath, request.timeout(), request.requestMayBeNested() );
     if ( mHandle )
@@ -88,7 +89,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   {
     // some kind of MBR spatial filtering is required
     whereClause = whereClauseRect();
-    if ( !whereClause.isEmpty() )
+    if ( ! whereClause.isEmpty() )
     {
       whereClauses.append( whereClause );
     }
@@ -97,7 +98,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   if ( !mSource->mSubsetString.isEmpty() )
   {
     whereClause = "( " + mSource->mSubsetString + ')';
-    if ( !whereClause.isEmpty() )
+    if ( ! whereClause.isEmpty() )
     {
       whereClauses.append( whereClause );
     }
@@ -106,7 +107,7 @@ QgsSpatiaLiteFeatureIterator::QgsSpatiaLiteFeatureIterator( QgsSpatiaLiteFeature
   if ( request.filterType() == Qgis::FeatureRequestFilterType::Fid )
   {
     whereClause = whereClauseFid();
-    if ( !whereClause.isEmpty() )
+    if ( ! whereClause.isEmpty() )
     {
       whereClauses.append( whereClause );
     }
@@ -460,14 +461,18 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
       mbrFilter += QStringLiteral( "ymax >= %1" ).arg( qgsDoubleToString( mFilterRect.yMinimum() ) );
       QString idxName = QStringLiteral( "idx_%1_%2" ).arg( mSource->mIndexTable, mSource->mIndexGeometry );
       whereClause += QStringLiteral( "%1 IN (SELECT pkid FROM %2 WHERE %3)" )
-                       .arg( mSource->mViewBased ? quotedPrimaryKey() : QStringLiteral( "ROWID" ), QgsSqliteUtils::quotedIdentifier( idxName ), mbrFilter );
+                     .arg( mSource->mViewBased ? quotedPrimaryKey() : QStringLiteral( "ROWID" ),
+                           QgsSqliteUtils::quotedIdentifier( idxName ),
+                           mbrFilter );
     }
     else if ( mSource->mSpatialIndexMbrCache )
     {
       // using the MbrCache spatial index
       QString idxName = QStringLiteral( "cache_%1_%2" ).arg( mSource->mIndexTable, mSource->mIndexGeometry );
       whereClause += QStringLiteral( "%1 IN (SELECT rowid FROM %2 WHERE mbr = FilterMbrIntersects(%3))" )
-                       .arg( mSource->mViewBased ? quotedPrimaryKey() : QStringLiteral( "ROWID" ), QgsSqliteUtils::quotedIdentifier( idxName ), mbr( mFilterRect ) );
+                     .arg( mSource->mViewBased ? quotedPrimaryKey() : QStringLiteral( "ROWID" ),
+                           QgsSqliteUtils::quotedIdentifier( idxName ),
+                           mbr( mFilterRect ) );
     }
     else
     {
@@ -490,7 +495,10 @@ QString QgsSpatiaLiteFeatureIterator::whereClauseRect()
 QString QgsSpatiaLiteFeatureIterator::mbr( const QgsRectangle &rect )
 {
   return QStringLiteral( "%1, %2, %3, %4" )
-    .arg( qgsDoubleToString( rect.xMinimum() ), qgsDoubleToString( rect.yMinimum() ), qgsDoubleToString( rect.xMaximum() ), qgsDoubleToString( rect.yMaximum() ) );
+         .arg( qgsDoubleToString( rect.xMinimum() ),
+               qgsDoubleToString( rect.yMinimum() ),
+               qgsDoubleToString( rect.xMaximum() ),
+               qgsDoubleToString( rect.yMaximum() ) );
 }
 
 
@@ -498,7 +506,8 @@ QString QgsSpatiaLiteFeatureIterator::fieldName( const QgsField &fld )
 {
   QString fieldname = QgsSqliteUtils::quotedIdentifier( fld.name() );
   const QString type = fld.typeName().toLower();
-  if ( type.contains( QLatin1String( "geometry" ) ) || type.contains( QLatin1String( "point" ) ) || type.contains( QLatin1String( "line" ) ) || type.contains( QLatin1String( "polygon" ) ) )
+  if ( type.contains( QLatin1String( "geometry" ) ) || type.contains( QLatin1String( "point" ) ) ||
+       type.contains( QLatin1String( "line" ) ) || type.contains( QLatin1String( "polygon" ) ) )
   {
     fieldname = QStringLiteral( "AsText(%1)" ).arg( fieldname );
   }
@@ -619,7 +628,7 @@ QVariant QgsSpatiaLiteFeatureIterator::getFeatureAttribute( sqlite3_stmt *stmt, 
     {
       // assume arrays are stored as JSON
       QVariant result = QVariant( QgsJsonUtils::parseArray( txt, subType ) );
-      if ( !result.convert( static_cast<int>( type ) ) )
+      if ( ! result.convert( static_cast<int>( type ) ) )
       {
         QgsDebugMsgLevel( QStringLiteral( "Could not convert JSON value to requested QVariant type" ).arg( txt ), 3 );
       }
@@ -656,7 +665,7 @@ void QgsSpatiaLiteFeatureIterator::getFeatureGeometry( sqlite3_stmt *stmt, int i
     int geom_size = 0;
     const void *blob = sqlite3_column_blob( stmt, ic );
     int blob_size = sqlite3_column_bytes( stmt, ic );
-    QgsSpatiaLiteProvider::convertToGeosWKB( ( const unsigned char * ) blob, blob_size, &featureGeom, &geom_size );
+    QgsSpatiaLiteProvider::convertToGeosWKB( ( const unsigned char * )blob, blob_size, &featureGeom, &geom_size );
     if ( featureGeom )
     {
       QgsGeometry g;

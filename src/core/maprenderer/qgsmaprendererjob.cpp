@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmaprendererjob.h"
-#include "moc_qgsmaprendererjob.cpp"
 
 #include <QPainter>
 #include <QElapsedTimer>
@@ -50,7 +49,6 @@
 #include "qgsruntimeprofiler.h"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerlabeling.h"
-#include "qgsrasterlabeling.h"
 #include "qgsgeos.h"
 
 const QgsSettingsEntryBool *QgsMapRendererJob::settingsLogCanvasRefreshEvent = new QgsSettingsEntryBool( QStringLiteral( "logCanvasRefreshEvent" ), QgsSettingsTree::sTreeMap, false );
@@ -269,22 +267,13 @@ bool QgsMapRendererJob::prepareLabelCache() const
         break;
       }
 
-      case Qgis::LayerType::Raster:
-      {
-        QgsRasterLayer *l = qobject_cast< QgsRasterLayer *>( ml );
-        if ( l->labelsEnabled() && l->labeling()->requiresAdvancedEffects() )
-        {
-          canCache = false;
-        }
-        break;
-      }
-
       case Qgis::LayerType::VectorTile:
       {
         // TODO -- add detection of advanced labeling effects for vector tile layers
         break;
       }
 
+      case Qgis::LayerType::Raster:
       case Qgis::LayerType::Annotation:
       case Qgis::LayerType::Plugin:
       case Qgis::LayerType::PointCloud:

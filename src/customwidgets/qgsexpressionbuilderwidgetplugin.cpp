@@ -16,7 +16,6 @@
 #include "qgiscustomwidgets.h"
 #include "qgsexpressionbuilderwidget.h"
 #include "qgsexpressionbuilderwidgetplugin.h"
-#include "moc_qgsexpressionbuilderwidgetplugin.cpp"
 
 
 QgsExpressionBuilderWidgetPlugin::QgsExpressionBuilderWidgetPlugin( QObject *parent )
@@ -94,5 +93,5 @@ QString QgsExpressionBuilderWidgetPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-    .arg( name() );
+         .arg( name() );
 }

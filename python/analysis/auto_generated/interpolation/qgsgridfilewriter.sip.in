@@ -21,6 +21,7 @@ A class that does interpolation to a grid and writes the results to an ascii gri
 #include "qgsgridfilewriter.h"
 %End
   public:
+
     QgsGridFileWriter( QgsInterpolator *interpolator, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows );
 %Docstring
 Constructor for QgsGridFileWriter, for the specified ``interpolator``.

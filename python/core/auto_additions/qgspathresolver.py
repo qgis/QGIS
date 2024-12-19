@@ -4,5 +4,5 @@ try:
     QgsPathResolver.removePathPreprocessor = staticmethod(QgsPathResolver.removePathPreprocessor)
     QgsPathResolver.setPathWriter = staticmethod(QgsPathResolver.setPathWriter)
     QgsPathResolver.removePathWriter = staticmethod(QgsPathResolver.removePathWriter)
-except (NameError, AttributeError):
+except NameError:
     pass

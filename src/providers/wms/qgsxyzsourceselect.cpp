@@ -19,7 +19,6 @@
 #include "qgsgui.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsxyzsourceselect.h"
-#include "moc_qgsxyzsourceselect.cpp"
 #include "qgsxyzconnection.h"
 #include "qgsxyzconnectiondialog.h"
 #include "qgsowsconnection.h"
@@ -44,7 +43,8 @@ QgsXyzSourceSelect::QgsXyzSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
   mSourceContainerWidget->setLayout( hlayout );
 
   connect( mSourceWidget, &QgsProviderSourceWidget::validChanged, this, &QgsXyzSourceSelect::enableButtons );
-  connect( mSourceWidget, &QgsProviderSourceWidget::changed, this, [this] {
+  connect( mSourceWidget, &QgsProviderSourceWidget::changed, this, [this]
+  {
     if ( mBlockChanges )
       return;
 
@@ -101,7 +101,7 @@ void QgsXyzSourceSelect::btnEdit_clicked()
 void QgsXyzSourceSelect::btnDelete_clicked()
 {
   const QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
-                        .arg( cmbConnections->currentText() );
+                      .arg( cmbConnections->currentText() );
   if ( QMessageBox::Yes != QMessageBox::question( this, tr( "Confirm Delete" ), msg, QMessageBox::Yes | QMessageBox::No ) )
     return;
 
@@ -119,7 +119,8 @@ void QgsXyzSourceSelect::btnSave_clicked()
 
 void QgsXyzSourceSelect::btnLoad_clicked()
 {
-  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( this, tr( "Load Connections" ), QDir::homePath(),
+                           tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

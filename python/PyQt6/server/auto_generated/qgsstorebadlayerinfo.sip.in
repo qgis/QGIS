@@ -9,7 +9,7 @@
 
 
 
-class QgsStoreBadLayerInfo : QgsProjectBadLayerHandler
+class QgsStoreBadLayerInfo: QgsProjectBadLayerHandler
 {
 %Docstring(signature="appended")
 Stores layer ids of bad layers
@@ -21,6 +21,7 @@ Stores layer ids of bad layers
 #include "qgsstorebadlayerinfo.h"
 %End
   public:
+
     QgsStoreBadLayerInfo();
 %Docstring
 Default constructor

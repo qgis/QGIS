@@ -20,33 +20,20 @@
       <string>Export Options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="1" column="4">
-       <spacer name="horizontalSpacer_3">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="5" column="0" colspan="5">
-       <widget class="QCheckBox" name="mGenerateWorldFile">
-        <property name="toolTip">
-         <string>If checked, a separate world file which georeferences exported images will be created</string>
-        </property>
+      <item row="2" column="0" colspan="2">
+       <widget class="QLabel" name="label_13">
         <property name="text">
-         <string>Generate world file</string>
+         <string>Page height</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_10">
+      <item row="3" column="0" colspan="5">
+       <widget class="QCheckBox" name="mAntialiasingCheckBox">
+        <property name="toolTip">
+         <string>If unchecked, the generated images will not be antialiased</string>
+        </property>
         <property name="text">
-         <string>Page width</string>
+         <string>Enable antialiasing</string>
         </property>
        </widget>
       </item>
@@ -67,27 +54,33 @@
         <property name="maximum">
          <number>99999999</number>
         </property>
-        <property name="showClearButton" stdset="0">
+        <property name="showClearButton">
          <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="0" column="0" colspan="2">
-       <widget class="QLabel" name="label_9">
+      <item row="4" column="0" colspan="5">
+       <widget class="QCheckBox" name="mGenerateWorldFile">
+        <property name="toolTip">
+         <string>If checked, a separate world file which georeferences exported images will be created</string>
+        </property>
         <property name="text">
-         <string>Export resolution</string>
+         <string>Generate world file</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0" colspan="5">
-       <widget class="QCheckBox" name="mAntialiasingCheckBox">
-        <property name="toolTip">
-         <string>If unchecked, the generated images will not be antialiased</string>
+      <item row="1" column="4">
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
-        <property name="text">
-         <string>Enable antialiasing</string>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
         </property>
-       </widget>
+       </spacer>
       </item>
       <item row="0" column="2" colspan="2">
        <widget class="QgsSpinBox" name="mResolutionSpinBox">
@@ -100,15 +93,15 @@
         <property name="maximum">
          <number>3000</number>
         </property>
-        <property name="showClearButton" stdset="0">
+        <property name="showClearButton">
          <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QLabel" name="label_13">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_10">
         <property name="text">
-         <string>Page height</string>
+         <string>Page width</string>
         </property>
        </widget>
       </item>
@@ -129,47 +122,15 @@
         <property name="maximum">
          <number>99999999</number>
         </property>
-        <property name="showClearButton" stdset="0">
+        <property name="showClearButton">
          <bool>false</bool>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
-       <widget class="QLabel" name="mQualityLabel">
+      <item row="0" column="0" colspan="2">
+       <widget class="QLabel" name="label_9">
         <property name="text">
-         <string>Quality</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="2">
-       <widget class="QSlider" name="mQualitySlider">
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-        <property name="value">
-         <number>90</number>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="3">
-       <widget class="QSpinBox" name="mQualitySpinBox">
-        <property name="suffix">
-         <string>%</string>
-        </property>
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>100</number>
-        </property>
-        <property name="value">
-         <number>90</number>
+         <string>Export resolution</string>
         </property>
        </widget>
       </item>
@@ -369,8 +330,6 @@
   <tabstop>mResolutionSpinBox</tabstop>
   <tabstop>mWidthSpinBox</tabstop>
   <tabstop>mHeightSpinBox</tabstop>
-  <tabstop>mQualitySlider</tabstop>
-  <tabstop>mQualitySpinBox</tabstop>
   <tabstop>mAntialiasingCheckBox</tabstop>
   <tabstop>mGenerateWorldFile</tabstop>
   <tabstop>mClipToContentGroupBox</tabstop>
@@ -378,7 +337,6 @@
   <tabstop>mLeftMarginSpinBox</tabstop>
   <tabstop>mRightMarginSpinBox</tabstop>
   <tabstop>mBottomMarginSpinBox</tabstop>
-  <tabstop>mOpenAfterExportingCheckBox</tabstop>
  </tabstops>
  <resources/>
  <connections>

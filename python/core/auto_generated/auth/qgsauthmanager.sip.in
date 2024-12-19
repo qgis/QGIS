@@ -34,7 +34,7 @@ and to utilize configurations through various authentication method plugins
       CRITICAL
     };
 
- bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() ) /Deprecated="Since 3.36. Use setup() or ensureInitialized() instead."/;
+ bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() ) /Deprecated/;
 %Docstring
 init initialize QCA, prioritize qca-ossl plugin and optionally set up the authentication database
 
@@ -84,7 +84,7 @@ Returns the authentication configuration storage registry.
 .. versionadded:: 3.40
 %End
 
- QSqlDatabase authDatabaseConnection() const /Deprecated="Since 3.40. Direct access to the DB is not allowed, use QgsAuthConfigurationStorage API instead."/;
+ QSqlDatabase authDatabaseConnection() const /Deprecated/;
 %Docstring
 Sets up the application instance of the authentication database connection
 
@@ -93,7 +93,7 @@ Sets up the application instance of the authentication database connection
    Direct access to the DB is not allowed, use :py:class:`QgsAuthConfigurationStorage` API instead.
 %End
 
- const QString authDatabaseConfigTable() const /Deprecated="Since 3.40. Direct access to the DB is not allowed, use methodConfigTableName() instead."/;
+ const QString authDatabaseConfigTable() const /Deprecated/;
 %Docstring
 Name of the authentication database table that stores configs
 
@@ -110,7 +110,7 @@ or an empty string if none available. The table is prefixed with schema and esca
 .. versionadded:: 3.40
 %End
 
- const QString authDatabaseServersTable() const /Deprecated="Since 3.40. Direct access to the DB is not allowed, use QgsAuthConfigurationStorage API instead."/;
+ const QString authDatabaseServersTable() const /Deprecated/;
 %Docstring
 Name of the authentication database table that stores server exceptions/configs
 
@@ -829,7 +829,7 @@ Signals emitted on password helper success,
 mainly used in the tests to exit main application loop
 %End
 
- void messageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const /Deprecated="Since 3.40. Use messageLog() instead."/;
+ void messageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const /Deprecated/;
 %Docstring
 Custom logging signal to relay to console output and :py:class:`QgsMessageLog`
 
@@ -857,7 +857,7 @@ Custom logging signal to relay to console output and :py:class:`QgsMessageLog`
 .. versionadded:: 3.40
 %End
 
- void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) /Deprecated="Since 3.40. Use passwordHelperMessageLog() instead."/;
+ void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) /Deprecated/;
 %Docstring
 Custom logging signal to inform the user about master password <-> password manager interactions
 

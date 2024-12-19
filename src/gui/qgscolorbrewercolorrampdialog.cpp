@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgscolorbrewercolorrampdialog.h"
-#include "moc_qgscolorbrewercolorrampdialog.cpp"
 
 #include "qgscolorramp.h"
 #include "qgssymbollayerutils.h"
@@ -39,6 +38,7 @@ QgsColorBrewerColorRampWidget::QgsColorBrewerColorRampWidget( const QgsColorBrew
   : QgsPanelWidget( parent )
   , mRamp( ramp )
 {
+
   setupUi( this );
 
   const QSize iconSize( 50, 16 );

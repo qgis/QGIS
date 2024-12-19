@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgslegendpatchshapebutton.h"
-#include "moc_qgslegendpatchshapebutton.cpp"
 #include "qgslegendpatchshapewidget.h"
 #include "qgis.h"
 #include "qgsguiutils.h"
@@ -42,7 +41,7 @@ QgsLegendPatchShapeButton::QgsLegendPatchShapeButton( QWidget *parent, const QSt
 
   //make sure height of button looks good under different platforms
   QSize size = QToolButton::minimumSizeHint();
-  int fontHeight = static_cast<int>( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 2.0 );
+  int fontHeight = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 2.0 );
   mSizeHint = QSize( size.width(), std::max( size.height(), fontHeight ) );
 }
 
@@ -102,7 +101,8 @@ void QgsLegendPatchShapeButton::showSettingsDialog()
   if ( panel && panel->dockMode() )
   {
     QgsLegendPatchShapeWidget *widget = new QgsLegendPatchShapeWidget( this, mShape );
-    connect( widget, &QgsLegendPatchShapeWidget::changed, this, [=] {
+    connect( widget, &QgsLegendPatchShapeWidget::changed, this, [ = ]
+    {
       setShape( widget->shape() );
     } );
     widget->setPanelTitle( mDialogTitle );
@@ -193,7 +193,7 @@ void QgsLegendPatchShapeButton::prepareMenu()
 
   QAction *defaultAction = new QAction( tr( "Reset to Default" ), this );
   mMenu->addAction( defaultAction );
-  connect( defaultAction, &QAction::triggered, this, [=] { setToDefault(); emit changed(); } );
+  connect( defaultAction, &QAction::triggered, this, [ = ] { setToDefault(); emit changed(); } );
 
   mMenu->addSeparator();
 
@@ -210,7 +210,7 @@ void QgsLegendPatchShapeButton::prepareMenu()
         QIcon icon = QgsSymbolLayerUtils::symbolPreviewPixmap( symbol, QSize( iconSize, iconSize ), 1, nullptr, false, nullptr, &shape, QgsScreenProperties( screen() ) );
         QAction *action = new QAction( name, this );
         action->setIcon( icon );
-        connect( action, &QAction::triggered, this, [=] { loadPatchFromStyle( name ); } );
+        connect( action, &QAction::triggered, this, [ = ] { loadPatchFromStyle( name ); } );
         mMenu->addAction( action );
       }
     }
@@ -260,7 +260,8 @@ void QgsLegendPatchShapeButton::updatePreview()
       //calculate size of push button part of widget (ie, without the menu dropdown button part)
       QStyleOptionToolButton opt;
       initStyleOption( &opt );
-      QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton, this );
+      QRect buttonSize = QApplication::style()->subControlRect( QStyle::CC_ToolButton, &opt, QStyle::SC_ToolButton,
+                         this );
       //make sure height of icon looks good under different platforms
 #ifdef Q_OS_WIN
       mIconSize = QSize( buttonSize.width() - 10, height() - 6 );
@@ -293,8 +294,8 @@ void QgsLegendPatchShapeButton::updatePreview()
   // set tooltip
   // create very large preview image
 
-  int width = static_cast<int>( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
-  int height = static_cast<int>( width / 1.61803398875 ); // golden ratio
+  int width = static_cast< int >( Qgis::UI_SCALE_FACTOR * fontMetrics().horizontalAdvance( 'X' ) * 23 );
+  int height = static_cast< int >( width / 1.61803398875 ); // golden ratio
 
   QPixmap pm = QgsSymbolLayerUtils::symbolPreviewPixmap( mPreviewSymbol.get(), QSize( width, height ), height / 20, nullptr, false, nullptr, &mShape, QgsScreenProperties( screen() ) );
   QByteArray data;

@@ -48,5 +48,5 @@ QgsAttributeTableModel.CustomRole.baseClass = QgsAttributeTableModel
 try:
     QgsAttributeTableModel.__attribute_docs__ = {'modelChanged': 'Emitted when the model has been changed.\n', 'finished': 'Emitted when the model has completely loaded all features.\n'}
     QgsAttributeTableModel.__group__ = ['attributetable']
-except (NameError, AttributeError):
+except NameError:
     pass

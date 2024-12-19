@@ -52,6 +52,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 {
     Q_OBJECT
   public:
+
     static inline QgsSettingsTreeNode *sTreePluginManager = QgsSettingsTree::treeRoot()->createChildNode( QStringLiteral( "plugin-manager" ) );
 
     static const QgsSettingsEntryBool *settingsAutomaticallyCheckForPluginUpdates;
@@ -211,7 +212,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     void initTabDescriptions();
 
     //! Returns true if given plugin is enabled in QgsSettings
-    bool isPluginEnabled( const QString &key );
+    bool isPluginEnabled( QString key );
 
     //! Returns true if there are plugins available for download in the metadata registry
     bool hasAvailablePlugins();
@@ -245,7 +246,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
 
     QMap<QString, QString> mTabDescriptions;
 
-    QMap<QString, QMap<QString, QString>> mPlugins;
+    QMap< QString, QMap< QString, QString > > mPlugins;
 
     QString mCurrentlyDisplayedPlugin;
 

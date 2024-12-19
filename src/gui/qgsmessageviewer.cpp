@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsmessageviewer.h"
-#include "moc_qgsmessageviewer.cpp"
 #include "qgssettings.h"
 #include "qgsgui.h"
 

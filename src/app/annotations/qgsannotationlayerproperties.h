@@ -54,9 +54,10 @@ class APP_EXPORT QgsAnnotationLayerProperties : public QgsLayerPropertiesDialog,
 
     QPushButton *mBtnStyle = nullptr;
 
-    std::unique_ptr<QgsPaintEffect> mPaintEffect;
+    std::unique_ptr< QgsPaintEffect > mPaintEffect;
 
     QgsCoordinateReferenceSystem mBackupCrs;
+
 };
 
 #endif // QGSANNOTATIONLAYERPROPERTIES_H

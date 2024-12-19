@@ -20,14 +20,14 @@
 #include "qgssettings.h"
 #include "qgsproject.h"
 
-class TestQgsDatumTransformDialog : public QObject
+class TestQgsDatumTransformDialog: public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
+    void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void init(); // will be called before each testfunction is executed.
+    void cleanup(); // will be called after every testfunction.
 
     void defaultTransform();
     void fallback();
@@ -36,6 +36,7 @@ class TestQgsDatumTransformDialog : public QObject
     void runDialog();
 
   private:
+
 };
 
 void TestQgsDatumTransformDialog::initTestCase()
@@ -124,7 +125,7 @@ void TestQgsDatumTransformDialog::shouldAskUser()
   const QgsDatumTransformDialog dlg2( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:26742" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:7406" ) ) );
   QVERIFY( !dlg2.shouldAskUserForSelection() );
 
-  //prompts
+//prompts
   QgsSettings().setValue( QStringLiteral( "/projections/promptWhenMultipleTransformsExist" ), true, QgsSettings::App );
   const QgsDatumTransformDialog dlg3( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:26742" ) ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ) );
   QVERIFY( dlg3.shouldAskUserForSelection() );

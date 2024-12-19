@@ -38,10 +38,12 @@ class GUI_EXPORT QgsToolTipComboBox : public QComboBox
     Q_OBJECT
 
   public:
+
     //! Constructor for QgsToolTipComboBox.
     QgsToolTipComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     bool event( QEvent *event ) override;
+
 };
 
 #endif // QGSTOOLTIPCOMBOBOX_H

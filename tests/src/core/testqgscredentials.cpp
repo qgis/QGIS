@@ -20,6 +20,7 @@
 
 class TestCredentials : public QgsCredentials
 {
+
   public:
     TestCredentials( bool isInstance )
       : mExpectedRealm( QStringLiteral( "test_realm" ) )
@@ -55,12 +56,13 @@ class TestQgsCredentials : public QObject
     Q_OBJECT
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init() {}          // will be called before each testfunction is executed.
-    void cleanup() {}       // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
     void basic();
     void threadSafety();
+
 };
 
 
@@ -110,15 +112,15 @@ void TestQgsCredentials::basic()
 
 struct GetPutCredentials
 {
-    void operator()( int i )
-    {
-      QgsCredentials::instance()->put( QStringLiteral( "test_realm%1" ).arg( i ), QStringLiteral( "username" ), QStringLiteral( "password" ) );
-      QString user;
-      QString password;
-      QVERIFY( QgsCredentials::instance()->get( QStringLiteral( "test_realm%1" ).arg( i ), user, password ) );
-      QCOMPARE( user, QStringLiteral( "username" ) );
-      QCOMPARE( password, QStringLiteral( "password" ) );
-    }
+  void operator()( int i )
+  {
+    QgsCredentials::instance()->put( QStringLiteral( "test_realm%1" ).arg( i ), QStringLiteral( "username" ), QStringLiteral( "password" ) );
+    QString user;
+    QString password;
+    QVERIFY( QgsCredentials::instance()->get( QStringLiteral( "test_realm%1" ).arg( i ), user, password ) );
+    QCOMPARE( user, QStringLiteral( "username" ) );
+    QCOMPARE( password, QStringLiteral( "password" ) );
+  }
 };
 
 void TestQgsCredentials::threadSafety()
@@ -130,7 +132,7 @@ void TestQgsCredentials::threadSafety()
   t->mPassword = QStringLiteral( "pass" );
 
   // smash credentials rendering over multiple threads
-  QVector<int> list;
+  QVector< int > list;
   list.resize( 1000 );
   for ( int i = 0; i < list.size(); ++i )
     list[i] = i;

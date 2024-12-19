@@ -31,7 +31,9 @@
  */
 class QgsVirtualRasterCalculatorAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
+
     QgsVirtualRasterCalculatorAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmRasterCalculator.svg" ) ); }
@@ -46,14 +48,18 @@ class QgsVirtualRasterCalculatorAlgorithm : public QgsProcessingAlgorithm
     QgsVirtualRasterCalculatorAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
-    QList<QgsMapLayer *> mLayers;
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    QList< QgsMapLayer * > mLayers;
 };
 
 class QgsVirtualRasterCalculatorModelerAlgorithm : public QgsVirtualRasterCalculatorAlgorithm
 {
+
   public:
+
     QgsVirtualRasterCalculatorModelerAlgorithm() = default;
     Qgis::ProcessingAlgorithmFlags flags() const override;
     QString name() const override;
@@ -64,9 +70,11 @@ class QgsVirtualRasterCalculatorModelerAlgorithm : public QgsVirtualRasterCalcul
     QgsVirtualRasterCalculatorModelerAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
   private:
+
     /**
      * Generates Excel-like names from the number
      * A, B, C, …, Y, Z, AA, AB, AC, …, AZ, BA, BB, BC…

@@ -17,7 +17,6 @@
 
 #include "qgsapplication.h"
 #include "qgsdelattrdialog.h"
-#include "moc_qgsdelattrdialog.cpp"
 #include "qgsfields.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"

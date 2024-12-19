@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgstiledscenelayerstylewidget.h"
-#include "moc_qgstiledscenelayerstylewidget.cpp"
 #include "qgstiledscenerendererpropertieswidget.h"
 #include "qgsstyle.h"
 #include "qgsapplication.h"
@@ -30,7 +29,7 @@ QgsTiledSceneRendererWidgetFactory::QgsTiledSceneRendererWidgetFactory( QObject 
 
 QgsMapLayerConfigWidget *QgsTiledSceneRendererWidgetFactory::createWidget( QgsMapLayer *layer, QgsMapCanvas *, bool, QWidget *parent ) const
 {
-  return new QgsTiledSceneRendererPropertiesWidget( qobject_cast<QgsTiledSceneLayer *>( layer ), QgsStyle::defaultStyle(), parent );
+  return new QgsTiledSceneRendererPropertiesWidget( qobject_cast< QgsTiledSceneLayer * >( layer ), QgsStyle::defaultStyle(), parent );
 }
 
 bool QgsTiledSceneRendererWidgetFactory::supportLayerPropertiesDialog() const

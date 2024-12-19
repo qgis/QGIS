@@ -37,6 +37,7 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsConfigureShortcutsDialog.
      * \param parent parent widget
@@ -63,6 +64,7 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
     void showHelp();
 
   private:
+
     //! Populates the dialog with all actions from the manager
     void populateActions();
 
@@ -90,6 +92,7 @@ class GUI_EXPORT QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsCo
 
     bool mGettingShortcut = false;
     int mModifiers = 0, mKey = 0;
+
 };
 
 #endif //QGSCONFIGURESHORTCUTSDIALOG_H

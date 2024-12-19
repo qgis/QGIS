@@ -44,10 +44,11 @@ class QgsAbstractLayoutUndoCommand;
  * \note not available in Python bindings
  *
 */
-class GUI_EXPORT QgsLayoutMouseHandles : public QgsGraphicsViewMouseHandles
+class GUI_EXPORT QgsLayoutMouseHandles: public QgsGraphicsViewMouseHandles
 {
     Q_OBJECT
   public:
+
     QgsLayoutMouseHandles( QgsLayout *layout, QgsLayoutView *view );
 
     /**
@@ -65,14 +66,15 @@ class GUI_EXPORT QgsLayoutMouseHandles : public QgsGraphicsViewMouseHandles
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
 
   protected:
+
     void setViewportCursor( Qt::CursorShape cursor ) override;
     QList<QGraphicsItem *> sceneItemsAtPoint( QPointF scenePoint ) override;
     QList<QGraphicsItem *> selectedSceneItems( bool includeLockedItems = true ) const override;
     bool itemIsLocked( QGraphicsItem *item ) override;
     bool itemIsGroupMember( QGraphicsItem *item ) override;
     QRectF itemRect( QGraphicsItem *item ) const override;
-    void expandItemList( const QList<QGraphicsItem *> &items, QList<QGraphicsItem *> &collected ) const override;
-    void expandItemList( const QList<QgsLayoutItem *> &items, QList<QGraphicsItem *> &collected ) const;
+    void expandItemList( const QList< QGraphicsItem * > &items, QList< QGraphicsItem * > &collected ) const override;
+    void expandItemList( const QList< QgsLayoutItem * > &items, QList< QGraphicsItem * > &collected ) const;
     void moveItem( QGraphicsItem *item, double deltaX, double deltaY ) override;
     void setItemRect( QGraphicsItem *item, QRectF rect ) override;
     void showStatusMessage( const QString &message ) override;
@@ -82,24 +84,21 @@ class GUI_EXPORT QgsLayoutMouseHandles : public QgsGraphicsViewMouseHandles
     void endItemCommand( QGraphicsItem *item ) override;
     void startMacroCommand( const QString &text ) override;
     void endMacroCommand() override;
-
-
-    void mouseDoubleClickEvent( QGraphicsSceneMouseEvent *event ) override;
-
   public slots:
 
     //! Sets up listeners to sizeChanged signal for all selected items
     void selectionChanged();
 
   private:
+
     QgsLayout *mLayout = nullptr;
-    QPointer<QgsLayoutView> mView;
+    QPointer< QgsLayoutView > mView;
 
     //! Align snap lines
     QGraphicsLineItem *mHorizontalSnapLine = nullptr;
     QGraphicsLineItem *mVerticalSnapLine = nullptr;
 
-    std::unique_ptr<QgsAbstractLayoutUndoCommand> mItemCommand;
+    std::unique_ptr< QgsAbstractLayoutUndoCommand > mItemCommand;
 };
 
 ///@endcond PRIVATE

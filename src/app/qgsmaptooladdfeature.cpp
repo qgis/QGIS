@@ -14,14 +14,11 @@
  ***************************************************************************/
 
 #include "qgsmaptooladdfeature.h"
-#include "moc_qgsmaptooladdfeature.cpp"
 #include "qgsadvanceddigitizingdockwidget.h"
 #include "qgsexception.h"
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
-#include "qgssettingsentryimpl.h"
-#include "qgssettingsregistrycore.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgsfeatureaction.h"
@@ -33,6 +30,7 @@
 
 QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode )
   : QgsMapToolDigitizeFeature( canvas, cadDockWidget, mode )
+  , mCheckGeometryType( true )
 {
   setLayer( canvas->currentLayer() );
 
@@ -48,53 +46,31 @@ QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mo
 
 std::unique_ptr<QgsHighlight> QgsMapToolAddFeature::createHighlight( QgsVectorLayer *layer, const QgsFeature &f )
 {
-  std::unique_ptr<QgsHighlight> highlight = std::make_unique<QgsHighlight>( mCanvas, f.geometry(), layer );
+  std::unique_ptr< QgsHighlight > highlight = std::make_unique< QgsHighlight >( mCanvas, f.geometry(), layer );
   highlight->applyDefaultStyle();
-
-  switch ( f.geometry().type() )
-  {
-    case Qgis::GeometryType::Point:
-    {
-      highlight->mPointSizeRadiusMM = 1.0;
-      highlight->mPointSymbol = QgsHighlight::PointSymbol::Circle;
-
-      break;
-    }
-
-    case Qgis::GeometryType::Polygon:
-    case Qgis::GeometryType::Line:
-    {
-      const double rubberbandWidth = QgsSettingsRegistryCore::settingsDigitizingLineWidth->value();
-
-      highlight->setWidth( static_cast<int>( rubberbandWidth ) + 1 );
-
-      break;
-    }
-    default:
-      break;
-  }
+  highlight->mPointSizeRadiusMM = 1.0;
+  highlight->mPointSymbol = QgsHighlight::PointSymbol::Circle;
   return highlight;
 };
 
 bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, const QgsFeature &f, bool showModal )
 {
   QgsFeature feat( f );
-  std::unique_ptr<QgsExpressionContextScope> scope( QgsExpressionContextUtils::mapToolCaptureScope( snappingMatches() ) );
+  std::unique_ptr< QgsExpressionContextScope > scope( QgsExpressionContextUtils::mapToolCaptureScope( snappingMatches() ) );
   QgsFeatureAction *action = new QgsFeatureAction( tr( "add feature" ), feat, vlayer, QUuid(), -1, this );
 
-  std::unique_ptr<QgsHighlight> highlight;
+  std::unique_ptr< QgsHighlight > highlight;
   if ( QgsRubberBand *rb = takeRubberBand() )
   {
     connect( action, &QgsFeatureAction::addFeatureFinished, rb, &QgsRubberBand::deleteLater );
   }
-
-  // create a highlight for all spatial layers to enable distinguishing features in case
-  // the user digitizes multiple features and has many pending attribute dialogs. This also
-  // ensures that tools which don't create a rubber band (ie those which digitize single points)
-  // still have a visible way of representing the captured geometry
-
-  if ( vlayer->isSpatial() )
+  else
+  {
+    // if we didn't get a rubber band, then create manually a highlight for the geometry. This ensures
+    // that tools which don't create a rubber band (ie those which digitize single points) still have
+    // a visible way of representing the captured geometry
     highlight = createHighlight( vlayer, f );
+  }
 
   const QgsFeatureAction::AddFeatureResult res = action->addFeature( QgsAttributeMap(), showModal, std::move( scope ), false, std::move( highlight ) );
   if ( showModal )
@@ -123,8 +99,10 @@ void QgsMapToolAddFeature::featureDigitized( const QgsFeature &feature )
     //add points to other features to keep topology up-to-date
     const bool topologicalEditing = QgsProject::instance()->topologicalEditing();
     const Qgis::AvoidIntersectionsMode avoidIntersectionsMode = QgsProject::instance()->avoidIntersectionsMode();
-    if ( topologicalEditing && avoidIntersectionsMode == Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers && ( mode() == CaptureLine || mode() == CapturePolygon ) )
+    if ( topologicalEditing && avoidIntersectionsMode == Qgis::AvoidIntersectionsMode::AvoidIntersectionsLayers &&
+         ( mode() == CaptureLine || mode() == CapturePolygon ) )
     {
+
       //use always topological editing for avoidIntersection.
       //Otherwise, no way to guarantee the geometries don't have a small gap in between.
       const QList<QgsVectorLayer *> intersectionLayers = QgsProject::instance()->avoidIntersectionsLayers();

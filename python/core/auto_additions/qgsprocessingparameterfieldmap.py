@@ -2,5 +2,5 @@
 try:
     QgsProcessingParameterFieldMapping.typeName = staticmethod(QgsProcessingParameterFieldMapping.typeName)
     QgsProcessingParameterFieldMapping.__group__ = ['processing']
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -22,8 +22,7 @@
 #include <gdal.h>
 
 #include "qgsogrutils.h"
-
-class QgsRasterBlock;
+#include "qgsrasterdataprovider.h"
 
 /**
  * \ingroup core
@@ -254,7 +253,7 @@ class CORE_EXPORT QgsGdalUtils
      *
      * \since QGIS 3.30
      */
-    static GDALResampleAlg gdalResamplingAlgorithm( Qgis::RasterResamplingMethod method );
+    static GDALResampleAlg gdalResamplingAlgorithm( QgsRasterDataProvider::ResamplingMethod method );
 
 #ifndef QT_NO_NETWORKPROXY
     //! Sets the gdal proxy variables

@@ -28,7 +28,7 @@
 #include "qgsgcptransformer.h"
 #endif
 
-#if defined( _MSC_VER )
+#if defined(_MSC_VER)
 #ifndef SIP_RUN
 template class QgsSettingsEnumEditorWidgetWrapper<QgsImageWarper::ResamplingMethod>;
 template class QgsSettingsEnumEditorWidgetWrapper<QgsGcpTransformerInterface::TransformMethod>;
@@ -39,6 +39,7 @@ template class QgsSettingsEnumEditorWidgetWrapper<QgsGcpTransformerInterface::Tr
 QgsSettingsRegistryApp::QgsSettingsRegistryApp()
   : QgsSettingsRegistry()
 {
+
 #ifdef HAVE_GEOREFERENCER
   QgsGui::instance()->settingsEditorWidgetRegistry()->addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsImageWarper::ResamplingMethod>() );
   QgsGui::instance()->settingsEditorWidgetRegistry()->addWrapper( new QgsSettingsEnumEditorWidgetWrapper<QgsGcpTransformerInterface::TransformMethod>() );

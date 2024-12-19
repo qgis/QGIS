@@ -32,7 +32,9 @@
  */
 class QgsMeanCoordinatesAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
+
     QgsMeanCoordinatesAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmMeanCoordinates.svg" ) ); }
@@ -46,9 +48,14 @@ class QgsMeanCoordinatesAlgorithm : public QgsProcessingAlgorithm
     QgsMeanCoordinatesAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMMEANCOORDINATES_H
+
+

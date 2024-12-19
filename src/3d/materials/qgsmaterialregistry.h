@@ -40,6 +40,7 @@ enum class QgsMaterialSettingsRenderingTechnique;
 class _3D_EXPORT QgsMaterialSettingsAbstractMetadata
 {
   public:
+
     /**
      * Constructor for QgsMaterialSettingsAbstractMetadata, with the specified \a type and \a visibleName.
      *
@@ -120,6 +121,7 @@ typedef bool ( *QgsMaterialSettingsSupportsTechniqueFunc )( QgsMaterialSettingsR
 class _3D_EXPORT QgsMaterialSettingsMetadata : public QgsMaterialSettingsAbstractMetadata
 {
   public:
+
     /**
      * Constructor for QgsMaterialSettingsMetadata, with the specified \a type and \a visibleName.
      *
@@ -128,7 +130,11 @@ class _3D_EXPORT QgsMaterialSettingsMetadata : public QgsMaterialSettingsAbstrac
      *
      * An optional \a icon can be specified to represent the material type.
      */
-    QgsMaterialSettingsMetadata( const QString &type, const QString &visibleName, QgsMaterialSettingsCreateFunc pfCreate, QgsMaterialSettingsSupportsTechniqueFunc pfSupportsTechnique, QgsMaterialSettingsWidgetFunc pfWidget = nullptr, const QIcon &icon = QIcon() )
+    QgsMaterialSettingsMetadata( const QString &type, const QString &visibleName,
+                                 QgsMaterialSettingsCreateFunc pfCreate,
+                                 QgsMaterialSettingsSupportsTechniqueFunc pfSupportsTechnique,
+                                 QgsMaterialSettingsWidgetFunc pfWidget = nullptr,
+                                 const QIcon &icon = QIcon() )
       : QgsMaterialSettingsAbstractMetadata( type, visibleName, icon )
       , mCreateFunc( pfCreate )
       , mSupportsTechniqueFunc( pfSupportsTechnique )
@@ -162,6 +168,7 @@ class _3D_EXPORT QgsMaterialSettingsMetadata : public QgsMaterialSettingsAbstrac
     QgsMaterialSettingsCreateFunc mCreateFunc;
     QgsMaterialSettingsSupportsTechniqueFunc mSupportsTechniqueFunc;
     QgsMaterialSettingsWidgetFunc mWidgetFunc;
+
 };
 #endif
 
@@ -178,6 +185,7 @@ class _3D_EXPORT QgsMaterialSettingsMetadata : public QgsMaterialSettingsAbstrac
 class _3D_EXPORT QgsMaterialRegistry
 {
   public:
+
     QgsMaterialRegistry();
     ~QgsMaterialRegistry();
 

@@ -42,8 +42,14 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
 {
     Q_OBJECT
   public:
+
     //! Constructor for QgsRelationReferenceWidgetWrapper
-    explicit QgsRelationReferenceWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent SIP_TRANSFERTHIS = nullptr );
+    explicit QgsRelationReferenceWidgetWrapper( QgsVectorLayer *vl,
+        int fieldIdx,
+        QWidget *editor,
+        QgsMapCanvas *canvas,
+        QgsMessageBar *messageBar,
+        QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     QWidget *createWidget( QWidget *parent ) override;
     void initWidget( QWidget *editor ) override;
@@ -72,6 +78,7 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
     QgsMessageBar *mMessageBar = nullptr;
     bool mIndeterminateState;
     int mBlockChanges = 0;
+
 };
 
 #endif // QGSRELATIONREFERENCEWIDGETWRAPPER_H

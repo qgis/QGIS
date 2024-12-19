@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgslayoutimageexportoptionsdialog.h"
-#include "moc_qgslayoutimageexportoptionsdialog.cpp"
 #include "qgis.h"
 #include "qgssettings.h"
 #include "qgsgui.h"
@@ -24,30 +23,17 @@
 
 #include <QCheckBox>
 #include <QPushButton>
-#include <QSpinBox>
-#include <QSlider>
 
-QgsLayoutImageExportOptionsDialog::QgsLayoutImageExportOptionsDialog( QWidget *parent, const QString &fileExtension, Qt::WindowFlags flags )
+QgsLayoutImageExportOptionsDialog::QgsLayoutImageExportOptionsDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
-  , mFileExtension( fileExtension )
 {
   setupUi( this );
-  connect( mWidthSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mWidthSpinBox_valueChanged );
-  connect( mHeightSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mHeightSpinBox_valueChanged );
-  connect( mResolutionSpinBox, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mResolutionSpinBox_valueChanged );
+  connect( mWidthSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mWidthSpinBox_valueChanged );
+  connect( mHeightSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mHeightSpinBox_valueChanged );
+  connect( mResolutionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutImageExportOptionsDialog::mResolutionSpinBox_valueChanged );
 
   connect( mClipToContentGroupBox, &QGroupBox::toggled, this, &QgsLayoutImageExportOptionsDialog::clipToContentsToggled );
   connect( mHelpButtonBox, &QDialogButtonBox::helpRequested, this, &QgsLayoutImageExportOptionsDialog::showHelp );
-
-  const bool showQuality = shouldShowQuality();
-  mQualitySpinBox->setVisible( showQuality );
-  mQualitySlider->setVisible( showQuality );
-  mQualityLabel->setVisible( showQuality );
-  mQualityLabel->setText( tr( "%1 quality", "Image format" ).arg( mFileExtension.toUpper() ) );
-
-  connect( mQualitySpinBox, qOverload<int>( &QSpinBox::valueChanged ), mQualitySlider, &QSlider::setValue );
-  connect( mQualitySlider, &QSlider::valueChanged, mQualitySpinBox, &QSpinBox::setValue );
-
   QgsGui::enableAutoGeometryRestore( this );
 }
 
@@ -156,20 +142,6 @@ void QgsLayoutImageExportOptionsDialog::setOpenAfterExporting( bool enabled )
   mOpenAfterExportingCheckBox->setChecked( enabled );
 }
 
-int QgsLayoutImageExportOptionsDialog::quality() const
-{
-  if ( !shouldShowQuality() )
-  {
-    return -1;
-  }
-  return mQualitySpinBox->value();
-}
-
-void QgsLayoutImageExportOptionsDialog::setQuality( int quality )
-{
-  mQualitySpinBox->setValue( quality );
-}
-
 void QgsLayoutImageExportOptionsDialog::mWidthSpinBox_valueChanged( int value )
 {
   mHeightSpinBox->blockSignals( true );
@@ -228,17 +200,4 @@ void QgsLayoutImageExportOptionsDialog::clipToContentsToggled( bool state )
 void QgsLayoutImageExportOptionsDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "print_composer/create_output.html" ) );
-}
-
-bool QgsLayoutImageExportOptionsDialog::shouldShowQuality() const
-{
-  const QStringList validExtensions = { "jpeg", "jpg" };
-  for ( const QString &ext : validExtensions )
-  {
-    if ( mFileExtension.toLower() == ext )
-    {
-      return true;
-    }
-  }
-  return false;
 }

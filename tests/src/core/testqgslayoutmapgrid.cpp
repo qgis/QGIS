@@ -31,39 +31,39 @@ class TestQgsLayoutMapGrid : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLayoutMapGrid()
-      : QgsTest( QStringLiteral( "Layout Map Grid Tests" ), QStringLiteral( "composer_mapgrid" ) ) {}
+
+    TestQgsLayoutMapGrid() : QgsTest( QStringLiteral( "Layout Map Grid Tests" ),  QStringLiteral( "composer_mapgrid" ) ) {}
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
 
-    void grid();                           //test if grid and grid annotation works
-    void reprojected();                    //test if reprojected grid works
-    void crossGrid();                      //test if grid "cross" mode works
-    void markerGrid();                     //test if grid "marker" mode works
-    void frameOnly();                      //test if grid "frame/annotation" mode works
-    void zebraStyle();                     //test zebra map border style
-    void zebraStyleSides();                //test zebra border on certain sides
-    void zebraStyleMargin();               //test zebra map border style
-    void zebraStyleNautical();             //test zebra map border style
-    void frameDivisions();                 //test filtering frame divisions
-    void annotationFilter();               //test filtering annotations
-    void interiorTicks();                  //test interior tick mode
-    void interiorTicksMargin();            //test interior tick mode
-    void interiorTicksAnnotated();         //test interior tick mode with annotations
-    void exteriorTicks();                  //test exterior tick mode
-    void exteriorTicksMargin();            //test exterior tick mode
-    void exteriorTicksAnnotated();         //test exterior tick mode with annotations
-    void interiorExteriorTicks();          //test interior & exterior tick mode
-    void interiorExteriorTicksMargin();    //test interior & exterior tick mode
+    void grid(); //test if grid and grid annotation works
+    void reprojected(); //test if reprojected grid works
+    void crossGrid(); //test if grid "cross" mode works
+    void markerGrid(); //test if grid "marker" mode works
+    void frameOnly(); //test if grid "frame/annotation" mode works
+    void zebraStyle(); //test zebra map border style
+    void zebraStyleSides(); //test zebra border on certain sides
+    void zebraStyleMargin(); //test zebra map border style
+    void zebraStyleNautical(); //test zebra map border style
+    void frameDivisions(); //test filtering frame divisions
+    void annotationFilter(); //test filtering annotations
+    void interiorTicks(); //test interior tick mode
+    void interiorTicksMargin(); //test interior tick mode
+    void interiorTicksAnnotated(); //test interior tick mode with annotations
+    void exteriorTicks(); //test exterior tick mode
+    void exteriorTicksMargin(); //test exterior tick mode
+    void exteriorTicksAnnotated(); //test exterior tick mode with annotations
+    void interiorExteriorTicks(); //test interior & exterior tick mode
+    void interiorExteriorTicksMargin(); //test interior & exterior tick mode
     void interiorExteriorTicksAnnotated(); //test interior & exterior tick mode with annotations
-    void lineBorder();                     //test line border frame mode
-    void lineBorderMargin();               //test line border frame mode
-    void lineBorderNautical();             //test line border frame mode
-    void lineBorderAnnotated();            //test line border frame with annotations
-    void annotationFormats();              //various tests for annotation formats
-    void descendingAnnotations();          //test descending annotation direction
+    void lineBorder(); //test line border frame mode
+    void lineBorderMargin(); //test line border frame mode
+    void lineBorderNautical(); //test line border frame mode
+    void lineBorderAnnotated(); //test line border frame with annotations
+    void annotationFormats(); //various tests for annotation formats
+    void descendingAnnotations(); //test descending annotation direction
 };
 
 void TestQgsLayoutMapGrid::initTestCase()
@@ -215,7 +215,7 @@ void TestQgsLayoutMapGrid::markerGrid()
   map->grid()->setIntervalY( 2000 );
   map->grid()->setGridLineWidth( 0.5 );
   map->grid()->setGridLineColor( QColor( 0, 0, 0 ) );
-  static_cast<QgsSimpleMarkerSymbolLayer *>( map->grid()->markerSymbol()->symbolLayer( 0 ) )->setStrokeColor( Qt::black );
+  static_cast< QgsSimpleMarkerSymbolLayer * >( map->grid()->markerSymbol()->symbolLayer( 0 ) )->setStrokeColor( Qt::black );
   map->updateBoundingRect();
   l.addLayoutItem( map );
 
@@ -361,6 +361,7 @@ void TestQgsLayoutMapGrid::zebraStyleSides()
 
   map->grid()->setFrameSideFlag( QgsLayoutItemMapGrid::FrameBottom, true );
   map->grid()->setFrameStyle( QgsLayoutItemMapGrid::NoFrame );
+
 }
 
 void TestQgsLayoutMapGrid::zebraStyleMargin()

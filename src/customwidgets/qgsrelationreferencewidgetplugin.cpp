@@ -15,7 +15,6 @@
 
 #include "qgiscustomwidgets.h"
 #include "qgsrelationreferencewidgetplugin.h"
-#include "moc_qgsrelationreferencewidgetplugin.cpp"
 #include "qgsrelationreferencewidget.h"
 
 
@@ -94,5 +93,5 @@ QString QgsRelationReferenceWidgetPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-    .arg( name() );
+         .arg( name() );
 }

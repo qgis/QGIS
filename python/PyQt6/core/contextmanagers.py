@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 """
 ***************************************************************************
     contextmanagers.py
@@ -15,9 +17,9 @@
 ***************************************************************************
 """
 
-__author__ = "Nathan Woodrow"
-__date__ = "May 2014"
-__copyright__ = "(C) 2014, Nathan Woodrow"
+__author__ = 'Nathan Woodrow'
+__date__ = 'May 2014'
+__copyright__ = '(C) 2014, Nathan Woodrow'
 
 import sys
 from contextlib import contextmanager

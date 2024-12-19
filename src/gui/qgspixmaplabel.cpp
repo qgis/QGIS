@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgspixmaplabel.h"
-#include "moc_qgspixmaplabel.cpp"
 
 
 QgsPixmapLabel::QgsPixmapLabel( QWidget *parent )
@@ -45,7 +44,7 @@ int QgsPixmapLabel::heightForWidth( int width ) const
   if ( mPixmap.isNull() )
     return 0;
 
-  return ( ( qreal ) mPixmap.height() * width ) / mPixmap.width();
+  return ( ( qreal )mPixmap.height() * width ) / mPixmap.width();
 }
 
 QSize QgsPixmapLabel::sizeHint() const

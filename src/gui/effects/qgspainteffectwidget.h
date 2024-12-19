@@ -41,8 +41,7 @@ class GUI_EXPORT QgsPaintEffectWidget : public QWidget
     Q_OBJECT
 
   public:
-    QgsPaintEffectWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr )
-      : QWidget( parent ) {}
+    QgsPaintEffectWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr ) : QWidget( parent ) {}
 
     /**
      * Sets the paint effect to modify with the widget
@@ -56,6 +55,7 @@ class GUI_EXPORT QgsPaintEffectWidget : public QWidget
      * Emitted when properties of the effect are changed through the widget
      */
     void changed();
+
 };
 
 //individual effect widgets
@@ -88,7 +88,9 @@ class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::
     void opacityChanged( double value );
     void mDrawModeComboBox_currentIndexChanged( int index );
     void mBlendCmbBx_currentIndexChanged( int index );
+
 };
+
 
 
 #include "ui_widget_blur.h"
@@ -122,7 +124,9 @@ class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::Widget
     void opacityChanged( double value );
     void mDrawModeComboBox_currentIndexChanged( int index );
     void mBlendCmbBx_currentIndexChanged( int index );
+
 };
+
 
 
 #include "ui_widget_shadoweffect.h"
@@ -196,6 +200,7 @@ class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::Widget
     void mBlurRadiusSpnBx_valueChanged( double value );
     void mBlurUnitWidget_changed();
     void applyColorRamp();
+
 };
 
 #include "ui_widget_transform.h"
@@ -234,6 +239,7 @@ class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::W
     void mSpinScaleX_valueChanged( double value );
     void mSpinScaleY_valueChanged( double value );
     void mRotationSpinBox_valueChanged( double value );
+
 };
 
 
@@ -273,7 +279,9 @@ class GUI_EXPORT QgsColorEffectWidget : public QgsPaintEffectWidget, private Ui:
     void mColorizeCheck_stateChanged( int state );
     void mColorizeColorButton_colorChanged( const QColor &color );
     void mGrayscaleCombo_currentIndexChanged( int index );
+
 };
+
 
 
 #endif //QGSPAINTEFFECTWIDGET_H

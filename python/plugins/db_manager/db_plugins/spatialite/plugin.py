@@ -27,17 +27,8 @@ from qgis.PyQt.QtWidgets import QApplication, QAction, QFileDialog
 from qgis.core import Qgis, QgsApplication, QgsDataSourceUri, QgsSettings
 from qgis.gui import QgsMessageBar
 
-from ..plugin import (
-    DBPlugin,
-    Database,
-    Table,
-    VectorTable,
-    RasterTable,
-    TableField,
-    TableIndex,
-    TableTrigger,
-    InvalidDataException,
-)
+from ..plugin import DBPlugin, Database, Table, VectorTable, RasterTable, TableField, TableIndex, TableTrigger, \
+    InvalidDataException
 
 
 def classFactory():
@@ -52,19 +43,19 @@ class SpatiaLiteDBPlugin(DBPlugin):
 
     @classmethod
     def typeName(self):
-        return "spatialite"
+        return 'spatialite'
 
     @classmethod
     def typeNameString(self):
-        return QCoreApplication.translate("db_manager", "SpatiaLite")
+        return QCoreApplication.translate('db_manager', 'SpatiaLite')
 
     @classmethod
     def providerName(self):
-        return "spatialite"
+        return 'spatialite'
 
     @classmethod
     def connectionSettingsKey(self):
-        return "/SpatiaLite/connections"
+        return '/SpatiaLite/connections'
 
     def databasesFactory(self, connection, uri):
         return SLDatabase(connection, uri)
@@ -72,14 +63,10 @@ class SpatiaLiteDBPlugin(DBPlugin):
     def connect(self, parent=None):
         conn_name = self.connectionName()
         settings = QgsSettings()
-        settings.beginGroup(f"/{self.connectionSettingsKey()}/{conn_name}")
+        settings.beginGroup("/%s/%s" % (self.connectionSettingsKey(), conn_name))
 
         if not settings.contains("sqlitepath"):  # non-existent entry?
-            raise InvalidDataException(
-                self.tr('There is no defined database connection "{0}".').format(
-                    conn_name
-                )
-            )
+            raise InvalidDataException(self.tr('There is no defined database connection "{0}".').format(conn_name))
 
         database = settings.value("sqlitepath")
 
@@ -90,7 +77,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
     @classmethod
     def addConnection(self, conn_name, uri):
         settings = QgsSettings()
-        settings.beginGroup(f"/{self.connectionSettingsKey()}/{conn_name}")
+        settings.beginGroup("/%s/%s" % (self.connectionSettingsKey(), conn_name))
         settings.setValue("sqlitepath", uri.database())
         return True
 
@@ -98,9 +85,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
     def addConnectionActionSlot(self, item, action, parent, index):
         QApplication.restoreOverrideCursor()
         try:
-            filename, selected_filter = QFileDialog.getOpenFileName(
-                parent, "Choose SQLite/SpatiaLite file"
-            )
+            filename, selected_filter = QFileDialog.getOpenFileName(parent, "Choose SQLite/SpatiaLite file")
             if not filename:
                 return
         finally:
@@ -147,9 +132,7 @@ class SLDatabase(Database):
 
     def registerDatabaseActions(self, mainWindow):
         action = QAction(self.tr("Run &Vacuum"), self)
-        mainWindow.registerAction(
-            action, self.tr("&Database"), self.runVacuumActionSlot
-        )
+        mainWindow.registerAction(action, self.tr("&Database"), self.runVacuumActionSlot)
 
         Database.registerDatabaseActions(self, mainWindow)
 
@@ -157,11 +140,8 @@ class SLDatabase(Database):
         QApplication.restoreOverrideCursor()
         try:
             if not isinstance(item, (DBPlugin, Table)) or item.database() is None:
-                parent.infoBar.pushMessage(
-                    self.tr("No database selected or you are not connected to it."),
-                    Qgis.MessageLevel.Info,
-                    parent.iface.messageTimeout(),
-                )
+                parent.infoBar.pushMessage(self.tr("No database selected or you are not connected to it."),
+                                           Qgis.MessageLevel.Info, parent.iface.messageTimeout())
                 return
         finally:
             QApplication.setOverrideCursor(Qt.CursorShape.WaitCursor)
@@ -190,9 +170,7 @@ class SLDatabase(Database):
         return True
 
     def spatialIndexClause(self, src_table, src_column, dest_table, dest_column):
-        return """ "{}".ROWID IN (\nSELECT ROWID FROM SpatialIndex WHERE f_table_name='{}' AND search_frame="{}"."{}") """.format(
-            src_table, src_table, dest_table, dest_column
-        )
+        return """ "%s".ROWID IN (\nSELECT ROWID FROM SpatialIndex WHERE f_table_name='%s' AND search_frame="%s"."%s") """ % (src_table, src_table, dest_table, dest_column)
 
     def supportsComment(self):
         return False
@@ -205,7 +183,7 @@ class SLTable(Table):
         self.name, self.isView, self.isSysTable = row
 
     def ogrUri(self):
-        ogrUri = f"{self.uri().database()}|layername={self.name}"
+        ogrUri = "%s|layername=%s" % (self.uri().database(), self.name)
         return ogrUri
 
     def mimeUri(self):
@@ -242,20 +220,16 @@ class SLVectorTable(SLTable, VectorTable):
         # SpatiaLite does case-insensitive checks for table names, but the
         # SL provider didn't do the same in QGIS < 1.9, so self.geomTableName
         # stores the table name like stored in the geometry_columns table
-        self.geomTableName, self.geomColumn, self.geomType, self.geomDim, self.srid = (
-            row[-5:]
-        )
+        self.geomTableName, self.geomColumn, self.geomType, self.geomDim, self.srid = row[-5:]
 
     def uri(self):
         uri = self.database().uri()
-        uri.setDataSource("", self.geomTableName, self.geomColumn)
+        uri.setDataSource('', self.geomTableName, self.geomColumn)
         return uri
 
     def hasSpatialIndex(self, geom_column=None):
         geom_column = geom_column if geom_column is not None else self.geomColumn
-        return self.database().connector.hasSpatialIndex(
-            (self.schemaName(), self.name), geom_column
-        )
+        return self.database().connector.hasSpatialIndex((self.schemaName(), self.name), geom_column)
 
     def createSpatialIndex(self, geom_column=None):
         self.aboutToChange.emit()
@@ -286,21 +260,19 @@ class SLRasterTable(SLTable, RasterTable):
         SLTable.__init__(self, row[:-3], db, schema)
         RasterTable.__init__(self, db, schema)
         self.prefixName, self.geomColumn, self.srid = row[-3:]
-        self.geomType = "RASTER"
+        self.geomType = 'RASTER'
 
         # def info(self):
         # from .info_model import SLRasterTableInfo
         # return SLRasterTableInfo(self)
 
     def rasterliteGdalUri(self):
-        gdalUri = "RASTERLITE:{},table={}".format(
-            self.uri().database(), self.prefixName
-        )
+        gdalUri = 'RASTERLITE:%s,table=%s' % (self.uri().database(), self.prefixName)
         return gdalUri
 
     def mimeUri(self):
         # QGIS has no provider to load rasters, let's use GDAL
-        uri = f"raster:gdal:{self.name}:{self.uri().database()}"
+        uri = "raster:gdal:%s:%s" % (self.name, self.uri().database())
         return uri
 
     def toMapLayer(self, geometryType=None, crs=None):
@@ -311,9 +283,7 @@ class SLRasterTable(SLTable, RasterTable):
 
         rl = QgsRasterLayer(uri, self.name)
         if rl.isValid():
-            rl.setContrastEnhancement(
-                QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum
-            )
+            rl.setContrastEnhancement(QgsContrastEnhancement.ContrastEnhancementAlgorithm.StretchToMinimumMaximum)
         return rl
 
 
@@ -321,14 +291,7 @@ class SLTableField(TableField):
 
     def __init__(self, row, table):
         TableField.__init__(self, table)
-        (
-            self.num,
-            self.name,
-            self.dataType,
-            self.notNull,
-            self.default,
-            self.primaryKey,
-        ) = row
+        self.num, self.name, self.dataType, self.notNull, self.default, self.primaryKey = row
         self.hasDefault = self.default
 
 

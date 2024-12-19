@@ -33,14 +33,15 @@ class QgsDevToolsModelGroup;
 class QgsDevToolsModelNode
 {
   public:
+
     //! Custom node data roles
     enum Roles
     {
       RoleStatus = Qt::UserRole + 1, //!< Request status role
-      RoleId,                        //!< Request ID role
-      RoleElapsedTime,               //!< Elapsed time
-      RoleMaximumTime,               //!< Maximum encountered elapsed time
-      RoleSort,                      //!< Sort order role
+      RoleId, //!< Request ID role
+      RoleElapsedTime, //!< Elapsed time
+      RoleMaximumTime, //!< Maximum encountered elapsed time
+      RoleSort, //!< Sort order role
     };
 
     virtual ~QgsDevToolsModelNode();
@@ -67,7 +68,7 @@ class QgsDevToolsModelNode
      *
      * The actions should be parented to \a parent.
      */
-    virtual QList<QAction *> actions( QObject *parent );
+    virtual QList< QAction * > actions( QObject *parent );
 
     /**
      * Converts the node's contents to a variant.
@@ -75,9 +76,11 @@ class QgsDevToolsModelNode
     virtual QVariant toVariant() const;
 
   protected:
+
     QgsDevToolsModelNode();
 
   private:
+
     QgsDevToolsModelGroup *mParent = nullptr;
     friend class QgsDevToolsModelGroup;
 };
@@ -90,12 +93,13 @@ class QgsDevToolsModelNode
 class QgsDevToolsModelGroup : public QgsDevToolsModelNode
 {
   public:
+
     /**
      * Adds a \a child node to this node.
      *
      * Returns a pointer to the newly added node.
      */
-    QgsDevToolsModelNode *addChild( std::unique_ptr<QgsDevToolsModelNode> child );
+    QgsDevToolsModelNode *addChild( std::unique_ptr< QgsDevToolsModelNode > child );
 
     /**
      * Returns the index of the specified \a child node.
@@ -119,6 +123,7 @@ class QgsDevToolsModelGroup : public QgsDevToolsModelNode
     QVariant toVariant() const override;
 
   protected:
+
     /**
      * Constructor for a QgsDevToolsModelGroup, with the specified \a title.
      */
@@ -130,10 +135,12 @@ class QgsDevToolsModelGroup : public QgsDevToolsModelNode
     void addKeyValueNode( const QString &key, const QString &value, const QColor &color = QColor() );
 
   protected:
-    std::deque<std::unique_ptr<QgsDevToolsModelNode>> mChildren;
+    std::deque< std::unique_ptr< QgsDevToolsModelNode > > mChildren;
 
   private:
+
     QString mGroupTitle;
+
 };
 
 /**
@@ -144,6 +151,7 @@ class QgsDevToolsModelGroup : public QgsDevToolsModelNode
 class QgsDevToolsModelValueNode : public QgsDevToolsModelNode
 {
   public:
+
     /**
      * Constructor for QgsDevToolsModelValueNode, with the specified \a key (usually translated) and \a value.
      */
@@ -161,9 +169,10 @@ class QgsDevToolsModelValueNode : public QgsDevToolsModelNode
 
     QVariant data( int role = Qt::DisplayRole ) const override final;
     int childCount() const override final { return 0; }
-    QList<QAction *> actions( QObject *parent ) override final;
+    QList< QAction * > actions( QObject *parent ) override final;
 
   private:
+
     QString mKey;
     QString mValue;
     QColor mColor;

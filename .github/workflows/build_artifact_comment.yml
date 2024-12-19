@@ -5,7 +5,6 @@ on:
     workflows: 
       - 🪟 MingW64 Windows 64bit Build
       - 🪟 Windows Qt6
-      - 🧮 Vcpkg report
     types:
       - completed
 
@@ -17,7 +16,6 @@ concurrency:
 
 jobs:
   on-success:
-    if: github.event.workflow_run.event == 'pull_request'
 
     permissions:
       pull-requests: write

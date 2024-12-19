@@ -30,6 +30,7 @@ class GUI_EXPORT QgsPixmapLabel : public QLabel
     Q_OBJECT
 
   public:
+
     //! Constructor for QgsPixmapLabel
     explicit QgsPixmapLabel( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
@@ -57,6 +58,7 @@ class GUI_EXPORT QgsPixmapLabel : public QLabel
     void clear();
 
   private:
+
     static const int PIXMAP_MINIMUM_HEIGHT = 20;
 
     QPixmap mPixmap;

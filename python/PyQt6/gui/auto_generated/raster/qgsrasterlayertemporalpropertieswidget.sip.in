@@ -24,6 +24,7 @@ A widget for configuring the temporal properties for a raster layer.
 #include "qgsrasterlayertemporalpropertieswidget.h"
 %End
   public:
+
     QgsRasterLayerTemporalPropertiesWidget( QWidget *parent = 0, QgsRasterLayer *layer = 0 );
 %Docstring
 Constructor for QgsRasterLayerTemporalPropertiesWidget.

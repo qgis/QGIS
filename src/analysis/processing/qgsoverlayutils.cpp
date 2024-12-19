@@ -107,17 +107,18 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
   if ( outputAttrs != OutputBA )
     requestB.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
 
-  double step = sourceB.featureCount() > 0 ? 100.0 / static_cast<double>( sourceB.featureCount() ) : 1;
+  double step = sourceB.featureCount() > 0 ? 100.0 / static_cast< double >( sourceB.featureCount() ) : 1;
   long long i = 0;
   QgsFeatureIterator fi = sourceB.getFeatures( requestB );
 
   feedback->setProgressText( QObject::tr( "Creating spatial index" ) );
-  const QgsSpatialIndex indexB( fi, [&]( const QgsFeature & ) -> bool {
+  const QgsSpatialIndex indexB( fi, [&]( const QgsFeature & )->bool
+  {
     i++;
     if ( feedback->isCanceled() )
       return false;
 
-    feedback->setProgress( static_cast<double>( i ) * step );
+    feedback->setProgress( static_cast< double >( i ) * step );
 
     return true;
   } );
@@ -131,7 +132,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
   attrs.resize( outputAttrs == OutputA ? fieldsCountA : ( fieldsCountA + fieldsCountB ) );
 
   if ( totalCount == 0 )
-    totalCount = 1; // avoid division by zero
+    totalCount = 1;  // avoid division by zero
 
   feedback->setProgressText( QObject::tr( "Calculating difference" ) );
 
@@ -157,7 +158,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
       if ( outputAttrs != OutputBA )
         request.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
 
-      std::unique_ptr<QgsGeometryEngine> engine;
+      std::unique_ptr< QgsGeometryEngine > engine;
       if ( !intersects.isEmpty() )
       {
         // use prepared geometries for faster intersection tests
@@ -225,7 +226,7 @@ void QgsOverlayUtils::difference( const QgsFeatureSource &sourceA, const QgsFeat
     }
 
     ++count;
-    feedback->setProgress( count / static_cast<double>( totalCount ) * 100. );
+    feedback->setProgress( count / static_cast< double >( totalCount ) * 100. );
   }
 }
 
@@ -241,16 +242,17 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
 
   QgsFeature outFeat;
 
-  double step = sourceB.featureCount() > 0 ? 100.0 / static_cast<double>( sourceB.featureCount() ) : 1;
+  double step = sourceB.featureCount() > 0 ? 100.0 / static_cast< double >( sourceB.featureCount() ) : 1;
   long long i = 0;
   QgsFeatureIterator fi = sourceB.getFeatures( request );
   feedback->setProgressText( QObject::tr( "Creating spatial index" ) );
-  const QgsSpatialIndex indexB( fi, [&]( const QgsFeature & ) -> bool {
+  const QgsSpatialIndex indexB( fi, [&]( const QgsFeature & )->bool
+  {
     i++;
     if ( feedback->isCanceled() )
       return false;
 
-    feedback->setProgress( static_cast<double>( i ) * step );
+    feedback->setProgress( static_cast< double >( i ) * step );
 
     return true;
   } );
@@ -259,7 +261,7 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
     return;
 
   if ( totalCount == 0 )
-    totalCount = 1; // avoid division by zero
+    totalCount = 1;  // avoid division by zero
 
   feedback->setProgressText( QObject::tr( "Calculating intersection" ) );
 
@@ -281,7 +283,7 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
     request.setDestinationCrs( sourceA.sourceCrs(), context.transformContext() );
     request.setSubsetOfAttributes( fieldIndicesB );
 
-    std::unique_ptr<QgsGeometryEngine> engine;
+    std::unique_ptr< QgsGeometryEngine > engine;
     if ( !intersects.isEmpty() )
     {
       // use prepared geometries for faster intersection tests
@@ -320,7 +322,7 @@ void QgsOverlayUtils::intersection( const QgsFeatureSource &sourceA, const QgsFe
     }
 
     ++count;
-    feedback->setProgress( count / static_cast<double>( totalCount ) * 100. );
+    feedback->setProgress( count / static_cast<double >( totalCount ) * 100. );
   }
 }
 
@@ -329,7 +331,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
   long count = 0;
   const long totalCount = source.featureCount();
   if ( totalCount == 0 )
-    return; // nothing to do here
+    return;  // nothing to do here
 
   QgsFeatureId newFid = -1;
 
@@ -359,7 +361,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
 
   QHash<QgsFeatureId, QgsGeometry> geometries;
   QgsSpatialIndex index;
-  QHash<QgsFeatureId, QList<QgsFeatureId>> intersectingIds; // which features overlap a particular area
+  QHash<QgsFeatureId, QList<QgsFeatureId> > intersectingIds;  // which features overlap a particular area
 
   // resolve intersections
 
@@ -371,7 +373,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
 
     const QgsFeatureId fid1 = f.id();
     QgsGeometry g1 = f.geometry();
-    std::unique_ptr<QgsGeometryEngine> g1engine;
+    std::unique_ptr< QgsGeometryEngine > g1engine;
 
     geometries.insert( fid1, g1 );
     index.addFeature( f );
@@ -471,7 +473,7 @@ void QgsOverlayUtils::resolveOverlaps( const QgsFeatureSource &source, QgsFeatur
     }
 
     ++count;
-    feedback->setProgress( count / static_cast<double>( totalCount ) * 100. );
+    feedback->setProgress( count / static_cast< double >( totalCount ) * 100. );
   }
   if ( feedback->isCanceled() )
     return;

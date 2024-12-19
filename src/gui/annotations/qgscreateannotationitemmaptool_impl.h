@@ -35,7 +35,7 @@ class QgsSettingsTreeNode;
  *
  * \since QGIS 3.40
  */
-class GUI_EXPORT QgsMapToolCaptureAnnotationItem : public QgsMapToolCapture, public QgsCreateAnnotationItemMapToolInterface
+class GUI_EXPORT QgsMapToolCaptureAnnotationItem: public QgsMapToolCapture, public QgsCreateAnnotationItemMapToolInterface
 {
     Q_OBJECT
   public:
@@ -48,7 +48,9 @@ class GUI_EXPORT QgsMapToolCaptureAnnotationItem : public QgsMapToolCapture, pub
     bool supportsTechnique( Qgis::CaptureTechnique technique ) const override;
 
   protected:
+
     QgsCreateAnnotationItemMapToolHandler *mHandler = nullptr;
+
 };
 
 /**
@@ -59,7 +61,7 @@ class GUI_EXPORT QgsMapToolCaptureAnnotationItem : public QgsMapToolCapture, pub
  *
  * \since QGIS 3.40
  */
-class GUI_EXPORT QgsCreatePointTextItemMapTool : public QgsMapToolAdvancedDigitizing, public QgsCreateAnnotationItemMapToolInterface
+class GUI_EXPORT QgsCreatePointTextItemMapTool: public QgsMapToolAdvancedDigitizing, public QgsCreateAnnotationItemMapToolInterface
 {
     Q_OBJECT
 
@@ -73,7 +75,9 @@ class GUI_EXPORT QgsCreatePointTextItemMapTool : public QgsMapToolAdvancedDigiti
     QgsMapTool *mapTool() override;
 
   private:
+
     QgsCreateAnnotationItemMapToolHandler *mHandler = nullptr;
+
 };
 
 
@@ -85,7 +89,7 @@ class GUI_EXPORT QgsCreatePointTextItemMapTool : public QgsMapToolAdvancedDigiti
  *
  * \since QGIS 3.40
  */
-class GUI_EXPORT QgsCreateMarkerItemMapTool : public QgsMapToolCaptureAnnotationItem
+class GUI_EXPORT QgsCreateMarkerItemMapTool: public QgsMapToolCaptureAnnotationItem
 {
     Q_OBJECT
 
@@ -94,6 +98,7 @@ class GUI_EXPORT QgsCreateMarkerItemMapTool : public QgsMapToolCaptureAnnotation
     QgsCreateMarkerItemMapTool( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *event ) override;
+
 };
 
 /**
@@ -104,7 +109,7 @@ class GUI_EXPORT QgsCreateMarkerItemMapTool : public QgsMapToolCaptureAnnotation
  *
  * \since QGIS 3.40
  */
-class GUI_EXPORT QgsCreateLineItemMapTool : public QgsMapToolCaptureAnnotationItem
+class GUI_EXPORT QgsCreateLineItemMapTool: public QgsMapToolCaptureAnnotationItem
 {
     Q_OBJECT
 
@@ -124,7 +129,7 @@ class GUI_EXPORT QgsCreateLineItemMapTool : public QgsMapToolCaptureAnnotationIt
  *
  * \since QGIS 3.40
  */
-class GUI_EXPORT QgsCreatePolygonItemMapTool : public QgsMapToolCaptureAnnotationItem
+class GUI_EXPORT QgsCreatePolygonItemMapTool: public QgsMapToolCaptureAnnotationItem
 {
     Q_OBJECT
 
@@ -144,7 +149,7 @@ class GUI_EXPORT QgsCreatePolygonItemMapTool : public QgsMapToolCaptureAnnotatio
  *
  * \since QGIS 3.40
  */
-class GUI_EXPORT QgsCreateRectangleTextItemMapTool : public QgsMapToolAdvancedDigitizing, public QgsCreateAnnotationItemMapToolInterface
+class GUI_EXPORT QgsCreateRectangleTextItemMapTool: public QgsMapToolAdvancedDigitizing, public QgsCreateAnnotationItemMapToolInterface
 {
     Q_OBJECT
 
@@ -164,7 +169,7 @@ class GUI_EXPORT QgsCreateRectangleTextItemMapTool : public QgsMapToolAdvancedDi
 
     QRectF mRect;
     QgsPointXY mFirstPoint;
-    QObjectUniquePtr<QgsRubberBand> mRubberBand;
+    QObjectUniquePtr< QgsRubberBand > mRubberBand;
 };
 
 /**
@@ -175,7 +180,7 @@ class GUI_EXPORT QgsCreateRectangleTextItemMapTool : public QgsMapToolAdvancedDi
  *
  * \since QGIS 3.40
  */
-class GUI_EXPORT QgsCreatePictureItemMapTool : public QgsMapToolAdvancedDigitizing, public QgsCreateAnnotationItemMapToolInterface
+class GUI_EXPORT QgsCreatePictureItemMapTool: public QgsMapToolAdvancedDigitizing, public QgsCreateAnnotationItemMapToolInterface
 {
     Q_OBJECT
 
@@ -199,7 +204,7 @@ class GUI_EXPORT QgsCreatePictureItemMapTool : public QgsMapToolAdvancedDigitizi
 
     QRectF mRect;
     QgsPointXY mFirstPoint;
-    QObjectUniquePtr<QgsRubberBand> mRubberBand;
+    QObjectUniquePtr< QgsRubberBand > mRubberBand;
 };
 
 /**
@@ -210,7 +215,7 @@ class GUI_EXPORT QgsCreatePictureItemMapTool : public QgsMapToolAdvancedDigitizi
  *
  * \since QGIS 3.40
  */
-class GUI_EXPORT QgsCreateLineTextItemMapTool : public QgsMapToolCaptureAnnotationItem
+class GUI_EXPORT QgsCreateLineTextItemMapTool: public QgsMapToolCaptureAnnotationItem
 {
     Q_OBJECT
 

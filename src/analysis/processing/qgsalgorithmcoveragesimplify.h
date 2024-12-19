@@ -43,10 +43,14 @@ class QgsCoverageSimplifyAlgorithm : public QgsProcessingAlgorithm
     QgsCoverageSimplifyAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMCOVERAGESIMPLIFY_H
+
+

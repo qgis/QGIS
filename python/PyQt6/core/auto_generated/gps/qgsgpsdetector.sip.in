@@ -76,7 +76,7 @@ Call :py:func:`~QgsGpsDetector.takeConnection` to take ownership of the detected
 .. versionadded:: 3.38
 %End
 
- void detected( QgsGpsConnection *connection ) /Deprecated="Since 3.40. This signal is dangerous and extremely unsafe! It is recommended to instead set the ``useUnsafeSignals`` parameter to ``False`` in the QgsGpsDetector constructor and use the safe connectionDetected() signal instead."/;
+ void detected( QgsGpsConnection *connection ) /Deprecated/;
 %Docstring
 Emitted when the GPS connection has been detected. A single connection must listen for this signal and
 immediately take ownership of the ``connection`` object.

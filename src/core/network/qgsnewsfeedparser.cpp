@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewsfeedparser.h"
-#include "moc_qgsnewsfeedparser.cpp"
 #include "qgis.h"
 #include "qgsnetworkcontentfetchertask.h"
 #include "qgsnetworkcontentfetcher.h"

@@ -4,9 +4,9 @@ try:
     QgsVectorDataProvider.availableEncodings = staticmethod(QgsVectorDataProvider.availableEncodings)
     QgsVectorDataProvider.convertValue = staticmethod(QgsVectorDataProvider.convertValue)
     QgsVectorDataProvider.__group__ = ['vector']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsVectorDataProvider.NativeType.__group__ = ['vector']
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -31,9 +31,11 @@
  */
 class GUI_EXPORT QgsPlotToolPan : public QgsPlotTool
 {
+
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPlotToolPan, with the associated \a canvas.
      */
@@ -46,10 +48,12 @@ class GUI_EXPORT QgsPlotToolPan : public QgsPlotTool
     void deactivate() override;
 
   private:
+
     bool mIsPanning = false;
     QPoint mLastMousePos;
     //! Start position for mouse press
     QPoint mMousePressStartPos;
+
 };
 
 #endif // QGSPLOTTOOLPAN_H

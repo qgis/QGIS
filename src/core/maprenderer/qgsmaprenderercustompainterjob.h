@@ -74,7 +74,7 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererAbstract
     QgsLabelingResults *takeLabelingResults() SIP_TRANSFER override;
 
     //! \note not available in Python bindings
-    const std::vector< LayerRenderJob > &jobs() const SIP_SKIP { return mLayerJobs; }
+    const std::vector< LayerRenderJob > &jobs() const { return mLayerJobs; } SIP_SKIP
 
     /**
      * Wait for the job to be finished - and keep the thread's event loop running while waiting.

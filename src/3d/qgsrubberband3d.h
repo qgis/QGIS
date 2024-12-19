@@ -18,8 +18,6 @@
 
 #include "qgis_3d.h"
 
-#include <QColor>
-
 #define SIP_NO_FILE
 
 /// @cond PRIVATE
@@ -45,22 +43,22 @@ class QgsPoint3DBillboardMaterial;
 namespace Qt3DCore
 {
   class QEntity;
-#if QT_VERSION >= QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
   class QBuffer;
   class QGeometry;
   class QAttribute;
 #endif
-} // namespace Qt3DCore
+}
 
 namespace Qt3DRender
 {
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
   class QBuffer;
   class QGeometry;
   class QAttribute;
 #endif
   class QGeometryRenderer;
-} // namespace Qt3DRender
+}
 
 /**
  * \ingroup 3d
@@ -70,51 +68,20 @@ namespace Qt3DRender
  * class will be attached to the parentEntity given in the constructor (normally this
  * should be the root entity, i.e. map scene object).
  *
- * \note Currently only supports multi point and linestring geometry.
+ * \note Currently only supports linestring geometry.
  * \since QGIS 3.20
  */
 class _3D_EXPORT QgsRubberBand3D
 {
   public:
-    //! Icons
-    enum MarkerType
-    {
-
-      /**
-       * A box is used to highlight points (□)
-       */
-      Square,
-
-      /**
-       * A circle is used to highlight points (○)
-       */
-      Circle
-    };
-
-    QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engine, Qt3DCore::QEntity *parentEntity, Qgis::GeometryType geometryType = Qgis::GeometryType::Line );
+    QgsRubberBand3D( Qgs3DMapSettings &map, QgsWindow3DEngine *engine, Qt3DCore::QEntity *parentEntity );
     ~QgsRubberBand3D();
 
-    //! Returns the rubber band width in pixels
     float width() const;
-
-    //! Sets the rubber band width in pixels
     void setWidth( float width );
 
-    //! Returns the rubber band color
     QColor color() const;
-
-    //! Sets the rubber band color.
     void setColor( QColor color );
-
-    /**
-     * Sets the \a marker type to highlight point geometries and line vertices.
-     */
-    void setMarkerType( MarkerType marker );
-
-    /**
-     * Returns the current marker type to highlight point geometries and line vertices.
-     */
-    MarkerType markerType() const;
 
     void reset();
 
@@ -125,7 +92,7 @@ class _3D_EXPORT QgsRubberBand3D
     void moveLastPoint( const QgsPoint &pt );
 
     //! Sets whether the marker on the last vertex is displayed. We typically do not want it displayed while it is still tracked by the mouse.
-    void setHideLastMarker( bool hide ) { mHideLastMarker = hide; }
+    void setShowLastMarker( bool show ) { mShowLastMarker = show; }
 
   private:
     void updateGeometry();
@@ -133,23 +100,17 @@ class _3D_EXPORT QgsRubberBand3D
 
   private:
     QgsLineString mLineString;
-    bool mHideLastMarker = false;
+    bool mShowLastMarker = false;
 
-    Qgs3DMapSettings *mMapSettings = nullptr; // not owned
+    Qgs3DMapSettings *mMapSettings = nullptr;  // not owned
     QgsWindow3DEngine *mEngine = nullptr;
-    Qgis::GeometryType mGeometryType = Qgis::GeometryType::Line;
 
-    //! point and vertex marker type
-    MarkerType mMarkerType = Circle;
-    float mWidth = 3.f;
-    QColor mColor = Qt::red;
-
-    Qt3DCore::QEntity *mLineEntity = nullptr;   // owned by parentEntity (from constructor)
+    Qt3DCore::QEntity *mLineEntity = nullptr;  // owned by parentEntity (from constructor)
     Qt3DCore::QEntity *mMarkerEntity = nullptr; // owned by parentEntity (from constructor)
 
     // all these are owned by mLineEntity
-    Qt3DRender::QGeometryRenderer *mLineGeomRenderer = nullptr;
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+    Qt3DRender::QGeometryRenderer *mGeomRenderer = nullptr;
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     Qt3DRender::QGeometry *mGeometry = nullptr;
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
     Qt3DRender::QAttribute *mIndexAttribute = nullptr;
@@ -164,12 +125,11 @@ class _3D_EXPORT QgsRubberBand3D
     Qt3DRender::QGeometryRenderer *mMarkerGeometryRenderer = nullptr;
     QgsBillboardGeometry *mMarkerGeometry = nullptr;
     QgsPoint3DBillboardMaterial *mMarkerMaterial = nullptr;
-
-    std::unique_ptr<QgsMarkerSymbol> mMarkerSymbol;
+    QgsMarkerSymbol *mMarkerSymbol = nullptr;
 
     // Disable copying as we have pointer members.
     QgsRubberBand3D( const QgsRubberBand3D & ) = delete;
-    QgsRubberBand3D &operator=( const QgsRubberBand3D & ) = delete;
+    QgsRubberBand3D &operator= ( const QgsRubberBand3D & ) = delete;
 };
 
 /// @endcond

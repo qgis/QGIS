@@ -24,6 +24,7 @@
 class QgsTiledSceneSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
+
     QString providerKey() const override { return QStringLiteral( "tiledscene" ); }
     QString text() const override { return QObject::tr( "Scene" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 51; }

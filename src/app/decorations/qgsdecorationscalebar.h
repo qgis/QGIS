@@ -31,7 +31,7 @@ class QPainter;
 #include <QColor>
 #include "qgis_app.h"
 
-class APP_EXPORT QgsDecorationScaleBar : public QgsDecorationItem
+class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
 {
     Q_OBJECT
   public:
@@ -51,6 +51,7 @@ class APP_EXPORT QgsDecorationScaleBar : public QgsDecorationItem
     void setupScaleBar();
 
   private:
+
     //! The size preferred size of the scale bar
     int mPreferredSize;
     //! Should we snap to integer times power of 10?
@@ -69,7 +70,7 @@ class APP_EXPORT QgsDecorationScaleBar : public QgsDecorationItem
     QgsScaleBarSettings mSettings;
 
     //! Scalebar style
-    std::unique_ptr<QgsScaleBarRenderer> mStyle;
+    std::unique_ptr< QgsScaleBarRenderer > mStyle;
 
     //! Margin percentage values
     int mMarginHorizontal = 0;

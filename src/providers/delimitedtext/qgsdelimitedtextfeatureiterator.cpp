@@ -33,6 +33,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   : QgsAbstractFeatureIteratorFromSource<QgsDelimitedTextFeatureSource>( source, ownSource, request )
   , mTestSubset( mSource->mSubsetExpression )
 {
+
   // Determine mode to use based on request...
   QgsDebugMsgLevel( QStringLiteral( "Setting up QgsDelimitedTextIterator" ), 4 );
 
@@ -62,7 +63,7 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
                          && mSource->mGeomRep == QgsDelimitedTextProvider::GeomAsWkt;
 
     // If request doesn't overlap extents, then nothing to return
-    if ( !mFilterRect.intersects( mSource->mExtent.toRectangle() ) && !mTestSubset )
+    if ( ! mFilterRect.intersects( mSource->mExtent.toRectangle() ) && !mTestSubset )
     {
       QgsDebugMsgLevel( QStringLiteral( "Rectangle outside layer extents - no features to return" ), 4 );
       mMode = FeatureIds;
@@ -147,7 +148,14 @@ QgsDelimitedTextFeatureIterator::QgsDelimitedTextFeatureIterator( QgsDelimitedTe
   // if we are testing geometry (ie spatial filter), or
   // if testing the subset expression.
   if ( hasGeometry
-       && ( !( mRequest.flags() & Qgis::FeatureRequestFlag::NoGeometry ) || mTestGeometry || mDistanceWithinEngine || ( mTestSubset && mSource->mSubsetExpression->needsGeometry() ) || ( request.filterType() == Qgis::FeatureRequestFilterType::Expression && request.filterExpression()->needsGeometry() ) ) )
+       && (
+         !( mRequest.flags() & Qgis::FeatureRequestFlag::NoGeometry )
+         || mTestGeometry
+         || mDistanceWithinEngine
+         || ( mTestSubset && mSource->mSubsetExpression->needsGeometry() )
+         || ( request.filterType() == Qgis::FeatureRequestFilterType::Expression && request.filterExpression()->needsGeometry() )
+       )
+     )
   {
     mLoadGeometry = true;
   }
@@ -208,7 +216,7 @@ bool QgsDelimitedTextFeatureIterator::fetchFeature( QgsFeature &feature )
   }
   else
   {
-    while ( !gotFeature )
+    while ( ! gotFeature )
     {
       qint64 fid = -1;
       if ( mMode == FeatureIds )
@@ -397,7 +405,7 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature &feature )
     // If we are testing subset expression, then need all attributes just in case.
     // Could be more sophisticated, but probably not worth it!
 
-    if ( !mTestSubset && ( mRequest.flags() & Qgis::FeatureRequestFlag::SubsetOfAttributes ) )
+    if ( ! mTestSubset && ( mRequest.flags() & Qgis::FeatureRequestFlag::SubsetOfAttributes ) )
     {
       const QgsAttributeList attrs = mRequest.subsetOfAttributes();
       for ( QgsAttributeList::const_iterator i = attrs.constBegin(); i != attrs.constEnd(); ++i )
@@ -420,12 +428,13 @@ bool QgsDelimitedTextFeatureIterator::nextFeatureInternal( QgsFeature &feature )
       const QVariant isOk = mSource->mSubsetExpression->evaluate( &mSource->mExpressionContext );
       if ( mSource->mSubsetExpression->hasEvalError() )
         continue;
-      if ( !isOk.toBool() )
+      if ( ! isOk.toBool() )
         continue;
     }
 
     // We have a good record, so return
     return true;
+
   }
 
   return false;
@@ -453,7 +462,7 @@ QgsGeometry QgsDelimitedTextFeatureIterator::loadGeometryWkt( const QStringList 
   {
     geom = QgsGeometry();
   }
-  if ( !geom.isNull() && !testSpatialFilter( geom ) )
+  if ( !geom.isNull() && ! testSpatialFilter( geom ) )
   {
     geom = QgsGeometry();
   }
@@ -506,11 +515,11 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature &feature, int f
     case QMetaType::Type::Bool:
     {
       Q_ASSERT( mSource->mFieldBooleanLiterals.contains( fieldIdx ) );
-      if ( value.compare( mSource->mFieldBooleanLiterals[fieldIdx].first, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+      if ( value.compare( mSource->mFieldBooleanLiterals[ fieldIdx ].first, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
       {
         val = true;
       }
-      else if ( value.compare( mSource->mFieldBooleanLiterals[fieldIdx].second, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
+      else if ( value.compare( mSource->mFieldBooleanLiterals[ fieldIdx ].second, Qt::CaseSensitivity::CaseInsensitive ) == 0 )
       {
         val = false;
       }
@@ -524,7 +533,7 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature &feature, int f
     {
       int ivalue = 0;
       bool ok = false;
-      if ( !value.isEmpty() )
+      if ( ! value.isEmpty() )
         ivalue = value.toInt( &ok );
       if ( ok )
         val = QVariant( ivalue );
@@ -534,11 +543,11 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature &feature, int f
     }
     case QMetaType::Type::LongLong:
     {
-      if ( !value.isEmpty() )
+      if ( ! value.isEmpty() )
       {
         bool ok;
         val = value.toLongLong( &ok );
-        if ( !ok )
+        if ( ! ok )
         {
           val = QgsVariantUtils::createNullVariant( mSource->mFields.at( fieldIdx ).type() );
         }
@@ -553,7 +562,7 @@ void QgsDelimitedTextFeatureIterator::fetchAttribute( QgsFeature &feature, int f
     {
       double dvalue = 0.0;
       bool ok = false;
-      if ( !value.isEmpty() )
+      if ( ! value.isEmpty() )
       {
         if ( mSource->mDecimalPoint.isEmpty() )
         {

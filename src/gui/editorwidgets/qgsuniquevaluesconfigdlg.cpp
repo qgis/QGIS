@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsuniquevaluesconfigdlg.h"
-#include "moc_qgsuniquevaluesconfigdlg.cpp"
 
 QgsUniqueValuesConfigDlg::QgsUniqueValuesConfigDlg( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsEditorConfigWidget( vl, fieldIdx, parent )

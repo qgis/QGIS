@@ -33,6 +33,7 @@ class QgsMessageBar;
 class GUI_EXPORT QgsMapLayerActionContext
 {
   public:
+
     QgsMapLayerActionContext();
 
     /**
@@ -68,8 +69,9 @@ class GUI_EXPORT QgsMapLayerActionContext
     void setMessageBar( QgsMessageBar *bar );
 
   private:
-    QPointer<QgsAttributeDialog> mAttributeDialog;
-    QPointer<QgsMessageBar> mMessageBar;
+
+    QPointer< QgsAttributeDialog > mAttributeDialog;
+    QPointer< QgsMessageBar > mMessageBar;
 };
 
 Q_DECLARE_METATYPE( QgsMapLayerActionContext )

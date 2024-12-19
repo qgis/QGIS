@@ -35,6 +35,7 @@ class QgsAccessControl;
 class SERVER_EXPORT QgsOWSServerFilterRestorer
 {
   public:
+
     /**
      * Default constructor for QgsOWSServerFilterRestorer.
      */
@@ -59,7 +60,8 @@ class SERVER_EXPORT QgsOWSServerFilterRestorer
 
     //! Apply filter from AccessControl
     //XXX May be this method should be owned QgsAccessControl
-    static void applyAccessControlLayerFilters( const QgsAccessControl *accessControl, QgsMapLayer *mapLayer, QHash<QgsMapLayer *, QString> &originalLayerFilters );
+    static void applyAccessControlLayerFilters( const QgsAccessControl *accessControl, QgsMapLayer *mapLayer,
+        QHash<QgsMapLayer *, QString> &originalLayerFilters );
 
     /**
      * Applies filters from access control on layer.
@@ -70,6 +72,8 @@ class SERVER_EXPORT QgsOWSServerFilterRestorer
 
   private:
     QHash<QgsMapLayer *, QString> mOriginalLayerFilters;
+
 };
 
 #endif // QGSFILTERRESTORER_H
+

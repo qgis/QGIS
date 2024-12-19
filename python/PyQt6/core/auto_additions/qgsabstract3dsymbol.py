@@ -23,5 +23,5 @@ QgsAbstract3DSymbol.Property.__doc__ = """Data definable properties.
 # --
 try:
     QgsAbstract3DSymbol.__group__ = ['3d']
-except (NameError, AttributeError):
+except NameError:
     pass

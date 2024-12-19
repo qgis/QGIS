@@ -307,7 +307,7 @@ std::vector< QgsLazDecoder::RequestedAttributeDetails > prepareRequestedAttribut
   return requestedAttributeDetails;
 }
 
-bool decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &outputOffset, std::vector< QgsLazDecoder::RequestedAttributeDetails > &requestedAttributeDetails )
+void decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &outputOffset, std::vector< QgsLazDecoder::RequestedAttributeDetails > &requestedAttributeDetails )
 {
   lazperf::las::point10 p10;
   lazperf::las::gpstime gps;
@@ -355,7 +355,6 @@ bool decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &
 
     default:
       Q_ASSERT( false );  // must not happen - we checked earlier that the format is supported
-      return false;
   }
 
   for ( const QgsLazDecoder::RequestedAttributeDetails &requestedAttribute : requestedAttributeDetails )
@@ -428,7 +427,7 @@ bool decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &
         lazStoreToStream_<unsigned short>( dataBuffer, outputOffset, requestedAttribute.type, rgb.b );
         break;
       case QgsLazDecoder::LazAttribute::ScannerChannel:
-        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? char( p14.scannerChannel() ) : 0 );
+        lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, char( p14.scannerChannel() ) );
         break;
       case QgsLazDecoder::LazAttribute::Synthetic:
         lazStoreToStream_<char>( dataBuffer, outputOffset, requestedAttribute.type, isLas14 ? char( ( p14.classFlags() >> 0 ) & 0x01 ) : char( ( p10.classification >> 5 ) & 0x01 ) );
@@ -511,7 +510,6 @@ bool decodePoint( char *buf, int lasPointFormat, char *dataBuffer, std::size_t &
 
     outputOffset += requestedAttribute.size;
   }
-  return true;
 }
 
 template<typename FileType>
@@ -594,10 +592,11 @@ std::unique_ptr<QgsPointCloudBlock> decompressLaz_( FileType &file, const QgsPoi
     {
       f.readPoint( buf ); // read the point out
 
-      bool skipThisPoint = !decodePoint( buf, lasPointFormat, dataBuffer, outputOffset, requestedAttributeDetails );
+      decodePoint( buf, lasPointFormat, dataBuffer, outputOffset, requestedAttributeDetails );
 
       // check if point needs to be filtered out
-      if ( !skipThisPoint && hasFilterRect && attributeX && attributeY )
+      bool skipThisPoint = false;
+      if ( hasFilterRect && attributeX && attributeY )
       {
         const double x = attributeX->convertValueToDouble( dataBuffer + outputOffset - requestedPointRecordSize + xAttributeOffset );
         const double y = attributeY->convertValueToDouble( dataBuffer + outputOffset - requestedPointRecordSize + yAttributeOffset );
@@ -704,10 +703,12 @@ std::unique_ptr<QgsPointCloudBlock> QgsLazDecoder::decompressCopc( const QByteAr
     decompressor.decompress( decodedData.get() );
     char *buf = decodedData.get();
 
-    bool skipThisPoint = !decodePoint( buf, lasPointFormat, dataBuffer, outputOffset, requestedAttributeDetails );
+    decodePoint( buf, lasPointFormat, dataBuffer, outputOffset, requestedAttributeDetails );
 
     // check if point needs to be filtered out
-    if ( !skipThisPoint && hasFilterRect && attributeX && attributeY )
+    bool skipThisPoint = false;
+
+    if ( hasFilterRect && attributeX && attributeY )
     {
       const double x = attributeX->convertValueToDouble( dataBuffer + outputOffset - requestedPointRecordSize + xAttributeOffset );
       const double y = attributeY->convertValueToDouble( dataBuffer + outputOffset - requestedPointRecordSize + yAttributeOffset );

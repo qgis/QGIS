@@ -33,6 +33,7 @@ geographic coordinates corresponding to the event.
       sipType = 0;
 %End
   public:
+
     QgsPlotMouseEvent( QgsPlotCanvas *canvas, QMouseEvent *event );
 %Docstring
 Creates a new QgsPlotMouseEvent.
@@ -41,7 +42,8 @@ Creates a new QgsPlotMouseEvent.
 :param event: The original mouse event
 %End
 
-    QgsPlotMouseEvent( QgsPlotCanvas *canvas, QEvent::Type type, QPoint pos, Qt::MouseButton button = Qt::NoButton, Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
+    QgsPlotMouseEvent( QgsPlotCanvas *canvas, QEvent::Type type, QPoint pos, Qt::MouseButton button = Qt::NoButton,
+                       Qt::MouseButtons buttons = Qt::NoButton, Qt::KeyboardModifiers modifiers = Qt::NoModifier );
 %Docstring
 Creates a new QgsPlotMouseEvent.
 

@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsmeshdatasetgroupstore.h"
-#include "moc_qgsmeshdatasetgroupstore.cpp"
 #include "qgsmeshlayer.h"
 #include "qgsmeshlayerutils.h"
 #include "qgsapplication.h"
@@ -123,44 +122,6 @@ bool QgsMeshDatasetGroupStore::addDatasetGroup( QgsMeshDatasetGroup *group )
   emit datasetGroupsAdded( groupIndexes );
 
   return true;
-}
-
-void QgsMeshDatasetGroupStore::removeDatasetGroup( int index )
-{
-  const QgsMeshDatasetGroupStore::DatasetGroup group = datasetGroup( index );
-  if ( group.first == mPersistentProvider )
-    mPersistentProvider->removeDatasetGroup( group.second );
-  else if ( group.first == &mExtraDatasets )
-    eraseExtraDataset( group.second );
-
-  reindexDatasetGroups();
-}
-
-void QgsMeshDatasetGroupStore::reindexDatasetGroups()
-{
-  mRegistry.clear();
-  mPersistentExtraDatasetGroupIndexes.clear();
-  mGroupNameToGlobalIndex.clear();
-
-  int globalIndex = 0;
-
-  for ( int i = 0; i < mPersistentProvider->datasetGroupCount(); i++ )
-  {
-    const QString name = mPersistentProvider->datasetGroupMetadata( i ).name();
-    mRegistry[globalIndex] = DatasetGroup{mPersistentProvider, i};
-    mPersistentExtraDatasetGroupIndexes.append( globalIndex );
-    mGroupNameToGlobalIndex.insert( name, globalIndex );
-    globalIndex++;
-  }
-
-  for ( int i = 0; i < mExtraDatasets.datasetGroupCount(); i++ )
-  {
-    QgsMeshDatasetSourceInterface *source = &mExtraDatasets;
-    const QString name = source->datasetGroupMetadata( i ).name();
-    mRegistry[globalIndex] = DatasetGroup{source, i};
-    mGroupNameToGlobalIndex.insert( name, globalIndex );
-    globalIndex++;
-  }
 }
 
 void QgsMeshDatasetGroupStore::resetDatasetGroupTreeItem()
@@ -733,10 +694,10 @@ int QgsMeshExtraDatasetStore::addDatasetGroup( QgsMeshDatasetGroup *datasetGroup
   return mGroups.size() - 1;
 }
 
-void QgsMeshExtraDatasetStore::removeDatasetGroup( int groupIndex )
+void QgsMeshExtraDatasetStore::removeDatasetGroup( int index )
 {
-  if ( groupIndex < datasetGroupCount() )
-    mGroups.erase( mGroups.begin() + groupIndex );
+  if ( index < datasetGroupCount() )
+    mGroups.erase( mGroups.begin() + index );
 
 
   updateTemporalCapabilities();

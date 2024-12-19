@@ -37,7 +37,7 @@ class QgsPointCloudLayer;
 class QgsAbstractTerrainProvider;
 class QgsProfileSnapContext;
 class QgsPointCloudRenderer;
-class QgsPointCloudNodeId;
+class IndexedPointCloudNode;
 class QgsPointCloudIndex;
 class QgsPointCloudRequest;
 class QgsPointCloudBlock;
@@ -144,9 +144,9 @@ class CORE_EXPORT QgsPointCloudLayerProfileGenerator : public QgsAbstractProfile
     QgsFeedback *feedback() const override;
 
   private:
-    QVector<QgsPointCloudNodeId> traverseTree( const QgsPointCloudIndex *pc, QgsPointCloudNodeId n, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange );
-    int visitNodesSync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
-    int visitNodesAsync( const QVector<QgsPointCloudNodeId> &nodes, QgsPointCloudIndex *pc,  QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
+    QVector<IndexedPointCloudNode> traverseTree( const QgsPointCloudIndex *pc, IndexedPointCloudNode n, double maxErrorPixels, double nodeErrorPixels, const QgsDoubleRange &zRange );
+    int visitNodesSync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc, QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
+    int visitNodesAsync( const QVector<IndexedPointCloudNode> &nodes, QgsPointCloudIndex *pc,  QgsPointCloudRequest &request, const QgsDoubleRange &zRange );
     void visitBlock( const QgsPointCloudBlock *block, const QgsDoubleRange &zRange );
 
     QPointer< QgsPointCloudLayer > mLayer;

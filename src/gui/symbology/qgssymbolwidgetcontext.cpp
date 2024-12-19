@@ -103,7 +103,7 @@ QList<QgsExpressionContextScope *> QgsSymbolWidgetContext::globalProjectAtlasMap
            << mMapCanvas->defaultExpressionContextScope()
            << new QgsExpressionContextScope( mMapCanvas->expressionContextScope() );
 
-    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast<const QgsExpressionContextScopeGenerator *>( mMapCanvas->temporalController() ) )
+    if ( const QgsExpressionContextScopeGenerator *generator = dynamic_cast< const QgsExpressionContextScopeGenerator * >( mMapCanvas->temporalController() ) )
     {
       scopes << generator->createExpressionContextScope();
     }

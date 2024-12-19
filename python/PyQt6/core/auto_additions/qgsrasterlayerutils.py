@@ -2,5 +2,5 @@
 try:
     QgsRasterLayerUtils.renderedBandForElevationAndTemporalRange = staticmethod(QgsRasterLayerUtils.renderedBandForElevationAndTemporalRange)
     QgsRasterLayerUtils.__group__ = ['raster']
-except (NameError, AttributeError):
+except NameError:
     pass

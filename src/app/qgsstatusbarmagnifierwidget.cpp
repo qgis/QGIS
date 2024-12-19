@@ -22,7 +22,6 @@
 #include "qgssettings.h"
 #include "qgsapplication.h"
 #include "qgsstatusbarmagnifierwidget.h"
-#include "moc_qgsstatusbarmagnifierwidget.cpp"
 #include "qgsdoublespinbox.h"
 #include "qgsguiutils.h"
 
@@ -55,7 +54,7 @@ QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget *parent )
   mSpinBox->setClearValueMode( QgsDoubleSpinBox::CustomValue );
   mSpinBox->setClearValue( defaultFactor );
 
-  connect( mSpinBox, static_cast<void ( QgsDoubleSpinBox::* )( double )>( &QgsDoubleSpinBox::valueChanged ), this, &QgsStatusBarMagnifierWidget::setMagnification );
+  connect( mSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsStatusBarMagnifierWidget::setMagnification );
 
   mLockButton = new QToolButton();
   mLockButton->setIcon( QIcon( QgsApplication::getThemeIcon( "/lockedGray.svg" ) ) );

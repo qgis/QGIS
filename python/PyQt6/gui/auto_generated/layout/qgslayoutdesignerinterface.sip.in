@@ -9,7 +9,7 @@
 
 
 
-class QgsLayoutDesignerInterface : QObject
+class QgsLayoutDesignerInterface: QObject
 {
 %Docstring(signature="appended")
 A common interface for layout designer dialogs and widgets.
@@ -41,6 +41,7 @@ open layout designer dialogs.
       sipType = NULL;
 %End
   public:
+
     enum StandardTool /BaseType=IntEnum/
     {
       ToolMoveItemContent,
@@ -85,7 +86,7 @@ Returns the layout view utilized by the designer.
 Returns the designer's message bar.
 %End
 
-    virtual void selectItems( const QList<QgsLayoutItem *> &items ) = 0;
+    virtual void selectItems( const QList< QgsLayoutItem * > &items ) = 0;
 %Docstring
 Selects the specified ``items``.
 %End
@@ -411,9 +412,11 @@ Encapsulates the results of an export operation performed in the designer.
 #include "qgslayoutdesignerinterface.h"
 %End
       public:
+
         QgsLayoutExporter::ExportResult result;
 
-        QMap<QString, QgsLabelingResults *> labelingResults;
+        QMap< QString, QgsLabelingResults * > labelingResults;
+
     };
 
     virtual QgsLayoutDesignerInterface::ExportResults *lastExportResults() const = 0 /Factory/;
@@ -457,6 +460,7 @@ Emitted when a ``map`` item's preview has been refreshed.
 
 .. versionadded:: 3.20
 %End
+
 };
 
 /************************************************************************

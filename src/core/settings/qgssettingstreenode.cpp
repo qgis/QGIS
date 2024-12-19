@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgssettingstreenode.h"
-#include "moc_qgssettingstreenode.cpp"
 #include "qgssettingsentryimpl.h"
 #include "qgsexception.h"
 #include "qgssettings.h"

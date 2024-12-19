@@ -17,27 +17,27 @@
 #include "qgstest.h"
 
 #include <editorwidgets/qgsspinbox.h>
-#include <QSignalSpy>
 
-class TestQgsSpinBox : public QObject
+class TestQgsSpinBox: public QObject
 {
     Q_OBJECT
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
+    void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void init(); // will be called before each testfunction is executed.
+    void cleanup(); // will be called after every testfunction.
 
     void clear();
     void expression();
     void step();
-    void editingTimeout();
 
   private:
+
 };
 
 void TestQgsSpinBox::initTestCase()
 {
+
 }
 
 void TestQgsSpinBox::cleanupTestCase()
@@ -200,45 +200,6 @@ void TestQgsSpinBox::step()
   QCOMPARE( spin.value(), -1000 );
   spin.stepBy( -1 );
   QCOMPARE( spin.value(), -1000 );
-}
-
-void TestQgsSpinBox::editingTimeout()
-{
-  QgsSpinBox spin;
-  spin.setMinimum( -1000 );
-  spin.setMaximum( 1000 );
-  spin.setSingleStep( 1 );
-  spin.setFocus();
-  QCOMPARE( spin.editingTimeoutInterval(), 1000 );
-  spin.setEditingTimeoutInterval( 300 );
-  QCOMPARE( spin.editingTimeoutInterval(), 300 );
-
-  QSignalSpy spy( &spin, &QgsSpinBox::editingTimeout );
-  spin.selectAll();
-  QTest::keyClicks( &spin, QStringLiteral( "3" ) );
-  QTest::qWait( 100 );
-  // too short, should not be signal
-  QCOMPARE( spy.count(), 0 );
-  QTest::qWait( 400 );
-  // long enough, signal should have been emitted
-  QCOMPARE( spy.count(), 1 );
-  QCOMPARE( spy.at( 0 ).at( 0 ).toInt(), 3 );
-
-  QTest::keyClicks( &spin, QStringLiteral( "2" ) );
-  QCOMPARE( spy.count(), 1 );
-  QTest::qWait( 400 );
-  // long enough, signal should have been emitted
-  QCOMPARE( spy.count(), 2 );
-  QCOMPARE( spy.at( 1 ).at( 0 ).toInt(), 32 );
-
-  // no signal if value not changed
-  QTest::keyClicks( &spin, QStringLiteral( "4" ) );
-  QTest::qWait( 100 );
-  QCOMPARE( spy.count(), 2 );
-  QTest::keyPress( &spin, Qt::Key_Backspace );
-  QTest::qWait( 400 );
-  // no signal, value did not change
-  QCOMPARE( spy.count(), 2 );
 }
 
 QGSTEST_MAIN( TestQgsSpinBox )

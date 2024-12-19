@@ -18,6 +18,7 @@ class QgsRendererRasterPropertiesWidget : QgsMapLayerConfigWidget
 #include "qgsrendererrasterpropertieswidget.h"
 %End
   public:
+
     QgsRendererRasterPropertiesWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 %Docstring
 A widget to hold the renderer properties for a raster layer.

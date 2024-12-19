@@ -1,5 +1,6 @@
 # Qt6 blocklist
 test_core_compositionconverter
+test_core_expression
 test_core_labelingengine
 test_core_layoutpicture
 # test_core_ogcutils runs fine locally on Fedora:rawhide but not on CI
@@ -33,8 +34,10 @@ PyQgsProviderConnectionMssql
 PyQgsStyleStorageMssql
 
 # To be fixed
+PyQgsPythonProvider
 PyQgsAnnotation
 PyQgsAuthenticationSystem
+PyQgsBlockingProcess
 PyQgsCodeEditor
 PyQgsDelimitedTextProvider
 PyQgsEditWidgets
@@ -42,21 +45,30 @@ PyQgsElevationProfileCanvas
 PyQgsProject
 PyQgsFloatingWidget
 PyQgsLayoutHtml
+PyQgsLineSymbolLayers
 PyQgsMapBoxGlStyleConverter
+PyQgsMemoryProvider
 PyQgsNetworkAccessManager
 PyQgsPalLabelingPlacement
 PyQgsRasterAttributeTable
 PyQgsRasterLayerRenderer
+PyQgsShapefileProvider
+PyQgsSpatialiteProvider
 PyQgsSymbolLayerReadSld
+PyQgsVectorLayerEditBuffer
+PyQgsVectorLayerEditUtils
 PyQgsLayerDefinition
 PyQgsSettings
 PyQgsSettingsEntry
+PyQgsServerApi
 PyQgsServerWMSGetFeatureInfo
 PyQgsServerWMSGetMap
 PyQgsServerAccessControlWFSTransactional
 PyQgsServerWFS
 ProcessingQgisAlgorithmsTestPt2
+ProcessingQgisAlgorithmsTestPt3
 ProcessingQgisAlgorithmsTestPt4
 ProcessingGdalAlgorithmsVectorTest
+ProcessingGrassAlgorithmsImageryTest
 # PyQgsProviderRegistry runs fine locally on Fedora:rawhide but not on CI
 PyQgsProviderRegistry

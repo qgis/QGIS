@@ -28,3 +28,7 @@ namespace QgsWms
   void writeGetSchemaExtension( QgsServerResponse &response );
 
 } // namespace QgsWms
+
+
+
+

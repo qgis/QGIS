@@ -12,14 +12,9 @@ if(WITH_GUI)
   list(APPEND VCPKG_MANIFEST_FEATURES "gui")
 endif()
 
-# Binarycache can only be used on Windows or if mono is available.
-find_program(_VCPKG_MONO mono)
-if(NOT "${NUGET_TOKEN}" STREQUAL "" AND (CMAKE_HOST_WIN32 OR EXISTS "${_VCPKG_MONO}"))
-  if(CMAKE_HOST_WIN32)
-    set(_VCPKG_EXECUTABLE "$ENV{VCPKG_ROOT}/vcpkg.exe")
-  else()
-    set(_VCPKG_EXECUTABLE "$ENV{VCPKG_ROOT}/vcpkg")
-  endif()
+# Setup binary cache
+if(NOT "${NUGET_TOKEN}" STREQUAL "" AND WIN32)
+  set(_VCPKG_EXECUTABLE "vcpkg.exe")
 
   execute_process(
     COMMAND ${_VCPKG_EXECUTABLE} fetch nuget
@@ -29,11 +24,7 @@ if(NOT "${NUGET_TOKEN}" STREQUAL "" AND (CMAKE_HOST_WIN32 OR EXISTS "${_VCPKG_MO
   STRING(REGEX REPLACE "\n" ";" _FETCH_NUGET_OUTPUT "${_FETCH_NUGET_OUTPUT}")
   list(GET _FETCH_NUGET_OUTPUT -1 _NUGET_PATH)
 
-  if(CMAKE_HOST_WIN32)
-    set(_NUGET_EXE ${_NUGET_PATH})
-  else()
-    set(_NUGET_EXE ${_VCPKG_MONO} ${_NUGET_PATH})
-  endif()
+  set(_NUGET_EXE ${_NUGET_PATH})
 
   set(_CONFIG_PATH "${CMAKE_BINARY_DIR}/github-NuGet.Config")
 

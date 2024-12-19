@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgslocator.h"
-#include "moc_qgslocator.cpp"
 #include "qgsmessagelog.h"
 #include "qgssettingsentryimpl.h"
 

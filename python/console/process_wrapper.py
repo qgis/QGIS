@@ -15,6 +15,7 @@
 ***************************************************************************
 """
 
+
 import locale
 import os
 import subprocess
@@ -42,7 +43,7 @@ class ProcessWrapper(QObject):
             "stdout": subprocess.PIPE,
             "stdin": subprocess.PIPE,
             "stderr": subprocess.PIPE,
-            "shell": True,
+            "shell": True
         }
 
         # On Unix, we can use os.setsid
@@ -63,16 +64,12 @@ class ProcessWrapper(QObject):
 
         # Read process stdout and push to out queue
         self.q_out = Queue()
-        self.t_out = Thread(
-            daemon=True, target=self.enqueue_output, args=[self.p.stdout, self.q_out]
-        )
+        self.t_out = Thread(daemon=True, target=self.enqueue_output, args=[self.p.stdout, self.q_out])
         self.t_out.start()
 
         # Read process stderr and push to err queue
         self.q_err = Queue()
-        self.t_err = Thread(
-            daemon=True, target=self.enqueue_output, args=[self.p.stderr, self.q_err]
-        )
+        self.t_err = Thread(daemon=True, target=self.enqueue_output, args=[self.p.stderr, self.q_err])
         self.t_err.start()
 
         # Polls process and output both queues content to sys.stdout and sys.stderr
@@ -92,10 +89,8 @@ class ProcessWrapper(QObject):
         stream.close()
 
     def __repr__(self):
-        """Helpful representation of the maanaged process"""
-        status = (
-            "Running" if self.returncode is None else f"Completed ({self.returncode})"
-        )
+        """ Helpful representation of the maanaged process """
+        status = "Running" if self.returncode is None else f"Completed ({self.returncode})"
         repr = f"ProcessWrapper object at {hex(id(self))}"
         repr += f"\n - Status: {status}"
         repr += f"\n - stdout: {self.stdout}"
@@ -116,7 +111,7 @@ class ProcessWrapper(QObject):
         return text
 
     def read_content(self, queue, stream, is_stderr):
-        """Write queue content to the standard stream and append it to the internal buffer"""
+        """ Write queue content to the standard stream and append it to the internal buffer """
         content = b""
         while True:
             try:
@@ -135,7 +130,7 @@ class ProcessWrapper(QObject):
                 return
 
     def dequeue_output(self):
-        """Check process every 0.1s and forward its outputs to stdout and stderr"""
+        """ Check process every 0.1s and forward its outputs to stdout and stderr """
 
         # Poll process and forward its outputs to stdout and stderr
         while self.p.poll() is None:
@@ -156,11 +151,11 @@ class ProcessWrapper(QObject):
         self.finished.emit(self.returncode)
 
     def wait(self, timeout=1):
-        """Wait for the managed process to finish. If timeout=-1, waits indefinitely (and freeze the GUI)"""
+        """ Wait for the managed process to finish. If timeout=-1, waits indefinitely (and freeze the GUI) """
         self.p.wait(timeout)
 
     def write(self, data):
-        """Send data to the managed process"""
+        """ Send data to the managed process"""
         try:
             self.p.stdin.write((data + "\n").encode("utf8"))
             self.p.stdin.flush()
@@ -170,7 +165,7 @@ class ProcessWrapper(QObject):
             self.finished.emit(self.p.poll())
 
     def kill(self):
-        """Kill the managed process"""
+        """ Kill the managed process """
 
         # Process in run with shell=True, so calling self.p.kill() would only kill the shell
         # (i.e a text editor launched with !gedit would not close) so we need to iterate
@@ -178,7 +173,6 @@ class ProcessWrapper(QObject):
 
         try:
             import psutil
-
             if self.p.returncode is None:
                 process = psutil.Process(self.p.pid)
                 for child_process in process.children(recursive=True):
@@ -193,7 +187,7 @@ class ProcessWrapper(QObject):
                 self.p.kill()
 
     def __del__(self):
-        """Ensure streams are closed when the process is destroyed"""
+        """ Ensure streams are closed when the process is destroyed """
         self.p.stdout.close()
         self.p.stderr.close()
         self.p.stdin.close()

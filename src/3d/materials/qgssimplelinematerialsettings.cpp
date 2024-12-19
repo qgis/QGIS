@@ -22,7 +22,7 @@
 #include <Qt3DRender/QEffect>
 #include <QMap>
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <Qt3DRender/QGeometry>
@@ -71,15 +71,6 @@ QgsAbstractMaterialSettings *QgsSimpleLineMaterialSettings::create()
 QgsSimpleLineMaterialSettings *QgsSimpleLineMaterialSettings::clone() const
 {
   return new QgsSimpleLineMaterialSettings( *this );
-}
-
-bool QgsSimpleLineMaterialSettings::equals( const QgsAbstractMaterialSettings *other ) const
-{
-  const QgsSimpleLineMaterialSettings *otherLine = dynamic_cast<const QgsSimpleLineMaterialSettings *>( other );
-  if ( !otherLine )
-    return false;
-
-  return *this == *otherLine;
 }
 
 void QgsSimpleLineMaterialSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
@@ -131,7 +122,7 @@ QgsMaterial *QgsSimpleLineMaterialSettings::toMaterial( QgsMaterialSettingsRende
 QMap<QString, QString> QgsSimpleLineMaterialSettings::toExportParameters() const
 {
   QMap<QString, QString> parameters;
-  parameters[QStringLiteral( "Ka" )] = QStringLiteral( "%1 %2 %3" ).arg( mAmbient.redF() ).arg( mAmbient.greenF() ).arg( mAmbient.blueF() );
+  parameters[ QStringLiteral( "Ka" ) ] = QStringLiteral( "%1 %2 %3" ).arg( mAmbient.redF() ).arg( mAmbient.greenF() ).arg( mAmbient.blueF() );
   return parameters;
 }
 

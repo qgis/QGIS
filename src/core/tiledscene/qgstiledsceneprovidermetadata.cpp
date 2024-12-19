@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgstiledsceneprovidermetadata.h"
-#include "moc_qgstiledsceneprovidermetadata.cpp"
 #include "qgstiledsceneconnection.h"
 #include "qgsapplication.h"
 #include "qgstiledscenedataitems.h"

@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "November 2016"
-__copyright__ = "(C) 2016, Victor Olaya"
+__author__ = 'Victor Olaya'
+__date__ = 'November 2016'
+__copyright__ = '(C) 2016, Victor Olaya'
 
 import os
 from functools import partial
@@ -28,23 +28,15 @@ from qgis.utils import iface
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtGui import QTextCursor
-from qgis.PyQt.QtWidgets import (
-    QLineEdit,
-    QPushButton,
-    QLabel,
-    QComboBox,
-    QSpacerItem,
-    QSizePolicy,
-    QListWidgetItem,
-)
+from qgis.PyQt.QtWidgets import (QLineEdit, QPushButton, QLabel,
+                                 QComboBox, QSpacerItem, QSizePolicy,
+                                 QListWidgetItem)
 
-from qgis.core import (
-    QgsProcessingUtils,
-    QgsProcessingParameterDefinition,
-    QgsProcessingParameterRasterLayer,
-    QgsProcessingOutputRasterLayer,
-    QgsProject,
-)
+from qgis.core import (QgsProcessingUtils,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingOutputRasterLayer,
+                       QgsProject)
 
 from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_BATCH
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
@@ -57,8 +49,7 @@ from qgis.analysis import QgsRasterCalculatorEntry, QgsRasterCalcNode
 
 pluginPath = os.path.dirname(__file__)
 WIDGET_ADD_NEW, BASE_ADD_NEW = uic.loadUiType(
-    os.path.join(pluginPath, "AddNewExpressionDialog.ui")
-)
+    os.path.join(pluginPath, 'AddNewExpressionDialog.ui'))
 
 
 class AddNewExpressionDialog(BASE_ADD_NEW, WIDGET_ADD_NEW):
@@ -83,8 +74,7 @@ class AddNewExpressionDialog(BASE_ADD_NEW, WIDGET_ADD_NEW):
 
 
 WIDGET_DLG, BASE_DLG = uic.loadUiType(
-    os.path.join(pluginPath, "PredefinedExpressionDialog.ui")
-)
+    os.path.join(pluginPath, 'PredefinedExpressionDialog.ui'))
 
 
 class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
@@ -96,7 +86,7 @@ class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
         self.filledExpression = None
         self.options = options
         self.expression = expression
-        self.variables = set(re.findall(r"\[.*?\]", expression))
+        self.variables = set(re.findall(r'\[.*?\]', expression))
         self.comboBoxes = {}
         for variable in self.variables:
             label = QLabel(variable[1:-1])
@@ -107,9 +97,7 @@ class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
             self.groupBox.layout().addWidget(label)
             self.groupBox.layout().addWidget(combo)
 
-        verticalSpacer = QSpacerItem(
-            20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding
-        )
+        verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         self.groupBox.layout().addItem(verticalSpacer)
 
         self.buttonBox.rejected.connect(self.cancelPressed)
@@ -121,13 +109,13 @@ class PredefinedExpressionDialog(BASE_DLG, WIDGET_DLG):
     def okPressed(self):
         self.filledExpression = self.expression
         for name, combo in self.comboBoxes.items():
-            self.filledExpression = self.filledExpression.replace(
-                name, self.options[combo.currentText()]
-            )
+            self.filledExpression = self.filledExpression.replace(name,
+                                                                  self.options[combo.currentText()])
         self.close()
 
 
-WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, "RasterCalculatorWidget.ui"))
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'RasterCalculatorWidget.ui'))
 
 
 class ExpressionWidget(BASE, WIDGET):
@@ -145,16 +133,10 @@ class ExpressionWidget(BASE, WIDGET):
         def addButtonText(text):
             if any(c for c in text if c.islower()):
                 self.text.insertPlainText(f" {text}()")
-                self.text.moveCursor(
-                    QTextCursor.MoveOperation.PreviousCharacter,
-                    QTextCursor.MoveMode.MoveAnchor,
-                )
+                self.text.moveCursor(QTextCursor.MoveOperation.PreviousCharacter, QTextCursor.MoveMode.MoveAnchor)
             else:
                 self.text.insertPlainText(f" {text} ")
-
-        buttons = [
-            b for b in self.buttonsGroupBox.children() if isinstance(b, QPushButton)
-        ]
+        buttons = [b for b in self.buttonsGroupBox.children()if isinstance(b, QPushButton)]
         for button in buttons:
             button.clicked.connect(partial(addButtonText, button.text()))
         self.listWidget.itemDoubleClicked.connect(doubleClicked)
@@ -172,33 +154,25 @@ class ExpressionWidget(BASE, WIDGET):
         self.text.textChanged.connect(self.expressionValid)
 
     def expressionValid(self):
-        errorString = ""
-        testNode = QgsRasterCalcNode.parseRasterCalcString(
-            self.text.toPlainText(), errorString
-        )
+        errorString = ''
+        testNode = QgsRasterCalcNode.parseRasterCalcString(self.text.toPlainText(), errorString)
 
         if not self.text.toPlainText():
-            self.expressionErrorLabel.setText(self.tr("Expression is empty"))
+            self.expressionErrorLabel.setText(self.tr('Expression is empty'))
             self.expressionErrorLabel.setStyleSheet("QLabel { color: black; }")
             return False
 
         if testNode:
-            self.expressionErrorLabel.setText(self.tr("Expression is valid"))
-            self.expressionErrorLabel.setStyleSheet(
-                "QLabel { color: green; font-weight: bold; }"
-            )
+            self.expressionErrorLabel.setText(self.tr('Expression is valid'))
+            self.expressionErrorLabel.setStyleSheet("QLabel { color: green; font-weight: bold; }")
             return True
 
-        self.expressionErrorLabel.setText(
-            self.tr("Expression is not valid ") + errorString
-        )
-        self.expressionErrorLabel.setStyleSheet(
-            "QLabel { color : red; font-weight: bold; }"
-        )
+        self.expressionErrorLabel.setText(self.tr('Expression is not valid ') + errorString)
+        self.expressionErrorLabel.setStyleSheet("QLabel { color : red; font-weight: bold; }")
         return False
 
     def expsFile(self):
-        return os.path.join(userFolder(), "rastercalcexpressions.json")
+        return os.path.join(userFolder(), 'rastercalcexpressions.json')
 
     def addPredefined(self):
         expression = self.expressions[self.comboPredefined.currentText()]
@@ -212,7 +186,7 @@ class ExpressionWidget(BASE, WIDGET):
         used = [v for v in self.options.values() if v in exp]
 
         for i, v in enumerate(used):
-            exp = exp.replace(v, f"[{chr(97 + i)}]")
+            exp = exp.replace(v, f'[{chr(97 + i)}]')
 
         dlg = AddNewExpressionDialog(exp)
         dlg.exec()
@@ -236,7 +210,7 @@ class ExpressionWidget(BASE, WIDGET):
             for entry in entries:
                 if entry.ref == name:
                     return entry.raster.source()
-            return ""
+            return ''
 
         for name in options.keys():
             item = QListWidgetItem(name, self.listWidget)
@@ -266,25 +240,14 @@ class ExpressionWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
-            if (
-                iface is not None
-                and iface.layerTreeView() is not None
-                and iface.layerTreeView().layerTreeModel() is not None
-            ):
+            if iface is not None and iface.layerTreeView() is not None and iface.layerTreeView().layerTreeModel() is not None:
                 iface.layerTreeView().layerTreeModel().dataChanged.connect(self.refresh)
             return self._panel(self._get_options())
         elif self.dialogType == DIALOG_BATCH:
             return QLineEdit()
         else:
-            layers = self.dialog.getAvailableValuesOfType(
-                [QgsProcessingParameterRasterLayer], [QgsProcessingOutputRasterLayer]
-            )
-            options = {
-                self.dialog.resolveValueDescription(
-                    lyr
-                ): f"{self.dialog.resolveValueDescription(lyr)}@1"
-                for lyr in layers
-            }
+            layers = self.dialog.getAvailableValuesOfType([QgsProcessingParameterRasterLayer], [QgsProcessingOutputRasterLayer])
+            options = {self.dialog.resolveValueDescription(lyr): f"{self.dialog.resolveValueDescription(lyr)}@1" for lyr in layers}
             self.widget = self._panel(options)
             return self.widget
 
@@ -312,9 +275,7 @@ class LayersListWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType == DIALOG_BATCH:
-            widget = BatchInputSelectionPanel(
-                self.parameterDefinition(), self.row, self.col, self.dialog
-            )
+            widget = BatchInputSelectionPanel(self.parameterDefinition(), self.row, self.col, self.dialog)
             widget.valueChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             return widget
         else:
@@ -330,27 +291,17 @@ class LayersListWidgetWrapper(WidgetWrapper):
                 return self.param.setValue(self.widget.selectedoptions)
             else:
                 if self.param.datatype == dataobjects.TYPE_RASTER:
-                    options = QgsProcessingUtils.compatibleRasterLayers(
-                        QgsProject.instance(), False
-                    )
+                    options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
                 elif self.param.datatype == dataobjects.TYPE_VECTOR_ANY:
-                    options = QgsProcessingUtils.compatibleVectorLayers(
-                        QgsProject.instance(), [], False
-                    )
+                    options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
                 else:
-                    options = QgsProcessingUtils.compatibleVectorLayers(
-                        QgsProject.instance(), [self.param.datatype], False
-                    )
+                    options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.datatype], False)
                 return [options[i] for i in self.widget.selectedoptions]
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.getText()
         else:
             options = self._getOptions()
             values = [options[i] for i in self.widget.selectedoptions]
-            if (
-                len(values) == 0
-                and not self.parameterDefinition().flags()
-                & QgsProcessingParameterDefinition.Flag.FlagOptional
-            ):
+            if len(values) == 0 and not self.parameterDefinition().flags() & QgsProcessingParameterDefinition.Flag.FlagOptional:
                 raise InvalidParameterValue()
             return values

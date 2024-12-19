@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgspresetcolorrampdialog.h"
-#include "moc_qgspresetcolorrampdialog.cpp"
 
 #include "qgssymbollayerutils.h"
 #include "qgscolordialog.h"

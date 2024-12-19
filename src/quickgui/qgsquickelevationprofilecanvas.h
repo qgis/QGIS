@@ -58,6 +58,7 @@ class QUICK_EXPORT QgsQuickElevationProfileCanvas : public QQuickItem
     Q_PROPERTY( bool isRendering READ isRendering NOTIFY isRenderingChanged )
 
   public:
+
     /**
      * Constructor for QgsElevationProfileCanvas, with the specified \a parent widget.
      */
@@ -258,6 +259,8 @@ class QUICK_EXPORT QgsQuickElevationProfileCanvas : public QQuickItem
 
     QgsGeometry mProfileCurve;
     double mTolerance = 0;
+
+    bool mFirstDrawOccurred = false;
 
     bool mZoomFullWhenJobFinished = true;
 

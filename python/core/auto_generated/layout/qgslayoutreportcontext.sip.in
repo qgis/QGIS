@@ -74,7 +74,7 @@ Emits the :py:func:`~QgsLayoutReportContext.changed` signal.
 .. seealso:: :py:func:`layer`
 %End
 
- void setPredefinedScales( const QVector<qreal> &scales ) /Deprecated="Since 3.40. Use QgsLayoutRenderContext.setPredefinedScales()."/;
+ void setPredefinedScales( const QVector<qreal> &scales ) /Deprecated/;
 %Docstring
 Sets the list of predefined ``scales`` to use with the layout. This is used
 for maps which are set to the predefined atlas scaling mode.
@@ -86,7 +86,7 @@ for maps which are set to the predefined atlas scaling mode.
    Use :py:func:`QgsLayoutRenderContext.setPredefinedScales()`.
 %End
 
- QVector<qreal> predefinedScales() const /Deprecated="Since 3.40. Use QgsLayoutRenderContext.predefinedScales()."/;
+ QVector<qreal> predefinedScales() const /Deprecated/;
 %Docstring
 Returns the current list of predefined scales for use with the layout.
 

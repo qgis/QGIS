@@ -43,7 +43,7 @@ QgsSingleBandGrayRenderer cannot be copied. Use :py:func:`~QgsSingleBandGrayRend
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
 
 
- int grayBand() const /Deprecated="Since 3.38. Use inputBand() instead."/;
+ int grayBand() const /Deprecated/;
 %Docstring
 
 .. deprecated:: 3.38
@@ -51,7 +51,7 @@ QgsSingleBandGrayRenderer cannot be copied. Use :py:func:`~QgsSingleBandGrayRend
    Use :py:func:`~QgsSingleBandGrayRenderer.inputBand` instead.
 %End
 
- void setGrayBand( int band ) /Deprecated="Since 3.38. Use setInputBand() instead."/;
+ void setGrayBand( int band ) /Deprecated/;
 %Docstring
 
 .. deprecated:: 3.38
@@ -106,7 +106,6 @@ Ownership of ``settings`` is transferred.
 
 .. versionadded:: 3.18
 %End
-
 
   private:
     QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer & );

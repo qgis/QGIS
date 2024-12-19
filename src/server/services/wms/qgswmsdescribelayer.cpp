@@ -29,7 +29,8 @@
 namespace QgsWms
 {
 
-  void writeDescribeLayer( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response )
+  void writeDescribeLayer( QgsServerInterface *serverIface, const QgsProject *project,
+                           const QgsWmsRequest &request, QgsServerResponse &response )
   {
     const QDomDocument doc = describeLayer( serverIface, project, request );
     response.setHeader( QStringLiteral( "Content-Type" ), QStringLiteral( "text/xml; charset=utf-8" ) );
@@ -37,33 +38,37 @@ namespace QgsWms
   }
 
   // DescribeLayer is defined for WMS1.1.1/SLD1.0 and in WMS 1.3.0 SLD Extension
-  QDomDocument describeLayer( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request )
+  QDomDocument describeLayer( QgsServerInterface *serverIface, const QgsProject *project,
+                              const QgsWmsRequest &request )
   {
     const QgsServerRequest::Parameters parameters = request.parameters();
 
     if ( !parameters.contains( QStringLiteral( "SLD_VERSION" ) ) )
     {
-      throw QgsServiceException( QStringLiteral( "MissingParameterValue" ), QStringLiteral( "SLD_VERSION is mandatory for DescribeLayer operation" ), 400 );
+      throw QgsServiceException( QStringLiteral( "MissingParameterValue" ),
+                                 QStringLiteral( "SLD_VERSION is mandatory for DescribeLayer operation" ), 400 );
     }
-    if ( parameters[QStringLiteral( "SLD_VERSION" )] != QLatin1String( "1.1.0" ) )
+    if ( parameters[ QStringLiteral( "SLD_VERSION" )] != QLatin1String( "1.1.0" ) )
     {
-      throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ), QStringLiteral( "SLD_VERSION = %1 is not supported" ).arg( parameters[QStringLiteral( "SLD_VERSION" )] ), 400 );
+      throw QgsServiceException( QStringLiteral( "InvalidParameterValue" ),
+                                 QStringLiteral( "SLD_VERSION = %1 is not supported" ).arg( parameters[ QStringLiteral( "SLD_VERSION" )] ), 400 );
     }
 
     if ( !parameters.contains( QStringLiteral( "LAYERS" ) ) && !parameters.contains( QStringLiteral( "LAYER" ) ) )
     {
-      throw QgsServiceException( QStringLiteral( "MissingParameterValue" ), QStringLiteral( "LAYERS or LAYER is mandatory for DescribeLayer operation" ), 400 );
+      throw QgsServiceException( QStringLiteral( "MissingParameterValue" ),
+                                 QStringLiteral( "LAYERS or LAYER is mandatory for DescribeLayer operation" ), 400 );
     }
 
     QStringList layersList;
 
     if ( parameters.contains( QStringLiteral( "LAYERS" ) ) )
     {
-      layersList = parameters[QStringLiteral( "LAYERS" )].split( ',', Qt::SkipEmptyParts );
+      layersList = parameters[ QStringLiteral( "LAYERS" )].split( ',', Qt::SkipEmptyParts );
     }
     else
     {
-      layersList = parameters[QStringLiteral( "LAYER" )].split( ',', Qt::SkipEmptyParts );
+      layersList = parameters[ QStringLiteral( "LAYER" )].split( ',', Qt::SkipEmptyParts );
     }
     if ( layersList.isEmpty() )
     {
@@ -112,7 +117,7 @@ namespace QgsWms
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
     QgsAccessControl *accessControl = serverIface->accessControls();
 #else
-    ( void ) serverIface;
+    ( void )serverIface;
 #endif
     // Use layer ids
     const bool useLayerIds = QgsServerProjectUtils::wmsUseLayerIds( *project );

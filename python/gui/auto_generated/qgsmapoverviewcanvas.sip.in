@@ -56,6 +56,7 @@ Triggered when a layer in the overview requests a repaint.
 %End
 
   protected:
+
     void drawExtentRect();
 %Docstring
 used for overview canvas to reflect changed extent in main map canvas

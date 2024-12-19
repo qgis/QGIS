@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "April 2013"
-__copyright__ = "(C) 2013, Victor Olaya"
+__author__ = 'Victor Olaya'
+__date__ = 'April 2013'
+__copyright__ = '(C) 2013, Victor Olaya'
 
 from qgis.PyQt.QtCore import Qt, QCoreApplication
 from qgis.PyQt.QtWidgets import QProgressBar
@@ -32,19 +32,15 @@ class MessageBarProgress(QgsProcessingFeedback):
         QgsProcessingFeedback.__init__(self)
 
         self.msg = []
-        self.progressMessageBar = iface.messageBar().createMessage(
-            self.tr("Executing algorithm <i>{}</i>".format(algname if algname else ""))
-        )
+        self.progressMessageBar = \
+            iface.messageBar().createMessage(self.tr('Executing algorithm <i>{}</i>'.format(algname if algname else '')))
         self.progress = QProgressBar()
         self.progressChanged.connect(self.set_progress_bar_value)
         self.progress.setMaximum(100)
-        self.progress.setAlignment(
-            Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter
-        )
+        self.progress.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
         self.progressMessageBar.layout().addWidget(self.progress)
-        self.message_bar_item = iface.messageBar().pushWidget(
-            self.progressMessageBar, Qgis.MessageLevel.Info
-        )
+        self.message_bar_item = iface.messageBar().pushWidget(self.progressMessageBar,
+                                                              Qgis.MessageLevel.Info)
 
     def set_progress_bar_value(self, progress: float):
         """
@@ -59,16 +55,12 @@ class MessageBarProgress(QgsProcessingFeedback):
     def close(self):
         if self.msg:
             dlg = MessageDialog()
-            dlg.setTitle(
-                QCoreApplication.translate(
-                    "MessageBarProgress", "Problem executing algorithm"
-                )
-            )
+            dlg.setTitle(QCoreApplication.translate('MessageBarProgress', 'Problem executing algorithm'))
             dlg.setMessage("<br>".join(self.msg))
             dlg.exec()
         iface.messageBar().popWidget(self.message_bar_item)
 
-    def tr(self, string, context=""):
-        if context == "":
-            context = "MessageBarProgress"
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'MessageBarProgress'
         return QCoreApplication.translate(context, string)

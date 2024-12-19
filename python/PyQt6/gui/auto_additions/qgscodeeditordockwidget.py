@@ -3,5 +3,5 @@ try:
     QgsCodeEditorDockWidget.__attribute_docs__ = {'visibilityChanged': "Emitted when the editor's visibility is changed.\n"}
     QgsCodeEditorDockWidget.__signal_arguments__ = {'visibilityChanged': ['isVisible: bool']}
     QgsCodeEditorDockWidget.__group__ = ['codeeditors']
-except (NameError, AttributeError):
+except NameError:
     pass

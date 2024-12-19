@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsauthcerttrustpolicycombobox.h"
-#include "moc_qgsauthcerttrustpolicycombobox.cpp"
 
 #include <QLineEdit>
 
@@ -26,13 +25,18 @@
 #include "qgsapplication.h"
 
 
-QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent, QgsAuthCertUtils::CertTrustPolicy policy, QgsAuthCertUtils::CertTrustPolicy defaultpolicy )
+QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent,
+    QgsAuthCertUtils::CertTrustPolicy policy,
+    QgsAuthCertUtils::CertTrustPolicy defaultpolicy )
   : QComboBox( parent )
 {
-  QList<QPair<QgsAuthCertUtils::CertTrustPolicy, QString>> policies;
-  policies << qMakePair( QgsAuthCertUtils::DefaultTrust, defaultTrustText( defaultpolicy ) )
-           << qMakePair( QgsAuthCertUtils::Trusted, QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Trusted ) )
-           << qMakePair( QgsAuthCertUtils::Untrusted, QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted ) );
+  QList < QPair<QgsAuthCertUtils::CertTrustPolicy, QString> > policies;
+  policies << qMakePair( QgsAuthCertUtils::DefaultTrust,
+                         defaultTrustText( defaultpolicy ) )
+           << qMakePair( QgsAuthCertUtils::Trusted,
+                         QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Trusted ) )
+           << qMakePair( QgsAuthCertUtils::Untrusted,
+                         QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::Untrusted ) );
 
   for ( int i = 0; i < policies.size(); i++ )
   {
@@ -45,10 +49,11 @@ QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent,
   setItemData( 2, QgsAuthGuiUtils::redColor(), Qt::ForegroundRole );
 
   // for styling closed state of combobox
-  //  setEditable( true );
-  //  lineEdit()->setReadOnly( true );
+//  setEditable( true );
+//  lineEdit()->setReadOnly( true );
 
-  connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsAuthCertTrustPolicyComboBox::highlightCurrentIndex );
+  connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+           this, &QgsAuthCertTrustPolicyComboBox::highlightCurrentIndex );
 
   setTrustPolicy( policy );
   setDefaultTrustPolicy( defaultpolicy );
@@ -56,12 +61,12 @@ QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent,
 
 QgsAuthCertUtils::CertTrustPolicy QgsAuthCertTrustPolicyComboBox::trustPolicy()
 {
-  return ( QgsAuthCertUtils::CertTrustPolicy ) currentData().toInt();
+  return ( QgsAuthCertUtils::CertTrustPolicy )currentData().toInt();
 }
 
 QgsAuthCertUtils::CertTrustPolicy QgsAuthCertTrustPolicyComboBox::trustPolicyForIndex( int indx )
 {
-  return ( QgsAuthCertUtils::CertTrustPolicy ) itemData( indx ).toInt();
+  return ( QgsAuthCertUtils::CertTrustPolicy )itemData( indx ).toInt();
 }
 
 void QgsAuthCertTrustPolicyComboBox::setTrustPolicy( QgsAuthCertUtils::CertTrustPolicy policy )
@@ -78,7 +83,7 @@ void QgsAuthCertTrustPolicyComboBox::setDefaultTrustPolicy( QgsAuthCertUtils::Ce
 
 void QgsAuthCertTrustPolicyComboBox::highlightCurrentIndex( int indx )
 {
-  const QgsAuthCertUtils::CertTrustPolicy policy = ( QgsAuthCertUtils::CertTrustPolicy ) itemData( indx ).toInt();
+  const QgsAuthCertUtils::CertTrustPolicy policy = ( QgsAuthCertUtils::CertTrustPolicy )itemData( indx ).toInt();
   QString ss;
 
   // TODO: why are these widget state selectors backwards?
@@ -115,5 +120,6 @@ const QString QgsAuthCertTrustPolicyComboBox::defaultTrustText( QgsAuthCertUtils
     }
   }
   return QStringLiteral( "%1 (%2)" )
-    .arg( QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::DefaultTrust ), QgsAuthCertUtils::getCertTrustName( defaultpolicy ) );
+         .arg( QgsAuthCertUtils::getCertTrustName( QgsAuthCertUtils::DefaultTrust ),
+               QgsAuthCertUtils::getCertTrustName( defaultpolicy ) );
 }

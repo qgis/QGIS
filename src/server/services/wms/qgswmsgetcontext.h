@@ -25,11 +25,20 @@ namespace QgsWms
   /**
    * Output GetContext response
    */
-  void writeGetContext( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response );
+  void writeGetContext( QgsServerInterface *serverIface,
+                        const QgsProject *project,
+                        const QgsWmsRequest &request,
+                        QgsServerResponse &response );
 
   /**
    * Returns XML document for the 'GetContext' request
    */
-  QDomDocument getContext( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request );
+  QDomDocument getContext( QgsServerInterface *serverIface,
+                           const QgsProject *project,
+                           const QgsWmsRequest &request );
 
 } // namespace QgsWms
+
+
+
+

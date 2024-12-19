@@ -2,5 +2,5 @@
 try:
     QgsRunProcess.create = staticmethod(QgsRunProcess.create)
     QgsRunProcess.splitCommand = staticmethod(QgsRunProcess.splitCommand)
-except (NameError, AttributeError):
+except NameError:
     pass

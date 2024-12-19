@@ -49,6 +49,7 @@ class _3D_EXPORT QgsTextureMaterial : public QgsMaterial
     Q_PROPERTY( Qt3DRender::QAbstractTexture *texture READ texture WRITE setTexture NOTIFY textureChanged )
 
   public:
+
     /**
      * Constructor for QgsTextureMaterial, with the specified \a parent node.
      */
@@ -78,6 +79,7 @@ class _3D_EXPORT QgsTextureMaterial : public QgsMaterial
     Qt3DRender::QRenderPass *mGL3RenderPass = nullptr;
     Qt3DRender::QShaderProgram *mGL3Shader = nullptr;
     Qt3DRender::QFilterKey *mFilterKey = nullptr;
+
 };
 
 ///@endcond PRIVATE

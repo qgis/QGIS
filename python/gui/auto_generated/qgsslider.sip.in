@@ -9,7 +9,6 @@
 
 
 
-
 class QgsSlider : QSlider
 {
 
@@ -17,6 +16,7 @@ class QgsSlider : QSlider
 #include "qgsslider.h"
 %End
   public:
+
     QgsSlider( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSlider
@@ -41,7 +41,6 @@ Constructor for QgsSlider
 
 
 };
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

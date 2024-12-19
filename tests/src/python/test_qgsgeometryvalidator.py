@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "03/10/2016"
-__copyright__ = "Copyright 2016, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '03/10/2016'
+__copyright__ = 'Copyright 2016, The QGIS Project'
 
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.core import QgsGeometry, QgsGeometryValidator, QgsPointXY
@@ -21,7 +20,7 @@ app = start_app()
 class TestQgsGeometryValidator(QgisTestCase):
 
     def testIssue15660(self):
-        """Test crash when validating geometry (#15660)"""
+        """ Test crash when validating geometry (#15660) """
         g = QgsGeometry.fromWkt(
             "Polygon ((0.44256348235389709 -47.87645625696347906, -2.88231630340906797 -47.90003919913998232,"
             "-2.88589842578005751 -48.91215450743293047, -2.8858984257800584 -48.91215450743293047,"
@@ -52,17 +51,14 @@ class TestQgsGeometryValidator(QgisTestCase):
             "-2.71083842578005996 -44.83541850743291945, -2.71083842578005729 -44.83541850743291945,"
             "-0.86779302740823816 -44.89143693883772812, -0.86745855610774569 -44.87743669555854353,"
             "0.29843811058281489 -44.90401226269042922, 0.20437651721061911 -46.69301920907949466,"
-            "0.50389019278376956 -46.71008040893148916, 0.44256348235389709 -47.87645625696347906))"
-        )
+            "0.50389019278376956 -46.71008040893148916, 0.44256348235389709 -47.87645625696347906))")
 
         self.assertTrue(g)
         # make sure validating this geometry doesn't crash QGIS
         QgsGeometryValidator.validateGeometry(g)
 
     def test_linestring_duplicate_nodes(self):
-        g = QgsGeometry.fromWkt(
-            "LineString (1 1, 1 1, 1 1, 1 2, 1 3, 1 3, 1 3, 1 4, 1 5, 1 6, 1 6)"
-        )
+        g = QgsGeometry.fromWkt("LineString (1 1, 1 1, 1 1, 1 2, 1 3, 1 3, 1 3, 1 4, 1 5, 1 6, 1 6)")
 
         validator = QgsGeometryValidator(g)
         spy = QSignalSpy(validator.errorFound)
@@ -70,20 +66,13 @@ class TestQgsGeometryValidator(QgisTestCase):
 
         self.assertEqual(len(spy), 3)
         self.assertEqual(spy[0][0].where(), QgsPointXY(1, 6))
-        self.assertEqual(
-            spy[0][0].what(),
-            "line 1 contains 2 duplicate node(s) starting at vertex 10",
-        )
+        self.assertEqual(spy[0][0].what(), 'line 1 contains 2 duplicate node(s) starting at vertex 10')
 
         self.assertEqual(spy[1][0].where(), QgsPointXY(1, 3))
-        self.assertEqual(
-            spy[1][0].what(), "line 1 contains 3 duplicate node(s) starting at vertex 5"
-        )
+        self.assertEqual(spy[1][0].what(), 'line 1 contains 3 duplicate node(s) starting at vertex 5')
 
         self.assertEqual(spy[2][0].where(), QgsPointXY(1, 1))
-        self.assertEqual(
-            spy[2][0].what(), "line 1 contains 3 duplicate node(s) starting at vertex 1"
-        )
+        self.assertEqual(spy[2][0].what(), 'line 1 contains 3 duplicate node(s) starting at vertex 1')
 
     def test_linestring_intersections(self):
         # no intersections
@@ -119,15 +108,11 @@ class TestQgsGeometryValidator(QgisTestCase):
 
         self.assertEqual(len(spy), 1)
         self.assertEqual(spy[0][0].where(), QgsPointXY(5, 5))
-        self.assertEqual(
-            spy[0][0].what(), "segments 0 and 2 of line 0 intersect at 5, 5"
-        )
+        self.assertEqual(spy[0][0].what(), 'segments 0 and 2 of line 0 intersect at 5, 5')
 
         # tests issue #54022
         # Test number 1
-        g = QgsGeometry.fromWkt(
-            "LineString (10.516394879668999 59.73620343022049894, 10.51672588102520045 59.73642831668259845, 10.51671297289430029 59.73629479296509004, 10.516394879668999 59.73620343022049894)"
-        )
+        g = QgsGeometry.fromWkt("LineString (10.516394879668999 59.73620343022049894, 10.51672588102520045 59.73642831668259845, 10.51671297289430029 59.73629479296509004, 10.516394879668999 59.73620343022049894)")
         validator = QgsGeometryValidator(g)
         spy = QSignalSpy(validator.errorFound)
         validator.run()
@@ -135,9 +120,7 @@ class TestQgsGeometryValidator(QgisTestCase):
         self.assertEqual(len(spy), 0)
 
         # Test number 2
-        g = QgsGeometry.fromWkt(
-            "LINESTRING (10.516394879668999 59.73620343022049894, 10.51672588102520045 59.73642831668259845, 10.51671297289430029 59.73619479296509004, 10.516394879668999 59.73620343022049894)"
-        )
+        g = QgsGeometry.fromWkt("LINESTRING (10.516394879668999 59.73620343022049894, 10.51672588102520045 59.73642831668259845, 10.51671297289430029 59.73619479296509004, 10.516394879668999 59.73620343022049894)")
         validator = QgsGeometryValidator(g)
         spy = QSignalSpy(validator.errorFound)
         validator.run()
@@ -146,9 +129,7 @@ class TestQgsGeometryValidator(QgisTestCase):
 
     def test_ring_intersections(self):
         # no intersections
-        g = QgsGeometry.fromWkt(
-            "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 5 1, 1 9, 1 1), (6 9, 2 9, 6 1, 6 9))"
-        )
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 5 1, 1 9, 1 1), (6 9, 2 9, 6 1, 6 9))")
 
         validator = QgsGeometryValidator(g)
         spy = QSignalSpy(validator.errorFound)
@@ -157,9 +138,7 @@ class TestQgsGeometryValidator(QgisTestCase):
         self.assertEqual(len(spy), 0)
 
         # two interior rings intersecting
-        g = QgsGeometry.fromWkt(
-            "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 5 1, 1 9, 1 1), (2 2, 5 2, 2 9, 2 2))"
-        )
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 5 1, 1 9, 1 1), (2 2, 5 2, 2 9, 2 2))")
 
         validator = QgsGeometryValidator(g)
         spy = QSignalSpy(validator.errorFound)
@@ -168,16 +147,10 @@ class TestQgsGeometryValidator(QgisTestCase):
         self.assertEqual(len(spy), 2)
 
         self.assertEqual(spy[0][0].where(), QgsPointXY(4.5, 2))
-        self.assertEqual(
-            spy[0][0].what(),
-            "segment 1 of ring 1 of polygon 0 intersects segment 0 of ring 2 of polygon 0 at 4.5, 2",
-        )
+        self.assertEqual(spy[0][0].what(), 'segment 1 of ring 1 of polygon 0 intersects segment 0 of ring 2 of polygon 0 at 4.5, 2')
 
         self.assertEqual(spy[1][0].where(), QgsPointXY(2, 7))
-        self.assertEqual(
-            spy[1][0].what(),
-            "segment 1 of ring 1 of polygon 0 intersects segment 2 of ring 2 of polygon 0 at 2, 7",
-        )
+        self.assertEqual(spy[1][0].what(), 'segment 1 of ring 1 of polygon 0 intersects segment 2 of ring 2 of polygon 0 at 2, 7')
 
     def test_line_vertices(self):
         # valid line
@@ -197,7 +170,7 @@ class TestQgsGeometryValidator(QgisTestCase):
         self.assertEqual(len(spy), 1)
 
         self.assertEqual(spy[0][0].where(), QgsPointXY())
-        self.assertEqual(spy[0][0].what(), "line 0 with less than two points")
+        self.assertEqual(spy[0][0].what(), 'line 0 with less than two points')
 
         g = QgsGeometry.fromWkt("LineString ()")
 
@@ -207,7 +180,7 @@ class TestQgsGeometryValidator(QgisTestCase):
         self.assertEqual(len(spy), 1)
 
         self.assertEqual(spy[0][0].where(), QgsPointXY())
-        self.assertEqual(spy[0][0].what(), "line 0 with less than two points")
+        self.assertEqual(spy[0][0].what(), 'line 0 with less than two points')
 
     def test_ring_vertex_count(self):
         # valid ring
@@ -227,7 +200,7 @@ class TestQgsGeometryValidator(QgisTestCase):
         self.assertEqual(len(spy), 1)
 
         self.assertEqual(spy[0][0].where(), QgsPointXY())
-        self.assertEqual(spy[0][0].what(), "ring 0 with less than four points")
+        self.assertEqual(spy[0][0].what(), 'ring 0 with less than four points')
 
         g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 0 0))")
 
@@ -237,7 +210,7 @@ class TestQgsGeometryValidator(QgisTestCase):
         self.assertEqual(len(spy), 1)
 
         self.assertEqual(spy[0][0].where(), QgsPointXY())
-        self.assertEqual(spy[0][0].what(), "ring 0 with less than four points")
+        self.assertEqual(spy[0][0].what(), 'ring 0 with less than four points')
 
         g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0))")
 
@@ -247,7 +220,7 @@ class TestQgsGeometryValidator(QgisTestCase):
         self.assertEqual(len(spy), 1)
 
         self.assertEqual(spy[0][0].where(), QgsPointXY())
-        self.assertEqual(spy[0][0].what(), "ring 0 with less than four points")
+        self.assertEqual(spy[0][0].what(), 'ring 0 with less than four points')
 
         g = QgsGeometry.fromWkt("Polygon ((0 0))")
 
@@ -257,7 +230,7 @@ class TestQgsGeometryValidator(QgisTestCase):
         self.assertEqual(len(spy), 1)
 
         self.assertEqual(spy[0][0].where(), QgsPointXY())
-        self.assertEqual(spy[0][0].what(), "ring 0 with less than four points")
+        self.assertEqual(spy[0][0].what(), 'ring 0 with less than four points')
 
         g = QgsGeometry.fromWkt("Polygon (())")
 
@@ -274,20 +247,16 @@ class TestQgsGeometryValidator(QgisTestCase):
         self.assertEqual(len(spy), 1)
 
         self.assertEqual(spy[0][0].where(), QgsPointXY())
-        self.assertEqual(spy[0][0].what(), "ring 1 with less than four points")
+        self.assertEqual(spy[0][0].what(), 'ring 1 with less than four points')
 
-        g = QgsGeometry.fromWkt(
-            "Polygon ((0 0, 10 0, 10 10, 0 0),(1 1, 2 1, 2 2, 1 1))"
-        )
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 0 0),(1 1, 2 1, 2 2, 1 1))")
 
         validator = QgsGeometryValidator(g)
         spy = QSignalSpy(validator.errorFound)
         validator.run()
         self.assertEqual(len(spy), 0)
 
-        g = QgsGeometry.fromWkt(
-            "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 2 1, 2 2, 1 1),(3 3, 3 4, 4 4))"
-        )
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 2 1, 2 2, 1 1),(3 3, 3 4, 4 4))")
 
         validator = QgsGeometryValidator(g)
         spy = QSignalSpy(validator.errorFound)
@@ -295,7 +264,7 @@ class TestQgsGeometryValidator(QgisTestCase):
         self.assertEqual(len(spy), 1)
 
         self.assertEqual(spy[0][0].where(), QgsPointXY())
-        self.assertEqual(spy[0][0].what(), "ring 2 with less than four points")
+        self.assertEqual(spy[0][0].what(), 'ring 2 with less than four points')
 
     def test_ring_closed(self):
         # valid ring
@@ -315,11 +284,9 @@ class TestQgsGeometryValidator(QgisTestCase):
         self.assertEqual(len(spy), 1)
 
         self.assertEqual(spy[0][0].where(), QgsPointXY(0, 0))
-        self.assertEqual(spy[0][0].what(), "ring 0 not closed")
+        self.assertEqual(spy[0][0].what(), 'ring 0 not closed')
 
-        g = QgsGeometry.fromWkt(
-            "Polygon ((0 0, 10 0, 10 10, 0 0),(1 1, 2 1, 2 2, 1.1 1))"
-        )
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 0 0),(1 1, 2 1, 2 2, 1.1 1))")
 
         validator = QgsGeometryValidator(g)
         spy = QSignalSpy(validator.errorFound)
@@ -327,11 +294,9 @@ class TestQgsGeometryValidator(QgisTestCase):
         self.assertEqual(len(spy), 1)
 
         self.assertEqual(spy[0][0].where(), QgsPointXY(1, 1))
-        self.assertEqual(spy[0][0].what(), "ring 1 not closed")
+        self.assertEqual(spy[0][0].what(), 'ring 1 not closed')
 
-        g = QgsGeometry.fromWkt(
-            "Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 2 1, 2 2, 1 1),(3 3, 3 4, 4 4, 3.1 3))"
-        )
+        g = QgsGeometry.fromWkt("Polygon ((0 0, 10 0, 10 10, 0 10, 0 0),(1 1, 2 1, 2 2, 1 1),(3 3, 3 4, 4 4, 3.1 3))")
 
         validator = QgsGeometryValidator(g)
         spy = QSignalSpy(validator.errorFound)
@@ -339,7 +304,7 @@ class TestQgsGeometryValidator(QgisTestCase):
         self.assertEqual(len(spy), 1)
 
         self.assertEqual(spy[0][0].where(), QgsPointXY(3, 3))
-        self.assertEqual(spy[0][0].what(), "ring 2 not closed")
+        self.assertEqual(spy[0][0].what(), 'ring 2 not closed')
 
         # not closed but 2d closed
         g = QgsGeometry.fromWkt("POLYGONZ((1 1 0, 1 2 1, 2 2 2, 2 1 3, 1 1 4))")
@@ -350,20 +315,18 @@ class TestQgsGeometryValidator(QgisTestCase):
         self.assertEqual(len(spy), 1)
 
         self.assertEqual(spy[0][0].where(), QgsPointXY(1, 1))
-        self.assertEqual(spy[0][0].what(), "ring 0 not closed, Z mismatch: 0 vs 4")
+        self.assertEqual(spy[0][0].what(), 'ring 0 not closed, Z mismatch: 0 vs 4')
 
     def test_multi_part_curve_nested_shell(self):
         # A circle inside another one
-        g = QgsGeometry.fromWkt(
-            "MultiSurface (CurvePolygon (CircularString (0 5, 5 0, 0 -5, -5 0, 0 5)),CurvePolygon (CircularString (0 1, 1 0, 0 -1, -1 0, 0 1)))"
-        )
+        g = QgsGeometry.fromWkt("MultiSurface (CurvePolygon (CircularString (0 5, 5 0, 0 -5, -5 0, 0 5)),CurvePolygon (CircularString (0 1, 1 0, 0 -1, -1 0, 0 1)))")
         validator = QgsGeometryValidator(g)
         spy = QSignalSpy(validator.errorFound)
         validator.run()
         self.assertEqual(len(spy), 1)
 
         self.assertEqual(spy[0][0].where(), QgsPointXY())
-        self.assertEqual(spy[0][0].what(), "Polygon 1 lies inside polygon 0")
+        self.assertEqual(spy[0][0].what(), 'Polygon 1 lies inside polygon 0')
 
         # converted as a straight polygon
         g.convertToStraightSegment()
@@ -373,13 +336,11 @@ class TestQgsGeometryValidator(QgisTestCase):
         self.assertEqual(len(spy), 1)
 
         self.assertEqual(spy[0][0].where(), QgsPointXY())
-        self.assertEqual(spy[0][0].what(), "Polygon 1 lies inside polygon 0")
+        self.assertEqual(spy[0][0].what(), 'Polygon 1 lies inside polygon 0')
 
     def test_multi_part_curve(self):
         # A circle inside another one
-        g = QgsGeometry.fromWkt(
-            "MultiSurface (CurvePolygon (CircularString (0 5, 5 0, 0 -5, -5 0, 0 5)),CurvePolygon (CircularString (100 1, 100 0, 100 -1, 99 0, 100 1)))"
-        )
+        g = QgsGeometry.fromWkt("MultiSurface (CurvePolygon (CircularString (0 5, 5 0, 0 -5, -5 0, 0 5)),CurvePolygon (CircularString (100 1, 100 0, 100 -1, 99 0, 100 1)))")
         validator = QgsGeometryValidator(g)
         spy = QSignalSpy(validator.errorFound)
         validator.run()
@@ -393,5 +354,5 @@ class TestQgsGeometryValidator(QgisTestCase):
         self.assertEqual(len(spy), 0)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

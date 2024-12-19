@@ -4,11 +4,11 @@ try:
     QgsMapLayerFactory.LayerOptions.__doc__ = """Setting options for loading layers.
 
 .. versionadded:: 3.22"""
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMapLayerFactory.typeFromString = staticmethod(QgsMapLayerFactory.typeFromString)
     QgsMapLayerFactory.typeToString = staticmethod(QgsMapLayerFactory.typeToString)
     QgsMapLayerFactory.createLayer = staticmethod(QgsMapLayerFactory.createLayer)
-except (NameError, AttributeError):
+except NameError:
     pass

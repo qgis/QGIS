@@ -43,6 +43,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     Q_OBJECT
 
   public:
+
     /**
      * Creates a map layer action which can run on any layer
      * \note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatibility reasons.
@@ -121,9 +122,9 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     virtual void triggerForLayer( QgsMapLayer *layer, const QgsMapLayerActionContext &context );
 
     //! Define the targets of the action
-    void setTargets( Qgis::MapLayerActionTargets targets ) { mTargets = targets; }
+    void setTargets( Qgis::MapLayerActionTargets targets ) {mTargets = targets;}
     //! Returns availibity of action
-    Qgis::MapLayerActionTargets targets() const { return mTargets; }
+    Qgis::MapLayerActionTargets targets() const {return mTargets;}
 
     /**
      * Returns TRUE if the action is only enabled for layers in editable mode.
@@ -174,6 +175,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     void triggeredForLayerV2( QgsMapLayer *layer, const QgsMapLayerActionContext &context );
 
   private:
+
     // true if action is only valid for a single layer
     bool mSingleLayer = false;
     // layer if action is only valid for a single layer

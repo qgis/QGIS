@@ -76,16 +76,6 @@ void QgsTextBlock::append( QgsTextFragment &&fragment )
   mFragments.push_back( fragment );
 }
 
-void QgsTextBlock::insert( int index, const QgsTextFragment &fragment )
-{
-  mFragments.insert( index, fragment );
-}
-
-void QgsTextBlock::insert( int index, QgsTextFragment &&fragment )
-{
-  mFragments.insert( index, fragment );
-}
-
 void QgsTextBlock::clear()
 {
   mFragments.clear();
@@ -112,12 +102,6 @@ void QgsTextBlock::applyCapitalization( Qgis::Capitalization capitalization )
   {
     fragment.applyCapitalization( capitalization );
   }
-}
-
-bool QgsTextBlock::hasBackgrounds() const
-{
-  return mBlockFormat.hasBackground()
-  || std::any_of( mFragments.begin(), mFragments.end(), []( const QgsTextFragment & fragment ) { return fragment.characterFormat().hasBackground(); } );
 }
 
 const QgsTextFragment &QgsTextBlock::at( int index ) const

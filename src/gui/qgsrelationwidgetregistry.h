@@ -31,6 +31,7 @@
 class GUI_EXPORT QgsRelationWidgetRegistry
 {
   public:
+
     /**
      * Constructor
      */
@@ -91,6 +92,7 @@ class GUI_EXPORT QgsRelationWidgetRegistry
     QString defaultWidgetType() const;
 
   private:
+
     QMap<QString, QgsAbstractRelationEditorWidgetFactory *> mRelationWidgetFactories;
 
     QString mDefaultWidgetType;

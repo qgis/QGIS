@@ -18,7 +18,6 @@ using namespace nlohmann;
 
 #include "qgslogger.h"
 #include "qgsoapifitemsrequest.h"
-#include "moc_qgsoapifitemsrequest.cpp"
 #include "qgsoapifutils.h"
 #include "qgsproviderregistry.h"
 
@@ -26,8 +25,9 @@ using namespace nlohmann;
 
 #include <QTextCodec>
 
-QgsOapifItemsRequest::QgsOapifItemsRequest( const QgsDataSourceUri &baseUri, const QString &url )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), baseUri.authConfigId() ), tr( "OAPIF" ) ), mUrl( url )
+QgsOapifItemsRequest::QgsOapifItemsRequest( const QgsDataSourceUri &baseUri, const QString &url ):
+  QgsBaseNetworkRequest( QgsAuthorizationSettings( baseUri.username(), baseUri.password(), baseUri.authConfigId() ), tr( "OAPIF" ) ),
+  mUrl( url )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main
@@ -123,14 +123,16 @@ void QgsOapifItemsRequest::processReply()
   removeUselessSpacesFromJSONBuffer( buffer );
   QgsDebugMsgLevel( QStringLiteral( "JSON compaction end time: %1" ).arg( time( nullptr ) ), 5 );
 
-  const QString vsimemFilename = QStringLiteral( "/vsimem/oaipf_%1.json" ).arg( reinterpret_cast<quintptr>( &buffer ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
-  VSIFCloseL( VSIFileFromMemBuffer( vsimemFilename.toUtf8().constData(), const_cast<GByte *>( reinterpret_cast<const GByte *>( buffer.constData() ) ), buffer.size(), false ) );
+  const QString vsimemFilename = QStringLiteral( "/vsimem/oaipf_%1.json" ).arg( reinterpret_cast< quintptr >( &buffer ), QT_POINTER_SIZE * 2, 16, QLatin1Char( '0' ) );
+  VSIFCloseL( VSIFileFromMemBuffer( vsimemFilename.toUtf8().constData(),
+                                    const_cast<GByte *>( reinterpret_cast<const GByte *>( buffer.constData() ) ),
+                                    buffer.size(),
+                                    false ) );
   QgsProviderRegistry *pReg = QgsProviderRegistry::instance();
   const QgsDataProvider::ProviderOptions providerOptions;
   QgsDebugMsgLevel( QStringLiteral( "OGR data source open start time: %1" ).arg( time( nullptr ) ), 5 );
   auto vectorProvider = std::unique_ptr<QgsVectorDataProvider>(
-    qobject_cast<QgsVectorDataProvider *>( pReg->createProvider( "ogr", vsimemFilename, providerOptions ) )
-  );
+                          qobject_cast< QgsVectorDataProvider * >( pReg->createProvider( "ogr", vsimemFilename, providerOptions ) ) );
   QgsDebugMsgLevel( QStringLiteral( "OGR data source open end time: %1" ).arg( time( nullptr ) ), 5 );
   if ( !vectorProvider || !vectorProvider->isValid() )
   {
@@ -164,7 +166,7 @@ void QgsOapifItemsRequest::processReply()
   try
   {
     QgsDebugMsgLevel( QStringLiteral( "json::parse() start time: %1" ).arg( time( nullptr ) ), 5 );
-    const json j = json::parse( buffer.constData(), buffer.constData() + buffer.size() );
+    const json j = json::parse( buffer.constData(), buffer.constData()  + buffer.size() );
     QgsDebugMsgLevel( QStringLiteral( "json::parse() end time: %1" ).arg( time( nullptr ) ), 5 );
     if ( j.is_object() && j.contains( "features" ) )
     {
@@ -200,7 +202,9 @@ void QgsOapifItemsRequest::processReply()
     }
 
     const auto links = QgsOAPIFJson::parseLinks( j );
-    mNextUrl = QgsOAPIFJson::findLink( links, QStringLiteral( "next" ), { QStringLiteral( "application/geo+json" ) } );
+    mNextUrl = QgsOAPIFJson::findLink( links,
+                                       QStringLiteral( "next" ),
+    {  QStringLiteral( "application/geo+json" ) } );
 
     if ( j.is_object() && j.contains( "numberMatched" ) )
     {

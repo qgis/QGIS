@@ -31,7 +31,7 @@ class QgsPointCloudExtentRenderer;
 
 ///@cond PRIVATE
 
-class GUI_EXPORT QgsPointCloudExtentRendererWidget : public QgsPointCloudRendererWidget, private Ui::QgsPointCloudExtentRendererWidgetBase
+class GUI_EXPORT QgsPointCloudExtentRendererWidget: public QgsPointCloudRendererWidget, private Ui::QgsPointCloudExtentRendererWidgetBase
 {
     Q_OBJECT
 
@@ -49,6 +49,7 @@ class GUI_EXPORT QgsPointCloudExtentRendererWidget : public QgsPointCloudRendere
     void setFromRenderer( const QgsPointCloudRenderer *r );
 
     bool mBlockChangedSignal = false;
+
 };
 
 ///@endcond

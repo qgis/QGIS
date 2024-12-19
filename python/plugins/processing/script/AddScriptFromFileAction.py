@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "April 2014"
-__copyright__ = "(C) 201, Victor Olaya"
+__author__ = 'Victor Olaya'
+__date__ = 'April 2014'
+__copyright__ = '(C) 201, Victor Olaya'
 
 import os
 import shutil
@@ -35,20 +35,16 @@ from processing.script import ScriptUtils
 class AddScriptFromFileAction(ToolboxAction):
 
     def __init__(self):
-        self.name = QCoreApplication.translate(
-            "AddScriptFromFileAction", "Add Script to Toolbox…"
-        )
+        self.name = QCoreApplication.translate("AddScriptFromFileAction", "Add Script to Toolbox…")
         self.group = self.tr("Tools")
 
     def execute(self):
         settings = QgsSettings()
         lastDir = settings.value("processing/lastScriptsDir", "")
-        files, _ = QFileDialog.getOpenFileNames(
-            self.toolbox,
-            self.tr("Add script(s)"),
-            lastDir,
-            self.tr("Processing scripts (*.py *.PY)"),
-        )
+        files, _ = QFileDialog.getOpenFileNames(self.toolbox,
+                                                self.tr("Add script(s)"),
+                                                lastDir,
+                                                self.tr("Processing scripts (*.py *.PY)"))
         if files:
             settings.setValue("processing/lastScriptsDir", os.path.dirname(files[0]))
 
@@ -58,13 +54,9 @@ class AddScriptFromFileAction(ToolboxAction):
                     shutil.copy(f, ScriptUtils.scriptsFolders()[0])
                     valid += 1
                 except OSError as e:
-                    QgsMessageLog.logMessage(
-                        self.tr("Could not copy script '{}'\n{}").format(f, str(e)),
-                        "Processing",
-                        Qgis.MessageLevel.Warning,
-                    )
+                    QgsMessageLog.logMessage(self.tr("Could not copy script '{}'\n{}").format(f, str(e)),
+                                             "Processing",
+                                             Qgis.MessageLevel.Warning)
 
             if valid > 0:
-                QgsApplication.processingRegistry().providerById(
-                    "script"
-                ).refreshAlgorithms()
+                QgsApplication.processingRegistry().providerById("script").refreshAlgorithms()

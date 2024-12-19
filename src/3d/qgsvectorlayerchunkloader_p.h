@@ -124,12 +124,12 @@ class QgsVectorLayerChunkedEntity : public QgsChunkedEntity
 
     ~QgsVectorLayerChunkedEntity();
   private slots:
-    void onTerrainElevationOffsetChanged();
+    void onTerrainElevationOffsetChanged( float newOffset );
 
   private:
     friend class QgsRuleBasedChunkedEntity;
     //! This implementation is shared between QgsVectorLayerChunkedEntity and QgsRuleBasedChunkedEntity
-    static QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &transformMatrix, const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context, const QgsVector3D &origin );
+    static QVector<QgsRayCastingUtils::RayHit> rayIntersection( const QList<QgsChunkNode *> &activeNodes, const QMatrix4x4 &transformMatrix, const QgsRayCastingUtils::Ray3D &ray, const QgsRayCastingUtils::RayCastContext &context );
 
     Qt3DCore::QTransform *mTransform = nullptr;
 

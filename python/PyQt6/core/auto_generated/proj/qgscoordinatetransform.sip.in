@@ -119,7 +119,7 @@ which dictate the behavior of the transformation.
  explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
         const QgsCoordinateReferenceSystem &destination,
         int sourceDatumTransformId,
-        int destinationDatumTransformId ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0. Use the constructor with a QgsCoordinateTransformContext argument instead."/;
+        int destinationDatumTransformId ) /Deprecated/;
 %Docstring
 Constructs a QgsCoordinateTransform to transform from the ``source``
 to ``destination`` coordinate reference system, with the specified
@@ -219,7 +219,7 @@ transform coordinates to.
 .. seealso:: :py:func:`sourceCrs`
 %End
 
-    QgsPointXY transform( const QgsPointXY &point, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
+    QgsPointXY transform( const QgsPointXY &point, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const throw( QgsCsException );
 %Docstring
 Transform the point from the source CRS to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -233,7 +233,7 @@ otherwise points are transformed from destination to source CRS.
 :raises QgsCsException: if the transformation fails
 %End
 
-    QgsPointXY transform( double x, double y, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
+    QgsPointXY transform( double x, double y, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const throw( QgsCsException );
 %Docstring
 Transform the point specified by x,y from the source CRS to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -248,7 +248,7 @@ otherwise points are transformed from destination to source CRS.
 :raises QgsCsException: if the transformation fails
 %End
 
-    QgsVector3D transform( const QgsVector3D &point, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
+    QgsVector3D transform( const QgsVector3D &point, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const throw( QgsCsException );
 %Docstring
 Transform the point specified in 3D coordinates from the source CRS to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -264,7 +264,7 @@ otherwise points are transformed from destination to source CRS.
 .. versionadded:: 3.18
 %End
 
-    QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward, bool handle180Crossover = false ) const;
+    QgsRectangle transformBoundingBox( const QgsRectangle &rectangle, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward, bool handle180Crossover = false ) const throw( QgsCsException );
 %Docstring
 Transforms a rectangle from the source CRS to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -283,7 +283,7 @@ the returned rectangle.
 :raises QgsCsException: if the transformation fails
 %End
 
-    void transformInPlace( double &x, double &y, double &z, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
+    void transformInPlace( double &x, double &y, double &z, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const throw( QgsCsException );
 %Docstring
 Transforms an array of x, y and z double coordinates in place, from the source CRS to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -303,7 +303,7 @@ otherwise points are transformed from destination to source CRS.
 
 
 
-    void transformPolygon( QPolygonF &polygon, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
+    void transformPolygon( QPolygonF &polygon, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const throw( QgsCsException );
 %Docstring
 Transforms a polygon to the destination coordinate system.
 
@@ -313,7 +313,7 @@ Transforms a polygon to the destination coordinate system.
 :raises QgsCsException: if the transformation fails
 %End
 
-    QgsRectangle transform( const QgsRectangle &rectangle, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
+    QgsRectangle transform( const QgsRectangle &rectangle, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const throw( QgsCsException );
 %Docstring
 Transforms a rectangle to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -327,7 +327,7 @@ otherwise points are transformed from destination to source CRS.
 :raises QgsCsException: if the transformation fails
 %End
 
-    void transformCoords( int numPoint, double *x, double *y, double *z, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const;
+    void transformCoords( int numPoint, double *x, double *y, double *z, Qgis::TransformDirection direction = Qgis::TransformDirection::Forward ) const throw( QgsCsException );
 %Docstring
 Transform an array of coordinates to the destination CRS.
 If the direction is ForwardTransform then coordinates are transformed from source to destination,
@@ -527,7 +527,7 @@ Returns ``True`` if a fallback operation occurred for the most recent transform.
 .. versionadded:: 3.12
 %End
 
- int sourceDatumTransformId() const /Deprecated="Since 3.40. Unused on builds based on Proj 6.0 or later."/;
+ int sourceDatumTransformId() const /Deprecated/;
 %Docstring
 Returns the ID of the datum transform to use when projecting from the source
 CRS.
@@ -546,7 +546,7 @@ but can be manually overwritten by a call to :py:func:`~QgsCoordinateTransform.s
    Unused on builds based on Proj 6.0 or later.
 %End
 
- void setSourceDatumTransformId( int datumId ) /Deprecated="Since 3.40. Unused on builds based on Proj 6.0 or later."/;
+ void setSourceDatumTransformId( int datumId ) /Deprecated/;
 %Docstring
 Sets the ``datumId`` ID of the datum transform to use when projecting from the source
 CRS.
@@ -565,7 +565,7 @@ Calling this method will overwrite any automatically calculated datum transform.
    Unused on builds based on Proj 6.0 or later.
 %End
 
- int destinationDatumTransformId() const /Deprecated="Since 3.40. Unused on builds based on Proj 6.0 or later."/;
+ int destinationDatumTransformId() const /Deprecated/;
 %Docstring
 Returns the ID of the datum transform to use when projecting to the destination
 CRS.
@@ -584,7 +584,7 @@ but can be manually overwritten by a call to :py:func:`~QgsCoordinateTransform.s
    Unused on builds based on Proj 6.0 or later.
 %End
 
- void setDestinationDatumTransformId( int datumId ) /Deprecated="Since 3.40. Unused on builds based on Proj 6.0 or later."/;
+ void setDestinationDatumTransformId( int datumId ) /Deprecated/;
 %Docstring
 Sets the ``datumId`` ID of the datum transform to use when projecting to the destination
 CRS.

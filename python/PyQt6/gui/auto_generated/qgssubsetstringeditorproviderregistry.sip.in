@@ -25,11 +25,12 @@ This class keeps a list of subset string editor providers.
 #include "qgssubsetstringeditorproviderregistry.h"
 %End
   public:
+
     QgsSubsetStringEditorProviderRegistry();
     ~QgsSubsetStringEditorProviderRegistry();
 
 
-    QList<QgsSubsetStringEditorProvider *> providers();
+    QList< QgsSubsetStringEditorProvider *> providers();
 %Docstring
 Gets list of available providers
 %End

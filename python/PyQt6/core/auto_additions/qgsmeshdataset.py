@@ -12,37 +12,37 @@ QgsMeshDatasetGroup.Memory = QgsMeshDatasetGroup.Type.Memory
 QgsMeshDatasetGroup.Virtual = QgsMeshDatasetGroup.Type.Virtual
 try:
     QgsMeshDatasetIndex.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMeshDatasetValue.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMeshDataBlock.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMesh3DDataBlock.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMeshDatasetGroupMetadata.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMeshDatasetMetadata.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMeshDataset.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMeshDatasetGroup.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsMeshDatasetGroupTreeItem.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass

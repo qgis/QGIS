@@ -27,16 +27,17 @@ class TestQgsTriangulation : public QgsTest
     Q_OBJECT
 
   public:
+
     TestQgsTriangulation()
       : QgsTest( QStringLiteral( "Triangulation Test" ) )
     {}
 
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init() ;// will be called before each testfunction is executed.
+    void cleanup() ;// will be called after every testfunction.
     void dualEdge();
 
     void meshTriangulation();
@@ -46,7 +47,7 @@ class TestQgsTriangulation : public QgsTest
   private:
 };
 
-void TestQgsTriangulation::initTestCase()
+void  TestQgsTriangulation::initTestCase()
 {
   QgsApplication::init();
   QgsApplication::initQgis();
@@ -78,7 +79,7 @@ void TestQgsTriangulation::dualEdge()
     mesh = triangulation.triangulationToMesh();
     QCOMPARE( mesh.vertices.count(), 3 );
     QCOMPARE( mesh.faceCount(), 1 );
-    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( { 0, 2, 1 } ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 2, 1} ) ) );
   }
 
   {
@@ -95,7 +96,7 @@ void TestQgsTriangulation::dualEdge()
     mesh = triangulation.triangulationToMesh();
     QCOMPARE( mesh.vertices.count(), 4 );
     QCOMPARE( mesh.faceCount(), 2 );
-    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( { 0, 2, 1 } ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 2, 1} ) ) );
   }
 
   {
@@ -111,8 +112,8 @@ void TestQgsTriangulation::dualEdge()
     mesh = triangulation.triangulationToMesh();
     QCOMPARE( mesh.vertices.count(), 4 );
     QCOMPARE( mesh.faceCount(), 2 );
-    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( { 0, 3, 1 } ) ) );
-    QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( { 3, 2, 1 } ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 1} ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {3, 2, 1} ) ) );
     triangulation.addPoint( QgsPoint( 2, 3, 0 ) );
     mesh = triangulation.triangulationToMesh();
     QCOMPARE( mesh.vertices.count(), 5 );
@@ -132,15 +133,15 @@ void TestQgsTriangulation::dualEdge()
     mesh = triangulation.triangulationToMesh();
     QCOMPARE( mesh.vertices.count(), 4 );
     QCOMPARE( mesh.faceCount(), 2 );
-    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( { 0, 3, 2 } ) ) );
-    QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( { 1, 2, 3 } ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 2} ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {1, 2, 3} ) ) );
     triangulation.addPoint( QgsPoint( 2, 3, 0 ) );
     mesh = triangulation.triangulationToMesh();
     QCOMPARE( mesh.vertices.count(), 5 );
     QCOMPARE( mesh.faceCount(), 3 );
-    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( { 0, 3, 2 } ) ) );
-    QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( { 1, 3, 4 } ) ) );
-    QVERIFY( QgsMesh::compareFaces( mesh.face( 2 ), QgsMeshFace( { 1, 2, 3 } ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 2} ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {1, 3, 4} ) ) );
+    QVERIFY( QgsMesh::compareFaces( mesh.face( 2 ), QgsMeshFace( {1, 2, 3} ) ) );
   }
 
   {
@@ -188,7 +189,9 @@ void TestQgsTriangulation::meshTriangulation()
 
   meshTri.setCrs( QgsCoordinateReferenceSystem( "EPSG:32620" ) );
 
-  std::unique_ptr<QgsVectorLayer> mLayerPointZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "PointZ?crs=EPSG:32620" ), QStringLiteral( "point Z" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > mLayerPointZ = std::make_unique< QgsVectorLayer >( QStringLiteral( "PointZ?crs=EPSG:32620" ),
+      QStringLiteral( "point Z" ),
+      QStringLiteral( "memory" ) );
 
   const QString wkt1 = "PointZ (684486.0 1761297.0 1)";
   const QString wkt2 = "PointZ (684276.0 1761309.0 2)";
@@ -209,7 +212,9 @@ void TestQgsTriangulation::meshTriangulation()
   mLayerPointZ->dataProvider()->addFeatures( flist );
 
   const QgsCoordinateTransformContext transformContext;
-  QgsCoordinateTransform transform( mLayerPointZ->crs(), QgsCoordinateReferenceSystem( "EPSG:32620" ), transformContext );
+  QgsCoordinateTransform transform( mLayerPointZ->crs(),
+                                    QgsCoordinateReferenceSystem( "EPSG:32620" ),
+                                    transformContext );
 
   QgsFeatureIterator fIt = mLayerPointZ->getFeatures();
   meshTri.addVertices( fIt, -1, transform );
@@ -223,18 +228,22 @@ void TestQgsTriangulation::meshTriangulation()
   QCOMPARE( mesh.vertex( 1 ), QgsMeshVertex( 684276.0, 1761309.0, 2 ) );
   QCOMPARE( mesh.vertex( 2 ), QgsMeshVertex( 684098.0, 1761401.0, 3 ) );
   QCOMPARE( mesh.vertex( 3 ), QgsMeshVertex( 684292.0, 1761406.0, 4 ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( { 0, 3, 1 } ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( { 1, 3, 2 } ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 1} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {1, 3, 2} ) ) );
 
   const QString wkt5 = "LineStringZ (684098.0 1761401.0 3,684210.24 1761347.92 7,684343.8 1761373.4 8,684486.0 1761297.0 1)";
 
-  std::unique_ptr<QgsVectorLayer> mLayerBreakLine = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZ?crs=EPSG:32620" ), QStringLiteral( "line" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > mLayerBreakLine = std::make_unique< QgsVectorLayer >( QStringLiteral( "LineStringZ?crs=EPSG:32620" ),
+      QStringLiteral( "line" ),
+      QStringLiteral( "memory" ) );
 
   QgsFeature f5;
   f5.setGeometry( QgsGeometry::fromWkt( wkt5 ) );
   mLayerBreakLine->dataProvider()->addFeature( f5 );
 
-  transform = QgsCoordinateTransform( mLayerBreakLine->crs(), QgsCoordinateReferenceSystem( "EPSG:32620" ), transformContext );
+  transform = QgsCoordinateTransform( mLayerBreakLine->crs(),
+                                      QgsCoordinateReferenceSystem( "EPSG:32620" ),
+                                      transformContext );
   fIt = mLayerBreakLine->getFeatures();
   meshTri.addBreakLines( fIt, -1, transform );
 
@@ -243,19 +252,21 @@ void TestQgsTriangulation::meshTriangulation()
   QCOMPARE( mesh.vertexCount(), 6 );
   QCOMPARE( mesh.faceCount(), 6 );
 
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( { 0, 3, 5 } ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( { 0, 5, 1 } ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 2 ), QgsMeshFace( { 1, 4, 2 } ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 3 ), QgsMeshFace( { 3, 4, 5 } ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 4 ), QgsMeshFace( { 1, 5, 4 } ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 5 ), QgsMeshFace( { 2, 4, 3 } ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {0, 3, 5} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {0, 5, 1} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 2 ), QgsMeshFace( {1, 4, 2} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 3 ), QgsMeshFace( {3, 4, 5} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 4 ), QgsMeshFace( {1, 5, 4} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 5 ), QgsMeshFace( {2, 4, 3} ) ) );
 }
 
 void TestQgsTriangulation::meshTriangulationWithOnlyBreakLine()
 {
   QgsMeshTriangulation meshTri;
 
-  std::unique_ptr<QgsVectorLayer> mLayerLineZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZ" ), QStringLiteral( "break line Z" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > mLayerLineZ = std::make_unique< QgsVectorLayer>( QStringLiteral( "LineStringZ" ),
+      QStringLiteral( "break line Z" ),
+      QStringLiteral( "memory" ) );
 
   QStringList wktLines;
 
@@ -281,7 +292,9 @@ void TestQgsTriangulation::meshTriangulationWithOnlyBreakLine()
   mLayerLineZ->dataProvider()->addFeatures( flist );
 
   const QgsCoordinateTransformContext transformContext;
-  const QgsCoordinateTransform transform( mLayerLineZ->crs(), QgsCoordinateReferenceSystem(), transformContext );
+  const QgsCoordinateTransform transform( mLayerLineZ->crs(),
+                                          QgsCoordinateReferenceSystem(),
+                                          transformContext );
 
   QgsFeatureIterator fIt = mLayerLineZ->getFeatures();
   meshTri.addBreakLines( fIt, -1, transform );
@@ -291,23 +304,25 @@ void TestQgsTriangulation::meshTriangulationWithOnlyBreakLine()
   QCOMPARE( mesh.vertexCount(), 8 );
   QCOMPARE( mesh.faceCount(), 6 );
 
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( { 2, 0, 4 } ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( { 0, 2, 1 } ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 2 ), QgsMeshFace( { 1, 2, 5 } ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 3 ), QgsMeshFace( { 2, 4, 3 } ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 4 ), QgsMeshFace( { 4, 6, 3 } ) ) );
-  QVERIFY( QgsMesh::compareFaces( mesh.face( 5 ), QgsMeshFace( { 4, 7, 6 } ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 0 ), QgsMeshFace( {2, 0, 4} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 1 ), QgsMeshFace( {0, 2, 1} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 2 ), QgsMeshFace( {1, 2, 5} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 3 ), QgsMeshFace( {2, 4, 3} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 4 ), QgsMeshFace( {4, 6, 3} ) ) );
+  QVERIFY( QgsMesh::compareFaces( mesh.face( 5 ), QgsMeshFace( {4, 7, 6} ) ) );
 }
 
 void TestQgsTriangulation::meshTriangulationPointAndBreakLineBreakLine()
 {
   QgsMeshTriangulation meshTri;
 
-  std::unique_ptr<QgsVectorLayer> mLayerPointsZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "PointZ" ), QStringLiteral( "points Z" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > mLayerPointsZ = std::make_unique< QgsVectorLayer >( QStringLiteral( "PointZ" ),
+      QStringLiteral( "points Z" ),
+      QStringLiteral( "memory" ) );
 
   for ( int i = 0; i < 4; ++i )
   {
-    for ( int j = 0; j < 10; ++j )
+    for ( int j = 0 ; j < 10; ++j )
     {
       QgsFeature feat;
       feat.setGeometry( QgsGeometry( new QgsPoint( i * 10.0, j * 10.0 ) ) );
@@ -316,7 +331,9 @@ void TestQgsTriangulation::meshTriangulationPointAndBreakLineBreakLine()
   }
 
   const QgsCoordinateTransformContext transformContext;
-  const QgsCoordinateTransform transform( mLayerPointsZ->crs(), QgsCoordinateReferenceSystem(), transformContext );
+  const QgsCoordinateTransform transform( mLayerPointsZ->crs(),
+                                          QgsCoordinateReferenceSystem(),
+                                          transformContext );
 
   QgsFeatureIterator fIt = mLayerPointsZ->getFeatures();
   meshTri.addVertices( fIt, -1, transform );
@@ -326,7 +343,9 @@ void TestQgsTriangulation::meshTriangulationPointAndBreakLineBreakLine()
   QCOMPARE( mesh.vertexCount(), 40 );
   QCOMPARE( mesh.faceCount(), 54 );
 
-  std::unique_ptr<QgsVectorLayer> mLayerLineZ = std::make_unique<QgsVectorLayer>( QStringLiteral( "LineStringZ" ), QStringLiteral( "break line Z" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > mLayerLineZ = std::make_unique< QgsVectorLayer >( QStringLiteral( "LineStringZ" ),
+      QStringLiteral( "break line Z" ),
+      QStringLiteral( "memory" ) );
 
 
   QgsFeature feat;

@@ -26,13 +26,13 @@ void QgsAppSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<Q
   Q_ASSERT( QThread::currentThread() == QApplication::instance()->thread() );
 
   const QString hostport( QStringLiteral( "%1:%2" )
-                            .arg( reply->url().host() )
-                            .arg( reply->url().port() != -1 ? reply->url().port() : 443 )
-                            .trimmed() );
+                          .arg( reply->url().host() )
+                          .arg( reply->url().port() != -1 ? reply->url().port() : 443 )
+                          .trimmed() );
   const QString digest( QgsAuthCertUtils::shaHexForCert( reply->sslConfiguration().peerCertificate() ) );
   const QString dgsthostport( QStringLiteral( "%1:%2" ).arg( digest, hostport ) );
 
-  const QHash<QString, QSet<QSslError::SslError>> &errscache( QgsApplication::authManager()->ignoredSslErrorCache() );
+  const QHash<QString, QSet<QSslError::SslError> > &errscache( QgsApplication::authManager()->ignoredSslErrorCache() );
 
   if ( errscache.contains( dgsthostport ) )
   {
@@ -58,7 +58,9 @@ void QgsAppSslErrorHandler::handleSslErrors( QNetworkReply *reply, const QList<Q
       return;
     }
 
-    QgsDebugMsgLevel( QStringLiteral( "Errors %1 for cached item for %2" ).arg( errenums.isEmpty() ? QStringLiteral( "not found" ) : QStringLiteral( "did not match" ), hostport ), 2 );
+    QgsDebugMsgLevel( QStringLiteral( "Errors %1 for cached item for %2" )
+                      .arg( errenums.isEmpty() ? QStringLiteral( "not found" ) : QStringLiteral( "did not match" ),
+                            hostport ), 2 );
   }
 
   QgsDebugError( QStringLiteral( "SSL errors occurred accessing URL:\n%1" ).arg( reply->request().url().toString() ) );

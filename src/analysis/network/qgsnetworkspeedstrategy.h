@@ -28,18 +28,20 @@
 class ANALYSIS_EXPORT QgsNetworkSpeedStrategy : public QgsNetworkStrategy
 {
   public:
+
     /**
      * Default constructor
      */
     QgsNetworkSpeedStrategy( int attributeId, double defaultValue, double toMetricFactor );
 
     QVariant cost( double distance, const QgsFeature &f ) const override;
-    QSet<int> requiredAttributes() const override;
+    QSet< int > requiredAttributes() const override;
 
   private:
     int mAttributeId;
     double mDefaultValue;
     double mToMetricFactor;
+
 };
 
 #endif // QGSNETWORKSPEEDSTRATEGY_H

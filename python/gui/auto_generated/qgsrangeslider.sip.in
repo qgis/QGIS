@@ -21,6 +21,7 @@ A slider control with two interactive endpoints, for interactive selection of a 
 #include "qgsrangeslider.h"
 %End
   public:
+
     QgsRangeSlider( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRangeSlider, with the specified ``parent`` widget.

@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgspalettedrendererwidget.h"
-#include "moc_qgspalettedrendererwidget.cpp"
 #include "qgspalettedrasterrenderer.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrasterlayer.h"
@@ -39,8 +38,7 @@
 #endif
 
 
-QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
-  : QgsRasterRendererWidget( layer, extent )
+QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent ): QgsRasterRendererWidget( layer, extent )
 {
   setupUi( this );
 
@@ -69,7 +67,8 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mTreeView->setSortingEnabled( false );
   mTreeView->setModel( mProxyModel );
 
-  connect( this, &QgsPalettedRendererWidget::widgetChanged, this, [=] {
+  connect( this, &QgsPalettedRendererWidget::widgetChanged, this, [ = ]
+  {
     mProxyModel->sort( QgsPalettedRendererModel::Column::ValueColumn );
   } );
 
@@ -91,7 +90,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
   mTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
   mTreeView->setDefaultDropAction( Qt::MoveAction );
 
-  connect( mTreeView, &QTreeView::customContextMenuRequested, this, [=]( QPoint ) { mContextMenu->exec( QCursor::pos() ); } );
+  connect( mTreeView, &QTreeView::customContextMenuRequested, this, [ = ]( QPoint ) { mContextMenu->exec( QCursor::pos() ); } );
 
   btnColorRamp->setShowRandomColorRamp( true );
 
@@ -125,7 +124,7 @@ QgsPalettedRendererWidget::QgsPalettedRendererWidget( QgsRasterLayer *layer, con
     mLoadFromLayerAction->setEnabled( false );
   }
 
-  connect( QgsProject::instance(), static_cast<void ( QgsProject::* )( QgsMapLayer * )>( &QgsProject::layerWillBeRemoved ), this, &QgsPalettedRendererWidget::layerWillBeRemoved );
+  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( QgsMapLayer * ) >( &QgsProject::layerWillBeRemoved ), this, &QgsPalettedRendererWidget::layerWillBeRemoved );
   connect( mBandComboBox, &QgsRasterBandComboBox::bandChanged, this, &QgsPalettedRendererWidget::bandChanged );
 }
 
@@ -168,14 +167,14 @@ void QgsPalettedRendererWidget::setFromRenderer( const QgsRasterRenderer *r )
     }
     else
     {
-      std::unique_ptr<QgsColorRamp> ramp( new QgsRandomColorRamp() );
+      std::unique_ptr< QgsColorRamp > ramp( new QgsRandomColorRamp() );
       whileBlocking( btnColorRamp )->setColorRamp( ramp.get() );
     }
   }
   else
   {
     loadFromLayer();
-    std::unique_ptr<QgsColorRamp> ramp( new QgsRandomColorRamp() );
+    std::unique_ptr< QgsColorRamp > ramp( new QgsRandomColorRamp() );
     whileBlocking( btnColorRamp )->setColorRamp( ramp.get() );
   }
 
@@ -229,7 +228,7 @@ void QgsPalettedRendererWidget::addEntry()
   disconnect( mModel, &QgsPalettedRendererModel::classesChanged, this, &QgsPalettedRendererWidget::widgetChanged );
 
   QColor color( 150, 150, 150 );
-  std::unique_ptr<QgsColorRamp> ramp( btnColorRamp->colorRamp() );
+  std::unique_ptr< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
   if ( ramp )
   {
     color = ramp->color( 1.0 );
@@ -247,13 +246,13 @@ void QgsPalettedRendererWidget::changeColor()
   QModelIndex colorIndex = mModel->index( sel.first().top(), QgsPalettedRendererModel::ColorColumn );
   QColor currentColor = mModel->data( colorIndex, Qt::DisplayRole ).value<QColor>();
 
-  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast<QWidget *>( parent() ) );
+  QgsPanelWidget *panel = QgsPanelWidget::findParentPanel( qobject_cast< QWidget * >( parent() ) );
   if ( panel && panel->dockMode() )
   {
     QgsCompoundColorWidget *colorWidget = new QgsCompoundColorWidget( panel, currentColor, QgsCompoundColorWidget::LayoutVertical );
     colorWidget->setPanelTitle( tr( "Select Color" ) );
     colorWidget->setAllowOpacity( true );
-    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [=]( const QColor &color ) { setSelectionColor( sel, color ); } );
+    connect( colorWidget, &QgsCompoundColorWidget::currentColorChanged, this, [ = ]( const QColor & color ) { setSelectionColor( sel, color ); } );
     panel->openPanel( colorWidget );
   }
   else
@@ -333,7 +332,7 @@ void QgsPalettedRendererWidget::changeLabel()
 
 void QgsPalettedRendererWidget::applyColorRamp()
 {
-  std::unique_ptr<QgsColorRamp> ramp( btnColorRamp->colorRamp() );
+  std::unique_ptr< QgsColorRamp > ramp( btnColorRamp->colorRamp() );
   if ( !ramp )
   {
     return;
@@ -438,7 +437,8 @@ void QgsPalettedRendererWidget::classify()
 
     mGatherer = new QgsPalettedRendererClassGatherer( mRasterLayer, mBandComboBox->currentBand(), mModel->classData(), btnColorRamp->colorRamp() );
 
-    connect( mGatherer, &QgsPalettedRendererClassGatherer::progressChanged, mCalculatingProgressBar, [=]( int progress ) {
+    connect( mGatherer, &QgsPalettedRendererClassGatherer::progressChanged, mCalculatingProgressBar, [ = ]( int progress )
+    {
       mCalculatingProgressBar->setValue( progress );
     } );
 
@@ -475,18 +475,18 @@ void QgsPalettedRendererWidget::bandChanged( int band )
   if ( band == mBand )
     return;
 
-  if ( mRasterLayer && mRasterLayer->dataProvider() )
+  if ( mRasterLayer && mRasterLayer->dataProvider( ) )
   {
-    mValueDelegate->setDataType( mRasterLayer->dataProvider()->dataType( mBand ) );
+    mValueDelegate->setDataType( mRasterLayer->dataProvider( )->dataType( mBand ) );
   }
 
   bool deleteExisting = false;
   if ( !mModel->classData().isEmpty() )
   {
-    int res = QMessageBox::question( this, tr( "Delete Classification" ), tr( "The classification band was changed from %1 to %2.\n"
-                                                                              "Should the existing classes be deleted?" )
-                                                                            .arg( mBand )
-                                                                            .arg( band ),
+    int res = QMessageBox::question( this,
+                                     tr( "Delete Classification" ),
+                                     tr( "The classification band was changed from %1 to %2.\n"
+                                         "Should the existing classes be deleted?" ).arg( mBand ).arg( band ),
                                      QMessageBox::Yes | QMessageBox::No );
 
     deleteExisting = ( res == QMessageBox::Yes );
@@ -537,6 +537,7 @@ void QgsPalettedRendererWidget::layerWillBeRemoved( QgsMapLayer *layer )
 QgsPalettedRendererModel::QgsPalettedRendererModel( QObject *parent )
   : QAbstractItemModel( parent )
 {
+
 }
 
 void QgsPalettedRendererModel::setClassData( const QgsPalettedRasterRenderer::ClassData &data )
@@ -643,6 +644,7 @@ QVariant QgsPalettedRendererModel::headerData( int section, Qt::Orientation orie
               return tr( "Label" );
           }
         }
+
       }
       break;
     }
@@ -669,7 +671,7 @@ bool QgsPalettedRendererModel::setData( const QModelIndex &index, const QVariant
       if ( !ok )
         return false;
 
-      mData[index.row()].value = newValue;
+      mData[ index.row() ].value = newValue;
       emit dataChanged( index, index );
       emit classesChanged();
       return true;
@@ -677,7 +679,7 @@ bool QgsPalettedRendererModel::setData( const QModelIndex &index, const QVariant
 
     case ColorColumn:
     {
-      mData[index.row()].color = value.value<QColor>();
+      mData[ index.row() ].color = value.value<QColor>();
       emit dataChanged( index, index );
       emit classesChanged();
       return true;
@@ -685,7 +687,7 @@ bool QgsPalettedRendererModel::setData( const QModelIndex &index, const QVariant
 
     case LabelColumn:
     {
-      mData[index.row()].label = value.toString();
+      mData[ index.row() ].label = value.toString();
       emit dataChanged( index, index );
       emit classesChanged();
       return true;
@@ -785,8 +787,7 @@ QMimeData *QgsPalettedRendererModel::mimeData( const QModelIndexList &indexes ) 
 bool QgsPalettedRendererModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex & )
 {
   Q_UNUSED( column )
-  if ( action != Qt::MoveAction )
-    return true;
+  if ( action != Qt::MoveAction ) return true;
 
   if ( !data->hasFormat( QStringLiteral( "application/x-qgspalettedrenderermodel" ) ) )
     return false;
@@ -873,8 +874,8 @@ void QgsPalettedRendererClassGatherer::run()
           break;
         }
       }
-      i++;
-      emit progressChanged( 100 * ( static_cast<double>( i ) / static_cast<double>( newClasses.count() ) ) );
+      i ++;
+      emit progressChanged( 100 * ( static_cast< double >( i ) / static_cast<double>( newClasses.count() ) ) );
     }
     mClasses = newClasses;
   }
@@ -892,7 +893,7 @@ void QgsPalettedRendererClassGatherer::run()
 QgsPalettedRasterRenderer::ClassData QgsPalettedRendererProxyModel::classData() const
 {
   QgsPalettedRasterRenderer::ClassData data;
-  for ( int i = 0; i < rowCount(); ++i )
+  for ( int i = 0; i < rowCount( ); ++i )
   {
     data.push_back( qobject_cast<QgsPalettedRendererModel *>( sourceModel() )->classAtIndex( mapToSource( index( i, 0 ) ) ) );
   }

@@ -15,30 +15,19 @@ ${DEFAULTDOCSTRINGSIGNATURE}
 %Include server_auto.sip
 
 
-
 %VirtualErrorHandler serverapi_badrequest_exception_handler
-    PyObject *type, *exception, *traceback;
+    PyObject *type, *exception, *traceback, *pyStrException;
 
     PyErr_Fetch(&type, &exception, &traceback);
-    // check whether the object is already a unicode string
-    QString originalExceptionMessage;
-    if ( PyUnicode_Check( exception) )
-    {
-      originalExceptionMessage = QString::fromUtf8( PyUnicode_AsUTF8( exception ) );
-    }
-    else
-    {
-      PyObject* str = PyObject_Str( exception );
-      originalExceptionMessage = QString::fromUtf8( PyUnicode_AsUTF8( str ) );
-      Py_XDECREF( str );
-    }
+    pyStrException = PyObject_Str(exception);
+    Py_DECREF(pyStrException);
 
     SIP_RELEASE_GIL( sipGILState );
 
     QString strException = "API bad request error";
-    if ( !originalExceptionMessage.isEmpty() )
+    if ( pyStrException && PyUnicode_Check(pyStrException) )
     {
-       strException = originalExceptionMessage;
+       strException = QString::fromUtf8( PyUnicode_AsUTF8(pyStrException) );
     }
 
     throw QgsServerApiBadRequestException( strException );
@@ -46,30 +35,19 @@ ${DEFAULTDOCSTRINGSIGNATURE}
 
 
 %VirtualErrorHandler server_exception_handler
-    PyObject *type, *exception, *traceback;
+    PyObject *type, *exception, *traceback, *pyStrException;
 
     PyErr_Fetch(&type, &exception, &traceback);
-    // check whether the object is already a unicode string
-    QString originalExceptionMessage;
-    if ( PyUnicode_Check( exception) )
-    {
-      originalExceptionMessage = QString::fromUtf8( PyUnicode_AsUTF8( exception ) );
-    }
-    else
-    {
-      PyObject* str = PyObject_Str( exception );
-      originalExceptionMessage = QString::fromUtf8( PyUnicode_AsUTF8( str ) );
-      Py_XDECREF( str );
-    }
+    pyStrException = PyObject_Str(exception);
+    Py_DECREF(pyStrException);
 
     SIP_RELEASE_GIL( sipGILState );
 
     QString strException = "Server internal error";
-    if ( !originalExceptionMessage.isEmpty() )
+    if ( pyStrException && PyUnicode_Check(pyStrException) )
     {
-       strException = originalExceptionMessage;
+       strException = QString::fromUtf8( PyUnicode_AsUTF8(pyStrException) );
     }
 
     throw QgsServerException( strException );
 %End
-

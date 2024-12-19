@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgspointcloud3dsymbolwidget.h"
-#include "moc_qgspointcloud3dsymbolwidget.cpp"
 
 #include "qgspointcloudlayer.h"
 #include "qgspointcloud3dsymbol.h"
@@ -93,7 +92,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   mRenderingStyleComboBox->setCurrentIndex( 0 );
   mStackedWidget->setCurrentIndex( 0 );
 
-  whileBlocking( mPointBudgetSpinBox )->setMinimum( std::min( mLayer->pointCount() / 2, ( qint64 ) 100000 ) );
+  whileBlocking( mPointBudgetSpinBox )->setMinimum( std::min( mLayer->pointCount() / 2, ( qint64 )100000 ) );
   whileBlocking( mPointBudgetSpinBox )->setMaximum( mLayer->pointCount() + 1 );
   whileBlocking( mPointBudgetSpinBox )->setValue( 1000000 );
 
@@ -101,7 +100,7 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
     setSymbol( symbol );
 
   connect( mPointSizeSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
-  connect( mRenderingStyleComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsPointCloud3DSymbolWidget::onRenderingStyleChanged );
+  connect( mRenderingStyleComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsPointCloud3DSymbolWidget::onRenderingStyleChanged );
   connect( mScalarRecalculateMinMaxButton, &QPushButton::clicked, this, &QgsPointCloud3DSymbolWidget::setMinMaxFromLayer );
   connect( mColorRampShaderWidget, &QgsColorRampShaderWidget::widgetChanged, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
   connect( mSingleColorBtn, &QgsColorButton::colorChanged, this, &QgsPointCloud3DSymbolWidget::emitChangedSignal );
@@ -114,14 +113,16 @@ QgsPointCloud3DSymbolWidget::QgsPointCloud3DSymbolWidget( QgsPointCloudLayer *la
   connect( mPointBudgetSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
 
   connect( mTriangulateGroupBox, &QGroupBox::toggled, this, [&]() { emitChangedSignal(); } );
-  connect( mTriangulateGroupBox, &QGroupBox::toggled, this, [&]() { mPointSizeSpinBox->setEnabled( !mTriangulateGroupBox->isChecked() ); } );
+  connect( mTriangulateGroupBox, &QGroupBox::toggled, this, [&]() {mPointSizeSpinBox->setEnabled( !mTriangulateGroupBox->isChecked() ); } );
 
   connect( mHorizontalTriangleCheckBox, &QCheckBox::stateChanged, this, [&]() { emitChangedSignal(); } );
-  connect( mHorizontalTriangleCheckBox, &QCheckBox::stateChanged, this, [&]() { mHorizontalTriangleThresholdSpinBox->setEnabled( mHorizontalTriangleCheckBox->isChecked() ); } );
+  connect( mHorizontalTriangleCheckBox, &QCheckBox::stateChanged, this, [&]()
+  { mHorizontalTriangleThresholdSpinBox->setEnabled( mHorizontalTriangleCheckBox->isChecked() ); } );
   connect( mHorizontalTriangleThresholdSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
 
   connect( mVerticalTriangleCheckBox, &QCheckBox::stateChanged, this, [&]() { emitChangedSignal(); } );
-  connect( mVerticalTriangleCheckBox, &QCheckBox::stateChanged, this, [&]() { mVerticalTriangleThresholdSpinBox->setEnabled( mVerticalTriangleCheckBox->isChecked() ); } );
+  connect( mVerticalTriangleCheckBox, &QCheckBox::stateChanged, this, [&]()
+  { mVerticalTriangleThresholdSpinBox->setEnabled( mVerticalTriangleCheckBox->isChecked() ); } );
   connect( mVerticalTriangleThresholdSpinBox, qOverload<double>( &QDoubleSpinBox::valueChanged ), this, [&]() { emitChangedSignal(); } );
 
   mPointSizeSpinBox->setEnabled( !mTriangulateGroupBox->isChecked() );
@@ -308,7 +309,8 @@ void QgsPointCloud3DSymbolWidget::setCustomMinMaxValues( QgsRgbPointCloud3DSymbo
     return;
   }
 
-  if ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() == QgsContrastEnhancement::NoEnhancement )
+  if ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ==
+       QgsContrastEnhancement::NoEnhancement )
   {
     symbol->setRedContrastEnhancement( nullptr );
     symbol->setGreenContrastEnhancement( nullptr );
@@ -352,21 +354,18 @@ void QgsPointCloud3DSymbolWidget::setCustomMinMaxValues( QgsRgbPointCloud3DSymbo
 
   if ( redEnhancement )
   {
-    redEnhancement->setContrastEnhancementAlgorithm( static_cast<QgsContrastEnhancement::ContrastEnhancementAlgorithm>(
-      ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() )
-    ) );
+    redEnhancement->setContrastEnhancementAlgorithm( static_cast< QgsContrastEnhancement::ContrastEnhancementAlgorithm >(
+          ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) ) );
   }
   if ( greenEnhancement )
   {
-    greenEnhancement->setContrastEnhancementAlgorithm( static_cast<QgsContrastEnhancement::ContrastEnhancementAlgorithm>(
-      ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() )
-    ) );
+    greenEnhancement->setContrastEnhancementAlgorithm( static_cast< QgsContrastEnhancement::ContrastEnhancementAlgorithm >(
+          ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) ) );
   }
   if ( blueEnhancement )
   {
-    blueEnhancement->setContrastEnhancementAlgorithm( static_cast<QgsContrastEnhancement::ContrastEnhancementAlgorithm>(
-      ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() )
-    ) );
+    blueEnhancement->setContrastEnhancementAlgorithm( static_cast< QgsContrastEnhancement::ContrastEnhancementAlgorithm >(
+          ( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) ) );
   }
   symbol->setRedContrastEnhancement( redEnhancement );
   symbol->setGreenContrastEnhancement( greenEnhancement );
@@ -380,8 +379,7 @@ void QgsPointCloud3DSymbolWidget::minMaxModified()
     if ( ( QgsContrastEnhancement::ContrastEnhancementAlgorithm )( mContrastEnhancementAlgorithmComboBox->currentData().toInt() ) == QgsContrastEnhancement::NoEnhancement )
     {
       mContrastEnhancementAlgorithmComboBox->setCurrentIndex(
-        mContrastEnhancementAlgorithmComboBox->findData( ( int ) QgsContrastEnhancement::StretchToMinimumMaximum )
-      );
+        mContrastEnhancementAlgorithmComboBox->findData( ( int ) QgsContrastEnhancement::StretchToMinimumMaximum ) );
     }
     emitChangedSignal();
   }
@@ -407,8 +405,7 @@ void QgsPointCloud3DSymbolWidget::setMinMaxValue( const QgsContrastEnhancement *
   // QgsMultiBandColorRenderer is using individual contrast enhancements for each
   // band, but this widget GUI has one for all
   mContrastEnhancementAlgorithmComboBox->setCurrentIndex( mContrastEnhancementAlgorithmComboBox->findData(
-    static_cast<int>( ce->contrastEnhancementAlgorithm() )
-  ) );
+        static_cast< int >( ce->contrastEnhancementAlgorithm() ) ) );
 }
 
 void QgsPointCloud3DSymbolWidget::reloadColorRampShaderMinMax()
@@ -438,7 +435,7 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
     }
     else if ( newSymbolType == QLatin1String( "color-ramp" ) && mLayer->renderer()->type() == QLatin1String( "ramp" ) )
     {
-      const QgsPointCloudAttributeByRampRenderer *renderer2d = dynamic_cast<const QgsPointCloudAttributeByRampRenderer *>( mLayer->renderer() );
+      const QgsPointCloudAttributeByRampRenderer *renderer2d = dynamic_cast< const QgsPointCloudAttributeByRampRenderer * >( mLayer->renderer() );
       mBlockChangedSignals++;
       mRenderingParameterComboBox->setAttribute( renderer2d->attribute() );
       mColorRampShaderMinEdit->setValue( renderer2d->minimum() );
@@ -449,7 +446,7 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
     }
     else if ( newSymbolType == QLatin1String( "rgb" ) )
     {
-      const QgsPointCloudRgbRenderer *renderer2d = dynamic_cast<const QgsPointCloudRgbRenderer *>( mLayer->renderer() );
+      const QgsPointCloudRgbRenderer *renderer2d = dynamic_cast< const QgsPointCloudRgbRenderer * >( mLayer->renderer() );
       mBlockChangedSignals++;
       if ( renderer2d )
       {
@@ -465,7 +462,8 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
       }
       else
       {
-        if ( mRedAttributeComboBox->findText( QStringLiteral( "Red" ) ) > -1 && mRedAttributeComboBox->findText( QStringLiteral( "Green" ) ) > -1 && mRedAttributeComboBox->findText( QStringLiteral( "Blue" ) ) > -1 )
+        if ( mRedAttributeComboBox->findText( QStringLiteral( "Red" ) ) > -1 && mRedAttributeComboBox->findText( QStringLiteral( "Green" ) ) > -1 &&
+             mRedAttributeComboBox->findText( QStringLiteral( "Blue" ) ) > -1 )
         {
           mRedAttributeComboBox->setAttribute( QStringLiteral( "Red" ) );
           mGreenAttributeComboBox->setAttribute( QStringLiteral( "Green" ) );
@@ -482,7 +480,7 @@ void QgsPointCloud3DSymbolWidget::onRenderingStyleChanged()
         blueAttributeChanged();
       }
 
-      ( void ) ( renderer2d );
+      ( void )( renderer2d );
       mBlockChangedSignals--;
     }
     else if ( newSymbolType == QLatin1String( "classification" ) )
@@ -512,8 +510,8 @@ void QgsPointCloud3DSymbolWidget::rampAttributeChanged()
 
     if ( mRenderingParameterComboBox->currentAttribute() == QLatin1String( "Z" ) )
     {
-      const double zScale = static_cast<const QgsPointCloudLayerElevationProperties *>( mLayer->elevationProperties() )->zScale();
-      const double zOffset = static_cast<const QgsPointCloudLayerElevationProperties *>( mLayer->elevationProperties() )->zOffset();
+      const double zScale = static_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->zScale();
+      const double zOffset = static_cast< const QgsPointCloudLayerElevationProperties * >( mLayer->elevationProperties() )->zOffset();
       mProviderMin = mProviderMin * zScale + zOffset;
       mProviderMax = mProviderMax * zScale + zOffset;
     }

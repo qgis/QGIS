@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsnative.h"
-#include "moc_qgsnative.cpp"
 #include <QString>
 #include <QDesktopServices>
 #include <QUrl>
@@ -30,8 +29,12 @@ QgsNative::Capabilities QgsNative::capabilities() const
   return QgsNative::Capabilities();
 }
 
-void QgsNative::initializeMainWindow( QWindow *, const QString &, const QString &, const QString & )
+void QgsNative::initializeMainWindow( QWindow *,
+                                      const QString &,
+                                      const QString &,
+                                      const QString & )
 {
+
 }
 
 void QgsNative::currentAppActivateIgnoringOtherApps()
@@ -47,22 +50,27 @@ void QgsNative::openFileExplorerAndSelectFile( const QString &path )
 
 void QgsNative::showFileProperties( const QString & )
 {
+
 }
 
 void QgsNative::showUndefinedApplicationProgress()
 {
+
 }
 
 void QgsNative::setApplicationProgress( double )
 {
+
 }
 
 void QgsNative::hideApplicationProgress()
 {
+
 }
 
 void QgsNative::setApplicationBadgeCount( int )
 {
+
 }
 
 bool QgsNative::hasDarkTheme()
@@ -84,4 +92,5 @@ QgsNative::NotificationResult QgsNative::showDesktopNotification( const QString 
 
 void QgsNative::onRecentProjectsChanged( const std::vector<QgsNative::RecentProjectProperties> & )
 {
+
 }

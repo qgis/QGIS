@@ -25,6 +25,7 @@ class QgsArcGisRestDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
     Q_OBJECT
 
   public:
+
     QgsArcGisRestDataItemGuiProvider() = default;
 
     QString name() override
@@ -32,7 +33,8 @@ class QgsArcGisRestDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
       return QStringLiteral( "afs_items" );
     }
 
-    void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
   private:
     static void newConnection( QgsDataItem *item );

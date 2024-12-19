@@ -17,7 +17,6 @@
  ***************************************************************************/
 
 #include "qgsnetworkcontentfetchertask.h"
-#include "moc_qgsnetworkcontentfetchertask.cpp"
 #include "qgsnetworkcontentfetcher.h"
 #include "qgsnetworkreply.h"
 #include <QEventLoop>

@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Paul Blottiere"
-__date__ = "November 2018"
-__copyright__ = "(C) 2018, Paul Blottiere"
+__author__ = 'Paul Blottiere'
+__date__ = 'November 2018'
+__copyright__ = '(C) 2018, Paul Blottiere'
 
 import os
 
@@ -29,15 +29,17 @@ from qgis.core import (
     QgsProcessingParameterString,
     QgsProcessingParameterNumber,
     QgsExpression,
-    QgsProcessingModelChildParameterSource,
+    QgsProcessingModelChildParameterSource
 )
 
 from qgis.gui import QgsFieldExpressionWidget
 
-from processing.gui.wrappers import WidgetWrapper, dialogTypes, DIALOG_MODELER
+from processing.gui.wrappers import (WidgetWrapper,
+                                     dialogTypes,
+                                     DIALOG_MODELER)
 
 pluginPath = os.path.dirname(__file__)
-WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, "ExecuteSQLWidgetBase.ui"))
+WIDGET, BASE = uic.loadUiType(os.path.join(pluginPath, 'ExecuteSQLWidgetBase.ui'))
 
 
 class ExecuteSQLWidget(BASE, WIDGET):
@@ -53,8 +55,7 @@ class ExecuteSQLWidget(BASE, WIDGET):
         # add model parameters in context scope if called from modeler
         if self.dialogType == DIALOG_MODELER:
             strings = dialog.getAvailableValuesOfType(
-                [QgsProcessingParameterString, QgsProcessingParameterNumber], []
-            )
+                [QgsProcessingParameterString, QgsProcessingParameterNumber], [])
             model_params = [dialog.resolveValueDescription(s) for s in strings]
 
             scope = QgsExpressionContextScope()
@@ -70,7 +71,7 @@ class ExecuteSQLWidget(BASE, WIDGET):
 
     def insert(self):
         if self.mExpressionWidget.currentText():
-            exp = f"[%{self.mExpressionWidget.currentText()}%]"
+            exp = f'[%{self.mExpressionWidget.currentText()}%]'
             self.mText.insertPlainText(exp)
 
     def setValue(self, value):
@@ -79,32 +80,20 @@ class ExecuteSQLWidget(BASE, WIDGET):
         if self.dialogType == DIALOG_MODELER:
             if isinstance(value, list):
                 for v in value:
-                    if (
-                        isinstance(v, QgsProcessingModelChildParameterSource)
-                        and v.source()
-                        == Qgis.ProcessingModelChildParameterSource.ExpressionText
-                    ):
+                    if isinstance(v, QgsProcessingModelChildParameterSource) \
+                            and v.source() == Qgis.ProcessingModelChildParameterSource.ExpressionText:
                         text = v.expressionText()
 
                         # replace parameter's name by expression (diverging after model save)
                         names = QgsExpression.referencedVariables(text)
 
                         strings = self.dialog.getAvailableValuesOfType(
-                            [
-                                QgsProcessingParameterString,
-                                QgsProcessingParameterNumber,
-                            ],
-                            [],
-                        )
-                        model_params = [
-                            (self.dialog.resolveValueDescription(s), s) for s in strings
-                        ]
+                            [QgsProcessingParameterString, QgsProcessingParameterNumber], [])
+                        model_params = [(self.dialog.resolveValueDescription(s), s) for s in strings]
 
                         for k, v in model_params:
                             if v.parameterName() in names:
-                                text = text.replace(
-                                    f"[% @{v.parameterName()} %]", f"[% @{k} %]"
-                                )
+                                text = text.replace(f'[% @{v.parameterName()} %]', f'[% @{k} %]')
 
         self.mText.setPlainText(text)
 
@@ -120,8 +109,7 @@ class ExecuteSQLWidget(BASE, WIDGET):
 
     def _expressionValues(self, text):
         strings = self.dialog.getAvailableValuesOfType(
-            [QgsProcessingParameterString, QgsProcessingParameterNumber], []
-        )
+            [QgsProcessingParameterString, QgsProcessingParameterNumber], [])
         model_params = [(self.dialog.resolveValueDescription(s), s) for s in strings]
 
         variables = QgsExpression.referencedVariables(text)
@@ -131,7 +119,7 @@ class ExecuteSQLWidget(BASE, WIDGET):
 
         for k, v in model_params:
             if k in descriptions:
-                text = text.replace(f"[% @{k} %]", f"[% @{v.parameterName()} %]")
+                text = text.replace(f'[% @{k} %]', f'[% @{v.parameterName()} %]')
 
         src = QgsProcessingModelChildParameterSource.fromExpressionText(text)
 

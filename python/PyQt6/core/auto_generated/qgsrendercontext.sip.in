@@ -110,7 +110,7 @@ This is currently used to implement selective masking.
 %End
 
 
- void setDisabledSymbolLayers( const QSet<const QgsSymbolLayer *> &symbolLayers ) /Deprecated="Since 3.30. And replaced with setDisabledSymbolLayersV2."/;
+ void setDisabledSymbolLayers( const QSet<const QgsSymbolLayer *> &symbolLayers ) /Deprecated/;
 %Docstring
 When rendering a map layer in a second pass (for selective masking),
 some symbol layers may be disabled.
@@ -142,7 +142,7 @@ Sets the list of disabled symbol layer ids.
 .. versionadded:: 3.30
 %End
 
- QSet<const QgsSymbolLayer *> disabledSymbolLayers() const /Deprecated="Since 3.30. And replaced with disabledSymbolLayersV2."/;
+ QSet<const QgsSymbolLayer *> disabledSymbolLayers() const /Deprecated/;
 %Docstring
 When rendering a map layer in a second pass (for selective masking),
 some symbol layers may be disabled.
@@ -873,7 +873,7 @@ in a mask painter, which is not meant to be visible, by definition.
 .. versionadded:: 3.12
 %End
 
- QVariantMap customRenderingFlags() const /Deprecated="Since 3.40. Use customProperties() instead."/;
+ QVariantMap customRenderingFlags() const /Deprecated/;
 %Docstring
 Gets custom rendering flags. Layers might honour these to alter their rendering.
 
@@ -897,7 +897,7 @@ Objects might honour these to alter their rendering.
 .. versionadded:: 3.40
 %End
 
- void setCustomRenderingFlag( const QString &flag, const QVariant &value ) /Deprecated="Since 3.40. Use setCustomProperty() instead."/;
+ void setCustomRenderingFlag( const QString &flag, const QVariant &value ) /Deprecated/;
 %Docstring
 Sets a custom rendering flag. Layers might honour these to alter their rendering.
 
@@ -922,7 +922,7 @@ Objects might honour these to alter their rendering.
 .. versionadded:: 3.40
 %End
 
- void clearCustomRenderingFlag( const QString &flag ) /Deprecated="Since 3.40. Use clearCustomProperty() instead."/;
+ void clearCustomRenderingFlag( const QString &flag ) /Deprecated/;
 %Docstring
 Clears the specified custom rendering flag.
 
@@ -1026,7 +1026,7 @@ are drawn and behave during render operations.
 .. versionadded:: 3.38
 %End
 
- void addSymbolLayerClipPath( const QString &symbolLayerId, QPainterPath path ) /Deprecated="Since 3.38. Use addSymbolLayerClipGeometry() instead."/;
+ void addSymbolLayerClipPath( const QString &symbolLayerId, QPainterPath path ) /Deprecated/;
 %Docstring
 Add a clip ``path`` to be applied to the ``symbolLayer`` before rendering
 
@@ -1037,7 +1037,7 @@ Add a clip ``path`` to be applied to the ``symbolLayer`` before rendering
    Use :py:func:`~QgsRenderContext.addSymbolLayerClipGeometry` instead.
 %End
 
- QList<QPainterPath> symbolLayerClipPaths( const QString &symbolLayerId ) const /Deprecated="Since 3.38. Use symbolLayerClipGeometries() instead."/;
+ QList<QPainterPath> symbolLayerClipPaths( const QString &symbolLayerId ) const /Deprecated/;
 %Docstring
 Returns clip paths to be applied to the ``symbolLayer`` before rendering
 

@@ -17,7 +17,6 @@
 #include "qgsguiutils.h"
 #include "qgsjsonutils.h"
 #include "qgsqueryloggerpanelwidget.h"
-#include "moc_qgsqueryloggerpanelwidget.cpp"
 #include "qgsdatabasequeryloggernode.h"
 #include "qgsappquerylogger.h"
 #include "qgssettings.h"
@@ -50,7 +49,8 @@ QgsDatabaseQueryLoggerTreeView::QgsDatabaseQueryLoggerTreeView( QgsAppQueryLogge
   mProxyModel->setSortRole( QgsDevToolsModelNode::RoleSort );
   setModel( mProxyModel );
 
-  connect( mProxyModel, &QAbstractItemModel::rowsInserted, this, [this]( const QModelIndex &parent, int first, int last ) {
+  connect( mProxyModel, &QAbstractItemModel::rowsInserted, this, [this]( const QModelIndex & parent, int first, int last )
+  {
     // we want all second level items to be spanned
     for ( int row = first; row <= last; ++row )
     {
@@ -67,20 +67,22 @@ QgsDatabaseQueryLoggerTreeView::QgsDatabaseQueryLoggerTreeView( QgsAppQueryLogge
   setContextMenuPolicy( Qt::CustomContextMenu );
   connect( this, &QgsDatabaseQueryLoggerTreeView::customContextMenuRequested, this, &QgsDatabaseQueryLoggerTreeView::contextMenu );
 
-  connect( verticalScrollBar(), &QAbstractSlider::sliderMoved, this, [this]( int value ) {
+  connect( verticalScrollBar(), &QAbstractSlider::sliderMoved, this, [this]( int value )
+  {
     if ( value == verticalScrollBar()->maximum() )
       mAutoScroll = true;
     else
       mAutoScroll = false;
   } );
 
-  connect( mLogger, &QAbstractItemModel::rowsInserted, this, [=] {
+  connect( mLogger, &QAbstractItemModel::rowsInserted, this, [ = ]
+  {
     if ( mLogger->rowCount() > ( QgsAppQueryLogger::MAX_LOGGED_REQUESTS * 1.2 ) ) // 20 % more as buffer
     {
       // never trim expanded nodes
       const int toTrim = mLogger->rowCount() - QgsAppQueryLogger::MAX_LOGGED_REQUESTS;
       int trimmed = 0;
-      QList<int> rowsToTrim;
+      QList< int > rowsToTrim;
       rowsToTrim.reserve( toTrim );
       for ( int i = 0; i < mLogger->rowCount(); ++i )
       {
@@ -131,7 +133,7 @@ void QgsDatabaseQueryLoggerTreeView::contextMenu( QPoint point )
   {
     mMenu->clear();
 
-    const QList<QAction *> actions = mLogger->actions( modelIndex, mMenu );
+    const QList< QAction * > actions = mLogger->actions( modelIndex, mMenu );
     mMenu->addActions( actions );
     if ( !mMenu->actions().empty() )
     {
@@ -182,12 +184,15 @@ QgsDatabaseQueryLoggerPanelWidget::QgsDatabaseQueryLoggerPanelWidget( QgsAppQuer
 
   connect( mFilterLineEdit, &QgsFilterLineEdit::textChanged, mTreeView, &QgsDatabaseQueryLoggerTreeView::setFilterString );
   connect( mActionClear, &QAction::triggered, mLogger, &QgsAppQueryLogger::clear );
-  connect( mActionRecord, &QAction::toggled, this, [=]( bool enabled ) {
+  connect( mActionRecord, &QAction::toggled, this, [ = ]( bool enabled )
+  {
     QgsSettings().setValue( QStringLiteral( "logDatabaseQueries" ), enabled, QgsSettings::App );
     QgsApplication::databaseQueryLog()->setEnabled( enabled );
   } );
-  connect( mActionSaveLog, &QAction::triggered, this, [=]() {
-    if ( QMessageBox::warning( this, tr( "Save Database Query Log" ), tr( "Security warning: query logs may contain sensitive data including usernames or passwords. Treat this log as confidential and be careful who you share it with. Continue?" ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
+  connect( mActionSaveLog, &QAction::triggered, this, [ = ]()
+  {
+    if ( QMessageBox::warning( this, tr( "Save Database Query Log" ),
+                               tr( "Security warning: query logs may contain sensitive data including usernames or passwords. Treat this log as confidential and be careful who you share it with. Continue?" ), QMessageBox::Yes | QMessageBox::No ) == QMessageBox::No )
       return;
 
     const QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save Query Log" ), QDir::homePath(), tr( "Log files" ) + " (*.json)" );

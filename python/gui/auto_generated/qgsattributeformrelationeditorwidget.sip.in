@@ -21,6 +21,7 @@ Widget to show for child relations on an attribute form.
 #include "qgsattributeformrelationeditorwidget.h"
 %End
   public:
+
     explicit QgsAttributeFormRelationEditorWidget( QgsRelationWidgetWrapper *wrapper, QgsAttributeForm *form );
 %Docstring
 Constructor

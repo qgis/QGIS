@@ -57,7 +57,7 @@ QString QgsClipAlgorithm::groupId() const
 void QgsClipAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Overlay layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "OVERLAY" ), QObject::tr( "Overlay layer" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) ) );
 
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Clipped" ) ) );
 }
@@ -79,7 +79,7 @@ QgsClipAlgorithm *QgsClipAlgorithm::createInstance() const
 
 bool QgsClipAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 {
-  const QgsVectorLayer *layer = qobject_cast<const QgsVectorLayer *>( l );
+  const QgsVectorLayer *layer = qobject_cast< const QgsVectorLayer * >( l );
   if ( !layer )
     return false;
 
@@ -88,11 +88,11 @@ bool QgsClipAlgorithm::supportInPlaceEdit( const QgsMapLayer *l ) const
 
 QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
-  std::unique_ptr<QgsFeatureSource> featureSource( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
+  std::unique_ptr< QgsFeatureSource > featureSource( parameterAsSource( parameters, QStringLiteral( "INPUT" ), context ) );
   if ( !featureSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "INPUT" ) ) );
 
-  std::unique_ptr<QgsFeatureSource> maskSource( parameterAsSource( parameters, QStringLiteral( "OVERLAY" ), context ) );
+  std::unique_ptr< QgsFeatureSource > maskSource( parameterAsSource( parameters, QStringLiteral( "OVERLAY" ), context ) );
   if ( !maskSource )
     throw QgsProcessingException( invalidSourceError( parameters, QStringLiteral( "OVERLAY" ) ) );
 
@@ -101,14 +101,14 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
 
   QString dest;
   const Qgis::GeometryType sinkType = QgsWkbTypes::geometryType( featureSource->wkbType() );
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, featureSource->fields(), QgsWkbTypes::promoteNonPointTypesToMulti( featureSource->wkbType() ), featureSource->sourceCrs() ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, dest, featureSource->fields(), QgsWkbTypes::promoteNonPointTypesToMulti( featureSource->wkbType() ), featureSource->sourceCrs() ) );
 
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   // first build up a list of clip geometries
-  QVector<QgsGeometry> clipGeoms;
-  QgsFeatureIterator it = maskSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QList<int>() ).setDestinationCrs( featureSource->sourceCrs(), context.transformContext() ) );
+  QVector< QgsGeometry > clipGeoms;
+  QgsFeatureIterator it = maskSource->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QList< int >() ).setDestinationCrs( featureSource->sourceCrs(), context.transformContext() ) );
   QgsFeature f;
   while ( it.nextFeature( f ) )
   {
@@ -141,7 +141,7 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
   }
 
   // use prepared geometries for faster intersection tests
-  std::unique_ptr<QgsGeometryEngine> engine( QgsGeometry::createGeometryEngine( combinedClipGeom.constGet() ) );
+  std::unique_ptr< QgsGeometryEngine > engine( QgsGeometry::createGeometryEngine( combinedClipGeom.constGet() ) );
   engine->prepareGeometry();
 
   QgsFeatureIds testedFeatureIds;
@@ -225,11 +225,9 @@ QVariantMap QgsClipAlgorithm::processAlgorithm( const QVariantMap &parameters, Q
     if ( !singleClipFeature )
     {
       // coarse progress report for multiple clip geometries
-      feedback->setProgress( 100.0 * static_cast<double>( i ) / clipGeoms.length() );
+      feedback->setProgress( 100.0 * static_cast< double >( i ) / clipGeoms.length() );
     }
   }
-
-  sink->finalize();
 
   return outputs;
 }

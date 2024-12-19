@@ -39,10 +39,10 @@ class TestQgsFieldExpressionWidget : public QObject
     TestQgsFieldExpressionWidget() = default;
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void initTestCase();      // will be called before the first testfunction is executed.
+    void cleanupTestCase();   // will be called after the last testfunction was executed.
+    void init();              // will be called before each testfunction is executed.
+    void cleanup();           // will be called after every testfunction.
 
     void testRemoveJoin();
     void asExpression();
@@ -83,6 +83,8 @@ void TestQgsFieldExpressionWidget::initTestCase()
   // init widget
   mWidget = new QgsFieldExpressionWidget();
   mWidget->setLayer( mLayerA );
+
+
 }
 
 void TestQgsFieldExpressionWidget::init()
@@ -100,6 +102,7 @@ void TestQgsFieldExpressionWidget::cleanupTestCase()
 
 void TestQgsFieldExpressionWidget::testRemoveJoin()
 {
+
   QVERIFY( mLayerA->fields().count() == 1 );
 
   QgsVectorLayerJoinInfo joinInfo;
@@ -135,15 +138,15 @@ void TestQgsFieldExpressionWidget::testRemoveJoin()
 void TestQgsFieldExpressionWidget::asExpression()
 {
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "point?field=fld:int&field=fld2:int&field=fld3:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
-  layer->dataProvider()->addAttributes( QList<QgsField>() << QgsField( QStringLiteral( "a space" ), QMetaType::Type::QString ) );
+  layer->dataProvider()->addAttributes( QList< QgsField >() << QgsField( QStringLiteral( "a space" ), QMetaType::Type::QString ) );
   layer->updateFields();
   QgsProject::instance()->addMapLayer( layer );
 
-  std::unique_ptr<QgsFieldExpressionWidget> widget( new QgsFieldExpressionWidget() );
+  std::unique_ptr< QgsFieldExpressionWidget > widget( new QgsFieldExpressionWidget() );
   widget->setLayer( layer );
 
-  const QSignalSpy spy( widget.get(), static_cast<void ( QgsFieldExpressionWidget::* )( const QString & )>( &QgsFieldExpressionWidget::fieldChanged ) );
-  const QSignalSpy spy2( widget.get(), static_cast<void ( QgsFieldExpressionWidget::* )( const QString &, bool )>( &QgsFieldExpressionWidget::fieldChanged ) );
+  const QSignalSpy spy( widget.get(), static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ) );
+  const QSignalSpy spy2( widget.get(), static_cast < void ( QgsFieldExpressionWidget::* )( const QString &, bool ) >( &QgsFieldExpressionWidget::fieldChanged ) );
 
   // check with field set
   widget->setField( QStringLiteral( "fld" ) );
@@ -230,7 +233,7 @@ void TestQgsFieldExpressionWidget::testIsValid()
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "point?field=fld:int&field=name%20with%20space:string" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( layer );
 
-  std::unique_ptr<QgsFieldExpressionWidget> widget( new QgsFieldExpressionWidget() );
+  std::unique_ptr< QgsFieldExpressionWidget > widget( new QgsFieldExpressionWidget() );
   widget->setLayer( layer );
 
   // also check the fieldChanged signal to ensure that the emitted bool isValid value is correct
@@ -287,7 +290,7 @@ void TestQgsFieldExpressionWidget::testFilters()
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "point?field=intfld:int&field=stringfld:string&field=string2fld:string&field=longfld:long&field=doublefld:double&field=datefld:date&field=timefld:time&field=datetimefld:datetime&field=binaryfld:binary&field=booleanfld:boolean" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( layer );
 
-  std::unique_ptr<QgsFieldExpressionWidget> widget( new QgsFieldExpressionWidget() );
+  std::unique_ptr< QgsFieldExpressionWidget > widget( new QgsFieldExpressionWidget() );
   widget->setLayer( layer );
 
   QCOMPARE( widget->mCombo->count(), 10 );
@@ -355,7 +358,7 @@ void TestQgsFieldExpressionWidget::setNull()
   QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "point?field=fld:int&field=fld2:int&field=fld3:int" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
   QgsProject::instance()->addMapLayer( layer );
 
-  std::unique_ptr<QgsFieldExpressionWidget> widget( new QgsFieldExpressionWidget() );
+  std::unique_ptr< QgsFieldExpressionWidget > widget( new QgsFieldExpressionWidget() );
   widget->setLayer( layer );
 
   widget->setField( QString() );
@@ -381,6 +384,7 @@ void TestQgsFieldExpressionWidget::testVeryLongExpression()
   mWidget->setExpression( veryLongExpression );
   QCOMPARE( veryLongExpression.size(), mWidget->currentText().size() );
 };
+
 
 
 QGSTEST_MAIN( TestQgsFieldExpressionWidget )

@@ -49,22 +49,22 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
     // Create the index
     mSpatialIndexes.emplace( cacheKey, new QgsGenericSpatialIndex<Tile>() );
     mTiles.emplace( cacheKey, std::map<TileIdType, std::unique_ptr<Tile>>() );
-    mLoadedIndexBounds[cacheKey] = QgsGeometry();
+    mLoadedIndexBounds[ cacheKey] = QgsGeometry();
   }
 
   // Now check if the requested extent was completely downloaded
   const QgsGeometry requestedRect { QgsGeometry::fromRect( request.extent ) };
 
   // Fast track for first tile (where index is empty)
-  if ( mLoadedIndexBounds[cacheKey].isNull() )
+  if ( mLoadedIndexBounds[ cacheKey ].isNull() )
   {
     return fetchTilesIndexAndData( requestedRect, request );
   }
-  else if ( !mLoadedIndexBounds[cacheKey].contains( requestedRect ) )
+  else if ( ! mLoadedIndexBounds[ cacheKey].contains( requestedRect ) )
   {
     // Fetch index
-    const QgsGeometry geomDiff { requestedRect.difference( mLoadedIndexBounds[cacheKey] ) };
-    if ( !fetchTilesIndex( geomDiff.isEmpty() ? requestedRect : geomDiff, request ) )
+    const QgsGeometry geomDiff { requestedRect.difference( mLoadedIndexBounds[ cacheKey ] ) };
+    if ( ! fetchTilesIndex( geomDiff.isEmpty() ? requestedRect : geomDiff, request ) )
     {
       return result;
     }
@@ -74,14 +74,16 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
   QStringList missingTileIds;
 
   // Get intersecting tiles from the index
-  mSpatialIndexes[cacheKey]->intersects( request.extent, [&]( Tile *tilePtr ) -> bool {
+  mSpatialIndexes[ cacheKey ]->intersects( request.extent, [ & ]( Tile * tilePtr ) -> bool
+  {
     if ( tilePtr->data.size() == 0 )
     {
       missingTileIds.push_back( QStringLiteral( "'%1'" ).arg( tilePtr->tileId ) );
     }
     else
     {
-      result.tiles.push_back( TileBand {
+      result.tiles.push_back( TileBand
+      {
         tilePtr->tileId,
         tilePtr->srid,
         tilePtr->extent,
@@ -101,21 +103,29 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
   } );
 
   // Fetch missing tile data in one single query
-  if ( !missingTileIds.isEmpty() )
+  if ( ! missingTileIds.isEmpty() )
   {
+
     const QString sql { QStringLiteral( "SELECT %1, ENCODE( ST_AsBinary( %2, TRUE ), 'hex') "
                                         "FROM %3 WHERE %4 %1 IN ( %5 )" )
-                          .arg( request.pk, request.rasterColumn, request.tableToQuery, request.whereClause, missingTileIds.join( ',' ) ) };
+                        .arg( request.pk,
+                              request.rasterColumn,
+                              request.tableToQuery,
+                              request.whereClause,
+                              missingTileIds.join( ',' ) ) };
 
     QgsPostgresResult dataResult( request.conn->PQexec( sql ) );
     if ( dataResult.PQresultStatus() != PGRES_TUPLES_OK )
     {
-      QgsMessageLog::logMessage( QObject::tr( "Unable to get tile data.\nThe error message from the database was:\n%1.\nSQL: %2" ).arg( dataResult.PQresultErrorMessage(), sql ), QObject::tr( "PostGIS" ), Qgis::MessageLevel::Critical );
+      QgsMessageLog::logMessage( QObject::tr( "Unable to get tile data.\nThe error message from the database was:\n%1.\nSQL: %2" )
+                                 .arg( dataResult.PQresultErrorMessage(),
+                                       sql ), QObject::tr( "PostGIS" ), Qgis::MessageLevel::Critical );
     }
 
     if ( dataResult.PQntuples() != missingTileIds.size() )
     {
-      QgsMessageLog::logMessage( QObject::tr( "Missing tiles were not found while fetching tile data from backend.\nSQL: %1" ).arg( sql ), QObject::tr( "PostGIS" ), Qgis::MessageLevel::Critical );
+      QgsMessageLog::logMessage( QObject::tr( "Missing tiles were not found while fetching tile data from backend.\nSQL: %1" )
+                                 .arg( sql ), QObject::tr( "PostGIS" ), Qgis::MessageLevel::Critical );
     }
 
     for ( int row = 0; row < dataResult.PQntuples(); ++row )
@@ -124,7 +134,9 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
       const TileIdType tileId { dataResult.PQgetvalue( row, 0 ) };
       if ( tileId.isEmpty() )
       {
-        QgsMessageLog::logMessage( QObject::tr( "Tile with ID (%1) is empty while fetching tile data from backend.\nSQL: %2" ).arg( dataResult.PQgetvalue( row, 0 ) ).arg( sql ), QObject::tr( "PostGIS" ), Qgis::MessageLevel::Critical );
+        QgsMessageLog::logMessage( QObject::tr( "Tile with ID (%1) is empty while fetching tile data from backend.\nSQL: %2" )
+                                   .arg( dataResult.PQgetvalue( row, 0 ) )
+                                   .arg( sql ), QObject::tr( "PostGIS" ), Qgis::MessageLevel::Critical );
       }
 
       int dataRead;
@@ -132,19 +144,19 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::tiles( c
       Tile const *tilePtr { setTileData( cacheKey, tileId, QByteArray::fromRawData( reinterpret_cast<char *>( binaryData ), dataRead ) ) };
       CPLFree( binaryData );
 
-      if ( !tilePtr )
+      if ( ! tilePtr )
       {
         // This should never happen!
         QgsMessageLog::logMessage( QObject::tr( "Tile with ID (%1) could not be found in provider storage while fetching tile data "
                                                 "from backend.\nSQL: %2" )
-                                     .arg( tileId )
-                                     .arg( sql ),
-                                   QObject::tr( "PostGIS" ), Qgis::MessageLevel::Critical );
-        Q_ASSERT( tilePtr ); // Abort
+                                   .arg( tileId )
+                                   .arg( sql ), QObject::tr( "PostGIS" ), Qgis::MessageLevel::Critical );
+        Q_ASSERT( tilePtr );  // Abort
       }
-      else // Add to result
+      else  // Add to result
       {
-        result.tiles.push_back( TileBand {
+        result.tiles.push_back( TileBand
+        {
           tilePtr->tileId,
           tilePtr->srid,
           tilePtr->extent,
@@ -177,17 +189,18 @@ void QgsPostgresRasterSharedData::invalidateCache()
 
 QgsPostgresRasterSharedData::Tile const *QgsPostgresRasterSharedData::setTileData( const QString &cacheKey, TileIdType tileId, const QByteArray &data )
 {
-  Q_ASSERT( !data.isEmpty() );
-  if ( mTiles.find( cacheKey ) == mTiles.end() || mTiles[cacheKey].find( tileId ) == mTiles[cacheKey].end() )
+  Q_ASSERT( ! data.isEmpty() );
+  if ( mTiles.find( cacheKey ) == mTiles.end() ||
+       mTiles[ cacheKey ].find( tileId ) == mTiles[ cacheKey ].end() )
   {
     return nullptr;
   }
 
-  Tile *const tile { mTiles[cacheKey][tileId].get() };
+  Tile *const tile { mTiles[ cacheKey ][ tileId ].get() };
   const QVariantMap parsedData = QgsPostgresRasterUtils::parseWkb( data );
   for ( int bandCnt = 1; bandCnt <= tile->numBands; ++bandCnt )
   {
-    tile->data.emplace_back( parsedData[QStringLiteral( "band%1" ).arg( bandCnt )].toByteArray() );
+    tile->data.emplace_back( parsedData[ QStringLiteral( "band%1" ).arg( bandCnt ) ].toByteArray() );
   }
   return tile;
 }
@@ -200,27 +213,33 @@ QString QgsPostgresRasterSharedData::keyFromRequest( const QgsPostgresRasterShar
 bool QgsPostgresRasterSharedData::fetchTilesIndex( const QgsGeometry &requestPolygon, const TilesRequest &request )
 {
   const QString indexSql { QStringLiteral( "SELECT %1, (ST_Metadata( %2 )).* FROM %3 "
-                                           "WHERE %6 %2 && ST_GeomFromText( '%5', %4 )" )
-                             .arg( request.pk, request.rasterColumn, request.tableToQuery, request.srid, requestPolygon.asWkt(), request.whereClause ) };
+                           "WHERE %6 %2 && ST_GeomFromText( '%5', %4 )" )
+                           .arg( request.pk,
+                                 request.rasterColumn,
+                                 request.tableToQuery,
+                                 request.srid,
+                                 requestPolygon.asWkt(),
+                                 request.whereClause ) };
 
   QgsPostgresResult result( request.conn->PQexec( indexSql ) );
 
   if ( result.PQresultStatus() != PGRES_TUPLES_OK )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Error fetching tile index from backend.\nSQL: %1" ).arg( indexSql ), QObject::tr( "PostGIS" ), Qgis::MessageLevel::Critical );
+    QgsMessageLog::logMessage( QObject::tr( "Error fetching tile index from backend.\nSQL: %1" )
+                               .arg( indexSql ), QObject::tr( "PostGIS" ), Qgis::MessageLevel::Critical );
 
     return false;
   }
 
   const QString cacheKey { keyFromRequest( request ) };
 
-  if ( mLoadedIndexBounds[cacheKey].isNull() )
+  if ( mLoadedIndexBounds[ cacheKey ].isNull() )
   {
-    mLoadedIndexBounds[cacheKey] = requestPolygon;
+    mLoadedIndexBounds[ cacheKey ] = requestPolygon;
   }
   else
   {
-    mLoadedIndexBounds[cacheKey] = mLoadedIndexBounds[cacheKey].combine( requestPolygon );
+    mLoadedIndexBounds[ cacheKey ] = mLoadedIndexBounds[ cacheKey ].combine( requestPolygon );
   }
 
   QgsRectangle overallExtent;
@@ -230,18 +249,18 @@ bool QgsPostgresRasterSharedData::fetchTilesIndex( const QgsGeometry &requestPol
     // rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands
     const TileIdType tileId { result.PQgetvalue( i, 0 ) };
 
-    if ( mTiles[cacheKey].find( tileId ) == mTiles[cacheKey].end() )
+    if ( mTiles[ cacheKey ].find( tileId ) == mTiles[ cacheKey ].end() )
     {
       const double upperleftx { result.PQgetvalue( i, 1 ).toDouble() };
       const double upperlefty { result.PQgetvalue( i, 2 ).toDouble() };
-      const long int tileWidth { result.PQgetvalue( i, 3 ).toLong() };
-      const long int tileHeight { result.PQgetvalue( i, 4 ).toLong() };
-      const double scalex { result.PQgetvalue( i, 5 ).toDouble() };
-      const double scaley { result.PQgetvalue( i, 6 ).toDouble() };
-      const double skewx { result.PQgetvalue( i, 7 ).toDouble() };
-      const double skewy { result.PQgetvalue( i, 8 ).toDouble() };
-      const int srid { result.PQgetvalue( i, 9 ).toInt() };
-      const int numbands { result.PQgetvalue( i, 10 ).toInt() };
+      const long int tileWidth { result.PQgetvalue( i, 3 ).toLong( ) };
+      const long int tileHeight { result.PQgetvalue( i, 4 ).toLong( ) };
+      const double scalex { result.PQgetvalue( i, 5 ).toDouble( ) };
+      const double scaley { result.PQgetvalue( i, 6 ).toDouble( ) };
+      const double skewx { result.PQgetvalue( i, 7 ).toDouble( ) };
+      const double skewy { result.PQgetvalue( i, 8 ).toDouble( ) };
+      const int srid {result.PQgetvalue( i, 9 ).toInt() };
+      const int numbands {result.PQgetvalue( i, 10 ).toInt() };
       double minY { upperlefty + tileHeight * scaley };
       double maxY { upperlefty };
       // Southing Y?
@@ -249,39 +268,43 @@ bool QgsPostgresRasterSharedData::fetchTilesIndex( const QgsGeometry &requestPol
       {
         std::swap( minY, maxY );
       }
-      const QgsRectangle extent( upperleftx, minY, upperleftx + tileWidth * scalex, maxY );
+      const QgsRectangle extent( upperleftx, minY,  upperleftx + tileWidth * scalex, maxY );
 
       overallExtent.combineExtentWith( extent );
 
       std::unique_ptr<QgsPostgresRasterSharedData::Tile> tile = std::make_unique<QgsPostgresRasterSharedData::Tile>(
-        tileId,
-        srid,
-        extent,
-        upperleftx,
-        maxY,
-        tileWidth,
-        tileHeight,
-        scalex,
-        scaley,
-        skewx,
-        skewy,
-        numbands
-      );
-      mSpatialIndexes[cacheKey]->insert( tile.get(), tile->extent );
-      mTiles[cacheKey][tileId] = std::move( tile );
-      QgsDebugMsgLevel( QStringLiteral( "Tile added: %1, ID: %2" ).arg( cacheKey ).arg( tileId ), 3 );
+            tileId,
+            srid,
+            extent,
+            upperleftx,
+            maxY,
+            tileWidth,
+            tileHeight,
+            scalex,
+            scaley,
+            skewx,
+            skewy,
+            numbands
+          );
+      mSpatialIndexes[ cacheKey ]->insert( tile.get(), tile->extent );
+      mTiles[ cacheKey ][ tileId ] = std::move( tile );
+      QgsDebugMsgLevel( QStringLiteral( "Tile added: %1, ID: %2" )
+                        .arg( cacheKey )
+                        .arg( tileId ), 3 );
       //qDebug() << "Tile added:" << cacheKey << " ID: " << tileId << "extent " << extent.toString( 4 ) << upperleftx << upperlefty << tileWidth  << tileHeight <<  extent.width() << extent.height();
     }
     else
     {
-      QgsDebugMsgLevel( QStringLiteral( "Tile already indexed: %1, ID: %2" ).arg( cacheKey ).arg( tileId ), 3 );
+      QgsDebugMsgLevel( QStringLiteral( "Tile already indexed: %1, ID: %2" )
+                        .arg( cacheKey )
+                        .arg( tileId ), 3 );
     }
   }
 
   // Include actual bounds
   if ( !overallExtent.isNull() )
   {
-    mLoadedIndexBounds[cacheKey] = requestPolygon.combine( QgsGeometry::fromRect( overallExtent ) );
+    mLoadedIndexBounds[ cacheKey ] = requestPolygon.combine( QgsGeometry::fromRect( overallExtent ) );
   }
 
   return true;
@@ -291,14 +314,20 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::fetchTil
 {
   QgsPostgresRasterSharedData::TilesResponse response;
   const QString indexSql { QStringLiteral( "SELECT %1, (ST_Metadata( %2 )).*, ENCODE( ST_AsBinary( %2, TRUE ), 'hex') FROM %3 "
-                                           "WHERE %6 %2 && ST_GeomFromText( '%5', %4 )" )
-                             .arg( request.pk, request.rasterColumn, request.tableToQuery, request.srid, requestPolygon.asWkt(), request.whereClause ) };
+                           "WHERE %6 %2 && ST_GeomFromText( '%5', %4 )" )
+                           .arg( request.pk,
+                                 request.rasterColumn,
+                                 request.tableToQuery,
+                                 request.srid,
+                                 requestPolygon.asWkt(),
+                                 request.whereClause ) };
 
   QgsPostgresResult dataResult( request.conn->PQexec( indexSql ) );
 
   if ( dataResult.PQresultStatus() != PGRES_TUPLES_OK )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Error fetching tile index from backend.\nSQL: %1" ).arg( indexSql ), QObject::tr( "PostGIS" ), Qgis::MessageLevel::Critical );
+    QgsMessageLog::logMessage( QObject::tr( "Error fetching tile index from backend.\nSQL: %1" )
+                               .arg( indexSql ), QObject::tr( "PostGIS" ), Qgis::MessageLevel::Critical );
 
     return response;
   }
@@ -310,18 +339,18 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::fetchTil
     // rid | upperleftx | upperlefty | width | height | scalex | scaley | skewx | skewy | srid | numbands | data
     const TileIdType tileId { dataResult.PQgetvalue( row, 0 ) };
 
-    if ( mTiles[cacheKey].find( tileId ) == mTiles[cacheKey].end() )
+    if ( mTiles[ cacheKey ].find( tileId ) == mTiles[ cacheKey ].end() )
     {
       const double upperleftx { dataResult.PQgetvalue( row, 1 ).toDouble() };
       const double upperlefty { dataResult.PQgetvalue( row, 2 ).toDouble() };
-      const long int tileWidth { dataResult.PQgetvalue( row, 3 ).toLong() };
-      const long int tileHeight { dataResult.PQgetvalue( row, 4 ).toLong() };
-      const double scalex { dataResult.PQgetvalue( row, 5 ).toDouble() };
-      const double scaley { dataResult.PQgetvalue( row, 6 ).toDouble() };
-      const double skewx { dataResult.PQgetvalue( row, 7 ).toDouble() };
-      const double skewy { dataResult.PQgetvalue( row, 8 ).toDouble() };
-      const int srid { dataResult.PQgetvalue( row, 9 ).toInt() };
-      const int numbands { dataResult.PQgetvalue( row, 10 ).toInt() };
+      const long int tileWidth { dataResult.PQgetvalue( row, 3 ).toLong( ) };
+      const long int tileHeight { dataResult.PQgetvalue( row, 4 ).toLong( ) };
+      const double scalex { dataResult.PQgetvalue( row, 5 ).toDouble( ) };
+      const double scaley { dataResult.PQgetvalue( row, 6 ).toDouble( ) };
+      const double skewx { dataResult.PQgetvalue( row, 7 ).toDouble( ) };
+      const double skewy { dataResult.PQgetvalue( row, 8 ).toDouble( ) };
+      const int srid {dataResult.PQgetvalue( row, 9 ).toInt() };
+      const int numbands {dataResult.PQgetvalue( row, 10 ).toInt() };
 
       double minY { upperlefty + tileHeight * scaley };
       double maxY { upperlefty };
@@ -330,22 +359,22 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::fetchTil
       {
         std::swap( minY, maxY );
       }
-      const QgsRectangle extent( upperleftx, minY, upperleftx + tileWidth * scalex, maxY );
+      const QgsRectangle extent( upperleftx, minY,  upperleftx + tileWidth * scalex, maxY );
 
       std::unique_ptr<QgsPostgresRasterSharedData::Tile> tile = std::make_unique<QgsPostgresRasterSharedData::Tile>(
-        tileId,
-        srid,
-        extent,
-        upperleftx,
-        upperlefty,
-        tileWidth,
-        tileHeight,
-        scalex,
-        scaley,
-        skewx,
-        skewy,
-        numbands
-      );
+            tileId,
+            srid,
+            extent,
+            upperleftx,
+            upperlefty,
+            tileWidth,
+            tileHeight,
+            scalex,
+            scaley,
+            skewx,
+            skewy,
+            numbands
+          );
 
       int dataRead;
       GByte *binaryData { CPLHexToBinary( dataResult.PQgetvalue( row, 11 ).toLatin1().constData(), &dataRead ) };
@@ -353,11 +382,12 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::fetchTil
       CPLFree( binaryData );
       for ( int bandCnt = 1; bandCnt <= tile->numBands; ++bandCnt )
       {
-        tile->data.emplace_back( parsedData[QStringLiteral( "band%1" ).arg( bandCnt )].toByteArray() );
+        tile->data.emplace_back( parsedData[ QStringLiteral( "band%1" ).arg( bandCnt ) ].toByteArray() );
       }
-      mSpatialIndexes[cacheKey]->insert( tile.get(), tile->extent );
+      mSpatialIndexes[ cacheKey ]->insert( tile.get(), tile->extent );
 
-      response.tiles.push_back( TileBand {
+      response.tiles.push_back( TileBand
+      {
         tile->tileId,
         tile->srid,
         tile->extent,
@@ -374,18 +404,22 @@ QgsPostgresRasterSharedData::TilesResponse QgsPostgresRasterSharedData::fetchTil
 
       response.extent.combineExtentWith( tile->extent );
 
-      mTiles[cacheKey][tileId] = std::move( tile );
-      QgsDebugMsgLevel( QStringLiteral( "Tile added: %1, ID: %2" ).arg( cacheKey ).arg( tileId ), 3 );
+      mTiles[ cacheKey ][ tileId ] = std::move( tile );
+      QgsDebugMsgLevel( QStringLiteral( "Tile added: %1, ID: %2" )
+                        .arg( cacheKey )
+                        .arg( tileId ), 3 );
       //qDebug() << "Tile data added:" << cacheKey << " ID: " << tileId << "extent " << extent.toString( 4 ) << upperleftx << upperlefty << tileWidth  << tileHeight <<  extent.width() << extent.height();
     }
     else
     {
-      QgsDebugMsgLevel( QStringLiteral( "Tile and data already indexed: %1, ID: %2" ).arg( cacheKey ).arg( tileId ), 2 );
+      QgsDebugMsgLevel( QStringLiteral( "Tile and data already indexed: %1, ID: %2" )
+                        .arg( cacheKey )
+                        .arg( tileId ), 2 );
     }
   }
 
   // Include requested bounds
-  mLoadedIndexBounds[cacheKey] = requestPolygon;
+  mLoadedIndexBounds[ cacheKey ] = requestPolygon;
 
   return response;
 }
@@ -404,6 +438,7 @@ QgsPostgresRasterSharedData::Tile::Tile( const QgsPostgresRasterSharedData::Tile
   , skewY( skewY )
   , numBands( numBands )
 {
+
 }
 
 const QByteArray QgsPostgresRasterSharedData::Tile::bandData( int bandNo ) const

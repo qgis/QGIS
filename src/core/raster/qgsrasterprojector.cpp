@@ -19,7 +19,6 @@
 #include "qgsrasterdataprovider.h"
 #include "qgslogger.h"
 #include "qgsrasterprojector.h"
-#include "moc_qgsrasterprojector.cpp"
 #include "qgscoordinatetransform.h"
 #include "qgsexception.h"
 

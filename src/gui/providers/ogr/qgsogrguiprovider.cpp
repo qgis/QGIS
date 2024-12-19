@@ -39,6 +39,7 @@ static const QString TEXT_PROVIDER_KEY = QStringLiteral( "ogr" );
 class QgsOgrVectorSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
+
     QString providerKey() const override { return QStringLiteral( "ogr" ); }
     QString text() const override { return QObject::tr( "Vector" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 10; }
@@ -52,6 +53,7 @@ class QgsOgrVectorSourceSelectProvider : public QgsSourceSelectProvider
 class QgsGeoPackageSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
+
     virtual QString name() const override;
     QString providerKey() const override { return QStringLiteral( "ogr" ); }
     QString text() const override { return QObject::tr( "GeoPackage" ); }
@@ -117,6 +119,7 @@ QgsSourceSelectProvider::Capabilities QgsOgrVectorSourceSelectProvider::capabili
 
 QgsOgrSourceWidgetProvider::QgsOgrSourceWidgetProvider()
 {
+
 }
 
 QString QgsOgrSourceWidgetProvider::providerKey() const
@@ -162,8 +165,8 @@ QList<QgsSourceSelectProvider *> QgsOgrGuiProviderMetadata::sourceSelectProvider
   QList<QgsSourceSelectProvider *> providers;
 
   providers
-    << new QgsOgrVectorSourceSelectProvider
-    << new QgsGeoPackageSourceSelectProvider;
+      << new QgsOgrVectorSourceSelectProvider
+      << new QgsGeoPackageSourceSelectProvider;
   // << new QgsSpatiaLiteSourceSelectProvider;
 
   return providers;

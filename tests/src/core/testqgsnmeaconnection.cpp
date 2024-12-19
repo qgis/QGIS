@@ -27,6 +27,7 @@ class ReplayNmeaConnection : public QgsNmeaConnection
 {
     Q_OBJECT
   public:
+
     ReplayNmeaConnection()
       : QgsNmeaConnection( nullptr )
     {
@@ -46,7 +47,7 @@ class ReplayNmeaConnection : public QgsNmeaConnection
       mBuffer->seek( pos );
 
       spy.wait();
-      return spy.constLast().at( 0 ).value<QgsGpsInformation>();
+      return spy.constLast().at( 0 ).value< QgsGpsInformation >();
     }
 
     void pushString( const QString &string )
@@ -58,6 +59,7 @@ class ReplayNmeaConnection : public QgsNmeaConnection
     }
 
   private:
+
     QBuffer *mBuffer = nullptr;
 };
 
@@ -67,8 +69,8 @@ class TestQgsNmeaConnection : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsNmeaConnection()
-      : QgsTest( QStringLiteral( "NMEA Connection Tests" ) ) {}
+
+    TestQgsNmeaConnection() : QgsTest( QStringLiteral( "NMEA Connection Tests" ) ) {}
 
   private slots:
     void initTestCase();
@@ -86,6 +88,7 @@ class TestQgsNmeaConnection : public QgsTest
     void testComponent_data();
     void testComponent();
     void testIncompleteMessage();
+
 };
 
 void TestQgsNmeaConnection::initTestCase()
@@ -137,7 +140,7 @@ void TestQgsNmeaConnection::testBasic()
   QCOMPARE( info.elevation, 0 );
   QVERIFY( std::isnan( info.direction ) );
 
-  info = connection.push( QStringLiteral( "$%1GSV,3,3,12,17,31,279,,28,27,320,,23,23,026,,14,22,060,*7B" ).arg( talkerId ) );
+  info =  connection.push( QStringLiteral( "$%1GSV,3,3,12,17,31,279,,28,27,320,,23,23,026,,14,22,060,*7B" ).arg( talkerId ) );
   QVERIFY( info.isValid() );
   QVERIFY( !info.satInfoComplete );
   QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::NoData );
@@ -302,7 +305,7 @@ void TestQgsNmeaConnection::testFixStatus()
   QVERIFY( info.isValid() );
   QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::Fix3D );
   QCOMPARE( statusSpy.count(), 1 );
-  QCOMPARE( statusSpy.constLast().at( 0 ).value<Qgis::GpsFixStatus>(), Qgis::GpsFixStatus::Fix3D );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::Fix3D );
 
   // no fix status change
   connection.push( QStringLiteral( "$%1GSA,A,3,,,,,,16,18,,22,24,,,3.6,2.1,2.2*3C" ).arg( talkerId ) );
@@ -314,7 +317,7 @@ void TestQgsNmeaConnection::testFixStatus()
   QVERIFY( info.isValid() );
   QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::Fix2D );
   QCOMPARE( statusSpy.count(), 2 );
-  QCOMPARE( statusSpy.constLast().at( 0 ).value<Qgis::GpsFixStatus>(), Qgis::GpsFixStatus::Fix2D );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::Fix2D );
 
   // no fix status change
   connection.push( QStringLiteral( "$%1GSA,A,2,,,,,,16,18,,22,24,,,3.6,2.1,2.2*3C" ).arg( talkerId ) );
@@ -326,7 +329,7 @@ void TestQgsNmeaConnection::testFixStatus()
   QVERIFY( !info.isValid() );
   QCOMPARE( info.bestFixStatus( constellation ), Qgis::GpsFixStatus::NoFix );
   QCOMPARE( statusSpy.count(), 3 );
-  QCOMPARE( statusSpy.constLast().at( 0 ).value<Qgis::GpsFixStatus>(), Qgis::GpsFixStatus::NoFix );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::NoFix );
 
   // no fix status change
   connection.push( QStringLiteral( "$%1GSA,A,1,,,,,,16,18,,22,24,,,3.6,2.1,2.2*3C" ).arg( talkerId ) );
@@ -341,7 +344,7 @@ void TestQgsNmeaConnection::testFixStatus()
   QVERIFY( !info.isValid() );
 
   QCOMPARE( statusSpy.count(), 4 );
-  QCOMPARE( statusSpy.constLast().at( 0 ).value<Qgis::GpsFixStatus>(), Qgis::GpsFixStatus::Fix2D );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::Fix2D );
 
   info = connection.push( QStringLiteral( "$%1RMC,220516,A,9933.82,S,00042.24,W,173.8,231.8,130694,004.2,W*70" ).arg( talkerId ) );
   QGSCOMPARENEAR( info.latitude, -99.563666, 0.00001 );
@@ -363,7 +366,8 @@ void TestQgsNmeaConnection::testFixStatus()
 
   connection.close();
   QCOMPARE( statusSpy.count(), 5 );
-  QCOMPARE( statusSpy.constLast().at( 0 ).value<Qgis::GpsFixStatus>(), Qgis::GpsFixStatus::NoData );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::NoData );
+
 }
 
 void TestQgsNmeaConnection::testFixStatusAcrossConstellations()
@@ -377,40 +381,40 @@ void TestQgsNmeaConnection::testFixStatusAcrossConstellations()
   QgsGpsInformation info = connection.push( QStringLiteral( "$GPGSA,A,1,7,9,16,27,30,9,7,1,6,5,,,4.2,3.4,2.4*07" ) );
   QCOMPARE( info.bestFixStatus( bestConstellation ), Qgis::GpsFixStatus::NoFix );
   QCOMPARE( statusSpy.count(), 1 );
-  QCOMPARE( statusSpy.constLast().at( 0 ).value<Qgis::GpsFixStatus>(), Qgis::GpsFixStatus::NoFix );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::NoFix );
   QCOMPARE( bestConstellation, Qgis::GnssConstellation::Gps );
 
   info = connection.push( QStringLiteral( "$GLGSA,A,1,7,9,16,27,30,9,7,1,6,5,,,4.2,3.4,2.4*07" ) );
   QCOMPARE( info.bestFixStatus( bestConstellation ), Qgis::GpsFixStatus::NoFix );
   QCOMPARE( statusSpy.count(), 1 );
-  QCOMPARE( statusSpy.constLast().at( 0 ).value<Qgis::GpsFixStatus>(), Qgis::GpsFixStatus::NoFix );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::NoFix );
   QCOMPARE( bestConstellation, Qgis::GnssConstellation::Gps );
 
   info = connection.push( QStringLiteral( "$GLGSA,A,2,7,9,16,27,30,9,7,1,6,5,,,4.2,3.4,2.4*07\r\n$GPGSA,A,1,7,9,16,27,30,9,7,1,6,5,,,4.2,3.4,2.4*07" ) );
   QCOMPARE( info.bestFixStatus( bestConstellation ), Qgis::GpsFixStatus::Fix2D );
   QCOMPARE( statusSpy.count(), 2 );
-  QCOMPARE( statusSpy.constLast().at( 0 ).value<Qgis::GpsFixStatus>(), Qgis::GpsFixStatus::Fix2D );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::Fix2D );
   QCOMPARE( bestConstellation, Qgis::GnssConstellation::Glonass );
 
   info = connection.push( QStringLiteral( "$GNGSA,A,3,7,9,16,27,30,9,7,1,6,5,,,4.2,3.4,2.4*07" ) );
   QCOMPARE( info.bestFixStatus( bestConstellation ), Qgis::GpsFixStatus::Fix3D );
   QCOMPARE( statusSpy.count(), 3 );
-  QCOMPARE( statusSpy.constLast().at( 0 ).value<Qgis::GpsFixStatus>(), Qgis::GpsFixStatus::Fix3D );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::Fix3D );
   QCOMPARE( bestConstellation, Qgis::GnssConstellation::Gps );
 
   // GPS fix lost, best fix is 2D glonass one
   info = connection.push( QStringLiteral( "$GNGSA,A,1,7,9,16,27,30,9,7,1,6,5,,,4.2,3.4,2.4*07" ) );
   QCOMPARE( info.bestFixStatus( bestConstellation ), Qgis::GpsFixStatus::Fix2D );
   QCOMPARE( statusSpy.count(), 4 );
-  QCOMPARE( statusSpy.constLast().at( 0 ).value<Qgis::GpsFixStatus>(), Qgis::GpsFixStatus::Fix2D );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::Fix2D );
   QCOMPARE( bestConstellation, Qgis::GnssConstellation::Glonass );
 
   // another test where a number of GNGSA sentences are received at once
   info = connection.push( QStringLiteral( "$GNGSA,A,3,6,11,12,19,20,25,29,10,20,19,7,10,7.5,5.5,5.1*24\r\n$GNGSA,A,3,11,12,24,25,31,,,,,,,,7.5,5.5,5.1*2A\r\n$GNGSA,A,1,194,195,,,,,,,,,,,7.5,5.5,5.1*29" ) );
   QCOMPARE( info.bestFixStatus( bestConstellation ), Qgis::GpsFixStatus::Fix3D );
-  QVERIFY( info.isValid() );
+  QVERIFY( info.isValid() ) ;
   QCOMPARE( statusSpy.count(), 5 );
-  QCOMPARE( statusSpy.constLast().at( 0 ).value<Qgis::GpsFixStatus>(), Qgis::GpsFixStatus::Fix3D );
+  QCOMPARE( statusSpy.constLast().at( 0 ).value< Qgis::GpsFixStatus >(), Qgis::GpsFixStatus::Fix3D );
   QCOMPARE( bestConstellation, Qgis::GnssConstellation::Gps );
 }
 
@@ -484,7 +488,7 @@ void TestQgsNmeaConnection::testPosition()
 
   connection.push( QStringLiteral( "$%1GGA,084112.185,6900.0,N,01800.0,E,1,04,1.4,35.0,M,29.4,M,,0000*63" ).arg( talkerId ) );
   QCOMPARE( spy.count(), 1 );
-  QCOMPARE( spy.constLast().at( 0 ).value<QgsPoint>(), QgsPoint( 18, 69, 35 ) );
+  QCOMPARE( spy.constLast().at( 0 ).value< QgsPoint>(), QgsPoint( 18, 69, 35 ) );
   QCOMPARE( connection.lastValidLocation(), QgsPoint( 18, 69, 35 ) );
   // push same location, should be no new signal
   connection.push( QStringLiteral( "$%1GGA,084112.185,6900.0,N,01800.0,E,1,04,1.4,35.0,M,29.6,M,,0000*63" ).arg( talkerId ) );
@@ -493,7 +497,7 @@ void TestQgsNmeaConnection::testPosition()
   // new location
   connection.push( QStringLiteral( "$%1GGA,084112.185,6900.0,N,01900.0,E,1,04,1.4,35.0,M,29.4,M,,0000*63" ).arg( talkerId ) );
   QCOMPARE( spy.count(), 2 );
-  QCOMPARE( spy.constLast().at( 0 ).value<QgsPoint>(), QgsPoint( 19, 69, 35 ) );
+  QCOMPARE( spy.constLast().at( 0 ).value< QgsPoint>(), QgsPoint( 19, 69, 35 ) );
   QCOMPARE( connection.lastValidLocation(), QgsPoint( 19, 69, 35 ) );
 
   // invalid location (latitude > 90 degrees)
@@ -521,15 +525,15 @@ void TestQgsNmeaConnection::testComponent()
 
   QgsGpsInformation info = connection.push( QStringLiteral( "$%1GGA,084112.185,6900.0,N,01800.0,E,1,04,1.4,35.0,M,29.4,M,,0000*63" ).arg( talkerId ) );
 
-  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Location ).value<QgsPointXY>(), QgsPointXY( 18, 69 ) );
+  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Location ).value< QgsPointXY >(), QgsPointXY( 18, 69 ) );
   QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Altitude ).toDouble(), 35 );
   QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::GroundSpeed ).toDouble(), 0 );
   QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Bearing ).toDouble(), 0 );
 
   info = connection.push( QStringLiteral( "$%1RMC,084111.185,A,6938.6531,N,01856.8527,E,0.16,2.00,220120,,,A*6E" ).arg( talkerId ) );
-  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Location ).value<QgsPointXY>(), QgsPointXY( 18.94754499999999808, 69.644218333333341779 ) );
+  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Location ).value< QgsPointXY >(), QgsPointXY( 18.94754499999999808, 69.644218333333341779 ) );
   QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Altitude ).toDouble(), 35 );
-  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::GroundSpeed ).toDouble(), 0.29632 );
+  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::GroundSpeed ).toDouble(),  0.29632 );
   QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Bearing ).toDouble(), 2 );
 }
 
@@ -551,9 +555,9 @@ void TestQgsNmeaConnection::testIncompleteMessage()
   // got a full sentence now, status should be "data received"
   QCOMPARE( connection.status(), QgsGpsConnection::Status::GPSDataReceived );
   QCOMPARE( stateChangedSpy.size(), 1 );
-  const QgsGpsInformation info = stateChangedSpy.at( 0 ).at( 0 ).value<QgsGpsInformation>();
+  const QgsGpsInformation info = stateChangedSpy.at( 0 ).at( 0 ).value< QgsGpsInformation >();
 
-  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Location ).value<QgsPointXY>(), QgsPointXY( 18, 69 ) );
+  QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Location ).value< QgsPointXY >(), QgsPointXY( 18, 69 ) );
   QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Altitude ).toDouble(), 35 );
   QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::GroundSpeed ).toDouble(), 0 );
   QCOMPARE( info.componentValue( Qgis::GpsInformationComponent::Bearing ).toDouble(), 0 );

@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsdialog.h"
-#include "moc_qgsdialog.cpp"
 
-QgsDialog::QgsDialog( QWidget *parent, Qt::WindowFlags fl, QDialogButtonBox::StandardButtons buttons, Qt::Orientation orientation )
+QgsDialog::QgsDialog( QWidget *parent, Qt::WindowFlags fl,
+                      QDialogButtonBox::StandardButtons buttons,
+                      Qt::Orientation orientation )
   : QDialog( parent, fl )
 {
   // create buttonbox
@@ -37,3 +38,4 @@ QgsDialog::QgsDialog( QWidget *parent, Qt::WindowFlags fl, QDialogButtonBox::Sta
   layout->addWidget( mButtonBox );
   setLayout( layout );
 }
+

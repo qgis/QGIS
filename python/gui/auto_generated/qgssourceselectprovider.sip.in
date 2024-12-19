@@ -22,6 +22,7 @@ This is the interface for those who want to add entries to the :py:class:`QgsDat
     static const QMetaObject staticMetaObject;
 
   public:
+
     enum Ordering
     {
       OrderLocalProvider,
@@ -72,7 +73,7 @@ The default implementation returns an empty string.
 Creates a new instance of an QIcon for the menu item entry
 %End
 
-    virtual int ordering() const;
+    virtual int ordering( ) const;
 %Docstring
 Ordering: the source select provider registry will be able to sort
 the source selects (ascending) using this integer value
@@ -91,6 +92,7 @@ The default implementation returns no capabilities.
 
 .. versionadded:: 3.38
 %End
+
 };
 
 QFlags<QgsSourceSelectProvider::Capability> operator|(QgsSourceSelectProvider::Capability f1, QFlags<QgsSourceSelectProvider::Capability> f2);

@@ -17,7 +17,6 @@
 
 
 #include "qgsmodelgroupboxdefinitionwidget.h"
-#include "moc_qgsmodelgroupboxdefinitionwidget.cpp"
 
 #include "qgscolorbutton.h"
 #include "qgsgui.h"
@@ -26,7 +25,8 @@
 #include <QDialogButtonBox>
 #include <QLabel>
 
-QgsModelGroupBoxDefinitionDialog::QgsModelGroupBoxDefinitionDialog( const QgsProcessingModelGroupBox &box, QWidget *parent )
+QgsModelGroupBoxDefinitionDialog::QgsModelGroupBoxDefinitionDialog( const QgsProcessingModelGroupBox &box,
+    QWidget *parent )
   : QDialog( parent )
   , mBox( box )
 {
@@ -74,3 +74,4 @@ QgsProcessingModelGroupBox QgsModelGroupBoxDefinitionDialog::groupBox() const
   box.setDescription( mCommentEdit->toPlainText() );
   return box;
 }
+

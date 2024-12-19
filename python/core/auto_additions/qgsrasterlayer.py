@@ -4,11 +4,11 @@ try:
     QgsRasterLayer.isValidRasterFileName = staticmethod(QgsRasterLayer.isValidRasterFileName)
     QgsRasterLayer.lastModified = staticmethod(QgsRasterLayer.lastModified)
     QgsRasterLayer.__group__ = ['raster']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsRasterLayer.LayerOptions.__attribute_docs__ = {'loadDefaultStyle': 'Sets to ``True`` if the default layer style should be loaded', 'transformContext': 'Coordinate transform context\n\n.. versionadded:: 3.8', 'skipCrsValidation': "Controls whether the layer is allowed to have an invalid/unknown CRS.\n\nIf ``True``, then no validation will be performed on the layer's CRS and the layer\nlayer's :py:func:`~QgsRasterLayer.crs` may be :py:func:`~QgsRasterLayer.invalid` (i.e. the layer will have no georeferencing available\nand will be treated as having purely numerical coordinates).\n\nIf ``False`` (the default), the layer's CRS will be validated using :py:func:`QgsCoordinateReferenceSystem.validate()`,\nwhich may cause a blocking, user-facing dialog asking users to manually select the correct CRS for the\nlayer.\n\n.. versionadded:: 3.10"}
     QgsRasterLayer.LayerOptions.__doc__ = """Setting options for loading raster layers."""
     QgsRasterLayer.LayerOptions.__group__ = ['raster']
-except (NameError, AttributeError):
+except NameError:
     pass

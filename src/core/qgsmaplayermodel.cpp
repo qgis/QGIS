@@ -16,7 +16,6 @@
 #include <QIcon>
 
 #include "qgsmaplayermodel.h"
-#include "moc_qgsmaplayermodel.cpp"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 #include "qgsiconutils.h"

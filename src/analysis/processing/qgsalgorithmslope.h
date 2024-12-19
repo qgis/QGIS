@@ -30,7 +30,9 @@
  */
 class QgsSlopeAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
+
     QgsSlopeAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
@@ -42,7 +44,9 @@ class QgsSlopeAlgorithm : public QgsProcessingAlgorithm
     QgsSlopeAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE

@@ -10,10 +10,6 @@
 
 
 
-%ModuleHeaderCode
-#include <qgsgeos.h>
-%End
-
 class QgsGeometryEngine
 {
 %Docstring(signature="appended")
@@ -56,12 +52,6 @@ Example
 
 %TypeHeaderCode
 #include "qgsgeometryengine.h"
-%End
-%ConvertToSubClassCode
-    if ( dynamic_cast< QgsGeos * >( sipCpp ) != NULL )
-      sipType = sipType_QgsGeos;
-    else
-      sipType = NULL;
 %End
   public:
 

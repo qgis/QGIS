@@ -31,7 +31,9 @@
  */
 class QgsRasterLayerZonalStatsAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
+
     QgsRasterLayerZonalStatsAlgorithm() = default;
 
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
@@ -45,19 +47,22 @@ class QgsRasterLayerZonalStatsAlgorithm : public QgsProcessingAlgorithm
     QgsRasterLayerZonalStatsAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
+
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
+
     enum RefLayer
     {
       Source,
       Zones
     };
 
-    std::unique_ptr<QgsRasterInterface> mSourceDataProvider;
-    std::unique_ptr<QgsRasterInterface> mZonesDataProvider;
-    std::unique_ptr<QgsRasterProjector> mProjector;
+    std::unique_ptr< QgsRasterInterface > mSourceDataProvider;
+    std::unique_ptr< QgsRasterInterface > mZonesDataProvider;
+    std::unique_ptr< QgsRasterProjector> mProjector;
     QgsRasterInterface *mSourceInterface = nullptr;
     QgsRasterInterface *mZonesInterface = nullptr;
     bool mHasNoDataValue = false;
@@ -71,8 +76,11 @@ class QgsRasterLayerZonalStatsAlgorithm : public QgsProcessingAlgorithm
     double mRasterUnitsPerPixelX = 0;
     double mRasterUnitsPerPixelY = 0;
     RefLayer mRefLayer = Source;
+
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMRASTERZONALSTATS_H
+
+

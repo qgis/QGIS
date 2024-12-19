@@ -14,8 +14,8 @@ uniform float lightNearPlane;
 
 uniform float shadowMinX;
 uniform float shadowMaxX;
-uniform float shadowMinY;
-uniform float shadowMaxY;
+uniform float shadowMinZ;
+uniform float shadowMaxZ;
 
 uniform vec3 lightPosition;
 uniform vec3 lightDirection;
@@ -121,7 +121,7 @@ void main()
   positionInLightSpace /= positionInLightSpace.w;
   vec3 color = texture(colorTexture, texCoord).rgb;
   // if shadow rendering is disabled or the pixel is outside the shadow rendering distance don't render shadows
-  if (renderShadows == 0 || depth >= 1 || worldPosition.x > shadowMaxX || worldPosition.x < shadowMinX || worldPosition.y > shadowMaxY || worldPosition.y < shadowMinY)
+  if (renderShadows == 0 || depth >= 1 || worldPosition.x > shadowMaxX || worldPosition.x < shadowMinX || worldPosition.z > shadowMaxZ || worldPosition.z < shadowMinZ)
   {
     fragColor = vec4(color, 1.0f);
   } else

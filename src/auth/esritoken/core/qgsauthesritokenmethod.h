@@ -30,6 +30,7 @@ class QgsAuthEsriTokenMethod : public QgsAuthMethod
     Q_OBJECT
 
   public:
+
     static const QString AUTH_METHOD_KEY;
     static const QString AUTH_METHOD_DESCRIPTION;
     static const QString AUTH_METHOD_DISPLAY_DESCRIPTION;
@@ -43,13 +44,14 @@ class QgsAuthEsriTokenMethod : public QgsAuthMethod
 
     QString displayDescription() const override;
 
-    bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg, const QString &dataprovider = QString() ) override;
+    bool updateNetworkRequest( QNetworkRequest &request, const QString &authcfg,
+                               const QString &dataprovider = QString() ) override;
 
     void clearCachedConfig( const QString &authcfg ) override;
     void updateMethodConfig( QgsAuthMethodConfig &mconfig ) override;
 
 #ifdef HAVE_GUI
-    QWidget *editWidget( QWidget *parent ) const override;
+    QWidget *editWidget( QWidget *parent )const override;
 #endif
 
   private:
@@ -60,6 +62,7 @@ class QgsAuthEsriTokenMethod : public QgsAuthMethod
     void removeMethodConfig( const QString &authcfg );
 
     static QMap<QString, QgsAuthMethodConfig> sAuthConfigCache;
+
 };
 
 
@@ -69,7 +72,7 @@ class QgsAuthEsriTokenMethodMetadata : public QgsAuthMethodMetadata
     QgsAuthEsriTokenMethodMetadata()
       : QgsAuthMethodMetadata( QgsAuthEsriTokenMethod::AUTH_METHOD_KEY, QgsAuthEsriTokenMethod::AUTH_METHOD_DESCRIPTION )
     {}
-    QgsAuthEsriTokenMethod *createAuthMethod() const override { return new QgsAuthEsriTokenMethod; }
+    QgsAuthEsriTokenMethod *createAuthMethod() const override {return new QgsAuthEsriTokenMethod;}
     //QStringList supportedDataProviders() const override;
 };
 

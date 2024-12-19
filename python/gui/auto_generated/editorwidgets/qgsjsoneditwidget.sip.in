@@ -9,7 +9,6 @@
 
 
 
-
 class QgsJsonEditWidget : QWidget
 {
 %Docstring(signature="appended")
@@ -22,6 +21,7 @@ The :py:class:`QgsJsonEditWidget` is a widget to display JSON data in a code hig
 #include "qgsjsoneditwidget.h"
 %End
   public:
+
     enum class View
     {
       Text,

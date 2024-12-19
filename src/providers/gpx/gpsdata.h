@@ -33,9 +33,9 @@
 // workaround for MSVC compiler which already has defined macro max
 // that interferes with calling std::numeric_limits<int>::max
 #ifdef _MSC_VER
-#ifdef max
-#undef max
-#endif
+# ifdef max
+#  undef max
+# endif
 #endif
 
 /**
@@ -139,6 +139,7 @@ class QgsTrack : public QgsGpsExtended
 class QgsGpsData
 {
   public:
+
     //! This iterator type is used to iterate over waypoints.
     typedef QList<QgsWaypoint>::iterator WaypointIterator;
     //! This iterator type is used to iterate over routes.
@@ -204,7 +205,8 @@ class QgsGpsData
      * waypoint will be returned (it will be waypointsEnd() if the waypoint
      * couldn't be added.
     */
-    WaypointIterator addWaypoint( double lat, double lon, const QString &name = "", double ele = -std::numeric_limits<double>::max() );
+    WaypointIterator addWaypoint( double lat, double lon, const QString &name = "",
+                                  double ele = -std::numeric_limits<double>::max() );
 
     WaypointIterator addWaypoint( const QgsWaypoint &wpt );
 
@@ -265,6 +267,7 @@ class QgsGpsData
     //friend std::ostream& operator<<(std::ostream& os, const GPSData& d);
 
   protected:
+
     QList<QgsWaypoint> waypoints;
     QList<QgsRoute> routes;
     QList<QgsTrack> tracks;
@@ -273,7 +276,7 @@ class QgsGpsData
     double xMin, xMax, yMin, yMax;
 
     //! This is used internally to store GPS data objects (one per file).
-    typedef QMap<QString, QPair<QgsGpsData *, unsigned>> DataMap;
+    typedef QMap<QString, QPair<QgsGpsData *, unsigned> > DataMap;
 
     /**
      * This is the static container that maps file names to GPSData objects and
@@ -284,7 +287,9 @@ class QgsGpsData
 
     //! Mutex for sDataObjects
     static QRecursiveMutex sDataObjectsMutex;
+
 };
+
 
 
 class QgsGPXHandler
@@ -292,7 +297,7 @@ class QgsGPXHandler
   public:
     explicit QgsGPXHandler( QgsGpsData &data )
       : mData( data )
-    {}
+    { }
 
     /**
      * This function is called when expat encounters a new start element in
@@ -328,6 +333,7 @@ class QgsGPXHandler
     }
 
   private:
+
     enum ParseMode
     {
       ParsingDocument,

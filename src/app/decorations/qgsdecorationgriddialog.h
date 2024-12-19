@@ -49,6 +49,7 @@ class APP_EXPORT QgsDecorationGridDialog : public QDialog, private Ui::QgsDecora
     void updateGuiElements();
     void updateDecoFromGui();
     void updateInterval( bool force = false );
+
 };
 
 #endif

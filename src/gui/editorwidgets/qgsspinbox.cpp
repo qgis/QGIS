@@ -17,10 +17,8 @@
 #include <QMouseEvent>
 #include <QSettings>
 #include <QStyle>
-#include <QTimer>
 
 #include "qgsspinbox.h"
-#include "moc_qgsspinbox.cpp"
 #include "qgsexpression.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -46,15 +44,11 @@ QgsSpinBox::QgsSpinBox( QWidget *parent )
   setLineEdit( mLineEdit );
 
   const QSize msz = minimumSizeHint();
-  setMinimumSize( msz.width() + CLEAR_ICON_SIZE + 9 + frameWidth() * 2 + 2, std::max( msz.height(), CLEAR_ICON_SIZE + frameWidth() * 2 + 2 ) );
+  setMinimumSize( msz.width() + CLEAR_ICON_SIZE + 9 + frameWidth() * 2 + 2,
+                  std::max( msz.height(), CLEAR_ICON_SIZE + frameWidth() * 2 + 2 ) );
 
   connect( mLineEdit, &QgsFilterLineEdit::cleared, this, &QgsSpinBox::clear );
-  connect( this, static_cast<void ( QSpinBox::* )( int )>( &QSpinBox::valueChanged ), this, &QgsSpinBox::changed );
-
-  mLastEditTimer = new QTimer( this );
-  mLastEditTimer->setSingleShot( true );
-  mLastEditTimer->setInterval( 1000 );
-  connect( mLastEditTimer, &QTimer::timeout, this, &QgsSpinBox::onLastEditTimeout );
+  connect( this, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsSpinBox::changed );
 }
 
 void QgsSpinBox::setShowClearButton( const bool showClearButton )
@@ -118,28 +112,9 @@ void QgsSpinBox::timerEvent( QTimerEvent *event )
     QSpinBox::timerEvent( event );
 }
 
-void QgsSpinBox::focusOutEvent( QFocusEvent *event )
-{
-  QSpinBox::focusOutEvent( event );
-  onLastEditTimeout();
-}
-
 void QgsSpinBox::changed( int value )
 {
   mLineEdit->setShowClearButton( shouldShowClearForValue( value ) );
-  mLastEditTimer->start();
-}
-
-void QgsSpinBox::onLastEditTimeout()
-{
-  mLastEditTimer->stop();
-  const int currentValue = value();
-  if ( !mHasEmittedEditTimeout || mLastEditTimeoutValue != currentValue )
-  {
-    mHasEmittedEditTimeout = true;
-    mLastEditTimeoutValue = currentValue;
-    emit editingTimeout( mLastEditTimeoutValue );
-  }
 }
 
 void QgsSpinBox::clear()
@@ -255,16 +230,6 @@ void QgsSpinBox::stepBy( int steps )
     whileBlocking( this )->setValue( 0 );
   }
   QSpinBox::stepBy( steps );
-}
-
-int QgsSpinBox::editingTimeoutInterval() const
-{
-  return mLastEditTimer->interval();
-}
-
-void QgsSpinBox::setEditingTimeoutInterval( int timeout )
-{
-  mLastEditTimer->setInterval( timeout );
 }
 
 int QgsSpinBox::frameWidth() const

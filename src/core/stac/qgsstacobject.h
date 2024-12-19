@@ -23,7 +23,6 @@
 
 #include <QString>
 #include <QStringList>
-#include <QObject>
 
 /**
  * \ingroup core
@@ -101,8 +100,5 @@ class CORE_EXPORT QgsStacObject
     QStringList mStacExtensions;
     QVector< QgsStacLink > mLinks;
 };
-
-// we'll store STAC object pointers in QVariants in item models
-Q_DECLARE_METATYPE( QgsStacObject * )
 
 #endif // QGSSTACOBJECT_H

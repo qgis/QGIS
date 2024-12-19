@@ -146,7 +146,7 @@ join layer information.
 :return: the corresponding joined feature
 %End
 
- void setJoinFieldNamesBlackList( const QStringList &blackList ) /Deprecated="Since 3.40. Use setJoinFieldNamesBlockList() instead."/;
+ void setJoinFieldNamesBlackList( const QStringList &blackList ) /Deprecated/;
 %Docstring
 Sets a list of fields to ignore whatever happens.
 
@@ -155,7 +155,7 @@ Sets a list of fields to ignore whatever happens.
    Use :py:func:`~QgsVectorLayerJoinInfo.setJoinFieldNamesBlockList` instead.
 %End
 
- QStringList joinFieldNamesBlackList() const /Deprecated="Since 3.40. Use joinFieldNamesBlockList() instead."/;
+ QStringList joinFieldNamesBlackList() const /Deprecated/;
 %Docstring
 Returns the list of fields to ignore.
 

@@ -32,6 +32,7 @@ SIP_NO_FILE
 class GUI_EXPORT QgsJsonEditWidgetFactory : public QgsEditorWidgetFactory
 {
   public:
+
     /**
      * Constructor for QgsJsonEditWidgetFactory, where \a name is a human-readable
      * name for the factory.

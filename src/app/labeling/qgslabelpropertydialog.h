@@ -26,11 +26,20 @@
 
 
 //! A dialog to enter data defined label attributes
-class APP_EXPORT QgsLabelPropertyDialog : public QDialog, private Ui::QgsLabelPropertyDialogBase
+class APP_EXPORT QgsLabelPropertyDialog: public QDialog, private Ui::QgsLabelPropertyDialogBase
 {
     Q_OBJECT
   public:
-    QgsLabelPropertyDialog( const QString &layerId, const QString &providerId, QgsFeatureId featureId, const QFont &labelFont, const QString &labelText, bool isPinned, const QgsPalLayerSettings &layerSettings, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags() );
+    QgsLabelPropertyDialog( const QString &layerId,
+                            const QString &providerId,
+                            QgsFeatureId featureId,
+                            const QFont &labelFont,
+                            const QString &labelText,
+                            bool isPinned,
+                            const QgsPalLayerSettings &layerSettings,
+                            QgsMapCanvas *canvas,
+                            QWidget *parent = nullptr,
+                            Qt::WindowFlags f = Qt::WindowFlags() );
 
     //! Returns properties changed by the user
     const QgsAttributeMap &changedProperties() const { return mChangedProperties; }
@@ -104,7 +113,7 @@ class APP_EXPORT QgsLabelPropertyDialog : public QDialog, private Ui::QgsLabelPr
 
     QgsAttributeMap mChangedProperties;
     QgsPropertyCollection mDataDefinedProperties;
-    QMap<int, int> mPropertyToFieldMap;
+    QMap< int, int > mPropertyToFieldMap;
     QFont mLabelFont;
 
     QFontDatabase mFontDB;

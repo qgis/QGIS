@@ -3,5 +3,5 @@ QgsMeshDataProviderTemporalCapabilities.FindClosestDatasetBeforeStartRangeTime =
 QgsMeshDataProviderTemporalCapabilities.FindClosestDatasetFromStartRangeTime = QgsMeshDataProviderTemporalCapabilities.MatchingTemporalDatasetMethod.FindClosestDatasetFromStartRangeTime
 try:
     QgsMeshDataProviderTemporalCapabilities.__group__ = ['mesh']
-except (NameError, AttributeError):
+except NameError:
     pass

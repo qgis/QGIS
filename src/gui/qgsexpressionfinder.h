@@ -36,6 +36,7 @@ class QPlainTextEdit;
 class GUI_EXPORT QgsExpressionFinder
 {
   public:
+
     /**
      * Find an expression at the given position in the given text
      *
@@ -75,6 +76,8 @@ class GUI_EXPORT QgsExpressionFinder
      * Otherwise, the selection is kept unchanged and the selected text is returned
      */
     static QString findAndSelectActiveExpression( QPlainTextEdit *editor, const QString &pattern = QString() );
+
+
 };
 
 #endif // QGSEXPRESSIONFINDER_H

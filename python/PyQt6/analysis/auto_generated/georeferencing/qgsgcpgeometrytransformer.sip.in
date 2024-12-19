@@ -22,6 +22,7 @@ A geometry transformer which uses an underlying Ground Control Points (GCP) base
 #include "qgsgcpgeometrytransformer.h"
 %End
   public:
+
     QgsGcpGeometryTransformer( QgsGcpTransformerInterface *gcpTransformer /Transfer/ );
 %Docstring
 Constructor for QgsGcpGeometryTransformer, which uses the specified ``gcpTransformer`` to

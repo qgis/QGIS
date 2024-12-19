@@ -42,14 +42,14 @@ class TestVectorLayerJoinBuffer : public QObject
 
   public:
     TestVectorLayerJoinBuffer()
-      : mLayers( QMap<QPair<QString, QString>, QgsVectorLayer *>() )
+      : mLayers( QMap<QPair<QString, QString>, QgsVectorLayer*>() )
     {}
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void initTestCase();      // will be called before the first testfunction is executed.
+    void cleanupTestCase();   // will be called after the last testfunction was executed.
+    void init();              // will be called before each testfunction is executed.
+    void cleanup();           // will be called after every testfunction.
 
     void testJoinBasic_data();
     void testJoinBasic();
@@ -214,11 +214,11 @@ void TestVectorLayerJoinBuffer::testJoinBasic_data()
   QTest::addColumn<QString>( "provider" );
   QTest::addColumn<bool>( "memoryCache" );
 
-  QTest::newRow( "memory with cache" ) << "memory" << true;
+  QTest::newRow( "memory with cache" ) << "memory" << true ;
   QTest::newRow( "memory without cache" ) << "memory" << false;
 
 #ifdef ENABLE_PGTEST
-  QTest::newRow( "postgresql with cache" ) << "PG" << true;
+  QTest::newRow( "postgresql with cache" ) << "PG" << true ;
   QTest::newRow( "postgresql without cache" ) << "PG" << false;
 #endif
 }
@@ -268,6 +268,7 @@ void TestVectorLayerJoinBuffer::testJoinTransitive_data()
 
 void TestVectorLayerJoinBuffer::testJoinTransitive()
 {
+
   QFETCH( QString, provider );
 
   QgsVectorLayer *vlA = mLayers.value( QPair<QString, QString>( QStringLiteral( "A" ), provider ) );
@@ -370,11 +371,11 @@ void TestVectorLayerJoinBuffer::testJoinSubset_data()
   QTest::addColumn<QString>( "provider" );
   QTest::addColumn<bool>( "memoryCache" );
 
-  QTest::newRow( "memory with cache" ) << "memory" << true;
+  QTest::newRow( "memory with cache" ) << "memory" << true ;
   QTest::newRow( "memory without cache" ) << "memory" << false;
 
 #ifdef ENABLE_PGTEST
-  QTest::newRow( "postgresql with cache" ) << "PG" << true;
+  QTest::newRow( "postgresql with cache" ) << "PG" << true ;
   QTest::newRow( "postgresql without cache" ) << "PG" << false;
 #endif
 }
@@ -439,6 +440,7 @@ void TestVectorLayerJoinBuffer::testJoinTwoTimes_data()
 
 void TestVectorLayerJoinBuffer::testJoinTwoTimes()
 {
+
   QFETCH( QString, provider );
 
   QgsVectorLayer *vlA = mLayers.value( QPair<QString, QString>( QStringLiteral( "A" ), provider ) );
@@ -805,7 +807,10 @@ void TestVectorLayerJoinBuffer::testChangeAttributeValues()
   QCOMPARE( joinFeature.attributes().at( 2 ).toString(), QString() );
 
   // change a combination of provider and joined fields at once
-  QVERIFY( vlA->changeAttributeValues( 2, QgsAttributeMap { { 1, QStringLiteral( "new_a_2_1" ) }, { 2, QStringLiteral( "new_a_2_2" ) }, { 3, QStringLiteral( "new_b_2_1" ) }, { 4, QStringLiteral( "new_b_2_2" ) } } ) );
+  QVERIFY( vlA->changeAttributeValues( 2, QgsAttributeMap{ { 1, QStringLiteral( "new_a_2_1" ) },
+    { 2, QStringLiteral( "new_a_2_2" ) },
+    { 3, QStringLiteral( "new_b_2_1" ) },
+    { 4, QStringLiteral( "new_b_2_2" ) }} ) );
 
   QCOMPARE( vlA->getFeature( 2 ).attributes().size(), 5 );
   QCOMPARE( vlA->getFeature( 2 ).attributes().at( 0 ).toInt(), 2 );
@@ -815,7 +820,8 @@ void TestVectorLayerJoinBuffer::testChangeAttributeValues()
   QCOMPARE( vlA->getFeature( 2 ).attributes().at( 4 ).toString(), QStringLiteral( "new_b_2_2" ) );
 
   // change only provider fields
-  QVERIFY( vlA->changeAttributeValues( 2, QgsAttributeMap { { 1, QStringLiteral( "new_a_2_1b" ) }, { 2, QStringLiteral( "new_a_2_2b" ) } } ) );
+  QVERIFY( vlA->changeAttributeValues( 2, QgsAttributeMap{ { 1, QStringLiteral( "new_a_2_1b" ) },
+    { 2, QStringLiteral( "new_a_2_2b" ) }} ) );
 
   QCOMPARE( vlA->getFeature( 2 ).attributes().size(), 5 );
   QCOMPARE( vlA->getFeature( 2 ).attributes().at( 0 ).toInt(), 2 );
@@ -825,7 +831,8 @@ void TestVectorLayerJoinBuffer::testChangeAttributeValues()
   QCOMPARE( vlA->getFeature( 2 ).attributes().at( 4 ).toString(), QStringLiteral( "new_b_2_2" ) );
 
   // change only joined fields
-  QVERIFY( vlA->changeAttributeValues( 2, QgsAttributeMap { { 3, QStringLiteral( "new_b_2_1b" ) }, { 4, QStringLiteral( "new_b_2_2b" ) } } ) );
+  QVERIFY( vlA->changeAttributeValues( 2, QgsAttributeMap{ { 3, QStringLiteral( "new_b_2_1b" ) },
+    { 4, QStringLiteral( "new_b_2_2b" ) }} ) );
 
   QCOMPARE( vlA->getFeature( 2 ).attributes().size(), 5 );
   QCOMPARE( vlA->getFeature( 2 ).attributes().at( 0 ).toInt(), 2 );
@@ -833,6 +840,7 @@ void TestVectorLayerJoinBuffer::testChangeAttributeValues()
   QCOMPARE( vlA->getFeature( 2 ).attributes().at( 2 ).toString(), QStringLiteral( "new_a_2_2b" ) );
   QCOMPARE( vlA->getFeature( 2 ).attributes().at( 3 ).toString(), QStringLiteral( "new_b_2_1b" ) );
   QCOMPARE( vlA->getFeature( 2 ).attributes().at( 4 ).toString(), QStringLiteral( "new_b_2_2b" ) );
+
 }
 
 // Check https://github.com/qgis/QGIS/issues/26652
@@ -863,7 +871,7 @@ void TestVectorLayerJoinBuffer::testCollidingNameColumn()
 
   QgsFeatureIterator fi1 = vlA->getFeatures();
   fi1.nextFeature( fA1 );
-  QCOMPARE( fA1.fields().names(), QStringList( { "id_a", "name", "value_b", "value_c" } ) );
+  QCOMPARE( fA1.fields().names(), QStringList( {"id_a", "name", "value_b", "value_c"} ) );
   QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
   QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
   QVERIFY( !fA1.attribute( "value_b" ).isValid() );
@@ -879,73 +887,73 @@ void TestVectorLayerJoinBuffer::testCollidingNameColumn()
 
   QgsFeatureIterator fi2 = vlA->getFeatures();
   fi2.nextFeature( fA1 );
-  QCOMPARE( fA1.fields().names(), QStringList( { "id_a", "name", "value_b", "value_c" } ) );
+  QCOMPARE( fA1.fields().names(), QStringList( {"id_a", "name", "value_b", "value_c"} ) );
   QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
   QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
   QCOMPARE( fA1.attribute( "value_b" ).toString(), QStringLiteral( "value_b" ) );
   QCOMPARE( fA1.attribute( "value_c" ).toString(), QStringLiteral( "value_c" ) );
 
-  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( { 0, 1, 2 } ) ) );
+  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( {0, 1, 2} ) ) );
   fi2.nextFeature( fA1 );
-  QCOMPARE( fA1.fields().names(), QStringList( { "id_a", "name", "value_b", "value_c" } ) );
+  QCOMPARE( fA1.fields().names(), QStringList( {"id_a", "name", "value_b", "value_c"} ) );
   QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
   QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
   QCOMPARE( fA1.attribute( "value_b" ).toString(), QStringLiteral( "value_b" ) );
   QVERIFY( !fA1.attribute( "value_c" ).isValid() );
 
-  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( { 0, 1, 3 } ) ) );
+  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( {0, 1, 3} ) ) );
   fi2.nextFeature( fA1 );
-  QCOMPARE( fA1.fields().names(), QStringList( { "id_a", "name", "value_b", "value_c" } ) );
+  QCOMPARE( fA1.fields().names(), QStringList( {"id_a", "name", "value_b", "value_c"} ) );
   QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
   QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
   QVERIFY( !fA1.attribute( "value_b" ).isValid() );
   QCOMPARE( fA1.attribute( "value_c" ).toString(), QStringLiteral( "value_c" ) );
 
   vlA->removeJoin( vlB->id() );
-  joinInfo.setJoinFieldNamesSubset( new QStringList( { "name" } ) );
+  joinInfo.setJoinFieldNamesSubset( new QStringList( {"name"} ) );
   vlA->addJoin( joinInfo );
-  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( { 0, 1, 2 } ) ) );
+  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( {0, 1, 2} ) ) );
   fi2.nextFeature( fA1 );
-  QCOMPARE( fA1.fields().names(), QStringList( { "id_a", "name" } ) );
+  QCOMPARE( fA1.fields().names(), QStringList( {"id_a", "name"} ) );
   QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
   QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
 
   vlA->removeJoin( vlB->id() );
-  joinInfo.setJoinFieldNamesSubset( new QStringList( { "value_b" } ) );
+  joinInfo.setJoinFieldNamesSubset( new QStringList( {"value_b"} ) );
   vlA->addJoin( joinInfo );
-  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( { 0, 1, 2 } ) ) );
+  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( {0, 1, 2} ) ) );
   fi2.nextFeature( fA1 );
-  QCOMPARE( fA1.fields().names(), QStringList( { "id_a", "name", "value_b" } ) );
+  QCOMPARE( fA1.fields().names(), QStringList( {"id_a", "name", "value_b"} ) );
   QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
   QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
   QCOMPARE( fA1.attribute( "value_b" ).toString(), QStringLiteral( "value_b" ) );
 
   vlA->removeJoin( vlB->id() );
-  joinInfo.setJoinFieldNamesSubset( new QStringList( { "value_c" } ) );
+  joinInfo.setJoinFieldNamesSubset( new QStringList( {"value_c"} ) );
   vlA->addJoin( joinInfo );
-  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( { 0, 1, 2 } ) ) );
+  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( {0, 1, 2} ) ) );
   fi2.nextFeature( fA1 );
-  QCOMPARE( fA1.fields().names(), QStringList( { "id_a", "name", "value_c" } ) );
+  QCOMPARE( fA1.fields().names(), QStringList( {"id_a", "name", "value_c"} ) );
   QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
   QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
   QCOMPARE( fA1.attribute( "value_c" ).toString(), QStringLiteral( "value_c" ) );
 
   vlA->removeJoin( vlB->id() );
-  joinInfo.setJoinFieldNamesSubset( new QStringList( { "name", "value_c" } ) );
+  joinInfo.setJoinFieldNamesSubset( new QStringList( {"name", "value_c"} ) );
   vlA->addJoin( joinInfo );
-  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( { 0, 1, 2, 3 } ) ) );
+  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( {0, 1, 2, 3} ) ) );
   fi2.nextFeature( fA1 );
-  QCOMPARE( fA1.fields().names(), QStringList( { "id_a", "name", "value_c" } ) );
+  QCOMPARE( fA1.fields().names(), QStringList( {"id_a", "name", "value_c"} ) );
   QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
   QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
   QCOMPARE( fA1.attribute( "value_c" ).toString(), QStringLiteral( "value_c" ) );
 
   vlA->removeJoin( vlB->id() );
-  joinInfo.setJoinFieldNamesSubset( new QStringList( { "value_b", "value_c" } ) );
+  joinInfo.setJoinFieldNamesSubset( new QStringList( {"value_b", "value_c"} ) );
   vlA->addJoin( joinInfo );
-  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( { 0, 1, 2, 3 } ) ) );
+  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( {0, 1, 2, 3} ) ) );
   fi2.nextFeature( fA1 );
-  QCOMPARE( fA1.fields().names(), QStringList( { "id_a", "name", "value_b", "value_c" } ) );
+  QCOMPARE( fA1.fields().names(), QStringList( {"id_a", "name", "value_b", "value_c"} ) );
   QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
   QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
   QCOMPARE( fA1.attribute( "value_b" ).toString(), QStringLiteral( "value_b" ) );
@@ -954,17 +962,17 @@ void TestVectorLayerJoinBuffer::testCollidingNameColumn()
   vlA->removeJoin( vlB->id() );
   joinInfo.setJoinFieldNamesSubset( nullptr );
   vlA->addJoin( joinInfo );
-  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( { 0, 1, 2 } ) ) );
+  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( {0, 1, 2} ) ) );
   fi2.nextFeature( fA1 );
-  QCOMPARE( fA1.fields().names(), QStringList( { "id_a", "name", "value_b", "value_c" } ) );
+  QCOMPARE( fA1.fields().names(), QStringList( {"id_a", "name", "value_b", "value_c"} ) );
   QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
   QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
   QCOMPARE( fA1.attribute( "value_b" ).toString(), QStringLiteral( "value_b" ) );
   QVERIFY( !fA1.attribute( "value_c" ).isValid() );
 
-  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( { 0, 1, 3 } ) ) );
+  fi2 = vlA->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList( {0, 1, 3} ) ) );
   fi2.nextFeature( fA1 );
-  QCOMPARE( fA1.fields().names(), QStringList( { "id_a", "name", "value_b", "value_c" } ) );
+  QCOMPARE( fA1.fields().names(), QStringList( {"id_a", "name", "value_b", "value_c"} ) );
   QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
   QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
   QVERIFY( !fA1.attribute( "value_b" ).isValid() );
@@ -1007,7 +1015,7 @@ void TestVectorLayerJoinBuffer::testCollidingNameColumnCached()
 
   QgsFeatureIterator fi1 = vlA->getFeatures();
   fi1.nextFeature( fA1 );
-  QCOMPARE( fA1.fields().names(), QStringList( { "id_a", "name", "value_b", "value_c" } ) );
+  QCOMPARE( fA1.fields().names(), QStringList( {"id_a", "name", "value_b", "value_c"} ) );
   QCOMPARE( fA1.attribute( "id_a" ).toInt(), 1 );
   QCOMPARE( fA1.attribute( "name" ).toString(), QStringLiteral( "name_a" ) );
   QCOMPARE( fA1.attribute( "value_b" ).toString(), QStringLiteral( "value_b" ) );

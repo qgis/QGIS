@@ -2,5 +2,5 @@
 try:
     QgsLocatorWidget.__attribute_docs__ = {'configTriggered': 'Emitted when the configure option is triggered in the widget.\n'}
     QgsLocatorWidget.__group__ = ['locator']
-except (NameError, AttributeError):
+except NameError:
     pass

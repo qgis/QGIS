@@ -4,5 +4,5 @@ try:
     QgsRasterProjector.precisionLabel = staticmethod(QgsRasterProjector.precisionLabel)
     QgsRasterProjector.extentSize = staticmethod(QgsRasterProjector.extentSize)
     QgsRasterProjector.__group__ = ['raster']
-except (NameError, AttributeError):
+except NameError:
     pass

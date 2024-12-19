@@ -21,6 +21,7 @@ Consists of the widget which is visible in edit mode as well as the widget visib
 #include "qgsattributeformwidget.h"
 %End
   public:
+
     enum Mode
     {
       DefaultMode,
@@ -103,7 +104,7 @@ Adds an additional search widget wrapper.
 Used to register a secondary search widget as used for "between" searches.
 %End
 
-    QList<QgsSearchWidgetWrapper *> searchWidgetWrappers();
+    QList< QgsSearchWidgetWrapper * > searchWidgetWrappers();
 %Docstring
 Returns the search widget wrapper used in this widget. The wrapper must
 first be created using :py:func:`~QgsAttributeFormWidget.createSearchWidgetWrapper`
@@ -132,6 +133,7 @@ this search widgte or defines the comparison operator to use.
 %End
 
   protected:
+
 
 
 

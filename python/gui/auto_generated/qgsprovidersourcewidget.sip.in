@@ -21,6 +21,7 @@ Base class for widgets which allow customization of a provider's source URI.
 #include "qgsprovidersourcewidget.h"
 %End
   public:
+
     QgsProviderSourceWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsProviderSourceWidget with the specified ``parent`` widget.

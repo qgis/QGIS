@@ -42,6 +42,7 @@ class GUI_EXPORT QgsMapLayerLoadStyleDialog : public QDialog, private Ui::QgsVec
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsMapLayerLoadStyleDialog, associated with the specified map \a layer.
      */

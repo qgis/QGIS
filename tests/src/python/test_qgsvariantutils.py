@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """QGIS Unit tests for QgsVariantUtils.
 
 From build dir, run: ctest -R PyQgsVariantUtils -V
@@ -8,10 +9,9 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 
 """
-
-__author__ = "Alessandro Pasotti"
-__date__ = "11/10/224"
-__copyright__ = "Copyright 2024, The QGIS Project"
+__author__ = 'Alessandro Pasotti'
+__date__ = '11/10/224'
+__copyright__ = 'Copyright 2024, The QGIS Project'
 
 
 from qgis.PyQt.QtCore import QVariant, QMetaType
@@ -44,5 +44,5 @@ class TestQgsVariantUtils(unittest.TestCase):
         self.assertFalse(QgsVariantUtils.isNumericType(QMetaType.Type.QTime))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

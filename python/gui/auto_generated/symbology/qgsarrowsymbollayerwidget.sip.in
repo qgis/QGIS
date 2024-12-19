@@ -8,13 +8,14 @@
 
 
 
-class QgsArrowSymbolLayerWidget : QgsSymbolLayerWidget
+class QgsArrowSymbolLayerWidget: QgsSymbolLayerWidget
 {
 
 %TypeHeaderCode
 #include "qgsarrowsymbollayerwidget.h"
 %End
   public:
+
     QgsArrowSymbolLayerWidget( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor

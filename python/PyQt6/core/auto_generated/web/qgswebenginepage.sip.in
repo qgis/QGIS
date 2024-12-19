@@ -93,7 +93,7 @@ Returns the size of the page document, in pixels.
    If the page content was NOT loaded using a blocking method, then this method involves running the event loop on the current thread. Take care when calling from the main thread as incorrect use will result in crashes.
 %End
 
-    bool render( QPainter *painter, const QRectF &painterRect );
+    bool render( QPainter *painter, const QRectF &painterRect ) throw( QgsNotSupportedException );
 %Docstring
 Renders the web page contents to a ``painter``. Content will be rendered as vector objects.
 

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsdbrelationshipwidget.h"
-#include "moc_qgsdbrelationshipwidget.cpp"
 #include "qgsgui.h"
 #include "qgsdatabasetablemodel.h"
 #include "qgsproviderregistry.h"
@@ -85,14 +84,17 @@ QgsDbRelationWidget::QgsDbRelationWidget( QgsAbstractDatabaseProviderConnection 
   mLeftTableCombo->setModel( mProxyModel );
   mRightTableCombo->setModel( mProxyModel );
 
-  connect( mNameEdit, &QLineEdit::textChanged, this, [=] {
+  connect( mNameEdit, &QLineEdit::textChanged, this, [ = ]
+  {
     emit validityChanged( isValid() );
   } );
-  connect( mLeftTableCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mLeftTableCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
     mLeftFieldsCombo->setFields( mConnection->fields( QString(), mLeftTableCombo->currentText() ) );
     emit validityChanged( isValid() );
   } );
-  connect( mRightTableCombo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mRightTableCombo, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
     mRightFieldsCombo->setFields( mConnection->fields( QString(), mRightTableCombo->currentText() ) );
     emit validityChanged( isValid() );
   } );
@@ -100,13 +102,14 @@ QgsDbRelationWidget::QgsDbRelationWidget( QgsAbstractDatabaseProviderConnection 
   for ( QComboBox *combo :
         {
           mCardinalityCombo,
-          qobject_cast<QComboBox *>( mLeftFieldsCombo ),
-          qobject_cast<QComboBox *>( mRightFieldsCombo ),
+          qobject_cast< QComboBox *>( mLeftFieldsCombo ),
+          qobject_cast< QComboBox *>( mRightFieldsCombo ),
           mStrengthCombo,
           mRelatedTableTypeCombo
         } )
   {
-    connect( combo, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+    connect( combo, qOverload< int >( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+    {
       emit validityChanged( isValid() );
     } );
   }
@@ -137,8 +140,19 @@ void QgsDbRelationWidget::setRelationship( const QgsWeakRelation &relationship )
 
 QgsWeakRelation QgsDbRelationWidget::relationship() const
 {
-  QgsWeakRelation result( mRelation.id().isEmpty() ? mNameEdit->text() : mRelation.id(), mRelation.name().isEmpty() ? mNameEdit->text() : mRelation.name(), mStrengthCombo->currentData().value<Qgis::RelationshipStrength>(), QString(), QString(), mConnection->tableUri( QString(), mRightTableCombo->currentText() ), mConnection->providerKey(), QString(), QString(), mConnection->tableUri( QString(), mLeftTableCombo->currentText() ), mConnection->providerKey() );
-  result.setCardinality( mCardinalityCombo->currentData().value<Qgis::RelationshipCardinality>() );
+  QgsWeakRelation result( mRelation.id().isEmpty() ? mNameEdit->text() : mRelation.id(),
+                          mRelation.name().isEmpty() ? mNameEdit->text() : mRelation.name(),
+                          mStrengthCombo->currentData().value< Qgis::RelationshipStrength >(),
+                          QString(),
+                          QString(),
+                          mConnection->tableUri( QString(), mRightTableCombo->currentText() ),
+                          mConnection->providerKey(),
+                          QString(),
+                          QString(),
+                          mConnection->tableUri( QString(), mLeftTableCombo->currentText() ),
+                          mConnection->providerKey()
+                        );
+  result.setCardinality( mCardinalityCombo->currentData().value< Qgis::RelationshipCardinality >() );
   result.setReferencedLayerFields( { mLeftFieldsCombo->currentText() } );
   result.setReferencingLayerFields( { mRightFieldsCombo->currentText() } );
   result.setForwardPathLabel( mForwardLabelLineEdit->text() );

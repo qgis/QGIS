@@ -39,6 +39,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
     Q_PROPERTY( bool minScale READ minScale WRITE setMinScale )
 
   public:
+
     /**
      * \brief QgsScaleWidget creates a combobox which lets the user select map scale from predefined list
      * and highlights nearest to current scale value
@@ -57,7 +58,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
      * Returns whether a button to set the scale from map canvas is shown or not.
      * \see setShowCurrentScaleButton()
      */
-    bool showCurrentScaleButton() { return mShowCurrentScaleButton; }
+    bool showCurrentScaleButton() { return mShowCurrentScaleButton;}
 
     /**
      * Set the map \a canvas associated to the current button.
@@ -143,7 +144,7 @@ class GUI_EXPORT QgsScaleWidget : public QWidget
      *
      * \since QGIS 3.38
     */
-    void setPredefinedScales( const QVector<double> &scales );
+    void setPredefinedScales( const QVector< double > &scales );
 
   public slots:
 

@@ -22,6 +22,7 @@ and highlights nearest to current scale value
 #include "qgsscalewidget.h"
 %End
   public:
+
     explicit QgsScaleWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsScaleWidget creates a combobox which lets the user select map scale from predefined list
@@ -139,7 +140,7 @@ Returns ``True`` if the widget can be set to a NULL value.
 .. versionadded:: 3.8
 %End
 
-    void setPredefinedScales( const QVector<double> &scales );
+    void setPredefinedScales( const QVector< double > &scales );
 %Docstring
 Sets the list of predefined ``scales`` to show in the widget. List elements
 are expected to be scale denominators, e.g. 1000.0 for a 1:1000 map.

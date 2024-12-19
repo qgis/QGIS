@@ -31,7 +31,9 @@
  */
 class QgsGeometryByExpressionAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
+
   public:
+
     QgsGeometryByExpressionAlgorithm() = default;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmCentroids.svg" ) ); }
     QString svgIconPath() const override { return QgsApplication::iconPath( QStringLiteral( "/algorithms/mAlgorithmCentroids.svg" ) ); }
@@ -46,13 +48,15 @@ class QgsGeometryByExpressionAlgorithm : public QgsProcessingFeatureBasedAlgorit
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
 
   protected:
+
     QString outputName() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType ) const override;
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
+
     Qgis::WkbType mWkbType;
     QgsExpression mExpression;
     QgsExpressionContext mExpressionContext;

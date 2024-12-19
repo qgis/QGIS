@@ -18,14 +18,13 @@ using namespace nlohmann;
 
 #include "qgslogger.h"
 #include "qgsoapifconformancerequest.h"
-#include "moc_qgsoapifconformancerequest.cpp"
 #include "qgsoapifutils.h"
 #include "qgswfsconstants.h"
 
 #include <QTextCodec>
 
-QgsOapifConformanceRequest::QgsOapifConformanceRequest( const QgsDataSourceUri &uri )
-  : QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), uri.authConfigId() ), "OAPIF" )
+QgsOapifConformanceRequest::QgsOapifConformanceRequest( const QgsDataSourceUri &uri ):
+  QgsBaseNetworkRequest( QgsAuthorizationSettings( uri.username(), uri.password(), uri.authConfigId() ), "OAPIF" )
 {
   // Using Qt::DirectConnection since the download might be running on a different thread.
   // In this case, the request was sent from the main thread and is executed with the main

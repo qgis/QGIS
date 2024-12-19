@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsspatialiteconnection.h"
-#include "moc_qgsspatialiteconnection.cpp"
 #include "qgssettings.h"
 #include "qgslogger.h"
 #include "qgsspatialiteutils.h"
@@ -25,7 +24,7 @@
 #include <cstdlib> // atoi
 
 #ifdef _MSC_VER
-#define strcasecmp( a, b ) stricmp( a, b )
+#define strcasecmp(a,b) stricmp(a,b)
 #endif
 
 const QString QgsSpatiaLiteConnection::SPATIALITE_ARRAY_PREFIX = QStringLiteral( "json" );
@@ -556,7 +555,7 @@ bool QgsSpatiaLiteConnection::checkVirtsGeometryColumns( sqlite3 *handle )
 
 bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 *handle, const char *table )
 {
-  // testing for RasterLite-1 datasources
+// testing for RasterLite-1 datasources
   int ret;
   int i;
   char **results = nullptr;
@@ -567,7 +566,7 @@ bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 *handle, const ch
   char sql[4258];
 
   strncpy( table_raster, table, sizeof table_raster );
-  table_raster[sizeof table_raster - 1] = '\0';
+  table_raster[ sizeof table_raster - 1 ] = '\0';
 
   const size_t len = strlen( table_raster );
   if ( strlen( table_raster ) < 9 )
@@ -615,8 +614,8 @@ bool QgsSpatiaLiteConnection::isDeclaredHidden( sqlite3 *handle, const QString &
     return false;
   // checking if some Layer has been declared as HIDDEN
   const QString sql = QString( "SELECT hidden FROM geometry_columns_auth"
-                               " WHERE f_table_name=%1 and f_geometry_column=%2" )
-                        .arg( QgsSqliteUtils::quotedString( table ), QgsSqliteUtils::quotedString( geom ) );
+                               " WHERE f_table_name=%1 and f_geometry_column=%2" ).arg( QgsSqliteUtils::quotedString( table ),
+                                   QgsSqliteUtils::quotedString( geom ) );
 
   ret = sqlite3_get_table( handle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
@@ -650,6 +649,9 @@ error:
 }
 
 
+
+
+
 static void fcnRegexp( sqlite3_context *ctx, int /*argc*/, sqlite3_value *argv[] )
 {
   const QRegularExpression re( reinterpret_cast<const char *>( sqlite3_value_text( argv[0] ) ) );
@@ -662,7 +664,9 @@ static void fcnRegexp( sqlite3_context *ctx, int /*argc*/, sqlite3_value *argv[]
 }
 
 
-QMap<QString, QgsSqliteHandle *> QgsSqliteHandle::sHandles;
+
+
+QMap < QString, QgsSqliteHandle * > QgsSqliteHandle::sHandles;
 QMutex QgsSqliteHandle::sHandleMutex;
 
 
@@ -709,7 +713,8 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
   {
     // failure
     QgsDebugError( QStringLiteral( "Failure while connecting to: %1\n%2" )
-                     .arg( dbPath, QString::fromUtf8( sqlite3_errmsg( database.get() ) ) ) );
+                   .arg( dbPath,
+                         QString::fromUtf8( sqlite3_errmsg( database.get() ) ) ) );
     return nullptr;
   }
 
@@ -725,7 +730,7 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
   sqlite3_create_function( database.get(), "REGEXP", 2, SQLITE_UTF8, nullptr, fcnRegexp, nullptr, nullptr );
 
   // activating Foreign Key constraints
-  ( void ) sqlite3_exec( database.get(), "PRAGMA foreign_keys = 1", nullptr, nullptr, nullptr );
+  ( void )sqlite3_exec( database.get(), "PRAGMA foreign_keys = 1", nullptr, nullptr, nullptr );
 
   QgsDebugMsgLevel( QStringLiteral( "Connection to the database was successful" ), 2 );
 
@@ -746,7 +751,7 @@ void QgsSqliteHandle::closeDb( QgsSqliteHandle *&handle )
   else
   {
     const QMutexLocker locker( &sHandleMutex );
-    QMap<QString, QgsSqliteHandle *>::iterator i;
+    QMap < QString, QgsSqliteHandle * >::iterator i;
     for ( i = sHandles.begin(); i != sHandles.end() && i.value() != handle; ++i )
       ;
 

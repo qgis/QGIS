@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprofilerenderer.h"
-#include "moc_qgsprofilerenderer.cpp"
 #include "qgsabstractprofilesource.h"
 #include "qgsabstractprofilegenerator.h"
 #include "qgscurve.h"

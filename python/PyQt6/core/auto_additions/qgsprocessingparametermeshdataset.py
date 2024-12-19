@@ -3,7 +3,7 @@ try:
     QgsProcessingParameterMeshDatasetGroups.typeName = staticmethod(QgsProcessingParameterMeshDatasetGroups.typeName)
     QgsProcessingParameterMeshDatasetGroups.valueAsDatasetGroup = staticmethod(QgsProcessingParameterMeshDatasetGroups.valueAsDatasetGroup)
     QgsProcessingParameterMeshDatasetGroups.__group__ = ['processing']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsProcessingParameterMeshDatasetTime.typeName = staticmethod(QgsProcessingParameterMeshDatasetTime.typeName)
@@ -11,5 +11,5 @@ try:
     QgsProcessingParameterMeshDatasetTime.timeValueAsDatasetIndex = staticmethod(QgsProcessingParameterMeshDatasetTime.timeValueAsDatasetIndex)
     QgsProcessingParameterMeshDatasetTime.timeValueAsDefinedDateTime = staticmethod(QgsProcessingParameterMeshDatasetTime.timeValueAsDefinedDateTime)
     QgsProcessingParameterMeshDatasetTime.__group__ = ['processing']
-except (NameError, AttributeError):
+except NameError:
     pass

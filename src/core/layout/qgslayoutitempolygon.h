@@ -58,7 +58,6 @@ class CORE_EXPORT QgsLayoutItemPolygon: public QgsLayoutNodesItem
     bool accept( QgsStyleEntityVisitorInterface *visitor ) const override;
     QgsLayoutItem::Flags itemFlags() const override;
     QgsGeometry clipPath() const override;
-    bool isValid() const override;
 
     /**
      * Returns the fill symbol used to draw the shape.

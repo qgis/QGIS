@@ -31,6 +31,7 @@ Security can define any (or none) of the following method:
 #include "qgsaccesscontrolfilter.h"
 %End
   public:
+
     QgsAccessControlFilter( const QgsServerInterface *serverInterface );
 %Docstring
 Constructor
@@ -42,10 +43,10 @@ and must be passed to QgsAccessControlFilter instances.
 
     struct LayerPermissions
     {
-        bool canRead;
-        bool canUpdate;
-        bool canInsert;
-        bool canDelete;
+      bool canRead;
+      bool canUpdate;
+      bool canInsert;
+      bool canDelete;
     };
 
     const QgsServerInterface *serverInterface() const;

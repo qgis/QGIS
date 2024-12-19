@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgslayouttablebackgroundcolorsdialog.h"
-#include "moc_qgslayouttablebackgroundcolorsdialog.cpp"
 #include "qgslayouttable.h"
 #include "qgslayout.h"
 #include "qgssettings.h"

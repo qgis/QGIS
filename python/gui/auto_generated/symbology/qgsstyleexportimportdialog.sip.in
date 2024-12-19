@@ -18,6 +18,7 @@ class QgsStyleExportImportDialog : QDialog
 #include "qgsstyleexportimportdialog.h"
 %End
   public:
+
     enum Mode
     {
       Export,

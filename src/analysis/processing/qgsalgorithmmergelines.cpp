@@ -68,7 +68,7 @@ QString QgsMergeLinesAlgorithm::shortHelpString() const
 
 QList<int> QgsMergeLinesAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine );
+  return QList<int>() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine );
 }
 
 QgsMergeLinesAlgorithm *QgsMergeLinesAlgorithm::createInstance() const
@@ -91,3 +91,5 @@ QgsFeatureList QgsMergeLinesAlgorithm::processFeature( const QgsFeature &feature
 }
 
 ///@endcond
+
+

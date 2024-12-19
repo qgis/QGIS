@@ -61,6 +61,7 @@ class _3D_EXPORT QgsRuleBased3DRendererMetadata : public Qgs3DRendererAbstractMe
 class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRenderer
 {
   public:
+
     class Rule;
     typedef QList<QgsRuleBased3DRenderer::Rule *> RuleList;
     typedef QHash<const QgsRuleBased3DRenderer::Rule *, QgsFeature3DHandler *> RuleToHandlerMap;
@@ -131,11 +132,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
          *
          * \param filterExp An expression
          */
-        void setFilterExpression( const QString &filterExp )
-        {
-          mFilterExp = filterExp;
-          initFilter();
-        }
+        void setFilterExpression( const QString &filterExp ) { mFilterExp = filterExp; initFilter(); }
 
         /**
          * Set a human readable description for this rule
@@ -245,7 +242,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
          * call prepare() on handlers and populate attributeNames
          * \note not available in Python bindings
          */
-        void prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, const QgsVector3D &chunkOrigin, RuleToHandlerMap &handlers ) const SIP_SKIP;
+        void prepare( const Qgs3DRenderContext &context, QSet<QString> &attributeNames, RuleToHandlerMap &handlers ) const SIP_SKIP;
 
         /**
          * register individual features
@@ -311,6 +308,7 @@ class _3D_EXPORT QgsRuleBased3DRenderer : public QgsAbstractVectorLayer3DRendere
 
   private:
     Rule *mRootRule = nullptr;
+
 };
 
 #endif // QGSRULEBASED3DRENDERER_H

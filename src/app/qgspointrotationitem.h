@@ -23,9 +23,10 @@
 #include "qgis_app.h"
 
 //! An item that shows a rotated point symbol (e.g. arrow) centered to a map location together with a text displaying the rotation value
-class APP_EXPORT QgsPointRotationItem : public QgsMapCanvasItem
+class APP_EXPORT QgsPointRotationItem: public QgsMapCanvasItem
 {
   public:
+
     enum Orientation
     {
       Clockwise = 0,
@@ -43,7 +44,7 @@ class APP_EXPORT QgsPointRotationItem : public QgsMapCanvasItem
      * Sets the rotation of the symbol.
      * Units are degrees, starting from north direction, clockwise direction.
     */
-    void setSymbolRotation( int r ) { mRotation = r; }
+    void setSymbolRotation( int r ) {mRotation = r;}
 
     /**
      * Sets the rotation unit.
@@ -58,6 +59,7 @@ class APP_EXPORT QgsPointRotationItem : public QgsMapCanvasItem
     Orientation orientation() const { return mOrientation; }
 
   private:
+
     //! Converts rotation into QPainter rotation considering mOrientation
     int painterRotation( int rotation ) const;
     //! Clockwise (default) or counterclockwise

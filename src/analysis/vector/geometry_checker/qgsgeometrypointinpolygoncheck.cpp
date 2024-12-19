@@ -37,13 +37,14 @@ void QgsGeometryPointInPolygonCheck::collectErrors( const QMap<QString, QgsFeatu
       int nInside = 0;
 
       // Check whether point is contained by a fully contained by a polygon
-      const QgsRectangle rect( point->x() - mContext->tolerance, point->y() - mContext->tolerance, point->x() + mContext->tolerance, point->y() + mContext->tolerance );
-      const QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, featureIds.keys(), rect, { Qgis::GeometryType::Polygon }, mContext );
+      const QgsRectangle rect( point->x() - mContext->tolerance, point->y() - mContext->tolerance,
+                               point->x() + mContext->tolerance, point->y() + mContext->tolerance );
+      const QgsGeometryCheckerUtils::LayerFeatures checkFeatures( featurePools, featureIds.keys(), rect, {Qgis::GeometryType::Polygon}, mContext );
       for ( const QgsGeometryCheckerUtils::LayerFeature &checkFeature : checkFeatures )
       {
         ++nTested;
         const QgsAbstractGeometry *testGeom = checkFeature.geometry().constGet();
-        std::unique_ptr<QgsGeometryEngine> testGeomEngine( QgsGeometry::createGeometryEngine( testGeom, mContext->reducedTolerance ) );
+        std::unique_ptr< QgsGeometryEngine > testGeomEngine = QgsGeometryCheckerUtils::createGeomEngine( testGeom, mContext->reducedTolerance );
         if ( !testGeomEngine->isValid() )
         {
           messages.append( tr( "Point in polygon check failed for (%1): the geometry is invalid" ).arg( checkFeature.id() ) );

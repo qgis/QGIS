@@ -37,9 +37,11 @@ class QgsElevationProfileCanvas;
  */
 class GUI_EXPORT QgsPlotToolXAxisZoom : public QgsPlotToolZoom
 {
+
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPlotToolXAxisZoom, with the associated \a canvas.
      */
@@ -52,7 +54,6 @@ class GUI_EXPORT QgsPlotToolXAxisZoom : public QgsPlotToolZoom
     QRectF constrainBounds( const QRectF &sceneBounds ) const override;
     void zoomOutClickOn( QPointF scenePoint ) override;
     void zoomInClickOn( QPointF scenePoint ) override;
-
   private:
     QgsElevationProfileCanvas *mElevationCanvas = nullptr;
 };

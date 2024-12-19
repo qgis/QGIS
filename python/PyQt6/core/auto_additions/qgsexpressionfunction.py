@@ -2,9 +2,9 @@
 try:
     QgsExpressionFunction.allParamsStatic = staticmethod(QgsExpressionFunction.allParamsStatic)
     QgsExpressionFunction.__group__ = ['expression']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsExpressionFunction.Parameter.__group__ = ['expression']
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -13,7 +13,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsattributeformwidget.h"
-#include "moc_qgsattributeformwidget.cpp"
 #include <QHBoxLayout>
 #include <QStackedWidget>
 
@@ -42,7 +41,8 @@ QgsAttributeFormWidget::QgsAttributeFormWidget( QgsWidgetWrapper *widget, QgsAtt
   l->addWidget( mSearchFrame, 1 );
   mSearchWidgetToolButton = new QgsSearchWidgetToolButton();
   mSearchWidgetToolButton->setObjectName( QStringLiteral( "SearchWidgetToolButton" ) );
-  connect( mSearchWidgetToolButton, &QgsSearchWidgetToolButton::activeFlagsChanged, this, &QgsAttributeFormWidget::searchWidgetFlagsChanged );
+  connect( mSearchWidgetToolButton, &QgsSearchWidgetToolButton::activeFlagsChanged,
+           this, &QgsAttributeFormWidget::searchWidgetFlagsChanged );
   l->addWidget( mSearchWidgetToolButton, 0 );
 
   mStack = new QStackedWidget();
@@ -170,7 +170,8 @@ void QgsAttributeFormWidget::searchWidgetFlagsChanged( QgsSearchWidgetWrapper::F
   const auto constMSearchWidgets = mSearchWidgets;
   for ( QgsSearchWidgetWrapper *widget : constMSearchWidgets )
   {
-    widget->setEnabled( !( flags & QgsSearchWidgetWrapper::IsNull ) && !( flags & QgsSearchWidgetWrapper::IsNotNull ) );
+    widget->setEnabled( !( flags & QgsSearchWidgetWrapper::IsNull )
+                        && !( flags & QgsSearchWidgetWrapper::IsNotNull ) );
     if ( !mSearchWidgetToolButton->isActive() )
     {
       widget->clearWidget();
@@ -179,7 +180,8 @@ void QgsAttributeFormWidget::searchWidgetFlagsChanged( QgsSearchWidgetWrapper::F
 
   if ( mSearchWidgets.count() >= 2 )
   {
-    mSearchWidgets.at( 1 )->widget()->setVisible( flags & QgsSearchWidgetWrapper::Between || flags & QgsSearchWidgetWrapper::IsNotBetween );
+    mSearchWidgets.at( 1 )->widget()->setVisible( flags & QgsSearchWidgetWrapper::Between ||
+        flags & QgsSearchWidgetWrapper::IsNotBetween );
   }
 }
 

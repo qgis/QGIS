@@ -12,7 +12,7 @@
 
 
 
-class QgsSymbolAnimationSettingsWidget : QgsPanelWidget
+class QgsSymbolAnimationSettingsWidget: QgsPanelWidget
 {
 %Docstring(signature="appended")
 A widget for customising animation settings for a symbol.
@@ -24,6 +24,7 @@ A widget for customising animation settings for a symbol.
 #include "qgssymbolanimationsettingswidget.h"
 %End
   public:
+
     QgsSymbolAnimationSettingsWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSymbolAnimationSettingsWidget
@@ -57,6 +58,7 @@ A dialog for customising animation settings for a symbol.
 #include "qgssymbolanimationsettingswidget.h"
 %End
   public:
+
     QgsSymbolAnimationSettingsDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags f = Qt::WindowFlags() );
 %Docstring
 Constructor for QgsSymbolAnimationSettingsDialog

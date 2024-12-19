@@ -45,7 +45,6 @@
 #include <QRegularExpressionValidator>
 
 #include "qgsvariantdelegate.h"
-#include "moc_qgsvariantdelegate.cpp"
 
 QgsVariantDelegate::QgsVariantDelegate( QObject *parent )
   : QItemDelegate( parent )
@@ -68,7 +67,9 @@ QgsVariantDelegate::QgsVariantDelegate( QObject *parent )
   mDateTimeExp.setPattern( mDateExp.pattern() + 'T' + mTimeExp.pattern() );
 }
 
-void QgsVariantDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+void QgsVariantDelegate::paint( QPainter *painter,
+                                const QStyleOptionViewItem &option,
+                                const QModelIndex &index ) const
 {
   if ( index.column() == 2 )
   {
@@ -85,7 +86,9 @@ void QgsVariantDelegate::paint( QPainter *painter, const QStyleOptionViewItem &o
   QItemDelegate::paint( painter, option, index );
 }
 
-QWidget *QgsVariantDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+QWidget *QgsVariantDelegate::createEditor( QWidget *parent,
+    const QStyleOptionViewItem &option,
+    const QModelIndex &index ) const
 {
   Q_UNUSED( option )
   if ( index.column() != 2 )
@@ -136,7 +139,8 @@ QWidget *QgsVariantDelegate::createEditor( QWidget *parent, const QStyleOptionVi
     case QMetaType::Type::ULongLong:
       regExp = mUnsignedIntegerExp;
       break;
-    default:;
+    default:
+      ;
   }
 
   if ( QgsVariantDelegate::type( originalValue ) == QMetaType::Type::Bool )
@@ -159,30 +163,32 @@ QWidget *QgsVariantDelegate::createEditor( QWidget *parent, const QStyleOptionVi
   }
 }
 
-void QgsVariantDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+void QgsVariantDelegate::setEditorData( QWidget *editor,
+                                        const QModelIndex &index ) const
 {
   const QVariant value = index.model()->data( index, Qt::UserRole );
 
-  if ( QComboBox *comboBox = qobject_cast<QComboBox *>( editor ) )
+  if ( QComboBox *comboBox = qobject_cast<QComboBox * >( editor ) )
   {
     comboBox->setCurrentIndex( value.toBool() ? 1 : 0 );
   }
-  else if ( QLineEdit *lineEdit = qobject_cast<QLineEdit *>( editor ) )
+  else if ( QLineEdit *lineEdit = qobject_cast<QLineEdit * >( editor ) )
   {
     lineEdit->setText( displayText( value ) );
   }
 }
 
-void QgsVariantDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+void QgsVariantDelegate::setModelData( QWidget *editor, QAbstractItemModel *model,
+                                       const QModelIndex &index ) const
 {
   const QVariant originalValue = index.model()->data( index, Qt::UserRole );
   QVariant value;
 
-  if ( QComboBox *comboBox = qobject_cast<QComboBox *>( editor ) )
+  if ( QComboBox *comboBox = qobject_cast<QComboBox * >( editor ) )
   {
     value = comboBox->currentIndex() == 1;
   }
-  else if ( QLineEdit *lineEdit = qobject_cast<QLineEdit *>( editor ) )
+  else if ( QLineEdit *lineEdit = qobject_cast<QLineEdit * >( editor ) )
   {
     if ( !lineEdit->isModified() )
       return;
@@ -204,7 +210,10 @@ void QgsVariantDelegate::setModelData( QWidget *editor, QAbstractItemModel *mode
       case QMetaType::Type::QColor:
       {
         const QRegularExpressionMatch match = mColorExp.match( text );
-        value = QColor( std::min( match.captured( 1 ).toInt(), 255 ), std::min( match.captured( 2 ).toInt(), 255 ), std::min( match.captured( 3 ).toInt(), 255 ), std::min( match.captured( 4 ).toInt(), 255 ) );
+        value = QColor( std::min( match.captured( 1 ).toInt(), 255 ),
+                        std::min( match.captured( 2 ).toInt(), 255 ),
+                        std::min( match.captured( 3 ).toInt(), 255 ),
+                        std::min( match.captured( 4 ).toInt(), 255 ) );
         break;
       }
       case QMetaType::Type::QDate:
@@ -232,7 +241,8 @@ void QgsVariantDelegate::setModelData( QWidget *editor, QAbstractItemModel *mode
       case QMetaType::Type::QRect:
       {
         const QRegularExpressionMatch match = mRectExp.match( text );
-        value = QRect( match.captured( 1 ).toInt(), match.captured( 2 ).toInt(), match.captured( 3 ).toInt(), match.captured( 4 ).toInt() );
+        value = QRect( match.captured( 1 ).toInt(), match.captured( 2 ).toInt(),
+                       match.captured( 3 ).toInt(), match.captured( 4 ).toInt() );
         break;
       }
       case QMetaType::Type::QSize:
@@ -307,10 +317,8 @@ QString QgsVariantDelegate::displayText( const QVariant &value )
     {
       const QColor color = qvariant_cast<QColor>( value );
       return QStringLiteral( "(%1,%2,%3,%4)" )
-        .arg( color.red() )
-        .arg( color.green() )
-        .arg( color.blue() )
-        .arg( color.alpha() );
+             .arg( color.red() ).arg( color.green() )
+             .arg( color.blue() ).arg( color.alpha() );
     }
     case QMetaType::Type::QDate:
       return value.toDate().toString( Qt::ISODate );
@@ -327,10 +335,8 @@ QString QgsVariantDelegate::displayText( const QVariant &value )
     {
       const QRect rect = value.toRect();
       return QStringLiteral( "(%1,%2,%3,%4)" )
-        .arg( rect.x() )
-        .arg( rect.y() )
-        .arg( rect.width() )
-        .arg( rect.height() );
+             .arg( rect.x() ).arg( rect.y() )
+             .arg( rect.width() ).arg( rect.height() );
     }
     case QMetaType::Type::QSize:
     {
@@ -345,6 +351,7 @@ QString QgsVariantDelegate::displayText( const QVariant &value )
       break;
   }
   return QStringLiteral( "<%1>" ).arg( value.toString() );
+
 }
 
 /* hack to get "real" type of a variant, because QVariant::type() almost always returns QString */
@@ -370,6 +377,7 @@ QMetaType::Type QgsVariantDelegate::type( const QVariant &value )
     ( void ) str.toDouble( &ok );
     if ( ok )
       return QMetaType::Type::Double;
+
   }
 
   // fallback to QVariant::type()

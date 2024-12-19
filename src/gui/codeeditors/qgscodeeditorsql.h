@@ -110,14 +110,13 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
  * \note not available in Python bindings
  * \ingroup gui
 */
-class QgsCaseInsensitiveLexerSQL : public QsciLexerSQL
+class QgsCaseInsensitiveLexerSQL: public QsciLexerSQL
 {
     Q_OBJECT
 
   public:
     //! constructor
-    explicit QgsCaseInsensitiveLexerSQL( QObject *parent = nullptr )
-      : QsciLexerSQL( parent ) {}
+    explicit QgsCaseInsensitiveLexerSQL( QObject *parent = nullptr ) : QsciLexerSQL( parent ) {}
 
     bool caseSensitive() const override { return false; }
 };

@@ -109,21 +109,24 @@ Base class for processing filters like renderers, reprojector, resampler etc.
 
 %TypeHeaderCode
 #include "qgsrasterinterface.h"
-#include "qgsbrightnesscontrastfilter.h"
-#include "qgshuesaturationfilter.h"
-#include "qgsrasterdataprovider.h"
-#include "qgsrasternuller.h"
-#include "qgsrasterprojector.h"
-#include "qgsrasterrenderer.h"
-#include "qgsrasterresamplefilter.h"
-#include "qgshillshaderenderer.h"
-#include "qgsmultibandcolorrenderer.h"
-#include "qgspalettedrasterrenderer.h"
-#include "qgssinglebandcolordatarenderer.h"
-#include "qgssinglebandgrayrenderer.h"
-#include "qgssinglebandpseudocolorrenderer.h"
-#include "qgsrastersinglecolorrenderer.h"
-#include "qgsrastercontourrenderer.h"
+// QgsRasterInterface subclasses
+#include <qgsbrightnesscontrastfilter.h>
+#include <qgshuesaturationfilter.h>
+#include <qgsrasterdataprovider.h>
+#include <qgsrasternuller.h>
+#include <qgsrasterprojector.h>
+#include <qgsrasterrenderer.h>
+#include <qgsrasterresamplefilter.h>
+
+// QgsRasterRenderer subclasses
+#include <qgshillshaderenderer.h>
+#include <qgsmultibandcolorrenderer.h>
+#include <qgspalettedrasterrenderer.h>
+#include <qgssinglebandcolordatarenderer.h>
+#include <qgssinglebandgrayrenderer.h>
+#include <qgssinglebandpseudocolorrenderer.h>
+#include <qgsrastersinglecolorrenderer.h>
+#include <qgsrastercontourrenderer.h>
 %End
 %ConvertToSubClassCode
     if ( dynamic_cast<QgsBrightnessContrastFilter *>( sipCpp ) )
@@ -184,7 +187,7 @@ Clone itself, create deep copy
 Returns the capabilities supported by the interface.
 %End
 
- QString capabilitiesString() const /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
+ QString capabilitiesString() const /Deprecated/;
 %Docstring
 Returns the raster interface capabilities in friendly format.
 
@@ -295,7 +298,7 @@ It may be used to get info about original data, e.g. resolution to decide
 resampling etc.
 %End
 
- QgsRasterBandStats bandStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, QgsRasterBlockFeedback *feedback = 0 ) /Deprecated="Since 3.40. Use Qgis.RasterBandStatistic instead of int for ``stats`` argument."/;
+ QgsRasterBandStats bandStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0, QgsRasterBlockFeedback *feedback = 0 ) /Deprecated/;
 %Docstring
 Returns the band statistics.
 
@@ -324,7 +327,7 @@ Returns the band statistics.
 :param feedback: optional feedback object
 %End
 
- bool hasStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0 ) /Deprecated="Since 3.40. Use Qgis.RasterBandStatistic instead of int for ``stats`` argument."/;
+ bool hasStatistics( int bandNo, int stats, const QgsRectangle &extent = QgsRectangle(), int sampleSize = 0 ) /Deprecated/;
 %Docstring
 Returns ``True`` if histogram is available (cached, already calculated).
 The parameters are the same as in :py:func:`~QgsRasterInterface.bandStatistics`
@@ -538,7 +541,7 @@ Fill in histogram defaults if not specified
 #endif
 %End
 
- void initStatistics( QgsRasterBandStats &statistics, int bandNo, int stats, const QgsRectangle &boundingBox = QgsRectangle(), int binCount = 0 ) const /Deprecated="Since 3.40. Use Qgis.RasterBandStatistic instead of int for ``stats`` argument."/;
+ void initStatistics( QgsRasterBandStats &statistics, int bandNo, int stats, const QgsRectangle &boundingBox = QgsRectangle(), int binCount = 0 ) const /Deprecated/;
 %Docstring
 Fill in statistics defaults if not specified
 

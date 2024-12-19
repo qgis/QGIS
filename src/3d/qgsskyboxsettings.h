@@ -36,6 +36,7 @@ class QDomElement;
 class _3D_EXPORT QgsSkyboxSettings
 {
   public:
+
     QgsSkyboxSettings() = default;
     QgsSkyboxSettings( const QgsSkyboxSettings &other );
     QgsSkyboxSettings &operator=( QgsSkyboxSettings const &rhs );

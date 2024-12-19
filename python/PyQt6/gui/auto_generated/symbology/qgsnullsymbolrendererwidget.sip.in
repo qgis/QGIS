@@ -20,6 +20,7 @@ Blank widget for customizing :py:class:`QgsNullSymbolRenderer`.
 #include "qgsnullsymbolrendererwidget.h"
 %End
   public:
+
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
 Creates a new QgsNullSymbolRendererWidget object
@@ -38,6 +39,8 @@ Returns a pointer to the configured renderer
 %End
 
   protected:
+
+
 };
 
 

@@ -86,8 +86,7 @@ double QgsTerrainDownloader::findBestTileResolution( double requestedMupp ) cons
       break;
   }
 
-  if ( zoom > 15 )
-    zoom = 15;
+  if ( zoom > 15 ) zoom = 15;
   const double finalMupp = mXSpan / ( 256 * ( 1 << zoom ) );
   return finalMupp;
 }
@@ -173,7 +172,8 @@ QByteArray QgsTerrainDownloader::getHeightMap( const QgsRectangle &extentOrig, i
   }
 
   // resample to the desired extent + resolution
-  QgsGdalUtils::resampleSingleBandRaster( hSrcDS.get(), hDstDS.get(), GRA_Bilinear, context.calculateCoordinateOperation( mOnlineDtm->crs(), destCrs ).toUtf8().constData() );
+  QgsGdalUtils::resampleSingleBandRaster( hSrcDS.get(), hDstDS.get(), GRA_Bilinear,
+                                          context.calculateCoordinateOperation( mOnlineDtm->crs(), destCrs ).toUtf8().constData() );
 
   QByteArray heightMapOut;
   heightMapOut.resize( resOrig * resOrig * sizeof( float ) );

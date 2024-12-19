@@ -44,3 +44,4 @@ QgsCanvasRefreshBlocker::~QgsCanvasRefreshBlocker()
   if ( !mReleased )
     release();
 }
+

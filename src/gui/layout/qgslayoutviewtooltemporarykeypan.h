@@ -26,9 +26,11 @@
  */
 class GUI_EXPORT QgsLayoutViewToolTemporaryKeyPan : public QgsLayoutViewTool
 {
+
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutViewToolTemporaryKeyPan.
      */
@@ -39,8 +41,10 @@ class GUI_EXPORT QgsLayoutViewToolTemporaryKeyPan : public QgsLayoutViewTool
     void activate() override;
 
   private:
+
     QPoint mLastMousePos;
-    QPointer<QgsLayoutViewTool> mPreviousViewTool;
+    QPointer< QgsLayoutViewTool > mPreviousViewTool;
+
 };
 
 #endif // QGSLAYOUTVIEWTOOLTEMPORARYKEYPAN_H

@@ -39,7 +39,9 @@ QgsMapCanvasItem::~QgsMapCanvasItem()
   update(); // schedule redraw of canvas
 }
 
-void QgsMapCanvasItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
+void QgsMapCanvasItem::paint( QPainter *painter,
+                              const QStyleOptionGraphicsItem *option,
+                              QWidget *widget )
 {
   Q_UNUSED( option )
   Q_UNUSED( widget )

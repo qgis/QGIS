@@ -22,6 +22,7 @@ Represents an item shown within a :py:class:`QgsMessageBar` widget.
 #include "qgsmessagebaritem.h"
 %End
   public:
+
     QgsMessageBarItem( const QString &text, Qgis::MessageLevel level = Qgis::MessageLevel::Info, int duration = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsMessageBarItem, containing a message with the specified ``text`` to be displayed on the bar.

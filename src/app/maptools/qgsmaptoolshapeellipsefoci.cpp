@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapeellipsefoci.h"
-#include "moc_qgsmaptoolshapeellipsefoci.cpp"
 #include "qgsgeometryrubberband.h"
 #include "qgslinestring.h"
 #include "qgspoint.h"

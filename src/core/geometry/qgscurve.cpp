@@ -253,7 +253,7 @@ bool QgsCurve::isValid( QString &error, Qgis::GeometryValidityFlags flags ) cons
     return error.isEmpty();
   }
 
-  const QgsGeos geos( this, 0, Qgis::GeosCreationFlags() );
+  const QgsGeos geos( this );
   const bool res = geos.isValid( &error, flags & Qgis::GeometryValidityFlag::AllowSelfTouchingHoles, nullptr );
   if ( flags == 0 )
   {

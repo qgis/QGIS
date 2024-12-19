@@ -627,7 +627,19 @@ Returns whether provider-level resampling is enabled.
 .. versionadded:: 3.16
 %End
 
-    virtual bool setZoomedInResamplingMethod( Qgis::RasterResamplingMethod method );
+    enum class ResamplingMethod
+    {
+      Nearest,
+      Bilinear,
+      Cubic,
+      CubicSpline,
+      Lanczos,
+      Average,
+      Mode,
+      Gauss
+    };
+
+    virtual bool setZoomedInResamplingMethod( ResamplingMethod method );
 %Docstring
 Set resampling method to apply for zoomed-in operations.
 
@@ -636,14 +648,14 @@ Set resampling method to apply for zoomed-in operations.
 .. versionadded:: 3.16
 %End
 
-    Qgis::RasterResamplingMethod zoomedInResamplingMethod() const;
+    ResamplingMethod zoomedInResamplingMethod() const;
 %Docstring
 Returns resampling method for zoomed-in operations.
 
 .. versionadded:: 3.16
 %End
 
-    virtual bool setZoomedOutResamplingMethod( Qgis::RasterResamplingMethod  method );
+    virtual bool setZoomedOutResamplingMethod( ResamplingMethod method );
 %Docstring
 Set resampling method to apply for zoomed-out operations.
 
@@ -652,7 +664,7 @@ Set resampling method to apply for zoomed-out operations.
 .. versionadded:: 3.16
 %End
 
-    Qgis::RasterResamplingMethod  zoomedOutResamplingMethod() const;
+    ResamplingMethod zoomedOutResamplingMethod() const;
 %Docstring
 Returns resampling method for zoomed-out operations.
 

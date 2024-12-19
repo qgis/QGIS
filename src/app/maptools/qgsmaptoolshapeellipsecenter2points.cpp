@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsmaptoolshapeellipsecenter2points.h"
-#include "moc_qgsmaptoolshapeellipsecenter2points.cpp"
 #include "qgsgeometryrubberband.h"
 #include "qgslinestring.h"
 #include "qgspoint.h"
@@ -56,6 +55,7 @@ bool QgsMapToolShapeEllipseCenter2Points::cadCanvasReleaseEvent( QgsMapMouseEven
   const QgsPoint point = mParentTool->mapPoint( *e );
   if ( e->button() == Qt::LeftButton )
   {
+
     if ( mPoints.size() < 2 )
       mPoints.append( point );
 

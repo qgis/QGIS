@@ -43,21 +43,18 @@ class CORE_EXPORT QgsProxyFeatureSink : public QgsFeatureSink
      * Constructs a new QgsProxyFeatureSink which forwards features onto a destination \a sink.
      */
     QgsProxyFeatureSink( QgsFeatureSink *sink );
-    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
-    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
-    bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override;
-    QString lastError() const override;
-    bool flushBuffer() override;
-    void finalize() override;
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override { return mSink->addFeature( feature, flags ); }
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override { return mSink->addFeatures( features, flags ); }
+    bool addFeatures( QgsFeatureIterator &iterator, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() ) override { return mSink->addFeatures( iterator, flags ); }
+    QString lastError() const override { return mSink->lastError(); }
 
     /**
      * Returns the destination QgsFeatureSink which the proxy will forward features to.
      */
     QgsFeatureSink *destinationSink() { return mSink; }
 
-  protected:
+  private:
 
-    //! Underlying destination sink
     QgsFeatureSink *mSink = nullptr;
 };
 

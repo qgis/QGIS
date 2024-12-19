@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsprojectelevationproperties.h"
-#include "moc_qgsprojectelevationproperties.cpp"
 #include "qgis.h"
 #include "qgsterrainprovider.h"
 

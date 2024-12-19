@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgslayoutitemregistry.h"
-#include "moc_qgslayoutitemregistry.cpp"
 #include "qgslayoutitemshape.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemlabel.h"

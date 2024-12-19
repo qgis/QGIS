@@ -15,27 +15,19 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "August 2012"
-__copyright__ = "(C) 2012, Victor Olaya"
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
 
-from qgis.core import Qgis, QgsFeature, QgsGeometry, QgsFeatureRequest, QgsFeatureSink
+from qgis.core import (Qgis,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsFeatureRequest,
+                       QgsFeatureSink)
 
 
-def buffering(
-    feedback,
-    context,
-    sink,
-    distance,
-    field,
-    useField,
-    source,
-    dissolve,
-    segments,
-    endCapStyle=1,
-    joinStyle=1,
-    miterLimit=2,
-):
+def buffering(feedback, context, sink, distance, field, useField, source, dissolve, segments, endCapStyle=1,
+              joinStyle=1, miterLimit=2):
     if useField:
         field = source.fields().lookupField(field)
 
@@ -50,9 +42,7 @@ def buffering(
         if useField:
             attributes_to_fetch.append(field)
 
-        features = source.getFeatures(
-            QgsFeatureRequest().setSubsetOfAttributes(attributes_to_fetch)
-        )
+        features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes(attributes_to_fetch))
         buffered_geometries = []
         for inFeat in features:
             if feedback.isCanceled():
@@ -66,15 +56,7 @@ def buffering(
 
             inGeom = inFeat.geometry()
 
-            buffered_geometries.append(
-                inGeom.buffer(
-                    float(value),
-                    segments,
-                    Qgis.EndCapStyle(endCapStyle),
-                    Qgis.JoinStyle(joinStyle),
-                    miterLimit,
-                )
-            )
+            buffered_geometries.append(inGeom.buffer(float(value), segments, Qgis.EndCapStyle(endCapStyle), Qgis.JoinStyle(joinStyle), miterLimit))
 
             current += 1
             feedback.setProgress(int(current * total))
@@ -98,13 +80,7 @@ def buffering(
                 value = distance
             inGeom = inFeat.geometry()
             outFeat = QgsFeature()
-            outGeom = inGeom.buffer(
-                float(value),
-                segments,
-                Qgis.EndCapStyle(endCapStyle),
-                Qgis.JoinStyle(joinStyle),
-                miterLimit,
-            )
+            outGeom = inGeom.buffer(float(value), segments, Qgis.EndCapStyle(endCapStyle), Qgis.JoinStyle(joinStyle), miterLimit)
             outFeat.setGeometry(outGeom)
             outFeat.setAttributes(attrs)
             sink.addFeature(outFeat, QgsFeatureSink.Flag.FastInsert)

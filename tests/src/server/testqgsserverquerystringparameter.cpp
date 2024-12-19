@@ -134,6 +134,7 @@ void TestQgsServerQueryStringParameter::testArguments()
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=a%20value" ) );
   QCOMPARE( p.value( ctx ).toStringList(), QStringList() << QStringLiteral( "a value" ) );
   QCOMPARE( static_cast<QMetaType::Type>( p.value( ctx ).userType() ), QMetaType::Type::QStringList );
+
 }
 
 void TestQgsServerQueryStringParameter::testCustomValidators()
@@ -146,7 +147,8 @@ void TestQgsServerQueryStringParameter::testCustomValidators()
   QCOMPARE( p.value( ctx ).toInt(), 123 );
 
   // Test a range validator that increments the value
-  const QgsServerQueryStringParameter::customValidator validator = []( const QgsServerApiContext &, QVariant &value ) -> bool {
+  const QgsServerQueryStringParameter::customValidator validator = [ ]( const QgsServerApiContext &, QVariant & value ) -> bool
+  {
     const auto v { value.toLongLong() };
     // Change the value by adding 1
     value.setValue( v + 1 );
@@ -158,6 +160,7 @@ void TestQgsServerQueryStringParameter::testCustomValidators()
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=501" ) );
   QCOMPARE( p.value( ctx ).toInt(), 502 );
   QCOMPARE( static_cast<QMetaType::Type>( p.value( ctx ).userType() ), QMetaType::Type::LongLong );
+
 }
 
 void TestQgsServerQueryStringParameter::testDefaultValues()
@@ -174,6 +177,7 @@ void TestQgsServerQueryStringParameter::testDefaultValues()
   QCOMPARE( p2.value( ctx ).toInt(), 10 );
   request.setUrl( QStringLiteral( "http://www.qgis.org/api/?parameter1=501" ) );
   QCOMPARE( p2.value( ctx ).toInt(), 501 );
+
 }
 
 void TestQgsServerQueryStringParameter::testParseInput()

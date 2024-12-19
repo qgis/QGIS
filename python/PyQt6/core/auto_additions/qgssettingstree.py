@@ -4,5 +4,5 @@ try:
     QgsSettingsTree.createPluginTreeNode = staticmethod(QgsSettingsTree.createPluginTreeNode)
     QgsSettingsTree.unregisterPluginTreeNode = staticmethod(QgsSettingsTree.unregisterPluginTreeNode)
     QgsSettingsTree.__group__ = ['settings']
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -20,5 +20,5 @@ for labels.
 # --
 try:
     QgsLabelObstacleSettings.__group__ = ['labeling']
-except (NameError, AttributeError):
+except NameError:
     pass

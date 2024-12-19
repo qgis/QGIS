@@ -5,5 +5,5 @@ try:
     QgsMapClippingUtils.calculateFeatureIntersectionGeometry = staticmethod(QgsMapClippingUtils.calculateFeatureIntersectionGeometry)
     QgsMapClippingUtils.calculatePainterClipRegion = staticmethod(QgsMapClippingUtils.calculatePainterClipRegion)
     QgsMapClippingUtils.calculateLabelIntersectionGeometry = staticmethod(QgsMapClippingUtils.calculateLabelIntersectionGeometry)
-except (NameError, AttributeError):
+except NameError:
     pass

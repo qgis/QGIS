@@ -33,7 +33,6 @@
 #include "qgsvectorlayer.h"
 
 #include "qgsquickmapcanvasmap.h"
-#include "moc_qgsquickmapcanvasmap.cpp"
 #include "qgsquickmapsettings.h"
 
 
@@ -43,7 +42,7 @@ QgsQuickMapCanvasMap::QgsQuickMapCanvasMap( QQuickItem *parent )
   , mCache( std::make_unique<QgsMapRendererCache>() )
 {
   connect( this, &QQuickItem::windowChanged, this, &QgsQuickMapCanvasMap::onWindowChanged );
-  connect( &mRefreshTimer, &QTimer::timeout, this, [=] { refreshMap(); } );
+  connect( &mRefreshTimer, &QTimer::timeout, this, [ = ] { refreshMap(); } );
   connect( &mMapUpdateTimer, &QTimer::timeout, this, &QgsQuickMapCanvasMap::renderJobUpdated );
 
   connect( mMapSettings.get(), &QgsQuickMapSettings::extentChanged, this, &QgsQuickMapCanvasMap::onExtentChanged );
@@ -74,7 +73,8 @@ void QgsQuickMapCanvasMap::zoom( QPointF center, qreal scale )
   QgsPoint oldCenter( extent.center() );
   QgsPoint mousePos( mMapSettings->screenToCoordinate( center ) );
 
-  QgsPointXY newCenter( mousePos.x() + ( ( oldCenter.x() - mousePos.x() ) * scale ), mousePos.y() + ( ( oldCenter.y() - mousePos.y() ) * scale ) );
+  QgsPointXY newCenter( mousePos.x() + ( ( oldCenter.x() - mousePos.x() ) * scale ),
+                        mousePos.y() + ( ( oldCenter.y() - mousePos.y() ) * scale ) );
 
   // same as zoomWithCenter (no coordinate transformations are needed)
   extent.scale( scale, &newCenter );
@@ -107,12 +107,12 @@ void QgsQuickMapCanvasMap::refreshMap()
   if ( mCacheInvalidations.testFlag( CacheInvalidationType::Temporal ) )
   {
     clearTemporalCache();
-    mCacheInvalidations &= ~( static_cast<int>( CacheInvalidationType::Temporal ) );
+    mCacheInvalidations &= ~( static_cast< int >( CacheInvalidationType::Temporal ) );
   }
   if ( mCacheInvalidations.testFlag( CacheInvalidationType::Elevation ) )
   {
     clearElevationCache();
-    mCacheInvalidations &= ~( static_cast<int>( CacheInvalidationType::Elevation ) );
+    mCacheInvalidations &= ~( static_cast< int >( CacheInvalidationType::Elevation ) );
   }
 
   QgsMapSettings mapSettings = mMapSettings->mapSettings();
@@ -526,7 +526,7 @@ void QgsQuickMapCanvasMap::clearTemporalCache()
     for ( QgsMapLayer *layer : layerList )
     {
       bool alreadyInvalidatedThisLayer = false;
-      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+      if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
       {
         if ( vl->renderer() && QgsSymbolLayerUtils::rendererFrameRate( vl->renderer() ) > -1 )
         {
@@ -541,7 +541,7 @@ void QgsQuickMapCanvasMap::clearTemporalCache()
 
       if ( layer->temporalProperties() && layer->temporalProperties()->isActive() )
       {
-        if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+        if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
         {
           if ( vl->labelsEnabled() || vl->diagramsEnabled() )
             invalidateLabels = true;
@@ -588,7 +588,7 @@ void QgsQuickMapCanvasMap::clearElevationCache()
     {
       if ( layer->elevationProperties() && layer->elevationProperties()->hasElevation() )
       {
-        if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+        if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
         {
           if ( vl->labelsEnabled() || vl->diagramsEnabled() )
             invalidateLabels = true;

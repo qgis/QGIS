@@ -58,6 +58,7 @@ class QgsBrowserPropertiesWrapLabel : public QTextEdit
 {
     Q_OBJECT
   public:
+
     /**
       * Constructor for QgsBrowserPropertiesWrapLabel
       * \param text label text
@@ -76,6 +77,7 @@ class QgsBrowserPropertiesWidget : public QWidget
 {
     Q_OBJECT
   public:
+
     /**
       * Constructor for QgsBrowserPropertiesWidget
       * \param parent parent widget
@@ -103,6 +105,7 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
 {
     Q_OBJECT
   public:
+
     /**
       * Constructor for QgsBrowserLayerProperties
       * \param parent parent widget
@@ -123,10 +126,12 @@ class QgsBrowserLayerProperties : public QgsBrowserPropertiesWidget, private Ui:
     void urlClicked( const QUrl &url );
 
   private:
+
     void loadAttributeTable();
 
     std::unique_ptr<QgsMapLayer> mLayer;
     QgsAttributeTableFilterModel *mAttributeTableFilterModel = nullptr;
+
 };
 
 /**
@@ -136,6 +141,7 @@ class QgsBrowserDirectoryProperties : public QgsBrowserPropertiesWidget, private
 {
     Q_OBJECT
   public:
+
     /**
       * Constructor for QgsBrowserDirectoryProperties
       * \param parent parent widget
@@ -144,7 +150,6 @@ class QgsBrowserDirectoryProperties : public QgsBrowserPropertiesWidget, private
 
     //! Create widget from the given item and add it
     void setItem( QgsDataItem *item ) override;
-
   private:
     QgsDirectoryParamWidget *mDirectoryWidget = nullptr;
     QgsBrowserPropertiesWrapLabel *mPathLabel = nullptr;
@@ -157,6 +162,7 @@ class GUI_EXPORT QgsBrowserPropertiesDialog : public QDialog, private Ui::QgsBro
 {
     Q_OBJECT
   public:
+
     /**
       * Constructor for QgsBrowserPropertiesDialog
       * \param settingsSection prefix for settings (from the object name)
@@ -186,6 +192,7 @@ class QgsDockBrowserTreeView : public QgsBrowserTreeView
     Q_OBJECT
 
   public:
+
     /**
       * Constructor for QgsDockBrowserTreeView
       * \param parent parent widget

@@ -39,6 +39,7 @@
 class QgsLineDensityAlgorithm : public QgsProcessingAlgorithm
 {
   public:
+
     QgsLineDensityAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmLineDensity.svg" ) ); }
@@ -53,10 +54,12 @@ class QgsLineDensityAlgorithm : public QgsProcessingAlgorithm
 
   protected:
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context,
+                                  QgsProcessingFeedback *feedback ) override;
 
   private:
-    std::unique_ptr<QgsFeatureSource> mSource;
+    std::unique_ptr< QgsFeatureSource > mSource;
     QString mWeightField;
     double mSearchRadius = 0;
     double mPixelSize = 0;
@@ -66,6 +69,7 @@ class QgsLineDensityAlgorithm : public QgsProcessingAlgorithm
     QgsDistanceArea mDa;
     QgsSpatialIndex mIndex;
     QHash<QgsFeatureId, double> mFeatureWeights;
+
 };
 
 ///@endcond PRIVATE

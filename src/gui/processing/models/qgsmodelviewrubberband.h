@@ -37,9 +37,11 @@ class QGraphicsPolygonItem;
  */
 class GUI_EXPORT QgsModelViewRubberBand : public QObject
 {
+
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsModelViewRubberBand.
      */
@@ -115,6 +117,7 @@ class GUI_EXPORT QgsModelViewRubberBand : public QObject
     void sizeChanged( const QString &size );
 
   protected:
+
     /**
      * Calculates an updated bounding box rectangle from a original \a start position
      * and new \a position. If \a constrainSquare is TRUE then the bounding box will be
@@ -124,10 +127,12 @@ class GUI_EXPORT QgsModelViewRubberBand : public QObject
     QRectF updateRect( QPointF start, QPointF position, bool constrainSquare, bool fromCenter );
 
   private:
+
     QgsModelGraphicsView *mView = nullptr;
 
     QBrush mBrush = Qt::NoBrush;
     QPen mPen = QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 );
+
 };
 
 
@@ -141,6 +146,7 @@ class GUI_EXPORT QgsModelViewRectangularRubberBand : public QgsModelViewRubberBa
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsModelViewRectangularRubberBand.
      */
@@ -154,11 +160,13 @@ class GUI_EXPORT QgsModelViewRectangularRubberBand : public QgsModelViewRubberBa
     QRectF finish( QPointF position = QPointF(), Qt::KeyboardModifiers modifiers = Qt::KeyboardModifiers() ) override;
 
   private:
+
     //! Rubber band item
     QGraphicsRectItem *mRubberBandItem = nullptr;
 
     //! Start of rubber band creation
     QPointF mRubberBandStartPos;
+
 };
 
 #endif // QGSMODELVIEWRUBBERBAND_H

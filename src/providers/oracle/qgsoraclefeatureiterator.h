@@ -29,7 +29,7 @@ class QgsOracleConn;
 class QgsOracleProvider;
 
 
-class QgsOracleFeatureSource final : public QgsAbstractFeatureSource
+class QgsOracleFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsOracleFeatureSource( const QgsOracleProvider *p );
@@ -67,7 +67,7 @@ class QgsOracleFeatureSource final : public QgsAbstractFeatureSource
 };
 
 
-class QgsOracleFeatureIterator final : public QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>
+class QgsOracleFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>
 {
   public:
     QgsOracleFeatureIterator( QgsOracleFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
@@ -101,7 +101,7 @@ class QgsOracleFeatureIterator final : public QgsAbstractFeatureIteratorFromSour
     QgsRectangle mFilterRect;
 
     QgsGeometry mDistanceWithinGeom;
-    std::unique_ptr<QgsGeometryEngine> mDistanceWithinEngine;
+    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
 
     bool mIsTransactionConnection = false;
 };

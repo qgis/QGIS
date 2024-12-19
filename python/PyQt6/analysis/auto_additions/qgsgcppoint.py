@@ -11,5 +11,5 @@ QgsGcpPoint.PointType.__doc__ = """Coordinate point types
 # --
 try:
     QgsGcpPoint.__group__ = ['georeferencing']
-except (NameError, AttributeError):
+except NameError:
     pass

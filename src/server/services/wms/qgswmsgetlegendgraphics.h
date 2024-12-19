@@ -28,7 +28,9 @@ namespace QgsWms
   /**
    * Output GetLegendGRaphics response
    */
-  void writeGetLegendGraphics( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response );
+  void writeGetLegendGraphics( QgsServerInterface *serverIface, const QgsProject *project,
+                               const QgsWmsRequest &request,
+                               QgsServerResponse &response );
 
   /**
    * checkParameters checks request \a parameters and sets SRCHEIGHT and SRCWIDTH to default values

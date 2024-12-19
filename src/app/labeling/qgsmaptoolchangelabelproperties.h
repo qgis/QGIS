@@ -21,7 +21,7 @@
 #include "qgsmaptoollabel.h"
 #include "qgis_app.h"
 
-class APP_EXPORT QgsMapToolChangeLabelProperties : public QgsMapToolLabel
+class APP_EXPORT QgsMapToolChangeLabelProperties: public QgsMapToolLabel
 {
     Q_OBJECT
 
@@ -33,6 +33,7 @@ class APP_EXPORT QgsMapToolChangeLabelProperties : public QgsMapToolLabel
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 
   protected:
+
     /**
      * Applies the label property changes
      * \param changes attribute map of changes
@@ -42,6 +43,7 @@ class APP_EXPORT QgsMapToolChangeLabelProperties : public QgsMapToolLabel
   private slots:
 
     void dialogPropertiesApplied();
+
 };
 
 #endif // QGSMAPTOOLCHANGELABEL_H

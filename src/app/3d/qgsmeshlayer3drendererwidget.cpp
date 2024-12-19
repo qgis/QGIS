@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmeshlayer3drendererwidget.h"
-#include "moc_qgsmeshlayer3drendererwidget.cpp"
 
 #include "qgsmesh3dsymbol.h"
 #include "qgsmesh3dsymbolwidget.h"
@@ -66,7 +65,7 @@ void QgsMeshLayer3DRendererWidget::setRenderer( const QgsMeshLayer3DRenderer *re
 
 QgsMeshLayer3DRenderer *QgsMeshLayer3DRendererWidget::renderer()
 {
-  std::unique_ptr<QgsMesh3DSymbol> sym = mWidgetMesh->symbol();
+  std::unique_ptr< QgsMesh3DSymbol > sym = mWidgetMesh->symbol();
   sym->setEnabled( mChkEnabled->isChecked() );
   mRenderer.reset( new QgsMeshLayer3DRenderer( sym.release() ) );
   mRenderer->setLayer( qobject_cast<QgsMeshLayer *>( mLayer ) );
@@ -87,7 +86,7 @@ void QgsMeshLayer3DRendererWidget::onEnabledClicked()
 
 void QgsMeshLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
 {
-  mLayer = layer;
+  mLayer = layer ;
   QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( layer );
   mWidgetMesh->setLayer( meshLayer );
   QgsAbstract3DRenderer *r = layer->renderer3D();
@@ -104,8 +103,8 @@ void QgsMeshLayer3DRendererWidget::syncToLayer( QgsMapLayer *layer )
   }
 }
 
-QgsMeshLayer3DRendererWidgetFactory::QgsMeshLayer3DRendererWidgetFactory( QObject *parent )
-  : QObject( parent )
+QgsMeshLayer3DRendererWidgetFactory::QgsMeshLayer3DRendererWidgetFactory( QObject *parent ):
+  QObject( parent )
 {
   setIcon( QIcon( ":/images/themes/default/3d.svg" ) );
   setTitle( tr( "3D View" ) );

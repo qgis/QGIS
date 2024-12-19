@@ -174,7 +174,6 @@ set(QGIS_APP_SRCS
   devtools/networklogger/qgsnetworkloggerwidgetfactory.cpp
   devtools/profiler/qgsprofilerpanelwidget.cpp
   devtools/profiler/qgsprofilerwidgetfactory.cpp
-  devtools/documentation/qgsdocumentationpanelwidget.cpp
   devtools/querylogger/qgsappquerylogger.cpp
   devtools/querylogger/qgsdatabasequeryloggernode.cpp
   devtools/querylogger/qgsqueryloggerpanelwidget.cpp
@@ -379,7 +378,6 @@ if (WITH_3D)
     3d/qgspointcloudlayer3drendererwidget.cpp
     3d/qgs3dmapcanvaswidget.cpp
     3d/qgs3dviewsmanagerdialog.cpp
-    3d/qgs3ddebugwidget.cpp
   )
 endif()
 
@@ -479,26 +477,16 @@ if(PEDANTIC)
 endif()
 
 if(MSVC)
-  # -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in dbghelp.h
-  set_source_files_properties(
-    qgisapp.cpp
-    main.cpp
-    qgscrashhandler.cpp
-    PROPERTIES COMPILE_FLAGS -wd4091
-  )
-  set_source_files_properties(
-    qgisapp.cpp
-    PROPERTIES COMPILE_FLAGS "/bigobj"
-  )
-elseif(MINGW)
-  set_source_files_properties(
-    qgisapp.cpp
-    PROPERTIES COMPILE_FLAGS "-Wa,-mbig-obj"
-  )
+# -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in dbghelp.h
+set_source_files_properties(
+  qgisapp.cpp
+  main.cpp
+  qgscrashhandler.cpp
+  PROPERTIES COMPILE_FLAGS -wd4091)
 endif()
 
 if(HAVE_OPENCL)
-  include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
+    include_directories(SYSTEM ${OpenCL_INCLUDE_DIRS})
 endif()
 
 if(ENABLE_MODELTEST)
@@ -524,17 +512,11 @@ if (ANDROID)
   # require c++17
   target_compile_features(${QGIS_APP_NAME} PRIVATE cxx_std_17)
 else()
-  if(APPLE)
-    set (CREATE_MACOSX_BUNDLE TRUE CACHE BOOL "Create macosx bundle during build. Disable for development to avoid copying libraries and ease debugging.")
-    if(CREATE_MACOSX_BUNDLE)
-      set(MACOSX_BUNDLE "MACOSX_BUNDLE")
-    endif()
-  endif()
-  add_executable(${QGIS_APP_NAME} ${MACOSX_BUNDLE} WIN32 ${QGIS_APPMAIN_SRCS})
+  add_executable(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 ${QGIS_APPMAIN_SRCS})
 
-  if(WIN32 AND BUILD_WITH_QT6)
+  if(MSVC AND BUILD_WITH_QT6)
     qt_disable_unicode_defines(${QGIS_APP_NAME})
-  endif()
+  endif(MSVC AND BUILD_WITH_QT6)
 
   # require c++17
   target_compile_features(${QGIS_APP_NAME} PRIVATE cxx_std_17)
@@ -610,12 +592,6 @@ target_link_libraries(qgis_app
 )
 
 target_compile_definitions(qgis_app PRIVATE "-DQT_NO_FOREACH")
-
-if (USE_PRECOMPILED_HEADERS)
-  target_precompile_headers(qgis_app PRIVATE $<$<COMPILE_LANGUAGE:CXX>:${CMAKE_SOURCE_DIR}/src/core/qgis.h>)
-endif()
-
-set_target_properties(qgis_app PROPERTIES UNITY_BUILD ${ENABLE_UNITY_BUILDS})
 
 if (WITH_BINDINGS)
   add_definitions(-DWITH_BINDINGS)
@@ -702,7 +678,7 @@ if (WITH_PDAL)
 endif()
 
 if(MSVC)
-  install(FILES qgis.ico qgis-mime.ico qgis-qgs.ico qgis-qlr.ico qgis-qml.ico qgis-qpt.ico DESTINATION icons)
+  install(FILES qgis.ico qgis-mime.ico qgis-qgs.ico qgis-qlr.ico qgis-qml.ico qgis-qpt.ico DESTINATION ${CMAKE_INSTALL_PREFIX}/icons)
 endif()
 
 install(TARGETS qgis_app

@@ -20,6 +20,7 @@ This class implements a resolution for problems detected in geometry checks.
 #include "qgsgeometrycheckresolutionmethod.h"
 %End
   public:
+
     QgsGeometryCheckResolutionMethod( int id, const QString &name, const QString &description, bool isStable = true );
 %Docstring
 Creates a new method with the specified parameters.

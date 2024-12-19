@@ -14,7 +14,6 @@
 ***************************************************************************/
 
 #include "qgspointcloudattributecombobox.h"
-#include "moc_qgspointcloudattributecombobox.cpp"
 #include "qgsfieldproxymodel.h"
 #include "qgsmaplayer.h"
 #include "qgspointcloudlayer.h"
@@ -26,7 +25,7 @@ QgsPointCloudAttributeComboBox::QgsPointCloudAttributeComboBox( QWidget *parent 
   mProxyModel = new QgsPointCloudAttributeProxyModel( mAttributeModel, this );
   setModel( mProxyModel );
 
-  connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsPointCloudAttributeComboBox::indexChanged );
+  connect( this, static_cast < void ( QComboBox::* )( int ) > ( &QComboBox::activated ), this, &QgsPointCloudAttributeComboBox::indexChanged );
 }
 
 void QgsPointCloudAttributeComboBox::setFilters( QgsPointCloudAttributeProxyModel::Filters filters )
@@ -107,7 +106,7 @@ QString QgsPointCloudAttributeComboBox::currentAttribute() const
     return QString();
   }
 
-  return mProxyModel->data( proxyIndex, static_cast<int>( QgsPointCloudAttributeModel::CustomRole::AttributeName ) ).toString();
+  return mProxyModel->data( proxyIndex, static_cast< int >( QgsPointCloudAttributeModel::CustomRole::AttributeName ) ).toString();
 }
 
 void QgsPointCloudAttributeComboBox::indexChanged( int i )

@@ -2,5 +2,5 @@
 try:
     QgsTextAnnotation.create = staticmethod(QgsTextAnnotation.create)
     QgsTextAnnotation.__group__ = ['annotations']
-except (NameError, AttributeError):
+except NameError:
     pass

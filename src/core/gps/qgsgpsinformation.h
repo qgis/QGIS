@@ -171,7 +171,7 @@ class CORE_EXPORT QgsGpsInformation
 
     /**
      * GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive, etc.)
-     * \deprecated QGIS 3.40. Use qualityIndicator() instead.
+     * \deprecated QGIS 3.40. Use qualityIndicator instead.
      */
     int quality = -1;
 

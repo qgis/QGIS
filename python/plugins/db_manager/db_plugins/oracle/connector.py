@@ -54,14 +54,14 @@ class OracleDBConnector(DBConnector):
         3003: QgsWkbTypes.Type.Polygon25D,
         3005: QgsWkbTypes.Type.MultiPoint25D,
         3006: QgsWkbTypes.Type.MultiLineString25D,
-        3007: QgsWkbTypes.Type.MultiPolygon25D,
+        3007: QgsWkbTypes.Type.MultiPolygon25D
     }
 
     def __init__(self, uri, connName):
         DBConnector.__init__(self, uri)
 
         self.connName = connName
-        self.user = uri.username() or os.environ.get("USER")
+        self.user = uri.username() or os.environ.get('USER')
         self.passwd = uri.password()
         self.host = uri.host()
 
@@ -76,29 +76,29 @@ class OracleDBConnector(DBConnector):
 
         # Connection options
         self.useEstimatedMetadata = uri.useEstimatedMetadata()
-        self.userTablesOnly = uri.param("userTablesOnly").lower() == "true"
-        self.geometryColumnsOnly = uri.param("geometryColumnsOnly").lower() == "true"
-        self.allowGeometrylessTables = (
-            uri.param("allowGeometrylessTables").lower() == "true"
-        )
-        self.onlyExistingTypes = uri.param("onlyExistingTypes").lower() == "true"
-        self.includeGeoAttributes = uri.param("includeGeoAttributes").lower() == "true"
+        self.userTablesOnly = uri.param('userTablesOnly').lower() == "true"
+        self.geometryColumnsOnly = uri.param(
+            'geometryColumnsOnly').lower() == "true"
+        self.allowGeometrylessTables = uri.param(
+            'allowGeometrylessTables').lower() == "true"
+        self.onlyExistingTypes = uri.param(
+            'onlyExistingTypes').lower() == "true"
+        self.includeGeoAttributes = uri.param(
+            'includeGeoAttributes').lower() == "true"
 
         # For refreshing
         self.populated = False
         try:
             self.connection = QtSqlDB.connect(
-                "QOCISPATIAL", self.dbname, self.user, self.passwd
-            )
+                "QOCISPATIAL", self.dbname, self.user, self.passwd)
 
         except self.connection_error_types() as e:
             raise ConnectionError(e)
 
         # Find if we can connect to data_sources_cache.db
         sqlite_cache_file = os.path.join(
-            QgsApplication.qgisSettingsDirPath(), "data_sources_cache.db"
-        )
-        if os.path.isfile(sqlite_cache_file):
+            QgsApplication.qgisSettingsDirPath(), "data_sources_cache.db")
+        if (os.path.isfile(sqlite_cache_file)):
             try:
                 self.cache_connection = sqlite3.connect(sqlite_cache_file)
             except sqlite3.Error:
@@ -110,9 +110,8 @@ class OracleDBConnector(DBConnector):
         if self.cache_connection:
             try:
                 cache_c = self.cache_connection.cursor()
-                query = "SELECT COUNT(*) FROM meta_oracle WHERE" " conn = '{}'".format(
-                    self.connName
-                )
+                query = ("SELECT COUNT(*) FROM meta_oracle WHERE"
+                         " conn = '{}'".format(self.connName))
                 cache_c.execute(query)
                 has_cached = cache_c.fetchone()[0]
                 cache_c.close()
@@ -130,10 +129,8 @@ class OracleDBConnector(DBConnector):
 
     def _checkSpatial(self):
         """Check whether Oracle Spatial is present in catalog."""
-        query = (
-            "SELECT count(*) FROM v$option WHERE parameter = "
-            " 'Spatial' AND value = 'TRUE'"
-        )
+        query = ("SELECT count(*) FROM v$option WHERE parameter = "
+                 " 'Spatial' AND value = 'TRUE'")
         c = self._execute(None, query)
         self.has_spatial = self._fetchone(c)[0] > 0
         c.close()
@@ -143,12 +140,12 @@ class OracleDBConnector(DBConnector):
     def _checkGeometryColumnsTable(self):
         """Check if user can read *_SDO_GEOM_METADATA view."""
         # First check if user can read ALL_SDO_GEOM_METADATA
-        privs = self.getRawTablePrivileges("ALL_SDO_GEOM_METADATA", "MDSYS", "PUBLIC")
+        privs = self.getRawTablePrivileges('ALL_SDO_GEOM_METADATA',
+                                           'MDSYS', 'PUBLIC')
         # Otherwise, try with USER_SDO_GEOM_METADATA
         if not privs[0]:
-            privs = self.getRawTablePrivileges(
-                "USER_SDO_GEOM_METADATA", "MDSYS", "PUBLIC"
-            )
+            privs = self.getRawTablePrivileges('USER_SDO_GEOM_METADATA',
+                                               'MDSYS', 'PUBLIC')
 
         if privs[0]:
             self.has_geometry_columns = True
@@ -214,18 +211,12 @@ class OracleDBConnector(DBConnector):
         http://docs.oracle.com/cd/B28359_01/server.111/b28318/datatype.htm#CNCPT1828
         """
         return [
-            "number",
-            "number(9)",  # integers
-            "number(9,2)",
-            "number(*,4)",
-            "binary_float",
+            "number", "number(9)",  # integers
+            "number(9,2)", "number(*,4)", "binary_float",
             "binary_double",  # floats
-            "varchar2(255)",
-            "char(20)",
-            "nvarchar2(255)",
+            "varchar2(255)", "char(20)", "nvarchar2(255)",
             "nchar(20)",  # strings
-            "date",
-            "timestamp",  # date/time
+            "date", "timestamp"  # date/time
         ]
 
     def getSchemaPrivileges(self, schema):
@@ -257,12 +248,10 @@ class OracleDBConnector(DBConnector):
           AND TABLE_NAME = {}
           AND OWNER = {}
           AND GRANTEE IN ({}, {})
-        """.format(
-            self.quoteString(table),
-            self.quoteString(owner),
-            self.quoteString(grantee),
-            self.quoteString(grantee.upper()),
-        )
+        """.format(self.quoteString(table),
+                   self.quoteString(owner),
+                   self.quoteString(grantee),
+                   self.quoteString(grantee.upper()))
 
         c = self._execute(None, sql)
         res = self._fetchall(c)
@@ -295,9 +284,7 @@ class OracleDBConnector(DBConnector):
         SELECT DISTINCT ownername
         FROM "oracle_{}"
         ORDER BY ownername
-        """.format(
-            self.connName
-        )
+        """.format(self.connName)
         c = self.cache_connection.cursor()
         c.execute(sql)
         res = c.fetchall()
@@ -316,11 +303,13 @@ class OracleDBConnector(DBConnector):
             return self.getSchemasCache()
 
         # Use cache if available:
-        metatable = "all_objects WHERE object_type IN " "('TABLE','VIEW','SYNONYM')"
+        metatable = ("all_objects WHERE object_type IN "
+                     "('TABLE','VIEW','SYNONYM')")
         if self.geometryColumnsOnly:
             metatable = "all_sdo_geom_metadata"
 
-        sql = f"""SELECT DISTINCT owner FROM {metatable} ORDER BY owner"""
+        sql = """SELECT DISTINCT owner FROM {} ORDER BY owner""".format(
+            metatable)
 
         c = self._execute(None, sql)
         res = self._fetchall(c)
@@ -354,7 +343,8 @@ class OracleDBConnector(DBConnector):
                 prefix = "USER"
                 owner = "user As OWNER"
             if schema and not self.userTablesOnly:
-                where = f"AND o.owner = {self.quoteString(schema)} "
+                where = "AND o.owner = {} ".format(
+                    self.quoteString(schema))
 
             sql = """
             SELECT o.OBJECT_NAME, {},
@@ -365,12 +355,9 @@ class OracleDBConnector(DBConnector):
             WHERE o.object_type IN ('TABLE','VIEW','SYNONYM')
             {} {}
             ORDER BY o.OBJECT_NAME
-            """.format(
-                owner,
-                prefix,
-                where,
-                "" if add_sys_tables else "AND o.OBJECT_NAME NOT LIKE 'MDRT_%'",
-            )
+            """.format(owner, prefix, where,
+                       "" if add_sys_tables
+                       else "AND o.OBJECT_NAME NOT LIKE 'MDRT_%'")
 
             c = self._execute(None, sql)
             for tbl in self._fetchall(c):
@@ -383,9 +370,7 @@ class OracleDBConnector(DBConnector):
 
         self.populated = True
 
-        listTables = sorted(
-            items, key=cmp_to_key(lambda x, y: (x[1] > y[1]) - (x[1] < y[1]))
-        )
+        listTables = sorted(items, key=cmp_to_key(lambda x, y: (x[1] > y[1]) - (x[1] < y[1])))
 
         if self.hasCache():
             self.updateCache(listTables, schema)
@@ -408,25 +393,23 @@ class OracleDBConnector(DBConnector):
             pass
 
         if not self.allowGeometrylessTables:
-            return sorted(
-                items, key=cmp_to_key(lambda x, y: (x[1] > y[1]) - (x[1] < y[1]))
-            )
+            return sorted(items, key=cmp_to_key(lambda x, y: (x[1] > y[1]) - (x[1] < y[1])))
 
         # get all non geographic tables and views
         schema_where = ""
         if self.userTablesOnly:
-            schema_where = f"AND ownername = '{self.user}'"
+            schema_where = "AND ownername = '{}'".format(
+                self.user)
         if schema and not self.userTablesOnly:
-            schema_where = f"AND ownername = '{schema}'"
+            schema_where = "AND ownername = '{}'".format(
+                schema)
 
         sql = """
         SELECT tablename, ownername, isview
         FROM "oracle_{}"
         WHERE geometrycolname IS '' {}
         ORDER BY tablename
-        """.format(
-            self.connName, schema_where
-        )
+        """.format(self.connName, schema_where)
 
         c = self.cache_connection.cursor()
         c.execute(sql)
@@ -452,28 +435,18 @@ class OracleDBConnector(DBConnector):
                 pkCols = self.pkCols((schema, table[1]))
             # Deals with non-geographic tables
             if table[0] == Table.TableType:
-                line = (
-                    table[1],
-                    table[2],
-                    int(table[3]),
-                    "",
-                    ",".join(pkCols) if pkCols else "",
-                    100,
-                    0,
-                    "",
-                )
+                line = (table[1], table[2], int(table[3]),
+                        "",
+                        ",".join(pkCols) if pkCols else "",
+                        100, 0, "")
             # Deals with vector tables
             elif table[0] == Table.VectorType:
-                line = (
-                    table[1],
-                    table[2],
-                    int(table[3]),
-                    table[4],
-                    ",".join(pkCols) if pkCols else "",
-                    table[9],
-                    table[8] if table[10] == "-1" else table[10],
-                    "",
-                )
+                line = (table[1], table[2], int(table[3]),
+                        table[4],
+                        ",".join(pkCols) if pkCols else "",
+                        table[9],
+                        table[8] if table[10] == "-1" else table[10],
+                        "")
             else:
                 continue
             data.append(line)
@@ -481,9 +454,8 @@ class OracleDBConnector(DBConnector):
         # Then, empty the cache list
         sql = """
         DELETE FROM "oracle_{}" {}
-        """.format(
-            self.connName, f"WHERE ownername = '{schema}'" if schema else ""
-        )
+        """.format(self.connName,
+                   "WHERE ownername = '{}'".format(schema) if schema else "")
         self.cache_connection.execute(sql)
         self.cache_connection.commit()
 
@@ -492,9 +464,7 @@ class OracleDBConnector(DBConnector):
         INSERT INTO "oracle_{}"(tablename, ownername, isview,
         geometrycolname, pkcols, geomtypes, geomsrids, sql)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-        """.format(
-            self.connName
-        )
+        """.format(self.connName)
         c = self.cache_connection.cursor()
         c.executemany(sql, data)
         c.close()
@@ -502,22 +472,16 @@ class OracleDBConnector(DBConnector):
 
     def singleGeomTypes(self, geomtypes, srids):
         """Intelligent wkbtype grouping (multi with non multi)"""
-        if (
-            QgsWkbTypes.Type.Polygon in geomtypes
-            and QgsWkbTypes.Type.MultiPolygon in geomtypes
-        ):
+        if (QgsWkbTypes.Type.Polygon in geomtypes
+                and QgsWkbTypes.Type.MultiPolygon in geomtypes):
             srids.pop(geomtypes.index(QgsWkbTypes.Type.Polygon))
             geomtypes.pop(geomtypes.index(QgsWkbTypes.Type.Polygon))
-        if (
-            QgsWkbTypes.Type.Point in geomtypes
-            and QgsWkbTypes.Type.MultiPoint in geomtypes
-        ):
+        if (QgsWkbTypes.Type.Point in geomtypes
+                and QgsWkbTypes.Type.MultiPoint in geomtypes):
             srids.pop(geomtypes.index(QgsWkbTypes.Type.Point))
             geomtypes.pop(geomtypes.index(QgsWkbTypes.Type.Point))
-        if (
-            QgsWkbTypes.Type.LineString in geomtypes
-            and QgsWkbTypes.Type.MultiLineString in geomtypes
-        ):
+        if (QgsWkbTypes.Type.LineString in geomtypes
+                and QgsWkbTypes.Type.MultiLineString in geomtypes):
             srids.pop(geomtypes.index(QgsWkbTypes.Type.LineString))
             geomtypes.pop(geomtypes.index(QgsWkbTypes.Type.LineString))
         if QgsWkbTypes.Type.Unknown in geomtypes and len(geomtypes) > 1:
@@ -538,9 +502,11 @@ class OracleDBConnector(DBConnector):
         """
         schema_where = ""
         if self.userTablesOnly:
-            schema_where = f"AND ownername = '{self.user}'"
+            schema_where = "AND ownername = '{}'".format(
+                self.user)
         if schema and not self.userTablesOnly:
-            schema_where = f"AND ownername = '{schema}'"
+            schema_where = "AND ownername = '{}'".format(
+                schema)
 
         sql = """
         SELECT tablename, ownername, isview,
@@ -549,9 +515,7 @@ class OracleDBConnector(DBConnector):
         FROM "oracle_{}"
         WHERE geometrycolname IS NOT '' {}
         ORDER BY tablename
-        """.format(
-            self.connName, schema_where
-        )
+        """.format(self.connName, schema_where)
 
         items = []
 
@@ -574,9 +538,7 @@ class OracleDBConnector(DBConnector):
                     buf = list(item)
                     geomtype = geomtypes[j]
                     srid = srids[j]
-                    datatype = QgsWkbTypes.displayString(
-                        QgsWkbTypes.flatType(QgsWkbTypes.singleType(geomtype))
-                    )
+                    datatype = QgsWkbTypes.displayString(QgsWkbTypes.flatType(QgsWkbTypes.singleType(geomtype)))
                     geo = datatype.upper()
                     buf.append(geo)
                     buf.append(geomtype)
@@ -609,8 +571,8 @@ class OracleDBConnector(DBConnector):
             where = "WHERE c.data_type = 'SDO_GEOMETRY'"
         if schema and not self.userTablesOnly:
             where = "{} c.owner = {}".format(
-                f"{where} AND" if where else "WHERE", self.quoteString(schema)
-            )
+                "{} AND".format(where) if where else "WHERE",
+                self.quoteString(schema))
 
         if self.userTablesOnly:
             prefix = "user"
@@ -629,14 +591,15 @@ class OracleDBConnector(DBConnector):
         JOIN {2}_objects o ON c.table_name = o.object_name
              AND o.object_type IN ('TABLE','VIEW','SYNONYM') {4} {5}
         ORDER BY TABLE_NAME
-        """.format(
-            owner,
-            "c.srid" if self.geometryColumnsOnly else "NULL as srid",
-            prefix,
-            "sdo_geom_metadata" if self.geometryColumnsOnly else "tab_columns",
-            "" if self.userTablesOnly else "AND c.owner = o.owner",
-            where,
-        )
+        """.format(owner,
+                   "c.srid" if self.geometryColumnsOnly
+                   else "NULL as srid",
+                   prefix,
+                   "sdo_geom_metadata" if self.geometryColumnsOnly
+                   else "tab_columns",
+                   "" if self.userTablesOnly
+                   else "AND c.owner = o.owner",
+                   where)
 
         # For each table, get all of the details
         items = []
@@ -654,11 +617,12 @@ class OracleDBConnector(DBConnector):
                 detectedSrid = int(detectedSrid)
 
             if schema:
-                table_name = f"{self.quoteId(schema)}.{self.quoteId(item[0])}"
+                table_name = "{}.{}".format(self.quoteId(schema), self.quoteId(item[0]))
             else:
                 table_name = self.quoteId(item[0])
             geocol = self.quoteId(item[3])
-            geomMultiTypes, multiSrids = self.getTableGeomTypes(table_name, geocol)
+            geomMultiTypes, multiSrids = self.getTableGeomTypes(
+                table_name, geocol)
             geomtypes = list(geomMultiTypes)
             srids = list(multiSrids)
             item.insert(0, Table.VectorType)
@@ -668,9 +632,7 @@ class OracleDBConnector(DBConnector):
             for j in range(len(geomtypes)):
                 buf = list(item)
                 geomtype = geomtypes[j]
-                datatype = QgsWkbTypes.displayString(
-                    QgsWkbTypes.flatType(QgsWkbTypes.singleType(geomtype))
-                )
+                datatype = QgsWkbTypes.displayString(QgsWkbTypes.flatType(QgsWkbTypes.singleType(geomtype)))
                 geo = datatype.upper()
                 buf.append(geo)  # Geometry type as String
                 buf.append(geomtype)  # Qgis.WkbType
@@ -679,7 +641,8 @@ class OracleDBConnector(DBConnector):
                 if not self.onlyExistingTypes:
                     geomMultiTypes.append(0)
                     multiSrids.append(multiSrids[0])
-                buf.append(",".join([str(x) for x in geomMultiTypes]))
+                buf.append(",".join([str(x) for x in
+                                     geomMultiTypes]))
                 buf.append(",".join([str(x) for x in multiSrids]))
                 items.append(buf)
 
@@ -699,7 +662,8 @@ class OracleDBConnector(DBConnector):
 
         schema, tablename = self.getSchemaTableName(table)
         data_prefix = "ALL" if schema else "USER"
-        where = f"AND OWNER = {self.quoteString(schema)}" if schema else ""
+        where = "AND OWNER = {}".format(
+            self.quoteString(schema)) if schema else ""
         if objectType in ["TABLE", "VIEW"]:
             data_table = "{}_TAB_COMMENTS"
             table = "TABLE"
@@ -713,9 +677,9 @@ class OracleDBConnector(DBConnector):
         sql = """
         SELECT COMMENTS FROM {} WHERE {}_NAME = {}
         {}
-        """.format(
-            data_table, table, self.quoteString(tablename), where
-        )
+        """.format(data_table, table,
+                   self.quoteString(tablename),
+                   where)
 
         c = self._execute(None, sql)
         res = self._fetchone(c)
@@ -738,13 +702,14 @@ class OracleDBConnector(DBConnector):
         SELECT OBJECT_TYPE FROM {0} WHERE OBJECT_NAME = {1} {2}
         """
         if schema:
-            sql = sql.format(
-                "ALL_OBJECTS",
-                self.quoteString(tablename),
-                f"AND OWNER = {self.quoteString(schema)}",
-            )
+            sql = sql.format("ALL_OBJECTS",
+                             self.quoteString(tablename),
+                             "AND OWNER = {}".format(
+                                 self.quoteString(schema)))
         else:
-            sql = sql.format("USER_OBJECTS", self.quoteString(tablename), "")
+            sql = sql.format("USER_OBJECTS",
+                             self.quoteString(tablename),
+                             "")
 
         c = self._execute(None, sql)
         res = self._fetchall(c)
@@ -771,10 +736,8 @@ class OracleDBConnector(DBConnector):
         WHERE owner={}
         AND table_name={}
         ORDER BY column_id
-        """.format(
-            self.quoteString(schema) if schema else self.user,
-            self.quoteString(tablename),
-        )
+        """.format(self.quoteString(schema) if schema else self.user,
+                   self.quoteString(tablename))
         c = self._execute(None, sql)
         res = self._fetchall(c)
         c.close()
@@ -797,9 +760,7 @@ class OracleDBConnector(DBConnector):
         FROM {1} a
         WHERE a.{0} IS NOT NULL {2}
         ORDER BY a.{0}.SDO_GTYPE
-        """.format(
-            geomCol, table, estimated
-        )
+        """.format(geomCol, table, estimated)
 
         try:
             c = self._execute(None, query)
@@ -838,20 +799,12 @@ class OracleDBConnector(DBConnector):
         # Make the decision:
         wkbType = QgsWkbTypes.Type.Unknown
         srid = -1
-        order = [
-            QgsWkbTypes.Type.MultiPolygon25D,
-            QgsWkbTypes.Type.Polygon25D,
-            QgsWkbTypes.Type.MultiPolygon,
-            QgsWkbTypes.Type.Polygon,
-            QgsWkbTypes.Type.MultiLineString25D,
-            QgsWkbTypes.Type.LineString25D,
-            QgsWkbTypes.Type.MultiLineString,
-            QgsWkbTypes.Type.LineString,
-            QgsWkbTypes.Type.MultiPoint25D,
-            QgsWkbTypes.Type.Point25D,
-            QgsWkbTypes.Type.MultiPoint,
-            QgsWkbTypes.Type.Point,
-        ]
+        order = [QgsWkbTypes.Type.MultiPolygon25D, QgsWkbTypes.Type.Polygon25D,
+                 QgsWkbTypes.Type.MultiPolygon, QgsWkbTypes.Type.Polygon,
+                 QgsWkbTypes.Type.MultiLineString25D, QgsWkbTypes.Type.LineString25D,
+                 QgsWkbTypes.Type.MultiLineString, QgsWkbTypes.Type.LineString,
+                 QgsWkbTypes.Type.MultiPoint25D, QgsWkbTypes.Type.Point25D,
+                 QgsWkbTypes.Type.MultiPoint, QgsWkbTypes.Type.Point]
         for geomType in order:
             if geomType in geomTypes:
                 wkbType = geomType
@@ -861,18 +814,17 @@ class OracleDBConnector(DBConnector):
         return wkbType, srid
 
     def getTableRowEstimation(self, table):
-        """Find the estimated number of rows of a table."""
+        """ Find the estimated number of rows of a table. """
         schema, tablename = self.getSchemaTableName(table)
         prefix = "ALL" if schema else "USER"
-        where = f"AND OWNER = {self.quoteString(schema)}" if schema else ""
+        where = "AND OWNER = {}".format(
+            self.quoteString(schema)) if schema else ""
 
         sql = """
         SELECT NUM_ROWS FROM {}_ALL_TABLES
         WHERE TABLE_NAME = {}
         {}
-        """.format(
-            prefix, self.quoteString(tablename), where
-        )
+        """.format(prefix, self.quoteString(tablename), where)
 
         c = self._execute(None, sql)
         res = self._fetchone(c)
@@ -884,18 +836,17 @@ class OracleDBConnector(DBConnector):
             return int(res[0])
 
     def getTableDates(self, table):
-        """Returns the modification/creation dates of an object"""
+        """ Returns the modification/creation dates of an object"""
         schema, tablename = self.getSchemaTableName(table)
         prefix = "ALL" if schema else "USER"
-        where = f"AND OWNER = {self.quoteString(schema)}" if schema else ""
+        where = "AND OWNER = {}".format(
+            self.quoteString(schema)) if schema else ""
 
         sql = """
         SELECT CREATED, LAST_DDL_TIME FROM {}_OBJECTS
         WHERE OBJECT_NAME = {}
         {}
-        """.format(
-            prefix, self.quoteString(tablename), where
-        )
+        """.format(prefix, self.quoteString(tablename), where)
 
         c = self._execute(None, sql)
         res = self._fetchone(c)
@@ -908,7 +859,8 @@ class OracleDBConnector(DBConnector):
 
     def getTableRowCount(self, table):
         """Returns the number of rows of the table."""
-        c = self._execute(None, f"SELECT COUNT(*) FROM {self.quoteId(table)}")
+        c = self._execute(
+            None, "SELECT COUNT(*) FROM {}".format(self.quoteId(table)))
         res = self._fetchone(c)[0]
         c.close()
 
@@ -919,8 +871,7 @@ class OracleDBConnector(DBConnector):
 
         schema, tablename = self.getSchemaTableName(table)
         schema_where = " AND a.OWNER={}".format(
-            self.quoteString(schema) if schema else ""
-        )
+            self.quoteString(schema) if schema else "")
         sql = """
         SELECT a.COLUMN_ID As ordinal_position,
                a.COLUMN_NAME As column_name,
@@ -941,9 +892,7 @@ class OracleDBConnector(DBConnector):
                 AND a.OWNER = c.OWNER
         WHERE a.TABLE_NAME = {} {}
         ORDER BY a.COLUMN_ID
-        """.format(
-            self.quoteString(tablename), schema_where
-        )
+        """.format(self.quoteString(tablename), schema_where)
 
         c = self._execute(None, sql)
         res = self._fetchall(c)
@@ -964,8 +913,7 @@ class OracleDBConnector(DBConnector):
         """Get info about table's indexes."""
         schema, tablename = self.getSchemaTableName(table)
         schema_where = " AND i.OWNER = {} ".format(
-            self.quoteString(schema) if schema else ""
-        )
+            self.quoteString(schema) if schema else "")
 
         sql = """
         SELECT i.INDEX_NAME, c.COLUMN_NAME, i.ITYP_NAME,
@@ -974,9 +922,7 @@ class OracleDBConnector(DBConnector):
         FROM ALL_INDEXES i
         INNER JOIN ALL_IND_COLUMNS c ON i.index_name = c.index_name
         WHERE i.table_name = {} {}
-        """.format(
-            self.quoteString(tablename), schema_where
-        )
+        """.format(self.quoteString(tablename), schema_where)
 
         c = self._execute(None, sql)
         res = self._fetchall(c)
@@ -987,7 +933,8 @@ class OracleDBConnector(DBConnector):
     def getMViewInfo(self, table):
         """Find some information about materialized views"""
         schema, tablename = self.getSchemaTableName(table)
-        where = f" AND a.OWNER = {self.quoteString(schema)} " if schema else ""
+        where = " AND a.OWNER = {} ".format(
+            self.quoteString(schema)) if schema else ""
         prefix = "ALL" if schema else "USER"
         sql = """
         SELECT a.REFRESH_MODE,
@@ -997,9 +944,7 @@ class OracleDBConnector(DBConnector):
         FROM {}_MVIEWS a
         WHERE MVIEW_NAME = {}
         {}
-        """.format(
-            prefix, self.quoteString(tablename), where
-        )
+        """.format(prefix, self.quoteString(tablename), where)
 
         c = self._execute(None, sql)
         res = self._fetchone(c)
@@ -1010,7 +955,8 @@ class OracleDBConnector(DBConnector):
     def getTableConstraints(self, table):
         """Find all the constraints for a table."""
         schema, tablename = self.getSchemaTableName(table)
-        schema_where = f" AND c.OWNER={self.quoteString(schema)} " if schema else ""
+        schema_where = " AND c.OWNER={} ".format(
+            self.quoteString(schema)) if schema else ""
 
         sql = """
         SELECT a.CONSTRAINT_NAME, a.CONSTRAINT_TYPE,
@@ -1027,9 +973,7 @@ class OracleDBConnector(DBConnector):
                         AND a.R_OWNER = b.OWNER
                         AND b.POSITION = c.POSITION
         WHERE c.TABLE_NAME = {} {}
-        """.format(
-            self.quoteString(tablename), schema_where
-        )
+        """.format(self.quoteString(tablename), schema_where)
 
         c = self._execute(None, sql)
         res = self._fetchall(c)
@@ -1046,9 +990,7 @@ class OracleDBConnector(DBConnector):
         FROM ALL_TRIGGERS
         WHERE TABLE_OWNER = {}
         AND TABLE_NAME = {}
-        """.format(
-            self.quoteString(schema), self.quoteString(tablename)
-        )
+        """.format(self.quoteString(schema), self.quoteString(tablename))
 
         c = self._execute(None, sql)
         res = self._fetchall(c)
@@ -1073,7 +1015,7 @@ class OracleDBConnector(DBConnector):
         """Deletes the trigger on a table."""
         schema, tablename = self.getSchemaTableName(table)
         trigger = ".".join([self.quoteId(schema), self.quoteId(trigger)])
-        sql = f"DROP TRIGGER {trigger}"
+        sql = "DROP TRIGGER {}".format(trigger)
         self._execute_and_commit(sql)
 
     def canUpdateMetadata(self, table):
@@ -1083,13 +1025,12 @@ class OracleDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(table)
         metadata = False
         # User can only update in USER_SDO_GEOM_METADATA
-        if self.getRawTablePrivileges("USER_SDO_GEOM_METADATA", "MDSYS", "PUBLIC")[2]:
+        if self.getRawTablePrivileges('USER_SDO_GEOM_METADATA', 'MDSYS',
+                                      'PUBLIC')[2]:
             tbQuery = """
             SELECT COUNT(*) FROM USER_SDO_GEOM_METADATA
             WHERE TABLE_NAME = {}
-            """.format(
-                self.quoteString(tablename)
-            )
+            """.format(self.quoteString(tablename))
             c = self._execute(None, tbQuery)
             res = self._fetchone(c)
             c.close()
@@ -1103,18 +1044,17 @@ class OracleDBConnector(DBConnector):
     def getTableExtent(self, table, geom):
         """Calculate the real table extent."""
         schema, tablename = self.getSchemaTableName(table)
-        tableQuote = f"'{schema}.{tablename}'"
+        tableQuote = "'{}.{}'".format(schema, tablename)
         # Extent calculation without spatial index
-        extentFunction = f"""SDO_AGGR_MBR("{geom}")"""
-        fromTable = f'"{schema}"."{tablename}"'
+        extentFunction = """SDO_AGGR_MBR("{}")""".format(geom)
+        fromTable = '"{}"."{}"'.format(schema, tablename)
 
         # if table as spatial index:
         indexes = self.getTableIndexes(table)
         if indexes:
             if "SPATIAL_INDEX" in [f[2] for f in indexes]:
                 extentFunction = "SDO_TUNE.EXTENT_OF({}, {})".format(
-                    tableQuote, self.quoteString(geom)
-                )
+                    tableQuote, self.quoteString(geom))
                 fromTable = "DUAL"
 
         sql = """
@@ -1124,9 +1064,7 @@ class OracleDBConnector(DBConnector):
         SDO_GEOM.SDO_MAX_MBR_ORDINATE({0}, 1),
         SDO_GEOM.SDO_MAX_MBR_ORDINATE({0}, 2)
         FROM {1}
-        """.format(
-            extentFunction, fromTable
-        )
+        """.format(extentFunction, fromTable)
 
         try:
             c = self._execute(None, sql)
@@ -1148,11 +1086,11 @@ class OracleDBConnector(DBConnector):
         where = """
         WHERE TABLE_NAME = {}
         AND COLUMN_NAME = {}
-        """.format(
-            self.quoteString(tablename), self.quoteString(geom)
-        )
+        """.format(self.quoteString(tablename),
+                   self.quoteString(geom))
         if schema:
-            where = f"{where} AND OWNER = {self.quoteString(schema)}"
+            where = "{} AND OWNER = {}".format(
+                where, self.quoteString(schema))
 
         request = """
         SELECT SDO_LB, SDO_UB
@@ -1186,21 +1124,18 @@ class OracleDBConnector(DBConnector):
         schema, tablename = self.getSchemaTableName(view)
         where = ""
         if schema:
-            where = f" AND OWNER={self.quoteString(schema)} "
+            where = " AND OWNER={} ".format(
+                self.quoteString(schema))
 
         # Query to grab a view definition
         if objectType == "VIEW":
             sql = """
             SELECT TEXT FROM ALL_VIEWS WHERE VIEW_NAME = {} {}
-            """.format(
-                self.quoteString(tablename), where
-            )
+            """.format(self.quoteString(tablename), where)
         elif objectType == "MATERIALIZED VIEW":
             sql = """
             SELECT QUERY FROM ALL_MVIEWS WHERE MVIEW_NAME = {} {}
-            """.format(
-                self.quoteString(tablename), where
-            )
+            """.format(self.quoteString(tablename), where)
         else:
             return None
 
@@ -1220,8 +1155,8 @@ class OracleDBConnector(DBConnector):
         try:
             c = self._execute(
                 None,
-                ("SELECT CS_NAME FROM MDSYS.CS_SRS WHERE" " SRID = {}".format(srid)),
-            )
+                ("SELECT CS_NAME FROM MDSYS.CS_SRS WHERE"
+                 " SRID = {}".format(srid)))
         except DbError:
             return
         sr = self._fetchone(c)
@@ -1235,16 +1170,16 @@ class OracleDBConnector(DBConnector):
         """
         if self.has_geometry_columns and self.has_geometry_columns_access:
             schema, tablename = self.getSchemaTableName(table)
-            where = f"WHERE TABLE_NAME = {self.quoteString(tablename)}"
+            where = "WHERE TABLE_NAME = {}".format(
+                self.quoteString(tablename))
             if schema:
-                where = f"{where} AND OWNER = {self.quoteString(schema)}"
+                where = "{} AND OWNER = {}".format(where,
+                                                   self.quoteString(schema))
             sql = """
             SELECT COUNT(*)
             FROM ALL_SDO_GEOM_METADATA
             {}
-            """.format(
-                where
-            )
+            """.format(where)
 
             c = self._execute(None, sql)
             res = self._fetchone(c)
@@ -1261,10 +1196,10 @@ class OracleDBConnector(DBConnector):
         if len(field_defs) == 0:
             return False
 
-        sql = f"CREATE TABLE {self.quoteId(table)} ("
+        sql = "CREATE TABLE {} (".format(self.quoteId(table))
         sql += ", ".join(field_defs)
         if pkey:
-            sql += f", PRIMARY KEY ({self.quoteId(pkey)})"
+            sql += ", PRIMARY KEY ({})".format(self.quoteId(pkey))
         sql += ")"
 
         self._execute_and_commit(sql)
@@ -1278,13 +1213,13 @@ class OracleDBConnector(DBConnector):
         if self.isVectorTable(table):
             self.deleteMetadata(table)
 
-        sql = f"DROP TABLE {self.quoteId(table)}"
+        sql = "DROP TABLE {}".format(self.quoteId(table))
         self._execute_and_commit(sql)
 
     def emptyTable(self, table):
         """Deletes all the rows of a table."""
 
-        sql = f"TRUNCATE TABLE {self.quoteId(table)}"
+        sql = "TRUNCATE TABLE {}".format(self.quoteId(table))
         self._execute_and_commit(sql)
 
     def renameTable(self, table, new_table):
@@ -1299,14 +1234,15 @@ class OracleDBConnector(DBConnector):
         if self.isVectorTable(table):
             self.updateMetadata(table, None, new_table=new_table)
 
-        sql = f"RENAME {self.quoteId(tablename)} TO {self.quoteId(new_table)}"
+        sql = "RENAME {} TO {}".format(
+            self.quoteId(tablename), self.quoteId(new_table))
         self._execute(c, sql)
 
         self._commit()
 
     def createView(self, view, query):
         """Creates a view as defined."""
-        sql = f"CREATE VIEW {self.quoteId(view)} AS {query}"
+        sql = "CREATE VIEW {} AS {}".format(self.quoteId(view), query)
         self._execute_and_commit(sql)
 
     def createSpatialView(self, view, query):
@@ -1345,18 +1281,19 @@ class OracleDBConnector(DBConnector):
         if self.isVectorTable(view):
             self.deleteMetadata(view)
 
-        sql = f"DROP VIEW {self.quoteId(view)}"
+        sql = "DROP VIEW {}".format(self.quoteId(view))
         self._execute_and_commit(sql)
 
     def createSchema(self, schema):
         """Creates a new empty schema in database."""
         # Not tested
-        sql = f"CREATE SCHEMA AUTHORIZATION {self.quoteId(schema)}"
+        sql = "CREATE SCHEMA AUTHORIZATION {}".format(
+            self.quoteId(schema))
         self._execute_and_commit(sql)
 
     def deleteSchema(self, schema):
         """Drops (empty) schema from database."""
-        sql = f"DROP USER {self.quoteId(schema)} CASCADE"
+        sql = "DROP USER {} CASCADE".format(self.quoteId(schema))
         self._execute_and_commit(sql)
 
     def renameSchema(self, schema, new_schema):
@@ -1366,13 +1303,14 @@ class OracleDBConnector(DBConnector):
 
     def addTableColumn(self, table, field_def):
         """Adds a column to a table."""
-        sql = f"ALTER TABLE {self.quoteId(table)} ADD {field_def}"
+        sql = "ALTER TABLE {} ADD {}".format(self.quoteId(table), field_def)
         self._execute_and_commit(sql)
 
     def deleteTableColumn(self, table, column):
         """Deletes column from a table."""
         # Delete all the constraints for this column
-        constraints = [f[0] for f in self.getTableConstraints(table) if f[2] == column]
+        constraints = [f[0] for f in self.getTableConstraints(table)
+                       if f[2] == column]
         for constraint in constraints:
             self.deleteTableConstraint(table, constraint)
 
@@ -1386,20 +1324,12 @@ class OracleDBConnector(DBConnector):
             self.deleteMetadata(table, column)
 
         sql = "ALTER TABLE {} DROP COLUMN {}".format(
-            self.quoteId(table), self.quoteId(column)
-        )
+            self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
-    def updateTableColumn(
-        self,
-        table,
-        column,
-        new_name=None,
-        data_type=None,
-        not_null=None,
-        default=None,
-        comment=None,
-    ):
+    def updateTableColumn(self, table, column, new_name=None,
+                          data_type=None, not_null=None,
+                          default=None, comment=None):
         """Updates properties of a column in a table."""
 
         schema, tablename = self.getSchemaTableName(table)
@@ -1409,9 +1339,9 @@ class OracleDBConnector(DBConnector):
         # update column definition
         col_actions = []
         if data_type:
-            col_actions.append(f"{data_type}")
+            col_actions.append("{}".format(data_type))
         if default:
-            col_actions.append(f"DEFAULT {default}")
+            col_actions.append("DEFAULT {}".format(default))
         else:
             col_actions.append("DEFAULT NULL")
 
@@ -1422,16 +1352,16 @@ class OracleDBConnector(DBConnector):
 
         if col_actions:
             sql = "ALTER TABLE {} MODIFY ( {} {} )".format(
-                self.quoteId(table), self.quoteId(column), " ".join(col_actions)
-            )
+                self.quoteId(table), self.quoteId(column),
+                " ".join(col_actions))
             self._execute(c, sql)
 
         # rename the column
         if new_name and new_name != column:
             isGeo = self.isGeometryColumn(table, column)
             sql = "ALTER TABLE {} RENAME COLUMN {} TO {}".format(
-                self.quoteId(table), self.quoteId(column), self.quoteId(new_name)
-            )
+                self.quoteId(table), self.quoteId(column),
+                self.quoteId(new_name))
             self._execute(c, sql)
 
             # update geometry_columns if Spatial is enabled
@@ -1462,16 +1392,16 @@ class OracleDBConnector(DBConnector):
         """Find if a column is geometric."""
         schema, tablename = self.getSchemaTableName(table)
         prefix = "ALL" if schema else "USER"
-        where = f"AND owner = {self.quoteString(schema)} " if schema else ""
+        where = "AND owner = {} ".format(
+            self.quoteString(schema)) if schema else ""
 
         sql = """
         SELECT COUNT(*)
         FROM {}_SDO_GEOM_METADATA
         WHERE TABLE_NAME = {}
               AND COLUMN_NAME = {} {}
-        """.format(
-            prefix, self.quoteString(tablename), self.quoteString(column.upper()), where
-        )
+        """.format(prefix, self.quoteString(tablename),
+                   self.quoteString(column.upper()), where)
 
         c = self._execute(None, sql)
         res = self._fetchone(c)[0] > 0
@@ -1482,100 +1412,92 @@ class OracleDBConnector(DBConnector):
     def refreshMView(self, table):
         """Refreshes an MVIEW"""
         schema, tablename = self.getSchemaTableName(table)
-        mview = f"{schema}.{tablename}" if schema else tablename
+        mview = "{}.{}".format(schema, tablename) if schema else tablename
         sql = """
         BEGIN
           DBMS_MVIEW.REFRESH({},'?');
         END;
-        """.format(
-            self.quoteString(mview)
-        )
+        """.format(self.quoteString(mview))
 
         self._execute_and_commit(sql)
 
     def deleteMetadata(self, table, geom_column=None):
         """Deletes the metadata entry for a table"""
         schema, tablename = self.getSchemaTableName(table)
-        if not (
-            self.getRawTablePrivileges("USER_SDO_GEOM_METADATA", "MDSYS", "PUBLIC")[3]
-            and schema == self.user
-        ):
+        if not (self.getRawTablePrivileges('USER_SDO_GEOM_METADATA',
+                                           'MDSYS',
+                                           'PUBLIC')[3] and
+                schema == self.user):
             return False
 
-        where = f"WHERE TABLE_NAME = {self.quoteString(tablename)}"
+        where = "WHERE TABLE_NAME = {}".format(self.quoteString(tablename))
         if geom_column:
-            where = "{} AND COLUMN_NAME = " "{}".format(
-                where, self.quoteString(geom_column)
-            )
-        sql = f"DELETE FROM USER_SDO_GEOM_METADATA {where}"
+            where = ("{} AND COLUMN_NAME = "
+                     "{}".format(where,
+                                 self.quoteString(geom_column)))
+        sql = "DELETE FROM USER_SDO_GEOM_METADATA {}".format(where)
 
         self._execute_and_commit(sql)
 
-    def updateMetadata(
-        self,
-        table,
-        geom_column,
-        new_geom_column=None,
-        new_table=None,
-        extent=None,
-        srid=None,
-    ):
+    def updateMetadata(self, table, geom_column, new_geom_column=None,
+                       new_table=None, extent=None, srid=None):
         """Updates the metadata table with the new information"""
 
         schema, tablename = self.getSchemaTableName(table)
-        if not (
-            self.getRawTablePrivileges("USER_SDO_GEOM_METADATA", "MDSYS", "PUBLIC")[2]
-            and schema == self.user
-        ):
+        if not (self.getRawTablePrivileges('USER_SDO_GEOM_METADATA',
+                                           'MDSYS',
+                                           'PUBLIC')[2] and
+                schema == self.user):
             return False
 
-        where = f"WHERE TABLE_NAME = {self.quoteString(tablename)}"
+        where = "WHERE TABLE_NAME = {}".format(self.quoteString(tablename))
         if geom_column:
             # in Metadata view, geographic column is always in uppercase
-            where = "{} AND COLUMN_NAME = " "{}".format(
-                where, self.quoteString(geom_column.upper())
-            )
+            where = ("{} AND COLUMN_NAME = "
+                     "{}".format(where,
+                                 self.quoteString(geom_column.upper())))
 
         update = "SET"
         if srid == 0:
             srid = -1
 
         if srid:
-            update = f"{update} SRID = {srid}"
+            update = "{} SRID = {}".format(update, srid)
         if extent:
             if len(extent) == 4:
                 if update != "SET":
-                    update = f"{update},"
+                    update = "{},".format(update)
                 update = """{4} DIMINFO = MDSYS.SDO_DIM_ARRAY(
                 MDSYS.SDO_DIM_ELEMENT('X', {0:.9f}, {1:.9f}, 0.005),
                 MDSYS.SDO_DIM_ELEMENT('Y', {2:.9f}, {3:.9f}, 0.005))
-                """.format(
-                    extent[0], extent[2], extent[1], extent[3], update
-                )
+                """.format(extent[0], extent[2], extent[1],
+                           extent[3], update)
         if new_geom_column:
             if update != "SET":
-                update = f"{update},"
+                update = "{},".format(update)
             # in Metadata view, geographic column is always in uppercase
-            update = "{} COLUMN_NAME = " "{}".format(
-                update, self.quoteString(new_geom_column.upper())
-            )
+            update = ("{} COLUMN_NAME = "
+                      "{}".format(update,
+                                  self.quoteString(new_geom_column.upper())))
 
         if new_table:
             if update != "SET":
-                update = f"{update},"
-            update = "{} TABLE_NAME = " "{}".format(update, self.quoteString(new_table))
+                update = "{},".format(update)
+            update = ("{} TABLE_NAME = "
+                      "{}".format(update,
+                                  self.quoteString(new_table)))
 
-        sql = f"UPDATE USER_SDO_GEOM_METADATA {update} {where}"
+        sql = "UPDATE USER_SDO_GEOM_METADATA {} {}".format(update, where)
 
         self._execute_and_commit(sql)
 
     def insertMetadata(self, table, geom_column, extent, srid, dim=2):
         """Inserts a line for the table in Oracle Metadata table."""
         schema, tablename = self.getSchemaTableName(table)
-        if not (
-            self.getRawTablePrivileges("USER_SDO_GEOM_METADATA", "MDSYS", "PUBLIC")[1]
-            and schema == self.user
-        ):
+        if not (self.getRawTablePrivileges('USER_SDO_GEOM_METADATA',
+                                           'MDSYS',
+                                           'PUBLIC')[1] and
+                schema == self.user):
             return False
 
         # in Metadata view, geographic column is always in uppercase
@@ -1585,21 +1507,16 @@ class OracleDBConnector(DBConnector):
 
         if len(extent) != 4:
             return False
-        dims = ["X", "Y", "Z", "T"]
+        dims = ['X', 'Y', 'Z', 'T']
         extentParts = []
         for i in range(dim):
             extentParts.append(
                 """MDSYS.SDO_DIM_ELEMENT(
-                '{}', {:.9f}, {:.9f}, 0.005)""".format(
-                    dims[i], extent[i], extent[i + 1]
-                )
-            )
+                '{}', {:.9f}, {:.9f}, 0.005)""".format(dims[i], extent[i], extent[i + 1]))
         extentParts = ",".join(extentParts)
         sqlExtent = """MDSYS.SDO_DIM_ARRAY(
                 {})
-                """.format(
-            extentParts
-        )
+                """.format(extentParts)
 
         sql = """
         INSERT INTO USER_SDO_GEOM_METADATA (TABLE_NAME,
@@ -1608,18 +1525,14 @@ class OracleDBConnector(DBConnector):
         VALUES({}, {},
                {},
                {})
-            """.format(
-            self.quoteString(tablename),
-            self.quoteString(geom_column),
-            sqlExtent,
-            str(srid),
-        )
+            """.format(self.quoteString(tablename),
+                       self.quoteString(geom_column),
+                       sqlExtent, str(srid))
 
         self._execute_and_commit(sql)
 
-    def addGeometryColumn(
-        self, table, geom_column="GEOM", geom_type=None, srid=-1, dim=2
-    ):
+    def addGeometryColumn(self, table, geom_column='GEOM',
+                          geom_type=None, srid=-1, dim=2):
         """Adds a geometry column and update Oracle Spatial
         metadata.
         """
@@ -1630,8 +1543,7 @@ class OracleDBConnector(DBConnector):
 
         # Add the column to the table
         sql = "ALTER TABLE {} ADD {} SDO_GEOMETRY".format(
-            self.quoteId(table), self.quoteId(geom_column)
-        )
+            self.quoteId(table), self.quoteId(geom_column))
 
         self._execute_and_commit(sql)
 
@@ -1639,9 +1551,9 @@ class OracleDBConnector(DBConnector):
         extent = []
         for i in range(dim):
             extent.extend([-100000, 10000])
-        self.insertMetadata(
-            table, geom_column, [-100000, 100000, -10000, 10000], srid, dim
-        )
+        self.insertMetadata(table, geom_column,
+                            [-100000, 100000, -10000, 10000],
+                            srid, dim)
 
     def deleteGeometryColumn(self, table, geom_column):
         """Deletes a geometric column."""
@@ -1650,61 +1562,57 @@ class OracleDBConnector(DBConnector):
     def addTableUniqueConstraint(self, table, column):
         """Adds a unique constraint to a table."""
         sql = "ALTER TABLE {} ADD UNIQUE ({})".format(
-            self.quoteId(table), self.quoteId(column)
-        )
+            self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
     def deleteTableConstraint(self, table, constraint):
         """Deletes constraint in a table."""
         sql = "ALTER TABLE {} DROP CONSTRAINT {}".format(
-            self.quoteId(table), self.quoteId(constraint)
-        )
+            self.quoteId(table), self.quoteId(constraint))
         self._execute_and_commit(sql)
 
     def addTablePrimaryKey(self, table, column):
         """Adds a primary key (with one column) to a table."""
         sql = "ALTER TABLE {} ADD PRIMARY KEY ({})".format(
-            self.quoteId(table), self.quoteId(column)
-        )
+            self.quoteId(table), self.quoteId(column))
         self._execute_and_commit(sql)
 
     def createTableIndex(self, table, name, column):
         """Creates index on one column using default options."""
         sql = "CREATE INDEX {} ON {} ({})".format(
-            self.quoteId(name), self.quoteId(table), self.quoteId(column)
-        )
+            self.quoteId(name), self.quoteId(table),
+            self.quoteId(column))
         self._execute_and_commit(sql)
 
     def rebuildTableIndex(self, table, name):
         """Rebuilds a table index"""
         schema, tablename = self.getSchemaTableName(table)
-        sql = f"ALTER INDEX {self.quoteId((schema, name))} REBUILD"
+        sql = "ALTER INDEX {} REBUILD".format(self.quoteId((schema, name)))
         self._execute_and_commit(sql)
 
     def deleteTableIndex(self, table, name):
         """Deletes an index on a table."""
         schema, tablename = self.getSchemaTableName(table)
-        sql = f"DROP INDEX {self.quoteId((schema, name))}"
+        sql = "DROP INDEX {}".format(self.quoteId((schema, name)))
         self._execute_and_commit(sql)
 
-    def createSpatialIndex(self, table, geom_column="GEOM"):
+    def createSpatialIndex(self, table, geom_column='GEOM'):
         """Creates a spatial index on a geometric column."""
         geom_column = geom_column.upper()
         schema, tablename = self.getSchemaTableName(table)
-        idx_name = self.quoteId(f"sidx_{tablename}_{geom_column}")
+        idx_name = self.quoteId("sidx_{}_{}".format(tablename, geom_column))
         sql = """
         CREATE INDEX {}
         ON {}({})
         INDEXTYPE IS MDSYS.SPATIAL_INDEX
-        """.format(
-            idx_name, self.quoteId(table), self.quoteId(geom_column)
-        )
+        """.format(idx_name, self.quoteId(table),
+                   self.quoteId(geom_column))
         self._execute_and_commit(sql)
 
-    def deleteSpatialIndex(self, table, geom_column="GEOM"):
+    def deleteSpatialIndex(self, table, geom_column='GEOM'):
         """Deletes a spatial index of a geometric column."""
         schema, tablename = self.getSchemaTableName(table)
-        idx_name = self.quoteId(f"sidx_{tablename}_{geom_column}")
+        idx_name = self.quoteId("sidx_{}_{}".format(tablename, geom_column))
         return self.deleteTableIndex(table, idx_name)
 
     def execution_error_types(self):
@@ -1764,7 +1672,6 @@ class OracleDBConnector(DBConnector):
     def getSqlDictionary(self):
         """Returns the dictionary for SQL dialog."""
         from .sql_dictionary import getSqlDictionary
-
         sql_dict = getSqlDictionary()
 
         # get schemas, tables and field names
@@ -1776,9 +1683,7 @@ class OracleDBConnector(DBConnector):
             SELECT DISTINCT tablename FROM "oracle_{0}"
             UNION
             SELECT DISTINCT ownername FROM "oracle_{0}"
-            """.format(
-                self.connName
-            )
+            """.format(self.connName)
             if self.userTablesOnly:
                 sql = """
                 SELECT DISTINCT tablename
@@ -1786,9 +1691,7 @@ class OracleDBConnector(DBConnector):
                 UNION
                 SELECT DISTINCT ownername
                 FROM "oracle_{conn}" WHERE ownername = '{user}'
-                """.format(
-                    conn=self.connName, user=self.user
-                )
+                """.format(conn=self.connName, user=self.user)
 
             c = self.cache_connection.cursor()
             c.execute(sql)
@@ -1799,9 +1702,8 @@ class OracleDBConnector(DBConnector):
         if self.hasCache():
             sql = """
             SELECT DISTINCT COLUMN_NAME FROM {}_TAB_COLUMNS
-            """.format(
-                "USER" if self.userTablesOnly else "ALL"
-            )
+            """.format("USER" if self.userTablesOnly else
+                       "ALL")
         elif self.userTablesOnly:
             sql = """
             SELECT DISTINCT TABLE_NAME FROM USER_ALL_TABLES
@@ -1829,7 +1731,6 @@ class OracleDBConnector(DBConnector):
 
     def getQueryBuilderDictionary(self):
         from .sql_dictionary import getQueryBuilderDictionary
-
         return getQueryBuilderDictionary()
 
     def cancel(self):

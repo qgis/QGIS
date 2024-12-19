@@ -53,5 +53,5 @@ QgsSensorModel.CustomRole.__doc__ = """Custom model roles.
 QgsSensorModel.CustomRole.baseClass = QgsSensorModel
 try:
     QgsSensorModel.__group__ = ['sensor']
-except (NameError, AttributeError):
+except NameError:
     pass

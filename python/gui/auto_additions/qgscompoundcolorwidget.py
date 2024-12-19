@@ -5,5 +5,5 @@ try:
     QgsCompoundColorWidget.createNewUserPalette = staticmethod(QgsCompoundColorWidget.createNewUserPalette)
     QgsCompoundColorWidget.removeUserPalette = staticmethod(QgsCompoundColorWidget.removeUserPalette)
     QgsCompoundColorWidget.__signal_arguments__ = {'currentColorChanged': ['color: QColor']}
-except (NameError, AttributeError):
+except NameError:
     pass

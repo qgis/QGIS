@@ -3225,16 +3225,9 @@ OGRErr QgsOgrLayer::GetExtent3D( OGREnvelope3D *psExtent3D, bool bForce )
     psExtent3D->MinZ = std::numeric_limits<double>::quiet_NaN();
     psExtent3D->MaxZ = std::numeric_limits<double>::quiet_NaN();
 
-    OGREnvelope envelope2D;
-    err = OGR_L_GetExtent( hLayer, &envelope2D, bForce );
+    err = OGR_L_GetExtent( hLayer, psExtent3D, bForce );
     if ( err == OGRERR_NONE )
-    {
-      psExtent3D->MinX = envelope2D.MinX;
-      psExtent3D->MinY = envelope2D.MinY;
-      psExtent3D->MaxX = envelope2D.MaxX;
-      psExtent3D->MaxY = envelope2D.MaxY;
       err = isSpatialiteEnabled();
-    }
 
     if ( err == OGRERR_NONE )
     {

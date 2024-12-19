@@ -2,5 +2,5 @@
 try:
     QgsCptCityColorRampDialog.__attribute_docs__ = {'changed': 'Emitted when the dialog settings change\n'}
     QgsCptCityColorRampDialog.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

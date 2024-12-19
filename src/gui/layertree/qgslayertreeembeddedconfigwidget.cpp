@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgslayertreeembeddedconfigwidget.h"
-#include "moc_qgslayertreeembeddedconfigwidget.cpp"
 
 #include "qgsmaplayer.h"
 #include "qgslayertreeembeddedwidgetregistry.h"

@@ -44,7 +44,7 @@ class QgsLayout3DMapWidget : public QgsLayoutItemBaseWidget, private Ui::QgsLayo
     void updateCameraPose();
 
   private:
-    QPointer<QgsLayoutItem3DMap> mMap3D;
+    QPointer< QgsLayoutItem3DMap > mMap3D;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
     QMenu *mMenu3DCanvases = nullptr;
     QMenu *mMenu3DCanvasesPose = nullptr;

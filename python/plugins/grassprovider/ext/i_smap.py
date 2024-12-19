@@ -15,23 +15,21 @@
 ***************************************************************************
 """
 
-__author__ = "Médéric Ribreux"
-__date__ = "March 2016"
-__copyright__ = "(C) 2016, Médéric Ribreux"
+__author__ = 'Médéric Ribreux'
+__date__ = 'March 2016'
+__copyright__ = '(C) 2016, Médéric Ribreux'
 
 from .i import regroupRasters, importSigFile
 
 
 def processCommand(alg, parameters, context, feedback):
     # Regroup rasters
-    group, subgroup = regroupRasters(
-        alg, parameters, context, "input", "group", "subgroup"
-    )
+    group, subgroup = regroupRasters(alg, parameters, context, 'input', 'group', 'subgroup')
 
     # import signature
-    signatureFile = alg.parameterAsString(parameters, "signaturefile", context)
-    shortSigFile = importSigFile(alg, group, subgroup, signatureFile, "sigset")
-    parameters["signaturefile"] = shortSigFile
+    signatureFile = alg.parameterAsString(parameters, 'signaturefile', context)
+    shortSigFile = importSigFile(alg, group, subgroup, signatureFile, 'sigset')
+    parameters['signaturefile'] = shortSigFile
 
     # Handle other parameters
     alg.processCommand(parameters, context, feedback)

@@ -3,5 +3,5 @@ try:
     QgsMetalRoughMaterialSettings.supportsTechnique = staticmethod(QgsMetalRoughMaterialSettings.supportsTechnique)
     QgsMetalRoughMaterialSettings.create = staticmethod(QgsMetalRoughMaterialSettings.create)
     QgsMetalRoughMaterialSettings.__group__ = ['materials']
-except (NameError, AttributeError):
+except NameError:
     pass

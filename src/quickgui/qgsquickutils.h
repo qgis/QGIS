@@ -38,6 +38,7 @@ class QUICK_EXPORT QgsQuickUtils : public QObject
     Q_OBJECT
 
   public:
+
     //! Creates new QgsQuickUtils - this class is meant to serve as a QML singleton
     explicit QgsQuickUtils( QObject *parent = nullptr );
     ~QgsQuickUtils() = default;

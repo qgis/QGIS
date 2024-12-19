@@ -11,7 +11,7 @@
 
 
 
-class QgsHillshadeRendererWidget : QgsRasterRendererWidget
+class QgsHillshadeRendererWidget: QgsRasterRendererWidget
 {
 %Docstring(signature="appended")
 Renderer widget for the hill shade renderer.
@@ -21,6 +21,7 @@ Renderer widget for the hill shade renderer.
 #include "qgshillshaderendererwidget.h"
 %End
   public:
+
     QgsHillshadeRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 %Docstring
 Renderer widget for the hill shade renderer.
@@ -51,14 +52,14 @@ Returns the direction of the light over the raster between 0-360.
 .. seealso:: :py:func:`setAzimuth`
 %End
 
-    double altitude() const;
+    double altitude()  const;
 %Docstring
 Returns the angle of the light source over the raster.
 
 .. seealso:: :py:func:`setAltitude`
 %End
 
-    double zFactor() const;
+    double zFactor()  const;
 %Docstring
 Returns the Z scaling factor.
 
@@ -111,6 +112,8 @@ Sets whether to render using a multi-directional hillshade algorithm.
 %End
 
 };
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

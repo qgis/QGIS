@@ -27,6 +27,7 @@ the stored geometry value).
 #include "qgsgeometrywidget.h"
 %End
   public:
+
     explicit QgsGeometryWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGeometryWidget, with the specified ``parent`` widget.
@@ -67,7 +68,7 @@ Sets the list of WKB geometry ``types`` which are permitted for the widget.
 .. seealso:: :py:func:`acceptedWkbTypes`
 %End
 
-    QList<Qgis::WkbType> acceptedWkbTypes() const;
+    QList< Qgis::WkbType > acceptedWkbTypes() const;
 %Docstring
 Returns the list of WKB geometry types which are permitted for the widget.
 

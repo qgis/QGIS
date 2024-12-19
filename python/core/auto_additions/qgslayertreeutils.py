@@ -21,5 +21,5 @@ try:
     QgsLayerTreeUtils.firstGroupWithoutCustomProperty = staticmethod(QgsLayerTreeUtils.firstGroupWithoutCustomProperty)
     QgsLayerTreeUtils.insertLayerAtOptimalPlacement = staticmethod(QgsLayerTreeUtils.insertLayerAtOptimalPlacement)
     QgsLayerTreeUtils.__group__ = ['layertree']
-except (NameError, AttributeError):
+except NameError:
     pass

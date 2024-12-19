@@ -28,9 +28,11 @@
  */
 class GUI_EXPORT QgsLayoutViewToolTemporaryKeyZoom : public QgsLayoutViewToolZoom
 {
+
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutViewToolTemporaryKeyZoom.
      */
@@ -42,7 +44,8 @@ class GUI_EXPORT QgsLayoutViewToolTemporaryKeyZoom : public QgsLayoutViewToolZoo
     void activate() override;
 
   private:
-    QPointer<QgsLayoutViewTool> mPreviousViewTool;
+
+    QPointer< QgsLayoutViewTool > mPreviousViewTool;
 
     bool mDeactivateOnMouseRelease = false;
 

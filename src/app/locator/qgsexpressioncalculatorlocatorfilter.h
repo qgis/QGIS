@@ -22,11 +22,13 @@
 #include "qgslocatorfilter.h"
 
 
+
 class APP_EXPORT QgsExpressionCalculatorLocatorFilter : public QgsLocatorFilter
 {
     Q_OBJECT
 
   public:
+
     QgsExpressionCalculatorLocatorFilter( QObject *parent = nullptr );
     QgsExpressionCalculatorLocatorFilter *clone() const override;
     QString name() const override { return QStringLiteral( "calculator" ); }

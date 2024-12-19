@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsafsprovider.h"
-#include "moc_qgsafsprovider.cpp"
 #include "qgsarcgisrestutils.h"
 #include "qgsarcgisrestquery.h"
 #include "qgsafsfeatureiterator.h"
@@ -49,11 +48,12 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   mRequestHeaders = mSharedData->mDataSource.httpHeaders();
   const QString &urlPrefix = mSharedData->mDataSource.param( QStringLiteral( "urlprefix" ) );
 
-  std::unique_ptr<QgsScopedRuntimeProfile> profile;
+  std::unique_ptr< QgsScopedRuntimeProfile > profile;
   if ( QgsApplication::profiler()->groupIsActive( QStringLiteral( "projectload" ) ) )
-    profile = std::make_unique<QgsScopedRuntimeProfile>( tr( "Retrieve service definition" ), QStringLiteral( "projectload" ) );
+    profile = std::make_unique< QgsScopedRuntimeProfile >( tr( "Retrieve service definition" ), QStringLiteral( "projectload" ) );
 
-  const QVariantMap layerData = QgsArcGisRestQueryUtils::getLayerInfo( mSharedData->mDataSource.param( QStringLiteral( "url" ) ), authcfg, errorTitle, errorMessage, mRequestHeaders, urlPrefix );
+  const QVariantMap layerData = QgsArcGisRestQueryUtils::getLayerInfo( mSharedData->mDataSource.param( QStringLiteral( "url" ) ),
+                                authcfg, errorTitle, errorMessage, mRequestHeaders, urlPrefix );
   if ( layerData.isEmpty() )
   {
     pushError( errorTitle + ": " + errorMessage );
@@ -75,7 +75,8 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     if ( adminUrl.contains( QStringLiteral( "/rest/services/" ) ) )
     {
       adminUrl.replace( QLatin1String( "/rest/services/" ), QLatin1String( "/rest/admin/services/" ) );
-      const QVariantMap adminData = QgsArcGisRestQueryUtils::getLayerInfo( adminUrl, authcfg, errorTitle, errorMessage, mRequestHeaders, urlPrefix );
+      const QVariantMap adminData = QgsArcGisRestQueryUtils::getLayerInfo( adminUrl,
+                                    authcfg, errorTitle, errorMessage, mRequestHeaders, urlPrefix );
       if ( !adminData.isEmpty() )
       {
         mAdminUrl = adminUrl;
@@ -132,7 +133,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
       spatialExtent.bounds = QgsBox3D( originalExtent );
       spatialExtent.extentCrs = extentCrs;
       QgsLayerMetadata::Extent metadataExtent;
-      metadataExtent.setSpatialExtents( QList<QgsLayerMetadata::SpatialExtent>() << spatialExtent );
+      metadataExtent.setSpatialExtents( QList<  QgsLayerMetadata::SpatialExtent >() << spatialExtent );
       mLayerMetadata.setExtent( metadataExtent );
     }
     if ( extentCrs.isValid() )
@@ -194,7 +195,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
       {
         const QVariantMap value = v.toMap();
         QVariantMap config;
-        config[value.value( QStringLiteral( "name" ) ).toString()] = value.value( QStringLiteral( "code" ) );
+        config[ value.value( QStringLiteral( "name" ) ).toString() ] = value.value( QStringLiteral( "code" ) );
         valueConfig.append( config );
       }
       QVariantMap editorConfig;
@@ -263,11 +264,13 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
     const QVariantList extent = timeInfo.value( QStringLiteral( "timeExtent" ) ).toList();
     if ( extent.size() == 2 )
     {
-      lTemporalCapabilities->setAvailableTemporalRange( QgsDateTimeRange( QgsArcGisRestUtils::convertDateTime( extent.at( 0 ) ), QgsArcGisRestUtils::convertDateTime( extent.at( 1 ) ) ) );
+      lTemporalCapabilities->setAvailableTemporalRange( QgsDateTimeRange( QgsArcGisRestUtils::convertDateTime( extent.at( 0 ) ),
+          QgsArcGisRestUtils::convertDateTime( extent.at( 1 ) ) ) );
     }
   }
 
-  QList<QgsVectorDataProvider::NativeType> types {
+  QList<QgsVectorDataProvider::NativeType> types
+  {
     QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Int ), QStringLiteral( "esriFieldTypeSmallInteger" ), QMetaType::Type::Int, -1, -1, 0, 0 ),
     QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::LongLong ), QStringLiteral( "esriFieldTypeInteger" ), QMetaType::Type::LongLong, -1, -1, 0, 0 ),
     QgsVectorDataProvider::NativeType( QgsVariantUtils::typeToDisplayString( QMetaType::Type::Double ), QStringLiteral( "esriFieldTypeDouble" ), QMetaType::Type::Double, 1, 20, 0, 20 ),
@@ -283,7 +286,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri, const ProviderOptions &optio
   // Read OBJECTIDs of all features: these may not be a continuous sequence,
   // and we need to store these to iterate through the features. This query
   // also returns the name of the ObjectID field.
-  if ( !mSharedData->getObjectIds( errorMessage ) )
+  if ( ! mSharedData->getObjectIds( errorMessage ) )
   {
     appendError( QgsErrorMessage( errorMessage, QStringLiteral( "AFSProvider" ) ) );
     return;
@@ -754,8 +757,8 @@ bool QgsAfsProvider::renderInPreview( const QgsDataProvider::PreviewContext & )
 }
 
 
-QgsAfsProviderMetadata::QgsAfsProviderMetadata()
-  : QgsProviderMetadata( QgsAfsProvider::AFS_PROVIDER_KEY, QgsAfsProvider::AFS_PROVIDER_DESCRIPTION )
+QgsAfsProviderMetadata::QgsAfsProviderMetadata():
+  QgsProviderMetadata( QgsAfsProvider::AFS_PROVIDER_KEY, QgsAfsProvider::AFS_PROVIDER_DESCRIPTION )
 {
 }
 
@@ -769,7 +772,7 @@ QList<QgsDataItemProvider *> QgsAfsProviderMetadata::dataItemProviders() const
   QList<QgsDataItemProvider *> providers;
 
   providers
-    << new QgsArcGisRestDataItemProvider;
+      << new QgsArcGisRestDataItemProvider;
 
   return providers;
 }
@@ -816,7 +819,7 @@ QString QgsAfsProviderMetadata::encodeUri( const QVariantMap &parts ) const
 
   if ( parts.contains( QStringLiteral( "bounds" ) ) && parts.value( QStringLiteral( "bounds" ) ).userType() == qMetaTypeId<QgsRectangle>() )
   {
-    const QgsRectangle bBox = parts.value( QStringLiteral( "bounds" ) ).value<QgsRectangle>();
+    const QgsRectangle bBox = parts.value( QStringLiteral( "bounds" ) ).value< QgsRectangle >();
     dsUri.setParam( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( bBox.xMinimum() ).arg( bBox.yMinimum() ).arg( bBox.xMaximum() ).arg( bBox.yMaximum() ) );
   }
 

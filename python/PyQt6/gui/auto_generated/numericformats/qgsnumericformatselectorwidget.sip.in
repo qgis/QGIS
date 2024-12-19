@@ -21,6 +21,7 @@ A widget which allows choice of numeric formats and the properties of them.
 #include "qgsnumericformatselectorwidget.h"
 %End
   public:
+
     QgsNumericFormatSelectorWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsNumericFormatSelectorWidget with the specified ``parent`` widget.
@@ -74,6 +75,7 @@ A simple dialog for customizing a numeric format.
 #include "qgsnumericformatselectorwidget.h"
 %End
   public:
+
     QgsNumericFormatSelectorDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor for QgsNumericFormatSelectorDialog.

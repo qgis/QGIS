@@ -19,7 +19,11 @@ A generic dialog for building expression strings
 #include "qgsexpressionbuilderdialog.h"
 %End
   public:
-    QgsExpressionBuilderDialog( QgsVectorLayer *layer, const QString &startText = QString(), QWidget *parent /TransferThis/ = 0, const QString &key = "generic", const QgsExpressionContext &context = QgsExpressionContext() );
+    QgsExpressionBuilderDialog( QgsVectorLayer *layer,
+                                const QString &startText = QString(),
+                                QWidget *parent /TransferThis/ = 0,
+                                const QString &key = "generic",
+                                const QgsExpressionContext &context = QgsExpressionContext() );
 
     QgsExpressionBuilderWidget *expressionBuilder();
 %Docstring
@@ -91,6 +95,7 @@ provide an expression context of which we are sure it's completely populated.
 %End
 
   protected:
+
     virtual void done( int r );
 
 %Docstring

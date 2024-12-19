@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsmeshlayertemporalproperties.h"
-#include "moc_qgsmeshlayertemporalproperties.cpp"
 #include "qgsmeshdataprovidertemporalcapabilities.h"
 #include "qgsproject.h"
 #include "qgsprojecttimesettings.h"

@@ -31,6 +31,7 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsOptionsPageWidget.
      */
@@ -54,10 +55,7 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
      * Returns the registered highlight widgets used to search and highlight text in
      * options dialogs.
      */
-    QHash<QWidget *, QgsOptionsDialogHighlightWidget *> registeredHighlightWidgets() SIP_SKIP
-    {
-      return mHighlightWidgets;
-    }
+    QHash<QWidget *, QgsOptionsDialogHighlightWidget *> registeredHighlightWidgets() {return mHighlightWidgets;} SIP_SKIP
 
     /**
      * Validates the current state of the widget.
@@ -85,6 +83,7 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
     virtual void cancel() { return; }
 
   protected:
+
     /**
      * Register a highlight widget to be used to search and highlight text in
      * options dialogs. This can be used to provide a custom implementation of
@@ -97,6 +96,8 @@ class GUI_EXPORT QgsOptionsPageWidget : public QWidget
 
   private:
     QHash<QWidget *, QgsOptionsDialogHighlightWidget *> mHighlightWidgets;
+
+
 };
 
 /**
@@ -111,6 +112,7 @@ class GUI_EXPORT QgsOptionsWidgetFactory : public QObject
     Q_OBJECT
 
   public:
+
     QgsOptionsWidgetFactory() = default;
 
     //! Constructor
@@ -195,6 +197,8 @@ class GUI_EXPORT QgsOptionsWidgetFactory : public QObject
     QString mTitle;
     QIcon mIcon;
     QString mKey;
+
+
 };
 
 #endif // QGSOPTIONSWIDGETFACTORY_H

@@ -5,14 +5,18 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Loïc Bartoletti"
-__date__ = "19/12/2023"
-__copyright__ = "Copyright 2023, The QGIS Project"
+__author__ = 'Loïc Bartoletti'
+__date__ = '19/12/2023'
+__copyright__ = 'Copyright 2023, The QGIS Project'
 
 import qgis  # NOQA
 
-from qgis.core import QgsMultiPoint, QgsPoint, QgsRectangle, QgsLineString
+from qgis.core import (
+    QgsMultiPoint,
+    QgsPoint,
+    QgsRectangle,
+    QgsLineString
+)
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -113,40 +117,46 @@ class TestQgsMultiPoint(QgisTestCase):
         # empty collection
         collection = QgsMultiPoint()
         self.assertTrue(collection.addGeometries([]))
-        self.assertEqual(collection.asWkt(), "MultiPoint EMPTY")
+        self.assertEqual(collection.asWkt(), 'MultiPoint EMPTY')
         self.assertEqual(collection.boundingBox(), QgsRectangle())
 
         self.assertTrue(
-            collection.addGeometries([QgsPoint(1, 2, 3), QgsPoint(11, 22, 33)])
+            collection.addGeometries([
+                QgsPoint(1, 2, 3),
+                QgsPoint(11, 22, 33)])
         )
-        self.assertEqual(collection.asWkt(), "MultiPoint Z ((1 2 3),(11 22 33))")
-        self.assertEqual(collection.boundingBox(), QgsRectangle(1, 2, 11, 22))
+        self.assertEqual(collection.asWkt(),
+                         'MultiPoint Z ((1 2 3),(11 22 33))')
+        self.assertEqual(collection.boundingBox(),
+                         QgsRectangle(1, 2, 11, 22))
 
         # can't add non-points
         self.assertFalse(
-            collection.addGeometries([QgsLineString([[100, 200], [200, 200]])])
-        )
-        self.assertEqual(collection.asWkt(), "MultiPoint Z ((1 2 3),(11 22 33))")
-        self.assertEqual(collection.boundingBox(), QgsRectangle(1, 2, 11, 22))
+            collection.addGeometries([
+                QgsLineString([[100, 200], [200, 200]])]
+            ))
+        self.assertEqual(collection.asWkt(),
+                         'MultiPoint Z ((1 2 3),(11 22 33))')
+        self.assertEqual(collection.boundingBox(),
+                         QgsRectangle(1, 2, 11, 22))
 
-        self.assertTrue(collection.addGeometries([QgsPoint(100, 2, 3)]))
-        self.assertEqual(
-            collection.asWkt(), "MultiPoint Z ((1 2 3),(11 22 33),(100 2 3))"
+        self.assertTrue(
+            collection.addGeometries([
+                QgsPoint(100, 2, 3)])
         )
-        self.assertEqual(collection.boundingBox(), QgsRectangle(1, 2, 100, 22))
+        self.assertEqual(collection.asWkt(), 'MultiPoint Z ((1 2 3),(11 22 33),(100 2 3))')
+        self.assertEqual(collection.boundingBox(),
+                         QgsRectangle(1, 2, 100, 22))
 
     def test_simplify_by_distance(self):
         """
         test simplifyByDistance
         """
         p = QgsMultiPoint()
-        p.fromWkt("MultiPoint( 0 0, 50 0, 70 0, 80 0, 100 0)")
+        p.fromWkt('MultiPoint( 0 0, 50 0, 70 0, 80 0, 100 0)')
         # this is just a clone
-        self.assertEqual(
-            p.simplifyByDistance(10).asWkt(),
-            "MultiPoint ((0 0),(50 0),(70 0),(80 0),(100 0))",
-        )
+        self.assertEqual(p.simplifyByDistance(10).asWkt(), 'MultiPoint ((0 0),(50 0),(70 0),(80 0),(100 0))')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

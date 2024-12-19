@@ -6,6 +6,7 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
+
 from qgis.PyQt.QtTest import QSignalSpy
 from qgis.gui import QgsPercentageWidget
 import unittest
@@ -17,7 +18,7 @@ start_app()
 class TestQgsPercentageWidget(QgisTestCase):
 
     def testGettersSetters(self):
-        """test widget getters/setters"""
+        """ test widget getters/setters """
         w = QgsPercentageWidget()
 
         w.setValue(0.2)
@@ -30,7 +31,7 @@ class TestQgsPercentageWidget(QgisTestCase):
         self.assertEqual(w.value(), 1.0)
 
     def test_ChangedSignals(self):
-        """test that signals are correctly emitted when setting value"""
+        """ test that signals are correctly emitted when setting value"""
 
         w = QgsPercentageWidget()
 
@@ -46,5 +47,5 @@ class TestQgsPercentageWidget(QgisTestCase):
         self.assertEqual(spy[1][0], 1.0)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

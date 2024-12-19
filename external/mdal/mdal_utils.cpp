@@ -839,14 +839,10 @@ std::string MDAL::coordinateToString( double coordinate, int precision )
   return returnString;
 }
 
-std::string MDAL::doubleToString( double value, int precision, bool forceScientific )
+std::string MDAL::doubleToString( double value, int precision )
 {
   std::ostringstream oss;
   oss.precision( precision );
-  if ( forceScientific )
-  {
-    oss.setf( std::ios::scientific );
-  }
   oss << value;
   return oss.str();
 }

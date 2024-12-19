@@ -49,7 +49,7 @@ Sets the original value variable value for data defined symbology
               before any data defined overrides have been applied.
 %End
 
- Qgis::RenderUnit outputUnit() const /Deprecated="Since 3.40. No longer used and will be removed in QGIS 4.0."/;
+ Qgis::RenderUnit outputUnit() const /Deprecated/;
 %Docstring
 Returns the output unit for the context.
 
@@ -58,7 +58,7 @@ Returns the output unit for the context.
    No longer used and will be removed in QGIS 4.0.
 %End
 
- void setOutputUnit( Qgis::RenderUnit u ) /Deprecated="Since 3.40. No longer used and will be removed in QGIS 4.0."/;
+ void setOutputUnit( Qgis::RenderUnit u ) /Deprecated/;
 %Docstring
 Sets the output unit for the context.
 
@@ -67,7 +67,7 @@ Sets the output unit for the context.
    No longer used and will be removed in QGIS 4.0.
 %End
 
- QgsMapUnitScale mapUnitScale() const /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
+ QgsMapUnitScale mapUnitScale() const /Deprecated/;
 %Docstring
 
 .. deprecated:: 3.40
@@ -75,7 +75,7 @@ Sets the output unit for the context.
    Will be removed in QGIS 4.0.
 %End
 
- void setMapUnitScale( const QgsMapUnitScale &scale ) /Deprecated="Since 3.40. Will be removed in QGIS 4.0."/;
+ void setMapUnitScale( const QgsMapUnitScale &scale ) /Deprecated/;
 %Docstring
 
 .. deprecated:: 3.40
@@ -197,7 +197,7 @@ Part number of current geometry
 Sets the part number of current geometry
 %End
 
- double outputLineWidth( double width ) const /Deprecated="Since 3.40. Use the size conversion methods in QgsRenderContext instead."/;
+ double outputLineWidth( double width ) const /Deprecated/;
 %Docstring
 
 .. deprecated:: 3.40
@@ -205,7 +205,7 @@ Sets the part number of current geometry
    Use the size conversion methods in :py:class:`QgsRenderContext` instead.
 %End
 
- double outputPixelSize( double size ) const /Deprecated="Since 3.40. Use the size conversion methods in QgsRenderContext instead."/;
+ double outputPixelSize( double size ) const /Deprecated/;
 %Docstring
 
 .. deprecated:: 3.40

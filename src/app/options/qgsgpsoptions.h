@@ -31,6 +31,7 @@ class APP_EXPORT QgsGpsOptionsWidget : public QgsOptionsPageWidget, private Ui::
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsGpsOptionsWidget with the specified \a parent widget.
      */
@@ -44,6 +45,7 @@ class APP_EXPORT QgsGpsOptionsWidget : public QgsOptionsPageWidget, private Ui::
     void timestampFormatChanged( int index );
 
   private:
+
     void updateTimeZones();
 
     bool mBlockStoringChanges = false;
@@ -59,11 +61,13 @@ class QgsGpsOptionsFactory : public QgsOptionsWidgetFactory
     Q_OBJECT
 
   public:
+
     QgsGpsOptionsFactory();
 
     QIcon icon() const override;
     QgsOptionsPageWidget *createWidget( QWidget *parent = nullptr ) const override;
     QString pagePositionHint() const override;
+
 };
 
 

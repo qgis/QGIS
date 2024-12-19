@@ -1,4 +1,4 @@
-"""
+'''
 test_qgstabwidget.py
                      --------------------------------------
                Date                 : September 2016
@@ -12,7 +12,7 @@ test_qgstabwidget.py
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-"""
+'''
 
 from qgis.PyQt.QtWidgets import QWidget
 from qgis.gui import QgsTabWidget
@@ -39,24 +39,24 @@ class TestQgsTabWidget(QgisTestCase):
         wdg2 = QWidget()
         wdg3 = QWidget()
 
-        tabWidget.addTab(wdg1, "1")
-        tabWidget.addTab(wdg2, "2")
-        tabWidget.addTab(wdg3, "3")
+        tabWidget.addTab(wdg1, '1')
+        tabWidget.addTab(wdg2, '2')
+        tabWidget.addTab(wdg3, '3')
 
         tabWidget.hideTab(wdg2)
         self.assertEqual(tabWidget.count(), 2)
         tabWidget.showTab(wdg2)
         self.assertEqual(tabWidget.count(), 3)
 
-        self.assertEqual(tabWidget.tabText(0), "1")
-        self.assertEqual(tabWidget.tabText(1), "2")
-        self.assertEqual(tabWidget.tabText(2), "3")
+        self.assertEqual(tabWidget.tabText(0), '1')
+        self.assertEqual(tabWidget.tabText(1), '2')
+        self.assertEqual(tabWidget.tabText(2), '3')
 
         tabWidget.hideTab(wdg2)
         tabWidget.removeTab(1)
-        self.assertEqual(tabWidget.tabText(0), "1")
+        self.assertEqual(tabWidget.tabText(0), '1')
         tabWidget.showTab(wdg2)
-        self.assertEqual(tabWidget.tabText(1), "2")
+        self.assertEqual(tabWidget.tabText(1), '2')
         self.assertEqual(tabWidget.count(), 2)
 
         # Show an already visible tab
@@ -82,5 +82,5 @@ class TestQgsTabWidget(QgisTestCase):
         self.assertEqual(tabWidget.count(), 0)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

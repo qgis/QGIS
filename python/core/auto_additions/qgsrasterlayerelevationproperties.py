@@ -2,5 +2,5 @@
 try:
     QgsRasterLayerElevationProperties.layerLooksLikeDem = staticmethod(QgsRasterLayerElevationProperties.layerLooksLikeDem)
     QgsRasterLayerElevationProperties.__group__ = ['raster']
-except (NameError, AttributeError):
+except NameError:
     pass

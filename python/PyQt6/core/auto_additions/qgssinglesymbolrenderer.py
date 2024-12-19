@@ -4,5 +4,5 @@ try:
     QgsSingleSymbolRenderer.create = staticmethod(QgsSingleSymbolRenderer.create)
     QgsSingleSymbolRenderer.convertFromRenderer = staticmethod(QgsSingleSymbolRenderer.convertFromRenderer)
     QgsSingleSymbolRenderer.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

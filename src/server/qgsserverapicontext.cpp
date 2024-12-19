@@ -20,9 +20,14 @@
 #include "qgsproject.h"
 #include "qgsserverinterface.h"
 
-QgsServerApiContext::QgsServerApiContext( const QString &apiRootPath, const QgsServerRequest *request, QgsServerResponse *response, const QgsProject *project, QgsServerInterface *serverInterface )
-  : mApiRootPath( apiRootPath ), mRequest( request ), mResponse( response ), mProject( project ), mServerInterface( serverInterface )
+QgsServerApiContext::QgsServerApiContext( const QString &apiRootPath, const QgsServerRequest *request, QgsServerResponse *response, const QgsProject *project, QgsServerInterface *serverInterface ):
+  mApiRootPath( apiRootPath ),
+  mRequest( request ),
+  mResponse( response ),
+  mProject( project ),
+  mServerInterface( serverInterface )
 {
+
 }
 
 const QgsServerRequest *QgsServerApiContext::request() const
@@ -54,8 +59,8 @@ QgsServerInterface *QgsServerApiContext::serverInterface() const
 
 const QString QgsServerApiContext::matchedPath() const
 {
-  QString path { mRequest->url().path() };
-  const auto idx { path.indexOf( mApiRootPath ) };
+  QString path { mRequest->url().path( )};
+  const auto idx { path.indexOf( mApiRootPath )};
   if ( idx != -1 )
   {
     path.truncate( idx + mApiRootPath.length() );
@@ -81,7 +86,7 @@ QString QgsServerApiContext::handlerPath() const
 {
   const QUrl url { request()->url() };
   const QString urlBasePath { matchedPath() };
-  if ( !urlBasePath.isEmpty() )
+  if ( ! urlBasePath.isEmpty() )
   {
     return url.path().mid( urlBasePath.length() );
   }

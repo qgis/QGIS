@@ -20,12 +20,10 @@ email                : brush.tyler@gmail.com
 
 from qgis.core import QgsMessageLog
 from ..plugin import BaseError
-from ..data_model import (
-    TableDataModel,
-    SqlResultModel,
-    SqlResultModelAsync,
-    SqlResultModelTask,
-)
+from ..data_model import (TableDataModel,
+                          SqlResultModel,
+                          SqlResultModelAsync,
+                          SqlResultModelTask)
 from .plugin import SLDatabase
 
 
@@ -38,7 +36,7 @@ class SLTableDataModel(TableDataModel):
         table_txt = self.db.quoteId((self.table.schemaName(), self.table.name))
 
         # run query and get results
-        sql = f"SELECT {fields_txt} FROM {table_txt}"
+        sql = "SELECT %s FROM %s" % (fields_txt, table_txt)
         c = self.db._get_cursor()
         self.db._execute(c, sql)
 
@@ -59,7 +57,7 @@ class SLTableDataModel(TableDataModel):
         if dataType[-10:] == "COLLECTION":
             dataType = dataType[:-10]
         if dataType in ["POINT", "LINESTRING", "POLYGON", "GEOMETRY"]:
-            return "GeometryType(%s)" % self.db.quoteId(field.name)
+            return 'GeometryType(%s)' % self.db.quoteId(field.name)
         return self.db.quoteId(field.name)
 
     def rowCount(self, index=None):

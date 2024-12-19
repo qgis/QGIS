@@ -27,13 +27,16 @@
  *
  * Algorithm from Riley et al. 1999: A terrain ruggedness index that quantifies topographic heterogeneity
 */
-class ANALYSIS_EXPORT QgsRuggednessFilter : public QgsNineCellFilter
+class ANALYSIS_EXPORT QgsRuggednessFilter: public QgsNineCellFilter
 {
   public:
     QgsRuggednessFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
 
   protected:
-    float processNineCellWindow( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 ) override;
+
+    float processNineCellWindow( float *x11, float *x21, float *x31,
+                                 float *x12, float *x22, float *x32,
+                                 float *x13, float *x23, float *x33 ) override;
 
 #ifdef HAVE_OPENCL
   private:
@@ -44,6 +47,7 @@ class ANALYSIS_EXPORT QgsRuggednessFilter : public QgsNineCellFilter
       return QStringLiteral( "ruggedness" );
     }
 #endif
+
 };
 
 #endif // QGSRUGGEDNESSFILTER_H

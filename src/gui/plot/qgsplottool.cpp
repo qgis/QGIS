@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsplottool.h"
-#include "moc_qgsplottool.cpp"
 #include "qgsplotcanvas.h"
 #include "qgsplotmouseevent.h"
 
@@ -28,7 +27,8 @@ QgsPlotTool::QgsPlotTool( QgsPlotCanvas *canvas, const QString &name )
   , mCanvas( canvas )
   , mToolName( name )
 {
-  connect( mCanvas, &QgsPlotCanvas::willBeDeleted, this, [=] {
+  connect( mCanvas, &QgsPlotCanvas::willBeDeleted, this, [ = ]
+  {
     mCanvas = nullptr;
   } );
 }

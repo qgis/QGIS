@@ -218,7 +218,7 @@ decoded orientation.
 If the string was correctly decoded, ``ok`` will be set to ``True``.
 %End
 
- static double scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style ) /Deprecated="Since 3.40. Use the variant with a QPainter argument instead."/;
+ static double scaleFactorFromItemStyle( const QStyleOptionGraphicsItem *style ) /Deprecated/;
 %Docstring
 Extracts the scale factor from an item ``style``.
 

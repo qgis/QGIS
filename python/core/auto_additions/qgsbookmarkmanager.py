@@ -4,9 +4,9 @@ try:
     QgsBookmarkManager.createProjectBasedManager = staticmethod(QgsBookmarkManager.createProjectBasedManager)
     QgsBookmarkManager.exportToFile = staticmethod(QgsBookmarkManager.exportToFile)
     QgsBookmarkManager.__signal_arguments__ = {'bookmarkAboutToBeAdded': ['id: str'], 'bookmarkAdded': ['id: str'], 'bookmarkRemoved': ['id: str'], 'bookmarkAboutToBeRemoved': ['id: str'], 'bookmarkChanged': ['id: str']}
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsBookmark.fromXml = staticmethod(QgsBookmark.fromXml)
-except (NameError, AttributeError):
+except NameError:
     pass

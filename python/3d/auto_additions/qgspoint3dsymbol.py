@@ -4,5 +4,5 @@ try:
     QgsPoint3DSymbol.shapeFromString = staticmethod(QgsPoint3DSymbol.shapeFromString)
     QgsPoint3DSymbol.shapeToString = staticmethod(QgsPoint3DSymbol.shapeToString)
     QgsPoint3DSymbol.__group__ = ['symbols']
-except (NameError, AttributeError):
+except NameError:
     pass

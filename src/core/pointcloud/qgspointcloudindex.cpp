@@ -24,66 +24,64 @@
 #include <QJsonObject>
 #include <QTime>
 #include <QtDebug>
-#include <qglobal.h>
 
-#include "qgsbox3d.h"
 #include "qgstiledownloadmanager.h"
 #include "qgspointcloudstatistics.h"
 #include "qgslogger.h"
 
-QgsPointCloudNodeId::QgsPointCloudNodeId():
+IndexedPointCloudNode::IndexedPointCloudNode():
   mD( -1 ),
   mX( 0 ),
   mY( 0 ),
   mZ( 0 )
 {}
 
-QgsPointCloudNodeId::QgsPointCloudNodeId( int _d, int _x, int _y, int _z ):
+IndexedPointCloudNode::IndexedPointCloudNode( int _d, int _x, int _y, int _z ):
   mD( _d ),
   mX( _x ),
   mY( _y ),
   mZ( _z )
 {}
 
-QgsPointCloudNodeId QgsPointCloudNodeId::parentNode() const
+IndexedPointCloudNode IndexedPointCloudNode::parentNode() const
 {
-  return QgsPointCloudNodeId( mD - 1, mX / 2, mY / 2, mZ / 2 );
+  return IndexedPointCloudNode( mD - 1, mX / 2, mY / 2, mZ / 2 );
 }
 
-QgsPointCloudNodeId QgsPointCloudNodeId::fromString( const QString &str )
+IndexedPointCloudNode IndexedPointCloudNode::fromString( const QString &str )
 {
   QStringList lst = str.split( '-' );
   if ( lst.count() != 4 )
-    return QgsPointCloudNodeId();
-  return QgsPointCloudNodeId( lst[0].toInt(), lst[1].toInt(), lst[2].toInt(), lst[3].toInt() );
+    return IndexedPointCloudNode();
+  return IndexedPointCloudNode( lst[0].toInt(), lst[1].toInt(), lst[2].toInt(), lst[3].toInt() );
 }
 
-QString QgsPointCloudNodeId::toString() const
+QString IndexedPointCloudNode::toString() const
 {
   return QStringLiteral( "%1-%2-%3-%4" ).arg( mD ).arg( mX ).arg( mY ).arg( mZ );
 }
 
-int QgsPointCloudNodeId::d() const
+int IndexedPointCloudNode::d() const
 {
   return mD;
 }
 
-int QgsPointCloudNodeId::x() const
+int IndexedPointCloudNode::x() const
 {
   return mX;
 }
 
-int QgsPointCloudNodeId::y() const
+int IndexedPointCloudNode::y() const
 {
   return mY;
 }
 
-int QgsPointCloudNodeId::z() const
+int IndexedPointCloudNode::z() const
 {
   return mZ;
 }
 
-uint qHash( QgsPointCloudNodeId id )
+uint qHash( IndexedPointCloudNode id )
 {
   return id.d() + id.x() + id.y() + id.z();
 }
@@ -94,7 +92,7 @@ uint qHash( QgsPointCloudNodeId id )
 // QgsPointCloudCacheKey
 //
 
-QgsPointCloudCacheKey::QgsPointCloudCacheKey( const QgsPointCloudNodeId &n, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri )
+QgsPointCloudCacheKey::QgsPointCloudCacheKey( const IndexedPointCloudNode &n, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri )
   : mNode( n )
   , mUri( uri )
   , mRequest( request )
@@ -116,32 +114,63 @@ uint qHash( const QgsPointCloudCacheKey &key )
 }
 
 //
-// QgsPointCloudNode
+// QgsPointCloudDataBounds
 //
 
-QgsBox3D QgsPointCloudNode::bounds() const
+QgsPointCloudDataBounds::QgsPointCloudDataBounds() = default;
+
+QgsPointCloudDataBounds::QgsPointCloudDataBounds( qint64 xmin, qint64 ymin, qint64 zmin, qint64 xmax, qint64 ymax, qint64 zmax )
+  : mXMin( xmin )
+  , mYMin( ymin )
+  , mZMin( zmin )
+  , mXMax( xmax )
+  , mYMax( ymax )
+  , mZMax( zmax )
 {
-  return mBounds;
+
 }
 
-QgsBox3D QgsPointCloudNode::bounds( QgsBox3D rootBounds, QgsPointCloudNodeId id )
+qint64 QgsPointCloudDataBounds::xMin() const
 {
-  const double d = rootBounds.xMaximum() - rootBounds.xMinimum();
-  const double dLevel = d / pow( 2, id.d() );
-
-  const double xMin = rootBounds.xMinimum() + dLevel * id.x();
-  const double xMax = rootBounds.xMinimum() + dLevel * ( id.x() + 1 );
-  const double yMin = rootBounds.yMinimum() + dLevel * id.y();
-  const double yMax = rootBounds.yMinimum() + dLevel * ( id.y() + 1 );
-  const double zMin = rootBounds.zMinimum() + dLevel * id.z();
-  const double zMax = rootBounds.zMinimum() + dLevel * ( id.z() + 1 );
-
-  return QgsBox3D( xMin, yMin, zMin, xMax, yMax, zMax );
+  return mXMin;
 }
 
-float QgsPointCloudNode::error() const
+qint64 QgsPointCloudDataBounds::yMin() const
 {
-  return mError;
+  return mYMin;
+}
+
+qint64 QgsPointCloudDataBounds::xMax() const
+{
+  return mXMax;
+}
+
+qint64 QgsPointCloudDataBounds::yMax() const
+{
+  return mYMax;
+}
+
+qint64 QgsPointCloudDataBounds::zMin() const
+{
+  return mZMin;
+}
+
+qint64 QgsPointCloudDataBounds::zMax() const
+{
+  return mZMax;
+}
+
+QgsRectangle QgsPointCloudDataBounds::mapExtent( const QgsVector3D &offset, const QgsVector3D &scale ) const
+{
+  return QgsRectangle(
+           mXMin * scale.x() + offset.x(), mYMin * scale.y() + offset.y(),
+           mXMax * scale.x() + offset.x(), mYMax * scale.y() + offset.y()
+         );
+}
+
+QgsDoubleRange QgsPointCloudDataBounds::zRange( const QgsVector3D &offset, const QgsVector3D &scale ) const
+{
+  return QgsDoubleRange( mZMin * scale.z() + offset.z(), mZMax * scale.z() + offset.z() );
 }
 
 ///@endcond
@@ -157,45 +186,75 @@ QgsPointCloudIndex::QgsPointCloudIndex() = default;
 
 QgsPointCloudIndex::~QgsPointCloudIndex() = default;
 
-bool QgsPointCloudIndex::hasNode( const QgsPointCloudNodeId &n ) const
+bool QgsPointCloudIndex::hasNode( const IndexedPointCloudNode &n ) const
 {
   QMutexLocker locker( &mHierarchyMutex );
   return mHierarchy.contains( n );
 }
 
-QgsPointCloudNode QgsPointCloudIndex::getNode( const QgsPointCloudNodeId &id ) const
+qint64 QgsPointCloudIndex::nodePointCount( const IndexedPointCloudNode &n ) const
 {
-  Q_ASSERT( hasNode( id ) );
+  QMutexLocker locker( &mHierarchyMutex );
+  return mHierarchy.value( n, -1 );
+}
 
-  qint64 pointCount;
+QList<IndexedPointCloudNode> QgsPointCloudIndex::nodeChildren( const IndexedPointCloudNode &n ) const
+{
+  QMutexLocker locker( &mHierarchyMutex );
+  Q_ASSERT( mHierarchy.contains( n ) );
+  QList<IndexedPointCloudNode> lst;
+  const int d = n.d() + 1;
+  const int x = n.x() * 2;
+  const int y = n.y() * 2;
+  const int z = n.z() * 2;
+
+  for ( int i = 0; i < 8; ++i )
   {
-    QMutexLocker locker( &mHierarchyMutex );
-    pointCount = mHierarchy.value( id, -1 );
+    int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
+    const IndexedPointCloudNode n2( d, x + dx, y + dy, z + dz );
+    if ( mHierarchy.contains( n2 ) )
+      lst.append( n2 );
   }
-
-  QList<QgsPointCloudNodeId> children;
-  {
-    const int d = id.d() + 1;
-    const int x = id.x() * 2;
-    const int y = id.y() * 2;
-    const int z = id.z() * 2;
-
-    for ( int i = 0; i < 8; ++i )
-    {
-      int dx = i & 1, dy = !!( i & 2 ), dz = !!( i & 4 );
-      const QgsPointCloudNodeId n2( d, x + dx, y + dy, z + dz );
-      if ( hasNode( n2 ) )
-        children.append( n2 );
-    }
-  }
-
-  QgsBox3D bounds = QgsPointCloudNode::bounds( mRootBounds, id );
-  return QgsPointCloudNode( id, pointCount, children, bounds.width() / mSpan, bounds );
+  return lst;
 }
 
 QgsPointCloudAttributeCollection QgsPointCloudIndex::attributes() const
 {
   return mAttributes;
+}
+
+QgsPointCloudDataBounds QgsPointCloudIndex::nodeBounds( const IndexedPointCloudNode &n ) const
+{
+  qint64 xMin, yMin, zMin, xMax, yMax, zMax;
+
+  const qint64 d = mRootBounds.xMax() - mRootBounds.xMin();
+  const double dLevel = ( double )d / pow( 2, n.d() );
+
+  xMin = round( mRootBounds.xMin() + dLevel * n.x() );
+  xMax = round( mRootBounds.xMin() + dLevel * ( n.x() + 1 ) );
+  yMin = round( mRootBounds.yMin() + dLevel * n.y() );
+  yMax = round( mRootBounds.yMin() + dLevel * ( n.y() + 1 ) );
+  zMin = round( mRootBounds.zMin() + dLevel * n.z() );
+  zMax = round( mRootBounds.zMin() + dLevel * ( n.z() + 1 ) );
+
+  QgsPointCloudDataBounds db( xMin, yMin, zMin, xMax, yMax, zMax );
+  return db;
+}
+
+QgsRectangle QgsPointCloudIndex::nodeMapExtent( const IndexedPointCloudNode &node ) const
+{
+  return nodeBounds( node ).mapExtent( mOffset, mScale );
+}
+
+QgsDoubleRange QgsPointCloudIndex::nodeZRange( const IndexedPointCloudNode &node ) const
+{
+  return nodeBounds( node ).zRange( mOffset, mScale );
+}
+
+float QgsPointCloudIndex::nodeError( const IndexedPointCloudNode &n ) const
+{
+  const double w = nodeMapExtent( n ).width();
+  return w / mSpan;
 }
 
 QgsVector3D QgsPointCloudIndex::scale() const
@@ -216,6 +275,14 @@ void QgsPointCloudIndex::setAttributes( const QgsPointCloudAttributeCollection &
 int QgsPointCloudIndex::span() const
 {
   return mSpan;
+}
+
+int QgsPointCloudIndex::nodePointCount( const IndexedPointCloudNode &n )
+{
+  mHierarchyMutex.lock();
+  const int count = mHierarchy.value( n, -1 );
+  mHierarchyMutex.unlock();
+  return count;
 }
 
 bool QgsPointCloudIndex::setSubsetString( const QString &subset )
@@ -247,16 +314,66 @@ QString QgsPointCloudIndex::subsetString() const
   return mFilterExpression;
 }
 
+QVariant QgsPointCloudIndex::metadataStatistic( const QString &attribute, Qgis::Statistic statistic ) const
+{
+  if ( attribute == QLatin1String( "X" ) && statistic == Qgis::Statistic::Min )
+    return mExtent.xMinimum();
+  if ( attribute == QLatin1String( "X" ) && statistic == Qgis::Statistic::Max )
+    return mExtent.xMaximum();
+
+  if ( attribute == QLatin1String( "Y" ) && statistic == Qgis::Statistic::Min )
+    return mExtent.yMinimum();
+  if ( attribute == QLatin1String( "Y" ) && statistic == Qgis::Statistic::Max )
+    return mExtent.yMaximum();
+
+  if ( attribute == QLatin1String( "Z" ) && statistic == Qgis::Statistic::Min )
+    return mZMin;
+  if ( attribute == QLatin1String( "Z" ) && statistic == Qgis::Statistic::Max )
+    return mZMax;
+
+  return QVariant();
+}
+
+QVariantList QgsPointCloudIndex::metadataClasses( const QString &attribute ) const
+{
+  Q_UNUSED( attribute );
+  return QVariantList();
+}
+
+QVariant QgsPointCloudIndex::metadataClassStatistic( const QString &attribute, const QVariant &value, Qgis::Statistic statistic ) const
+{
+  Q_UNUSED( attribute );
+  Q_UNUSED( value );
+  Q_UNUSED( statistic );
+  return QVariant();
+}
+
 QgsPointCloudStatistics QgsPointCloudIndex::metadataStatistics() const
 {
   QMap<QString, QgsPointCloudAttributeStatistics> statsMap;
-  statsMap[ "X" ].minimum = mExtent.xMinimum();
-  statsMap[ "X" ].maximum = mExtent.xMaximum();
-  statsMap[ "Y" ].minimum = mExtent.yMinimum();
-  statsMap[ "Y" ].maximum = mExtent.yMinimum();
-  statsMap[ "Z" ].minimum = mZMin;
-  statsMap[ "Z" ].maximum = mZMax;
+  for ( QgsPointCloudAttribute attribute : attributes().attributes() )
+  {
+    QString name = attribute.name();
+    QgsPointCloudAttributeStatistics s;
+    QVariant min = metadataStatistic( name, Qgis::Statistic::Min );
+    QVariant max = metadataStatistic( name, Qgis::Statistic::Max );
+    QVariant mean = metadataStatistic( name, Qgis::Statistic::Mean );
+    QVariant stDev = metadataStatistic( name, Qgis::Statistic::StDev );
+    if ( !min.isValid() )
+      continue;
 
+    s.minimum = min.toDouble();
+    s.maximum = max.toDouble();
+    s.mean = mean.toDouble();
+    s.stDev = stDev.toDouble();
+    s.count = metadataStatistic( name, Qgis::Statistic::Count ).toInt();
+    QVariantList classes = metadataClasses( name );
+    for ( QVariant c : classes )
+    {
+      s.classCount[ c.toInt() ] = metadataClassStatistic( name, c, Qgis::Statistic::Count ).toInt();
+    }
+    statsMap[ name ] = s;
+  }
   return QgsPointCloudStatistics( pointCount(), statsMap );
 }
 
@@ -276,7 +393,7 @@ void QgsPointCloudIndex::copyCommonProperties( QgsPointCloudIndex *destination )
   destination->mFilterExpression = mFilterExpression;
 }
 
-QgsPointCloudBlock *QgsPointCloudIndex::getNodeDataFromCache( const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request )
+QgsPointCloudBlock *QgsPointCloudIndex::getNodeDataFromCache( const IndexedPointCloudNode &node, const QgsPointCloudRequest &request )
 {
   QgsPointCloudCacheKey key( node, request, mFilterExpression, mUri );
 
@@ -285,12 +402,12 @@ QgsPointCloudBlock *QgsPointCloudIndex::getNodeDataFromCache( const QgsPointClou
   return cached ? cached->clone() : nullptr;
 }
 
-void QgsPointCloudIndex::storeNodeDataToCache( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request ) const
+void QgsPointCloudIndex::storeNodeDataToCache( QgsPointCloudBlock *data, const IndexedPointCloudNode &node, const QgsPointCloudRequest &request )
 {
   storeNodeDataToCacheStatic( data, node, request, mFilterExpression, mUri );
 }
 
-void QgsPointCloudIndex::storeNodeDataToCacheStatic( QgsPointCloudBlock *data, const QgsPointCloudNodeId &node, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri )
+void QgsPointCloudIndex::storeNodeDataToCacheStatic( QgsPointCloudBlock *data, const IndexedPointCloudNode &node, const QgsPointCloudRequest &request, const QgsPointCloudExpression &expression, const QString &uri )
 {
   if ( !data )
     return;

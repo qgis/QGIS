@@ -40,23 +40,24 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     Q_OBJECT
 
   public:
+
     /**
      * Specifies the color component which the widget alters
      */
     enum ColorComponent
     {
       Multiple = 0, //!< Widget alters multiple color components
-      Red,          //!< Red component of color
-      Green,        //!< Green component of color
-      Blue,         //!< Blue component of color
-      Hue,          //!< Hue component of color (based on HSV model)
-      Saturation,   //!< Saturation component of color (based on HSV model)
-      Value,        //!< Value component of color (based on HSV model)
-      Alpha,        //!< Alpha component (opacity) of color
-      Cyan,         //!< Cyan component (based on CMYK model) of color
-      Magenta,      //!< Magenta component (based on CMYK model) of color
-      Yellow,       //!< Yellow component (based on CMYK model) of color
-      Black         //!< Black component (based on CMYK model) of color
+      Red, //!< Red component of color
+      Green, //!< Green component of color
+      Blue, //!< Blue component of color
+      Hue, //!< Hue component of color (based on HSV model)
+      Saturation, //!< Saturation component of color (based on HSV model)
+      Value, //!< Value component of color (based on HSV model)
+      Alpha, //!< Alpha component (opacity) of color
+      Cyan, //!< Cyan component (based on CMYK model) of color
+      Magenta, //!< Magenta component (based on CMYK model) of color
+      Yellow, //!< Yellow component (based on CMYK model) of color
+      Black //!< Black component (based on CMYK model) of color
     };
 
     /**
@@ -65,8 +66,8 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     enum class ComponentUnit
     {
       Scaled0to255, //!< Values in the range 0-255
-      Percent,      //!< Percent values in the range 0-100
-      Degree        //!< Degree values in the range 0-359
+      Percent, //!< Percent values in the range 0-100
+      Degree //!< Degree values in the range 0-359
     };
     Q_ENUM( ComponentUnit )
 
@@ -178,6 +179,7 @@ class GUI_EXPORT QgsColorWidget : public QWidget
     void hovered();
 
   protected:
+
     QColor mCurrentColor;
 
     ColorComponent mComponent;
@@ -294,11 +296,12 @@ class GUI_EXPORT QgsColorWidget : public QWidget
  * \see QgsColorWidget
  */
 
-class GUI_EXPORT QgsColorWidgetAction : public QWidgetAction
+class GUI_EXPORT QgsColorWidgetAction: public QWidgetAction
 {
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new color widget action.
      * \param colorWidget QgsColorWidget to show in action
@@ -360,6 +363,7 @@ class GUI_EXPORT QgsColorWidgetAction : public QWidgetAction
 };
 
 
+
 /**
  * \ingroup gui
  * \class QgsColorWheel
@@ -372,6 +376,7 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructs a new color wheel widget.
      * \param parent parent QWidget for the widget
@@ -388,12 +393,14 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
     void setColor( const QColor &color, bool emitSignals = false ) override;
 
   protected:
+
     void resizeEvent( QResizeEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override;
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
 
   private:
+
     enum ControlPart
     {
       None,
@@ -447,6 +454,7 @@ class GUI_EXPORT QgsColorWheel : public QgsColorWidget
      * \param pos position for color
      */
     void setColorFromPos( QPointF pos );
+
 };
 
 
@@ -463,6 +471,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new color box widget.
      * \param parent parent QWidget for the widget
@@ -483,12 +492,14 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
     void setColor( const QColor &color, bool emitSignals = false ) override;
 
   protected:
+
     void resizeEvent( QResizeEvent *event ) override;
     void mouseMoveEvent( QMouseEvent *event ) override;
     void mousePressEvent( QMouseEvent *event ) override;
     void mouseReleaseEvent( QMouseEvent *event ) override;
 
   private:
+
     bool mIsDragging = false;
 
     /*Margin between outer ring and edge of widget*/
@@ -542,6 +553,7 @@ class GUI_EXPORT QgsColorBox : public QgsColorWidget
      * \param point point within the widget
      */
     void setColorFromPoint( QPoint point );
+
 };
 
 
@@ -557,13 +569,14 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
     Q_OBJECT
 
   public:
+
     /**
      * Specifies the orientation of a color ramp
      */
     enum Orientation
     {
       Horizontal = 0, //!< Horizontal ramp
-      Vertical        //!< Vertical ramp
+      Vertical //!< Vertical ramp
     };
 
     /**
@@ -572,7 +585,9 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
      * \param component color component which varies along the ramp
      * \param orientation orientation for widget
      */
-    QgsColorRampWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, ColorComponent component = QgsColorWidget::Red, Orientation orientation = QgsColorRampWidget::Horizontal );
+    QgsColorRampWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                        ColorComponent component = QgsColorWidget::Red,
+                        Orientation orientation = QgsColorRampWidget::Horizontal );
 
     QSize sizeHint() const override;
     void paintEvent( QPaintEvent *event ) override;
@@ -642,6 +657,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
     void valueChangedF( float value );
 
   protected:
+
     void mouseMoveEvent( QMouseEvent *event ) override;
     void wheelEvent( QWheelEvent *event ) override;
     void mousePressEvent( QMouseEvent *event ) override;
@@ -649,6 +665,7 @@ class GUI_EXPORT QgsColorRampWidget : public QgsColorWidget
     void keyPressEvent( QKeyEvent *event ) override;
 
   private:
+
     bool mIsDragging = false;
 
     /*Orientation for ramp*/
@@ -687,6 +704,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new color slider widget.
      * \param parent parent QWidget for the widget
@@ -699,6 +717,7 @@ class GUI_EXPORT QgsColorSliderWidget : public QgsColorWidget
     void setColor( const QColor &color, bool emitSignals = false ) override;
 
   private:
+
     /*Color ramp widget*/
     QgsColorRampWidget *mRampWidget = nullptr;
 
@@ -755,15 +774,16 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
     Q_OBJECT
 
   public:
+
     /**
      * Specifies the display format for a color
      */
     enum ColorTextFormat
     {
       HexRgb = 0, //!< \#RRGGBB in hexadecimal
-      HexRgbA,    //!< \#RRGGBBAA in hexadecimal, with alpha
-      Rgb,        //!< Rgb( r, g, b ) format
-      Rgba        //!< Rgba( r, g, b, a ) format, with alpha
+      HexRgbA, //!< \#RRGGBBAA in hexadecimal, with alpha
+      Rgb, //!< Rgb( r, g, b ) format
+      Rgba //!< Rgba( r, g, b, a ) format, with alpha
     };
     Q_ENUM( ColorTextFormat )
 
@@ -786,6 +806,7 @@ class GUI_EXPORT QgsColorTextWidget : public QgsColorWidget
     void resizeEvent( QResizeEvent *event ) override;
 
   private:
+
     QLineEdit *mLineEdit = nullptr;
 
     /*Drop-down menu button*/
@@ -826,6 +847,7 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
     Q_OBJECT
 
   public:
+
     /**
      * Construct a new color preview widget.
      * \param parent parent QWidget for the widget
@@ -856,6 +878,7 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
     virtual void setColor2( const QColor &color );
 
   protected:
+
     //reimplemented to allow dragging colors
     void mousePressEvent( QMouseEvent *e ) override;
 
@@ -866,6 +889,7 @@ class GUI_EXPORT QgsColorPreviewWidget : public QgsColorWidget
     void mouseMoveEvent( QMouseEvent *e ) override;
 
   private:
+
     /*Secondary color for widget*/
     QColor mColor2;
 

@@ -50,20 +50,21 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     Q_OBJECT
 
   public:
+
     //! Different capture modes
     enum CaptureMode
     {
-      CaptureNone,   //!< Do not capture / determine mode from layer geometry type
-      CapturePoint,  //!< Capture points
-      CaptureLine,   //!< Capture lines
-      CapturePolygon //!< Capture polygons
+      CaptureNone,    //!< Do not capture / determine mode from layer geometry type
+      CapturePoint,   //!< Capture points
+      CaptureLine,    //!< Capture lines
+      CapturePolygon  //!< Capture polygons
     };
 
     //! Specific capabilities of the tool
     enum Capability SIP_ENUM_BASETYPE( IntFlag )
     {
-      NoCapabilities = 1 << 0,     //!< No specific capabilities
-      SupportsCurves = 1 << 1,     //!< Supports curved geometries input
+      NoCapabilities = 1 << 0, //!< No specific capabilities
+      SupportsCurves = 1 << 1, //!< Supports curved geometries input
       ValidateGeometries = 1 << 2, //!< Tool supports geometry validation \since QGIS 3.22
     };
 
@@ -122,7 +123,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * Clear capture curve.
      *
      */
-    void clearCurve();
+    void clearCurve( );
 
     /**
      * Gets the capture curve
@@ -211,6 +212,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void updateExtraSnapLayer();
 
   protected:
+
     // TODO QGIS 4.0 returns an enum instead of a magic constant
 
     /**
@@ -337,33 +339,34 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void stopCapturing();
 
   private:
+
     /**
      * Called when the geometry is captured
      * A more specific handler is also called afterwards (pointCaptured, lineCaptured or polygonCaptured)
      * \since QGIS 3.26
      */
-    virtual void geometryCaptured( const QgsGeometry &geometry ) SIP_FORCE { Q_UNUSED( geometry ) }
+    virtual void geometryCaptured( const QgsGeometry &geometry ) {Q_UNUSED( geometry )} SIP_FORCE
 
     /**
      * Called when a point is captured
      * geometryCaptured is called just before
      * \since QGIS 3.26
      */
-    virtual void pointCaptured( const QgsPoint &point ) SIP_FORCE { Q_UNUSED( point ) }
+    virtual void pointCaptured( const QgsPoint &point ) {Q_UNUSED( point )} SIP_FORCE
 
     /**
      * Called when a line is captured
      * geometryCaptured is called just before
      * \since QGIS 3.26
      */
-    virtual void lineCaptured( const QgsCurve *line ) SIP_FORCE { Q_UNUSED( line ) }
+    virtual void lineCaptured( const QgsCurve *line ) {Q_UNUSED( line )} SIP_FORCE
 
     /**
      * Called when a polygon is captured
      * geometryCaptured is called just before
      * \since QGIS 3.26
      */
-    virtual void polygonCaptured( const QgsCurvePolygon *polygon ) SIP_FORCE { Q_UNUSED( polygon ) }
+    virtual void polygonCaptured( const QgsCurvePolygon *polygon ) {Q_UNUSED( polygon )} SIP_FORCE
 
     //! whether tracing has been requested by the user
     bool tracingEnabled();
@@ -405,8 +408,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     void validateGeometry();
     QgsGeometryValidator *mValidator = nullptr;
-    QList<QgsGeometry::Error> mGeomErrors;
-    QList<QgsVertexMarker *> mGeomErrorMarkers;
+    QList< QgsGeometry::Error > mGeomErrors;
+    QList< QgsVertexMarker * > mGeomErrorMarkers;
 
     //! A layer containing the current capture curve to provide additional snapping
     QgsVectorLayer *mExtraSnapLayer = nullptr;
@@ -430,7 +433,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     Qgis::CaptureTechnique mCurrentCaptureTechnique = Qgis::CaptureTechnique::StraightSegments;
 
-    QObjectUniquePtr<QgsMapToolShapeAbstract> mCurrentShapeMapTool;
+    QObjectUniquePtr< QgsMapToolShapeAbstract > mCurrentShapeMapTool;
 
     bool mAllowAddingStreamingPoints = false;
     int mStreamingToleranceInPixels = 1;
@@ -440,6 +443,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     bool mIgnoreSubsequentAutoRepeatUndo = false;
 
     friend class TestQgsMapToolCapture;
+
+
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapToolCapture::Capabilities )

@@ -14,16 +14,13 @@ import os
 from osgeo import gdal
 import unittest
 
-from test_authmanager_storage_base import (
-    AuthManagerStorageBaseTestCase,
-    TestAuthManagerStorageBase,
-)
+from test_authmanager_storage_base import AuthManagerStorageBaseTestCase, TestAuthManagerStorageBase
 from qgis.PyQt.QtCore import QTemporaryDir
 from qgis.core import QgsAuthConfigurationStorageDb
 
-__author__ = "Alessandro Pasotti"
-__date__ = "2024-06-24"
-__copyright__ = "Copyright 2024, The QGIS Project"
+__author__ = 'Alessandro Pasotti'
+__date__ = '2024-06-24'
+__copyright__ = 'Copyright 2024, The QGIS Project'
 
 
 class TestAuthStorageSqlite(AuthManagerStorageBaseTestCase, TestAuthManagerStorageBase):
@@ -36,8 +33,8 @@ class TestAuthStorageSqlite(AuthManagerStorageBaseTestCase, TestAuthManagerStora
         cls.temp_dir_path = cls.temp_dir.path()
 
         # Create an empty sqlite database using GDAL
-        cls.db_path = os.path.join(cls.temp_dir_path, "test.sqlite")
-        ds = gdal.GetDriverByName("SQLite").Create(cls.db_path, 0, 0, 0)
+        cls.db_path = os.path.join(cls.temp_dir_path, 'test.sqlite')
+        ds = gdal.GetDriverByName('SQLite').Create(cls.db_path, 0, 0, 0)
         del ds
 
         # Verify that the file was created
@@ -47,17 +44,17 @@ class TestAuthStorageSqlite(AuthManagerStorageBaseTestCase, TestAuthManagerStora
         cls.storage_uri = uri
         cls.storage = QgsAuthConfigurationStorageDb(uri)
 
-        assert cls.storage.type() == "DB-QSQLITE"
+        assert cls.storage.type() == 'DB-QSQLITE'
 
         super().setUpClass()
 
     def testCannotCreateDb(self):
         """Generic DB storage cannot create databases"""
 
-        path = os.path.join(self.temp_dir_path, "test_not_exist.sqlite")
+        path = os.path.join(self.temp_dir_path, 'test_not_exist.sqlite')
         storage = QgsAuthConfigurationStorageDb(self.storage_uri)
         assert not os.path.exists(path)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

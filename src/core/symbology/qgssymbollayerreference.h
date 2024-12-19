@@ -163,7 +163,7 @@ class CORE_EXPORT QgsSymbolLayerReference
 
     /**
      * The symbol layer's id
-     * \deprecated QGIS 3.30. Use symbolLayerIdV2() instead.
+     * \deprecated QGIS 3.30. Use symbolLayerIdV2 instead.
      */
     Q_DECL_DEPRECATED QgsSymbolLayerId symbolLayerId() const SIP_DEPRECATED { return mDeprecatedSymbolLayerId; }
 

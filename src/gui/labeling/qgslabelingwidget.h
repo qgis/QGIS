@@ -54,24 +54,6 @@ class GUI_EXPORT QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui:
      */
     QgsLabelingGui *labelingGui();
 
-    /**
-     * Shows the labeling engine rules.
-     *
-     * The rules widget will either be shown as a dialog or an inline panel, depending on the \a parent widget.
-     *
-     * \since QGIS 3.42
-     */
-    static void showLabelingEngineRules( QWidget *parent, QgsMapCanvas *canvas );
-
-    /**
-     * Shows the labeling engine configuration.
-     *
-     * The config widget will either be shown as a dialog or an inline panel, depending on the \a parent widget.
-     *
-     * \since QGIS 3.42
-     */
-    static void showEngineConfiguration( QWidget *parent, QgsMapCanvas *canvas );
-
   public slots:
     //! Sets the layer to configure
     void setLayer( QgsMapLayer *layer );
@@ -93,10 +75,11 @@ class GUI_EXPORT QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui:
 
   private slots:
     void labelModeChanged( int index );
-    void showLabelingEngineRulesPrivate();
-    void showEngineConfigDialogPrivate();
+    void showLabelingEngineRules();
+    void showEngineConfigDialog();
 
   private:
+
     enum Mode
     {
       ModeNone,
@@ -110,8 +93,8 @@ class GUI_EXPORT QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui:
     QgsMessageBar *mMessageBar = nullptr;
 
     QWidget *mWidget = nullptr;
-    std::unique_ptr<QgsPalLayerSettings> mSimpleSettings;
-    std::unique_ptr<QgsAbstractVectorLayerLabeling> mOldSettings;
+    std::unique_ptr< QgsPalLayerSettings > mSimpleSettings;
+    std::unique_ptr< QgsAbstractVectorLayerLabeling > mOldSettings;
     bool mOldLabelsEnabled = false;
 };
 

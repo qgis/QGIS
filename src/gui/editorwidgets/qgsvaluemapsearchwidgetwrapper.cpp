@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsvaluemapsearchwidgetwrapper.h"
-#include "moc_qgsvaluemapsearchwidgetwrapper.cpp"
 #include "qgstexteditconfigdlg.h"
 #include "qgsvaluemapconfigdlg.h"
 #include "qgsvaluemapfieldformatter.h"
@@ -159,7 +158,9 @@ void QgsValueMapSearchWidgetWrapper::setExpression( const QString &expression )
   QString str;
 
   str = QStringLiteral( "%1 = '%2'" )
-          .arg( QgsExpression::quotedColumnRef( fieldName ), exp.replace( '\'', QLatin1String( "''" ) ) );
+        .arg( QgsExpression::quotedColumnRef( fieldName ),
+              exp.replace( '\'', QLatin1String( "''" ) ) );
 
   mExpression = str;
 }
+

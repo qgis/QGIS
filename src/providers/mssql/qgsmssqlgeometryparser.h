@@ -30,12 +30,14 @@
 #include "qgspoint.h"
 
 
+
 /**
  * \class QgsMssqlGeometryParser
  * \brief Geometry parser for SqlGeometry/SqlGeography.
 */
 class QgsMssqlGeometryParser
 {
+
   protected:
     unsigned char *mData = nullptr;
     /* version information */
@@ -62,18 +64,18 @@ class QgsMssqlGeometryParser
     QgsPoint readCoordinates( int iPoint ) const;
     void readCoordinates( int iPoint, int iNextPoint, double *x, double *y, double *z, double *m ) const;
     const QgsPointSequence readPointSequence( int iPoint, int iNextPoint ) const;
-    std::unique_ptr<QgsPoint> readPoint( int iShape );
-    std::unique_ptr<QgsMultiPoint> readMultiPoint( int iShape );
-    std::unique_ptr<QgsLineString> readLineString( int iPoint, int iNextPoint );
-    std::unique_ptr<QgsLineString> readLineString( int iFigure );
-    std::unique_ptr<QgsCircularString> readCircularString( int iPoint, int iNextPoint );
-    std::unique_ptr<QgsCircularString> readCircularString( int iFigure );
-    std::unique_ptr<QgsMultiLineString> readMultiLineString( int iShape );
-    std::unique_ptr<QgsPolygon> readPolygon( int iShape );
-    std::unique_ptr<QgsMultiPolygon> readMultiPolygon( int iShape );
-    std::unique_ptr<QgsCompoundCurve> readCompoundCurve( int iFigure );
-    std::unique_ptr<QgsCurvePolygon> readCurvePolygon( int iShape );
-    std::unique_ptr<QgsGeometryCollection> readGeometryCollection( int iShape );
+    std::unique_ptr< QgsPoint > readPoint( int iShape );
+    std::unique_ptr< QgsMultiPoint > readMultiPoint( int iShape );
+    std::unique_ptr< QgsLineString > readLineString( int iPoint, int iNextPoint );
+    std::unique_ptr< QgsLineString > readLineString( int iFigure );
+    std::unique_ptr< QgsCircularString > readCircularString( int iPoint, int iNextPoint );
+    std::unique_ptr< QgsCircularString > readCircularString( int iFigure );
+    std::unique_ptr< QgsMultiLineString > readMultiLineString( int iShape );
+    std::unique_ptr< QgsPolygon > readPolygon( int iShape );
+    std::unique_ptr< QgsMultiPolygon > readMultiPolygon( int iShape );
+    std::unique_ptr< QgsCompoundCurve > readCompoundCurve( int iFigure );
+    std::unique_ptr< QgsCurvePolygon > readCurvePolygon( int iShape );
+    std::unique_ptr< QgsGeometryCollection > readGeometryCollection( int iShape );
 
   public:
     QgsMssqlGeometryParser();

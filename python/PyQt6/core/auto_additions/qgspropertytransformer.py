@@ -9,13 +9,13 @@ QgsSizeScaleTransformer.Exponential = QgsSizeScaleTransformer.ScaleType.Exponent
 try:
     QgsPropertyTransformer.create = staticmethod(QgsPropertyTransformer.create)
     QgsPropertyTransformer.fromExpression = staticmethod(QgsPropertyTransformer.fromExpression)
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsGenericNumericTransformer.fromExpression = staticmethod(QgsGenericNumericTransformer.fromExpression)
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsSizeScaleTransformer.fromExpression = staticmethod(QgsSizeScaleTransformer.fromExpression)
-except (NameError, AttributeError):
+except NameError:
     pass

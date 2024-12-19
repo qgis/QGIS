@@ -2,5 +2,5 @@
 try:
     QgsRelationWidgetWrapper.__attribute_docs__ = {'relatedFeaturesChanged': 'Emit this signal, whenever the related features changed.\nThis happens for example when related features are added, removed,\nlinked or unlinked.\n\n.. versionadded:: 3.22\n'}
     QgsRelationWidgetWrapper.__group__ = ['editorwidgets']
-except (NameError, AttributeError):
+except NameError:
     pass

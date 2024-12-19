@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Stephane Brunner"
-__date__ = "28/08/2015"
-__copyright__ = "Copyright 2015, The QGIS Project"
+__author__ = 'Stephane Brunner'
+__date__ = '28/08/2015'
+__copyright__ = 'Copyright 2015, The QGIS Project'
 
 import os
 import shutil
@@ -29,21 +28,21 @@ from qgis.server import (
 from test_qgsserver import QgsServerTestBase
 from utilities import unitTestDataPath
 
-XML_NS = (
-    'service="WFS" version="1.0.0" '
-    'xmlns:wfs="http://www.opengis.net/wfs" '
-    'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
-    'xmlns:ogc="http://www.opengis.net/ogc" '
-    'xmlns="http://www.opengis.net/wfs" updateSequence="0" '
-    'xmlns:xlink="http://www.w3.org/1999/xlink" '
-    'xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-capabilities.xsd" '
-    'xmlns:gml="http://www.opengis.net/gml" '
+XML_NS = \
+    'service="WFS" version="1.0.0" ' \
+    'xmlns:wfs="http://www.opengis.net/wfs" ' \
+    'xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' \
+    'xmlns:ogc="http://www.opengis.net/ogc" ' \
+    'xmlns="http://www.opengis.net/wfs" updateSequence="0" ' \
+    'xmlns:xlink="http://www.w3.org/1999/xlink" ' \
+    'xsi:schemaLocation="http://www.opengis.net/wfs http://schemas.opengis.net/wfs/1.0.0/WFS-capabilities.xsd" ' \
+    'xmlns:gml="http://www.opengis.net/gml" ' \
     'xmlns:ows="http://www.opengis.net/ows" '
-)
 
 
 class RestrictedAccessControl(QgsAccessControlFilter):
-    """Used to have restriction access"""
+
+    """ Used to have restriction access """
 
     # Be able to deactivate the access control to have a reference point
     _active = False
@@ -52,7 +51,7 @@ class RestrictedAccessControl(QgsAccessControlFilter):
         super(QgsAccessControlFilter, self).__init__(server_iface)
 
     def layerFilterExpression(self, layer):
-        """Return an additional expression filter"""
+        """ Return an additional expression filter """
 
         if not self._active:
             return super().layerFilterExpression(layer)
@@ -65,7 +64,7 @@ class RestrictedAccessControl(QgsAccessControlFilter):
             return None
 
     def layerFilterSubsetString(self, layer):
-        """Return an additional subset string (typically SQL) filter"""
+        """ Return an additional subset string (typically SQL) filter """
 
         if not self._active:
             return super().layerFilterSubsetString(layer)
@@ -80,7 +79,7 @@ class RestrictedAccessControl(QgsAccessControlFilter):
             return None
 
     def layerPermissions(self, layer):
-        """Return the layer rights"""
+        """ Return the layer rights """
 
         if not self._active:
             return super().layerPermissions(layer)
@@ -96,14 +95,12 @@ class RestrictedAccessControl(QgsAccessControlFilter):
         else:
             rights.canRead = layer.name() not in ("Country", "Hello_OnOff")
         if layer.name() == "db_point":
-            rights.canRead = rights.canInsert = rights.canUpdate = rights.canDelete = (
-                True
-            )
+            rights.canRead = rights.canInsert = rights.canUpdate = rights.canDelete = True
 
         return rights
 
     def authorizedLayerAttributes(self, layer, attributes):
-        """Return the authorised layer attributes"""
+        """ Return the authorised layer attributes """
 
         if not self._active:
             return super().authorizedLayerAttributes(layer, attributes)
@@ -113,7 +110,7 @@ class RestrictedAccessControl(QgsAccessControlFilter):
         return attributes
 
     def allowToEdit(self, layer, feature):
-        """Are we authorise to modify the following geometry"""
+        """ Are we authorise to modify the following geometry """
 
         if not self._active:
             return super().allowToEdit(layer, feature)
@@ -129,7 +126,7 @@ class TestQgsServerAccessControl(QgsServerTestBase):
     @classmethod
     def _execute_request(cls, qs, requestMethod=QgsServerRequest.GetMethod, data=None):
         if data is not None:
-            data = data.encode("utf-8")
+            data = data.encode('utf-8')
         request = QgsBufferServerRequest(qs, requestMethod, {}, data)
         response = QgsBufferServerResponse()
         cls._server.handleRequest(request, response)
@@ -153,7 +150,7 @@ class TestQgsServerAccessControl(QgsServerTestBase):
 
     @classmethod
     def project_file(cls):
-        return "project_grp.qgs"
+        return 'project_grp.qgs'
 
     def setUp(self):
         super().setUp()
@@ -167,23 +164,20 @@ class TestQgsServerAccessControl(QgsServerTestBase):
                 del os.environ[k]
 
         self.projectPath = os.path.join(self.tmp_path, self.project_file())
-        self.assertTrue(
-            os.path.isfile(self.projectPath),
-            f'Could not find project file "{self.projectPath}"',
-        )
+        self.assertTrue(os.path.isfile(self.projectPath), f'Could not find project file "{self.projectPath}"')
 
     def tearDown(self):
         shutil.rmtree(self.tmp_path, True)
 
     def _handle_request(self, restricted, query_string, **kwargs):
         self._accesscontrol._active = restricted
-        qs = "?" + query_string if query_string is not None else ""
+        qs = "?" + query_string if query_string is not None else ''
         result = self._result(self._execute_request(qs, **kwargs))
         return result
 
     def _result(self, data):
         headers = {}
-        for line in data[0].decode("UTF-8").split("\n"):
+        for line in data[0].decode('UTF-8').split("\n"):
             if line != "":
                 header = line.split(":")
                 self.assertEqual(len(header), 2, line)
@@ -201,36 +195,28 @@ class TestQgsServerAccessControl(QgsServerTestBase):
 
     def _post_fullaccess(self, data, query_string=None):
         self._server.putenv("QGIS_PROJECT_FILE", self.projectPath)
-        result = self._handle_request(
-            False, query_string, requestMethod=QgsServerRequest.PostMethod, data=data
-        )
-        self._server.putenv("QGIS_PROJECT_FILE", "")
+        result = self._handle_request(False, query_string, requestMethod=QgsServerRequest.PostMethod, data=data)
+        self._server.putenv("QGIS_PROJECT_FILE", '')
         return result
 
     def _post_restricted(self, data, query_string=None):
         self._server.putenv("QGIS_PROJECT_FILE", self.projectPath)
-        result = self._handle_request(
-            True, query_string, requestMethod=QgsServerRequest.PostMethod, data=data
-        )
-        self._server.putenv("QGIS_PROJECT_FILE", "")
+        result = self._handle_request(True, query_string, requestMethod=QgsServerRequest.PostMethod, data=data)
+        self._server.putenv("QGIS_PROJECT_FILE", '')
         return result
 
-    def _img_diff(
-        self, image, control_image, max_diff, max_size_diff=QSize(), outputFormat="PNG"
-    ):
+    def _img_diff(self, image, control_image, max_diff, max_size_diff=QSize(), outputFormat='PNG'):
 
-        if outputFormat == "PNG":
-            extFile = "png"
-        elif outputFormat == "JPG":
-            extFile = "jpg"
-        elif outputFormat == "WEBP":
-            extFile = "webp"
+        if outputFormat == 'PNG':
+            extFile = 'png'
+        elif outputFormat == 'JPG':
+            extFile = 'jpg'
+        elif outputFormat == 'WEBP':
+            extFile = 'webp'
         else:
-            raise RuntimeError("Yeah, new format implemented")
+            raise RuntimeError('Yeah, new format implemented')
 
-        temp_image = os.path.join(
-            tempfile.gettempdir(), f"{control_image}_result.{extFile}"
-        )
+        temp_image = os.path.join(tempfile.gettempdir(), f"{control_image}_result.{extFile}")
 
         with open(temp_image, "wb") as f:
             f.write(image)
@@ -243,15 +229,12 @@ class TestQgsServerAccessControl(QgsServerTestBase):
             control.setSizeTolerance(max_size_diff.width(), max_size_diff.height())
         return control.compareImages(control_image), control.report()
 
-    def _img_diff_error(
-        self, response, headers, image, max_diff=10, max_size_diff=QSize()
-    ):
-        super()._img_diff_error(
-            response, headers, image, max_diff=max_diff, max_size_diff=max_size_diff
-        )
+    def _img_diff_error(self, response, headers, image, max_diff=10, max_size_diff=QSize()):
+        super()._img_diff_error(response, headers, image, max_diff=max_diff,
+                                max_size_diff=max_size_diff)
 
     def _geo_img_diff(self, image_1, image_2):
-        if os.name == "nt":
+        if os.name == 'nt':
             # Not supported on Windows due to #13061
             return 0
 
@@ -260,15 +243,10 @@ class TestQgsServerAccessControl(QgsServerTestBase):
         image_1 = gdal.Open(os.path.join(tempfile.gettempdir(), image_2), GA_ReadOnly)
         assert image_1, "No output image written: " + image_2
 
-        image_2 = gdal.Open(
-            os.path.join(self.testdata_path, "results", image_2), GA_ReadOnly
-        )
+        image_2 = gdal.Open(os.path.join(self.testdata_path, "results", image_2), GA_ReadOnly)
         assert image_1, "No expected image found:" + image_2
 
-        if (
-            image_1.RasterXSize != image_2.RasterXSize
-            or image_1.RasterYSize != image_2.RasterYSize
-        ):
+        if image_1.RasterXSize != image_2.RasterXSize or image_1.RasterYSize != image_2.RasterYSize:
             image_1 = None
             image_2 = None
             return 1000  # wrong size
@@ -276,9 +254,7 @@ class TestQgsServerAccessControl(QgsServerTestBase):
         square_sum = 0
         for x in range(image_1.RasterXSize):
             for y in range(image_1.RasterYSize):
-                square_sum += (
-                    image_1.ReadAsArray()[x][y] - image_2.ReadAsArray()[x][y]
-                ) ** 2
+                square_sum += (image_1.ReadAsArray()[x][y] - image_2.ReadAsArray()[x][y]) ** 2
 
         # Explicitly close GDAL datasets
         image_1 = None
@@ -294,11 +270,8 @@ class TestQgsServerAccessControl(QgsServerTestBase):
                 <ogc:Filter xmlns:ogc="http://www.opengis.net/ogc"><ogc:PropertyIsEqualTo>
                 <ogc:PropertyName>gid</ogc:PropertyName>
                 <ogc:Literal>{id}</ogc:Literal>
-                </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>""".format(
-                    id=id, xml_ns=XML_NS
-                )
+                </ogc:PropertyIsEqualTo></ogc:Filter></wfs:Query></wfs:GetFeature>""".format(id=id, xml_ns=XML_NS)
             )
             self.assertTrue(
                 str(response).find(f"<qgs:color>{color}</qgs:color>") != -1,
-                f"Wrong color in result\n{response}",
-            )
+                f"Wrong color in result\n{response}")

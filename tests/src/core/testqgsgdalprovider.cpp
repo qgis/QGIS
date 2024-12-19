@@ -47,17 +47,16 @@ class TestQgsGdalProvider : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsGdalProvider()
-      : QgsTest( QStringLiteral( "GDAL Provider Tests" ) ) {}
+    TestQgsGdalProvider() : QgsTest( QStringLiteral( "GDAL Provider Tests" ) ) {}
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
 
-    void decodeUri();     // test decode URI implementation
-    void encodeUri();     // test encode URI implementation
+    void decodeUri(); // test decode URI implementation
+    void encodeUri(); // test encode URI implementation
     void scaleDataType(); //test resultant data types for int raster with float scale (#11573)
-    void warpedVrt();     //test loading raster which requires a warped vrt
+    void warpedVrt(); //test loading raster which requires a warped vrt
     void testVrtAlphaBandRequired();
     void testVrtAlphaBandNotRequired();
     void noData();
@@ -65,12 +64,12 @@ class TestQgsGdalProvider : public QgsTest
     void invalidNoDataInSourceIgnored();
     void isRepresentableValue();
     void mask();
-    void bandName();                // test band name based on `gtiff` tags (#7317)
-    void bandNameNoDescription();   // test band name for when no description or tags available (#16047)
+    void bandName(); // test band name based on `gtiff` tags (#7317)
+    void bandNameNoDescription(); // test band name for when no description or tags available (#16047)
     void bandNameWithDescription(); // test band name for when description available (#16047)
     void colorTable();
     void interactionBetweenRasterChangeAndCache(); // test that updading a raster invalidates the GDAL dataset cache (#20104)
-    void scale0();                                 //test when data has scale 0 (#20493)
+    void scale0(); //test when data has scale 0 (#20493)
     void transformCoordinates();
     void testGdalProviderQuerySublayers();
     void testGdalProviderQuerySublayers_NetCDF();
@@ -84,6 +83,7 @@ class TestQgsGdalProvider : public QgsTest
     QString mTestDataDir;
     bool mSupportsNetCDF;
     QgsProviderMetadata *mGdalMetadata;
+
 };
 
 //runs before all tests
@@ -97,12 +97,13 @@ void TestQgsGdalProvider::initTestCase()
 
   mGdalMetadata = QgsProviderRegistry::instance()->providerMetadata( QStringLiteral( "gdal" ) );
 
-  mSupportsNetCDF = static_cast<bool>( GDALGetDriverByName( "netcdf" ) );
+  mSupportsNetCDF = static_cast< bool >( GDALGetDriverByName( "netcdf" ) );
 
   // Disable creation of .aux.xml (stats) files during test run,
   // to avoid modifying .zip files.
   // See https://github.com/qgis/QGIS/issues/48846
   CPLSetConfigOption( "GDAL_PAM_ENABLED", "NO" );
+
 }
 
 //runs after all tests
@@ -230,7 +231,7 @@ void TestQgsGdalProvider::scaleDataType()
 {
   const QString rasterWithOffset = QStringLiteral( TEST_DATA_DIR ) + "/int_raster_with_scale.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), rasterWithOffset, QgsDataProvider::ProviderOptions() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
   //raster is an integer data type, but has a scale < 1, so data type must be float
   QCOMPARE( rp->dataType( 1 ), Qgis::DataType::Float32 );
@@ -242,7 +243,7 @@ void TestQgsGdalProvider::warpedVrt()
 {
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/requires_warped_vrt.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
 
   qDebug() << "x min: " << rp->extent().xMinimum();
@@ -260,8 +261,8 @@ void TestQgsGdalProvider::warpedVrt()
 void TestQgsGdalProvider::testVrtAlphaBandRequired()
 {
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/rotated_rgb.png";
-  std::unique_ptr<QgsDataProvider> provider( QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() ) );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider.get() );
+  std::unique_ptr< QgsDataProvider > provider( QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() ) );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider.get() );
   QVERIFY( rp );
 
   QCOMPARE( rp->bandCount(), 4 );
@@ -274,8 +275,8 @@ void TestQgsGdalProvider::testVrtAlphaBandRequired()
 void TestQgsGdalProvider::testVrtAlphaBandNotRequired()
 {
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/72_528t50dgm.txt";
-  std::unique_ptr<QgsDataProvider> provider( QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() ) );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider.get() );
+  std::unique_ptr< QgsDataProvider > provider( QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() ) );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider.get() );
   QVERIFY( rp );
 
   QGSCOMPARENEAR( rp->extent().xMinimum(), 719975, 0.0001 );
@@ -291,7 +292,7 @@ void TestQgsGdalProvider::noData()
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QVERIFY( provider->isValid() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
   if ( rp )
   {
@@ -305,7 +306,7 @@ void TestQgsGdalProvider::noDataOutsideExtent()
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QVERIFY( provider->isValid() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
   if ( rp )
   {
@@ -329,7 +330,7 @@ void TestQgsGdalProvider::invalidNoDataInSourceIgnored()
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/byte_with_nan_nodata.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QVERIFY( provider->isValid() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
   if ( rp )
   {
@@ -401,7 +402,7 @@ void TestQgsGdalProvider::mask()
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/rgb_with_mask.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
   QVERIFY( provider->isValid() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
   if ( rp )
   {
@@ -423,7 +424,7 @@ void TestQgsGdalProvider::bandName()
 {
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_tags.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
   QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1: wvln=1.234 (um)" ) );
   delete provider;
@@ -433,7 +434,7 @@ void TestQgsGdalProvider::bandNameNoDescription()
 {
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
   QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1" ) );
   delete provider;
@@ -443,7 +444,7 @@ void TestQgsGdalProvider::bandNameWithDescription()
 {
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/gtiff_desc.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
   QCOMPARE( rp->generateBandName( 1 ), QStringLiteral( "Band 1: 1.234 um" ) );
   delete provider;
@@ -453,7 +454,7 @@ void TestQgsGdalProvider::colorTable()
 {
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/band1_byte_ct_epsg4326.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
   QCOMPARE( rp->colorTable( 1 ).size(), 256 );
   // invalid band
@@ -463,28 +464,25 @@ void TestQgsGdalProvider::colorTable()
 
 void TestQgsGdalProvider::interactionBetweenRasterChangeAndCache()
 {
-  double geoTransform[6] = { 0, 2, 0, 0, 0, -2 };
+  double geoTransform[6] = { 0, 2, 0, 0, 0, -2};
   const QgsCoordinateReferenceSystem crs;
   const QString filename = QStringLiteral( "/vsimem/temp.tif" );
 
   // Create a all-0 dataset
   auto provider = QgsRasterDataProvider::create(
-    QStringLiteral( "gdal" ), filename, "GTiff", 1, Qgis::DataType::Byte, 1, 1, geoTransform, crs
-  );
+                    QStringLiteral( "gdal" ), filename, "GTiff", 1, Qgis::DataType::Byte, 1, 1, geoTransform, crs );
   delete provider;
 
   // Open it
-  provider = dynamic_cast<QgsRasterDataProvider *>(
-    QgsProviderRegistry::instance()->createProvider(
-      QStringLiteral( "gdal" ), filename, QgsDataProvider::ProviderOptions()
-    )
-  );
+  provider = dynamic_cast< QgsRasterDataProvider * >(
+               QgsProviderRegistry::instance()->createProvider(
+                 QStringLiteral( "gdal" ), filename, QgsDataProvider::ProviderOptions() ) );
   QVERIFY( provider );
-  auto rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  auto rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
 
   // Create a first clone, and destroys it
-  auto rpClone = dynamic_cast<QgsRasterDataProvider *>( rp->clone() );
+  auto rpClone = dynamic_cast< QgsRasterDataProvider *>( rp->clone() );
   QVERIFY( rpClone );
   QCOMPARE( rpClone->sample( QgsPointXY( 0.5, -0.5 ), 1 ), 0.0 );
   delete rpClone;
@@ -500,7 +498,7 @@ void TestQgsGdalProvider::interactionBetweenRasterChangeAndCache()
   rp->setEditable( false );
 
   // Creates a new clone, and check that we get an updated sample value
-  rpClone = dynamic_cast<QgsRasterDataProvider *>( rp->clone() );
+  rpClone = dynamic_cast< QgsRasterDataProvider *>( rp->clone() );
   QVERIFY( rpClone );
   QCOMPARE( rpClone->sample( QgsPointXY( 0.5, -0.5 ), 1 ), 255.0 );
   delete rpClone;
@@ -513,7 +511,7 @@ void TestQgsGdalProvider::scale0()
 {
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/raster/scale0ingdal23.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
   QCOMPARE( rp->bandScale( 1 ), 1.0 );
   QCOMPARE( rp->bandOffset( 1 ), 0.0 );
@@ -525,7 +523,7 @@ void TestQgsGdalProvider::transformCoordinates()
   // Test implementation of QgsRasterDataProvider::transformCoordinates()
   const QString raster = QStringLiteral( TEST_DATA_DIR ) + "/float1-16.tif";
   QgsDataProvider *provider = QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), raster, QgsDataProvider::ProviderOptions() );
-  QgsRasterDataProvider *rp = dynamic_cast<QgsRasterDataProvider *>( provider );
+  QgsRasterDataProvider *rp = dynamic_cast< QgsRasterDataProvider * >( provider );
   QVERIFY( rp );
   QVERIFY( rp->isValid() );
 
@@ -546,12 +544,13 @@ void TestQgsGdalProvider::transformCoordinates()
   QCOMPARE( pt1Image, QgsPoint( 0, 0, 0 ) );
   QCOMPARE( pt2Image, QgsPoint( 4, 0, 0 ) );
   QCOMPARE( pt3Image, QgsPoint( 4, 4, 0 ) );
+
 }
 
 void TestQgsGdalProvider::testGdalProviderQuerySublayers()
 {
   // invalid uri
-  QList<QgsProviderSublayerDetails> res = mGdalMetadata->querySublayers( QString() );
+  QList< QgsProviderSublayerDetails >res = mGdalMetadata->querySublayers( QString() );
   QVERIFY( res.empty() );
 
   // not a raster
@@ -570,8 +569,8 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "GTiff" ) );
 
   // make sure result is valid to load layer from
-  const QgsProviderSublayerDetails::LayerOptions options { QgsCoordinateTransformContext() };
-  std::unique_ptr<QgsRasterLayer> rl( qgis::down_cast<QgsRasterLayer *>( res.at( 0 ).toLayer( options ) ) );
+  const QgsProviderSublayerDetails::LayerOptions options{ QgsCoordinateTransformContext() };
+  std::unique_ptr< QgsRasterLayer > rl( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
 
   // geopackage with two raster layers
@@ -584,7 +583,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Raster );
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "GPKG" ) );
-  rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 0 ).toLayer( options ) ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
   QCOMPARE( res.at( 1 ).layerNumber(), 2 );
   QCOMPARE( res.at( 1 ).name(), QStringLiteral( "band2" ) );
@@ -593,7 +592,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 1 ).type(), Qgis::LayerType::Raster );
   QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "GPKG" ) );
-  rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 1 ).toLayer( options ) ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 1 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
   // geopackage with one raster layer with an identifier
   res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/qgis_server/test_project_wms_grouped_layers.gpkg" );
@@ -616,7 +615,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Raster );
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "AIG" ) );
-  rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 0 ).toLayer( options ) ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
 
   // aigrid, pointing to .adf file
@@ -629,7 +628,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Raster );
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "AIG" ) );
-  rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 0 ).toLayer( options ) ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
 
   // zip archive, only 1 file
@@ -643,7 +642,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( sl.providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( sl.type(), Qgis::LayerType::Raster );
   QCOMPARE( sl.driverName(), QStringLiteral( "GTiff" ) );
-  rl.reset( qgis::down_cast<QgsRasterLayer *>( sl.toLayer( options ) ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( sl.toLayer( options ) ) );
   QVERIFY( rl->isValid() );
 
   // multi-layer archive
@@ -656,7 +655,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Raster );
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "GTiff" ) );
-  rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 0 ).toLayer( options ) ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
   QCOMPARE( res.at( 1 ).layerNumber(), 1 );
   QCOMPARE( res.at( 1 ).name(), QStringLiteral( "landsat_b1.tif" ) );
@@ -665,7 +664,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 1 ).type(), Qgis::LayerType::Raster );
   QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "GTiff" ) );
-  rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 1 ).toLayer( options ) ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 1 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
   QCOMPARE( res.at( 2 ).layerNumber(), 1 );
   QCOMPARE( res.at( 2 ).name(), QStringLiteral( "landsat_b1.vrt" ) );
@@ -674,7 +673,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.at( 2 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 2 ).type(), Qgis::LayerType::Raster );
   QCOMPARE( res.at( 2 ).driverName(), QStringLiteral( "VRT" ) );
-  rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 2 ).toLayer( options ) ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 2 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
 
   // multi-layer archive, but with specific suffix specified
@@ -687,7 +686,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Raster );
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "GTiff" ) );
-  rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 0 ).toLayer( options ) ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
   res = mGdalMetadata->querySublayers( QStringLiteral( "/vsitar/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testtar.tgz/landsat_b1.tif" );
   QCOMPARE( res.count(), 1 );
@@ -698,7 +697,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Raster );
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "GTiff" ) );
-  rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 0 ).toLayer( options ) ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
 
   res = mGdalMetadata->querySublayers( QStringLiteral( "/vsizip/" ) + QStringLiteral( TEST_DATA_DIR ) + "/zip/testzip.zip/landsat_b1.vrt" );
@@ -724,16 +723,12 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.count(), 4 );
   QCOMPARE( res.at( 0 ).layerNumber(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "SENTINEL2_L2A:/vsizip/%1/zip/S2A_MSIL2A_0000.zip/S2A_MSIL2A_0000.SAFE/MTD_MSIL2A.xml:10m:EPSG_32634" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 9, 0 )
-  QCOMPARE( res.at( 0 ).description(), QString( "Bands B2, B3, B4, B8, AOT, WVP with 10m resolution, UTM 34N" ) );
-#else
   QCOMPARE( res.at( 0 ).description(), QString( "Bands B2, B3, B4, B8 with 10m resolution, UTM 34N" ) );
-#endif
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( "SENTINEL2_L2A:/vsizip/%1/zip/S2A_MSIL2A_0000.zip/S2A_MSIL2A_0000.SAFE/MTD_MSIL2A.xml:10m:EPSG_32634" ).arg( QStringLiteral( TEST_DATA_DIR ) ) );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Raster );
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "SENTINEL2" ) );
-  rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 0 ).toLayer( options ) ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
 
   // tiff with two raster layers and TIFF Tags describing sublayers
@@ -746,7 +741,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Raster );
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "GTiff" ) );
-  rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 0 ).toLayer( options ) ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
   QCOMPARE( res.at( 1 ).layerNumber(), 2 );
   QCOMPARE( res.at( 1 ).name(), QStringLiteral( "Test Document Name 2" ) );
@@ -755,20 +750,20 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers()
   QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 1 ).type(), Qgis::LayerType::Raster );
   QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "GTiff" ) );
-  rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 1 ).toLayer( options ) ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 1 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
 }
 
 void TestQgsGdalProvider::testGdalProviderQuerySublayers_NetCDF()
 {
-  if ( !mSupportsNetCDF )
+  if ( ! mSupportsNetCDF )
   {
     QSKIP( "NetCDF based tests require the netcdf GDAL driver" );
   }
 
-  QList<QgsProviderSublayerDetails> res;
-  std::unique_ptr<QgsRasterLayer> rl;
-  const QgsProviderSublayerDetails::LayerOptions options { QgsCoordinateTransformContext() };
+  QList< QgsProviderSublayerDetails > res;
+  std::unique_ptr< QgsRasterLayer > rl;
+  const QgsProviderSublayerDetails::LayerOptions options{ QgsCoordinateTransformContext() };
 
   // netcdf file
   res = mGdalMetadata->querySublayers( QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc" );
@@ -780,7 +775,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers_NetCDF()
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Raster );
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "netCDF" ) );
-  rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 0 ).toLayer( options ) ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
   QCOMPARE( res.at( 1 ).layerNumber(), 2 );
   QCOMPARE( res.at( 1 ).name(), QStringLiteral( "layerface_Z" ) );
@@ -789,7 +784,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers_NetCDF()
   QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 1 ).type(), Qgis::LayerType::Raster );
   QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "netCDF" ) );
-  rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 1 ).toLayer( options ) ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 1 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
 
   // netcdf with open options
@@ -802,7 +797,7 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers_NetCDF()
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Raster );
   QCOMPARE( res.at( 0 ).driverName(), QStringLiteral( "netCDF" ) );
-  rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 0 ).toLayer( options ) ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 0 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
   QCOMPARE( res.at( 1 ).layerNumber(), 2 );
   QCOMPARE( res.at( 1 ).name(), QStringLiteral( "layerface_Z" ) );
@@ -811,14 +806,14 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayers_NetCDF()
   QCOMPARE( res.at( 1 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 1 ).type(), Qgis::LayerType::Raster );
   QCOMPARE( res.at( 1 ).driverName(), QStringLiteral( "netCDF" ) );
-  rl.reset( qgis::down_cast<QgsRasterLayer *>( res.at( 1 ).toLayer( options ) ) );
+  rl.reset( qgis::down_cast< QgsRasterLayer * >( res.at( 1 ).toLayer( options ) ) );
   QVERIFY( rl->isValid() );
 }
 
 void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan()
 {
   // invalid uri
-  QList<QgsProviderSublayerDetails> res = mGdalMetadata->querySublayers( QString(), Qgis::SublayerQueryFlag::FastScan );
+  QList< QgsProviderSublayerDetails >res = mGdalMetadata->querySublayers( QString(), Qgis::SublayerQueryFlag::FastScan );
   QVERIFY( res.empty() );
 
   // not a raster
@@ -901,19 +896,19 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan()
 
 void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan_NetCDF()
 {
-  if ( !mSupportsNetCDF )
+  if ( ! mSupportsNetCDF )
   {
     QSKIP( "NetCDF based tests require the netcdf GDAL driver" );
   }
 
-  QList<QgsProviderSublayerDetails> res;
-  std::unique_ptr<QgsRasterLayer> rl;
+  QList< QgsProviderSublayerDetails > res;
+  std::unique_ptr< QgsRasterLayer > rl;
 
   // netcdf file
   res = mGdalMetadata->querySublayers(
-    QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc",
-    Qgis::SublayerQueryFlag::FastScan
-  );
+          QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc",
+          Qgis::SublayerQueryFlag::FastScan
+        );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "trap_steady_05_3D" ) );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc" );
@@ -923,15 +918,16 @@ void TestQgsGdalProvider::testGdalProviderQuerySublayersFastScan_NetCDF()
 
   // netcdf with open options
   res = mGdalMetadata->querySublayers(
-    QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc|option:HONOUR_VALID_RANGE=YES",
-    Qgis::SublayerQueryFlag::FastScan
-  );
+          QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc|option:HONOUR_VALID_RANGE=YES",
+          Qgis::SublayerQueryFlag::FastScan
+        );
   QCOMPARE( res.count(), 1 );
   QCOMPARE( res.at( 0 ).name(), QStringLiteral( "trap_steady_05_3D" ) );
   QCOMPARE( res.at( 0 ).uri(), QStringLiteral( TEST_DATA_DIR ) + "/mesh/trap_steady_05_3D.nc|option:HONOUR_VALID_RANGE=YES" );
   QCOMPARE( res.at( 0 ).providerKey(), QStringLiteral( "gdal" ) );
   QCOMPARE( res.at( 0 ).type(), Qgis::LayerType::Raster );
   QVERIFY( res.at( 0 ).skippedContainerScan() );
+
 }
 
 void TestQgsGdalProvider::testGdalProviderAbsoluteRelativeUri()
@@ -957,12 +953,12 @@ void TestQgsGdalProvider::testGdalProviderAbsoluteRelativeUri()
 
 void TestQgsGdalProvider::testVsiCredentialOptions()
 {
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 6, 0)
   // test that credential options are correctly set when layer URI specifies them
 
   // if actual aws dataset proves flaky, use this instead:
   // std::unique_ptr< QgsRasterLayer > rl = std::make_unique< QgsRasterLayer >( QStringLiteral( "/vsis3/testbucket/test|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-1|credential:AWS_S3_ENDPOINT=localhost" ), QStringLiteral( "test" ), QStringLiteral( "gdal" ) );
-  std::unique_ptr<QgsRasterLayer> rl = std::make_unique<QgsRasterLayer>( QStringLiteral( "/vsis3/cdn.proj.org/us_nga_egm96_15.tif|credential:AWS_NO_SIGN_REQUEST=YES" ), QStringLiteral( "test" ), QStringLiteral( "gdal" ) );
+  std::unique_ptr< QgsRasterLayer > rl = std::make_unique< QgsRasterLayer >( QStringLiteral( "/vsis3/cdn.proj.org/us_nga_egm96_15.tif|credential:AWS_NO_SIGN_REQUEST=YES" ), QStringLiteral( "test" ), QStringLiteral( "gdal" ) );
 
   // confirm that GDAL VSI configuration options are set
   QString noSign( VSIGetPathSpecificOption( "/vsis3/cdn.proj.org", "AWS_NO_SIGN_REQUEST", nullptr ) );
@@ -979,7 +975,7 @@ void TestQgsGdalProvider::testVsiCredentialOptions()
   QCOMPARE( region, QString() );
 
   // credentials should be bucket specific
-  std::unique_ptr<QgsRasterLayer> rl2 = std::make_unique<QgsRasterLayer>( QStringLiteral( "/vsis3/another/subfolder/subfolder2/test|credential:AWS_NO_SIGN_REQUEST=NO|credential:AWS_REGION=eu-central-2|credential:AWS_S3_ENDPOINT=localhost" ), QStringLiteral( "test" ), QStringLiteral( "gdal" ) );
+  std::unique_ptr< QgsRasterLayer > rl2 = std::make_unique< QgsRasterLayer >( QStringLiteral( "/vsis3/another/subfolder/subfolder2/test|credential:AWS_NO_SIGN_REQUEST=NO|credential:AWS_REGION=eu-central-2|credential:AWS_S3_ENDPOINT=localhost" ), QStringLiteral( "test" ), QStringLiteral( "gdal" ) );
   noSign = QString( VSIGetPathSpecificOption( "/vsis3/cdn.proj.org", "AWS_NO_SIGN_REQUEST", nullptr ) );
   QCOMPARE( noSign, QStringLiteral( "YES" ) );
   region = QString( VSIGetPathSpecificOption( "/vsis3/cdn.proj.org", "AWS_REGION", nullptr ) );
@@ -1003,7 +999,7 @@ void TestQgsGdalProvider::testVsiCredentialOptions()
 
 void TestQgsGdalProvider::testVsiCredentialOptionsQuerySublayers()
 {
-#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION( 3, 6, 0 )
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(3, 6, 0)
   QgsProviderMetadata *gdalMetadata = QgsProviderRegistry::instance()->providerMetadata( "gdal" );
   QVERIFY( gdalMetadata );
 
@@ -1011,7 +1007,7 @@ void TestQgsGdalProvider::testVsiCredentialOptionsQuerySublayers()
 
   // if actual aws dataset proves flaky, use this instead:
   //QList< QgsProviderSublayerDetails> subLayers = gdalMetadata->querySublayers( QStringLiteral( "/vsis3/gdalsublayerstestbucket/test.tif|credential:AWS_NO_SIGN_REQUEST=YES|credential:AWS_REGION=eu-central-3|credential:AWS_S3_ENDPOINT=localhost" ) );
-  QList<QgsProviderSublayerDetails> subLayers = gdalMetadata->querySublayers( QStringLiteral( "/vsis3/cdn.proj.org/us_nga_egm96_15.tif|credential:AWS_NO_SIGN_REQUEST=YES" ) );
+  QList< QgsProviderSublayerDetails> subLayers = gdalMetadata->querySublayers( QStringLiteral( "/vsis3/cdn.proj.org/us_nga_egm96_15.tif|credential:AWS_NO_SIGN_REQUEST=YES" ) );
   QCOMPARE( subLayers.size(), 1 );
   QCOMPARE( subLayers.at( 0 ).name(), QStringLiteral( "us_nga_egm96_15" ) );
   QCOMPARE( subLayers.at( 0 ).uri(), QStringLiteral( "/vsis3/cdn.proj.org/us_nga_egm96_15.tif|credential:AWS_NO_SIGN_REQUEST=YES" ) );

@@ -39,7 +39,7 @@ Sets ``filter`` flags which affect how layers are filtered within the model.
 .. seealso:: :py:func:`filters`
 %End
 
- void setFilters( int filters ) /Deprecated="Since 3.34. Use the flag signature instead."/;
+ void setFilters( int filters ) /Deprecated/;
 %Docstring
 Filters according to layer type and/or geometry type.
 
@@ -77,7 +77,7 @@ Returns if the ``layer`` matches the given ``filters``
 .. versionadded:: 3.14
 %End
 
- void setLayerWhitelist( const QList<QgsMapLayer *> &layers ) /Deprecated="Since 3.40. Use setLayerAllowList()."/;
+ void setLayerWhitelist( const QList<QgsMapLayer *> &layers ) /Deprecated/;
 %Docstring
 Sets an allowlist of ``layers`` to include within the model. Only layers
 from this list will be shown.
@@ -107,7 +107,7 @@ An empty list indicates that no filter by allowlist should be performed.
 .. versionadded:: 3.14
 %End
 
- QList<QgsMapLayer *> layerWhitelist() /Deprecated="Since 3.40. Use layerAllowlist() instead."/;
+ QList<QgsMapLayer *> layerWhitelist() /Deprecated/;
 %Docstring
 Returns the list of layers which are excluded from the model.
 

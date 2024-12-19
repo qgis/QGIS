@@ -29,6 +29,7 @@ feature. It proxies display and actions to :py:class:`QgsMapToolAdvancedDigitizi
 #include "qgsadvanceddigitizingfloater.h"
 %End
   public:
+
     enum class FloaterItem
     {
       XCoordinate,

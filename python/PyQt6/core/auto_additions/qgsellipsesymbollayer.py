@@ -23,5 +23,5 @@ try:
     QgsEllipseSymbolLayer.decodeShape = staticmethod(QgsEllipseSymbolLayer.decodeShape)
     QgsEllipseSymbolLayer.encodeShape = staticmethod(QgsEllipseSymbolLayer.encodeShape)
     QgsEllipseSymbolLayer.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

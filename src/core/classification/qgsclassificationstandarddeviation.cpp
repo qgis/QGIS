@@ -38,10 +38,10 @@ QString QgsClassificationStandardDeviation::id() const
   return METHOD_ID;
 }
 
-std::unique_ptr< QgsClassificationMethod > QgsClassificationStandardDeviation::clone() const
+QgsClassificationMethod *QgsClassificationStandardDeviation::clone() const
 {
-  std::unique_ptr<QgsClassificationStandardDeviation > c = std::make_unique< QgsClassificationStandardDeviation >();
-  copyBase( c.get() );
+  QgsClassificationStandardDeviation *c = new QgsClassificationStandardDeviation();
+  copyBase( c );
   c->mStdDev = mStdDev;
   return c;
 }

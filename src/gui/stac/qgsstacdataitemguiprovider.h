@@ -27,11 +27,14 @@ class GUI_EXPORT QgsStacDataItemGuiProvider : public QObject, public QgsDataItem
 {
     Q_OBJECT
   public:
+
     QgsStacDataItemGuiProvider() = default;
 
     QString name() override { return QStringLiteral( "STAC" ); }
 
-    void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems,
+                              QgsDataItemGuiContext context ) override;
 
   private:
     static void newConnection( QgsDataItem *item );

@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Nyall Dawson"
-__date__ = "1/02/2017"
-__copyright__ = "Copyright 2017, The QGIS Project"
+__author__ = 'Nyall Dawson'
+__date__ = '1/02/2017'
+__copyright__ = 'Copyright 2017, The QGIS Project'
 
 import sys
 
@@ -50,7 +49,7 @@ class TestQgsNoApplication(unittest.TestCase):
         self.assertTrue(QgsApplication.taskManager())
 
     def testNullRepresentation(self):
-        nr = "my_null_value"
+        nr = 'my_null_value'
         QgsApplication.setNullRepresentation(nr)
         self.assertEqual(QgsApplication.nullRepresentation(), nr)
 
@@ -67,5 +66,5 @@ class TestQgsNoApplication(unittest.TestCase):
         QgsApplication.initQgis()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

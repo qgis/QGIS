@@ -37,7 +37,7 @@ std::unique_ptr<QgsVersionMigration> QgsVersionMigration::canMigrate( int fromVe
 {
   if ( fromVersion == 20000 && toVersion >= 29900 )
   {
-    return std::make_unique<Qgs2To3Migration>();
+    return std::make_unique< Qgs2To3Migration >();
   }
   return nullptr;
 }
@@ -48,7 +48,7 @@ QgsError Qgs2To3Migration::runMigration()
   const QgsError settingsErrors = migrateSettings();
   if ( !settingsErrors.isEmpty() )
   {
-    const QList<QgsErrorMessage> errorList( settingsErrors.messageList() );
+    const QList<QgsErrorMessage> errorList( settingsErrors.messageList( ) );
     for ( const auto &err : errorList )
     {
       errors.append( err );
@@ -57,7 +57,7 @@ QgsError Qgs2To3Migration::runMigration()
   const QgsError stylesErrors = migrateStyles();
   if ( !stylesErrors.isEmpty() )
   {
-    const QList<QgsErrorMessage> errorList( stylesErrors.messageList() );
+    const QList<QgsErrorMessage> errorList( stylesErrors.messageList( ) );
     for ( const auto &err : errorList )
     {
       errors.append( err );
@@ -66,7 +66,7 @@ QgsError Qgs2To3Migration::runMigration()
   const QgsError authDbErrors = migrateAuthDb();
   if ( !authDbErrors.isEmpty() )
   {
-    const QList<QgsErrorMessage> errorList( authDbErrors.messageList() );
+    const QList<QgsErrorMessage> errorList( authDbErrors.messageList( ) );
     for ( const auto &err : errorList )
     {
       errors.append( err );
@@ -79,7 +79,7 @@ bool Qgs2To3Migration::requiresMigration()
 {
   const QgsSettings settings;
   const bool alreadyMigrated = settings.value( QStringLiteral( "migration/settings" ), false ).toBool();
-  const int settingsMigrationVersion = settings.value( QStringLiteral( "migration/fileVersion" ), 0 ).toInt();
+  const int  settingsMigrationVersion = settings.value( QStringLiteral( "migration/fileVersion" ), 0 ).toInt();
   QFile migrationFile( migrationFilePath() );
   if ( migrationFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
@@ -120,8 +120,7 @@ QgsError Qgs2To3Migration::migrateStyles()
   QSqlQuery query( db );
   QSqlQuery tagQuery( "SELECT name FROM tag"
                       "JOIN tagmap ON tagmap.tag_id = tag.id"
-                      "WHERE tagmap.symbol_id = :symbol_id",
-                      db );
+                      "WHERE tagmap.symbol_id = :symbol_id", db );
 
   QgsStyle *style = QgsStyle::defaultStyle();
   if ( query.exec( "SELECT id, name, xml FROM symbol" ) )
@@ -219,6 +218,7 @@ QgsError Qgs2To3Migration::migrateSettings()
         const QPair<QString, QString> key = transformKey( oldKey, newKey );
         keys.append( key );
       }
+
     }
     inputFile.close();
     newSettings.setValue( QStringLiteral( "migration/settings" ), true );
@@ -263,7 +263,7 @@ QgsError Qgs2To3Migration::migrateAuthDb()
   settingsDir.cdUp();
   const QString newAuthDbFilePath = QStringLiteral( "%1/qgis-auth.db" ).arg( settingsDir.absolutePath() );
   // Do not overwrite!
-  if ( QFile( newAuthDbFilePath ).exists() )
+  if ( QFile( newAuthDbFilePath ).exists( ) )
   {
     const QString msg = QStringLiteral( "Could not copy old auth DB to %1: file already exists!" ).arg( newAuthDbFilePath );
     QgsDebugError( msg );
@@ -272,7 +272,7 @@ QgsError Qgs2To3Migration::migrateAuthDb()
   else
   {
     QFile oldDbFile( oldAuthDbFilePath );
-    if ( oldDbFile.exists() )
+    if ( oldDbFile.exists( ) )
     {
       if ( oldDbFile.copy( newAuthDbFilePath ) )
       {
@@ -295,14 +295,14 @@ QgsError Qgs2To3Migration::migrateAuthDb()
   return error;
 }
 
-QList<QPair<QString, QString>> Qgs2To3Migration::walk( QString group, QString newkey )
+QList<QPair<QString, QString> > Qgs2To3Migration::walk( QString group, QString newkey )
 {
   mOldSettings->beginGroup( group );
-  QList<QPair<QString, QString>> foundKeys;
+  QList<QPair<QString, QString> > foundKeys;
   const auto constChildGroups = mOldSettings->childGroups();
   for ( const QString &group : constChildGroups )
   {
-    const QList<QPair<QString, QString>> data = walk( group, newkey );
+    const QList<QPair<QString, QString> > data = walk( group, newkey );
     foundKeys.append( data );
   }
 
@@ -344,5 +344,5 @@ QPair<QString, QString> Qgs2To3Migration::transformKey( QString fullOldKey, QStr
 
 QString Qgs2To3Migration::migrationFilePath()
 {
-  return QgsApplication::resolvePkgPath() + "/resources/2to3migration.txt";
+  return QgsApplication::resolvePkgPath() +  "/resources/2to3migration.txt";
 }

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsjsoneditwrapper.h"
-#include "moc_qgsjsoneditwrapper.cpp"
 
 #include "qgsjsoneditwidget.h"
 
@@ -83,3 +82,4 @@ void QgsJsonEditWrapper::setEnabled( bool enabled )
   // No need to disable JsonEditWidget as it is already read only
   Q_UNUSED( enabled )
 }
+

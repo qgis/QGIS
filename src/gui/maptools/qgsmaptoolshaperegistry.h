@@ -36,6 +36,7 @@ class GUI_EXPORT QgsMapToolShapeRegistry
 {
     Q_GADGET
   public:
+
     /**
      * Constructor
      */
@@ -55,7 +56,7 @@ class GUI_EXPORT QgsMapToolShapeRegistry
     void removeMapTool( const QString &id );
 
     //! Returns the list of map tools
-    QList<QgsMapToolShapeMetadata *> mapToolMetadatas() const { return mMapTools; }
+    QList<QgsMapToolShapeMetadata *> mapToolMetadatas() const {return mMapTools;}
 
     //! Returns the map tool metadata for the given \a id
     QgsMapToolShapeMetadata *mapToolMetadata( const QString &id ) const;
@@ -67,7 +68,9 @@ class GUI_EXPORT QgsMapToolShapeRegistry
     QgsMapToolShapeAbstract *mapTool( const QString &id, QgsMapToolCapture *parentTool ) const SIP_FACTORY;
 
   private:
+
     QList<QgsMapToolShapeMetadata *> mMapTools;
+
 };
 
 /**
@@ -78,6 +81,7 @@ class GUI_EXPORT QgsMapToolShapeRegistry
 class GUI_EXPORT QgsMapToolShapeMetadata
 {
   public:
+
     QgsMapToolShapeMetadata() = default;
 
     virtual ~QgsMapToolShapeMetadata() = default;

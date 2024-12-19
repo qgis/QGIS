@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsqueryresultmodel.h"
-#include "moc_qgsqueryresultmodel.cpp"
 #include "qgsexpression.h"
 
 const int QgsQueryResultModel::FETCH_MORE_ROWS_COUNT = 400;

@@ -245,7 +245,7 @@ Creates a clone of the FieldValueConverter.
         bool includeZ = false,
         const QgsAttributeList &attributes = QgsAttributeList(),
         QgsVectorFileWriter::FieldValueConverter *fieldValueConverter = 0
-                                                                                 ) /Deprecated="Since 3.40. Use writeAsVectorFormatV2() instead."/;
+                                                                                 ) /Deprecated/;
 %Docstring
 Write contents of vector layer to an (OGR supported) vector format
 
@@ -296,7 +296,7 @@ Write contents of vector layer to an (OGR supported) vector format
         bool includeZ = false,
         const QgsAttributeList &attributes = QgsAttributeList(),
         QgsVectorFileWriter::FieldValueConverter *fieldValueConverter = 0
-                                                                                 ) /Deprecated="Since 3.40. Use writeAsVectorFormatV2() instead."/;
+                                                                                 ) /Deprecated/;
 %Docstring
 Writes a layer out to a vector file.
 
@@ -400,7 +400,7 @@ Options to pass to :py:func:`~QgsVectorFileWriter.writeAsVectorFormat`
         const QgsVectorFileWriter::SaveVectorOptions &options,
         QString *newFilename = 0,
         QString *errorMessage /Out/ = 0
-                                                                                 ) /Deprecated="Since 3.40. Use writeAsVectorFormatV2() instead."/;
+                                                                                 ) /Deprecated/;
 %Docstring
 Writes a layer out to a vector file.
 
@@ -427,7 +427,7 @@ Writes a layer out to a vector file.
                                            QString *newFilename = 0,
                                            Qgis::FeatureSymbologyExport symbologyExport = Qgis::FeatureSymbologyExport::NoSymbology,
                                            QgsFeatureSink::SinkFlags sinkFlags = QgsFeatureSink::SinkFlags()
-                                         ) /Deprecated="Since 3.40. Use create() instead."/;
+                                         ) /Deprecated/;
 %Docstring
 Create a new vector file writer
 
@@ -469,7 +469,7 @@ Create a new vector file writer.
         const QgsVectorFileWriter::SaveVectorOptions &options,
         QString *newFilename = 0,
         QString *newLayer = 0,
-        QString *errorMessage /Out/ = 0 ) /Deprecated="Since 3.20. Use writeAsVectorFormatV3() instead."/;
+        QString *errorMessage /Out/ = 0 ) /Deprecated/;
 %Docstring
 Writes a layer out to a vector file.
 
@@ -485,7 +485,7 @@ Writes a layer out to a vector file.
 
 .. deprecated:: 3.20
 
-   Use :py:func:`~QgsVectorFileWriter.writeAsVectorFormatV3` instead.
+   Use writeAsVectorFormatV3 instead.
 %End
 
     static QgsVectorFileWriter::WriterError writeAsVectorFormatV3( QgsVectorLayer *layer,

@@ -61,10 +61,11 @@ class QgsAnnotationPolygonItemWidget : public QgsAnnotationItemBaseWidget, priva
     bool setNewItem( QgsAnnotationItem *item ) override;
 
   private:
+
     QgsSymbolSelectorWidget *mSelector = nullptr;
-    std::unique_ptr<QgsFillSymbol> mSymbol;
+    std::unique_ptr< QgsFillSymbol > mSymbol;
     bool mBlockChangedSignal = false;
-    std::unique_ptr<QgsAnnotationPolygonItem> mItem;
+    std::unique_ptr< QgsAnnotationPolygonItem> mItem;
 };
 
 class QgsAnnotationLineItemWidget : public QgsAnnotationItemBaseWidget, private Ui_QgsAnnotationSymbolWidgetBase
@@ -83,10 +84,11 @@ class QgsAnnotationLineItemWidget : public QgsAnnotationItemBaseWidget, private 
     bool setNewItem( QgsAnnotationItem *item ) override;
 
   private:
+
     QgsSymbolSelectorWidget *mSelector = nullptr;
-    std::unique_ptr<QgsLineSymbol> mSymbol;
+    std::unique_ptr< QgsLineSymbol > mSymbol;
     bool mBlockChangedSignal = false;
-    std::unique_ptr<QgsAnnotationLineItem> mItem;
+    std::unique_ptr< QgsAnnotationLineItem> mItem;
 };
 
 class QgsAnnotationMarkerItemWidget : public QgsAnnotationItemBaseWidget, private Ui_QgsAnnotationSymbolWidgetBase
@@ -105,10 +107,11 @@ class QgsAnnotationMarkerItemWidget : public QgsAnnotationItemBaseWidget, privat
     bool setNewItem( QgsAnnotationItem *item ) override;
 
   private:
+
     QgsSymbolSelectorWidget *mSelector = nullptr;
-    std::unique_ptr<QgsMarkerSymbol> mSymbol;
+    std::unique_ptr< QgsMarkerSymbol > mSymbol;
     bool mBlockChangedSignal = false;
-    std::unique_ptr<QgsAnnotationMarkerItem> mItem;
+    std::unique_ptr< QgsAnnotationMarkerItem> mItem;
 };
 
 
@@ -136,7 +139,7 @@ class QgsAnnotationPointTextItemWidget : public QgsAnnotationItemBaseWidget, pri
 
     QgsTextFormatWidget *mTextFormatWidget = nullptr;
     bool mBlockChangedSignal = false;
-    std::unique_ptr<QgsAnnotationPointTextItem> mItem;
+    std::unique_ptr< QgsAnnotationPointTextItem> mItem;
 };
 
 
@@ -174,7 +177,7 @@ class QgsAnnotationRectangleTextItemWidget : public QgsAnnotationItemBaseWidget,
     bool mBlockChangedSignal = false;
     bool mUpdateItemPosition = false;
 
-    std::unique_ptr<QgsAnnotationRectangleTextItem> mItem;
+    std::unique_ptr< QgsAnnotationRectangleTextItem> mItem;
 };
 
 class QgsAnnotationLineTextItemWidget : public QgsAnnotationItemBaseWidget, private Ui_QgsAnnotationLineTextWidgetBase
@@ -201,7 +204,7 @@ class QgsAnnotationLineTextItemWidget : public QgsAnnotationItemBaseWidget, priv
 
     QgsTextFormatWidget *mTextFormatWidget = nullptr;
     bool mBlockChangedSignal = false;
-    std::unique_ptr<QgsAnnotationLineTextItem> mItem;
+    std::unique_ptr< QgsAnnotationLineTextItem> mItem;
 };
 
 
@@ -233,13 +236,12 @@ class QgsAnnotationPictureItemWidget : public QgsAnnotationItemBaseWidget, priva
     void setWidth();
     void setHeight();
     void setLockAspectRatio( bool locked );
-
   private:
     double pictureAspectRatio() const;
 
     bool mBlockChangedSignal = false;
     bool mUpdateItemPosition = false;
-    std::unique_ptr<QgsAnnotationPictureItem> mItem;
+    std::unique_ptr< QgsAnnotationPictureItem> mItem;
 };
 
 ///@endcond

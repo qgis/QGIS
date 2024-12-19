@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsmeshlayerelevationproperties.h"
-#include "moc_qgsmeshlayerelevationproperties.cpp"
 #include "qgsmeshlayer.h"
 #include "qgslinesymbol.h"
 #include "qgsfillsymbol.h"

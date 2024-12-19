@@ -30,7 +30,9 @@
  */
 class QgsSingleSidedBufferAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
+
   public:
+
     QgsSingleSidedBufferAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -43,13 +45,15 @@ class QgsSingleSidedBufferAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     void initParameters( const QVariantMap &configuration = QVariantMap() ) override;
 
   protected:
+
     QString outputName() const override;
     Qgis::ProcessingSourceType outputLayerType() const override;
     Qgis::WkbType outputWkbType( Qgis::WkbType inputWkbType ) const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
+
     double mDistance = 0.0;
     bool mDynamicDistance = false;
     QgsProperty mDistanceProperty;
@@ -63,3 +67,5 @@ class QgsSingleSidedBufferAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMSINGLESIDEDBUFFER_H
+
+

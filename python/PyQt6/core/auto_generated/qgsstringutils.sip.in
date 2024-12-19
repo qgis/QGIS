@@ -330,19 +330,6 @@ and replacing them with a horizontal ellipsis character.
 .. versionadded:: 3.22
 %End
 
-    static bool containsByWord( const QString &candidate, const QString &words, Qt::CaseSensitivity sensitivity = Qt::CaseInsensitive );
-%Docstring
-Given a ``candidate`` string, returns ``True`` if the ``candidate`` contains
-all the individual words from another string, regardless of their order.
-
-.. note::
-
-   The search does NOT need to match whole words in the ``candidate`` string,
-   so eg a candidate string of "Worldmap_Winkel_II" will return ``True`` for ``words`` "winkle world"
-
-.. versionadded:: 3.42
-%End
-
 };
 
 /************************************************************************

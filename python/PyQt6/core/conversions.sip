@@ -1243,24 +1243,6 @@ which are not wrapped by PyQt:
 };
 
 template <TYPE>
-%MappedType std::unique_ptr< TYPE > /NoRelease,AllowNone,TypeHint="Optional[TYPE]",TypeHintValue="TYPE"/
-{
-%TypeHeaderCode
-#include <memory>
-%End
-
-%ConvertFromTypeCode
-    const sipTypeDef *sip_type = sipFindType("TYPE*");
-    return sipConvertFromNewType(sipCpp->release(), sip_type, NULL);
-%End
-
-%ConvertToTypeCode
-    // only one way for now...
-    return 0;
-%End
-};
-
-template <TYPE>
 %MappedType QVector< QVector<TYPE> >
 {
 %TypeHeaderCode

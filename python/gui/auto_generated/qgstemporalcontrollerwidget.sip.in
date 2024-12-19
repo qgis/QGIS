@@ -23,6 +23,7 @@ A widget for controlling playback properties of a :py:class:`QgsTemporalControll
 #include "qgstemporalcontrollerwidget.h"
 %End
   public:
+
     QgsTemporalControllerWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsTemporalControllerWidget, with the specified ``parent`` widget.
@@ -40,6 +41,7 @@ The dock widget retains ownership of the returned object.
 
 
   protected:
+
     virtual void keyPressEvent( QKeyEvent *e );
 
 

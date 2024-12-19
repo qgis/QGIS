@@ -2,9 +2,9 @@
 try:
     QgsLabelingEngineRulesWidget.__attribute_docs__ = {'changed': 'Emitted when the rules configured in the widget are changed.\n'}
     QgsLabelingEngineRulesWidget.__group__ = ['labeling']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsLabelingEngineRulesDialog.__group__ = ['labeling']
-except (NameError, AttributeError):
+except NameError:
     pass

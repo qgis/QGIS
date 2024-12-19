@@ -39,6 +39,7 @@ class QgsSingleGeometryCheck;
 class ANALYSIS_EXPORT QgsSingleGeometryCheckError
 {
   public:
+
     /**
      * Creates a new single geometry check error.
      */
@@ -114,6 +115,7 @@ class ANALYSIS_EXPORT QgsSingleGeometryCheckError
 class ANALYSIS_EXPORT QgsGeometryCheckErrorSingle : public QgsGeometryCheckError
 {
   public:
+
     /**
      * Creates a new error for a QgsSingleGeometryCheck.
      */
@@ -147,14 +149,20 @@ class ANALYSIS_EXPORT QgsGeometryCheckErrorSingle : public QgsGeometryCheckError
 class ANALYSIS_EXPORT QgsSingleGeometryCheck : public QgsGeometryCheck
 {
   public:
+
     /**
      * Creates a new single geometry check.
      */
-    QgsSingleGeometryCheck( const QgsGeometryCheckContext *context, const QVariantMap &configuration )
+    QgsSingleGeometryCheck( const QgsGeometryCheckContext *context,
+                            const QVariantMap &configuration )
       : QgsGeometryCheck( context, configuration )
     {}
 
-    void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools, QList<QgsGeometryCheckError *> &errors, QStringList &messages, QgsFeedback *feedback = nullptr, const QgsGeometryCheck::LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const FINAL;
+    void collectErrors( const QMap<QString, QgsFeaturePool *> &featurePools,
+                        QList<QgsGeometryCheckError *> &errors,
+                        QStringList &messages,
+                        QgsFeedback *feedback = nullptr,
+                        const QgsGeometryCheck::LayerFeatureIds &ids = QgsGeometryCheck::LayerFeatureIds() ) const FINAL;
 
     /**
      * Check the \a geometry for errors. It may make use of \a configuration options.
@@ -167,12 +175,14 @@ class ANALYSIS_EXPORT QgsSingleGeometryCheck : public QgsGeometryCheck
     virtual QList<QgsSingleGeometryCheckError *> processGeometry( const QgsGeometry &geometry ) const = 0;
 
   private:
+
     /**
      * Converts a QgsSingleGeometryCheckError to a QgsGeometryCheckErrorSingle.
      *
      * \since QGIS 3.4
      */
     QgsGeometryCheckErrorSingle *convertToGeometryCheckError( QgsSingleGeometryCheckError *singleGeometryCheckError, const QgsGeometryCheckerUtils::LayerFeature &layerFeature ) const;
+
 };
 
 #endif // QGSSINGLEGEOMETRYCHECK_H

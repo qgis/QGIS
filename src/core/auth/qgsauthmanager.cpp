@@ -51,7 +51,6 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgsauthmanager.h"
-#include "moc_qgsauthmanager.cpp"
 #include "qgsauthconfigurationstorageregistry.h"
 #include "qgsauthconfigurationstoragesqlite.h"
 #include "qgsvariantutils.h"
@@ -200,8 +199,6 @@ bool QgsAuthManager::ensureInitialized() const
   return mLazyInitResult;
 }
 
-static char *sPassFileEnv = nullptr;
-
 bool QgsAuthManager::initPrivate( const QString &pluginPath )
 {
   if ( mAuthInit )
@@ -316,11 +313,17 @@ bool QgsAuthManager::initPrivate( const QString &pluginPath )
   initSslCaches();
 #endif
   // set the master password from first line of file defined by QGIS_AUTH_PASSWORD_FILE env variable
-  if ( sPassFileEnv && masterPasswordHashInDatabase() )
+  const char *passenv = "QGIS_AUTH_PASSWORD_FILE";
+  if ( getenv( passenv ) && masterPasswordHashInDatabase() )
   {
-    QString passpath( sPassFileEnv );
-    free( sPassFileEnv );
-    sPassFileEnv = nullptr;
+    QString passpath( getenv( passenv ) );
+    // clear the env variable, so it can not be accessed from plugins, etc.
+    // (note: stored QgsApplication::systemEnvVars() skips this env variable as well)
+#ifdef Q_OS_WIN
+    putenv( passenv );
+#else
+    unsetenv( passenv );
+#endif
 
     QString masterpass;
     QFile passfile( passpath );
@@ -353,10 +356,6 @@ bool QgsAuthManager::initPrivate( const QString &pluginPath )
     }
   }
 
-#ifndef QT_NO_SSL
-  initSslCaches();
-#endif
-
   return true;
 }
 
@@ -364,20 +363,6 @@ void QgsAuthManager::setup( const QString &pluginPath, const QString &authDataba
 {
   mPluginPath = pluginPath;
   mAuthDatabaseConnectionUri = authDatabasePath;
-
-  const char *p = getenv( "QGIS_AUTH_PASSWORD_FILE" );
-  if ( p )
-  {
-    sPassFileEnv = qstrdup( p );
-
-    // clear the env variable, so it can not be accessed from plugins, etc.
-    // (note: stored QgsApplication::systemEnvVars() skips this env variable as well)
-#ifdef Q_OS_WIN
-    putenv( "QGIS_AUTH_PASSWORD_FILE" );
-#else
-    unsetenv( "QGIS_AUTH_PASSWORD_FILE" );
-#endif
-  }
 }
 
 bool QgsAuthManager::isDisabled() const
@@ -2244,6 +2229,7 @@ const QList<QgsAuthConfigSslServer> QgsAuthManager::sslCertCustomConfigs()
         emit messageLog( tr( "SSL custom config already in the list: %1" ).arg( hostPort ), authManTag(), Qgis::MessageLevel::Warning );
       }
     }
+    configs.append( storageConfigs );
   }
 
   if ( storages.empty() )
@@ -2454,11 +2440,11 @@ bool QgsAuthManager::rebuildIgnoredSslErrorCache()
         ids.append( shaHostPort );
         if ( !config.sslIgnoredErrorEnums().isEmpty() )
         {
-          nextcache.insert( shaHostPort, QSet<QSslError::SslError>( config.sslIgnoredErrorEnums().cbegin(), config.sslIgnoredErrorEnums().cend() ) );
+          nextcache.insert( config.sslHostPort(), QSet<QSslError::SslError>( config.sslIgnoredErrorEnums().cbegin(), config.sslIgnoredErrorEnums().cend() ) );
         }
-        if ( prevcache.contains( shaHostPort ) )
+        if ( prevcache.contains( config.sslHostPort() ) )
         {
-          prevcache.remove( shaHostPort );
+          prevcache.remove( config.sslHostPort() );
         }
       }
       else

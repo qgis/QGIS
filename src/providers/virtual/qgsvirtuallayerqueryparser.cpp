@@ -35,7 +35,7 @@ namespace QgsVirtualLayerQueryParser
     // open an empty in-memory sqlite database and execute the query
     // sqlite will return an error for each missing table
     // this way we know the list of tables referenced by the query
-    const QgsScopedSqlite db( QStringLiteral( ":memory:" ), /*withExtension=*/false );
+    const QgsScopedSqlite db( QStringLiteral( ":memory:" ), /*withExtension=*/ false );
 
     const QString noSuchError = QStringLiteral( "no such table: " );
 
@@ -110,7 +110,7 @@ namespace QgsVirtualLayerQueryParser
     return defs;
   }
 
-  // set the type of the column type, given its text representation
+// set the type of the column type, given its text representation
   void setColumnDefType( const QString &columnType, ColumnDef &d )
   {
     // geometry type
@@ -153,7 +153,7 @@ namespace QgsVirtualLayerQueryParser
     {
       const QString columnName = q.columnText( 1 );
       const QString columnType = q.columnText( 2 );
-      if ( !columnType.startsWith( QLatin1String( "geometry" ) ) )
+      if ( ! columnType.startsWith( QLatin1String( "geometry" ) ) )
         continue;
 
       d.setName( columnName );
@@ -288,4 +288,4 @@ namespace QgsVirtualLayerQueryParser
     return td;
   }
 
-} // namespace QgsVirtualLayerQueryParser
+} // namespace

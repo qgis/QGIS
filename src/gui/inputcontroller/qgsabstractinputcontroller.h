@@ -38,9 +38,9 @@ class GUI_EXPORT QgsAbstractInputController : public QObject
 
 #ifdef SIP_RUN
     SIP_CONVERT_TO_SUBCLASS_CODE
-    if ( qobject_cast<QgsAbstract2DMapController *>( sipCpp ) )
+    if ( qobject_cast< QgsAbstract2DMapController * >( sipCpp ) )
       sipType = sipType_QgsAbstract2DMapController;
-    else if ( qobject_cast<QgsAbstract3DMapController *>( sipCpp ) )
+    else if ( qobject_cast< QgsAbstract3DMapController * >( sipCpp ) )
       sipType = sipType_QgsAbstract3DMapController;
     else
       sipType = nullptr;
@@ -50,6 +50,7 @@ class GUI_EXPORT QgsAbstractInputController : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsAbstractInputController, with the specified \a parent object.
      */
@@ -69,6 +70,7 @@ class GUI_EXPORT QgsAbstractInputController : public QObject
      * Returns the input controller type.
      */
     virtual Qgis::InputControllerType type() const = 0;
+
 };
 
 

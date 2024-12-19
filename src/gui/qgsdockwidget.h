@@ -32,6 +32,7 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsDockWidget.
      * \param parent parent widget
@@ -104,6 +105,7 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
     void toggleUserVisible();
 
   protected:
+
     void closeEvent( QCloseEvent * ) override;
     void showEvent( QShowEvent *event ) override;
 
@@ -144,8 +146,10 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
     void handleVisibilityChanged( bool visible );
 
   private:
+
     bool mVisibleAndActive = false;
 
     QAction *mAction = nullptr;
+
 };
 #endif //QGSDOCKWIDGET_H

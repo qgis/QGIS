@@ -549,35 +549,6 @@ Creates a set of legend nodes representing the renderer.
 Returns a list of all rule keys for legend nodes created by the renderer.
 %End
 
-    void setShowLabels( const bool show );
-%Docstring
-Set whether the renderer should also render file labels inside extent
-
-.. versionadded:: 3.42
-%End
-
-    bool showLabels() const;
-%Docstring
-Returns whether the renderer shows file labels inside the extent
-rectangle
-
-.. versionadded:: 3.42
-%End
-
-    void setLabelTextFormat( const QgsTextFormat &textFormat );
-%Docstring
-Sets the text format renderers should use for rendering labels
-
-.. versionadded:: 3.42
-%End
-
-    QgsTextFormat labelTextFormat() const;
-%Docstring
-Returns the text format renderer is using for rendering labels
-
-.. versionadded:: 3.42
-%End
-
   protected:
 
     static void pointXY( QgsPointCloudRenderContext &context, const char *ptr, int i, double &x, double &y );

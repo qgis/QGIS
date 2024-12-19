@@ -29,12 +29,15 @@ class LDatabaseInfo(DatabaseInfo):
         self.db = db
 
     def connectionDetails(self):
-        tbl = []
+        tbl = [
+        ]
         return HtmlTable(tbl)
 
     def generalInfo(self):
         self.db.connector.getInfo()
-        tbl = [(QApplication.translate("DBManagerPlugin", "SQLite version:"), "3")]
+        tbl = [
+            (QApplication.translate("DBManagerPlugin", "SQLite version:"), "3")
+        ]
         return HtmlTable(tbl)
 
     def privilegesDetails(self):

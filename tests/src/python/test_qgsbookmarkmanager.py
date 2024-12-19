@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "(C) 2019 by Nyall Dawson"
-__date__ = "02/09/2019"
-__copyright__ = "Copyright 2019, The QGIS Project"
+__author__ = '(C) 2019 by Nyall Dawson'
+__date__ = '02/09/2019'
+__copyright__ = 'Copyright 2019, The QGIS Project'
 
 import os
 
@@ -60,84 +59,55 @@ class TestQgsBookmarkManager(QgisTestCase):
         b = QgsBookmark()
         self.assertFalse(b.id())
         self.assertFalse(b.name())
-        b.setId("id")
-        self.assertEqual(b.id(), "id")
-        b.setName("name")
-        self.assertEqual(b.name(), "name")
-        b.setGroup("group")
-        self.assertEqual(b.group(), "group")
-        b.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem("EPSG:3111")
-            )
-        )
-        self.assertEqual(
-            b.extent(),
-            QgsReferencedRectangle(
-                QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem("EPSG:3111")
-            ),
-        )
+        b.setId('id')
+        self.assertEqual(b.id(), 'id')
+        b.setName('name')
+        self.assertEqual(b.name(), 'name')
+        b.setGroup('group')
+        self.assertEqual(b.group(), 'group')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
+        self.assertEqual(b.extent(), QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
         b.setRotation(45.4)
         self.assertEqual(b.rotation(), 45.4)
 
     def testBookmarkEquality(self):
         b = QgsBookmark()
-        b.setId("id")
-        b.setName("name")
-        b.setGroup("group")
-        b.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem("EPSG:3111")
-            )
-        )
+        b.setId('id')
+        b.setName('name')
+        b.setGroup('group')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
         b2 = QgsBookmark()
-        b2.setId("id")
-        b2.setName("name")
-        b2.setGroup("group")
-        b2.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem("EPSG:3111")
-            )
-        )
+        b2.setId('id')
+        b2.setName('name')
+        b2.setGroup('group')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
         self.assertEqual(b, b2)
-        b2.setId("x")
+        b2.setId('x')
         self.assertNotEqual(b, b2)
-        b2.setId("id")
+        b2.setId('id')
         self.assertEqual(b, b2)
-        b2.setName("x")
+        b2.setName('x')
         self.assertNotEqual(b, b2)
-        b2.setName("name")
+        b2.setName('name')
         self.assertEqual(b, b2)
-        b2.setGroup("x")
+        b2.setGroup('x')
         self.assertNotEqual(b, b2)
-        b2.setGroup("group")
+        b2.setGroup('group')
         self.assertEqual(b, b2)
         b2.setRotation(-1)
         self.assertNotEqual(b, b2)
         b2.setRotation(0)
         self.assertEqual(b, b2)
-        b2.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(1, 2, 3, 5), QgsCoordinateReferenceSystem("EPSG:3111")
-            )
-        )
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 5), QgsCoordinateReferenceSystem('EPSG:3111')))
         self.assertNotEqual(b, b2)
-        b2.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:4326')))
         self.assertNotEqual(b, b2)
 
     def testAddBookmark(self):
         project = QgsProject()
         b = QgsBookmark()
-        b.setName("b1")
-        b.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem("EPSG:3111")
-            )
-        )
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
 
         manager = QgsBookmarkManager.createProjectBasedManager(project)
 
@@ -151,13 +121,8 @@ class TestQgsBookmarkManager(QgisTestCase):
         self.assertEqual(bookmark_added_spy[0][0], id)
 
         b = manager.bookmarkById(id)
-        self.assertEqual(b.name(), "b1")
-        self.assertEqual(
-            b.extent(),
-            QgsReferencedRectangle(
-                QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem("EPSG:3111")
-            ),
-        )
+        self.assertEqual(b.name(), 'b1')
+        self.assertEqual(b.extent(), QgsReferencedRectangle(QgsRectangle(1, 2, 3, 4), QgsCoordinateReferenceSystem('EPSG:3111')))
 
         # adding it again should fail
         id, res = manager.addBookmark(b)
@@ -165,25 +130,21 @@ class TestQgsBookmarkManager(QgisTestCase):
 
         # try adding a second bookmark
         b2 = QgsBookmark()
-        b2.setId("my id")
-        b2.setName("b2")
-        b2.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b2.setId('my id')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         id2, res = manager.addBookmark(b2)
         self.assertTrue(res)
-        self.assertEqual(id2, "my id")
+        self.assertEqual(id2, 'my id')
         self.assertEqual(len(bookmark_added_spy), 2)
-        self.assertEqual(bookmark_about_to_be_added_spy[1][0], "my id")
+        self.assertEqual(bookmark_about_to_be_added_spy[1][0], 'my id')
         self.assertEqual(len(bookmark_about_to_be_added_spy), 2)
-        self.assertEqual(bookmark_added_spy[1][0], "my id")
+        self.assertEqual(bookmark_added_spy[1][0], 'my id')
 
         # adding a bookmark with duplicate id should fail
         b3 = QgsBookmark()
-        b3.setId("my id")
+        b3.setId('my id')
 
         id, res = manager.addBookmark(b3)
         self.assertFalse(res)
@@ -193,31 +154,19 @@ class TestQgsBookmarkManager(QgisTestCase):
         manager = QgsBookmarkManager.createProjectBasedManager(project)
 
         b = QgsBookmark()
-        b.setId("1")
-        b.setName("b1")
-        b.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b.setId('1')
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         b2 = QgsBookmark()
-        b2.setId("2")
-        b2.setName("b2")
-        b2.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         b3 = QgsBookmark()
-        b3.setId("3")
-        b3.setName("b3")
-        b3.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         manager.addBookmark(b)
         self.assertEqual(manager.bookmarks(), [b])
@@ -231,57 +180,51 @@ class TestQgsBookmarkManager(QgisTestCase):
         manager = QgsBookmarkManager.createProjectBasedManager(project)
 
         b = QgsBookmark()
-        b.setId("1")
-        b.setName("b1")
+        b.setId('1')
+        b.setName('b1')
         manager.addBookmark(b)
         b2 = QgsBookmark()
-        b2.setId("2")
-        b2.setName("b2")
-        b2.setGroup("group1")
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setGroup('group1')
         manager.addBookmark(b2)
         b3 = QgsBookmark()
-        b3.setId("3")
-        b3.setName("b3")
-        b3.setGroup("group2")
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setGroup('group2')
         manager.addBookmark(b3)
 
         # test that groups are adjusted when bookmarks are added
-        self.assertEqual(manager.groups(), ["", "group1", "group2"])
+        self.assertEqual(manager.groups(), ['', 'group1', 'group2'])
 
-        manager.removeBookmark("3")
+        manager.removeBookmark('3')
 
         # test that groups are adjusted when a bookmark is removed
-        self.assertEqual(manager.groups(), ["", "group1"])
+        self.assertEqual(manager.groups(), ['', 'group1'])
 
-        b2.setGroup("groupmodified")
+        b2.setGroup('groupmodified')
         manager.updateBookmark(b2)
 
         # test that groups are adjusted when a bookmark group is edited
-        self.assertEqual(manager.groups(), ["", "groupmodified"])
+        self.assertEqual(manager.groups(), ['', 'groupmodified'])
 
     def bookmarkAboutToBeRemoved(self, id):
         # bookmark should still exist at this time
-        self.assertEqual(id, "1")
-        self.assertTrue(self.manager.bookmarkById("1").name())
+        self.assertEqual(id, '1')
+        self.assertTrue(self.manager.bookmarkById('1').name())
         self.aboutFired = True
 
     def testRemoveBookmark(self):
         project = QgsProject()
 
         b = QgsBookmark()
-        b.setId("1")
-        b.setName("b1")
-        b.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b.setId('1')
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         self.manager = QgsBookmarkManager.createProjectBasedManager(project)
         bookmark_removed_spy = QSignalSpy(self.manager.bookmarkRemoved)
-        bookmark_about_to_be_removed_spy = QSignalSpy(
-            self.manager.bookmarkAboutToBeRemoved
-        )
+        bookmark_about_to_be_removed_spy = QSignalSpy(self.manager.bookmarkAboutToBeRemoved)
         # tests that bookmark still exists when bookmarkAboutToBeRemoved is fired
         self.manager.bookmarkAboutToBeRemoved.connect(self.bookmarkAboutToBeRemoved)
 
@@ -295,9 +238,9 @@ class TestQgsBookmarkManager(QgisTestCase):
         self.assertTrue(self.manager.removeBookmark(b.id()))
         self.assertEqual(len(self.manager.bookmarks()), 0)
         self.assertEqual(len(bookmark_removed_spy), 1)
-        self.assertEqual(bookmark_removed_spy[0][0], "1")
+        self.assertEqual(bookmark_removed_spy[0][0], '1')
         self.assertEqual(len(bookmark_about_to_be_removed_spy), 1)
-        self.assertEqual(bookmark_about_to_be_removed_spy[0][0], "1")
+        self.assertEqual(bookmark_about_to_be_removed_spy[0][0], '1')
         self.assertTrue(self.aboutFired)
         self.manager = None
 
@@ -307,31 +250,19 @@ class TestQgsBookmarkManager(QgisTestCase):
 
         # add a bunch of bookmarks
         b = QgsBookmark()
-        b.setId("1")
-        b.setName("b1")
-        b.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b.setId('1')
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         b2 = QgsBookmark()
-        b2.setId("2")
-        b2.setName("b2")
-        b2.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         b3 = QgsBookmark()
-        b3.setId("3")
-        b3.setName("b3")
-        b3.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         manager.addBookmark(b)
         manager.addBookmark(b2)
@@ -350,40 +281,28 @@ class TestQgsBookmarkManager(QgisTestCase):
 
         # add a bunch of bookmarks
         b = QgsBookmark()
-        b.setId("1")
-        b.setName("b1")
-        b.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b.setId('1')
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         b2 = QgsBookmark()
-        b2.setId("2")
-        b2.setName("b2")
-        b2.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         b3 = QgsBookmark()
-        b3.setId("3")
-        b3.setName("b3")
-        b3.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         manager.addBookmark(b)
         manager.addBookmark(b2)
         manager.addBookmark(b3)
 
-        self.assertFalse(manager.bookmarkById("asdf").name())
-        self.assertEqual(manager.bookmarkById("1"), b)
-        self.assertEqual(manager.bookmarkById("2"), b2)
-        self.assertEqual(manager.bookmarkById("3"), b3)
+        self.assertFalse(manager.bookmarkById('asdf').name())
+        self.assertEqual(manager.bookmarkById('1'), b)
+        self.assertEqual(manager.bookmarkById('2'), b2)
+        self.assertEqual(manager.bookmarkById('3'), b3)
 
     def testReadWriteXml(self):
         """
@@ -394,33 +313,21 @@ class TestQgsBookmarkManager(QgisTestCase):
 
         # add a bunch of bookmarks
         b = QgsBookmark()
-        b.setId("1")
-        b.setName("b1")
-        b.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem("EPSG:3857")
-            )
-        )
+        b.setId('1')
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:3857')))
         b.setRotation(90)
 
         b2 = QgsBookmark()
-        b2.setId("2")
-        b2.setName("b2")
-        b2.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
         b2.setRotation(-1.1)
 
         b3 = QgsBookmark()
-        b3.setId("3")
-        b3.setName("b3")
-        b3.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
         b3.setRotation(280)
 
         manager.addBookmark(b)
@@ -440,37 +347,22 @@ class TestQgsBookmarkManager(QgisTestCase):
         self.assertEqual(len(manager2.bookmarks()), 3)
 
         # Check b1 values
-        self.assertEqual(manager2.bookmarkById("1").name(), "b1")
-        self.assertEqual(
-            manager2.bookmarkById("1").extent(),
-            QgsReferencedRectangle(
-                QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem("EPSG:3857")
-            ),
-        )
-        self.assertEqual(manager2.bookmarkById("1").rotation(), 90)
+        self.assertEqual(manager2.bookmarkById('1').name(), 'b1')
+        self.assertEqual(manager2.bookmarkById('1').extent(), QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:3857')))
+        self.assertEqual(manager2.bookmarkById('1').rotation(), 90)
 
         # Check b2 values
-        self.assertEqual(manager2.bookmarkById("2").name(), "b2")
-        self.assertEqual(
-            manager2.bookmarkById("2").extent(),
-            QgsReferencedRectangle(
-                QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem("EPSG:4326")
-            ),
-        )
-        self.assertEqual(manager2.bookmarkById("2").rotation(), -1.1)
+        self.assertEqual(manager2.bookmarkById('2').name(), 'b2')
+        self.assertEqual(manager2.bookmarkById('2').extent(), QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
+        self.assertEqual(manager2.bookmarkById('2').rotation(), -1.1)
 
         # Check b3 values
-        self.assertEqual(manager2.bookmarkById("3").name(), "b3")
-        self.assertEqual(
-            manager2.bookmarkById("3").extent(),
-            QgsReferencedRectangle(
-                QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem("EPSG:4326")
-            ),
-        )
-        self.assertEqual(manager2.bookmarkById("3").rotation(), 280)
+        self.assertEqual(manager2.bookmarkById('3').name(), 'b3')
+        self.assertEqual(manager2.bookmarkById('3').extent(), QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
+        self.assertEqual(manager2.bookmarkById('3').rotation(), 280)
 
         names = [c.name() for c in manager2.bookmarks()]
-        self.assertCountEqual(names, ["b1", "b2", "b3"])
+        self.assertCountEqual(names, ['b1', 'b2', 'b3'])
 
     def testUpdateBookmark(self):
         project = QgsProject()
@@ -478,84 +370,58 @@ class TestQgsBookmarkManager(QgisTestCase):
         changed_spy = QSignalSpy(manager.bookmarkChanged)
 
         b = QgsBookmark()
-        b.setId("1")
-        b.setName("b1")
-        b.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b.setId('1')
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         self.assertFalse(manager.updateBookmark(b))
         self.assertEqual(len(changed_spy), 0)
         manager.addBookmark(b)
 
-        b.setName("new b1")
+        b.setName('new b1')
         self.assertTrue(manager.updateBookmark(b))
-        self.assertEqual(manager.bookmarkById("1").name(), "new b1")
+        self.assertEqual(manager.bookmarkById('1').name(), 'new b1')
         self.assertEqual(len(changed_spy), 1)
-        self.assertEqual(changed_spy[-1][0], "1")
+        self.assertEqual(changed_spy[-1][0], '1')
 
         b2 = QgsBookmark()
-        b2.setId("2")
-        b2.setName("b2")
-        b2.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
         manager.addBookmark(b2)
 
-        b.setName("new b1 2")
-        b2.setName("new b2 2")
+        b.setName('new b1 2')
+        b2.setName('new b2 2')
         self.assertTrue(manager.updateBookmark(b))
-        self.assertEqual(manager.bookmarkById("1").name(), "new b1 2")
-        self.assertEqual(manager.bookmarkById("2").name(), "b2")
+        self.assertEqual(manager.bookmarkById('1').name(), 'new b1 2')
+        self.assertEqual(manager.bookmarkById('2').name(), 'b2')
         self.assertEqual(len(changed_spy), 2)
-        self.assertEqual(changed_spy[-1][0], "1")
+        self.assertEqual(changed_spy[-1][0], '1')
         self.assertTrue(manager.updateBookmark(b2))
-        self.assertEqual(manager.bookmarkById("1").name(), "new b1 2")
-        self.assertEqual(manager.bookmarkById("2").name(), "new b2 2")
+        self.assertEqual(manager.bookmarkById('1').name(), 'new b1 2')
+        self.assertEqual(manager.bookmarkById('2').name(), 'new b2 2')
         self.assertEqual(len(changed_spy), 3)
-        self.assertEqual(changed_spy[-1][0], "2")
+        self.assertEqual(changed_spy[-1][0], '2')
 
     def testOldBookmarks(self):
         """
         Test upgrading older bookmark storage format
         """
-        project_path = os.path.join(TEST_DATA_DIR, "projects", "old_bookmarks.qgs")
+        project_path = os.path.join(TEST_DATA_DIR, 'projects', 'old_bookmarks.qgs')
         p = QgsProject()
         self.assertTrue(p.read(project_path))
         self.assertEqual(len(p.bookmarkManager().bookmarks()), 3)
-        self.assertEqual(p.bookmarkManager().bookmarkById("bookmark_0").name(), "b1")
-        self.assertEqual(
-            p.bookmarkManager().bookmarkById("bookmark_0").extent().crs().authid(),
-            "EPSG:4283",
-        )
-        self.assertEqual(
-            p.bookmarkManager().bookmarkById("bookmark_0").extent().toString(1),
-            "150.0,-23.0 : 150.6,-22.0",
-        )
+        self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_0').name(), 'b1')
+        self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_0').extent().crs().authid(), 'EPSG:4283')
+        self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_0').extent().toString(1), '150.0,-23.0 : 150.6,-22.0')
 
-        self.assertEqual(p.bookmarkManager().bookmarkById("bookmark_1").name(), "b2")
-        self.assertEqual(
-            p.bookmarkManager().bookmarkById("bookmark_1").extent().crs().authid(),
-            "EPSG:4283",
-        )
-        self.assertEqual(
-            p.bookmarkManager().bookmarkById("bookmark_1").extent().toString(1),
-            "149.0,-21.6 : 149.4,-21.1",
-        )
+        self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_1').name(), 'b2')
+        self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_1').extent().crs().authid(), 'EPSG:4283')
+        self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_1').extent().toString(1), '149.0,-21.6 : 149.4,-21.1')
 
-        self.assertEqual(p.bookmarkManager().bookmarkById("bookmark_2").name(), "b3")
-        self.assertEqual(
-            p.bookmarkManager().bookmarkById("bookmark_2").extent().crs().authid(),
-            "EPSG:28355",
-        )
-        self.assertEqual(
-            p.bookmarkManager().bookmarkById("bookmark_2").extent().toString(1),
-            "807985.7,7450916.9 : 876080.0,7564407.4",
-        )
+        self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_2').name(), 'b3')
+        self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_2').extent().crs().authid(), 'EPSG:28355')
+        self.assertEqual(p.bookmarkManager().bookmarkById('bookmark_2').extent().toString(1), '807985.7,7450916.9 : 876080.0,7564407.4')
 
     def testFileStorage(self):
         """
@@ -570,31 +436,19 @@ class TestQgsBookmarkManager(QgisTestCase):
 
         # add a bunch of bookmarks
         b = QgsBookmark()
-        b.setId("1")
-        b.setName("b1")
-        b.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b.setId('1')
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         b2 = QgsBookmark()
-        b2.setId("2")
-        b2.setName("b2")
-        b2.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         b3 = QgsBookmark()
-        b3.setId("3")
-        b3.setName("b3")
-        b3.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         manager.addBookmark(b)
         manager.addBookmark(b2)
@@ -625,31 +479,19 @@ class TestQgsBookmarkManager(QgisTestCase):
 
         # add a bunch of bookmarks
         b = QgsBookmark()
-        b.setId("1")
-        b.setName("b1")
-        b.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b.setId('1')
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         b2 = QgsBookmark()
-        b2.setId("2")
-        b2.setName("b2")
-        b2.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         b3 = QgsBookmark()
-        b3.setId("3")
-        b3.setName("b3")
-        b3.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         manager.addBookmark(b)
         manager.addBookmark(b2)
@@ -671,31 +513,19 @@ class TestQgsBookmarkManager(QgisTestCase):
 
         # add a bunch of bookmarks
         b = QgsBookmark()
-        b.setId("1")
-        b.setName("b1")
-        b.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b.setId('1')
+        b.setName('b1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         b2 = QgsBookmark()
-        b2.setId("2")
-        b2.setName("b2")
-        b2.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         b3 = QgsBookmark()
-        b3.setId("3")
-        b3.setName("b3")
-        b3.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         manager.addBookmark(b)
         manager.addBookmark(b2)
@@ -704,7 +534,7 @@ class TestQgsBookmarkManager(QgisTestCase):
         self.assertEqual(manager.bookmarks(), [b, b2])
         self.assertEqual(manager2.bookmarks(), [b3])
 
-        self.assertFalse(manager.moveBookmark("bbbb", manager2))
+        self.assertFalse(manager.moveBookmark('bbbb', manager2))
         self.assertFalse(manager.moveBookmark(b3.id(), manager2))
         self.assertEqual(manager.bookmarks(), [b, b2])
         self.assertEqual(manager2.bookmarks(), [b3])
@@ -737,33 +567,21 @@ class TestQgsBookmarkManager(QgisTestCase):
 
         # add a bunch of bookmarks
         b = QgsBookmark()
-        b.setId("1")
-        b.setName("b1")
-        b.setGroup("g1")
-        b.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b.setId('1')
+        b.setName('b1')
+        b.setGroup('g1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         b2 = QgsBookmark()
-        b2.setId("2")
-        b2.setName("b2")
-        b2.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         b3 = QgsBookmark()
-        b3.setId("3")
-        b3.setName("b3")
-        b3.setGroup("g1")
-        b3.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setGroup('g1')
+        b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         manager.addBookmark(b)
         manager.addBookmark(b2)
@@ -772,30 +590,19 @@ class TestQgsBookmarkManager(QgisTestCase):
         # export one manager's bookmarks
         self.assertTrue(QgsBookmarkManager.exportToFile(tmpFile, [manager]))
         self.assertTrue(manager3.importFromFile(tmpFile))
-        self.assertEqual(
-            [(b.name(), b.extent()) for b in manager3.bookmarks()],
-            [(b.name(), b.extent()) for b in [b, b2]],
-        )
+        self.assertEqual([(b.name(), b.extent()) for b in manager3.bookmarks()], [(b.name(), b.extent()) for b in [b, b2]])
 
         manager3.clear()
         # export both manager's bookmarks
         self.assertTrue(QgsBookmarkManager.exportToFile(tmpFile, [manager, manager2]))
         self.assertTrue(manager3.importFromFile(tmpFile))
-        self.assertEqual(
-            [(b.name(), b.extent()) for b in manager3.bookmarks()],
-            [(b.name(), b.extent()) for b in [b, b2, b3]],
-        )
+        self.assertEqual([(b.name(), b.extent()) for b in manager3.bookmarks()], [(b.name(), b.extent()) for b in [b, b2, b3]])
 
         manager3.clear()
         # restrict to group
-        self.assertTrue(
-            QgsBookmarkManager.exportToFile(tmpFile, [manager, manager2], "g1")
-        )
+        self.assertTrue(QgsBookmarkManager.exportToFile(tmpFile, [manager, manager2], 'g1'))
         self.assertTrue(manager3.importFromFile(tmpFile))
-        self.assertEqual(
-            [(b.name(), b.extent()) for b in manager3.bookmarks()],
-            [(b.name(), b.extent()) for b in [b, b3]],
-        )
+        self.assertEqual([(b.name(), b.extent()) for b in manager3.bookmarks()], [(b.name(), b.extent()) for b in [b, b3]])
 
     def testRenameGroup(self):
         """
@@ -806,64 +613,58 @@ class TestQgsBookmarkManager(QgisTestCase):
 
         # add a bunch of bookmarks
         b = QgsBookmark()
-        b.setId("1")
-        b.setName("b1")
-        b.setGroup("g1")
-        b.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b.setId('1')
+        b.setName('b1')
+        b.setGroup('g1')
+        b.setExtent(QgsReferencedRectangle(QgsRectangle(11, 21, 31, 41), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         b2 = QgsBookmark()
-        b2.setId("2")
-        b2.setName("b2")
-        b2.setGroup("g1")
-        b2.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b2.setId('2')
+        b2.setName('b2')
+        b2.setGroup('g1')
+        b2.setExtent(QgsReferencedRectangle(QgsRectangle(12, 22, 32, 42), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         b3 = QgsBookmark()
-        b3.setId("3")
-        b3.setName("b3")
-        b3.setGroup("g3")
-        b3.setExtent(
-            QgsReferencedRectangle(
-                QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem("EPSG:4326")
-            )
-        )
+        b3.setId('3')
+        b3.setName('b3')
+        b3.setGroup('g3')
+        b3.setExtent(QgsReferencedRectangle(QgsRectangle(32, 32, 33, 43), QgsCoordinateReferenceSystem('EPSG:4326')))
 
         manager.addBookmark(b)
         manager.addBookmark(b2)
         manager.addBookmark(b3)
 
         changed_spy = QSignalSpy(manager.bookmarkChanged)
-        self.assertEqual([b.group() for b in manager.bookmarks()], ["g1", "g1", "g3"])
+        self.assertEqual([b.group() for b in manager.bookmarks()],
+                         ['g1', 'g1', 'g3'])
 
-        manager.renameGroup("xxxxx", "yyyyy")
-        self.assertEqual([b.group() for b in manager.bookmarks()], ["g1", "g1", "g3"])
+        manager.renameGroup('xxxxx', 'yyyyy')
+        self.assertEqual([b.group() for b in manager.bookmarks()],
+                         ['g1', 'g1', 'g3'])
         self.assertEqual(len(changed_spy), 0)
-        manager.renameGroup("", "")
-        self.assertEqual([b.group() for b in manager.bookmarks()], ["g1", "g1", "g3"])
+        manager.renameGroup('', '')
+        self.assertEqual([b.group() for b in manager.bookmarks()],
+                         ['g1', 'g1', 'g3'])
         self.assertEqual(len(changed_spy), 0)
-        manager.renameGroup("g1", "g2")
-        self.assertEqual([b.group() for b in manager.bookmarks()], ["g2", "g2", "g3"])
+        manager.renameGroup('g1', 'g2')
+        self.assertEqual([b.group() for b in manager.bookmarks()],
+                         ['g2', 'g2', 'g3'])
         self.assertEqual(len(changed_spy), 2)
-        self.assertEqual(changed_spy[0][0], "1")
-        self.assertEqual(changed_spy[1][0], "2")
-        manager.renameGroup("g3", "g2")
-        self.assertEqual([b.group() for b in manager.bookmarks()], ["g2", "g2", "g2"])
+        self.assertEqual(changed_spy[0][0], '1')
+        self.assertEqual(changed_spy[1][0], '2')
+        manager.renameGroup('g3', 'g2')
+        self.assertEqual([b.group() for b in manager.bookmarks()],
+                         ['g2', 'g2', 'g2'])
         self.assertEqual(len(changed_spy), 3)
-        self.assertEqual(changed_spy[2][0], "3")
-        manager.renameGroup("g2", "g")
-        self.assertEqual([b.group() for b in manager.bookmarks()], ["g", "g", "g"])
+        self.assertEqual(changed_spy[2][0], '3')
+        manager.renameGroup('g2', 'g')
+        self.assertEqual([b.group() for b in manager.bookmarks()],
+                         ['g', 'g', 'g'])
         self.assertEqual(len(changed_spy), 6)
-        self.assertEqual(changed_spy[3][0], "1")
-        self.assertEqual(changed_spy[4][0], "2")
-        self.assertEqual(changed_spy[5][0], "3")
+        self.assertEqual(changed_spy[3][0], '1')
+        self.assertEqual(changed_spy[4][0], '2')
+        self.assertEqual(changed_spy[5][0], '3')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

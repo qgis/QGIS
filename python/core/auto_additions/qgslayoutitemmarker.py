@@ -2,5 +2,5 @@
 try:
     QgsLayoutItemMarker.create = staticmethod(QgsLayoutItemMarker.create)
     QgsLayoutItemMarker.__group__ = ['layout']
-except (NameError, AttributeError):
+except NameError:
     pass

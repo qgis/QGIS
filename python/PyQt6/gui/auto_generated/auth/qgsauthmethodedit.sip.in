@@ -55,6 +55,7 @@ Clear GUI controls in subclassed widget
 %End
 
   protected:
+
     explicit QgsAuthMethodEdit( QWidget *parent = 0 );
 %Docstring
 Construct widget to edit an authentication method configuration

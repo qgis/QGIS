@@ -2,5 +2,5 @@
 try:
     QgsFillSymbol.createSimple = staticmethod(QgsFillSymbol.createSimple)
     QgsFillSymbol.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

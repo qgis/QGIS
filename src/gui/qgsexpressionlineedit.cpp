@@ -14,7 +14,6 @@
 ***************************************************************************/
 
 #include "qgsexpressionlineedit.h"
-#include "moc_qgsexpressionlineedit.cpp"
 #include "qgsfilterlineedit.h"
 #include "qgsexpressioncontext.h"
 #include "qgsapplication.h"
@@ -80,7 +79,7 @@ void QgsExpressionLineEdit::setMultiLine( bool multiLine )
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     setFocusProxy( mCodeEditor );
-    connect( mCodeEditor, &QsciScintilla::textChanged, this, static_cast<void ( QgsExpressionLineEdit::* )()>( &QgsExpressionLineEdit::expressionEdited ) );
+    connect( mCodeEditor, &QsciScintilla::textChanged, this, static_cast < void ( QgsExpressionLineEdit::* )() > ( &QgsExpressionLineEdit::expressionEdited ) );
 
     setExpression( exp );
   }
@@ -102,7 +101,7 @@ void QgsExpressionLineEdit::setMultiLine( bool multiLine )
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
 
     setFocusProxy( mLineEdit );
-    connect( mLineEdit, &QLineEdit::textChanged, this, static_cast<void ( QgsExpressionLineEdit::* )( const QString & )>( &QgsExpressionLineEdit::expressionEdited ) );
+    connect( mLineEdit, &QLineEdit::textChanged, this, static_cast < void ( QgsExpressionLineEdit::* )( const QString & ) > ( &QgsExpressionLineEdit::expressionEdited ) );
 
     setExpression( exp );
   }

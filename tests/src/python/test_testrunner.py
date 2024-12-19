@@ -5,10 +5,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Alessandro Pasotti"
-__date__ = "19.11.2018"
-__copyright__ = "Copyright 2018, The QGIS Project"
+__author__ = 'Alessandro Pasotti'
+__date__ = '19.11.2018'
+__copyright__ = 'Copyright 2018, The QGIS Project'
 
 
 from qgis.core import Qgis
@@ -23,7 +22,7 @@ class TestTestRunner(unittest.TestCase):
     def test_passes(self):
         self.assertGreater(Qgis.QGIS_VERSION_INT, 0)
 
-    @unittest.skip("Skipped!")
+    @unittest.skip('Skipped!')
     def test_skipped(self):
         self.assertTrue(False)
 
@@ -38,27 +37,26 @@ def _make_runner(tests=[]):
 
 # Test functions to be called by the runner
 
-
 def run_all():
     """Default function that is called by the runner if nothing else is specified"""
-    return _make_runner(["test_fails", "test_skipped", "test_passes"])
+    return _make_runner(['test_fails', 'test_skipped', 'test_passes'])
 
 
 def run_failing():
     """Run failing test only"""
-    return _make_runner(["test_fails"])
+    return _make_runner(['test_fails'])
 
 
 def run_passing():
     """Run passing test only"""
-    return _make_runner(["test_passes"])
+    return _make_runner(['test_passes'])
 
 
 def run_skipped():
     """Run skipped test only"""
-    return _make_runner(["test_skipped"])
+    return _make_runner(['test_skipped'])
 
 
 def run_skipped_and_passing():
     """Run skipped and passing test only"""
-    return _make_runner(["test_skipped", "test_passes"])
+    return _make_runner(['test_skipped', 'test_passes'])

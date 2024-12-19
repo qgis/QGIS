@@ -81,43 +81,6 @@ class CORE_EXPORT QgsTextBlock
      * Appends a \a fragment to the block.
      */
     void append( QgsTextFragment &&fragment ) SIP_SKIP;
-#ifndef SIP_RUN
-
-    /**
-     * Inserts a \a fragment into the block, at the specified index.
-     *
-     * \since QGIS 3.40
-     */
-    void insert( int index, const QgsTextFragment &fragment );
-
-#else
-    /**
-     * Inserts a \a fragment into the block, at the specified index.
-     *
-     * \throws IndexError if no fragment exists at the specified index.
-     *
-     * \since QGIS 3.40
-     */
-    void insert( int index, const QgsTextFragment &fragment );
-    % MethodCode
-    if ( a0 < 0 || a0 > sipCpp->size() )
-    {
-      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
-      sipIsErr = 1;
-    }
-    else
-    {
-      sipCpp->insert( a0, *a1 );
-    }
-    % End
-#endif
-
-    /**
-     * Inserts a \a fragment into the block, at the specified index.
-     *
-     * \since QGIS 3.40
-     */
-    void insert( int index, QgsTextFragment &&fragment ) SIP_SKIP;
 
     /**
      * Clears the block, removing all its contents.
@@ -158,13 +121,6 @@ class CORE_EXPORT QgsTextBlock
      * \since QGIS 3.16
      */
     void applyCapitalization( Qgis::Capitalization capitalization );
-
-    /**
-     * Returns TRUE if the block or any of the fragments in the block have background brushes set.
-     *
-     * \since QGIS 3.42
-     */
-    bool hasBackgrounds() const;
 
 #ifdef SIP_RUN
     int __len__() const;

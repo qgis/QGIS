@@ -3,9 +3,9 @@ try:
     QgsPointCloudClassifiedRenderer.create = staticmethod(QgsPointCloudClassifiedRenderer.create)
     QgsPointCloudClassifiedRenderer.defaultCategories = staticmethod(QgsPointCloudClassifiedRenderer.defaultCategories)
     QgsPointCloudClassifiedRenderer.__group__ = ['pointcloud']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsPointCloudCategory.__group__ = ['pointcloud']
-except (NameError, AttributeError):
+except NameError:
     pass

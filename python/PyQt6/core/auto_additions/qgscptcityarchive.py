@@ -12,7 +12,7 @@ try:
     QgsCptCityDataItem.findItem = staticmethod(QgsCptCityDataItem.findItem)
     QgsCptCityDataItem.__signal_arguments__ = {'beginInsertItems': ['parent: QgsCptCityDataItem', 'first: int', 'last: int'], 'beginRemoveItems': ['parent: QgsCptCityDataItem', 'first: int', 'last: int']}
     QgsCptCityDataItem.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsCptCityArchive.defaultBaseDir = staticmethod(QgsCptCityArchive.defaultBaseDir)
@@ -26,30 +26,30 @@ try:
     QgsCptCityArchive.defaultArchive = staticmethod(QgsCptCityArchive.defaultArchive)
     QgsCptCityArchive.archiveRegistry = staticmethod(QgsCptCityArchive.archiveRegistry)
     QgsCptCityArchive.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsCptCityDirectoryItem.dataItem = staticmethod(QgsCptCityDirectoryItem.dataItem)
     QgsCptCityDirectoryItem.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsCptCityColorRampItem.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsCptCityCollectionItem.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsCptCitySelectionItem.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsCptCityAllRampsItem.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsCptCityBrowserModel.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

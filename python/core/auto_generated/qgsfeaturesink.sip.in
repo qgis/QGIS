@@ -40,13 +40,6 @@ An interface for objects which accept features via addFeature(s) methods.
 
     virtual ~QgsFeatureSink();
 
-    virtual void finalize();
-%Docstring
-Finalizes the sink, flushing any buffered features to the destination.
-
-.. versionadded:: 3.42
-%End
-
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = QgsFeatureSink::Flags() );
 %Docstring
 Adds a single ``feature`` to the sink. Feature addition behavior is controlled by the specified ``flags``.

@@ -37,6 +37,7 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
     Q_OBJECT
 
   public:
+
     /**
      * QgsGraduatedHistogramWidget constructor
      * \param parent parent widget
@@ -60,6 +61,7 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
     void rangesModified( bool rangesAdded );
 
   protected:
+
     void drawHistogram() override;
 
   private slots:
@@ -68,6 +70,7 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
     void mouseRelease( double value );
 
   private:
+
     QgsGraduatedSymbolRenderer *mRenderer = nullptr;
     QwtPlotPicker *mHistoPicker = nullptr;
     QgsGraduatedHistogramEventFilter *mFilter = nullptr;
@@ -76,6 +79,7 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
     void findClosestRange( double value, int &closestRangeIndex, int &pixelDistance ) const;
 
     QwtPlotHistogram *createPlotHistogram( const QString &title, const QColor &color ) const;
+
 };
 
 
@@ -86,11 +90,12 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
 // not part of stable api or exposed to Python bindings
 //
 /// @cond PRIVATE
-class GUI_EXPORT QgsGraduatedHistogramEventFilter : public QObject
+class GUI_EXPORT QgsGraduatedHistogramEventFilter: public QObject
 {
     Q_OBJECT
 
   public:
+
     QgsGraduatedHistogramEventFilter( QwtPlot *plot );
 
     bool eventFilter( QObject *object, QEvent *event ) override;
@@ -101,6 +106,7 @@ class GUI_EXPORT QgsGraduatedHistogramEventFilter : public QObject
     void mouseRelease( double );
 
   private:
+
     QwtPlot *mPlot = nullptr;
     double posToValue( QPointF point ) const;
 };

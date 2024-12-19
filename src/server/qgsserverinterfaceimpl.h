@@ -34,8 +34,11 @@
 class SERVER_EXPORT QgsServerInterfaceImpl : public QgsServerInterface
 {
   public:
+
     //! Constructor
-    explicit QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache, QgsServiceRegistry *srvRegistry, QgsServerSettings *serverSettings );
+    explicit QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache,
+                                     QgsServiceRegistry *srvRegistry,
+                                     QgsServerSettings *serverSettings );
 
 
     ~QgsServerInterfaceImpl() override;
@@ -44,7 +47,7 @@ class SERVER_EXPORT QgsServerInterfaceImpl : public QgsServerInterface
     void clearRequestHandler() override;
     QgsCapabilitiesCache *capabilitiesCache() override { return mCapabilitiesCache; }
     //! Returns the QgsRequestHandler, to be used only in server plugins
-    QgsRequestHandler *requestHandler() override { return mRequestHandler; }
+    QgsRequestHandler  *requestHandler() override { return mRequestHandler; }
     void registerFilter( QgsServerFilter *filter, int priority = 0 ) override;
     QgsServerFiltersMap filters() override { return mFilters; }
 
@@ -86,6 +89,7 @@ class SERVER_EXPORT QgsServerInterfaceImpl : public QgsServerInterface
     void reloadSettings() override;
 
   private:
+
     QString mConfigFilePath;
     QgsServerFiltersMap mFilters;
     QgsAccessControl *mAccessControls = nullptr;
@@ -94,6 +98,7 @@ class SERVER_EXPORT QgsServerInterfaceImpl : public QgsServerInterface
     QgsRequestHandler *mRequestHandler = nullptr;
     QgsServiceRegistry *mServiceRegistry = nullptr;
     QgsServerSettings *mServerSettings = nullptr;
+
 };
 
 #endif // QGSSERVERINTERFACEIMPL_H

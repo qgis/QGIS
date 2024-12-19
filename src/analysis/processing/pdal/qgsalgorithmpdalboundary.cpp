@@ -77,7 +77,10 @@ QStringList QgsPdalBoundaryAlgorithm::createArgumentLists( const QVariantMap &pa
   const QString outputFile = parameterAsOutputLayer( parameters, QStringLiteral( "OUTPUT" ), context );
   setOutputValue( QStringLiteral( "OUTPUT" ), outputFile );
 
-  QStringList args = { QStringLiteral( "boundary" ), QStringLiteral( "--input=%1" ).arg( layer->source() ), QStringLiteral( "--output=%1" ).arg( outputFile ) };
+  QStringList args = { QStringLiteral( "boundary" ),
+                       QStringLiteral( "--input=%1" ).arg( layer->source() ),
+                       QStringLiteral( "--output=%1" ).arg( outputFile )
+                     };
 
   bool hasResolution = parameters.value( QStringLiteral( "RESOLUTION" ) ).isValid();
   bool hasThreshold = parameters.value( QStringLiteral( "THRESHOLD" ) ).isValid();

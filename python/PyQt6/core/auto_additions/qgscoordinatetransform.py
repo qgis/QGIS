@@ -3,5 +3,5 @@ try:
     QgsCoordinateTransform.isTransformationPossible = staticmethod(QgsCoordinateTransform.isTransformationPossible)
     QgsCoordinateTransform.invalidateCache = staticmethod(QgsCoordinateTransform.invalidateCache)
     QgsCoordinateTransform.__group__ = ['proj']
-except (NameError, AttributeError):
+except NameError:
     pass

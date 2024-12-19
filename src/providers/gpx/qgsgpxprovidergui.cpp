@@ -25,6 +25,7 @@
 class QgsGpxSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
+
     QString providerKey() const override { return QStringLiteral( "gpx" ); }
     QString text() const override { return QObject::tr( "GPS" ); }
     int ordering() const override { return QgsSourceSelectProvider::OrderLocalProvider + 65; }
@@ -36,7 +37,7 @@ class QgsGpxSourceSelectProvider : public QgsSourceSelectProvider
 };
 
 
-class QgsGpxProviderGuiMetadata : public QgsProviderGuiMetadata
+class QgsGpxProviderGuiMetadata: public QgsProviderGuiMetadata
 {
   public:
     QgsGpxProviderGuiMetadata()

@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsannotationmanager.h"
-#include "moc_qgsannotationmanager.cpp"
 #include "qgsproject.h"
 #include "qgsannotation.h"
 #include "qgsannotationregistry.h"

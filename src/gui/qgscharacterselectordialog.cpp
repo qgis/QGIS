@@ -16,7 +16,6 @@
 
 #include "characterwidget.h"
 #include "qgscharacterselectordialog.h"
-#include "moc_qgscharacterselectordialog.cpp"
 
 
 QgsCharacterSelectorDialog::QgsCharacterSelectorDialog( QWidget *parent, Qt::WindowFlags fl )

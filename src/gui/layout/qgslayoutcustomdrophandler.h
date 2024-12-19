@@ -34,6 +34,7 @@ class GUI_EXPORT QgsLayoutCustomDropHandler : public QObject
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsLayoutCustomDropHandler.
      */
@@ -83,7 +84,7 @@ class GUI_EXPORT QgsLayoutCustomDropHandler : public QObject
      *
      * \since QGIS 3.14
      */
-    virtual bool handlePaste( QgsLayoutDesignerInterface *iface, QPointF pastePoint, const QMimeData *data, QList<QgsLayoutItem *> &pastedItems SIP_OUT );
+    virtual bool handlePaste( QgsLayoutDesignerInterface *iface, QPointF pastePoint, const QMimeData *data, QList< QgsLayoutItem * > &pastedItems SIP_OUT );
 };
 
 

@@ -21,12 +21,14 @@ QgsHistoryEntry::QgsHistoryEntry( const QString &providerId, const QDateTime &ti
   , providerId( providerId )
   , entry( entry )
 {
+
 }
 
 QgsHistoryEntry::QgsHistoryEntry( const QVariantMap &entry )
   : timestamp( QDateTime::currentDateTime() )
   , entry( entry )
 {
+
 }
 
 bool QgsHistoryEntry::isValid() const

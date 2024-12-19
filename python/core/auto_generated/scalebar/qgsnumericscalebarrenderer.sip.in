@@ -40,14 +40,8 @@ A scale bar style that draws text in the form of '1:XXXXX'.
                              const QgsScaleBarSettings &settings,
                              const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
 
- virtual QSizeF calculateBoxSize( const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const /Deprecated="Since 3.14. Use the one with render context instead."/;
+ virtual QSizeF calculateBoxSize( const QgsScaleBarSettings &settings, const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const /Deprecated/;
 
-%Docstring
-
-.. deprecated:: 3.14
-
-   Use the one with render context instead.
-%End
 
 };
 

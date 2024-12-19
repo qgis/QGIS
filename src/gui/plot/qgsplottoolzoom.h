@@ -33,9 +33,11 @@ class QgsPlotRectangularRubberBand;
  */
 class GUI_EXPORT QgsPlotToolZoom : public QgsPlotTool
 {
+
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsPlotToolZoom, with the associated \a canvas.
      */
@@ -50,6 +52,7 @@ class GUI_EXPORT QgsPlotToolZoom : public QgsPlotTool
     void deactivate() override;
 
   protected:
+
     /**
      * Applies constraints to the start point of the zoom rubber band.
      *
@@ -89,6 +92,7 @@ class GUI_EXPORT QgsPlotToolZoom : public QgsPlotTool
     bool mMarqueeZoom = false;
 
   protected:
+
     //! Start position for mouse drag
     QPoint mMousePressStartPos;
 
@@ -96,10 +100,12 @@ class GUI_EXPORT QgsPlotToolZoom : public QgsPlotTool
     QPointF mRubberBandStartPos;
 
   private:
+
     //! Rubber band item
-    std::unique_ptr<QgsPlotRectangularRubberBand> mRubberBand;
+    std::unique_ptr< QgsPlotRectangularRubberBand > mRubberBand;
 
     void startMarqueeZoom( QPointF scenePoint );
+
 };
 
 #endif // QGSPLOTTOOLZOOM_H

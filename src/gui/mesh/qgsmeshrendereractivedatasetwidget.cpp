@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsmeshrendereractivedatasetwidget.h"
-#include "moc_qgsmeshrendereractivedatasetwidget.cpp"
 
 #include <QDateTime>
 #include <QIcon>
@@ -30,8 +29,10 @@ QgsMeshRendererActiveDatasetWidget::QgsMeshRendererActiveDatasetWidget( QWidget 
 {
   setupUi( this );
 
-  connect( mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::activeScalarGroupChanged, this, &QgsMeshRendererActiveDatasetWidget::onActiveScalarGroupChanged );
-  connect( mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::activeVectorGroupChanged, this, &QgsMeshRendererActiveDatasetWidget::onActiveVectorGroupChanged );
+  connect( mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::activeScalarGroupChanged,
+           this, &QgsMeshRendererActiveDatasetWidget::onActiveScalarGroupChanged );
+  connect( mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::activeVectorGroupChanged,
+           this, &QgsMeshRendererActiveDatasetWidget::onActiveVectorGroupChanged );
 }
 
 QgsMeshRendererActiveDatasetWidget::~QgsMeshRendererActiveDatasetWidget() = default;
@@ -41,15 +42,19 @@ void QgsMeshRendererActiveDatasetWidget::setLayer( QgsMeshLayer *layer )
 {
   if ( mMeshLayer )
   {
-    disconnect( mMeshLayer, &QgsMeshLayer::activeScalarDatasetGroupChanged, mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveScalarGroup );
-    disconnect( mMeshLayer, &QgsMeshLayer::activeVectorDatasetGroupChanged, mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveVectorGroup );
+    disconnect( mMeshLayer, &QgsMeshLayer::activeScalarDatasetGroupChanged,
+                mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveScalarGroup );
+    disconnect( mMeshLayer, &QgsMeshLayer::activeVectorDatasetGroupChanged,
+                mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveVectorGroup );
   }
 
   mMeshLayer = layer;
 
   mDatasetGroupTreeView->setLayer( layer );
-  connect( layer, &QgsMeshLayer::activeScalarDatasetGroupChanged, mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveScalarGroup );
-  connect( layer, &QgsMeshLayer::activeVectorDatasetGroupChanged, mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveVectorGroup );
+  connect( layer, &QgsMeshLayer::activeScalarDatasetGroupChanged,
+           mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveScalarGroup );
+  connect( layer, &QgsMeshLayer::activeVectorDatasetGroupChanged,
+           mDatasetGroupTreeView, &QgsMeshActiveDatasetGroupTreeView::setActiveVectorGroup );
 }
 
 int QgsMeshRendererActiveDatasetWidget::activeScalarDatasetGroup() const
@@ -89,7 +94,8 @@ void QgsMeshRendererActiveDatasetWidget::updateMetadata()
 {
   QString msg;
 
-  if ( !mMeshLayer || !mMeshLayer->dataProvider() )
+  if ( !mMeshLayer ||
+       !mMeshLayer->dataProvider() )
   {
     msg += tr( "Invalid mesh layer selected" );
   }
@@ -136,6 +142,7 @@ void QgsMeshRendererActiveDatasetWidget::updateMetadata()
 
 QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datasetIndex )
 {
+
   QString msg;
   msg += QLatin1String( "<table>" );
 
@@ -160,8 +167,8 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
     definedOnMesh = tr( "invalid mesh" );
   }
   msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
-           .arg( tr( "Mesh type" ) )
-           .arg( definedOnMesh );
+         .arg( tr( "Mesh type" ) )
+         .arg( definedOnMesh );
 
   const QgsMeshDatasetGroupMetadata gmeta = mMeshLayer->datasetGroupMetadata( datasetIndex );
   QString definedOn;
@@ -181,12 +188,12 @@ QString QgsMeshRendererActiveDatasetWidget::metadata( QgsMeshDatasetIndex datase
       break;
   }
   msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
-           .arg( tr( "Data type" ) )
-           .arg( definedOn );
+         .arg( tr( "Data type" ) )
+         .arg( definedOn );
 
   msg += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" )
-           .arg( tr( "Is vector" ) )
-           .arg( gmeta.isVector() ? tr( "Yes" ) : tr( "No" ) );
+         .arg( tr( "Is vector" ) )
+         .arg( gmeta.isVector() ? tr( "Yes" ) : tr( "No" ) );
 
   const auto options = gmeta.extraOptions();
   for ( auto it = options.constBegin(); it != options.constEnd(); ++it )

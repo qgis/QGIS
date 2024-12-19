@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Nyall Dawson"
-__date__ = "February 2018"
-__copyright__ = "(C) 2018, Nyall Dawson"
+__author__ = 'Nyall Dawson'
+__date__ = 'February 2018'
+__copyright__ = '(C) 2018, Nyall Dawson'
 
 import os
 from qgis.PyQt.QtWidgets import QFileDialog
@@ -35,28 +35,21 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class OpenScriptFromFileAction(ToolboxAction):
 
     def __init__(self):
-        self.name = QCoreApplication.translate(
-            "OpenScriptFromFileAction", "Open Existing Script…"
-        )
-        self.group = self.tr("Tools")
+        self.name = QCoreApplication.translate('OpenScriptFromFileAction', 'Open Existing Script…')
+        self.group = self.tr('Tools')
 
     def getIcon(self):
         return QgsApplication.getThemeIcon("/processingScript.svg")
 
     def execute(self):
         settings = QgsSettings()
-        lastDir = settings.value("Processing/lastScriptsDir", "")
-        filename, selected_filter = QFileDialog.getOpenFileName(
-            self.toolbox,
-            self.tr("Open Script", "AddScriptFromFileAction"),
-            lastDir,
-            self.tr("Processing scripts (*.py *.PY)", "AddScriptFromFileAction"),
-        )
+        lastDir = settings.value('Processing/lastScriptsDir', '')
+        filename, selected_filter = QFileDialog.getOpenFileName(self.toolbox,
+                                                                self.tr('Open Script', 'AddScriptFromFileAction'), lastDir,
+                                                                self.tr('Processing scripts (*.py *.PY)', 'AddScriptFromFileAction'))
         if filename:
-            settings.setValue(
-                "Processing/lastScriptsDir",
-                QFileInfo(filename).absoluteDir().absolutePath(),
-            )
+            settings.setValue('Processing/lastScriptsDir',
+                              QFileInfo(filename).absoluteDir().absolutePath())
 
             dlg = ScriptEditorDialog(filePath=filename, parent=iface.mainWindow())
             dlg.show()

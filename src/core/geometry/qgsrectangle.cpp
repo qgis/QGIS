@@ -22,7 +22,6 @@
 #include "qgsbox3d.h"
 #include "qgspolygon.h"
 #include "qgslinestring.h"
-#include "moc_qgsrectangle.cpp"
 
 #include <QString>
 #include <QTextStream>

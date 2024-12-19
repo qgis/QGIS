@@ -39,6 +39,7 @@ class QgsArcgisVectorTileConnectionDialog : public QDialog, public Ui::QgsArcgis
 
   private slots:
     void updateOkButtonState();
+
 };
 
 ///@endcond

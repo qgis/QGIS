@@ -15,35 +15,31 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "May 2015"
-__copyright__ = "(C) 2015, Victor Olaya"
+__author__ = 'Victor Olaya'
+__date__ = 'May 2015'
+__copyright__ = '(C) 2015, Victor Olaya'
 
 from qgis.PyQt.QtCore import QCoreApplication
-from qgis.PyQt.QtWidgets import (
-    QWidget,
-    QVBoxLayout,
-    QPushButton,
-    QLabel,
-    QPlainTextEdit,
-    QLineEdit,
-    QComboBox,
-    QCheckBox,
-    QSizePolicy,
-    QDialogButtonBox,
-)
+from qgis.PyQt.QtWidgets import (QWidget,
+                                 QVBoxLayout,
+                                 QPushButton,
+                                 QLabel,
+                                 QPlainTextEdit,
+                                 QLineEdit,
+                                 QComboBox,
+                                 QCheckBox,
+                                 QSizePolicy,
+                                 QDialogButtonBox)
 
 from qgis.core import (
     QgsProcessingException,
     QgsProcessingFeedback,
-    QgsProcessingParameterDefinition,
+    QgsProcessingParameterDefinition
 )
-from qgis.gui import (
-    QgsMessageBar,
-    QgsProjectionSelectionWidget,
-    QgsProcessingAlgorithmDialogBase,
-    QgsProcessingLayerOutputDestinationWidget,
-)
+from qgis.gui import (QgsMessageBar,
+                      QgsProjectionSelectionWidget,
+                      QgsProcessingAlgorithmDialogBase,
+                      QgsProcessingLayerOutputDestinationWidget)
 
 from processing.gui.AlgorithmDialog import AlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
@@ -128,48 +124,30 @@ class GdalParametersPanel(ParametersPanel):
             # messy as all heck, but we don't want to call the dialog's implementation of
             # createProcessingParameters as we want to catch the exceptions raised by the
             # parameter panel instead...
-            parameters = (
-                {}
-                if self.dialog.mainWidget() is None
-                else self.dialog.mainWidget().createProcessingParameters()
-            )
+            parameters = {} if self.dialog.mainWidget() is None else self.dialog.mainWidget().createProcessingParameters()
             for output in self.algorithm().destinationParameterDefinitions():
                 if not output.name() in parameters or parameters[output.name()] is None:
-                    if (
-                        not output.flags()
-                        & QgsProcessingParameterDefinition.Flag.FlagOptional
-                    ):
+                    if not output.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional:
                         parameters[output.name()] = self.tr("[temporary file]")
             for p in self.algorithm().parameterDefinitions():
                 if p.flags() & QgsProcessingParameterDefinition.Flag.FlagHidden:
                     continue
 
-                if (
-                    p.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional
-                    and p.name() not in parameters
-                ):
+                if p.flags() & QgsProcessingParameterDefinition.Flag.FlagOptional and p.name() not in parameters:
                     continue
 
-                if p.name() not in parameters or not p.checkValueIsAcceptable(
-                    parameters[p.name()]
-                ):
+                if p.name() not in parameters or not p.checkValueIsAcceptable(parameters[p.name()]):
                     # not ready yet
-                    self.text.setPlainText("")
+                    self.text.setPlainText('')
                     return
 
             try:
-                commands = self.algorithm().getConsoleCommands(
-                    parameters, context, feedback, executing=False
-                )
-                commands = [c for c in commands if c not in ["cmd.exe", "/C "]]
+                commands = self.algorithm().getConsoleCommands(parameters, context, feedback, executing=False)
+                commands = [c for c in commands if c not in ['cmd.exe', '/C ']]
                 self.text.setPlainText(" ".join(commands))
             except QgsProcessingException as e:
                 self.text.setPlainText(str(e))
         except AlgorithmDialogBase.InvalidParameterValue as e:
-            self.text.setPlainText(
-                self.tr("Invalid value for parameter '{0}'").format(
-                    e.parameter.description()
-                )
-            )
+            self.text.setPlainText(self.tr("Invalid value for parameter '{0}'").format(e.parameter.description()))
         except AlgorithmDialogBase.InvalidOutputExtension as e:
             self.text.setPlainText(e.message)

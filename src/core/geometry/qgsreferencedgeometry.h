@@ -70,8 +70,6 @@ class CORE_EXPORT QgsReferencedGeometryBase
  */
 class CORE_EXPORT QgsReferencedRectangle : public QgsRectangle, public QgsReferencedGeometryBase
 {
-    Q_GADGET
-
   public:
 
     /**

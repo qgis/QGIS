@@ -8,13 +8,14 @@
 
 
 
-class QgsEllipseSymbolLayerWidget : QgsSymbolLayerWidget
+class QgsEllipseSymbolLayerWidget: QgsSymbolLayerWidget
 {
 
 %TypeHeaderCode
 #include "qgsellipsesymbollayerwidget.h"
 %End
   public:
+
     QgsEllipseSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsEllipseSymbolLayerWidget.

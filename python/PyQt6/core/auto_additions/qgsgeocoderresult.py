@@ -2,5 +2,5 @@
 try:
     QgsGeocoderResult.errorResult = staticmethod(QgsGeocoderResult.errorResult)
     QgsGeocoderResult.__group__ = ['geocoding']
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -74,6 +74,7 @@ Optionally, override:
 #include "qgsserverogcapihandler.h"
 %End
   public:
+
     virtual ~QgsServerOgcApiHandler();
 
 
@@ -137,7 +138,7 @@ The default implementation returns the first content type returned by
 %End
 
 
-    virtual void handleRequest( const QgsServerApiContext &context ) const  /VirtualErrorHandler=serverapi_badrequest_exception_handler/;
+    virtual void handleRequest( const QgsServerApiContext &context ) const throw( QgsServerApiBadRequestException ) /VirtualErrorHandler=serverapi_badrequest_exception_handler/;
 %Docstring
 Handles the request within its ``context``
 
@@ -147,7 +148,7 @@ extract validated parameters from the request.
 :raises QgsServerApiBadRequestError: if the method encounters any error
 %End
 
-    virtual QVariantMap values( const QgsServerApiContext &context ) const;
+    virtual QVariantMap values( const QgsServerApiContext &context ) const throw( QgsServerApiBadRequestException );
 %Docstring
 Analyzes the incoming request ``context`` and returns the validated
 parameter map, throws :py:class:`QgsServerApiBadRequestError` in case of errors.
@@ -178,7 +179,7 @@ returns an empty string if there are not matches.
 
 
 
-    void write( QVariant &data, const QgsServerApiContext &context, const QVariantMap &htmlMetadata = QVariantMap() ) const;
+    void write( QVariant &data, const QgsServerApiContext &context, const QVariantMap &htmlMetadata = QVariantMap() ) const throw( QgsServerApiBadRequestException );
 %Docstring
 Writes ``data`` to the ``context`` response stream, content-type is calculated from the ``context`` request,
 optional ``htmlMetadata`` for the HTML templates can be specified and will be added as "metadata" to
@@ -253,6 +254,7 @@ Returns a vector layer from the ``collectionId`` in the given ``context``.
 
 
   protected:
+
     void setContentTypesInt( const QList<int> &contentTypes ) /PyName=setContentTypes/;
 %Docstring
 Set the content types to ``contentTypes``

@@ -35,6 +35,7 @@ class GUI_EXPORT QgsUuidWidgetWrapper : public QgsEditorWidgetWrapper
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsUuidWidgetWrapper.
      *
@@ -68,7 +69,7 @@ class GUI_EXPORT QgsUuidWidgetWrapper : public QgsEditorWidgetWrapper
     void setEnabled( bool enabled ) override;
 
   private:
-    void updateValues( const QVariant &value, const QVariantList & = QVariantList() ) override;
+    void updateValues( const QVariant &value, const QVariantList  & = QVariantList() ) override;
 
     QLabel *mLabel = nullptr;
     QLineEdit *mLineEdit = nullptr;

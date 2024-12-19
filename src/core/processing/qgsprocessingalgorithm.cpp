@@ -392,11 +392,6 @@ QVariantMap QgsProcessingAlgorithm::asMap( const QVariantMap &parameters, QgsPro
 
 bool QgsProcessingAlgorithm::addParameter( QgsProcessingParameterDefinition *definition, bool createOutput )
 {
-  return addParameter( std::unique_ptr<QgsProcessingParameterDefinition>( definition ), createOutput );
-}
-
-bool QgsProcessingAlgorithm::addParameter( std::unique_ptr<QgsProcessingParameterDefinition> definition, bool createOutput )
-{
   if ( !definition )
     return false;
 
@@ -405,22 +400,22 @@ bool QgsProcessingAlgorithm::addParameter( std::unique_ptr<QgsProcessingParamete
   if ( existingDef && existingDef->name() == definition->name() ) // parameterDefinition is case-insensitive, but we DO allow case-different duplicate names
   {
     QgsMessageLog::logMessage( QObject::tr( "Duplicate parameter %1 registered for alg %2" ).arg( definition->name(), id() ), QObject::tr( "Processing" ) );
+    delete definition;
     return false;
   }
 
   if ( definition->isDestination() && mProvider )
   {
-    QgsProcessingDestinationParameter *destParam = static_cast< QgsProcessingDestinationParameter *>( definition.get() );
+    QgsProcessingDestinationParameter *destParam = static_cast< QgsProcessingDestinationParameter *>( definition );
     if ( !mProvider->supportsNonFileBasedOutput() )
       destParam->setSupportsNonFileBasedOutput( false );
   }
 
+  mParameters << definition;
   definition->mAlgorithm = this;
-  mParameters << definition.release();
-  const QgsProcessingParameterDefinition *definitionRawPtr = mParameters.back();
 
   if ( createOutput )
-    return createAutoOutputForParameter( definitionRawPtr );
+    return createAutoOutputForParameter( definition );
   else
     return true;
 }
@@ -445,11 +440,6 @@ void QgsProcessingAlgorithm::removeParameter( const QString &name )
 
 bool QgsProcessingAlgorithm::addOutput( QgsProcessingOutputDefinition *definition )
 {
-  return addOutput( std::unique_ptr<QgsProcessingOutputDefinition>( definition ) );
-}
-
-bool QgsProcessingAlgorithm::addOutput( std::unique_ptr<QgsProcessingOutputDefinition> definition )
-{
   if ( !definition )
     return false;
 
@@ -457,10 +447,11 @@ bool QgsProcessingAlgorithm::addOutput( std::unique_ptr<QgsProcessingOutputDefin
   if ( QgsProcessingAlgorithm::outputDefinition( definition->name() ) )
   {
     QgsMessageLog::logMessage( QObject::tr( "Duplicate output %1 registered for alg %2" ).arg( definition->name(), id() ), QObject::tr( "Processing" ) );
+    delete definition;
     return false;
   }
 
-  mOutputs << definition.release();
+  mOutputs << definition;
   return true;
 }
 
@@ -1052,12 +1043,12 @@ bool QgsProcessingAlgorithm::supportInPlaceEdit( const QgsMapLayer *layer ) cons
 }
 
 
-bool QgsProcessingAlgorithm::createAutoOutputForParameter( const QgsProcessingParameterDefinition *parameter )
+bool QgsProcessingAlgorithm::createAutoOutputForParameter( QgsProcessingParameterDefinition *parameter )
 {
   if ( !parameter->isDestination() )
     return true; // nothing created, but nothing went wrong - so return true
 
-  const QgsProcessingDestinationParameter *dest = static_cast< const QgsProcessingDestinationParameter * >( parameter );
+  QgsProcessingDestinationParameter *dest = static_cast< QgsProcessingDestinationParameter * >( parameter );
   QgsProcessingOutputDefinition *output( dest->toOutputDefinition() );
   if ( !output )
     return true; // nothing created - but nothing went wrong - so return true
@@ -1191,8 +1182,6 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
     feedback->setProgress( current * step );
     current++;
   }
-
-  sink->finalize();
 
   mSource.reset();
 

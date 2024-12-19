@@ -14,16 +14,15 @@
  ***************************************************************************/
 
 #include "qgsflatterraingenerator.h"
-#include "moc_qgsflatterraingenerator.cpp"
 
 #include <Qt3DRender/QGeometryRenderer>
+#include <Qt3DCore/QTransform>
 
 #include "qgs3dmapsettings.h"
 #include "qgschunknode.h"
-#include "qgsgeotransform.h"
 #include "qgsterrainentity.h"
 #include "qgsterraintileentity_p.h"
-
+#include "qgs3dutils.h"
 /// @cond PRIVATE
 
 
@@ -50,7 +49,7 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
 
   Qt3DRender::QGeometryRenderer *mesh = new Qt3DRender::QGeometryRenderer;
   mesh->setGeometry( mTileGeometry ); // takes ownership if the component has no parent
-  entity->addComponent( mesh );       // takes ownership if the component has no parent
+  entity->addComponent( mesh ); // takes ownership if the component has no parent
 
   // create material
 
@@ -58,23 +57,27 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
 
   // create transform
 
-  QgsGeoTransform *transform = nullptr;
-  transform = new QgsGeoTransform();
+  Qt3DCore::QTransform *transform = nullptr;
+  transform = new Qt3DCore::QTransform();
   entity->addComponent( transform );
 
   // set up transform according to the extent covered by the quad geometry
-  const QgsBox3D box3D = mNode->box3D();
-  const QgsBox3D mapFullBox3D( map->extent(), box3D.zMinimum(), box3D.zMaximum() );
+  const QgsAABB bbox = mNode->bbox();
 
-  const QgsBox3D commonExtent( std::max( box3D.xMinimum(), mapFullBox3D.xMinimum() ), std::max( box3D.yMinimum(), mapFullBox3D.yMinimum() ), box3D.zMinimum(), std::min( box3D.xMaximum(), mapFullBox3D.xMaximum() ), std::min( box3D.yMaximum(), mapFullBox3D.yMaximum() ), box3D.zMaximum() );
-  const double xSide = commonExtent.width();
-  const double ySide = commonExtent.height();
-  const double xMin = commonExtent.xMinimum();
-  const double yMin = commonExtent.yMinimum();
+  const QgsAABB mapFullExtent = Qgs3DUtils::mapToWorldExtent( map->extent(), bbox.yMin, bbox.yMax, map->origin() );
 
-  transform->setRotation( QQuaternion::fromAxisAndAngle( QVector3D( 1, 0, 0 ), 90 ) ); // QPlaneGeometry uses XZ as the base plane
-  transform->setScale3D( QVector3D( static_cast<float>( xSide ), 1, static_cast<float>( ySide ) ) );
-  transform->setGeoTranslation( QgsVector3D( xMin + xSide / 2, yMin + ySide / 2, 0 ) );
+  const QgsAABB commonExtent = QgsAABB( std::max( bbox.xMin, mapFullExtent.xMin ),
+                                        bbox.yMin,
+                                        std::max( bbox.zMin, mapFullExtent.zMin ),
+                                        std::min( bbox.xMax, mapFullExtent.xMax ),
+                                        bbox.yMax,
+                                        std::min( bbox.zMax, mapFullExtent.zMax )
+                                      );
+  const double xSide = commonExtent.xExtent();
+  const double zSide = commonExtent.zExtent();
+
+  transform->setScale3D( QVector3D( xSide, 1, zSide ) );
+  transform->setTranslation( QVector3D( commonExtent.xMin + xSide / 2, 0, commonExtent.zMin + zSide / 2 ) );
 
   createTextureComponent( entity, map->isTerrainShadingEnabled(), map->terrainShadingMaterial(), !map->layers().empty() );
 
@@ -85,11 +88,6 @@ Qt3DCore::QEntity *FlatTerrainChunkLoader::createEntity( Qt3DCore::QEntity *pare
 /// @endcond
 
 // ---------------
-
-QgsTerrainGenerator *QgsFlatTerrainGenerator::create()
-{
-  return new QgsFlatTerrainGenerator();
-}
 
 QgsChunkLoader *QgsFlatTerrainGenerator::createChunkLoader( QgsChunkNode *node ) const
 {
@@ -121,7 +119,17 @@ void QgsFlatTerrainGenerator::rootChunkHeightRange( float &hMin, float &hMax ) c
   hMax = 0;
 }
 
-void QgsFlatTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext & )
+void QgsFlatTerrainGenerator::writeXml( QDomElement &elem ) const
+{
+  Q_UNUSED( elem )
+}
+
+void QgsFlatTerrainGenerator::readXml( const QDomElement &elem )
+{
+  Q_UNUSED( elem )
+}
+
+void QgsFlatTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs )
 {
   mCrs = crs;
   updateTilingScheme();

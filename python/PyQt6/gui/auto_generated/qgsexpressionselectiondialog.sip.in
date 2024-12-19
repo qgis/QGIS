@@ -23,6 +23,7 @@ remove from the current selection or select within the current selection.
 #include "qgsexpressionselectiondialog.h"
 %End
   public:
+
     QgsExpressionSelectionDialog( QgsVectorLayer *layer, const QString &startText = QString(), QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Creates a new selection dialog.
@@ -72,6 +73,7 @@ Sets a map canvas associated with the dialog.
 %End
 
   protected:
+
     virtual void closeEvent( QCloseEvent *closeEvent );
 
 %Docstring

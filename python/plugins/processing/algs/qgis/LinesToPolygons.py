@@ -15,29 +15,27 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "August 2012"
-__copyright__ = "(C) 2012, Victor Olaya"
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
 
 import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import (
-    QgsApplication,
-    QgsFeature,
-    QgsGeometry,
-    QgsGeometryCollection,
-    QgsPolygon,
-    QgsMultiPolygon,
-    QgsMultiSurface,
-    QgsWkbTypes,
-    QgsFeatureSink,
-    QgsProcessing,
-    QgsProcessingParameterFeatureSource,
-    QgsProcessingParameterFeatureSink,
-    QgsProcessingUtils,
-)
+from qgis.core import (QgsApplication,
+                       QgsFeature,
+                       QgsGeometry,
+                       QgsGeometryCollection,
+                       QgsPolygon,
+                       QgsMultiPolygon,
+                       QgsMultiSurface,
+                       QgsWkbTypes,
+                       QgsFeatureSink,
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingUtils)
 
 from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 from processing.tools import dataobjects, vector
@@ -54,25 +52,25 @@ class LinesToPolygons(QgisFeatureBasedAlgorithm):
         return QgsApplication.iconPath("/algorithms/mAlgorithmLineToPolygon.svg")
 
     def tags(self):
-        return self.tr("line,polygon,convert").split(",")
+        return self.tr('line,polygon,convert').split(',')
 
     def group(self):
-        return self.tr("Vector geometry")
+        return self.tr('Vector geometry')
 
     def groupId(self):
-        return "vectorgeometry"
+        return 'vectorgeometry'
 
     def __init__(self):
         super().__init__()
 
     def name(self):
-        return "linestopolygons"
+        return 'linestopolygons'
 
     def displayName(self):
-        return self.tr("Lines to polygons")
+        return self.tr('Lines to polygons')
 
     def outputName(self):
-        return self.tr("Polygons")
+        return self.tr('Polygons')
 
     def outputType(self):
         return QgsProcessing.SourceType.TypeVectorPolygon
@@ -87,11 +85,7 @@ class LinesToPolygons(QgisFeatureBasedAlgorithm):
         if feature.hasGeometry():
             feature.setGeometry(QgsGeometry(self.convertToPolygons(feature.geometry())))
             if feature.geometry().isEmpty():
-                feedback.reportError(
-                    self.tr(
-                        "One or more line ignored due to geometry not having a minimum of three vertices."
-                    )
-                )
+                feedback.reportError(self.tr("One or more line ignored due to geometry not having a minimum of three vertices."))
         return [feature]
 
     def supportInPlaceEdit(self, layer):
@@ -99,15 +93,9 @@ class LinesToPolygons(QgisFeatureBasedAlgorithm):
 
     def convertWkbToPolygons(self, wkb):
         multi_wkb = QgsWkbTypes.Type.NoGeometry
-        if (
-            QgsWkbTypes.singleType(QgsWkbTypes.flatType(wkb))
-            == QgsWkbTypes.Type.LineString
-        ):
+        if QgsWkbTypes.singleType(QgsWkbTypes.flatType(wkb)) == QgsWkbTypes.Type.LineString:
             multi_wkb = QgsWkbTypes.Type.MultiPolygon
-        elif (
-            QgsWkbTypes.singleType(QgsWkbTypes.flatType(wkb))
-            == QgsWkbTypes.Type.CompoundCurve
-        ):
+        elif QgsWkbTypes.singleType(QgsWkbTypes.flatType(wkb)) == QgsWkbTypes.Type.CompoundCurve:
             multi_wkb = QgsWkbTypes.Type.MultiSurface
         if QgsWkbTypes.hasM(wkb):
             multi_wkb = QgsWkbTypes.addM(multi_wkb)

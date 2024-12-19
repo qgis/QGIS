@@ -19,7 +19,6 @@
 #include <QItemSelection>
 
 #include "qgslocatormodelbridge.h"
-#include "moc_qgslocatormodelbridge.cpp"
 #include "qgslocator.h"
 #include "qgslocatormodel.h"
 

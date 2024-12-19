@@ -72,28 +72,6 @@ Appends a ``block`` to the document.
 %End
 
 
-
-    void insert( int index, const QgsTextBlock &block );
-%Docstring
-Inserts a ``block`` into the document, at the specified index.
-
-:raises IndexError: if no block exists at the specified index.
-
-.. versionadded:: 3.40
-%End
-%MethodCode
-    if ( a0 < 0 || a0 > sipCpp->size() )
-    {
-      PyErr_SetString( PyExc_IndexError, QByteArray::number( a0 ) );
-      sipIsErr = 1;
-    }
-    else
-    {
-      sipCpp->insert( a0, *a1 );
-    }
-%End
-
-
     void reserve( int count );
 %Docstring
 Reserves the specified ``count`` of blocks for optimised block appending.
@@ -158,13 +136,6 @@ if ``False`` then the lines are wrapped to an ideal minimum length of ``autoWrap
 Applies a ``capitalization`` style to the document's text.
 
 .. versionadded:: 3.16
-%End
-
-    bool hasBackgrounds() const;
-%Docstring
-Returns ``True`` if any blocks or fragments in the document have background brushes set.
-
-.. versionadded:: 3.42
 %End
 
 

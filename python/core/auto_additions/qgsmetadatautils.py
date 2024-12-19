@@ -2,5 +2,5 @@
 try:
     QgsMetadataUtils.convertFromEsri = staticmethod(QgsMetadataUtils.convertFromEsri)
     QgsMetadataUtils.__group__ = ['metadata']
-except (NameError, AttributeError):
+except NameError:
     pass

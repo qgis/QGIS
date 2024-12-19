@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsannotationitemregistry.h"
-#include "moc_qgsannotationitemregistry.cpp"
 #include "qgsannotationitem.h"
 #include "qgsannotationmarkeritem.h"
 #include "qgsannotationlineitem.h"

@@ -24,12 +24,13 @@ class TestQgsSensorThingsConnection : public QObject
     Q_OBJECT
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init() {}          // will be called before each testfunction is executed.
-    void cleanup() {}       // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
     void encodeDecode();
     void testConnections();
+
 };
 
 
@@ -87,7 +88,7 @@ void TestQgsSensorThingsConnection::testConnections()
   data.httpHeaders.insert( QStringLiteral( "my_header" ), QStringLiteral( "value" ) );
 
   QgsSensorThingsProviderConnection::addConnection( QStringLiteral( "my connection" ), data );
-  QCOMPARE( QgsSensorThingsProviderConnection::connectionList(), { QStringLiteral( "my connection" ) } );
+  QCOMPARE( QgsSensorThingsProviderConnection::connectionList(), {QStringLiteral( "my connection" )} );
 
   QCOMPARE( QgsSensorThingsProviderConnection::connection( QStringLiteral( "my connection" ) ).url, QStringLiteral( "http://testurl" ) );
 

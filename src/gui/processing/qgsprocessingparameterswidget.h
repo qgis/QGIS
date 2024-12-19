@@ -38,6 +38,7 @@ class GUI_EXPORT QgsProcessingParametersWidget : public QgsPanelWidget, public Q
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsProcessingParametersWidget, for the specified \a algorithm.
      */
@@ -46,6 +47,7 @@ class GUI_EXPORT QgsProcessingParametersWidget : public QgsPanelWidget, public Q
     const QgsProcessingAlgorithm *algorithm() const;
 
   protected:
+
     virtual void initWidgets();
 
     void addParameterWidget( const QgsProcessingParameterDefinition *parameter, QWidget *widget SIP_TRANSFER, int stretch = 0 );
@@ -57,6 +59,7 @@ class GUI_EXPORT QgsProcessingParametersWidget : public QgsPanelWidget, public Q
     void addExtraWidget( QWidget *widget SIP_TRANSFER );
 
   private:
+
     const QgsProcessingAlgorithm *mAlgorithm = nullptr;
 
     friend class TestProcessingGui;

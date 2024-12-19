@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsvectorlayereditbuffergroup.h"
-#include "moc_qgsvectorlayereditbuffergroup.cpp"
 
 #include "qgsproject.h"
 #include "qgstransaction.h"
@@ -33,11 +32,6 @@ QgsVectorLayerEditBufferGroup::QgsVectorLayerEditBufferGroup( QObject *parent )
 void QgsVectorLayerEditBufferGroup::addLayer( QgsVectorLayer *layer )
 {
   mLayers.insert( layer );
-}
-
-void QgsVectorLayerEditBufferGroup::removeLayer( QgsVectorLayer *layer )
-{
-  mLayers.remove( layer );
 }
 
 void QgsVectorLayerEditBufferGroup::clear()

@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsannotationlayer.h"
-#include "moc_qgsannotationlayer.cpp"
 #include "qgsannotationlayerrenderer.h"
 #include "qgsannotationitem.h"
 #include "qgsannotationitemregistry.h"

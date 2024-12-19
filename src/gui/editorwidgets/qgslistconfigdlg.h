@@ -36,6 +36,7 @@ class GUI_EXPORT QgsListConfigDlg : public QgsEditorConfigWidget, private Ui::Qg
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsListConfigDlg, with the specified \a vector layer and field index.
      */

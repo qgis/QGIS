@@ -19,7 +19,6 @@
 #include <QtAlgorithms>
 
 #include "qgslayoutatlas.h"
-#include "moc_qgslayoutatlas.cpp"
 #include "qgslayout.h"
 #include "qgsmessagelog.h"
 #include "qgsfeaturerequest.h"

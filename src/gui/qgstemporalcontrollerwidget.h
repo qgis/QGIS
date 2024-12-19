@@ -40,6 +40,7 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
 {
     Q_OBJECT
   public:
+
     /**
       * Constructor for QgsTemporalControllerWidget, with the specified \a parent widget.
       */
@@ -66,9 +67,11 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
 #endif
 
   protected:
+
     void keyPressEvent( QKeyEvent *e ) override;
 
   private:
+
     //! Handles all non-GUI navigation logic
     QgsTemporalNavigationObject *mNavigationObject = nullptr;
 
@@ -77,11 +80,11 @@ class GUI_EXPORT QgsTemporalControllerWidget : public QgsPanelWidget, private Ui
 
     bool mHasTemporalLayersLoaded = false;
 
-    std::unique_ptr<QMenu> mRangeMenu;
+    std::unique_ptr< QMenu > mRangeMenu;
     QAction *mRangeSetToProjectAction = nullptr;
     QAction *mRangeSetToAllLayersAction = nullptr;
 
-    std::unique_ptr<QMenu> mRangeLayersSubMenu;
+    std::unique_ptr< QMenu > mRangeLayersSubMenu;
     QgsMapLayerModel *mMapLayerModel = nullptr;
 
     void firstTemporalLayerLoaded( QgsMapLayer *layer );

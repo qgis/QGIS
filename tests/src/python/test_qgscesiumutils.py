@@ -7,13 +7,14 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "(C) 2023 by Nyall Dawson"
-__date__ = "10/07/2023"
-__copyright__ = "Copyright 2023, The QGIS Project"
+__author__ = '(C) 2023 by Nyall Dawson'
+__date__ = '10/07/2023'
+__copyright__ = 'Copyright 2023, The QGIS Project'
 
 import math
-from qgis.core import QgsCesiumUtils
+from qgis.core import (
+    QgsCesiumUtils
+)
 import unittest
 from qgis.testing import start_app, QgisTestCase
 
@@ -31,7 +32,8 @@ class TestQgsCesiumUtils(QgisTestCase):
         self.assertTrue(QgsCesiumUtils.parseRegion([1, 2, 3, 4]).isNull())
         self.assertTrue(QgsCesiumUtils.parseRegion([1, 2, 3, 4, 5, 6, 7]).isNull())
         # not doubles
-        self.assertTrue(QgsCesiumUtils.parseRegion([1, "a", 3, 4, 5, 6]).isNull())
+        self.assertTrue(
+            QgsCesiumUtils.parseRegion([1, 'a', 3, 4, 5, 6]).isNull())
 
         # valid
         box = QgsCesiumUtils.parseRegion([1.2, 2, 3, 4.6, 5.5, 6])
@@ -50,16 +52,14 @@ class TestQgsCesiumUtils(QgisTestCase):
         self.assertTrue(QgsCesiumUtils.parseBox([1, 2, 3, 4]).isNull())
         self.assertTrue(QgsCesiumUtils.parseBox([1, 2, 3, 4, 5, 6, 7]).isNull())
         # not doubles
-        self.assertTrue(QgsCesiumUtils.parseBox([1, 2, "a", 4, 5, 6, 7]).isNull())
+        self.assertTrue(QgsCesiumUtils.parseBox([1, 2, 'a', 4, 5, 6, 7]).isNull())
 
         # valid
         box = QgsCesiumUtils.parseBox([1, 2, 3, 10, 0, 0, 0, 20, 0, 0, 0, 30])
         self.assertEqual(box.centerX(), 1)
         self.assertEqual(box.centerY(), 2)
         self.assertEqual(box.centerZ(), 3)
-        self.assertEqual(
-            box.halfAxes(), [10.0, 0.0, 0.0, 0.0, 20.0, 0.0, 0.0, 0.0, 30.0]
-        )
+        self.assertEqual(box.halfAxes(), [10.0, 0.0, 0.0, 0.0, 20.0, 0.0, 0.0, 0.0, 30.0])
 
     def test_parse_sphere(self):
         sphere = QgsCesiumUtils.parseSphere([])
@@ -69,7 +69,7 @@ class TestQgsCesiumUtils(QgisTestCase):
         self.assertTrue(QgsCesiumUtils.parseSphere([1, 2, 3]).isNull())
         self.assertTrue(QgsCesiumUtils.parseSphere([1, 2, 3, 4, 5, 6, 7]).isNull())
         # not doubles
-        self.assertTrue(QgsCesiumUtils.parseSphere([1, 2, "a", 4]).isNull())
+        self.assertTrue(QgsCesiumUtils.parseSphere([1, 2, 'a', 4]).isNull())
 
         # valid
         sphere = QgsCesiumUtils.parseSphere([1, 2, 3, 10])
@@ -79,5 +79,5 @@ class TestQgsCesiumUtils(QgisTestCase):
         self.assertEqual(sphere.radius(), 10)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

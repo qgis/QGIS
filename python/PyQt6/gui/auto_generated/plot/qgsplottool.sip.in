@@ -43,6 +43,7 @@ Plot tools are user tools for manipulating and interacting with a :py:class:`Qgs
       sipType = nullptr;
 %End
   public:
+
     ~QgsPlotTool();
 
     virtual Qgis::PlotToolFlags flags() const;
@@ -207,6 +208,7 @@ Emitted when the tool is deactivated
 %End
 
   protected:
+
     QgsPlotTool( QgsPlotCanvas *canvas /TransferThis/, const QString &name );
 %Docstring
 Constructor takes a plot canvas as a parameter.

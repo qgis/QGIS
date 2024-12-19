@@ -22,6 +22,7 @@ QComboBox subclass which allows selecting multiple items.
 #include "qgscheckablecombobox.h"
 %End
   public:
+
     QgsCheckableComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCheckableComboBox.
@@ -152,6 +153,7 @@ Set items which should be checked/selected.
 %End
 
   protected:
+
     virtual void resizeEvent( QResizeEvent *event );
 
 %Docstring

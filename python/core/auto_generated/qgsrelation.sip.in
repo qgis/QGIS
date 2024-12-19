@@ -170,8 +170,7 @@ which is referenced by the provided feature.
 
 :param feature: A feature from the referencing (child) layer
 
-:return: The referenced (parent) feature, or an invalid feature if no matching feature
-         was found
+:return: A request the referenced feature
 %End
 
     QString name() const;

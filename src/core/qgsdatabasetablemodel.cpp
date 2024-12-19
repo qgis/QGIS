@@ -13,7 +13,6 @@
 *                                                                         *
 ***************************************************************************/
 #include "qgsdatabasetablemodel.h"
-#include "moc_qgsdatabasetablemodel.cpp"
 #include "qgsproviderregistry.h"
 #include "qgsprovidermetadata.h"
 #include "qgsabstractdatabaseproviderconnection.h"

@@ -25,6 +25,7 @@ class QgsLine3DSymbol : QgsAbstract3DSymbol /NoDefaultCtors/
 #include "qgsline3dsymbol.h"
 %End
   public:
+
     QgsLine3DSymbol();
     ~QgsLine3DSymbol();
 
@@ -43,7 +44,7 @@ Caller takes ownership of the returned symbol.
 
     virtual void readXml( const QDomElement &elem, const QgsReadWriteContext &context );
 
-    virtual QList<Qgis::GeometryType> compatibleGeometryTypes() const;
+    virtual QList< Qgis::GeometryType > compatibleGeometryTypes() const;
 
     virtual void setDefaultPropertiesFromLayer( const QgsVectorLayer *layer );
 
@@ -75,7 +76,7 @@ Returns width of the line symbol (in map units)
 Sets width of the line symbol (in map units)
 %End
 
- float height() const /Deprecated="Since 3.36. Use offset() instead."/;
+ float height() const /Deprecated/;
 %Docstring
 Returns height (altitude) of the symbol (in map units)
 
@@ -84,7 +85,7 @@ Returns height (altitude) of the symbol (in map units)
    Use :py:func:`~QgsLine3DSymbol.offset` instead.
 %End
 
- void setHeight( float height ) /Deprecated="Since 3.36. Use setOffset() instead."/;
+ void setHeight( float height ) /Deprecated/;
 %Docstring
 Sets height (altitude) of the symbol (in map units)
 

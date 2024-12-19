@@ -10,5 +10,5 @@ try:
     QgsServerOgcApi.contenTypeFromExtension = staticmethod(QgsServerOgcApi.contenTypeFromExtension)
     QgsServerOgcApi.contentTypeFromExtension = staticmethod(QgsServerOgcApi.contentTypeFromExtension)
     QgsServerOgcApi.mimeType = staticmethod(QgsServerOgcApi.mimeType)
-except (NameError, AttributeError):
+except NameError:
     pass

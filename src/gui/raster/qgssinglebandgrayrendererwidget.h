@@ -30,7 +30,7 @@ class QgsRasterMinMaxWidget;
  * \ingroup gui
  * \class QgsSingleBandGrayRendererWidget
  */
-class GUI_EXPORT QgsSingleBandGrayRendererWidget : public QgsRasterRendererWidget, private Ui::QgsSingleBandGrayRendererWidgetBase
+class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget, private Ui::QgsSingleBandGrayRendererWidgetBase
 {
     Q_OBJECT
   public:
@@ -46,23 +46,11 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget : public QgsRasterRendererWidge
      */
     void setFromRenderer( const QgsRasterRenderer *r );
 
-    QString min( int index = 0 ) override
-    {
-      Q_UNUSED( index )
-      return mMinLineEdit->text();
-    }
-    QString max( int index = 0 ) override
-    {
-      Q_UNUSED( index )
-      return mMaxLineEdit->text();
-    }
+    QString min( int index = 0 ) override { Q_UNUSED( index ) return mMinLineEdit->text(); }
+    QString max( int index = 0 ) override { Q_UNUSED( index ) return mMaxLineEdit->text(); }
     void setMin( const QString &value, int index = 0 ) override;
     void setMax( const QString &value, int index = 0 ) override;
-    int selectedBand( int index = 0 ) override
-    {
-      Q_UNUSED( index )
-      return mGrayBandComboBox->currentBand();
-    }
+    int selectedBand( int index = 0 ) override { Q_UNUSED( index ) return mGrayBandComboBox->currentBand(); }
 
     QgsContrastEnhancement::ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const override;
     void setContrastEnhancementAlgorithm( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm ) override;

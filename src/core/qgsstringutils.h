@@ -317,17 +317,6 @@ class CORE_EXPORT QgsStringUtils
      */
     static QString truncateMiddleOfString( const QString &string, int maxLength );
 
-    /**
-     * Given a \a candidate string, returns TRUE if the \a candidate contains
-     * all the individual words from another string, regardless of their order.
-     *
-     * \note The search does NOT need to match whole words in the \a candidate string,
-     * so eg a candidate string of "Worldmap_Winkel_II" will return TRUE for \a words "winkle world"
-     *
-     * \since QGIS 3.42
-     */
-    static bool containsByWord( const QString &candidate, const QString &words, Qt::CaseSensitivity sensitivity = Qt::CaseInsensitive );
-
 };
 
 #endif //QGSSTRINGUTILS_H

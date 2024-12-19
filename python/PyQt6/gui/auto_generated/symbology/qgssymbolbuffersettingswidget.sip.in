@@ -12,7 +12,7 @@
 
 
 
-class QgsSymbolBufferSettingsWidget : QgsPanelWidget
+class QgsSymbolBufferSettingsWidget: QgsPanelWidget
 {
 %Docstring(signature="appended")
 A widget for customising buffer settings for a symbol.
@@ -24,6 +24,7 @@ A widget for customising buffer settings for a symbol.
 #include "qgssymbolbuffersettingswidget.h"
 %End
   public:
+
     QgsSymbolBufferSettingsWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSymbolBufferSettingsWidget
@@ -57,6 +58,7 @@ A dialog for customising buffer settings for a symbol.
 #include "qgssymbolbuffersettingswidget.h"
 %End
   public:
+
     QgsSymbolBufferSettingsDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags f = Qt::WindowFlags() );
 %Docstring
 Constructor for QgsSymbolBufferSettingsDialog

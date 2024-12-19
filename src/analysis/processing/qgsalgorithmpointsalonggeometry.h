@@ -30,7 +30,9 @@
  */
 class QgsPointsAlongGeometryAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
+
   public:
+
     QgsPointsAlongGeometryAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -54,9 +56,10 @@ class QgsPointsAlongGeometryAlgorithm : public QgsProcessingFeatureBasedAlgorith
     Qgis::ProcessingFeatureSourceFlags sourceFlags() const override;
     QgsFeatureSink::SinkFlags sinkFlags() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeatureList processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
+    QgsFeatureList processFeature( const QgsFeature &feature,  QgsProcessingContext &, QgsProcessingFeedback *feedback ) override;
 
   private:
+
     double mDistance = 0.0;
     bool mDynamicDistance = false;
     QgsProperty mDistanceProperty;
@@ -68,9 +71,12 @@ class QgsPointsAlongGeometryAlgorithm : public QgsProcessingFeatureBasedAlgorith
     double mEndOffset = 0.0;
     bool mDynamicEndOffset = false;
     QgsProperty mEndOffsetProperty;
+
 };
 
 
 ///@endcond PRIVATE
 
 #endif // QGSPOINTSALONGGEOMETRYALGORITHM_H
+
+

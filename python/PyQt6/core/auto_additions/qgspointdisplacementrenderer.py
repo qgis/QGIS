@@ -6,5 +6,5 @@ try:
     QgsPointDisplacementRenderer.create = staticmethod(QgsPointDisplacementRenderer.create)
     QgsPointDisplacementRenderer.convertFromRenderer = staticmethod(QgsPointDisplacementRenderer.convertFromRenderer)
     QgsPointDisplacementRenderer.__group__ = ['symbology']
-except (NameError, AttributeError):
+except NameError:
     pass

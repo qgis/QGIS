@@ -7,5 +7,5 @@ Qgs3DTypes.Main3DRenderer = Qgs3DTypes.Flag3DRenderer.Main3DRenderer
 Qgs3DTypes.Selected3DRenderer = Qgs3DTypes.Flag3DRenderer.Selected3DRenderer
 try:
     Qgs3DTypes.__attribute_docs__ = {'PROP_NAME_3D_RENDERER_FLAG': 'Qt property name to hold the 3D geometry renderer flag'}
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -27,5 +27,5 @@ QgsRasterMatrix.opLOG10 = QgsRasterMatrix.OneArgOperator.opLOG10
 QgsRasterMatrix.opABS = QgsRasterMatrix.OneArgOperator.opABS
 try:
     QgsRasterMatrix.__group__ = ['raster']
-except (NameError, AttributeError):
+except NameError:
     pass

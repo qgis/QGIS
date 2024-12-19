@@ -31,7 +31,9 @@
  */
 class QgsConstantRasterAlgorithm : public QgsProcessingAlgorithm
 {
+
   public:
+
     QgsConstantRasterAlgorithm() = default;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/algorithms/mAlgorithmConstantRaster.svg" ) ); }
@@ -45,7 +47,9 @@ class QgsConstantRasterAlgorithm : public QgsProcessingAlgorithm
     QgsConstantRasterAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE

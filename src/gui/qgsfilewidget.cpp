@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgsfilewidget.h"
-#include "moc_qgsfilewidget.cpp"
 
 #include <QLineEdit>
 #include <QToolButton>
@@ -263,7 +262,9 @@ void QgsFileWidget::updateLayout()
   mFileWidgetButton->setEnabled( !mReadOnly );
   mLineEdit->setEnabled( !mReadOnly );
 
-  mLinkEditButton->setIcon( linkVisible && !mReadOnly ? QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) : QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveEdits.svg" ) ) );
+  mLinkEditButton->setIcon( linkVisible && !mReadOnly ?
+                            QgsApplication::getThemeIcon( QStringLiteral( "/mActionToggleEditing.svg" ) ) :
+                            QgsApplication::getThemeIcon( QStringLiteral( "/mActionSaveEdits.svg" ) ) );
 }
 
 void QgsFileWidget::openFileDialog()
@@ -338,7 +339,9 @@ void QgsFileWidget::openFileDialog()
         // the "gdb" file that is found in all File Geodatabase .gdb directory
         // to allow the user to select it. We now need to remove this gdb file
         // (which became gdb.gdb due to above logic) from the selected filename
-        if ( mFilter.contains( QLatin1String( "(*.gdb *.GDB gdb)" ) ) && ( fileName.endsWith( QLatin1String( "/gdb.gdb" ) ) || fileName.endsWith( QLatin1String( "\\gdb.gdb" ) ) ) )
+        if ( mFilter.contains( QLatin1String( "(*.gdb *.GDB gdb)" ) ) &&
+             ( fileName.endsWith( QLatin1String( "/gdb.gdb" ) ) ||
+               fileName.endsWith( QLatin1String( "\\gdb.gdb" ) ) ) )
         {
           fileName.chop( static_cast<int>( strlen( "/gdb.gdb" ) ) );
         }
@@ -351,7 +354,7 @@ void QgsFileWidget::openFileDialog()
   activateWindow();
   raise();
 
-  if ( fileName.isEmpty() && fileNames.isEmpty() )
+  if ( fileName.isEmpty() && fileNames.isEmpty( ) )
     return;
 
   if ( mStorageMode != GetMultipleFiles )
@@ -405,7 +408,7 @@ void QgsFileWidget::setFilePaths( const QStringList &filePaths )
     }
     else
     {
-      setFilePath( filePaths.first() );
+      setFilePath( filePaths.first( ) );
     }
   }
 }
@@ -517,11 +520,11 @@ QStringList QgsFileDropEdit::acceptableFilePaths( QDropEvent *event ) const
   QStringList paths;
   if ( event->mimeData()->hasUrls() )
   {
-    const QList<QUrl> urls = event->mimeData()->urls();
+    const QList< QUrl > urls = event->mimeData()->urls();
     rawPaths.reserve( urls.count() );
     for ( const QUrl &url : urls )
     {
-      const QString local = url.toLocalFile();
+      const QString local =  url.toLocalFile();
       if ( !rawPaths.contains( local ) )
         rawPaths.append( local );
     }

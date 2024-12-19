@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgscopyfiletask.h"
-#include "moc_qgscopyfiletask.cpp"
 
 #include <QFile>
 #include <QFileInfo>

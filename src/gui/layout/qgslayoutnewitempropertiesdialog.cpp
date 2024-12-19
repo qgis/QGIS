@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgslayoutnewitempropertiesdialog.h"
-#include "moc_qgslayoutnewitempropertiesdialog.cpp"
 #include "qgssettings.h"
 #include "qgslayout.h"
 #include "qgslayoutpagecollection.h"

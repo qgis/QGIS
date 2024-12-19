@@ -1,4 +1,4 @@
-"""
+'''
 test_versioncompare.py
                      --------------------------------------
                Date                 : September 2016
@@ -12,7 +12,8 @@ test_versioncompare.py
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-"""
+'''
+
 
 from pyplugin_installer.version_compare import compareVersions
 import unittest
@@ -32,37 +33,37 @@ class TestVersionCompare(QgisTestCase):
         pass
 
     def testCompareVersions(self):
-        a = "1.0.0"
+        a = '1.0.0'
         # a == b
-        b = "1.0.0"
+        b = '1.0.0'
         self.assertEqual(compareVersions(a, b), 0)
         # a > b
-        b = "0.1.0"
+        b = '0.1.0'
         self.assertEqual(compareVersions(a, b), 1)
         # b > a
-        b = "1.1.0"
+        b = '1.1.0'
         self.assertEqual(compareVersions(a, b), 2)
 
         # test that prefix stripped correctly
-        a = "ver. 1.0.0"
-        b = "ver. 0.1.0"
+        a = 'ver. 1.0.0'
+        b = 'ver. 0.1.0'
         self.assertEqual(compareVersions(a, b), 1)
 
         # test versions with build numbers
-        a = "1.0.0-1"
-        b = "1.0.0-2"
+        a = '1.0.0-1'
+        b = '1.0.0-2'
         self.assertEqual(compareVersions(a, b), 2)
 
         # test versions with suffixes
-        a = "1.0.0a"
-        b = "1.0.0b"
+        a = '1.0.0a'
+        b = '1.0.0b'
         self.assertEqual(compareVersions(a, b), 2)
 
         # test versions with suffixes in different cases
-        a = "1.0.0-201609011405-2690BD9"
-        b = "1.0.0-201609011405-2690bd9"
+        a = '1.0.0-201609011405-2690BD9'
+        b = '1.0.0-201609011405-2690bd9'
         self.assertEqual(compareVersions(a, b), 0)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

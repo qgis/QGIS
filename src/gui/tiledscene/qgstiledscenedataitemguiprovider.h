@@ -26,9 +26,11 @@ class QgsTiledSceneDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
 {
     Q_OBJECT
   public:
+
     QString name() override { return QStringLiteral( "Tiled Scene" ); }
 
-    void populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
+    void populateContextMenu( QgsDataItem *item, QMenu *menu,
+                              const QList<QgsDataItem *> &selectedItems, QgsDataItemGuiContext context ) override;
 
   private:
     static void editConnection( QgsDataItem *item );
@@ -36,6 +38,7 @@ class QgsTiledSceneDataItemGuiProvider : public QObject, public QgsDataItemGuiPr
     static void newConnection( QgsDataItem *item, QString provider );
     static void saveConnections();
     static void loadConnections( QgsDataItem *item );
+
 };
 
 ///@endcond

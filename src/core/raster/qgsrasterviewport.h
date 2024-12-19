@@ -57,13 +57,13 @@ struct CORE_EXPORT QgsRasterViewPort
   //! \brief Height, number of rows to be rendered
   qgssize mHeight;
 
-  //! \brief Intersection of current map extent and layer extent, in map (destination) CRS
+  //! \brief Intersection of current map extent and layer extent
   QgsRectangle mDrawnExtent;
 
-  //! \brief Source (layer) coordinate system
+  //! \brief Source coordinate system
   QgsCoordinateReferenceSystem mSrcCRS;
 
-  //! \brief Target (map) coordinate system
+  //! \brief Target coordinate system
   QgsCoordinateReferenceSystem mDestCRS;
 
   /**

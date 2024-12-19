@@ -16,7 +16,6 @@
 #include "qgiscustomwidgets.h"
 #include "qgsopacitywidget.h"
 #include "qgsopacitywidgetplugin.h"
-#include "moc_qgsopacitywidgetplugin.cpp"
 
 
 QgsOpacityWidgetPlugin::QgsOpacityWidgetPlugin( QObject *parent )
@@ -94,5 +93,5 @@ QString QgsOpacityWidgetPlugin::domXml() const
                   "  </property>\n"
                   " </widget>\n"
                   "</ui>\n" )
-    .arg( name() );
+         .arg( name() );
 }

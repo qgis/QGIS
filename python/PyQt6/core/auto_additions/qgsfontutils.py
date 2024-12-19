@@ -21,5 +21,5 @@ try:
     QgsFontUtils.recentFontFamilies = staticmethod(QgsFontUtils.recentFontFamilies)
     QgsFontUtils.setFontFamily = staticmethod(QgsFontUtils.setFontFamily)
     QgsFontUtils.createFont = staticmethod(QgsFontUtils.createFont)
-except (NameError, AttributeError):
+except NameError:
     pass

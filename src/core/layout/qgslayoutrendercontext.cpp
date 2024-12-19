@@ -15,7 +15,6 @@
  ***************************************************************************/
 
 #include "qgslayoutrendercontext.h"
-#include "moc_qgslayoutrendercontext.cpp"
 #include "qgslayout.h"
 
 QgsLayoutRenderContext::QgsLayoutRenderContext( QgsLayout *layout )

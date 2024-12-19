@@ -269,7 +269,6 @@ class CORE_EXPORT QgsSymbol
     enum class Property SIP_MONKEYPATCH_SCOPEENUM_UNNEST( QgsSymbol, Property ) : int
     {
       Opacity SIP_MONKEYPATCH_COMPAT_NAME( PropertyOpacity ), //!< Opacity
-      ExtentBuffer, //!< Extent buffer \since QGIS 3.42
     };
     // *INDENT-ON*
 
@@ -556,7 +555,7 @@ class CORE_EXPORT QgsSymbol
     QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = nullptr, Qgis::SymbolPreviewFlags flags = Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols, const QgsScreenProperties &screen = QgsScreenProperties() ) SIP_PYNAME( bigSymbolPreviewImageV2 );
 
     /**
-     * \deprecated QGIS 3.40. Use bigSymbolPreviewImageV2() instead.
+     * \deprecated QGIS 3.40. Use bigSymbolPreviewImageV2 instead.
      */
     Q_DECL_DEPRECATED QImage bigSymbolPreviewImage( QgsExpressionContext *expressionContext = nullptr, int flags = static_cast< int >( Qgis::SymbolPreviewFlag::FlagIncludeCrosshairsForMarkerSymbols ) ) SIP_DEPRECATED;
 
@@ -792,7 +791,7 @@ class CORE_EXPORT QgsSymbol
      * \see setDataDefinedProperties()
      * \since QGIS 3.18
      */
-    const QgsPropertyCollection &dataDefinedProperties() const SIP_SKIP { return mDataDefinedProperties; }
+    const QgsPropertyCollection &dataDefinedProperties() const { return mDataDefinedProperties; } SIP_SKIP
 
     /**
      * Sets the symbol's property collection, used for data defined overrides.
@@ -867,43 +866,6 @@ class CORE_EXPORT QgsSymbol
      * \since QGIS 3.20
      */
     void stopFeatureRender( const QgsFeature &feature, QgsRenderContext &context, int layer = -1 );
-
-    /**
-     * Returns the symbol's extent buffer.
-     *
-     * Units are retrieved via extentBufferSizeUnit().
-     * \since QGIS 3.42
-     */
-    double extentBuffer() const;
-
-    /**
-     * Sets the symbol's extent buffer.
-     *
-     * Units are set via setExtentBufferSizeUnit().
-     * \param extentBuffer buffer distance.
-     * \see extentBuffer()
-     * \note Negative values are not supported and will be changed to 0.
-     * \since QGIS 3.42
-     */
-    void setExtentBuffer( double extentBuffer );
-
-    /**
-     * Returns the units for the buffer size.
-     *
-     * \see extentBuffer()
-     * \see setExtentBufferSizeUnit()
-     * \since QGIS 3.42
-     */
-    Qgis::RenderUnit extentBufferSizeUnit() const { return mExtentBufferSizeUnit; }
-
-    /**
-     * Sets the \a unit used for the extent buffer.
-     *
-     * \see setExtentBuffer()
-     * \see extentBufferSizeUnit()
-     * \since QGIS 3.42
-     */
-    void setExtentBufferSizeUnit( Qgis::RenderUnit unit ) { mExtentBufferSizeUnit = unit; }
 
   protected:
 
@@ -992,9 +954,6 @@ class CORE_EXPORT QgsSymbol
 
     Qgis::SymbolType mType;
     QgsSymbolLayerList mLayers;
-
-    double mExtentBuffer = 0;
-    Qgis::RenderUnit mExtentBufferSizeUnit = Qgis::RenderUnit::MapUnits;
 
     //! Symbol opacity (in the range 0 - 1)
     qreal mOpacity = 1.0;

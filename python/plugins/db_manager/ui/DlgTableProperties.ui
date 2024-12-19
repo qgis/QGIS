@@ -212,7 +212,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QTextEdit" name="viewComment"/>
+        <widget class="QLineEdit" name="viewComment"/>
        </item>
        <item>
         <layout class="QHBoxLayout" name="_4">

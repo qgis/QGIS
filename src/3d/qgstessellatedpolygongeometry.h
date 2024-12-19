@@ -18,7 +18,7 @@
 
 #include "qgsfeatureid.h"
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 #include <Qt3DRender/QGeometry>
 #else
 #include <Qt3DCore/QGeometry>
@@ -33,7 +33,7 @@ namespace QgsRayCastingUtils
   class Ray3D;
 }
 
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 namespace Qt3DRender
 {
   class QBuffer;
@@ -57,7 +57,7 @@ namespace Qt3DCore
  * \note Not available in Python bindings
  *
  */
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
 class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
 #else
 class QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
@@ -91,6 +91,9 @@ class QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
      */
     void setAddTextureCoords( bool add ) { mAddTextureCoords = add; }
 
+    //! Initializes vertex buffer from given polygons. Takes ownership of passed polygon geometries
+    void setPolygons( const QList<QgsPolygon *> &polygons, const QList<QgsFeatureId> &featureIds, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon = QList<float>() );
+
     /**
      * Initializes vertex buffer (and other members) from data that were already tessellated.
      * This is an alternative to setPolygons() - this method does not do any expensive work in the body.
@@ -111,9 +114,9 @@ class QgsTessellatedPolygonGeometry : public Qt3DCore::QGeometry
     QVector<uint> triangleIndexStartingIndices() const { return mTriangleIndexStartingIndices; }
 
     friend class Qgs3DSceneExporter;
-
   private:
-#if QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 )
+
+#if QT_VERSION < QT_VERSION_CHECK(6, 0, 0)
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
     Qt3DRender::QAttribute *mNormalAttribute = nullptr;
     Qt3DRender::QAttribute *mTextureCoordsAttribute = nullptr;

@@ -43,6 +43,7 @@ class GUI_EXPORT QgsModelerToolboxModel : public QgsProcessingToolboxProxyModel
     explicit QgsModelerToolboxModel( QObject *parent = nullptr );
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     Qt::DropActions supportedDragActions() const override;
+
 };
 
 #endif
@@ -57,6 +58,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
 {
     Q_OBJECT
   public:
+
     QgsModelDesignerDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::WindowFlags() );
     ~QgsModelDesignerDialog() override;
 
@@ -101,7 +103,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
      */
     enum class SaveAction
     {
-      SaveAsFile,    //!< Save model as a file
+      SaveAsFile, //!< Save model as a file
       SaveInProject, //!< Save model into project
     };
 
@@ -115,6 +117,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void activate();
 
   protected:
+
     // cppcheck-suppress pureVirtualCall
     virtual void repaintModel( bool showControls = true ) = 0;
     virtual void addAlgorithm( const QString &algorithmId, const QPointF &pos ) = 0;
@@ -188,13 +191,14 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
     void showChildAlgorithmLog( const QString &childId );
 
   private:
+
     enum UndoCommand
     {
       NameChanged = 1,
       GroupChanged
     };
 
-    std::unique_ptr<QgsProcessingModelAlgorithm> mModel;
+    std::unique_ptr< QgsProcessingModelAlgorithm > mModel;
 
     QgsScreenHelper *mScreenHelper = nullptr;
 
@@ -209,7 +213,7 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
 
     bool mHasChanged = false;
     QUndoStack *mUndoStack = nullptr;
-    std::unique_ptr<QgsModelUndoCommand> mActiveCommand;
+    std::unique_ptr< QgsModelUndoCommand > mActiveCommand;
 
     QAction *mUndoAction = nullptr;
     QAction *mRedoAction = nullptr;
@@ -237,17 +241,18 @@ class GUI_EXPORT QgsModelDesignerDialog : public QMainWindow, public Ui::QgsMode
 
     struct PanelStatus
     {
-        PanelStatus( bool visible = true, bool active = false )
-          : isVisible( visible )
-          , isActive( active )
-        {}
-        bool isVisible;
-        bool isActive;
+      PanelStatus( bool visible = true, bool active = false )
+        : isVisible( visible )
+        , isActive( active )
+      {}
+      bool isVisible;
+      bool isActive;
     };
-    QMap<QString, PanelStatus> mPanelStatus;
+    QMap< QString, PanelStatus > mPanelStatus;
 
     QgsProcessingContext mLayerStore;
 };
+
 
 
 class GUI_EXPORT QgsModelChildDependenciesWidget : public QWidget
@@ -255,14 +260,16 @@ class GUI_EXPORT QgsModelChildDependenciesWidget : public QWidget
     Q_OBJECT
 
   public:
+
     QgsModelChildDependenciesWidget( QWidget *parent, QgsProcessingModelAlgorithm *model, const QString &childId );
-    QList<QgsProcessingModelChildDependency> value() const { return mValue; }
-    void setValue( const QList<QgsProcessingModelChildDependency> &value );
+    QList< QgsProcessingModelChildDependency > value() const { return mValue; }
+    void setValue( const QList< QgsProcessingModelChildDependency >  &value );
   private slots:
 
     void showDialog();
 
   private:
+
     void updateSummaryText();
 
     QLineEdit *mLineEdit = nullptr;
@@ -271,7 +278,7 @@ class GUI_EXPORT QgsModelChildDependenciesWidget : public QWidget
     QgsProcessingModelAlgorithm *mModel = nullptr;
     QString mChildId;
 
-    QList<QgsProcessingModelChildDependency> mValue;
+    QList< QgsProcessingModelChildDependency >  mValue;
 
     friend class TestProcessingGui;
 };

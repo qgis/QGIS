@@ -90,3 +90,4 @@ QgsFeatureList QgsAssignProjectionAlgorithm::processFeature( const QgsFeature &f
 }
 
 ///@endcond
+

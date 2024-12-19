@@ -34,7 +34,9 @@
  */
 class GUI_EXPORT QgsCodeEditorColorSchemeRegistry
 {
+
   public:
+
     /**
      * Constructor for a color scheme registry.
      */
@@ -67,7 +69,9 @@ class GUI_EXPORT QgsCodeEditorColorSchemeRegistry
     QgsCodeEditorColorScheme scheme( const QString &id ) const;
 
   private:
-    QMap<QString, QgsCodeEditorColorScheme> mColorSchemes;
+
+    QMap< QString, QgsCodeEditorColorScheme > mColorSchemes;
+
 };
 
 #endif // QGSCODEEDITORCOLORSCHEMEREGISTRY_H

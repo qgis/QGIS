@@ -42,16 +42,20 @@ class QgsExtractLabelsAlgorithm : public QgsProcessingAlgorithm
     QgsExtractLabelsAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
+
     QList<QgsMapLayer *> mMapLayers;
     QMap<QString, QString> mMapLayerNames;
     QMap<QString, QString> mMapThemeStyleOverrides;
     QgsLabelingEngineSettings mLabelSettings;
     QgsCoordinateReferenceSystem mCrs;
+
 };
 
 ///@endcond PRIVATE

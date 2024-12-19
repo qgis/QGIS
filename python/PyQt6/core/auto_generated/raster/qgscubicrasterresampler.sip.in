@@ -27,15 +27,8 @@ Cubic Raster Resampler.
 
     virtual QImage resampleV2( const QImage &source, const QSize &size );
 
+ virtual void resample( const QImage &srcImage, QImage &dstImage ) /Deprecated/;
 
- virtual void resample( const QImage &srcImage, QImage &dstImage ) /Deprecated="Since 3.12. Use resampleV2() instead."/;
-
-%Docstring
-
-.. deprecated:: 3.12
-
-   Use :py:func:`~QgsCubicRasterResampler.resampleV2` instead.
-%End
     virtual QString type() const;
 
     virtual int tileBufferPixels() const;

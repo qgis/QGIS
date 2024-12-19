@@ -22,6 +22,7 @@ Abstract base class for objects which track user history (i.e. operations perfor
 #include "qgshistoryprovider.h"
 %End
   public:
+
 %ConvertToSubClassCode
     if ( qobject_cast<QgsProcessingHistoryProvider *>( sipCpp ) )
       sipType = sipType_QgsProcessingHistoryProvider;
@@ -49,7 +50,11 @@ Updates an existing history ``node`` for the given ``entry``.
 
 .. versionadded:: 3.32
 %End
+
 };
+
+
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

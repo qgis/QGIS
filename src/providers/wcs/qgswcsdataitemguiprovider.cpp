@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgswcsdataitemguiprovider.h"
-#include "moc_qgswcsdataitemguiprovider.cpp"
 
 #include "qgsmanageconnectionsdialog.h"
 #include "qgswcsdataitems.h"
@@ -30,7 +29,7 @@
 
 void QgsWcsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *menu, const QList<QgsDataItem *> &selection, QgsDataItemGuiContext context )
 {
-  if ( QgsWCSRootItem *rootItem = qobject_cast<QgsWCSRootItem *>( item ) )
+  if ( QgsWCSRootItem *rootItem = qobject_cast< QgsWCSRootItem * >( item ) )
   {
     QAction *actionNew = new QAction( tr( "New Connection…" ), menu );
     connect( actionNew, &QAction::triggered, this, [rootItem] { newConnection( rootItem ); } );
@@ -45,7 +44,7 @@ void QgsWcsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     menu->addAction( actionLoadServers );
   }
 
-  if ( QgsWCSConnectionItem *connItem = qobject_cast<QgsWCSConnectionItem *>( item ) )
+  if ( QgsWCSConnectionItem *connItem = qobject_cast< QgsWCSConnectionItem * >( item ) )
   {
     QAction *actionRefresh = new QAction( tr( "Refresh" ), menu );
     connect( actionRefresh, &QAction::triggered, this, [connItem] { refreshConnection( connItem ); } );
@@ -61,10 +60,14 @@ void QgsWcsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
     connect( actionDuplicate, &QAction::triggered, this, [connItem] { duplicateConnection( connItem ); } );
     menu->addAction( actionDuplicate );
 
-    const QList<QgsWCSConnectionItem *> wcsConnectionItems = QgsDataItem::filteredItems<QgsWCSConnectionItem>( selection );
+    const QList< QgsWCSConnectionItem * > wcsConnectionItems = QgsDataItem::filteredItems<QgsWCSConnectionItem>( selection );
     QAction *actionDelete = new QAction( wcsConnectionItems.size() > 1 ? tr( "Remove Connections…" ) : tr( "Remove Connection…" ), menu );
-    connect( actionDelete, &QAction::triggered, this, [wcsConnectionItems, context] {
-      QgsDataItemGuiProviderUtils::deleteConnections( wcsConnectionItems, []( const QString &connectionName ) { QgsOwsConnection::deleteConnection( QStringLiteral( "WCS" ), connectionName ); }, context );
+    connect( actionDelete, &QAction::triggered, this, [wcsConnectionItems, context]
+    {
+      QgsDataItemGuiProviderUtils::deleteConnections( wcsConnectionItems, []( const QString & connectionName )
+      {
+        QgsOwsConnection::deleteConnection( QStringLiteral( "WCS" ), connectionName );
+      }, context );
     } );
     menu->addAction( actionDelete );
   }
@@ -72,7 +75,7 @@ void QgsWcsDataItemGuiProvider::populateContextMenu( QgsDataItem *item, QMenu *m
 
 void QgsWcsDataItemGuiProvider::newConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWcs, QStringLiteral( "WCS" ), QString(), QgsNewHttpConnection::FlagShowHttpSettings );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWcs, QStringLiteral( "WCS" ) );
 
   if ( nc.exec() )
   {
@@ -82,7 +85,7 @@ void QgsWcsDataItemGuiProvider::newConnection( QgsDataItem *item )
 
 void QgsWcsDataItemGuiProvider::editConnection( QgsDataItem *item )
 {
-  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWcs, QStringLiteral( "WCS" ), item->name(), QgsNewHttpConnection::FlagShowHttpSettings );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionWcs, QStringLiteral( "WCS" ), item->name() );
 
   if ( nc.exec() )
   {
@@ -94,7 +97,7 @@ void QgsWcsDataItemGuiProvider::editConnection( QgsDataItem *item )
 void QgsWcsDataItemGuiProvider::duplicateConnection( QgsDataItem *item )
 {
   const QString connectionName = item->name();
-  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( { QStringLiteral( "wcs" ) } );
+  const QStringList connections = QgsOwsConnection::sTreeOwsConnections->items( {QStringLiteral( "wcs" )} );
 
   const QString newConnectionName = QgsDataItemGuiProviderUtils::uniqueName( connectionName, connections );
 
@@ -137,7 +140,8 @@ void QgsWcsDataItemGuiProvider::saveConnections()
 
 void QgsWcsDataItemGuiProvider::loadConnections( QgsDataItem *item )
 {
-  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(), tr( "XML files (*.xml *.XML)" ) );
+  const QString fileName = QFileDialog::getOpenFileName( nullptr, tr( "Load Connections" ), QDir::homePath(),
+                           tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
     return;

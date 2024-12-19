@@ -38,10 +38,10 @@ class TestQgsMssqlProvider : public QObject
     Q_OBJECT
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init() {}          // will be called before each testfunction is executed.
-    void cleanup() {}       // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init() {}// will be called before each testfunction is executed.
+    void cleanup() {}// will be called after every testfunction.
 
     void openLayer();
 
@@ -51,11 +51,13 @@ class TestQgsMssqlProvider : public QObject
     void transactionUndoRedo();
 
   private:
+
     QString mDbConn;
 
     QStringList mSomeDataWktGeom;
     QStringList mSomeDataPolyWktGeom;
     QList<QVariantList> mSomeDataAttributes;
+
 };
 
 //runs before all tests
@@ -65,7 +67,8 @@ void TestQgsMssqlProvider::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
 
-  mDbConn = qEnvironmentVariable( "QGIS_MSSQLTEST_DB", "service='testsqlserver' user=sa password='<YourStrong!Passw0rd>' " );
+  mDbConn = qEnvironmentVariable( "QGIS_MSSQLTEST_DB",
+                                  "service='testsqlserver' user=sa password='<YourStrong!Passw0rd>' " );
 
   mSomeDataWktGeom << QStringLiteral( "Point (-70.33199999999999363 66.32999999999999829)" )
                    << QStringLiteral( "Point (-68.20000000000000284 70.79999999999999716)" )
@@ -74,19 +77,19 @@ void TestQgsMssqlProvider::initTestCase()
                    << QStringLiteral( "Point (-71.12300000000000466 78.23000000000000398)" );
 
   QVariantList varList;
-  varList << 1ll << 100 << "Orange" << "oranGe" << "1" << QDateTime( QDate( 2020, 05, 03 ), QTime( 12, 13, 14 ) ) << QDate( 2020, 05, 03 ) << QTime( 12, 13, 14 );
+  varList << 1ll << 100 << "Orange" <<  "oranGe" <<  "1" << QDateTime( QDate( 2020, 05, 03 ), QTime( 12, 13, 14 ) ) << QDate( 2020, 05, 03 ) << QTime( 12, 13, 14 ) ;
   mSomeDataAttributes << varList;
   varList.clear();
-  varList << 2ll << 200 << "Apple" << "Apple" << "2" << QDateTime( QDate( 2020, 05, 04 ), QTime( 12, 14, 14 ) ) << QDate( 2020, 05, 04 ) << QTime( 12, 14, 14 );
+  varList << 2ll << 200 << "Apple" <<  "Apple" <<  "2" << QDateTime( QDate( 2020, 05, 04 ), QTime( 12, 14, 14 ) ) << QDate( 2020, 05, 04 ) << QTime( 12, 14, 14 ) ;
   mSomeDataAttributes << varList;
   varList.clear();
-  varList << 3ll << 300 << "Pear" << "PEaR" << "3" << QDateTime() << QDate() << QTime();
+  varList << 3ll << 300 << "Pear" <<  "PEaR" <<  "3" << QDateTime() << QDate() << QTime();
   mSomeDataAttributes << varList;
   varList.clear();
-  varList << 4ll << 400 << "Honey" << "Honey" << "4" << QDateTime( QDate( 2021, 05, 04 ), QTime( 13, 13, 14 ) ) << QDate( 2021, 05, 04 ) << QTime( 13, 13, 14 );
+  varList << 4ll << 400 << "Honey" <<  "Honey" <<  "4" << QDateTime( QDate( 2021, 05, 04 ), QTime( 13, 13, 14 ) ) << QDate( 2021, 05, 04 ) << QTime( 13, 13, 14 ) ;
   mSomeDataAttributes << varList;
   varList.clear();
-  varList << 5ll << -200 << "" << "NuLl" << "5" << QDateTime( QDate( 2020, 05, 04 ), QTime( 12, 13, 14 ) ) << QDate( 2020, 05, 02 ) << QTime( 12, 13, 1 );
+  varList << 5ll << -200 << "" <<  "NuLl" <<  "5" << QDateTime( QDate( 2020, 05, 04 ), QTime( 12, 13, 14 ) ) << QDate( 2020, 05, 02 ) << QTime( 12, 13, 1 ) ;
   mSomeDataAttributes << varList;
 
 
@@ -281,6 +284,7 @@ void TestQgsMssqlProvider::transactionUndoRedo()
   vectorLayerPoint1->rollBack();
 
   // 2. with transaction, try to add a feature to the first layer -> both layers are affected
+
 }
 
 QGSTEST_MAIN( TestQgsMssqlProvider )

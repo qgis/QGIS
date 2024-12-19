@@ -41,6 +41,7 @@ class GUI_EXPORT QgsProviderSublayerDialogModel : public QgsProviderSublayerMode
     Q_OBJECT
 
   public:
+
     /**
      * Constructor.
      */
@@ -55,7 +56,10 @@ class GUI_EXPORT QgsProviderSublayerDialogModel : public QgsProviderSublayerMode
     void setGeometryTypesResolved( bool resolved );
 
   private:
+
     bool mGeometryTypesResolved = false;
+
+
 };
 
 /**
@@ -69,27 +73,34 @@ class GUI_EXPORT QgsProviderSublayersDialog : public QDialog, private Ui::QgsPro
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor.
      */
-    QgsProviderSublayersDialog( const QString &uri, const QString &providerKey, const QString &filePath, const QList<QgsProviderSublayerDetails> initialDetails = QList<QgsProviderSublayerDetails>(), const QList<Qgis::LayerType> &acceptableTypes = QList<Qgis::LayerType>(), QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = Qt::WindowFlags() );
+    QgsProviderSublayersDialog( const QString &uri,
+                                const QString &providerKey,
+                                const QString &filePath,
+                                const QList< QgsProviderSublayerDetails> initialDetails = QList< QgsProviderSublayerDetails>(),
+                                const QList< Qgis::LayerType > &acceptableTypes = QList< Qgis::LayerType >(),
+                                QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                                Qt::WindowFlags fl = Qt::WindowFlags() );
 
     /**
      * Set list of non-layer items (e.g. embedded QGIS project items).
      */
-    void setNonLayerItems( const QList<QgsProviderSublayerModel::NonLayerItem> &items );
+    void setNonLayerItems( const QList< QgsProviderSublayerModel::NonLayerItem > &items );
 
     ~QgsProviderSublayersDialog() override;
 
     /**
      * Returns the list of selected layers.
      */
-    QList<QgsProviderSublayerDetails> selectedLayers() const;
+    QList< QgsProviderSublayerDetails > selectedLayers() const;
 
     /**
      * Returns the list of selected non-layer items (e.g. embedded QGIS project items).
      */
-    QList<QgsProviderSublayerModel::NonLayerItem> selectedNonLayerItems() const;
+    QList< QgsProviderSublayerModel::NonLayerItem > selectedNonLayerItems() const;
 
     /**
      * Returns an appropriate name for the layer group.
@@ -106,18 +117,20 @@ class GUI_EXPORT QgsProviderSublayersDialog : public QDialog, private Ui::QgsPro
     /**
      * Emitted when sublayers selected from the dialog should be added to the project.
      */
-    void layersAdded( const QList<QgsProviderSublayerDetails> &layers );
+    void layersAdded( const QList< QgsProviderSublayerDetails > &layers );
 
   private slots:
     void treeSelectionChanged( const QItemSelection &, const QItemSelection & );
     void selectAll();
 
   private:
+
     QgsProviderSublayerDialogModel *mModel = nullptr;
     QgsProviderSublayerProxyModel *mProxyModel = nullptr;
-    QPointer<QgsProviderSublayerTask> mTask;
+    QPointer< QgsProviderSublayerTask > mTask;
     QString mGroupName;
     bool mBlockSelectionChanges = false;
+
 };
 
 #endif // QGSPROVIDERSUBLAYERSDIALOG_H

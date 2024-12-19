@@ -15,28 +15,29 @@
  ***************************************************************************/
 
 #include "qgspluginsortfilterproxymodel.h"
-#include "moc_qgspluginsortfilterproxymodel.cpp"
 
 
-QgsPluginSortFilterProxyModel::QgsPluginSortFilterProxyModel( QObject *parent )
-  : QSortFilterProxyModel( parent )
+
+QgsPluginSortFilterProxyModel::QgsPluginSortFilterProxyModel( QObject *parent ) : QSortFilterProxyModel( parent )
 {
 }
+
 
 
 bool QgsPluginSortFilterProxyModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
   QModelIndex inx = sourceModel()->index( sourceRow, 0, sourceParent );
 
-  if ( !sourceModel()->data( inx, SPACER_ROLE ).toString().isEmpty() )
+  if ( ! sourceModel()->data( inx, SPACER_ROLE ).toString().isEmpty() )
   {
     // it's a status spacer.
     // TODO: the condition below is only suitable for status spacers
-    return ( filterByStatus( inx ) && mAcceptedStatuses.count() > 2 && sourceModel()->data( inx, SPACER_ROLE ).toString() == mAcceptedSpacers );
+    return ( filterByStatus( inx ) &&  mAcceptedStatuses.count() > 2 && sourceModel()->data( inx, SPACER_ROLE ).toString() == mAcceptedSpacers );
   }
 
   return ( filterByStatus( inx ) && filterByPhrase( inx ) );
 }
+
 
 
 void QgsPluginSortFilterProxyModel::setAcceptedStatuses( const QStringList &statuses )
@@ -46,11 +47,13 @@ void QgsPluginSortFilterProxyModel::setAcceptedStatuses( const QStringList &stat
 }
 
 
+
 void QgsPluginSortFilterProxyModel::setAcceptedSpacers( const QString &spacers )
 {
   mAcceptedSpacers = spacers;
   invalidateFilter();
 }
+
 
 
 bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
@@ -64,10 +67,9 @@ bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
 
   QString status = sourceModel()->data( index, PLUGIN_STATUS_ROLE ).toString();
   const QString statusexp = sourceModel()->data( index, PLUGIN_STATUSEXP_ROLE ).toString();
-  if ( status.endsWith( 'Z' ) )
-    status.chop( 1 );
-  if ( !mAcceptedStatuses.isEmpty()
-       && !mAcceptedStatuses.contains( QStringLiteral( "invalid" ) )
+  if ( status.endsWith( 'Z' ) ) status.chop( 1 );
+  if ( ! mAcceptedStatuses.isEmpty()
+       && ! mAcceptedStatuses.contains( QStringLiteral( "invalid" ) )
        && !( mAcceptedStatuses.contains( status ) || mAcceptedStatuses.contains( statusexp ) ) )
   {
     // Don't accept if the status doesn't match
@@ -77,6 +79,7 @@ bool QgsPluginSortFilterProxyModel::filterByStatus( QModelIndex &index ) const
   // Otherwise, let the item go.
   return true;
 }
+
 
 
 bool QgsPluginSortFilterProxyModel::filterByPhrase( QModelIndex &index ) const
@@ -102,6 +105,7 @@ bool QgsPluginSortFilterProxyModel::filterByPhrase( QModelIndex &index ) const
 }
 
 
+
 int QgsPluginSortFilterProxyModel::countWithCurrentStatus()
 {
   int result = 0;
@@ -117,12 +121,14 @@ int QgsPluginSortFilterProxyModel::countWithCurrentStatus()
 }
 
 
+
 void QgsPluginSortFilterProxyModel::sortPluginsByName()
 {
   setAcceptedSpacers();
   sort( 0, Qt::AscendingOrder );
   setSortRole( Qt::DisplayRole );
 }
+
 
 
 void QgsPluginSortFilterProxyModel::sortPluginsByDownloads()
@@ -133,6 +139,7 @@ void QgsPluginSortFilterProxyModel::sortPluginsByDownloads()
 }
 
 
+
 void QgsPluginSortFilterProxyModel::sortPluginsByVote()
 {
   setAcceptedSpacers();
@@ -141,12 +148,14 @@ void QgsPluginSortFilterProxyModel::sortPluginsByVote()
 }
 
 
+
 void QgsPluginSortFilterProxyModel::sortPluginsByStatus()
 {
   setAcceptedSpacers( QStringLiteral( "status" ) );
   sort( 0, Qt::DescendingOrder );
   setSortRole( PLUGIN_STATUS_ROLE );
 }
+
 
 
 void QgsPluginSortFilterProxyModel::sortPluginsByDateCreated()

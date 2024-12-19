@@ -43,6 +43,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QgsSubsetStringEditorInterface, p
     Q_OBJECT
 
   public:
+
     //! pair (name, title)
     typedef QPair<QString, QString> PairNameTitle;
 
@@ -78,38 +79,35 @@ class GUI_EXPORT QgsSQLComposerDialog : public QgsSubsetStringEditorInterface, p
     //! argument of a function
     struct Argument
     {
-        //! name
-        QString name;
-        //! type, or empty if unknown
-        QString type;
+      //! name
+      QString name;
+      //! type, or empty if unknown
+      QString type;
 
-        //! constructor
-        Argument( const QString &nameIn = QString(), const QString &typeIn = QString() )
-          : name( nameIn ), type( typeIn ) {}
+      //! constructor
+      Argument( const QString &nameIn = QString(), const QString &typeIn = QString() ) : name( nameIn ), type( typeIn ) {}
     };
 
     //! description of server functions
     struct Function
     {
-        //! name
-        QString name;
-        //! Returns type, or empty if unknown
-        QString returnType;
-        //! minimum number of argument (or -1 if unknown)
-        int minArgs = -1;
-        //! maximum number of argument (or -1 if unknown)
-        int maxArgs = -1;
-        //! list of arguments. May be empty despite minArgs > 0
-        QList<Argument> argumentList;
+      //! name
+      QString name;
+      //! Returns type, or empty if unknown
+      QString returnType;
+      //! minimum number of argument (or -1 if unknown)
+      int minArgs = -1;
+      //! maximum number of argument (or -1 if unknown)
+      int maxArgs = -1;
+      //! list of arguments. May be empty despite minArgs > 0
+      QList<Argument> argumentList;
 
-        //! constructor with name and fixed number of arguments
-        Function( const QString &nameIn, int args )
-          : name( nameIn ), minArgs( args ), maxArgs( args ) {}
-        //! constructor with name and min,max number of arguments
-        Function( const QString &nameIn, int minArgs, int maxArgsIn )
-          : name( nameIn ), minArgs( minArgs ), maxArgs( maxArgsIn ) {}
+      //! constructor with name and fixed number of arguments
+      Function( const QString &nameIn, int args ) : name( nameIn ), minArgs( args ), maxArgs( args ) {}
+      //! constructor with name and min,max number of arguments
+      Function( const QString &nameIn, int minArgs, int maxArgsIn ) : name( nameIn ), minArgs( minArgs ), maxArgs( maxArgsIn ) {}
 
-        Function() = default;
+      Function() = default;
     };
 
     //! constructor
@@ -208,8 +206,12 @@ class GUI_EXPORT QgsSQLComposerDialog : public QgsSubsetStringEditorInterface, p
 
 
     void loadTableColumns( const QString &table );
-    void functionCurrentIndexChanged( QComboBox *combo, const QMap<QString, QString> &mapEntryTextToName );
-    void getFunctionList( const QList<Function> &list, QStringList &listApi, QStringList &listCombo, QMap<QString, QString> &mapEntryTextToName );
+    void functionCurrentIndexChanged( QComboBox *combo,
+                                      const QMap<QString, QString> &mapEntryTextToName );
+    void getFunctionList( const QList<Function> &list,
+                          QStringList &listApi,
+                          QStringList &listCombo,
+                          QMap<QString, QString> &mapEntryTextToName );
 };
 
 #endif

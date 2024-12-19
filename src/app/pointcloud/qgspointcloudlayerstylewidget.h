@@ -33,4 +33,5 @@ class QgsPointCloudRendererWidgetFactory : public QObject, public QgsMapLayerCon
 };
 
 
+
 #endif // QGSPOINTCLOUDLAYERSTYLEWIDGET_H

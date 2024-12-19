@@ -33,10 +33,10 @@ class TestQgisApp : public QObject
     TestQgisApp();
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init();            // will be called before each testfunction is executed.
-    void cleanup();         // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init(); // will be called before each testfunction is executed.
+    void cleanup(); // will be called after every testfunction.
 
     void addVectorLayerShp();
     void addVectorLayerGeopackageSingleLayer();
@@ -101,7 +101,7 @@ void TestQgisApp::addVectorLayerShp()
   QVERIFY( layer->source().endsWith( QLatin1String( "points.shp" ) ) );
 
   // cleanup
-  QgsProject::instance()->layerStore()->removeMapLayers( QStringList() << layer->id() );
+  QgsProject::instance()->layerStore()->removeMapLayers( QStringList() <<  layer->id() );
 }
 
 void TestQgisApp::addVectorLayerGeopackageSingleLayer()
@@ -114,7 +114,7 @@ void TestQgisApp::addVectorLayerGeopackageSingleLayer()
   QVERIFY( layer->source().endsWith( QLatin1String( "/vsimem/test.gpkg|layername=my_layer" ) ) );
 
   // cleanup
-  QgsProject::instance()->layerStore()->removeMapLayers( QStringList() << layer->id() );
+  QgsProject::instance()->layerStore()->removeMapLayers( QStringList() <<  layer->id() );
 }
 
 void TestQgisApp::addVectorLayerGeopackageSingleLayerAlreadyLayername()
@@ -127,7 +127,7 @@ void TestQgisApp::addVectorLayerGeopackageSingleLayerAlreadyLayername()
   QVERIFY( layer->source().endsWith( QLatin1String( "/vsimem/test.gpkg|layername=my_layer" ) ) );
 
   // cleanup
-  QgsProject::instance()->layerStore()->removeMapLayers( QStringList() << layer->id() );
+  QgsProject::instance()->layerStore()->removeMapLayers( QStringList() <<  layer->id() );
 }
 
 void TestQgisApp::addVectorLayerInvalid()
@@ -184,6 +184,7 @@ void TestQgisApp::pasteFeature()
   f = vl->getFeature( 2 );
   QCOMPARE( f.geometry().asWkt(), QStringLiteral( "Polygon ((0 0, 0 10, 5 10, 5 0, 0 0))" ) );
 }
+
 
 
 QGSTEST_MAIN( TestQgisApp )

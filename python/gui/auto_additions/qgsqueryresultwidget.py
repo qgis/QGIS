@@ -13,5 +13,5 @@ QgsQueryResultWidget.QueryWidgetMode.baseClass = QgsQueryResultWidget
 try:
     QgsQueryResultWidget.__attribute_docs__ = {'createSqlVectorLayer': 'Emitted when a new vector SQL (query) layer must be created.\n\n:param providerKey: name of the data provider\n:param connectionUri: the connection URI as returned by :py:func:`QgsAbstractProviderConnection.uri()`\n:param options:\n', 'firstResultBatchFetched': 'Emitted when the first batch of results has been fetched.\n\n.. note::\n\n   If the query returns no results this signal is not emitted.\n'}
     QgsQueryResultWidget.__signal_arguments__ = {'createSqlVectorLayer': ['providerKey: str', 'connectionUri: str', 'options: QgsAbstractDatabaseProviderConnection.SqlVectorLayerOptions']}
-except (NameError, AttributeError):
+except NameError:
     pass

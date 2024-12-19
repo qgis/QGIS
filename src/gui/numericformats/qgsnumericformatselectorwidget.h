@@ -39,6 +39,7 @@ class GUI_EXPORT QgsNumericFormatSelectorWidget : public QgsPanelWidget, private
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsNumericFormatSelectorWidget with the specified \a parent widget.
      */
@@ -80,12 +81,13 @@ class GUI_EXPORT QgsNumericFormatSelectorWidget : public QgsPanelWidget, private
     void formatChanged();
 
   private:
+
     void populateTypes();
     void updateFormatWidget();
     void updateSampleText();
 
-    std::unique_ptr<QgsNumericFormat> mCurrentFormat;
-    std::unique_ptr<QgsBasicNumericFormat> mPreviewFormat;
+    std::unique_ptr< QgsNumericFormat > mCurrentFormat;
+    std::unique_ptr< QgsBasicNumericFormat > mPreviewFormat;
 
     QgsExpressionContextGenerator *mExpressionContextGenerator = nullptr;
 };
@@ -104,6 +106,7 @@ class GUI_EXPORT QgsNumericFormatSelectorDialog : public QDialog
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsNumericFormatSelectorDialog.
      * \param parent parent widget
@@ -132,8 +135,10 @@ class GUI_EXPORT QgsNumericFormatSelectorDialog : public QDialog
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 
   private:
+
     QgsNumericFormatSelectorWidget *mFormatWidget = nullptr;
     QDialogButtonBox *mButtonBox = nullptr;
+
 };
 
 #endif //QGSNUMERICFORMATSELECTORWIDGET_H

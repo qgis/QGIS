@@ -15,9 +15,9 @@
 ***************************************************************************
 """
 
-__author__ = "Victor Olaya"
-__date__ = "August 2012"
-__copyright__ = "(C) 2012, Victor Olaya"
+__author__ = 'Victor Olaya'
+__date__ = 'August 2012'
+__copyright__ = '(C) 2012, Victor Olaya'
 
 from processing.tools.dataobjects import *  # NOQA
 from processing.tools.dataobjects import createContext
@@ -27,7 +27,7 @@ from processing.tools.general import (
     run,
     runAndLoadResults,
     createAlgorithmDialog,
-    execAlgorithmDialog,
+    execAlgorithmDialog
 )
 from processing.tools.vector import *  # NOQA
 from processing.tools.raster import *  # NOQA
@@ -52,5 +52,4 @@ qgis.processing.createContext = createContext
 
 def classFactory(iface):
     from processing.ProcessingPlugin import ProcessingPlugin
-
     return ProcessingPlugin(iface)

@@ -2,5 +2,5 @@
 try:
     QgsAnalysis.instance = staticmethod(QgsAnalysis.instance)
     QgsAnalysis.geometryCheckRegistry = staticmethod(QgsAnalysis.geometryCheckRegistry)
-except (NameError, AttributeError):
+except NameError:
     pass

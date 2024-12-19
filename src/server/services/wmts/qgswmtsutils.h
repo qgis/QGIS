@@ -40,84 +40,84 @@ namespace QgsWmts
 
   struct tileMatrixInfo
   {
-      QString ref;
+    QString ref;
 
-      QgsRectangle extent;
+    QgsRectangle extent;
 
-      Qgis::DistanceUnit unit = Qgis::DistanceUnit::Meters;
+    Qgis::DistanceUnit unit = Qgis::DistanceUnit::Meters;
 
-      bool hasAxisInverted = false;
+    bool hasAxisInverted = false;
 
-      double resolution = 0.0;
+    double resolution = 0.0;
 
-      double scaleDenominator = 0.0;
+    double scaleDenominator = 0.0;
 
-      int lastLevel = -1;
+    int lastLevel = -1;
   };
 
   struct tileMatrixDef
   {
-      double resolution = 0.0;
+    double resolution = 0.0;
 
-      double scaleDenominator = 0.0;
+    double scaleDenominator = 0.0;
 
-      int col = 0;
+    int col = 0;
 
-      int row = 0;
+    int row = 0;
 
-      double left = 0.0;
+    double left = 0.0;
 
-      double top = 0.0;
+    double top = 0.0;
   };
 
   struct tileMatrixSetDef
   {
-      QString ref;
+    QString ref;
 
-      QgsRectangle extent;
+    QgsRectangle extent;
 
-      Qgis::DistanceUnit unit;
+    Qgis::DistanceUnit unit;
 
-      bool hasAxisInverted = false;
+    bool hasAxisInverted = false;
 
-      QList<tileMatrixDef> tileMatrixList;
+    QList< tileMatrixDef > tileMatrixList;
   };
 
   struct tileMatrixLimitDef
   {
-      int minCol;
+    int minCol;
 
-      int maxCol;
+    int maxCol;
 
-      int minRow;
+    int minRow;
 
-      int maxRow;
+    int maxRow;
   };
 
   struct tileMatrixSetLinkDef
   {
-      QString ref;
+    QString ref;
 
-      QMap<int, tileMatrixLimitDef> tileMatrixLimits;
+    QMap< int, tileMatrixLimitDef > tileMatrixLimits;
   };
 
   struct layerDef
   {
-      QString id;
+    QString id;
 
-      QString title;
+    QString title;
 
-      QString abstract;
+    QString abstract;
 
-      QgsRectangle wgs84BoundingRect;
+    QgsRectangle wgs84BoundingRect;
 
-      QStringList formats;
+    QStringList formats;
 
-      bool queryable = false;
+    bool queryable = false;
 
-      double maxScale = 0.0;
+    double maxScale = 0.0;
 
-      double minScale = 0.0;
+    double minScale = 0.0;
   };
 
   /**
@@ -138,16 +138,19 @@ namespace QgsWmts
   tileMatrixInfo calculateTileMatrixInfo( const QString &crsStr, const QgsProject *project );
   tileMatrixSetDef calculateTileMatrixSet( tileMatrixInfo tmi, double minScale );
   double getProjectMinScale( const QgsProject *project );
-  QList<tileMatrixSetDef> getTileMatrixSetList( const QgsProject *project, const QString &tms_ref = QString() );
+  QList< tileMatrixSetDef > getTileMatrixSetList( const QgsProject *project, const QString &tms_ref = QString() );
 
-  QList<layerDef> getWmtsLayerList( QgsServerInterface *serverIface, const QgsProject *project );
+  QList< layerDef > getWmtsLayerList( QgsServerInterface *serverIface, const QgsProject *project );
   tileMatrixSetLinkDef getLayerTileMatrixSetLink( const layerDef layer, const tileMatrixSetDef tms, const QgsProject *project );
 
   /**
    * Translate WMTS parameters to WMS query item
    */
-  QUrlQuery translateWmtsParamToWmsQueryItem( const QString &request, const QgsWmtsParameters &params, const QgsProject *project, QgsServerInterface *serverIface );
+  QUrlQuery translateWmtsParamToWmsQueryItem( const QString &request, const QgsWmtsParameters &params,
+      const QgsProject *project, QgsServerInterface *serverIface );
 
 } // namespace QgsWmts
 
 #endif
+
+

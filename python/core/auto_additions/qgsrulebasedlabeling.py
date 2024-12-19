@@ -2,10 +2,10 @@
 try:
     QgsRuleBasedLabeling.Rule.create = staticmethod(QgsRuleBasedLabeling.Rule.create)
     QgsRuleBasedLabeling.Rule.__group__ = ['labeling']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsRuleBasedLabeling.create = staticmethod(QgsRuleBasedLabeling.create)
     QgsRuleBasedLabeling.__group__ = ['labeling']
-except (NameError, AttributeError):
+except NameError:
     pass

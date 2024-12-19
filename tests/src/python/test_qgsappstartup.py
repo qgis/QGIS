@@ -7,10 +7,9 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
-
-__author__ = "Hugo Mercier (hugo.mercier@oslandia.com)"
-__date__ = "17/07/2013"
-__copyright__ = "Copyright 2013, The QGIS Project"
+__author__ = 'Hugo Mercier (hugo.mercier@oslandia.com)'
+__date__ = '17/07/2013'
+__copyright__ = 'Copyright 2013, The QGIS Project'
 
 import errno
 import glob
@@ -26,14 +25,14 @@ from qgis.testing import unittest
 
 from utilities import unitTestDataPath
 
-print("CTEST_FULL_OUTPUT")
+print('CTEST_FULL_OUTPUT')
 
 TEST_DATA_DIR = unitTestDataPath()
 
 
 class TestPyQgsAppStartup(unittest.TestCase):
 
-    TMP_DIR = ""
+    TMP_DIR = ''
 
     @classmethod
     def setUpClass(cls):
@@ -48,17 +47,9 @@ class TestPyQgsAppStartup(unittest.TestCase):
         super().tearDownClass()
 
     # TODO: refactor parameters to **kwargs to handle all startup combinations
-    def doTestStartup(
-        self,
-        option="",
-        testDir="",
-        testFile="",
-        loadPlugins=False,
-        customization=False,
-        timeOut=360,
-        env=None,
-        additionalArguments=[],
-    ):
+    def doTestStartup(self, option='', testDir='', testFile='',
+                      loadPlugins=False, customization=False,
+                      timeOut=360, env=None, additionalArguments=[]):
         """Run QGIS with the given option. Wait for testFile to be created.
         If time runs out, fail.
         """
@@ -74,41 +65,30 @@ class TestPyQgsAppStartup(unittest.TestCase):
             os.remove(myTestFile)
 
         # whether to load plugins
-        plugins = "" if loadPlugins else "--noplugins"
+        plugins = '' if loadPlugins else '--noplugins'
 
         # whether to enable GUI customization
-        customize = "" if customization else "--nocustomization"
+        customize = '' if customization else '--nocustomization'
 
         # environment variables = system variables + provided 'env'
         myenv = os.environ.copy()
         if env is not None:
             myenv.update(env)
 
-        call = [
-            QGIS_BIN,
-            "--nologo",
-            plugins,
-            customize,
-            option,
-            testDir,
-        ] + additionalArguments
+        call = [QGIS_BIN, "--nologo", plugins, customize, option, testDir] + additionalArguments
         p = subprocess.Popen(call, env=myenv)
 
         s = 0
         while not os.path.exists(myTestFile):
             p.poll()
             if p.returncode is not None:
-                raise Exception(
-                    f"Return code: {p.returncode}, Call: \"{' '.join(call)}\", Env: {env}"
-                )
+                raise Exception(f"Return code: {p.returncode}, Call: \"{' '.join(call)}\", Env: {env}")
             time.sleep(1)
             s += 1
             if s > timeOut:
-                raise Exception(
-                    f"Timed out waiting for application start, Call: \"{' '.join(call)}\", Env: {env}"
-                )
+                raise Exception(f"Timed out waiting for application start, Call: \"{' '.join(call)}\", Env: {env}")
 
-        with open(myTestFile, encoding="utf-8") as res_file:
+        with open(myTestFile, encoding='utf-8') as res_file:
             lines = res_file.readlines()
 
         try:
@@ -122,85 +102,78 @@ class TestPyQgsAppStartup(unittest.TestCase):
     def testPyQgisStartupEnvVar(self):
         # verify PYQGIS_STARTUP env variable file is run by embedded interpreter
         # create a temp python module that writes out test file
-        testfile = "pyqgis_startup.txt"
-        testfilepath = os.path.join(self.TMP_DIR, testfile).replace("\\", "/")
+        testfile = 'pyqgis_startup.txt'
+        testfilepath = os.path.join(self.TMP_DIR, testfile).replace('\\', '/')
         testcode = [
             f"from qgis.core import QgsApplication\nf = open('{testfilepath}', 'w')\n",
             "f.write('Platform: ' + QgsApplication.platform())\n",
-            "f.close()\n",
+            "f.close()\n"
         ]
-        testmod = os.path.join(self.TMP_DIR, "pyqgis_startup.py").replace("\\", "/")
-        f = open(testmod, "w")
+        testmod = os.path.join(self.TMP_DIR, 'pyqgis_startup.py').replace('\\', '/')
+        f = open(testmod, 'w')
         f.writelines(testcode)
         f.close()
         testfile_lines = self.doTestStartup(
-            testFile=testfilepath, timeOut=360, env={"PYQGIS_STARTUP": testmod}
-        )
+            testFile=testfilepath,
+            timeOut=360,
+            env={'PYQGIS_STARTUP': testmod})
 
         # platform should be "Desktop"
-        self.assertEqual(testfile_lines, ["Platform: desktop"])
+        self.assertEqual(testfile_lines, ['Platform: desktop'])
 
     def testPyArgs(self):
-        testfile = "pyqgis_code.txt"
-        testfilepath = os.path.join(self.TMP_DIR, testfile).replace("\\", "/")
+        testfile = 'pyqgis_code.txt'
+        testfilepath = os.path.join(self.TMP_DIR, testfile).replace('\\', '/')
         testcode = [
             f"import sys\nf = open('{testfilepath}', 'a')\n",
-            "for arg in sys.argv:\n" "  f.write(arg)\n",
+            "for arg in sys.argv:\n"
+            "  f.write(arg)\n",
             "  f.write('\\n')\n",
-            "f.close()\n",
+            "f.close()\n"
         ]
-        testmod = os.path.join(self.TMP_DIR, "pyqgis_code.py").replace("\\", "/")
-        f = open(testmod, "w")
+        testmod = os.path.join(self.TMP_DIR, 'pyqgis_code.py').replace('\\', '/')
+        f = open(testmod, 'w')
         f.writelines(testcode)
         f.close()
 
         testfile_lines = self.doTestStartup(
             testFile=testfilepath,
             timeOut=10,
-            additionalArguments=[
-                "--code",
-                testmod,
-                "--py-args",
-                "--specialScriptArgument's",
-                'a "Quoted" text arg',
-                "--",
-            ],
-        )
+            additionalArguments=["--code", testmod, "--py-args", "--specialScriptArgument's", 'a "Quoted" text arg', "--"])
 
-        self.assertEqual(
-            testfile_lines,
-            [testmod + "\n", "--specialScriptArgument's\n", 'a "Quoted" text arg\n'],
-        )
+        self.assertEqual(testfile_lines, [testmod + '\n',
+                                          "--specialScriptArgument's\n",
+                                          'a "Quoted" text arg\n'])
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     # look for qgis bin path
-    QGIS_BIN = ""
-    prefixPath = os.environ["QGIS_PREFIX_PATH"]
+    QGIS_BIN = ''
+    prefixPath = os.environ['QGIS_PREFIX_PATH']
     # see qgsapplication.cpp:98
-    for f in ["", "..", "bin"]:
+    for f in ['', '..', 'bin']:
         d = os.path.join(prefixPath, f)
-        b = os.path.abspath(os.path.join(d, "qgis"))
+        b = os.path.abspath(os.path.join(d, 'qgis'))
         if os.path.exists(b):
             QGIS_BIN = b
             break
-        b = os.path.abspath(os.path.join(d, "qgis.exe"))
+        b = os.path.abspath(os.path.join(d, 'qgis.exe'))
         if os.path.exists(b):
             QGIS_BIN = b
             break
-        if sys.platform[:3] == "dar":  # Mac
+        if sys.platform[:3] == 'dar':  # Mac
             # QGIS.app may be QGIS_x.x-dev.app for nightlies
             # internal binary will match, minus the '.app'
             found = False
-            for app_path in glob.glob(d + "/QGIS*.app"):
-                m = re.search(r"/(QGIS(_\d\.\d-dev)?)\.app", app_path)
+            for app_path in glob.glob(d + '/QGIS*.app'):
+                m = re.search(r'/(QGIS(_\d\.\d-dev)?)\.app', app_path)
                 if m:
-                    QGIS_BIN = app_path + "/Contents/MacOS/" + m.group(1)
+                    QGIS_BIN = app_path + '/Contents/MacOS/' + m.group(1)
                     found = True
                     break
             if found:
                 break
 
-    print(f"\nQGIS_BIN: {QGIS_BIN}")
-    assert QGIS_BIN, "QGIS binary not found, skipping test suite"
+    print(f'\nQGIS_BIN: {QGIS_BIN}')
+    assert QGIS_BIN, 'QGIS binary not found, skipping test suite'
     unittest.main()

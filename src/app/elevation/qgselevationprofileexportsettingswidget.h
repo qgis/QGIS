@@ -30,6 +30,7 @@ class QgsElevationProfileExportSettingsWidget : public QWidget, private Ui::QgsE
 {
     Q_OBJECT
   public:
+
     QgsElevationProfileExportSettingsWidget( QWidget *parent = nullptr );
 
     /**
@@ -41,6 +42,7 @@ class QgsElevationProfileExportSettingsWidget : public QWidget, private Ui::QgsE
      * Updates plot settings based on the widget's state.
      */
     void updatePlotSettings( Qgs2DPlot &plot );
+
 };
 
 #endif // QGSELEVATIONPROFILEEXPORTSETTINGSWIDGET_H

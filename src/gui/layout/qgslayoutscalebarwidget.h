@@ -35,7 +35,7 @@ class QgsLayoutItemScaleBar;
  * \note This class is not a part of public API
  * \since QGIS 3.12
  */
-class GUI_EXPORT QgsLayoutScaleBarWidget : public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutScaleBarWidgetBase
+class GUI_EXPORT QgsLayoutScaleBarWidget: public QgsLayoutItemBaseWidget, public QgsExpressionContextGenerator, private Ui::QgsLayoutScaleBarWidgetBase
 {
     Q_OBJECT
 
@@ -89,7 +89,7 @@ class GUI_EXPORT QgsLayoutScaleBarWidget : public QgsLayoutItemBaseWidget, publi
     };
     static DistanceLabelPlacement distanceLabelPlacement( Qgis::ScaleBarDistanceLabelHorizontalPlacement horizontalPlacement, Qgis::ScaleBarDistanceLabelVerticalPlacement verticalPlacement );
 
-    QPointer<QgsLayoutItemScaleBar> mScalebar;
+    QPointer< QgsLayoutItemScaleBar > mScalebar;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
     QButtonGroup mSegmentSizeRadioGroup;
@@ -103,6 +103,7 @@ class GUI_EXPORT QgsLayoutScaleBarWidget : public QgsLayoutItemBaseWidget, publi
     void connectUpdateSignal();
     void disconnectUpdateSignal();
     void populateDataDefinedButtons();
+
 };
 
 #endif //QGSLAYOUTSCALEBARWIDGET_H

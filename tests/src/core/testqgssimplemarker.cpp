@@ -43,14 +43,14 @@ class TestQgsSimpleMarkerSymbol : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsSimpleMarkerSymbol()
-      : QgsTest( QStringLiteral( "Simple Marker Tests" ), QStringLiteral( "symbol_simplemarker" ) ) {}
+    TestQgsSimpleMarkerSymbol() : QgsTest( QStringLiteral( "Simple Marker Tests" ),
+                                             QStringLiteral( "symbol_simplemarker" ) ) {}
 
   private slots:
-    void initTestCase();    // will be called before the first testfunction is executed.
-    void cleanupTestCase(); // will be called after the last testfunction was executed.
-    void init() {}          // will be called before each testfunction is executed.
-    void cleanup() {}       // will be called after every testfunction.
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void decodeShape_data();
     void decodeShape();
@@ -82,7 +82,7 @@ class TestQgsSimpleMarkerSymbol : public QgsTest
     void dataDefinedOpacity();
 
   private:
-    bool mTestHasError = false;
+    bool mTestHasError =  false ;
 
     QgsMapSettings mMapSettings;
     QgsVectorLayer *mpPointsLayer = nullptr;
@@ -110,12 +110,12 @@ void TestQgsSimpleMarkerSymbol::initTestCase()
   //
   const QString pointFileName = mTestDataDir + "points.shp";
   const QFileInfo pointFileInfo( pointFileName );
-  mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(), pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
+  mpPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
+                                      pointFileInfo.completeBaseName(), QStringLiteral( "ogr" ) );
 
   // Register the layer with the registry
   QgsProject::instance()->addMapLayers(
-    QList<QgsMapLayer *>() << mpPointsLayer
-  );
+    QList<QgsMapLayer *>() << mpPointsLayer );
 
   //setup symbol
   mSimpleMarkerLayer = new QgsSimpleMarkerSymbolLayer();
@@ -143,46 +143,46 @@ void TestQgsSimpleMarkerSymbol::decodeShape_data()
   QTest::addColumn<int>( "shape" );
   QTest::addColumn<bool>( "ok" );
 
-  QTest::newRow( "empty string" ) << "" << static_cast<int>( Qgis::MarkerShape::Circle ) << false;
-  QTest::newRow( "invalid character" ) << "@" << static_cast<int>( Qgis::MarkerShape::Circle ) << false;
-  QTest::newRow( "square" ) << "square" << static_cast<int>( Qgis::MarkerShape::Square ) << true;
-  QTest::newRow( "square case" ) << "SQUARE" << static_cast<int>( Qgis::MarkerShape::Square ) << true;
-  QTest::newRow( "square case spaces" ) << "  SQUARE  " << static_cast<int>( Qgis::MarkerShape::Square ) << true;
-  QTest::newRow( "square_with_corners" ) << "square_with_corners" << static_cast<int>( Qgis::MarkerShape::SquareWithCorners ) << true;
-  QTest::newRow( "shield" ) << "shield" << static_cast<int>( Qgis::MarkerShape::Shield ) << true;
-  QTest::newRow( "rounded_square" ) << "rounded_square" << static_cast<int>( Qgis::MarkerShape::RoundedSquare ) << true;
-  QTest::newRow( "trapezoid" ) << "trapezoid" << static_cast<int>( Qgis::MarkerShape::Trapezoid ) << true;
-  QTest::newRow( "parallelogram_left" ) << "parallelogram_left" << static_cast<int>( Qgis::MarkerShape::ParallelogramLeft ) << true;
-  QTest::newRow( "rectangle" ) << "rectangle" << static_cast<int>( Qgis::MarkerShape::Square ) << true;
-  QTest::newRow( "diamond" ) << "diamond" << static_cast<int>( Qgis::MarkerShape::Diamond ) << true;
-  QTest::newRow( "pentagon" ) << "pentagon" << static_cast<int>( Qgis::MarkerShape::Pentagon ) << true;
-  QTest::newRow( "hexagon" ) << "hexagon" << static_cast<int>( Qgis::MarkerShape::Hexagon ) << true;
-  QTest::newRow( "octagon" ) << "octagon" << static_cast<int>( Qgis::MarkerShape::Octagon ) << true;
-  QTest::newRow( "decagon" ) << "decagon" << static_cast<int>( Qgis::MarkerShape::Decagon ) << true;
-  QTest::newRow( "triangle" ) << "triangle" << static_cast<int>( Qgis::MarkerShape::Triangle ) << true;
-  QTest::newRow( "equilateral_triangle" ) << "equilateral_triangle" << static_cast<int>( Qgis::MarkerShape::EquilateralTriangle ) << true;
-  QTest::newRow( "star_diamond" ) << "star_diamond" << static_cast<int>( Qgis::MarkerShape::DiamondStar ) << true;
-  QTest::newRow( "star" ) << "star" << static_cast<int>( Qgis::MarkerShape::Star ) << true;
-  QTest::newRow( "regular_star" ) << "regular_star" << static_cast<int>( Qgis::MarkerShape::Star ) << true;
-  QTest::newRow( "heart" ) << "heart" << static_cast<int>( Qgis::MarkerShape::Heart ) << true;
-  QTest::newRow( "arrow" ) << "arrow" << static_cast<int>( Qgis::MarkerShape::Arrow ) << true;
-  QTest::newRow( "circle" ) << "circle" << static_cast<int>( Qgis::MarkerShape::Circle ) << true;
-  QTest::newRow( "cross" ) << "cross" << static_cast<int>( Qgis::MarkerShape::Cross ) << true;
-  QTest::newRow( "cross_fill" ) << "cross_fill" << static_cast<int>( Qgis::MarkerShape::CrossFill ) << true;
-  QTest::newRow( "cross2" ) << "cross2" << static_cast<int>( Qgis::MarkerShape::Cross2 ) << true;
-  QTest::newRow( "x" ) << "x" << static_cast<int>( Qgis::MarkerShape::Cross2 ) << true;
-  QTest::newRow( "line" ) << "line" << static_cast<int>( Qgis::MarkerShape::Line ) << true;
-  QTest::newRow( "arrowhead" ) << "arrowhead" << static_cast<int>( Qgis::MarkerShape::ArrowHead ) << true;
-  QTest::newRow( "filled_arrowhead" ) << "filled_arrowhead" << static_cast<int>( Qgis::MarkerShape::ArrowHeadFilled ) << true;
-  QTest::newRow( "semi_circle" ) << "semi_circle" << static_cast<int>( Qgis::MarkerShape::SemiCircle ) << true;
-  QTest::newRow( "third_circle" ) << "third_circle" << static_cast<int>( Qgis::MarkerShape::ThirdCircle ) << true;
-  QTest::newRow( "quarter_circle" ) << "quarter_circle" << static_cast<int>( Qgis::MarkerShape::QuarterCircle ) << true;
-  QTest::newRow( "quarter_square" ) << "quarter_square" << static_cast<int>( Qgis::MarkerShape::QuarterSquare ) << true;
-  QTest::newRow( "half_square" ) << "half_square" << static_cast<int>( Qgis::MarkerShape::HalfSquare ) << true;
-  QTest::newRow( "diagonal_half_square" ) << "diagonal_half_square" << static_cast<int>( Qgis::MarkerShape::DiagonalHalfSquare ) << true;
-  QTest::newRow( "right_half_triangle" ) << "right_half_triangle" << static_cast<int>( Qgis::MarkerShape::RightHalfTriangle ) << true;
-  QTest::newRow( "left_half_triangle" ) << "left_half_triangle" << static_cast<int>( Qgis::MarkerShape::LeftHalfTriangle ) << true;
-  QTest::newRow( "asterisk_fill" ) << "asterisk_fill" << static_cast<int>( Qgis::MarkerShape::AsteriskFill ) << true;
+  QTest::newRow( "empty string" ) << "" << static_cast< int >( Qgis::MarkerShape::Circle ) << false;
+  QTest::newRow( "invalid character" ) << "@" << static_cast< int >( Qgis::MarkerShape::Circle ) << false;
+  QTest::newRow( "square" ) << "square" << static_cast< int >( Qgis::MarkerShape::Square ) << true;
+  QTest::newRow( "square case" ) << "SQUARE" << static_cast< int >( Qgis::MarkerShape::Square ) << true;
+  QTest::newRow( "square case spaces" ) << "  SQUARE  " << static_cast< int >( Qgis::MarkerShape::Square ) << true;
+  QTest::newRow( "square_with_corners" ) << "square_with_corners" << static_cast< int >( Qgis::MarkerShape::SquareWithCorners ) << true;
+  QTest::newRow( "shield" ) << "shield" << static_cast< int >( Qgis::MarkerShape::Shield ) << true;
+  QTest::newRow( "rounded_square" ) << "rounded_square" << static_cast< int >( Qgis::MarkerShape::RoundedSquare ) << true;
+  QTest::newRow( "trapezoid" ) << "trapezoid" << static_cast< int >( Qgis::MarkerShape::Trapezoid ) << true;
+  QTest::newRow( "parallelogram_left" ) << "parallelogram_left" << static_cast< int >( Qgis::MarkerShape::ParallelogramLeft ) << true;
+  QTest::newRow( "rectangle" ) << "rectangle" << static_cast< int >( Qgis::MarkerShape::Square ) << true;
+  QTest::newRow( "diamond" ) << "diamond" << static_cast< int >( Qgis::MarkerShape::Diamond ) << true;
+  QTest::newRow( "pentagon" ) << "pentagon" << static_cast< int >( Qgis::MarkerShape::Pentagon ) << true;
+  QTest::newRow( "hexagon" ) << "hexagon" << static_cast< int >( Qgis::MarkerShape::Hexagon ) << true;
+  QTest::newRow( "octagon" ) << "octagon" << static_cast< int >( Qgis::MarkerShape::Octagon ) << true;
+  QTest::newRow( "decagon" ) << "decagon" << static_cast< int >( Qgis::MarkerShape::Decagon ) << true;
+  QTest::newRow( "triangle" ) << "triangle" << static_cast< int >( Qgis::MarkerShape::Triangle ) << true;
+  QTest::newRow( "equilateral_triangle" ) << "equilateral_triangle" << static_cast< int >( Qgis::MarkerShape::EquilateralTriangle ) << true;
+  QTest::newRow( "star_diamond" ) << "star_diamond" << static_cast< int >( Qgis::MarkerShape::DiamondStar ) << true;
+  QTest::newRow( "star" ) << "star" << static_cast< int >( Qgis::MarkerShape::Star ) << true;
+  QTest::newRow( "regular_star" ) << "regular_star" << static_cast< int >( Qgis::MarkerShape::Star ) << true;
+  QTest::newRow( "heart" ) << "heart" << static_cast< int >( Qgis::MarkerShape::Heart ) << true;
+  QTest::newRow( "arrow" ) << "arrow" << static_cast< int >( Qgis::MarkerShape::Arrow ) << true;
+  QTest::newRow( "circle" ) << "circle" << static_cast< int >( Qgis::MarkerShape::Circle ) << true;
+  QTest::newRow( "cross" ) << "cross" << static_cast< int >( Qgis::MarkerShape::Cross ) << true;
+  QTest::newRow( "cross_fill" ) << "cross_fill" << static_cast< int >( Qgis::MarkerShape::CrossFill ) << true;
+  QTest::newRow( "cross2" ) << "cross2" << static_cast< int >( Qgis::MarkerShape::Cross2 ) << true;
+  QTest::newRow( "x" ) << "x" << static_cast< int >( Qgis::MarkerShape::Cross2 ) << true;
+  QTest::newRow( "line" ) << "line" << static_cast< int >( Qgis::MarkerShape::Line ) << true;
+  QTest::newRow( "arrowhead" ) << "arrowhead" << static_cast< int >( Qgis::MarkerShape::ArrowHead ) << true;
+  QTest::newRow( "filled_arrowhead" ) << "filled_arrowhead" << static_cast< int >( Qgis::MarkerShape::ArrowHeadFilled ) << true;
+  QTest::newRow( "semi_circle" ) << "semi_circle" << static_cast< int >( Qgis::MarkerShape::SemiCircle ) << true;
+  QTest::newRow( "third_circle" ) << "third_circle" << static_cast< int >( Qgis::MarkerShape::ThirdCircle ) << true;
+  QTest::newRow( "quarter_circle" ) << "quarter_circle" << static_cast< int >( Qgis::MarkerShape::QuarterCircle ) << true;
+  QTest::newRow( "quarter_square" ) << "quarter_square" << static_cast< int >( Qgis::MarkerShape::QuarterSquare ) << true;
+  QTest::newRow( "half_square" ) << "half_square" << static_cast< int >( Qgis::MarkerShape::HalfSquare ) << true;
+  QTest::newRow( "diagonal_half_square" ) << "diagonal_half_square" << static_cast< int >( Qgis::MarkerShape::DiagonalHalfSquare ) << true;
+  QTest::newRow( "right_half_triangle" ) << "right_half_triangle" << static_cast< int >( Qgis::MarkerShape::RightHalfTriangle ) << true;
+  QTest::newRow( "left_half_triangle" ) << "left_half_triangle" << static_cast< int >( Qgis::MarkerShape::LeftHalfTriangle ) << true;
+  QTest::newRow( "asterisk_fill" ) << "asterisk_fill" << static_cast< int >( Qgis::MarkerShape::AsteriskFill ) << true;
 }
 
 void TestQgsSimpleMarkerSymbol::decodeShape()
@@ -192,11 +192,11 @@ void TestQgsSimpleMarkerSymbol::decodeShape()
   QFETCH( bool, ok );
 
   bool res = false;
-  QCOMPARE( static_cast<int>( QgsSimpleMarkerSymbolLayerBase::decodeShape( string, &res ) ), shape );
+  QCOMPARE( static_cast< int >( QgsSimpleMarkerSymbolLayerBase::decodeShape( string, &res ) ), shape );
   QCOMPARE( res, ok );
 
   // round trip through encode
-  QCOMPARE( static_cast<int>( QgsSimpleMarkerSymbolLayerBase::decodeShape( QgsSimpleMarkerSymbolLayerBase::encodeShape( static_cast<Qgis::MarkerShape>( shape ) ) ) ), shape );
+  QCOMPARE( static_cast< int >( QgsSimpleMarkerSymbolLayerBase::decodeShape( QgsSimpleMarkerSymbolLayerBase::encodeShape( static_cast< Qgis::MarkerShape >( shape ) ) ) ), shape );
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerSymbol()
@@ -247,7 +247,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolPreviewRotation_data()
   QTest::addColumn<double>( "angle" );
   QTest::addColumn<QString>( "expression" );
 
-  QTest::newRow( "field_based" ) << QStringLiteral( "field_based" ) << 20. << QStringLiteral( "orientation" );    // Should fallback to 20 because orientation is not available
+  QTest::newRow( "field_based" ) << QStringLiteral( "field_based" ) << 20. << QStringLiteral( "orientation" ); // Should fallback to 20 because orientation is not available
   QTest::newRow( "static_expression" ) << QStringLiteral( "static_expression" ) << 20. << QStringLiteral( "40" ); // Should use 40 because expression has precedence
 }
 
@@ -261,6 +261,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolBevelJoin()
   mSimpleMarkerLayer->setStrokeWidth( 3 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::BevelJoin );
   QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_beveljoin" ), QStringLiteral( "simplemarker_beveljoin" ), mMapSettings );
+
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerSymbolMiterJoin()
@@ -349,6 +350,7 @@ void TestQgsSimpleMarkerSymbol::simpleMarkerSquareWithCorners()
   mSimpleMarkerLayer->setStrokeWidth( 2 );
   mSimpleMarkerLayer->setPenJoinStyle( Qt::MiterJoin );
   QGSVERIFYRENDERMAPSETTINGSCHECK( QStringLiteral( "simplemarker_square_with_corners" ), QStringLiteral( "simplemarker_square_with_corners" ), mMapSettings );
+
 }
 
 void TestQgsSimpleMarkerSymbol::simpleMarkerRoundedSquare()

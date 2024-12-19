@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsbookmarkmanager.h"
-#include "moc_qgsbookmarkmanager.cpp"
 #include "qgsproject.h"
 #include "qgssettings.h"
 #include "qgssqliteutils.h"

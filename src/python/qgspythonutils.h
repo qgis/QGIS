@@ -26,7 +26,7 @@
 
 
 class QgisInterface;
-#ifdef HAVE_SERVER_PYTHON_PLUGINS
+#ifdef  HAVE_SERVER_PYTHON_PLUGINS
 class QgsServerInterface;
 #endif
 
@@ -44,6 +44,7 @@ class QgsServerInterface;
 class PYTHON_EXPORT QgsPythonUtils
 {
   public:
+
     virtual ~QgsPythonUtils() = default;
 
     /**

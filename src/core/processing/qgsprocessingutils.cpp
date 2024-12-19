@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsprocessingutils.h"
-#include "moc_qgsprocessingutils.cpp"
 #include "qgsproject.h"
 #include "qgsexception.h"
 #include "qgsprocessingcontext.h"
@@ -2003,24 +2002,8 @@ QgsProcessingFeatureSink::QgsProcessingFeatureSink( QgsFeatureSink *originalSink
 
 QgsProcessingFeatureSink::~QgsProcessingFeatureSink()
 {
-  if ( !flushBuffer() && mContext.feedback() )
-  {
-    mContext.feedback()->reportError( lastError() );
-  }
-
   if ( mOwnsSink )
-  {
-    delete mSink;
-    mSink = nullptr;
-  }
-}
-
-void QgsProcessingFeatureSink::finalize()
-{
-  if ( !flushBuffer() )
-  {
-    throw QgsProcessingException( lastError() );
-  }
+    delete destinationSink();
 }
 
 bool QgsProcessingFeatureSink::addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags )

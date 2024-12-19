@@ -2,5 +2,5 @@
 try:
     QgsPolygon3DSymbol.create = staticmethod(QgsPolygon3DSymbol.create)
     QgsPolygon3DSymbol.__group__ = ['symbols']
-except (NameError, AttributeError):
+except NameError:
     pass

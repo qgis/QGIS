@@ -34,20 +34,19 @@ class TestQgsLayoutHtml : public QgsTest
     Q_OBJECT
 
   public:
-    TestQgsLayoutHtml()
-      : QgsTest( QStringLiteral( "Layout HTML Tests" ), QStringLiteral( "composer_html" ) ) {}
+    TestQgsLayoutHtml() : QgsTest( QStringLiteral( "Layout HTML Tests" ), QStringLiteral( "composer_html" ) ) {}
 
   private slots:
-    void initTestCase();             // will be called before the first testfunction is executed.
-    void cleanupTestCase();          // will be called after the last testfunction was executed.
-    void sourceMode();               //test if rendering manual HTML works
-    void userStylesheets();          //test if user stylesheets work
-    void evalExpressions();          //test if rendering with expressions works
-    void evalExpressionsOff();       //test if rendering with expressions disabled works
-    void table();                    //test if rendering a HTML url works
-    void tableMultiFrame();          //tests multiframe capabilities of composer html
+    void initTestCase();// will be called before the first testfunction is executed.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void sourceMode(); //test if rendering manual HTML works
+    void userStylesheets(); //test if user stylesheets work
+    void evalExpressions(); //test if rendering with expressions works
+    void evalExpressionsOff(); //test if rendering with expressions disabled works
+    void table(); //test if rendering a HTML url works
+    void tableMultiFrame(); //tests multiframe capabilities of composer html
     void htmlMultiFrameSmartBreak(); //tests smart page breaks in html multi frame
-    void javascriptSetFeature();     //test that JavaScript setFeature() function is correctly called
+    void javascriptSetFeature(); //test that JavaScript setFeature() function is correctly called
 
   private:
     QFont mTestFont;
@@ -127,8 +126,7 @@ void TestQgsLayoutHtml::evalExpressionsOff()
   l.initializeDefaults();
   QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( &l );
   QgsLayoutFrame *htmlFrame = new QgsLayoutFrame( &l, htmlItem );
-  htmlFrame->attemptSetSceneRect( QRectF( 0, 0, 100, 200 ) );
-  htmlFrame->setFrameEnabled( true );
+  htmlFrame->attemptSetSceneRect( QRectF( 0, 0, 100, 200 ) );  htmlFrame->setFrameEnabled( true );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setContentMode( QgsLayoutItemHtml::ManualHtml );
   htmlItem->setEvaluateExpressions( false );
@@ -144,8 +142,7 @@ void TestQgsLayoutHtml::table()
   l.initializeDefaults();
   QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( &l );
   QgsLayoutFrame *htmlFrame = new QgsLayoutFrame( &l, htmlItem );
-  htmlFrame->attemptSetSceneRect( QRectF( 0, 0, 100, 200 ) );
-  htmlFrame->setFrameEnabled( true );
+  htmlFrame->attemptSetSceneRect( QRectF( 0, 0, 100, 200 ) );  htmlFrame->setFrameEnabled( true );
   htmlItem->addFrame( htmlFrame );
   htmlItem->setUrl( QUrl( QStringLiteral( "file:///%1/test_html.html" ).arg( TEST_DATA_DIR ) ) );
 
@@ -203,7 +200,7 @@ void TestQgsLayoutHtml::javascriptSetFeature()
   QgsVectorDataProvider *pr = parentLayer->dataProvider();
   QgsFeature pf1;
   pf1.setFields( parentLayer->fields() );
-  pf1.setAttributes( QgsAttributes() << "test1" << 67 << 123 );
+  pf1.setAttributes( QgsAttributes() << "test1" << 67 <<  123 );
   QgsFeature pf2;
   pf2.setFields( parentLayer->fields() );
   pf2.setAttributes( QgsAttributes() << "test2" << 68 << 124 );
@@ -217,11 +214,11 @@ void TestQgsLayoutHtml::javascriptSetFeature()
   f1.setAttributes( QgsAttributes() << "foo" << 123 << 321 );
   QgsFeature f2;
   f2.setFields( childLayer->fields() );
-  f2.setAttributes( QgsAttributes() << "bar" << 123 << 654 );
+  f2.setAttributes( QgsAttributes() << "bar" <<  123 <<  654 );
   QgsFeature f3;
   f3.setFields( childLayer->fields() );
-  f3.setAttributes( QgsAttributes() << "foobar" << 124 << 554 );
-  QVERIFY( pr->addFeatures( QgsFeatureList() << f1 << f2 << f3 ) );
+  f3.setAttributes( QgsAttributes() << "foobar" << 124 <<  554 );
+  QVERIFY( pr->addFeatures( QgsFeatureList() << f1 <<  f2 <<  f3 ) );
 
   QgsProject::instance()->addMapLayers( QList<QgsMapLayer *>() << childLayer << parentLayer );
 

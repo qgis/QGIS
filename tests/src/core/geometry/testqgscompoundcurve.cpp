@@ -27,7 +27,7 @@
 #include "testgeometryutils.h"
 #include "testtransformer.h"
 
-class TestQgsCompoundCurve : public QObject
+class TestQgsCompoundCurve: public QObject
 {
     Q_OBJECT
   private slots:
@@ -164,7 +164,8 @@ void TestQgsCompoundCurve::addCurve()
   QCOMPARE( pts, QgsPointSequence() << QgsPoint( 1.0, 2.0 ) );
 
   cc.clear();
-  cs1.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) );
+  cs1.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                 << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) );
   cc.addCurve( cs1.clone() );
 
   QVERIFY( !cc.isEmpty() );
@@ -180,13 +181,15 @@ void TestQgsCompoundCurve::addCurve()
   QVERIFY( cc.hasCurvedSegments() );
 
   cc.points( pts );
-  QCOMPARE( pts, QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) );
-  QCOMPARE( *dynamic_cast<const QgsCircularString *>( cc.curveAt( 0 ) ), cs1 );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( 1, 2 )
+            << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) );
+  QCOMPARE( *dynamic_cast< const QgsCircularString *>( cc.curveAt( 0 ) ), cs1 );
   QVERIFY( !cc.curveAt( -1 ) );
   QVERIFY( !cc.curveAt( 1 ) );
 
   QgsCircularString cs2;
-  cs2.setPoints( QgsPointSequence() << QgsPoint( 3, 4 ) << QgsPoint( 4, 5 ) << QgsPoint( 3, 6 ) );
+  cs2.setPoints( QgsPointSequence() << QgsPoint( 3, 4 )
+                 << QgsPoint( 4, 5 ) << QgsPoint( 3, 6 ) );
   cc.addCurve( cs2.clone() );
 
   QCOMPARE( cc.numPoints(), 5 );
@@ -199,9 +202,10 @@ void TestQgsCompoundCurve::addCurve()
   pts.clear();
   cc.points( pts );
 
-  QCOMPARE( pts, QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) << QgsPoint( 4, 5 ) << QgsPoint( 3, 6 ) );
-  QCOMPARE( *dynamic_cast<const QgsCircularString *>( cc.curveAt( 0 ) ), cs1 );
-  QCOMPARE( *dynamic_cast<const QgsCircularString *>( cc.curveAt( 1 ) ), cs2 );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2, 3 )
+            << QgsPoint( 3, 4 ) << QgsPoint( 4, 5 ) << QgsPoint( 3, 6 ) );
+  QCOMPARE( *dynamic_cast< const QgsCircularString *>( cc.curveAt( 0 ) ), cs1 );
+  QCOMPARE( *dynamic_cast< const QgsCircularString *>( cc.curveAt( 1 ) ), cs2 );
   QVERIFY( !cc.curveAt( -1 ) );
   QVERIFY( !cc.curveAt( 2 ) );
 
@@ -219,10 +223,12 @@ void TestQgsCompoundCurve::addCurve()
   pts.clear();
   cc.points( pts );
 
-  QCOMPARE( pts, QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) << QgsPoint( 4, 5 ) << QgsPoint( 3, 6 ) << QgsPoint( 4, 6 ) );
-  QCOMPARE( *dynamic_cast<const QgsCircularString *>( cc.curveAt( 0 ) ), cs1 );
-  QCOMPARE( *dynamic_cast<const QgsCircularString *>( cc.curveAt( 1 ) ), cs2 );
-  QCOMPARE( *dynamic_cast<const QgsLineString *>( cc.curveAt( 2 ) ), cs3 );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2, 3 )
+            << QgsPoint( 3, 4 ) << QgsPoint( 4, 5 )
+            << QgsPoint( 3, 6 ) << QgsPoint( 4, 6 ) );
+  QCOMPARE( *dynamic_cast< const QgsCircularString *>( cc.curveAt( 0 ) ), cs1 );
+  QCOMPARE( *dynamic_cast< const QgsCircularString *>( cc.curveAt( 1 ) ), cs2 );
+  QCOMPARE( *dynamic_cast< const QgsLineString *>( cc.curveAt( 2 ) ), cs3 );
   QVERIFY( !cc.curveAt( -1 ) );
   QVERIFY( !cc.curveAt( 3 ) );
 }
@@ -275,7 +281,8 @@ void TestQgsCompoundCurve::addCurveWithZM()
   cc.clear();
 
   //addCurve with z
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 )
+                << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 4 ) );
   cc.addCurve( cs.clone() );
 
   QCOMPARE( cc.numPoints(), 2 );
@@ -285,11 +292,13 @@ void TestQgsCompoundCurve::addCurveWithZM()
 
   cc.points( pts );
 
-  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 4 ) );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 )
+            << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 4 ) );
 
   //addCurve with m
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 )
+                << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 4 ) );
   cc.addCurve( cs.clone() );
 
   QCOMPARE( cc.numPoints(), 2 );
@@ -298,11 +307,13 @@ void TestQgsCompoundCurve::addCurveWithZM()
   QCOMPARE( cc.wkbType(), Qgis::WkbType::CompoundCurveM );
 
   cc.points( pts );
-  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 4 ) );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 )
+            << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 4 ) );
 
   //addCurve with zm
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 2, 3, 4, 5 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 )
+                << QgsPoint( Qgis::WkbType::PointZM, 2, 3, 4, 5 ) );
   cc.addCurve( cs.clone() );
 
   QCOMPARE( cc.numPoints(), 2 );
@@ -311,7 +322,8 @@ void TestQgsCompoundCurve::addCurveWithZM()
   QCOMPARE( cc.wkbType(), Qgis::WkbType::CompoundCurveZM );
 
   cc.points( pts );
-  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 2, 3, 4, 5 ) );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 4, 5 )
+            << QgsPoint( Qgis::WkbType::PointZM, 2, 3, 4, 5 ) );
 }
 
 void TestQgsCompoundCurve::addCurveWithMissingDimInCompoundCurve()
@@ -320,12 +332,14 @@ void TestQgsCompoundCurve::addCurveWithMissingDimInCompoundCurve()
 
   //addCurve with z to non z compound curve
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 1, 2 ) << QgsPoint( Qgis::WkbType::Point, 2, 3 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 1, 2 )
+                << QgsPoint( Qgis::WkbType::Point, 2, 3 ) );
   cc.addCurve( cs.clone() );
 
   QCOMPARE( cc.wkbType(), Qgis::WkbType::CompoundCurve );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZ, 3, 3, 5 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 4 )
+                << QgsPoint( Qgis::WkbType::PointZ, 3, 3, 5 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( !cc.is3D() );
@@ -335,12 +349,15 @@ void TestQgsCompoundCurve::addCurveWithMissingDimInCompoundCurve()
   QgsPointSequence pts;
   cc.points( pts );
 
-  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 1, 2 ) << QgsPoint( Qgis::WkbType::Point, 2, 3 ) << QgsPoint( Qgis::WkbType::Point, 3, 3 ) );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 1, 2 )
+            << QgsPoint( Qgis::WkbType::Point, 2, 3 )
+            << QgsPoint( Qgis::WkbType::Point, 3, 3 ) );
 
   cc.removeCurve( 1 );
 
   //addCurve with m to non m compound curve
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 3, 3, 0, 5 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 4 )
+                << QgsPoint( Qgis::WkbType::PointM, 3, 3, 0, 5 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( !cc.is3D() );
@@ -348,12 +365,15 @@ void TestQgsCompoundCurve::addCurveWithMissingDimInCompoundCurve()
   QCOMPARE( cc.wkbType(), Qgis::WkbType::CompoundCurve );
 
   cc.points( pts );
-  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 1, 2 ) << QgsPoint( Qgis::WkbType::Point, 2, 3 ) << QgsPoint( Qgis::WkbType::Point, 3, 3 ) );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 1, 2 )
+            << QgsPoint( Qgis::WkbType::Point, 2, 3 )
+            << QgsPoint( Qgis::WkbType::Point, 3, 3 ) );
 
   cc.removeCurve( 1 );
 
   //addCurve with zm to non m compound curve
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 2, 3, 6, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 3, 3, 1, 5 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 2, 3, 6, 4 )
+                << QgsPoint( Qgis::WkbType::PointZM, 3, 3, 1, 5 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( !cc.is3D() );
@@ -361,7 +381,9 @@ void TestQgsCompoundCurve::addCurveWithMissingDimInCompoundCurve()
   QCOMPARE( cc.wkbType(), Qgis::WkbType::CompoundCurve );
 
   cc.points( pts );
-  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 1, 2 ) << QgsPoint( Qgis::WkbType::Point, 2, 3 ) << QgsPoint( Qgis::WkbType::Point, 3, 3 ) );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 1, 2 )
+            << QgsPoint( Qgis::WkbType::Point, 2, 3 )
+            << QgsPoint( Qgis::WkbType::Point, 3, 3 ) );
 
   cc.removeCurve( 1 );
 }
@@ -372,12 +394,14 @@ void TestQgsCompoundCurve::addCurveWithMissingDimInAddedCurve()
 
   //addCurve with no z to z compound curve
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 4 ) << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 5 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 4 )
+                << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 5 ) );
   cc.addCurve( cs.clone() );
 
   QCOMPARE( cc.wkbType(), Qgis::WkbType::CompoundCurveZ );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 2, 3 ) << QgsPoint( Qgis::WkbType::Point, 3, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 2, 3 )
+                << QgsPoint( Qgis::WkbType::Point, 3, 4 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( cc.is3D() );
@@ -387,12 +411,15 @@ void TestQgsCompoundCurve::addCurveWithMissingDimInAddedCurve()
   QgsPointSequence pts;
   cc.points( pts );
 
-  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 4 ) << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 5 ) << QgsPoint( Qgis::WkbType::PointZ, 3, 4, 0 ) );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 4 )
+            << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 5 )
+            << QgsPoint( Qgis::WkbType::PointZ, 3, 4, 0 ) );
 
   cc.removeCurve( 1 );
 
   //add curve with m, no z to z compound curve
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 8 ) << QgsPoint( Qgis::WkbType::PointM, 3, 4, 0, 9 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 8 )
+                << QgsPoint( Qgis::WkbType::PointM, 3, 4, 0, 9 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( cc.is3D() );
@@ -400,12 +427,15 @@ void TestQgsCompoundCurve::addCurveWithMissingDimInAddedCurve()
   QCOMPARE( cc.wkbType(), Qgis::WkbType::CompoundCurveZ );
 
   cc.points( pts );
-  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 4 ) << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 5 ) << QgsPoint( Qgis::WkbType::PointZ, 3, 4, 0 ) );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 4 )
+            << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 5 )
+            << QgsPoint( Qgis::WkbType::PointZ, 3, 4, 0 ) );
 
   cc.removeCurve( 1 );
 
   //add curve with zm to z compound curve
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 2, 3, 6, 8 ) << QgsPoint( Qgis::WkbType::PointZM, 3, 4, 7, 9 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 2, 3, 6, 8 )
+                << QgsPoint( Qgis::WkbType::PointZM, 3, 4, 7, 9 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( cc.is3D() );
@@ -414,18 +444,22 @@ void TestQgsCompoundCurve::addCurveWithMissingDimInAddedCurve()
 
   cc.points( pts );
 
-  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 4 ) << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 5 ) << QgsPoint( Qgis::WkbType::PointZ, 3, 4, 7 ) );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 4 )
+            << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 5 )
+            << QgsPoint( Qgis::WkbType::PointZ, 3, 4, 7 ) );
 
   cc.removeCurve( 1 );
 
   //addCurve with no m to m compound curve
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 5 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 )
+                << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 5 ) );
   cc.addCurve( cs.clone() );
 
   QCOMPARE( cc.wkbType(), Qgis::WkbType::CompoundCurveM );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 2, 3 ) << QgsPoint( Qgis::WkbType::Point, 3, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::Point, 2, 3 )
+                << QgsPoint( Qgis::WkbType::Point, 3, 4 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( !cc.is3D() );
@@ -433,12 +467,15 @@ void TestQgsCompoundCurve::addCurveWithMissingDimInAddedCurve()
   QCOMPARE( cc.wkbType(), Qgis::WkbType::CompoundCurveM );
 
   cc.points( pts );
-  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 5 ) << QgsPoint( Qgis::WkbType::PointM, 3, 4, 0, 0 ) );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 )
+            << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 5 )
+            << QgsPoint( Qgis::WkbType::PointM, 3, 4, 0, 0 ) );
 
   cc.removeCurve( 1 );
 
   //add curve with z, no m to m compound curve
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 8 ) << QgsPoint( Qgis::WkbType::PointZ, 3, 4, 9 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 2, 3, 8 )
+                << QgsPoint( Qgis::WkbType::PointZ, 3, 4, 9 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( !cc.is3D() );
@@ -446,12 +483,15 @@ void TestQgsCompoundCurve::addCurveWithMissingDimInAddedCurve()
   QCOMPARE( cc.wkbType(), Qgis::WkbType::CompoundCurveM );
 
   cc.points( pts );
-  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 5 ) << QgsPoint( Qgis::WkbType::PointM, 3, 4, 0, 0 ) );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 )
+            << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 5 )
+            << QgsPoint( Qgis::WkbType::PointM, 3, 4, 0, 0 ) );
 
   cc.removeCurve( 1 );
 
   //add curve with zm to m compound curve
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 2, 3, 6, 8 ) << QgsPoint( Qgis::WkbType::PointZM, 3, 4, 7, 9 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 2, 3, 6, 8 )
+                << QgsPoint( Qgis::WkbType::PointZM, 3, 4, 7, 9 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( !cc.is3D() );
@@ -459,7 +499,9 @@ void TestQgsCompoundCurve::addCurveWithMissingDimInAddedCurve()
   QCOMPARE( cc.wkbType(), Qgis::WkbType::CompoundCurveM );
 
   cc.points( pts );
-  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 5 ) << QgsPoint( Qgis::WkbType::PointM, 3, 4, 0, 9 ) );
+  QCOMPARE( pts, QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 )
+            << QgsPoint( Qgis::WkbType::PointM, 2, 3, 0, 5 )
+            << QgsPoint( Qgis::WkbType::PointM, 3, 4, 0, 9 ) );
 
   cc.removeCurve( 1 );
 }
@@ -471,7 +513,8 @@ void TestQgsCompoundCurve::addCurveExtend()
 
   // try to extend empty compound curve
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) );
   cc.addCurve( cs.clone(), true );
 
   QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve (CircularString (1 2, 2 3, 3 4))" ) );
@@ -500,7 +543,8 @@ void TestQgsCompoundCurve::addCurveExtend()
 
   // try to extend with another linestring
   //should add to final part, with no duplicate points
-  ls.setPoints( QgsPointSequence() << QgsPoint( 12, 12 ) << QgsPoint( 13, 12 ) << QgsPoint( 14, 15 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 12, 12 )
+                << QgsPoint( 13, 12 ) << QgsPoint( 14, 15 ) );
   cc.addCurve( ls.clone(), true );
 
   QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve (CircularString (1 2, 2 3, 3 4),CircularString (6 6, 7 8),(10 8, 10 12, 11 13, 12 12, 13 12, 14 15))" ) );
@@ -524,11 +568,13 @@ void TestQgsCompoundCurve::removeCurve()
   QgsCompoundCurve cc;
 
   QgsCircularString cs1;
-  cs1.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) );
+  cs1.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                 << QgsPoint( 2, 3 ) << QgsPoint( 3, 4 ) );
   cc.addCurve( cs1.clone() );
 
   QgsCircularString cs2;
-  cs2.setPoints( QgsPointSequence() << QgsPoint( 3, 4 ) << QgsPoint( 4, 5 ) << QgsPoint( 3, 6 ) );
+  cs2.setPoints( QgsPointSequence() << QgsPoint( 3, 4 )
+                 << QgsPoint( 4, 5 ) << QgsPoint( 3, 6 ) );
   cc.addCurve( cs2.clone() );
 
   QgsLineString cs3;
@@ -539,20 +585,20 @@ void TestQgsCompoundCurve::removeCurve()
   cc.removeCurve( 3 );
 
   QCOMPARE( cc.nCurves(), 3 );
-  QCOMPARE( *dynamic_cast<const QgsCircularString *>( cc.curveAt( 0 ) ), cs1 );
-  QCOMPARE( *dynamic_cast<const QgsCircularString *>( cc.curveAt( 1 ) ), cs2 );
-  QCOMPARE( *dynamic_cast<const QgsLineString *>( cc.curveAt( 2 ) ), cs3 );
+  QCOMPARE( *dynamic_cast< const QgsCircularString *>( cc.curveAt( 0 ) ), cs1 );
+  QCOMPARE( *dynamic_cast< const QgsCircularString *>( cc.curveAt( 1 ) ), cs2 );
+  QCOMPARE( *dynamic_cast< const QgsLineString *>( cc.curveAt( 2 ) ), cs3 );
 
   cc.removeCurve( 1 );
 
   QCOMPARE( cc.nCurves(), 2 );
-  QCOMPARE( *dynamic_cast<const QgsCircularString *>( cc.curveAt( 0 ) ), cs1 );
-  QCOMPARE( *dynamic_cast<const QgsLineString *>( cc.curveAt( 1 ) ), cs3 );
+  QCOMPARE( *dynamic_cast< const QgsCircularString *>( cc.curveAt( 0 ) ), cs1 );
+  QCOMPARE( *dynamic_cast< const QgsLineString *>( cc.curveAt( 1 ) ), cs3 );
 
   cc.removeCurve( 0 );
 
   QCOMPARE( cc.nCurves(), 1 );
-  QCOMPARE( *dynamic_cast<const QgsLineString *>( cc.curveAt( 0 ) ), cs3 );
+  QCOMPARE( *dynamic_cast< const QgsLineString *>( cc.curveAt( 0 ) ), cs3 );
 
   cc.removeCurve( 0 );
 
@@ -563,7 +609,9 @@ void TestQgsCompoundCurve::removeCurve()
 void TestQgsCompoundCurve::assignment()
 {
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 1 ) << QgsPoint( Qgis::WkbType::PointM, 1 / 3.0, 4 / 3.0, 0, 2 ) << QgsPoint( Qgis::WkbType::PointM, 7, 8, 0, 3 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 1 )
+                << QgsPoint( Qgis::WkbType::PointM, 1 / 3.0, 4 / 3.0, 0, 2 )
+                << QgsPoint( Qgis::WkbType::PointM, 7, 8, 0, 3 ) );
   QgsCompoundCurve cc1;
   cc1.addCurve( ls.clone() );
 
@@ -572,7 +620,9 @@ void TestQgsCompoundCurve::assignment()
   QVERIFY( cc1 != cc2 );
 
   QgsLineString ls2;
-  ls2.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 3, 4, 5, 6 ) << QgsPoint( Qgis::WkbType::PointM, 1 / 2.0, 5 / 7.0, 1, 3 ) << QgsPoint( Qgis::WkbType::PointM, 2, 3, 5, 7 ) );
+  ls2.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 3, 4, 5, 6 )
+                 << QgsPoint( Qgis::WkbType::PointM, 1 / 2.0, 5 / 7.0, 1, 3 )
+                 << QgsPoint( Qgis::WkbType::PointM, 2, 3, 5, 7 ) );
   cc2.addCurve( ls2.clone() );
   QVERIFY( cc1 != cc2 );
 
@@ -585,7 +635,8 @@ void TestQgsCompoundCurve::clone()
   QgsCompoundCurve cc;
 
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 2 ) << QgsPoint( 11, 22 ) << QgsPoint( 1, 22 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 2 )
+                << QgsPoint( 11, 22 ) << QgsPoint( 1, 22 ) );
   cc.addCurve( cs.clone() );
 
   QgsLineString ls;
@@ -597,7 +648,10 @@ void TestQgsCompoundCurve::clone()
 
   //clone with Z/M
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 )
+                << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
   cc.addCurve( cs.clone() );
   ls.setPoints( QgsPointSequence() << QgsPoint( 1, 22, 31, 34 ) << QgsPoint( 23, 22, 42, 43 ) );
   cc.addCurve( ls.clone() );
@@ -622,17 +676,19 @@ void TestQgsCompoundCurve::gettersSetters()
   QgsCompoundCurve cc;
 
   // no crash!
-  ( void ) cc.xAt( -1 );
-  ( void ) cc.xAt( 1 );
-  ( void ) cc.yAt( -1 );
-  ( void ) cc.yAt( 1 );
-  ( void ) cc.zAt( -1 );
-  ( void ) cc.zAt( 1 );
-  ( void ) cc.mAt( -1 );
-  ( void ) cc.mAt( 1 );
+  ( void )cc.xAt( -1 );
+  ( void )cc.xAt( 1 );
+  ( void )cc.yAt( -1 );
+  ( void )cc.yAt( 1 );
+  ( void )cc.zAt( -1 );
+  ( void )cc.zAt( 1 );
+  ( void )cc.mAt( -1 );
+  ( void )cc.mAt( 1 );
 
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 23, 24 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 )
+                << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 23, 24 ) );
   cc.addCurve( cs.clone() );
 
   QCOMPARE( cc.xAt( 0 ), 1.0 );
@@ -656,7 +712,8 @@ void TestQgsCompoundCurve::gettersSetters()
   ( void ) cc.mAt( -1 ); //out of range
   ( void ) cc.mAt( 11 ); //out of range
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 23, 24 ) << QgsPoint( Qgis::WkbType::PointZM, 31, 22, 13, 14 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 23, 24 )
+                << QgsPoint( Qgis::WkbType::PointZM, 31, 22, 13, 14 ) );
   cc.addCurve( cs.clone() );
 
   QCOMPARE( cc.xAt( 0 ), 1.0 );
@@ -745,22 +802,26 @@ void TestQgsCompoundCurve::equality()
   QVERIFY( cc1 == cc2 );
   QVERIFY( !( cc1 != cc2 ) );
 
-  ls1.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 1 / 3.0, 4 / 3.0 ) );
+  ls1.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                 << QgsPoint( 1 / 3.0, 4 / 3.0 ) );
   cc1.addCurve( ls1.clone() );
 
   QVERIFY( !( cc1 == cc2 ) ); //different number of curves
   QVERIFY( cc1 != cc2 );
 
   QgsLineString ls2;
-  ls2.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2 / 6.0, 8 / 6.0 ) );
+  ls2.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                 << QgsPoint( 2 / 6.0, 8 / 6.0 ) );
   cc2.addCurve( ls2.clone() );
 
   QVERIFY( cc1 == cc2 ); //check non-integer equality
   QVERIFY( !( cc1 != cc2 ) );
 
-  ls1.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 1 / 3.0, 4 / 3.0 ) << QgsPoint( 7, 8 ) );
+  ls1.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                 << QgsPoint( 1 / 3.0, 4 / 3.0 ) << QgsPoint( 7, 8 ) );
   cc1.addCurve( ls1.clone() );
-  ls2.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 2 / 6.0, 8 / 6.0 ) << QgsPoint( 6, 9 ) );
+  ls2.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                 << QgsPoint( 2 / 6.0, 8 / 6.0 ) << QgsPoint( 6, 9 ) );
   cc2.addCurve( ls2.clone() );
 
   QVERIFY( !( cc1 == cc2 ) ); //different coordinates
@@ -771,29 +832,38 @@ void TestQgsCompoundCurve::equalityZM()
 {
   QgsCompoundCurve cc1;
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 1 / 3.0, 4 / 3.0 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                << QgsPoint( 1 / 3.0, 4 / 3.0 ) );
   cc1.addCurve( ls.clone() );
 
   QgsCompoundCurve cc2;
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 0 ) << QgsPoint( Qgis::WkbType::PointZ, 1 / 3.0, 4 / 3.0, 0 ) << QgsPoint( Qgis::WkbType::PointZ, 7, 8, 0 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 0 )
+                << QgsPoint( Qgis::WkbType::PointZ, 1 / 3.0, 4 / 3.0, 0 )
+                << QgsPoint( Qgis::WkbType::PointZ, 7, 8, 0 ) );
   cc2.addCurve( ls.clone() );
 
   QVERIFY( !( cc1 == cc2 ) ); //different dimension
   QVERIFY( cc1 != cc2 );
 
   QgsCompoundCurve cc3;
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 2 ) << QgsPoint( Qgis::WkbType::PointZ, 1 / 3.0, 4 / 3.0, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 7, 8, 4 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 2 )
+                << QgsPoint( Qgis::WkbType::PointZ, 1 / 3.0, 4 / 3.0, 3 )
+                << QgsPoint( Qgis::WkbType::PointZ, 7, 8, 4 ) );
   cc3.addCurve( ls.clone() );
 
   QVERIFY( !( cc2 == cc3 ) ); //different z coordinates
   QVERIFY( cc2 != cc3 );
 
   QgsCompoundCurve cc4;
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 1 ) << QgsPoint( Qgis::WkbType::PointM, 1 / 3.0, 4 / 3.0, 0, 2 ) << QgsPoint( Qgis::WkbType::PointM, 7, 8, 0, 3 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 1 )
+                << QgsPoint( Qgis::WkbType::PointM, 1 / 3.0, 4 / 3.0, 0, 2 )
+                << QgsPoint( Qgis::WkbType::PointM, 7, 8, 0, 3 ) );
   cc4.addCurve( ls.clone() );
 
   QgsCompoundCurve cc5;
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 11 ) << QgsPoint( Qgis::WkbType::PointM, 1 / 3.0, 4 / 3.0, 0, 12 ) << QgsPoint( Qgis::WkbType::PointM, 7, 8, 0, 13 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 11 )
+                << QgsPoint( Qgis::WkbType::PointM, 1 / 3.0, 4 / 3.0, 0, 12 )
+                << QgsPoint( Qgis::WkbType::PointM, 7, 8, 0, 13 ) );
   cc5.addCurve( ls.clone() );
 
   QVERIFY( !( cc4 == cc5 ) ); //different m values
@@ -807,11 +877,14 @@ void TestQgsCompoundCurve::pointAt()
   QgsCompoundCurve cc;
 
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 23, 24 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 )
+                << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 23, 24 ) );
   cc.addCurve( cs.clone() );
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 23, 24 ) << QgsPoint( Qgis::WkbType::PointZM, 31, 22, 13, 14 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 23, 24 )
+                << QgsPoint( Qgis::WkbType::PointZM, 31, 22, 13, 14 ) );
   cc.addCurve( ls.clone() );
 
   QgsPoint p;
@@ -845,7 +918,8 @@ void TestQgsCompoundCurve::insertVertex()
 
   //2d line
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( cc.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( 4.0, 7.0 ) ) );
@@ -923,9 +997,11 @@ void TestQgsCompoundCurve::insertVertexZM()
 {
   //insert 4d vertex in 4d line
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 )
+                << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 )
+                << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
   QgsCompoundCurve cc;
-  cc.addCurve( cs.clone() );
+  cc.addCurve( cs.clone( ) );
 
   QVERIFY( cc.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) ) );
   QCOMPARE( cc.numPoints(), 5 );
@@ -945,7 +1021,8 @@ void TestQgsCompoundCurve::insertVertexZM()
 
   //insert 4d vertex in 2d line
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( cc.insertVertex( QgsVertexId( 0, 0, 1 ), QgsPoint( Qgis::WkbType::PointZM, 2, 4, 103, 104 ) ) );
@@ -1109,7 +1186,8 @@ void TestQgsCompoundCurve::nextVertexZM()
   //CircularStringZ
   cc.clear();
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 13 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 )
+                << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 13 ) );
   cc.addCurve( cs.clone() );
 
   QgsVertexId vId( 0, 0, -1 );
@@ -1123,7 +1201,8 @@ void TestQgsCompoundCurve::nextVertexZM()
   QVERIFY( !cc.nextVertex( vId, pt ) );
 
   //CircularStringM
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 14 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 )
+                << QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 14 ) );
   cc.clear();
   cc.addCurve( cs.clone() );
 
@@ -1138,7 +1217,8 @@ void TestQgsCompoundCurve::nextVertexZM()
   QVERIFY( !cc.nextVertex( vId, pt ) );
 
   //CircularStringZM
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) );
   cc.clear();
   cc.addCurve( cs.clone() );
 
@@ -1160,14 +1240,15 @@ void TestQgsCompoundCurve::vertexAtPointAt()
   Qgis::VertexType type;
 
   cc.vertexAt( QgsVertexId( 0, 0, -10 ) ); //out of bounds, check for no crash
-  cc.vertexAt( QgsVertexId( 0, 0, 10 ) );  //out of bounds, check for no crash
+  cc.vertexAt( QgsVertexId( 0, 0, 10 ) ); //out of bounds, check for no crash
 
   QVERIFY( !cc.pointAt( -10, p, type ) );
   QVERIFY( !cc.pointAt( 10, p, type ) );
 
   //CircularString
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 )
+                << QgsPoint( 1, 22 ) );
   cc.addCurve( cs.clone() );
 
   cc.vertexAt( QgsVertexId( 0, 0, -10 ) );
@@ -1208,7 +1289,9 @@ void TestQgsCompoundCurve::vertexAtPointAtZM()
 
   //CircularStringZ
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 13 ) << QgsPoint( Qgis::WkbType::PointZ, 1, 22, 23 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 )
+                << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 13 )
+                << QgsPoint( Qgis::WkbType::PointZ, 1, 22, 23 ) );
   cc.addCurve( cs.clone() );
 
   QCOMPARE( cc.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) );
@@ -1229,7 +1312,9 @@ void TestQgsCompoundCurve::vertexAtPointAtZM()
 
   //CircularStringM
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 14 ) << QgsPoint( Qgis::WkbType::PointM, 1, 22, 0, 24 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 )
+                << QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 14 )
+                << QgsPoint( Qgis::WkbType::PointM, 1, 22, 0, 24 ) );
   cc.addCurve( cs.clone() );
 
   QCOMPARE( cc.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 4 ) );
@@ -1250,7 +1335,9 @@ void TestQgsCompoundCurve::vertexAtPointAtZM()
 
   //CircularStringZM
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 23, 24 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 )
+                << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 23, 24 ) );
   cc.addCurve( cs.clone() );
 
   QCOMPARE( cc.vertexAt( QgsVertexId( 0, 0, 0 ) ), QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) );
@@ -1280,7 +1367,8 @@ void TestQgsCompoundCurve::moveVertex()
 
   //valid line
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( cc.moveVertex( QgsVertexId( 0, 0, 0 ), QgsPoint( 6.0, 7.0 ) ) );
@@ -1313,7 +1401,9 @@ void TestQgsCompoundCurve::moveVertex()
   QCOMPARE( pt, QgsPoint( 26.0, 27.0 ) );
 
   //move 4d point in 4d line
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 )
+                << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 )
+                << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
   cc.clear();
   cc.addCurve( cs.clone() );
 
@@ -1329,7 +1419,8 @@ void TestQgsCompoundCurve::moveVertex()
   QCOMPARE( pt, QgsPoint( Qgis::WkbType::PointZM, 34, 35, 12, 13 ) );
 
   //move 4d point in 2d line
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) );
   cc.clear();
   cc.addCurve( cs.clone() );
 
@@ -1348,7 +1439,10 @@ void TestQgsCompoundCurve::deleteVertex()
 
   // valid line
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 ) << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 6, 7 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 )
+                << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 )
+                << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 6, 7 ) );
   cc.addCurve( cs.clone() );
 
   // out of range vertices
@@ -1369,7 +1463,8 @@ void TestQgsCompoundCurve::deleteVertex()
 
   // removing a middle vertex from a 3 point CircularString should create a LineString
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
+                << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
   cc.addCurve( cs.clone() );
 
   QCOMPARE( cc.numPoints(), 3 );
@@ -1380,7 +1475,8 @@ void TestQgsCompoundCurve::deleteVertex()
 
   // removing a start vertex from a 3 point CircularString should remove the whole curve
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
+                << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
   cc.addCurve( cs.clone() );
 
   QCOMPARE( cc.numPoints(), 3 );
@@ -1390,7 +1486,8 @@ void TestQgsCompoundCurve::deleteVertex()
 
   // removing an end vertex from a 3 point CircularString should remove the whole curve
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
+                << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
   cc.addCurve( cs.clone() );
 
   QCOMPARE( cc.numPoints(), 3 );
@@ -1400,17 +1497,21 @@ void TestQgsCompoundCurve::deleteVertex()
 
   // two lines, small line first and long line second
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 ) );
   cc.clear();
   cc.addCurve( ls.clone() );
 
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 21, 32, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 31, 42, 4, 5 ) );
+  ls.setPoints( QgsPointSequence()
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 )
+                << QgsPoint( Qgis::WkbType::PointZM, 21, 32, 4, 5 )
+                << QgsPoint( Qgis::WkbType::PointZM, 31, 42, 4, 5 ) );
   cc.addCurve( ls.clone() );
 
   QVERIFY( cc.deleteVertex( QgsVertexId( 0, 0, 1 ) ) );
   QCOMPARE( cc.nCurves(), 1 );
 
-  const QgsLineString *lsPtr = dynamic_cast<const QgsLineString *>( cc.curveAt( 0 ) );
+  const QgsLineString *lsPtr = dynamic_cast< const QgsLineString * >( cc.curveAt( 0 ) );
 
   QCOMPARE( lsPtr->numPoints(), 3 );
   QCOMPARE( lsPtr->startPoint(), QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) );
@@ -1419,24 +1520,28 @@ void TestQgsCompoundCurve::deleteVertex()
   //add vertex at the end of linestring
   QVERIFY( cc.insertVertex( QgsVertexId( 0, 0, 3 ), QgsPoint( Qgis::WkbType::PointZM, 35, 43, 4, 5 ) ) );
 
-  lsPtr = dynamic_cast<const QgsLineString *>( cc.curveAt( 0 ) );
+  lsPtr = dynamic_cast< const QgsLineString * >( cc.curveAt( 0 ) );
 
   QCOMPARE( lsPtr->numPoints(), 4 );
   QCOMPARE( lsPtr->startPoint(), QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) );
   QCOMPARE( lsPtr->endPoint(), QgsPoint( Qgis::WkbType::PointZM, 35, 43, 4, 5 ) );
 
   // two lines, long line first and small line second
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 21, 32, 4, 5 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 )
+                << QgsPoint( Qgis::WkbType::PointZM, 21, 32, 4, 5 ) );
   cc.clear();
   cc.addCurve( ls.clone() );
 
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 21, 32, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 31, 42, 4, 5 ) );
+  ls.setPoints( QgsPointSequence()
+                << QgsPoint( Qgis::WkbType::PointZM, 21, 32, 4, 5 )
+                << QgsPoint( Qgis::WkbType::PointZM, 31, 42, 4, 5 ) );
   cc.addCurve( ls.clone() );
 
   QVERIFY( cc.deleteVertex( QgsVertexId( 0, 0, 2 ) ) );
   QCOMPARE( cc.nCurves(), 1 );
 
-  lsPtr = dynamic_cast<const QgsLineString *>( cc.curveAt( 0 ) );
+  lsPtr = dynamic_cast< const QgsLineString * >( cc.curveAt( 0 ) );
 
   QCOMPARE( lsPtr->numPoints(), 3 );
   QCOMPARE( lsPtr->startPoint(), QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) );
@@ -1458,7 +1563,8 @@ void TestQgsCompoundCurve::deleteVertex()
 
 void TestQgsCompoundCurve::filterVertices()
 {
-  auto filter = []( const QgsPoint &point ) -> bool {
+  auto filter = []( const QgsPoint & point )-> bool
+  {
     return point.x() > 5;
   };
 
@@ -1466,14 +1572,20 @@ void TestQgsCompoundCurve::filterVertices()
   cc.filterVertices( filter ); //no crash
 
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) );
+  cs.setPoints( QgsPointSequence()   << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM )
+                << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM )
+                << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) );
   cc.addCurve( cs.clone() );
   cc.filterVertices( filter );
 
   QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve ZM (CircularString ZM (11 2 3 4, 11 12 13 14, 111 12 23 24))" ) );
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( 12, 111, 23, 24, Qgis::WkbType::PointZM ) << QgsPoint( 22, 122, 33, 34, Qgis::WkbType::PointZM ) << QgsPoint( 1, 111, 23, 24, Qgis::WkbType::PointZM ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 12, 111, 23, 24, Qgis::WkbType::PointZM )
+                << QgsPoint( 22, 122, 33, 34, Qgis::WkbType::PointZM )
+                << QgsPoint( 1, 111, 23, 24, Qgis::WkbType::PointZM ) );
   cc.addCurve( ls.clone() );
   cc.filterVertices( filter );
 
@@ -1487,27 +1599,34 @@ void TestQgsCompoundCurve::removeDuplicateNodes()
   QVERIFY( !cc.removeDuplicateNodes() );
 
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2 )
+                << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( !cc.removeDuplicateNodes() );
   QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve (CircularString (11 2, 11 12, 111 12))" ) );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 11, 2 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2 )
+                << QgsPoint( 11, 12 ) << QgsPoint( 11, 2 ) );
   cc.clear();
   cc.addCurve( cs.clone() );
 
   QVERIFY( !cc.removeDuplicateNodes() );
   QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve (CircularString (11 2, 11 12, 11 2))" ) );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 10, 3 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 9, 3 ) << QgsPoint( 11, 2 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2 )
+                << QgsPoint( 10, 3 ) << QgsPoint( 11.01, 1.99 )
+                << QgsPoint( 9, 3 ) << QgsPoint( 11, 2 ) );
   cc.clear();
   cc.addCurve( cs.clone() );
 
   QVERIFY( !cc.removeDuplicateNodes( 0.02 ) );
   QCOMPARE( cc.asWkt( 2 ), QStringLiteral( "CompoundCurve (CircularString (11 2, 10 3, 11.01 1.99, 9 3, 11 2))" ) );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 11.02, 2.01 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) << QgsPoint( 111.01, 11.99 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2 )
+                << QgsPoint( 11.01, 1.99 ) << QgsPoint( 11.02, 2.01 )
+                << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 )
+                << QgsPoint( 111.01, 11.99 ) );
   cc.clear();
   cc.addCurve( cs.clone() );
 
@@ -1519,7 +1638,8 @@ void TestQgsCompoundCurve::removeDuplicateNodes()
 
   // with tiny segment
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( 111.01, 11.99 ) << QgsPoint( 111, 12 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 111.01, 11.99 )
+                << QgsPoint( 111, 12 ) );
   cc.addCurve( ls.clone() );
 
   QVERIFY( !cc.removeDuplicateNodes() );
@@ -1535,7 +1655,8 @@ void TestQgsCompoundCurve::removeDuplicateNodes()
 
   // ensure continuity
   cc.clear();
-  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 111.01, 11.99 ) << QgsPoint( 111, 12 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 1 )
+                << QgsPoint( 111.01, 11.99 ) << QgsPoint( 111, 12 ) );
   cc.addCurve( ls.clone() );
   ls.setPoints( QgsPointSequence() << QgsPoint( 111, 12 ) << QgsPoint( 31, 33 ) );
   cc.addCurve( ls.clone() );
@@ -1591,9 +1712,11 @@ void TestQgsCompoundCurve::addZValue()
 
   //linestring with m
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 )
+                << QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 4 ) );
   cc.addCurve( cs.clone() );
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 21, 32, 0, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 11, 12, 0, 4 )
+                << QgsPoint( Qgis::WkbType::PointM, 21, 32, 0, 4 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( cc.addZValue( 5 ) );
@@ -1652,9 +1775,11 @@ void TestQgsCompoundCurve::addMValue()
 
   //linestring with z
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 )
+                << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 4 ) );
   cc.addCurve( cs.clone() );
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 4 ) << QgsPoint( Qgis::WkbType::PointZ, 21, 32, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 4 )
+                << QgsPoint( Qgis::WkbType::PointZ, 21, 32, 4 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( cc.addMValue( 5 ) );
@@ -1710,9 +1835,11 @@ void TestQgsCompoundCurve::dropZValue()
 
   //linestring with m
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 3, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 3, 4 ) );
   cc.addCurve( cs.clone() );
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 3, 4 ) );
+  cs.setPoints( QgsPointSequence() <<  QgsPoint( Qgis::WkbType::PointZM, 11, 12, 3, 4 )
+                << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 3, 4 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( cc.dropZValue() );
@@ -1767,10 +1894,12 @@ void TestQgsCompoundCurve::dropMValue()
   QVERIFY( !cc.dropMValue() ); //already dropped
 
   //linestring with z
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 3, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 3, 4 ) );
   cc.clear();
   cc.addCurve( cs.clone() );
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 3, 4 ) );
+  cs.setPoints( QgsPointSequence() <<  QgsPoint( Qgis::WkbType::PointZM, 11, 12, 3, 4 )
+                << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 3, 4 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( cc.dropMValue() );
@@ -1795,19 +1924,22 @@ void TestQgsCompoundCurve::isRing()
   QVERIFY( !cc.isRing() );
 
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 2 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                << QgsPoint( 11, 12 ) << QgsPoint( 1, 2 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( !cc.isRing() ); //<4 points
 
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) << QgsPoint( 31, 32 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 )
+                << QgsPoint( 21, 22 ) << QgsPoint( 31, 32 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( !cc.isRing() ); //not closed
 
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) << QgsPoint( 1, 2 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 )
+                << QgsPoint( 21, 22 ) << QgsPoint( 1, 2 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( cc.isRing() );
@@ -1818,12 +1950,12 @@ void TestQgsCompoundCurve::isRing()
 
   QVERIFY( !cc.isRing() );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 12 ) << QgsPoint( 21, 22 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 12 )  << QgsPoint( 21, 22 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( !cc.isRing() );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 21, 22 ) << QgsPoint( 1, 2 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 21, 22 )  << QgsPoint( 1, 2 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( cc.isRing() );
@@ -1833,11 +1965,14 @@ void TestQgsCompoundCurve::startPointEndPoint()
 {
   QgsCompoundCurve cc;
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 )
+                << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 )
+                << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
   cc.addCurve( cs.clone() );
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) << QgsPoint( Qgis::WkbType::PointZM, 25, 10, 6, 7 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 )
+                << QgsPoint( Qgis::WkbType::PointZM, 25, 10, 6, 7 ) );
   cc.addCurve( ls.clone() );
 
   QCOMPARE( cc.startPoint(), QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 ) );
@@ -1853,7 +1988,7 @@ void TestQgsCompoundCurve::orientation()
 {
   QgsCompoundCurve cc;
 
-  ( void ) cc.orientation(); // no crash
+  ( void )cc.orientation(); // no crash
 
   cc.fromWkt( QStringLiteral( "CompoundCurve( ( 0 0, 0 1), CircularString (0 1, 1 1, 1 0), (1 0, 0 0))" ) );
   QCOMPARE( cc.orientation(), Qgis::AngularDirection::Clockwise );
@@ -1868,11 +2003,14 @@ void TestQgsCompoundCurve::length()
   QCOMPARE( cc.length(), 0.0 );
 
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 )
+                << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 )
+                << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
   cc.addCurve( cs.clone() );
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) << QgsPoint( Qgis::WkbType::PointZM, 25, 10, 6, 7 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 )
+                << QgsPoint( Qgis::WkbType::PointZM, 25, 10, 6, 7 ) );
   cc.addCurve( ls.clone() );
 
   QGSCOMPARENEAR( cc.length(), 36.1433, 0.001 );
@@ -1890,14 +2028,16 @@ void TestQgsCompoundCurve::centroid()
   QCOMPARE( cc.centroid(), QgsPoint( 5, 10 ) );
 
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 20, 10 ) << QgsPoint( 2, 9 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
+                << QgsPoint( 20, 10 ) << QgsPoint( 2, 9 ) );
   cc.addCurve( cs.clone() );
   QgsPoint centroid = cc.centroid();
 
   QGSCOMPARENEAR( centroid.x(), 7.333, 0.001 );
   QGSCOMPARENEAR( centroid.y(), 6.333, 0.001 );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 2, 9 ) << QgsPoint( 12, 9 ) << QgsPoint( 15, 19 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 2, 9 )
+                << QgsPoint( 12, 9 ) << QgsPoint( 15, 19 ) );
   cc.addCurve( cs.clone() );
   centroid = cc.centroid();
 
@@ -1911,8 +2051,8 @@ void TestQgsCompoundCurve::closestSegment()
   QgsVertexId vId;
 
   int leftOf = 0;
-  QgsPoint p( 0, 0 );                                     // reset all coords to zero
-  ( void ) cc.closestSegment( QgsPoint( 1, 2 ), p, vId ); //empty line, just want no crash
+  QgsPoint p( 0, 0 ); // reset all coords to zero
+  ( void )cc.closestSegment( QgsPoint( 1, 2 ), p, vId ); //empty line, just want no crash
 
   QgsCircularString cs;
   cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) );
@@ -1921,7 +2061,8 @@ void TestQgsCompoundCurve::closestSegment()
   QVERIFY( cc.closestSegment( QgsPoint( 5, 10 ), p, vId ) < 0 );
 
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 7, 12 ) << QgsPoint( 5, 15 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10 )
+                << QgsPoint( 7, 12 ) << QgsPoint( 5, 15 ) );
   cc.addCurve( cs.clone() );
 
   QGSCOMPARENEAR( cc.closestSegment( QgsPoint( 4, 11 ), p, vId, &leftOf ), 2.0, 0.0001 );
@@ -1929,7 +2070,7 @@ void TestQgsCompoundCurve::closestSegment()
   QCOMPARE( vId, QgsVertexId( 0, 0, 1 ) );
   QCOMPARE( leftOf, -1 );
 
-  QGSCOMPARENEAR( cc.closestSegment( QgsPoint( 8, 11 ), p, vId, &leftOf ), 1.583512, 0.0001 );
+  QGSCOMPARENEAR( cc.closestSegment( QgsPoint( 8, 11 ), p, vId, &leftOf ),  1.583512, 0.0001 );
   QGSCOMPARENEAR( p.x(), 6.84, 0.01 );
   QGSCOMPARENEAR( p.y(), 11.49, 0.01 );
   QCOMPARE( vId, QgsVertexId( 0, 0, 1 ) );
@@ -2018,14 +2159,16 @@ void TestQgsCompoundCurve::sumUpArea()
   QCOMPARE( area, 1.0 );
 
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 2, 0 ) << QgsPoint( 2, 2 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 2, 0 )
+                << QgsPoint( 2, 2 ) );
   cc.addCurve( cs.clone() );
   cc.sumUpArea( area );
 
   QGSCOMPARENEAR( area, 4.141593, 0.0001 );
 
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 2, 0 ) << QgsPoint( 2, 2 ) << QgsPoint( 0, 2 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 2, 0 )
+                << QgsPoint( 2, 2 ) << QgsPoint( 0, 2 ) );
   cc.addCurve( cs.clone() );
   cc.sumUpArea( area );
 
@@ -2033,7 +2176,8 @@ void TestQgsCompoundCurve::sumUpArea()
 
   // full circle
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 4, 0 ) << QgsPoint( 0, 0 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
+                << QgsPoint( 4, 0 ) << QgsPoint( 0, 0 ) );
   cc.addCurve( cs.clone() );
   area = 0.0;
   cc.sumUpArea( area );
@@ -2047,7 +2191,8 @@ void TestQgsCompoundCurve::sumUpArea()
   cc.addCurve( ll1 );
 
   QgsLineString *ll2 = new QgsLineString();
-  ll2->setPoints( QgsPointSequence() << QgsPoint( 0, 2 ) << QgsPoint( -1, 0 ) << QgsPoint( 0, -1 ) );
+  ll2->setPoints( QgsPointSequence() << QgsPoint( 0, 2 )
+                  << QgsPoint( -1, 0 ) << QgsPoint( 0, -1 ) );
   cc.addCurve( ll2 );
 
   QgsLineString *ll3 = new QgsLineString();
@@ -2058,7 +2203,9 @@ void TestQgsCompoundCurve::sumUpArea()
   cc.sumUpArea( ccArea );
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) << QgsPoint( -1, 0 ) << QgsPoint( 0, -1 ) << QgsPoint( 1, 1 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 1 )
+                << QgsPoint( 0, 2 ) <<  QgsPoint( -1, 0 )
+                << QgsPoint( 0, -1 ) << QgsPoint( 1, 1 ) );
   double lsArea = 0.0;
   ls.sumUpArea( lsArea );
 
@@ -2117,23 +2264,24 @@ void TestQgsCompoundCurve::angle()
   QgsCompoundCurve cc;
   QgsCircularString cs;
 
-  ( void ) cc.vertexAngle( QgsVertexId() );          //just want no crash
-  ( void ) cc.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash
+  ( void )cc.vertexAngle( QgsVertexId() ); //just want no crash
+  ( void )cc.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash
 
   cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) );
   cc.addCurve( cs.clone() );
 
-  ( void ) cc.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash, any answer is meaningless
+  ( void )cc.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash, any answer is meaningless
 
   cc.clear();
   cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) );
   cc.addCurve( cs.clone() );
 
-  ( void ) cc.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash, any answer is meaningless
-  ( void ) cc.vertexAngle( QgsVertexId( 0, 0, 1 ) ); //just want no crash, any answer is meaningless
+  ( void )cc.vertexAngle( QgsVertexId( 0, 0, 0 ) ); //just want no crash, any answer is meaningless
+  ( void )cc.vertexAngle( QgsVertexId( 0, 0, 1 ) ); //just want no crash, any answer is meaningless
 
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
+                << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) );
   cc.addCurve( cs.clone() );
 
   QGSCOMPARENEAR( cc.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 );
@@ -2141,17 +2289,19 @@ void TestQgsCompoundCurve::angle()
   QGSCOMPARENEAR( cc.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 4.712389, 0.0001 );
 
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 2 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 2 )
+                << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
   cc.addCurve( cs.clone() );
 
   QGSCOMPARENEAR( cc.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 );
   QGSCOMPARENEAR( cc.vertexAngle( QgsVertexId( 0, 0, 1 ) ), 3.141593, 0.0001 );
   QGSCOMPARENEAR( cc.vertexAngle( QgsVertexId( 0, 0, 2 ) ), 4.712389, 0.0001 );
 
-  ( void ) cc.vertexAngle( QgsVertexId( 0, 0, 20 ) ); // no crash
+  ( void )cc.vertexAngle( QgsVertexId( 0, 0, 20 ) ); // no crash
 
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 2 ) << QgsPoint( -1, 3 ) << QgsPoint( 0, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 )
+                << QgsPoint( 0, 2 ) << QgsPoint( -1, 3 ) << QgsPoint( 0, 4 ) );
   cc.addCurve( cs.clone() );
 
   QGSCOMPARENEAR( cc.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 1.5708, 0.0001 );
@@ -2161,7 +2311,8 @@ void TestQgsCompoundCurve::angle()
   QGSCOMPARENEAR( cc.vertexAngle( QgsVertexId( 0, 0, 4 ) ), 1.5708, 0.0001 );
 
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 4 ) << QgsPoint( -1, 3 ) << QgsPoint( 0, 2 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 4 ) << QgsPoint( -1, 3 )
+                << QgsPoint( 0, 2 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
   cc.addCurve( cs.clone() );
 
   QGSCOMPARENEAR( cc.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 4.712389, 0.0001 );
@@ -2180,7 +2331,8 @@ void TestQgsCompoundCurve::angle()
 
   //closed circular string
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 0, 0 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 )
+                << QgsPoint( 1, 0 ) << QgsPoint( 0, 0 ) );
   cc.addCurve( cs.clone() );
 
   QGSCOMPARENEAR( cc.vertexAngle( QgsVertexId( 0, 0, 0 ) ), 0, 0.00001 );
@@ -2195,43 +2347,47 @@ void TestQgsCompoundCurve::boundary()
   QVERIFY( !cc.boundary() );
 
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 )
+                << QgsPoint( 1, 1 ) );
   cc.addCurve( cs.clone() );
 
   QgsAbstractGeometry *boundary = cc.boundary();
-  QgsMultiPoint *mpBoundary = dynamic_cast<QgsMultiPoint *>( boundary );
+  QgsMultiPoint *mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
 
   QVERIFY( mpBoundary );
-  QCOMPARE( static_cast<QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
-  QCOMPARE( static_cast<QgsPoint *>( mpBoundary->geometryN( 0 ) )->y(), 0.0 );
-  QCOMPARE( static_cast<QgsPoint *>( mpBoundary->geometryN( 1 ) )->x(), 1.0 );
-  QCOMPARE( static_cast<QgsPoint *>( mpBoundary->geometryN( 1 ) )->y(), 1.0 );
+  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
+  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->y(), 0.0 );
+  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 1 ) )->x(), 1.0 );
+  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 1 ) )->y(), 1.0 );
 
   delete boundary;
 
   // closed string = no boundary
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 0, 0 ) << QgsPoint( 1, 0 )
+                << QgsPoint( 1, 1 ) << QgsPoint( 0, 0 ) );
   cc.addCurve( cs.clone() );
   QVERIFY( !cc.boundary() );
 
   //boundary with z
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 10 ) << QgsPoint( Qgis::WkbType::PointZ, 1, 0, 15 ) << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 20 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 0, 0, 10 )
+                << QgsPoint( Qgis::WkbType::PointZ, 1, 0, 15 )
+                << QgsPoint( Qgis::WkbType::PointZ, 1, 1, 20 ) );
   cc.addCurve( cs.clone() );
 
   boundary = cc.boundary();
-  mpBoundary = dynamic_cast<QgsMultiPoint *>( boundary );
+  mpBoundary = dynamic_cast< QgsMultiPoint * >( boundary );
 
   QVERIFY( mpBoundary );
   QCOMPARE( mpBoundary->geometryN( 0 )->wkbType(), Qgis::WkbType::PointZ );
-  QCOMPARE( static_cast<QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
-  QCOMPARE( static_cast<QgsPoint *>( mpBoundary->geometryN( 0 ) )->y(), 0.0 );
-  QCOMPARE( static_cast<QgsPoint *>( mpBoundary->geometryN( 0 ) )->z(), 10.0 );
+  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->x(), 0.0 );
+  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->y(), 0.0 );
+  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 0 ) )->z(), 10.0 );
   QCOMPARE( mpBoundary->geometryN( 1 )->wkbType(), Qgis::WkbType::PointZ );
-  QCOMPARE( static_cast<QgsPoint *>( mpBoundary->geometryN( 1 ) )->x(), 1.0 );
-  QCOMPARE( static_cast<QgsPoint *>( mpBoundary->geometryN( 1 ) )->y(), 1.0 );
-  QCOMPARE( static_cast<QgsPoint *>( mpBoundary->geometryN( 1 ) )->z(), 20.0 );
+  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 1 ) )->x(), 1.0 );
+  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 1 ) )->y(), 1.0 );
+  QCOMPARE( static_cast< QgsPoint *>( mpBoundary->geometryN( 1 ) )->z(), 20.0 );
 
   delete boundary;
 }
@@ -2250,7 +2406,8 @@ void TestQgsCompoundCurve::boundingBox()
   QCOMPARE( cc.boundingBox(), QgsRectangle( 5, 10, 10, 15 ) );
 
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( -5, -10 ) << QgsPoint( -6, -10 ) << QgsPoint( -5.5, -9 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( -5, -10 )
+                << QgsPoint( -6, -10 ) << QgsPoint( -5.5, -9 ) );
   cc.addCurve( cs.clone() );
 
   QCOMPARE( cc.boundingBox(), QgsRectangle( -6.125, -10.25, -5, -9 ) );
@@ -2304,7 +2461,7 @@ void TestQgsCompoundCurve::boundingBoxIntersects()
 
   QVERIFY( cc.boundingBox().isNull() );
   QVERIFY( !cc.boundingBoxIntersects( ( QgsRectangle( 0, 0, 0, 0 ) ) ) );
-  QVERIFY( !cc.boundingBoxIntersects( ( QgsRectangle() ) ) );
+  QVERIFY( !cc.boundingBoxIntersects( ( QgsRectangle( ) ) ) );
 
   cs.setPoints( QgsPointSequence() << QgsPoint( 5, 10 ) << QgsPoint( 10, 15 ) );
   cc.addCurve( cs.clone() );
@@ -2314,7 +2471,8 @@ void TestQgsCompoundCurve::boundingBoxIntersects()
 
   cc.clear();
   QVERIFY( cc.boundingBox().isNull() );
-  cs.setPoints( QgsPointSequence() << QgsPoint( -5, -10 ) << QgsPoint( -6, -10 ) << QgsPoint( -5.5, -9 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( -5, -10 )
+                << QgsPoint( -6, -10 ) << QgsPoint( -5.5, -9 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( cc.boundingBoxIntersects( QgsRectangle( -5, -9.5, -2, 2 ) ) );
@@ -2356,7 +2514,7 @@ void TestQgsCompoundCurve::interpolate()
 {
   QgsCompoundCurve cc;
 
-  std::unique_ptr<QgsPoint> interpolateResult( cc.interpolatePoint( 1 ) ); // no crash
+  std::unique_ptr< QgsPoint > interpolateResult( cc.interpolatePoint( 1 ) ); // no crash
   QVERIFY( !interpolateResult.get() );
 
   cc.fromWkt( QStringLiteral( "CompoundCurve ZM( ( 5 0 -1 -2, 10 0 1 2 ), CircularString ZM (10 0 1 2, 11 1 3 4, 12 0 13 14))" ) );
@@ -2405,14 +2563,17 @@ void TestQgsCompoundCurve::swapXy()
   cc.swapXy(); //no crash
 
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM )
+                << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) );
   cc.addCurve( cs.clone() );
   cc.swapXy();
 
   QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve ZM (CircularString ZM (2 11 3 4, 12 11 13 14, 12 111 23 24))" ) );
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( 12, 111, 23, 24, Qgis::WkbType::PointZM ) << QgsPoint( 22, 122, 33, 34, Qgis::WkbType::PointZM ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 12, 111, 23, 24, Qgis::WkbType::PointZM )
+                << QgsPoint( 22, 122, 33, 34, Qgis::WkbType::PointZM ) );
   cc.addCurve( ls.clone() );
   cc.swapXy();
 
@@ -2422,23 +2583,27 @@ void TestQgsCompoundCurve::swapXy()
 void TestQgsCompoundCurve::reversed()
 {
   QgsCompoundCurve cc;
-  std::unique_ptr<QgsCompoundCurve> reversed( cc.reversed() );
+  std::unique_ptr< QgsCompoundCurve > reversed( cc.reversed() );
 
   QVERIFY( reversed->isEmpty() );
 
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 )
+                << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 ) );
   cc.addCurve( cs.clone() );
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 ) << QgsPoint( Qgis::WkbType::PointZM, 23, 32, 7, 8 ) );
+  ls.setPoints( QgsPointSequence()
+                << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 )
+                << QgsPoint( Qgis::WkbType::PointZM, 23, 32, 7, 8 ) );
   cc.addCurve( ls.clone() );
 
   reversed.reset( cc.reversed() );
 
   QCOMPARE( reversed->numPoints(), 4 );
-  QVERIFY( dynamic_cast<const QgsLineString *>( reversed->curveAt( 0 ) ) );
-  QVERIFY( dynamic_cast<const QgsCircularString *>( reversed->curveAt( 1 ) ) );
+  QVERIFY( dynamic_cast< const QgsLineString * >( reversed->curveAt( 0 ) ) );
+  QVERIFY( dynamic_cast< const QgsCircularString * >( reversed->curveAt( 1 ) ) );
   QCOMPARE( reversed->wkbType(), Qgis::WkbType::CompoundCurveZM );
   QVERIFY( reversed->is3D() );
   QVERIFY( reversed->isMeasure() );
@@ -2464,7 +2629,8 @@ void TestQgsCompoundCurve::isClosed()
 
   QVERIFY( !cc.isClosed() );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 2 ) << QgsPoint( 11, 22 ) << QgsPoint( 1, 22 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 2 )
+                << QgsPoint( 11, 22 ) << QgsPoint( 1, 22 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( !cc.isClosed() );
@@ -2477,7 +2643,10 @@ void TestQgsCompoundCurve::isClosed()
 
   //test that m values aren't considered when testing for closedness
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 ) << QgsPoint( Qgis::WkbType::PointM, 11, 2, 0, 4 ) << QgsPoint( Qgis::WkbType::PointM, 11, 22, 0, 5 ) << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 6 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 3 )
+                << QgsPoint( Qgis::WkbType::PointM, 11, 2, 0, 4 )
+                << QgsPoint( Qgis::WkbType::PointM, 11, 22, 0, 5 )
+                << QgsPoint( Qgis::WkbType::PointM, 1, 2, 0, 6 ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( cc.isClosed() );
@@ -2491,7 +2660,8 @@ void TestQgsCompoundCurve::close()
   cc.close();
   QVERIFY( cc.isEmpty() );
 
-  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 )
+                << QgsPoint( 1, 22 ) );
   cc.addCurve( ls.clone() );
 
   QCOMPARE( cc.numPoints(), 3 );
@@ -2515,7 +2685,8 @@ void TestQgsCompoundCurve::close()
 void TestQgsCompoundCurve::transformVertices()
 {
   // transform vertices
-  auto transform = []( const QgsPoint &point ) -> QgsPoint {
+  auto transform = []( const QgsPoint & point )-> QgsPoint
+  {
     return QgsPoint( point.x() + 2, point.y() + 3, point.z() + 4, point.m() + 5 );
   };
 
@@ -2523,14 +2694,20 @@ void TestQgsCompoundCurve::transformVertices()
   cc.transformVertices( transform ); //no crash
 
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM )
+                << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM )
+                << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) );
   cc.addCurve( cs.clone() );
   cc.transformVertices( transform );
 
   QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve ZM (CircularString ZM (3 5 7 9, 13 5 7 9, 13 15 17 19, 113 15 27 29, 3 5 7 9))" ) );
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( 12, 111, 23, 24, Qgis::WkbType::PointZM ) << QgsPoint( 22, 122, 33, 34, Qgis::WkbType::PointZM ) << QgsPoint( 1, 111, 23, 24, Qgis::WkbType::PointZM ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 12, 111, 23, 24, Qgis::WkbType::PointZM )
+                << QgsPoint( 22, 122, 33, 34, Qgis::WkbType::PointZM )
+                << QgsPoint( 1, 111, 23, 24, Qgis::WkbType::PointZM ) );
   cc.addCurve( ls.clone() );
   cc.transformVertices( transform );
 
@@ -2547,14 +2724,20 @@ void TestQgsCompoundCurve::transformWithClass()
   QVERIFY( cc.transform( &transformer ) );
 
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM ) << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM ) << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM ) << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 2, 3, 4, Qgis::WkbType::PointZM )
+                << QgsPoint( 11, 12, 13, 14, Qgis::WkbType::PointZM )
+                << QgsPoint( 111, 12, 23, 24, Qgis::WkbType::PointZM )
+                << QgsPoint( 1, 2, 3, 4, Qgis::WkbType::PointZM ) );
   cc.addCurve( cs.clone() );
 
   QVERIFY( cc.transform( &transformer ) );
   QCOMPARE( cc.asWkt(), QStringLiteral( "CompoundCurve ZM (CircularString ZM (3 16 8 3, 33 16 8 3, 33 26 18 13, 333 26 28 23, 3 16 8 3))" ) );
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( 12, 111, 23, 24, Qgis::WkbType::PointZM ) << QgsPoint( 22, 122, 33, 34, Qgis::WkbType::PointZM ) << QgsPoint( 1, 111, 23, 24, Qgis::WkbType::PointZM ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 12, 111, 23, 24, Qgis::WkbType::PointZM )
+                << QgsPoint( 22, 122, 33, 34, Qgis::WkbType::PointZM )
+                << QgsPoint( 1, 111, 23, 24, Qgis::WkbType::PointZM ) );
   cc.addCurve( ls.clone() );
 
   QVERIFY( cc.transform( &transformer ) );
@@ -2562,6 +2745,7 @@ void TestQgsCompoundCurve::transformWithClass()
 
   TestFailTransformer failTransformer;
   QVERIFY( !cc.transform( &failTransformer ) );
+
 }
 
 void TestQgsCompoundCurve::crsTransform()
@@ -2572,12 +2756,14 @@ void TestQgsCompoundCurve::crsTransform()
 
   // 2d CRS transform
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 6374985, -3626584 ) << QgsPoint( 6474985, -3526584 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 6374985, -3626584 )
+                << QgsPoint( 6474985, -3526584 ) );
   QgsCompoundCurve cc;
   cc.addCurve( cs.clone() );
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( 6474985, -3526584 ) << QgsPoint( 6504985, -3526584 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 6474985, -3526584 )
+                << QgsPoint( 6504985, -3526584 ) );
   cc.addCurve( ls.clone() );
 
   cc.transform( tr, Qgis::TransformDirection::Forward );
@@ -2602,12 +2788,14 @@ void TestQgsCompoundCurve::crs3dTransformAndReverse()
 
   //3d CRS transform
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 6374985, -3626584, 1, 2 ) << QgsPoint( Qgis::WkbType::PointZM, 6474985, -3526584, 3, 4 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 6374985, -3626584, 1, 2 )
+                << QgsPoint( Qgis::WkbType::PointZM, 6474985, -3526584, 3, 4 ) );
   QgsCompoundCurve cc;
   cc.addCurve( cs.clone() );
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( 6474985, -3526584, 3, 4 ) << QgsPoint( 6504985, -3526584, 5, 6 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( 6474985, -3526584, 3, 4 )
+                << QgsPoint( 6504985, -3526584, 5, 6 ) );
   cc.addCurve( ls.clone() );
 
   cc.transform( tr, Qgis::TransformDirection::Forward );
@@ -2677,6 +2865,7 @@ void TestQgsCompoundCurve::crs3dTransformAndReverse()
   cc.pointAt( 2, pt, v );
   QGSCOMPARENEAR( pt.z(), 5, 0.001 );
 #endif
+
 }
 
 void TestQgsCompoundCurve::QTransformation()
@@ -2684,12 +2873,14 @@ void TestQgsCompoundCurve::QTransformation()
   QTransform qtr = QTransform::fromScale( 2, 3 );
 
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) );
   QgsCompoundCurve cc;
   cc.addCurve( cs.clone() );
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 21, 13, 13, 14 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 13, 14 )
+                << QgsPoint( Qgis::WkbType::PointZM, 21, 13, 13, 14 ) );
   cc.addCurve( ls.clone() );
   cc.transform( qtr, 5, 2, 4, 3 );
 
@@ -2716,11 +2907,14 @@ void TestQgsCompoundCurve::coordinateSequence()
   QVERIFY( coords.at( 0 ).at( 0 ).isEmpty() );
 
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 2, 3 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 12, 4, 5 )
+                << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 ) );
   cc.addCurve( cs.clone() );
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 ) << QgsPoint( Qgis::WkbType::PointZM, 31, 32, 16, 17 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 21, 22, 6, 7 ) <<
+                QgsPoint( Qgis::WkbType::PointZM, 31, 32, 16, 17 ) );
   cc.addCurve( ls.clone() );
 
   coords = cc.coordinateSequence();
@@ -2743,11 +2937,14 @@ void TestQgsCompoundCurve::points()
   QVERIFY( points.isEmpty() );
 
   QgsCircularString cl;
-  cl.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
+  cl.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 )
+                << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 )
+                << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
   cc.addCurve( cl.clone() );
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) << QgsPoint( Qgis::WkbType::PointZM, 25, 10, 6, 7 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 )
+                << QgsPoint( Qgis::WkbType::PointZM, 25, 10, 6, 7 ) );
   cc.addCurve( ls.clone() );
   cc.points( points );
 
@@ -2762,10 +2959,11 @@ void TestQgsCompoundCurve::segmentize()
 {
   QgsCompoundCurve cc;
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 10 ) << QgsPoint( 21, 2 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                << QgsPoint( 11, 10 ) << QgsPoint( 21, 2 ) );
   cc.addCurve( cs.clone() );
 
-  std::unique_ptr<QgsLineString> segmentized( static_cast<QgsLineString *>( cc.segmentize() ) );
+  std::unique_ptr<QgsLineString> segmentized( static_cast< QgsLineString * >( cc.segmentize() ) );
 
   QCOMPARE( segmentized->numPoints(), 156 );
   QCOMPARE( segmentized->vertexCount(), 156 );
@@ -2780,10 +2978,12 @@ void TestQgsCompoundCurve::segmentize()
 
   //segmentize with Z/M
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 10, 11, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 21, 2, 21, 24 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 10, 11, 14 )
+                << QgsPoint( Qgis::WkbType::PointZM, 21, 2, 21, 24 ) );
   cc.addCurve( cs.clone() );
 
-  segmentized.reset( static_cast<QgsLineString *>( cc.segmentize() ) );
+  segmentized.reset( static_cast< QgsLineString * >( cc.segmentize() ) );
 
   QCOMPARE( segmentized->numPoints(), 156 );
   QCOMPARE( segmentized->vertexCount(), 156 );
@@ -2797,7 +2997,7 @@ void TestQgsCompoundCurve::segmentize()
 
   //segmentize an empty line
   cc.clear();
-  segmentized.reset( static_cast<QgsLineString *>( cc.segmentize() ) );
+  segmentized.reset( static_cast< QgsLineString * >( cc.segmentize() ) );
 
   QVERIFY( segmentized->isEmpty() );
   QCOMPARE( segmentized->numPoints(), 0 );
@@ -2809,7 +3009,7 @@ void TestQgsCompoundCurve::segmentize()
 void TestQgsCompoundCurve::substring()
 {
   QgsCompoundCurve cc;
-  std::unique_ptr<QgsCompoundCurve> substringResult( cc.curveSubstring( 1, 2 ) ); // no crash
+  std::unique_ptr< QgsCompoundCurve > substringResult( cc.curveSubstring( 1, 2 ) ); // no crash
 
   QVERIFY( substringResult.get() );
   QVERIFY( substringResult->isEmpty() );
@@ -2817,7 +3017,8 @@ void TestQgsCompoundCurve::substring()
   cc.fromWkt( QStringLiteral( "CompoundCurve ZM( ( 5 0 -1 -2, 10 0 1 2 ), CircularString ZM (10 0 1 2, 11 1 3 4, 12 0 13 14))" ) );
   substringResult.reset( cc.curveSubstring( 0, 0 ) );
 
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve ZM ((5 0 -1 -2, 5 0 -1 -2))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ),
+            QStringLiteral( "CompoundCurve ZM ((5 0 -1 -2, 5 0 -1 -2))" ) );
 
   substringResult.reset( cc.curveSubstring( -1, -0.1 ) );
   QVERIFY( substringResult->isEmpty() );
@@ -2826,37 +3027,46 @@ void TestQgsCompoundCurve::substring()
   QVERIFY( substringResult->isEmpty() );
 
   substringResult.reset( cc.curveSubstring( -1, 1 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve ZM ((5 0 -1 -2, 6 0 -0.6 -1.2))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ),
+            QStringLiteral( "CompoundCurve ZM ((5 0 -1 -2, 6 0 -0.6 -1.2))" ) );
 
   substringResult.reset( cc.curveSubstring( 1, -1 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve ZM ((6 0 -0.6 -1.2, 6 0 -0.6 -1.2))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ),
+            QStringLiteral( "CompoundCurve ZM ((6 0 -0.6 -1.2, 6 0 -0.6 -1.2))" ) );
 
   substringResult.reset( cc.curveSubstring( -1, 10000 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve ZM ((5 0 -1 -2, 10 0 1 2),CircularString ZM (10 0 1 2, 11 1 3 4, 12 0 13 14))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ),
+            QStringLiteral( "CompoundCurve ZM ((5 0 -1 -2, 10 0 1 2),CircularString ZM (10 0 1 2, 11 1 3 4, 12 0 13 14))" ) );
 
   substringResult.reset( cc.curveSubstring( 1, 10000 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve ZM ((6 0 -0.6 -1.2, 10 0 1 2),CircularString ZM (10 0 1 2, 11 1 3 4, 12 0 13 14))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ),
+            QStringLiteral( "CompoundCurve ZM ((6 0 -0.6 -1.2, 10 0 1 2),CircularString ZM (10 0 1 2, 11 1 3 4, 12 0 13 14))" ) );
 
   substringResult.reset( cc.curveSubstring( 1, 7 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve ZM ((6 0 -0.6 -1.2, 10 0 1 2),CircularString ZM (10 0 1 2, 10.46 0.84 2.27 3.27, 11.42 0.91 5.73 6.73))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ),
+            QStringLiteral( "CompoundCurve ZM ((6 0 -0.6 -1.2, 10 0 1 2),CircularString ZM (10 0 1 2, 10.46 0.84 2.27 3.27, 11.42 0.91 5.73 6.73))" ) );
 
   substringResult.reset( cc.curveSubstring( 1, 1.5 ) );
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve ZM ((6 0 -0.6 -1.2, 6.5 0 -0.4 -0.8))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ),
+            QStringLiteral( "CompoundCurve ZM ((6 0 -0.6 -1.2, 6.5 0 -0.4 -0.8))" ) );
 
   cc.fromWkt( QStringLiteral( "CompoundCurve Z( ( 5 0 -1, 10 0 1 ), CircularString Z (10 0 1, 11 1 3, 12 0 13))" ) );
   substringResult.reset( cc.curveSubstring( 1, 7 ) );
 
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve Z ((6 0 -0.6, 10 0 1),CircularString Z (10 0 1, 10.46 0.84 2.27, 11.42 0.91 5.73))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ),
+            QStringLiteral( "CompoundCurve Z ((6 0 -0.6, 10 0 1),CircularString Z (10 0 1, 10.46 0.84 2.27, 11.42 0.91 5.73))" ) );
 
   cc.fromWkt( QStringLiteral( "CompoundCurve M( ( 5 0 -1, 10 0 1 ), CircularString M (10 0 1, 11 1 3, 12 0 13))" ) );
   substringResult.reset( cc.curveSubstring( 1, 7 ) );
 
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve M ((6 0 -0.6, 10 0 1),CircularString M (10 0 1, 10.46 0.84 2.27, 11.42 0.91 5.73))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ),
+            QStringLiteral( "CompoundCurve M ((6 0 -0.6, 10 0 1),CircularString M (10 0 1, 10.46 0.84 2.27, 11.42 0.91 5.73))" ) );
 
   cc.fromWkt( QStringLiteral( "CompoundCurve( ( 5 0, 10 0 ), CircularString (10 0, 11 1, 12 0))" ) );
   substringResult.reset( cc.curveSubstring( 1, 7 ) );
 
-  QCOMPARE( substringResult->asWkt( 2 ), QStringLiteral( "CompoundCurve ((6 0, 10 0),CircularString (10 0, 10.46 0.84, 11.42 0.91))" ) );
+  QCOMPARE( substringResult->asWkt( 2 ),
+            QStringLiteral( "CompoundCurve ((6 0, 10 0),CircularString (10 0, 10.46 0.84, 11.42 0.91))" ) );
 }
 
 void TestQgsCompoundCurve::convertTo()
@@ -2908,15 +3118,18 @@ void TestQgsCompoundCurve::convertTo()
 void TestQgsCompoundCurve::curveToLine()
 {
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 ) << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 1, 2, 3 )
+                << QgsPoint( Qgis::WkbType::PointZM, 1, 10, 4, 5 )
+                << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) );
   QgsCompoundCurve cc;
   cc.addCurve( cs.clone() );
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 ) << QgsPoint( Qgis::WkbType::PointZM, 25, 10, 6, 7 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 15, 10, 6, 7 )
+                << QgsPoint( Qgis::WkbType::PointZM, 25, 10, 6, 7 ) );
   cc.addCurve( ls.clone() );
 
-  std::unique_ptr<QgsLineString> segmentized( static_cast<QgsLineString *>( cc.curveToLine() ) );
+  std::unique_ptr<QgsLineString> segmentized( static_cast< QgsLineString * >( cc.curveToLine() ) );
 
   QCOMPARE( segmentized->numPoints(), 182 );
   QCOMPARE( segmentized->wkbType(), Qgis::WkbType::LineStringZM );
@@ -2930,9 +3143,10 @@ void TestQgsCompoundCurve::toCurveType()
 {
   QgsCompoundCurve cc;
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( 1, 2 )
+                << QgsPoint( 11, 12 ) << QgsPoint( 1, 22 ) );
   cc.addCurve( cs.clone() );
-  std::unique_ptr<QgsCurve> curve( cc.toCurveType() );
+  std::unique_ptr< QgsCurve > curve( cc.toCurveType() );
 
   QCOMPARE( curve->wkbType(), Qgis::WkbType::CompoundCurve );
   QCOMPARE( curve->numPoints(), 3 );
@@ -2956,7 +3170,10 @@ void TestQgsCompoundCurve::toCurveType()
 void TestQgsCompoundCurve::asQPolygonF()
 {
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 )
+                << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
   QgsCompoundCurve cc;
   cc.addCurve( cs.clone() );
 
@@ -2976,7 +3193,10 @@ void TestQgsCompoundCurve::asQPolygonF()
 void TestQgsCompoundCurve::toFromWKB()
 {
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 )
+                << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
   QgsCompoundCurve cc;
   cc.addCurve( cs.clone() );
 
@@ -2998,10 +3218,10 @@ void TestQgsCompoundCurve::toFromWKB()
   QVERIFY( cc.isMeasure() );
   QCOMPARE( cc.nCurves(), 1 );
 
-  QCOMPARE( qgis::down_cast<const QgsCircularString *>( cc.curveAt( 0 ) )->pointN( 0 ), cs.pointN( 0 ) );
-  QCOMPARE( qgis::down_cast<const QgsCircularString *>( cc.curveAt( 0 ) )->pointN( 1 ), cs.pointN( 1 ) );
-  QCOMPARE( qgis::down_cast<const QgsCircularString *>( cc.curveAt( 0 ) )->pointN( 2 ), cs.pointN( 2 ) );
-  QCOMPARE( qgis::down_cast<const QgsCircularString *>( cc.curveAt( 0 ) )->pointN( 3 ), cs.pointN( 3 ) );
+  QCOMPARE( qgis::down_cast< const QgsCircularString *>( cc.curveAt( 0 ) )->pointN( 0 ), cs.pointN( 0 ) );
+  QCOMPARE( qgis::down_cast< const QgsCircularString *>( cc.curveAt( 0 ) )->pointN( 1 ), cs.pointN( 1 ) );
+  QCOMPARE( qgis::down_cast< const QgsCircularString *>( cc.curveAt( 0 ) )->pointN( 2 ), cs.pointN( 2 ) );
+  QCOMPARE( qgis::down_cast< const QgsCircularString *>( cc.curveAt( 0 ) )->pointN( 3 ), cs.pointN( 3 ) );
 
   //bad WKB - check for no crash
   cc.clear();
@@ -3021,7 +3241,10 @@ void TestQgsCompoundCurve::toFromWKB()
 void TestQgsCompoundCurve::toFromWKT()
 {
   QgsCircularString cs;
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 ) << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 ) << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZM, 1, 2, 3, 4 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 2, 11, 14 )
+                << QgsPoint( Qgis::WkbType::PointZM, 11, 22, 21, 24 )
+                << QgsPoint( Qgis::WkbType::PointZM, 1, 22, 31, 34 ) );
   QgsCompoundCurve cc;
   cc.addCurve( cs.clone() );
 
@@ -3036,10 +3259,10 @@ void TestQgsCompoundCurve::toFromWKT()
   QVERIFY( cc.is3D() );
   QVERIFY( cc.isMeasure() );
 
-  QCOMPARE( qgis::down_cast<const QgsCircularString *>( cc.curveAt( 0 ) )->pointN( 0 ), cs.pointN( 0 ) );
-  QCOMPARE( qgis::down_cast<const QgsCircularString *>( cc.curveAt( 0 ) )->pointN( 1 ), cs.pointN( 1 ) );
-  QCOMPARE( qgis::down_cast<const QgsCircularString *>( cc.curveAt( 0 ) )->pointN( 2 ), cs.pointN( 2 ) );
-  QCOMPARE( qgis::down_cast<const QgsCircularString *>( cc.curveAt( 0 ) )->pointN( 3 ), cs.pointN( 3 ) );
+  QCOMPARE( qgis::down_cast< const QgsCircularString *>( cc.curveAt( 0 ) )->pointN( 0 ), cs.pointN( 0 ) );
+  QCOMPARE( qgis::down_cast< const QgsCircularString *>( cc.curveAt( 0 ) )->pointN( 1 ), cs.pointN( 1 ) );
+  QCOMPARE( qgis::down_cast< const QgsCircularString *>( cc.curveAt( 0 ) )->pointN( 2 ), cs.pointN( 2 ) );
+  QCOMPARE( qgis::down_cast< const QgsCircularString *>( cc.curveAt( 0 ) )->pointN( 3 ), cs.pointN( 3 ) );
 
   //bad WKT
   QVERIFY( !cc.fromWkt( "Polygon()" ) );
@@ -3056,19 +3279,24 @@ void TestQgsCompoundCurve::exportImport()
   //asGML2
   QgsCompoundCurve exportCurve;
   QgsCircularString exportLine;
-  exportLine.setPoints( QgsPointSequence() << QgsPoint( 31, 32 ) << QgsPoint( 41, 42 ) << QgsPoint( 51, 52 ) );
+  exportLine.setPoints( QgsPointSequence() << QgsPoint( 31, 32 )
+                        << QgsPoint( 41, 42 ) << QgsPoint( 51, 52 ) );
   exportCurve.addCurve( exportLine.clone() );
 
   QgsLineString exportLineString;
-  exportLineString.setPoints( QgsPointSequence() << QgsPoint( 51, 52 ) << QgsPoint( 61, 62 ) );
+  exportLineString.setPoints( QgsPointSequence() << QgsPoint( 51, 52 )
+                              << QgsPoint( 61, 62 ) );
   exportCurve.addCurve( exportLineString.clone() );
 
   QgsCircularString exportLineFloat;
-  exportLineFloat.setPoints( QgsPointSequence() << QgsPoint( 1 / 3.0, 2 / 3.0 ) << QgsPoint( 1 + 1 / 3.0, 1 + 2 / 3.0 ) << QgsPoint( 2 + 1 / 3.0, 2 + 2 / 3.0 ) );
+  exportLineFloat.setPoints( QgsPointSequence() << QgsPoint( 1 / 3.0, 2 / 3.0 )
+                             << QgsPoint( 1 + 1 / 3.0, 1 + 2 / 3.0 )
+                             << QgsPoint( 2 + 1 / 3.0, 2 + 2 / 3.0 ) );
   QgsCompoundCurve exportCurveFloat;
   exportCurveFloat.addCurve( exportLineFloat.clone() );
   QgsLineString exportLineStringFloat;
-  exportLineStringFloat.setPoints( QgsPointSequence() << QgsPoint( 2 + 1 / 3.0, 2 + 2 / 3.0 ) << QgsPoint( 3 + 1 / 3.0, 3 + 2 / 3.0 ) );
+  exportLineStringFloat.setPoints( QgsPointSequence() << QgsPoint( 2 + 1 / 3.0, 2 + 2 / 3.0 )
+                                   << QgsPoint( 3 + 1 / 3.0, 3 + 2 / 3.0 ) );
   exportCurveFloat.addCurve( exportLineStringFloat.clone() );
 
   QDomDocument doc( QStringLiteral( "gml" ) );
@@ -3123,7 +3351,9 @@ void TestQgsCompoundCurve::addToPainterPath()
 
   QVERIFY( pPath.isEmpty() );
 
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 13 ) << QgsPoint( Qgis::WkbType::PointZ, 21, 2, 3 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 )
+                << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 13 )
+                << QgsPoint( Qgis::WkbType::PointZ, 21, 2, 3 ) );
   cc.addCurve( cs.clone() );
   cc.addToPainterPath( pPath );
 
@@ -3132,7 +3362,8 @@ void TestQgsCompoundCurve::addToPainterPath()
   QVERIFY( !pPath.isEmpty() );
 
   QgsLineString ls;
-  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 21, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 31, 12, 3 ) );
+  ls.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 21, 2, 3 )
+                << QgsPoint( Qgis::WkbType::PointZ, 31, 12, 3 ) );
   cc.addCurve( ls.clone() );
   pPath = QPainterPath();
   cc.addToPainterPath( pPath );
@@ -3142,7 +3373,8 @@ void TestQgsCompoundCurve::addToPainterPath()
 
   // even number of points - should still work
   cc.clear();
-  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 ) << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 13 ) );
+  cs.setPoints( QgsPointSequence() << QgsPoint( Qgis::WkbType::PointZ, 1, 2, 3 )
+                << QgsPoint( Qgis::WkbType::PointZ, 11, 12, 13 ) );
   cc.addCurve( cs.clone() );
 
   pPath = QPainterPath();
@@ -3175,7 +3407,7 @@ void TestQgsCompoundCurve::compoundCurveCondense()
   QFETCH( QString, expected );
 
   QgsGeometry g = QgsGeometry::fromWkt( curve );
-  qgsgeometry_cast<QgsCompoundCurve *>( g.get() )->condenseCurves();
+  qgsgeometry_cast< QgsCompoundCurve * >( g.get() )->condenseCurves();
 
   QCOMPARE( g.asWkt(), expected );
 }

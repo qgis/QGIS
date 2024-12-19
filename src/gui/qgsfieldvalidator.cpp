@@ -18,7 +18,6 @@
  ***************************************************************************/
 
 #include "qgsfieldvalidator.h"
-#include "moc_qgsfieldvalidator.cpp"
 
 #include <QValidator>
 #include <QRegularExpression>
@@ -96,7 +95,7 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, co
     }
     break;
 
-    case QMetaType::Type::LongLong:
+    case QMetaType::Type::LongLong :
       mValidator = new QgsLongLongValidator( parent );
       break;
 
@@ -115,7 +114,13 @@ QgsFieldValidator::~QgsFieldValidator()
 QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
 {
   // empty values are considered NULL for numbers and dates and are acceptable
-  if ( s.isEmpty() && ( mField.type() == QMetaType::Type::Double || mField.type() == QMetaType::Type::Int || mField.type() == QMetaType::Type::LongLong || mField.type() == QMetaType::Type::QDate ) )
+  if ( s.isEmpty() &&
+       ( mField.type() == QMetaType::Type::Double
+         || mField.type() == QMetaType::Type::Int
+         || mField.type() == QMetaType::Type::LongLong
+         || mField.type() == QMetaType::Type::QDate
+       )
+     )
   {
     return Acceptable;
   }
@@ -162,8 +167,8 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
   {
     QgsDebugError(
       QStringLiteral( "unsupported type %1 (%2) for validation" )
-        .arg( mField.type() )
-        .arg( mField.typeName() )
+      .arg( mField.type() )
+      .arg( mField.typeName() )
     );
     return Invalid;
   }

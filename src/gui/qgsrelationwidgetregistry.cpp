@@ -76,7 +76,7 @@ QMap<QString, QgsAbstractRelationEditorWidgetFactory *> QgsRelationWidgetRegistr
 
 QgsAbstractRelationEditorWidget *QgsRelationWidgetRegistry::create( const QString &widgetType, const QVariantMap &config, QWidget *parent ) const
 {
-  if ( !mRelationWidgetFactories.contains( widgetType ) )
+  if ( ! mRelationWidgetFactories.contains( widgetType ) )
     return nullptr;
 
   return mRelationWidgetFactories.value( widgetType )->create( config, parent );
@@ -84,7 +84,7 @@ QgsAbstractRelationEditorWidget *QgsRelationWidgetRegistry::create( const QStrin
 
 QgsAbstractRelationEditorConfigWidget *QgsRelationWidgetRegistry::createConfigWidget( const QString &widgetType, const QgsRelation &relation, QWidget *parent ) const
 {
-  if ( !mRelationWidgetFactories.contains( widgetType ) )
+  if ( ! mRelationWidgetFactories.contains( widgetType ) )
     return nullptr;
 
   return mRelationWidgetFactories.value( widgetType )->configWidget( relation, parent );

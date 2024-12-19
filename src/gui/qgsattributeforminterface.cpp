@@ -35,6 +35,7 @@ void QgsAttributeFormInterface::initForm()
 
 void QgsAttributeFormInterface::featureChanged()
 {
+
 }
 
 QgsAttributeForm *QgsAttributeFormInterface::form()

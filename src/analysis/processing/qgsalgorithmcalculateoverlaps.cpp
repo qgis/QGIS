@@ -50,11 +50,12 @@ QString QgsCalculateVectorOverlapsAlgorithm::groupId() const
 
 void QgsCalculateVectorOverlapsAlgorithm::initAlgorithm( const QVariantMap & )
 {
-  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorPolygon ) ) );
+  addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ), QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorPolygon ) ) );
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Overlay layers" ), Qgis::ProcessingSourceType::VectorPolygon ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Overlap" ) ) );
 
-  std::unique_ptr<QgsProcessingParameterNumber> gridSize = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "GRID_SIZE" ), QObject::tr( "Grid size" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
+  std::unique_ptr< QgsProcessingParameterNumber > gridSize = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "GRID_SIZE" ),
+      QObject::tr( "Grid size" ), Qgis::ProcessingNumberParameterType::Double, QVariant(), true, 0 );
   gridSize->setFlags( gridSize->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( gridSize.release() );
 }
@@ -90,15 +91,15 @@ bool QgsCalculateVectorOverlapsAlgorithm::prepareAlgorithm( const QVariantMap &p
 
   mOutputFields = mSource->fields();
 
-  const QList<QgsMapLayer *> layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
+  const QList< QgsMapLayer * > layers = parameterAsLayerList( parameters, QStringLiteral( "LAYERS" ), context );
   mOverlayerSources.reserve( layers.size() );
   mLayerNames.reserve( layers.size() );
   for ( QgsMapLayer *layer : layers )
   {
-    if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+    if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer ) )
     {
       mLayerNames << layer->name();
-      mOverlayerSources.emplace_back( std::make_unique<QgsVectorLayerFeatureSource>( vl ) );
+      mOverlayerSources.emplace_back( std::make_unique< QgsVectorLayerFeatureSource >( vl ) );
       mOutputFields.append( QgsField( QStringLiteral( "%1_area" ).arg( vl->name() ), QMetaType::Type::Double ) );
       mOutputFields.append( QgsField( QStringLiteral( "%1_pc" ).arg( vl->name() ), QMetaType::Type::Double ) );
     }
@@ -114,13 +115,14 @@ bool QgsCalculateVectorOverlapsAlgorithm::prepareAlgorithm( const QVariantMap &p
 QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QString destId;
-  std::unique_ptr<QgsFeatureSink> sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, destId, mOutputFields, mOutputType, mCrs ) );
+  std::unique_ptr< QgsFeatureSink > sink( parameterAsSink( parameters, QStringLiteral( "OUTPUT" ), context, destId, mOutputFields,
+                                          mOutputType, mCrs ) );
   if ( !sink )
     throw QgsProcessingException( invalidSinkError( parameters, QStringLiteral( "OUTPUT" ) ) );
 
   // build a spatial index for each constraint layer for speed. We also store input constraint geometries here,
   // to avoid refetching and projecting them later
-  QList<QgsSpatialIndex> spatialIndices;
+  QList< QgsSpatialIndex > spatialIndices;
   spatialIndices.reserve( mLayerNames.size() );
   auto nameIt = mLayerNames.constBegin();
   for ( auto sourceIt = mOverlayerSources.begin(); sourceIt != mOverlayerSources.end(); ++sourceIt, ++nameIt )
@@ -165,19 +167,19 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
       }
 
       // prepare for lots of intersection tests (for speed)
-      std::unique_ptr<QgsGeometryEngine> bufferGeomEngine( QgsGeometry::createGeometryEngine( inputGeom.constGet() ) );
+      std::unique_ptr< QgsGeometryEngine > bufferGeomEngine( QgsGeometry::createGeometryEngine( inputGeom.constGet() ) );
       bufferGeomEngine->prepareGeometry();
 
       // calculate overlap attributes
       auto spatialIteratorIt = spatialIndices.begin();
-      for ( auto it = mOverlayerSources.begin(); it != mOverlayerSources.end(); ++it, ++spatialIteratorIt )
+      for ( auto it = mOverlayerSources.begin(); it != mOverlayerSources.end(); ++ it, ++spatialIteratorIt )
       {
         if ( feedback->isCanceled() )
           break;
 
         const QgsSpatialIndex &index = *spatialIteratorIt;
         const QList<QgsFeatureId> matches = index.intersects( inputGeom.boundingBox() );
-        QVector<QgsGeometry> intersectingGeoms;
+        QVector< QgsGeometry > intersectingGeoms;
         intersectingGeoms.reserve( matches.count() );
         for ( const QgsFeatureId match : matches )
         {
@@ -219,7 +221,7 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
     else
     {
       // input feature has no geometry
-      for ( auto it = mOverlayerSources.begin(); it != mOverlayerSources.end(); ++it )
+      for ( auto it = mOverlayerSources.begin(); it != mOverlayerSources.end(); ++ it )
       {
         outAttributes.append( QVariant() );
         outAttributes.append( QVariant() );
@@ -233,8 +235,6 @@ QVariantMap QgsCalculateVectorOverlapsAlgorithm::processAlgorithm( const QVarian
     i++;
     feedback->setProgress( i * step );
   }
-
-  sink->finalize();
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), destId );

@@ -26,7 +26,9 @@
 
 namespace QgsWms
 {
-  void writeGetPrint( QgsServerInterface *serverIface, const QgsProject *project, const QgsWmsRequest &request, QgsServerResponse &response )
+  void writeGetPrint( QgsServerInterface *serverIface, const QgsProject *project,
+                      const QgsWmsRequest &request,
+                      QgsServerResponse &response )
   {
     const QgsWmsParameters parameters = request.wmsParameters();
 
@@ -48,7 +50,8 @@ namespace QgsWms
         contentType = QStringLiteral( "application/pdf" );
         break;
       default:
-        throw QgsBadRequestException( QgsServiceException::OGC_InvalidFormat, parameters[QgsWmsParameter::FORMAT] );
+        throw QgsBadRequestException( QgsServiceException::OGC_InvalidFormat,
+                                      parameters[QgsWmsParameter::FORMAT] );
         break;
     }
 

@@ -50,7 +50,10 @@ static double fmod_with_tolerance( double num, double denom )
 
 static QgsRectangle transform_to_extent( const double *geotransform, double xSize, double ySize )
 {
-  QgsRectangle r( geotransform[0], geotransform[3], geotransform[0] + geotransform[1] * xSize, geotransform[3] + geotransform[5] * ySize );
+  QgsRectangle r( geotransform[0],
+                  geotransform[3],
+                  geotransform[0] + geotransform[1] * xSize,
+                  geotransform[3] + geotransform[5] * ySize );
   r.normalize();
   return r;
 }
@@ -69,7 +72,7 @@ static int CPL_STDCALL _progress( double dfComplete, const char *pszMessage, voi
 static CPLErr rescalePreWarpChunkProcessor( void *pKern, void *pArg )
 {
   GDALWarpKernel *kern = ( GDALWarpKernel * ) pKern;
-  const double cellsize = ( ( double * ) pArg )[0];
+  const double cellsize = ( ( double * )pArg )[0];
 
   for ( int nBand = 0; nBand < kern->nBands; ++nBand )
   {
@@ -89,7 +92,7 @@ static CPLErr rescalePreWarpChunkProcessor( void *pKern, void *pArg )
 static CPLErr rescalePostWarpChunkProcessor( void *pKern, void *pArg )
 {
   GDALWarpKernel *kern = ( GDALWarpKernel * ) pKern;
-  const double cellsize = ( ( double * ) pArg )[1];
+  const double cellsize = ( ( double * )pArg )[1];
 
   for ( int nBand = 0; nBand < kern->nBands; ++nBand )
   {
@@ -105,6 +108,7 @@ static CPLErr rescalePostWarpChunkProcessor( void *pKern, void *pArg )
   }
   return CE_None;
 }
+
 
 
 QgsAlignRaster::QgsAlignRaster()
@@ -130,12 +134,14 @@ void QgsAlignRaster::setClipExtent( double xmin, double ymin, double xmax, doubl
 
 void QgsAlignRaster::setClipExtent( const QgsRectangle &extent )
 {
-  setClipExtent( extent.xMinimum(), extent.yMinimum(), extent.xMaximum(), extent.yMaximum() );
+  setClipExtent( extent.xMinimum(), extent.yMinimum(),
+                 extent.xMaximum(), extent.yMaximum() );
 }
 
 QgsRectangle QgsAlignRaster::clipExtent() const
 {
-  return QgsRectangle( mClipExtent[0], mClipExtent[1], mClipExtent[2], mClipExtent[3] );
+  return QgsRectangle( mClipExtent[0], mClipExtent[1],
+                       mClipExtent[2], mClipExtent[3] );
 }
 
 
@@ -259,7 +265,9 @@ bool QgsAlignRaster::checkInputParameters()
       mErrorMessage = QString( "Failed to get suggested warp output.\n\n"
                                "File:\n%1\n\n"
                                "Source WKT:\n%2\n\nDestination WKT:\n%3" )
-                        .arg( r.inputFilename, info.mCrsWkt, mCrsWkt );
+                      .arg( r.inputFilename,
+                            info.mCrsWkt,
+                            mCrsWkt );
       return false;
     }
 
@@ -276,14 +284,10 @@ bool QgsAlignRaster::checkInputParameters()
     else
     {
       // use intersection of rects
-      if ( extent.xMinimum() > finalExtent[0] )
-        finalExtent[0] = extent.xMinimum();
-      if ( extent.yMinimum() > finalExtent[1] )
-        finalExtent[1] = extent.yMinimum();
-      if ( extent.xMaximum() < finalExtent[2] )
-        finalExtent[2] = extent.xMaximum();
-      if ( extent.yMaximum() < finalExtent[3] )
-        finalExtent[3] = extent.yMaximum();
+      if ( extent.xMinimum() > finalExtent[0] ) finalExtent[0] = extent.xMinimum();
+      if ( extent.yMinimum() > finalExtent[1] ) finalExtent[1] = extent.yMinimum();
+      if ( extent.xMaximum() < finalExtent[2] ) finalExtent[2] = extent.xMaximum();
+      if ( extent.yMaximum() < finalExtent[3] ) finalExtent[3] = extent.yMaximum();
     }
   }
 
@@ -298,14 +302,10 @@ bool QgsAlignRaster::checkInputParameters()
     const double clipY0 = floor_with_tolerance( ( mClipExtent[1] - mGridOffsetY ) / mCellSizeY ) * mCellSizeY + mGridOffsetY;
     const double clipX1 = ceil_with_tolerance( ( mClipExtent[2] - clipX0 ) / mCellSizeX ) * mCellSizeX + clipX0;
     const double clipY1 = ceil_with_tolerance( ( mClipExtent[3] - clipY0 ) / mCellSizeY ) * mCellSizeY + clipY0;
-    if ( clipX0 > finalExtent[0] )
-      finalExtent[0] = clipX0;
-    if ( clipY0 > finalExtent[1] )
-      finalExtent[1] = clipY0;
-    if ( clipX1 < finalExtent[2] )
-      finalExtent[2] = clipX1;
-    if ( clipY1 < finalExtent[3] )
-      finalExtent[3] = clipY1;
+    if ( clipX0 > finalExtent[0] ) finalExtent[0] = clipX0;
+    if ( clipY0 > finalExtent[1] ) finalExtent[1] = clipY0;
+    if ( clipX1 < finalExtent[2] ) finalExtent[2] = clipX1;
+    if ( clipY1 < finalExtent[3] ) finalExtent[3] = clipY1;
   }
 
   // align to grid - shrink the rect if necessary
@@ -437,7 +437,8 @@ bool QgsAlignRaster::createAndWarp( const Item &raster )
   const GDALDataType eDT = GDALGetRasterDataType( GDALGetRasterBand( hSrcDS.get(), 1 ) );
 
   // Create the output file.
-  const gdal::dataset_unique_ptr hDstDS( GDALCreate( hDriver, raster.outputFilename.toUtf8().constData(), mXSize, mYSize, bandCount, eDT, nullptr ) );
+  const gdal::dataset_unique_ptr hDstDS( GDALCreate( hDriver, raster.outputFilename.toUtf8().constData(), mXSize, mYSize,
+                                         bandCount, eDT, nullptr ) );
   if ( !hDstDS )
   {
     mErrorMessage = QObject::tr( "Unable to create output file: %1" ).arg( raster.outputFilename );
@@ -469,21 +470,24 @@ bool QgsAlignRaster::createAndWarp( const Item &raster )
     psWarpOptions->panDstBands[i] = i + 1;
   }
 
-  psWarpOptions->eResampleAlg = static_cast<GDALResampleAlg>( raster.resampleMethod );
+  psWarpOptions->eResampleAlg = static_cast< GDALResampleAlg >( raster.resampleMethod );
 
   // our progress function
   psWarpOptions->pfnProgress = _progress;
   psWarpOptions->pProgressArg = this;
 
   // Establish reprojection transformer.
-  psWarpOptions->pTransformerArg = GDALCreateGenImgProjTransformer( hSrcDS.get(), GDALGetProjectionRef( hSrcDS.get() ), hDstDS.get(), GDALGetProjectionRef( hDstDS.get() ), FALSE, 0.0, 1 );
+  psWarpOptions->pTransformerArg =
+    GDALCreateGenImgProjTransformer( hSrcDS.get(), GDALGetProjectionRef( hSrcDS.get() ),
+                                     hDstDS.get(), GDALGetProjectionRef( hDstDS.get() ),
+                                     FALSE, 0.0, 1 );
   psWarpOptions->pfnTransformer = GDALGenImgProjTransform;
 
   double rescaleArg[2];
   if ( raster.rescaleValues )
   {
     rescaleArg[0] = raster.srcCellSizeInDestCRS; // source cell size
-    rescaleArg[1] = mCellSizeX * mCellSizeY;     // destination cell size
+    rescaleArg[1] = mCellSizeX * mCellSizeY;  // destination cell size
     psWarpOptions->pfnPreWarpChunkProcessor = rescalePreWarpChunkProcessor;
     psWarpOptions->pfnPostWarpChunkProcessor = rescalePostWarpChunkProcessor;
     psWarpOptions->pPreWarpProcessorArg = rescaleArg;
@@ -516,7 +520,9 @@ bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo &info
   double extents[4];
   int nPixels = 0, nLines = 0;
   CPLErr eErr;
-  eErr = GDALSuggestedWarpOutput2( info.mDataset.get(), GDALGenImgProjTransform, hTransformArg, adfDstGeoTransform, &nPixels, &nLines, extents, 0 );
+  eErr = GDALSuggestedWarpOutput2( info.mDataset.get(),
+                                   GDALGenImgProjTransform, hTransformArg,
+                                   adfDstGeoTransform, &nPixels, &nLines, extents, 0 );
   GDALDestroyGenImgProjTransformer( hTransformArg );
 
   if ( eErr != CE_None )
@@ -529,7 +535,8 @@ bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo &info
   if ( cellSize )
     *cellSize = cs;
   if ( gridOffset )
-    *gridOffset = QPointF( fmod_with_tolerance( adfDstGeoTransform[0], cs.width() ), fmod_with_tolerance( adfDstGeoTransform[3], cs.height() ) );
+    *gridOffset = QPointF( fmod_with_tolerance( adfDstGeoTransform[0], cs.width() ),
+                           fmod_with_tolerance( adfDstGeoTransform[3], cs.height() ) );
   return true;
 }
 
@@ -561,7 +568,8 @@ QSizeF QgsAlignRaster::RasterInfo::cellSize() const
 
 QPointF QgsAlignRaster::RasterInfo::gridOffset() const
 {
-  return QPointF( fmod_with_tolerance( mGeoTransform[0], cellSize().width() ), fmod_with_tolerance( mGeoTransform[3], cellSize().height() ) );
+  return QPointF( fmod_with_tolerance( mGeoTransform[0], cellSize().width() ),
+                  fmod_with_tolerance( mGeoTransform[3], cellSize().height() ) );
 }
 
 QgsRectangle QgsAlignRaster::RasterInfo::extent() const
@@ -598,9 +606,11 @@ double QgsAlignRaster::RasterInfo::identify( double mx, double my )
   const int py = int( ( my - mGeoTransform[3] ) / mGeoTransform[5] );
 
   float *pafScanline = ( float * ) CPLMalloc( sizeof( float ) );
-  const CPLErr err = GDALRasterIO( hBand, GF_Read, px, py, 1, 1, pafScanline, 1, 1, GDT_Float32, 0, 0 );
+  const CPLErr err = GDALRasterIO( hBand, GF_Read, px, py, 1, 1,
+                                   pafScanline, 1, 1, GDT_Float32, 0, 0 );
   const double value = err == CE_None ? pafScanline[0] : std::numeric_limits<double>::quiet_NaN();
   CPLFree( pafScanline );
 
   return value;
 }
+

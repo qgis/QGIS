@@ -19,7 +19,6 @@
  ***************************************************************************/
 
 #include "qgshttpheaderwidget.h"
-#include "moc_qgshttpheaderwidget.cpp"
 #include "ui_qgshttpheaderwidget.h"
 #include "qgsapplication.h"
 
@@ -65,12 +64,12 @@ QgsHttpHeaders QgsHttpHeaderWidget::httpHeaders() const
     {
       continue;
     }
-    querypairs[tblwdgQueryPairs->item( i, 0 )->text()] = QVariant( tblwdgQueryPairs->item( i, 1 )->text() );
+    querypairs [ tblwdgQueryPairs->item( i, 0 )->text() ] = QVariant( tblwdgQueryPairs->item( i, 1 )->text() ) ;
   }
 
   if ( !mRefererLineEdit->text().isEmpty() )
   {
-    querypairs["referer"] = QVariant( mRefererLineEdit->text() );
+    querypairs [ "referer" ] = QVariant( mRefererLineEdit->text() ) ;
   }
 
 #if 0
@@ -118,11 +117,11 @@ void QgsHttpHeaderWidget::setHeaders( const QgsHttpHeaders &headers )
   {
     if ( ite->compare( "referer" ) != 0 )
     {
-      addQueryPairRow( *ite, headers[*ite].toString() );
+      addQueryPairRow( *ite, headers[ *ite ].toString() );
     }
     else
     {
-      mRefererLineEdit->setText( headers[*ite].toString() );
+      mRefererLineEdit->setText( headers[ *ite ].toString() );
     }
   }
 }

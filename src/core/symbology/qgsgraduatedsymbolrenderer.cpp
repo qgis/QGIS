@@ -321,7 +321,7 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::clone() const
 {
   QgsGraduatedSymbolRenderer *r = new QgsGraduatedSymbolRenderer( mAttrName, mRanges );
 
-  r->setClassificationMethod( mClassificationMethod->clone().release() );
+  r->setClassificationMethod( mClassificationMethod->clone() );
 
   if ( mSourceSymbol )
     r->setSourceSymbol( mSourceSymbol->clone() );
@@ -412,12 +412,12 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::createRenderer(
   Q_UNUSED( listForCboPrettyBreaks )
 
   QgsRangeList ranges;
-  std::unique_ptr< QgsGraduatedSymbolRenderer > r = std::make_unique< QgsGraduatedSymbolRenderer >( attrName, ranges );
+  QgsGraduatedSymbolRenderer *r = new QgsGraduatedSymbolRenderer( attrName, ranges );
   r->setSourceSymbol( symbol->clone() );
   r->setSourceColorRamp( ramp->clone() );
 
   QString methodId = methodIdFromMode( mode );
-  std::unique_ptr< QgsClassificationMethod > method = QgsApplication::classificationMethodRegistry()->method( methodId );
+  QgsClassificationMethod *method = QgsApplication::classificationMethodRegistry()->method( methodId );
 
   if ( method )
   {
@@ -426,13 +426,13 @@ QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::createRenderer(
     method->setLabelTrimTrailingZeroes( labelFormat.trimTrailingZeroes() );
     method->setLabelPrecision( labelFormat.precision() );
   }
-  r->setClassificationMethod( method.release() );
+  r->setClassificationMethod( method );
 
   QString error;
   r->updateClasses( vlayer, classes, error );
   ( void )error;
 
-  return r.release();
+  return r;
 }
 Q_NOWARN_DEPRECATED_POP
 
@@ -443,9 +443,9 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
     return;
 
   QString methodId = methodIdFromMode( mode );
-  std::unique_ptr< QgsClassificationMethod > method = QgsApplication::classificationMethodRegistry()->method( methodId );
+  QgsClassificationMethod *method = QgsApplication::classificationMethodRegistry()->method( methodId );
   method->setSymmetricMode( useSymmetricMode, symmetryPoint, astride );
-  setClassificationMethod( method.release() );
+  setClassificationMethod( method );
 
   QString error;
   updateClasses( vlayer, nclasses, error );
@@ -513,7 +513,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
 
   QString attrName = element.attribute( QStringLiteral( "attr" ) );
 
-  std::unique_ptr< QgsGraduatedSymbolRenderer > r = std::make_unique< QgsGraduatedSymbolRenderer >( attrName, ranges );
+  QgsGraduatedSymbolRenderer *r = new QgsGraduatedSymbolRenderer( attrName, ranges );
 
   QString attrMethod = element.attribute( QStringLiteral( "graduatedMethod" ) );
   if ( !attrMethod.isEmpty() )
@@ -551,7 +551,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
 
   QDomElement modeElem = element.firstChildElement( QStringLiteral( "mode" ) ); // old format,  backward compatibility
   QDomElement methodElem = element.firstChildElement( QStringLiteral( "classificationMethod" ) );
-  std::unique_ptr< QgsClassificationMethod > method;
+  QgsClassificationMethod *method = nullptr;
 
   // TODO QGIS 4 Remove
   // backward compatibility for QGIS project < 3.10
@@ -603,7 +603,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
   }
 
   // apply the method
-  r->setClassificationMethod( method.release() );
+  r->setClassificationMethod( method );
 
   QDomElement rotationElem = element.firstChildElement( QStringLiteral( "rotation" ) );
   if ( !rotationElem.isNull() && !rotationElem.attribute( QStringLiteral( "field" ) ).isEmpty() )
@@ -640,7 +640,7 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
     r->mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context ) );
   }
 // TODO: symbol levels
-  return r.release();
+  return r;
 }
 
 QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWriteContext &context )
@@ -1273,8 +1273,8 @@ void QgsGraduatedSymbolRenderer::setClassificationMethod( QgsClassificationMetho
 void QgsGraduatedSymbolRenderer::setMode( QgsGraduatedSymbolRenderer::Mode mode )
 {
   QString methodId = methodIdFromMode( mode );
-  std::unique_ptr< QgsClassificationMethod > method = QgsApplication::classificationMethodRegistry()->method( methodId );
-  setClassificationMethod( method.release() );
+  QgsClassificationMethod *method = QgsApplication::classificationMethodRegistry()->method( methodId );
+  setClassificationMethod( method );
 }
 
 void QgsGraduatedSymbolRenderer::setUseSymmetricMode( bool useSymmetricMode ) SIP_DEPRECATED

@@ -20,6 +20,7 @@ A widget for configuration of the properties of a relationship in a database.
 #include "qgsdbrelationshipwidget.h"
 %End
   public:
+
     QgsDbRelationWidget( QgsAbstractDatabaseProviderConnection *connection /Transfer/, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDbRelationWidget with the specified ``parent`` widget, for the specified ``connection``.
@@ -60,7 +61,8 @@ Emitted whenever the validity of the relationship configuration in the widget ch
 };
 
 
-class QgsDbRelationDialog : QDialog
+
+class QgsDbRelationDialog: QDialog
 {
 %Docstring(signature="appended")
 A dialog for configuration of the properties of a relationship in a database.
@@ -72,6 +74,7 @@ A dialog for configuration of the properties of a relationship in a database.
 #include "qgsdbrelationshipwidget.h"
 %End
   public:
+
     explicit QgsDbRelationDialog( QgsAbstractDatabaseProviderConnection *connection /Transfer/, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::WindowFlags() );
 %Docstring
 Constructor for QgsDbRelationDialog, with the specified ``parent`` widget and window ``flags``, for the specified ``connection``.

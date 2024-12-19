@@ -15,7 +15,7 @@
 
 #include "qgsstacitemcollection.h"
 
-QgsStacItemCollection::QgsStacItemCollection( const QVector< QgsStacItem * > &items, const QVector< QgsStacLink > &links, int numberMatched )
+QgsStacItemCollection::QgsStacItemCollection( const QVector< QgsStacItem * > items, const QVector< QgsStacLink > links, int numberMatched )
   : mItems( items )
   , mLinks( links )
   , mNumberMatched( numberMatched )

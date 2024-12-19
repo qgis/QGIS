@@ -6,5 +6,5 @@ QgsTextDiagram.Horizontal = QgsTextDiagram.Orientation.Horizontal
 QgsTextDiagram.Vertical = QgsTextDiagram.Orientation.Vertical
 try:
     QgsTextDiagram.__group__ = ['diagram']
-except (NameError, AttributeError):
+except NameError:
     pass

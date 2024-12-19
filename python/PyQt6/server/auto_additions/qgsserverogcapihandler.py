@@ -2,5 +2,5 @@
 try:
     QgsServerOgcApiHandler.parentLink = staticmethod(QgsServerOgcApiHandler.parentLink)
     QgsServerOgcApiHandler.layerFromCollectionId = staticmethod(QgsServerOgcApiHandler.layerFromCollectionId)
-except (NameError, AttributeError):
+except NameError:
     pass

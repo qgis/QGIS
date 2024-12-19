@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "qgsmaplayerrefreshsettingswidget.h"
-#include "moc_qgsmaplayerrefreshsettingswidget.cpp"
 #include "qgsmaplayer.h"
 
 QgsMapLayerRefreshSettingsWidget::QgsMapLayerRefreshSettingsWidget( QWidget *parent, QgsMapLayer *layer )
@@ -26,7 +25,7 @@ QgsMapLayerRefreshSettingsWidget::QgsMapLayerRefreshSettingsWidget( QWidget *par
   setupUi( this );
   mModeComboBox->addItem( tr( "Reload Data" ), QVariant::fromValue( Qgis::AutoRefreshMode::ReloadData ) );
   mModeComboBox->addItem( tr( "Redraw Layer Only" ), QVariant::fromValue( Qgis::AutoRefreshMode::RedrawOnly ) );
-  connect( mModeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, &QgsMapLayerRefreshSettingsWidget::updateHelp );
+  connect( mModeComboBox, qOverload< int >( &QComboBox::currentIndexChanged ), this, &QgsMapLayerRefreshSettingsWidget::updateHelp );
   syncToLayer();
 }
 
@@ -38,14 +37,14 @@ void QgsMapLayerRefreshSettingsWidget::setLayer( QgsMapLayer *layer )
 
 void QgsMapLayerRefreshSettingsWidget::saveToLayer()
 {
-  mLayer->setAutoRefreshInterval( static_cast<int>( mRefreshLayerIntervalSpinBox->value() * 1000.0 ) );
+  mLayer->setAutoRefreshInterval( static_cast< int >( mRefreshLayerIntervalSpinBox->value() * 1000.0 ) );
   if ( !mEnabledGroupBox->isChecked() )
   {
     mLayer->setAutoRefreshMode( Qgis::AutoRefreshMode::Disabled );
   }
   else
   {
-    mLayer->setAutoRefreshMode( mModeComboBox->currentData().value<Qgis::AutoRefreshMode>() );
+    mLayer->setAutoRefreshMode( mModeComboBox->currentData().value< Qgis::AutoRefreshMode >() );
   }
 }
 
@@ -75,7 +74,7 @@ void QgsMapLayerRefreshSettingsWidget::updateHelp()
 {
   QString title;
   QString help;
-  switch ( mModeComboBox->currentData().value<Qgis::AutoRefreshMode>() )
+  switch ( mModeComboBox->currentData().value< Qgis::AutoRefreshMode >() )
   {
     case Qgis::AutoRefreshMode::Disabled:
       break;

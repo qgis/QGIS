@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsabstractdatabaseproviderconnection.h"
-#include "moc_qgsabstractdatabaseproviderconnection.cpp"
 #include "qgsvectorlayer.h"
 #include "qgsexception.h"
 #include "qgsweakrelation.h"

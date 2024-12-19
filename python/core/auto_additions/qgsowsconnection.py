@@ -6,5 +6,5 @@ try:
     QgsOwsConnection.deleteConnection = staticmethod(QgsOwsConnection.deleteConnection)
     QgsOwsConnection.selectedConnection = staticmethod(QgsOwsConnection.selectedConnection)
     QgsOwsConnection.setSelectedConnection = staticmethod(QgsOwsConnection.setSelectedConnection)
-except (NameError, AttributeError):
+except NameError:
     pass

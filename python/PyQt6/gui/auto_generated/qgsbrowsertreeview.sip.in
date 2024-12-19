@@ -32,6 +32,7 @@ The :py:class:`QgsBrowserTreeView` class extends QTreeView with save/restore tre
       sipType = nullptr;
 %End
   public:
+
     QgsBrowserTreeView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBrowserTreeView
@@ -77,6 +78,7 @@ Since QGIS 3.38 the ``selectPath`` argument can be used to automatically select 
 %End
 
   protected:
+
     virtual void keyPressEvent( QKeyEvent *event );
 
 

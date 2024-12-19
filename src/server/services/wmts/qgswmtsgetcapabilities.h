@@ -45,13 +45,18 @@ namespace QgsWmts
   /**
    * Create get capabilities document
    */
-  QDomDocument createGetCapabilitiesDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request );
+  QDomDocument createGetCapabilitiesDocument( QgsServerInterface *serverIface,
+      const QgsProject *project, const QString &version,
+      const QgsServerRequest &request );
 
   /**
    * Output WCS  GetCapabilities response
    */
-  void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project, const QString &version, const QgsServerRequest &request, QgsServerResponse &response );
+  void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project,
+                             const QString &version, const QgsServerRequest &request,
+                             QgsServerResponse &response );
 
-} // namespace QgsWmts
+} // namespace QgsWcs
 
 #endif
+

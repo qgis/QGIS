@@ -27,11 +27,12 @@
  * \class QgsNativeAlgorithms
  * \brief Native c++ processing algorithm provider.
  */
-class ANALYSIS_EXPORT QgsNativeAlgorithms : public QgsProcessingProvider
+class ANALYSIS_EXPORT QgsNativeAlgorithms: public QgsProcessingProvider
 {
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsNativeAlgorithms.
      */
@@ -46,7 +47,11 @@ class ANALYSIS_EXPORT QgsNativeAlgorithms : public QgsProcessingProvider
     Qgis::ProcessingProviderFlags flags() const override;
 
   protected:
+
     void loadAlgorithms() override;
+
 };
 
 #endif // QGSNATIVEALGORITHMS_H
+
+

@@ -24,6 +24,7 @@ The :py:class:`QgsRasterAttributeTableWidget` class provides an attribute table 
 #include "qgsrasterattributetablewidget.h"
 %End
   public:
+
     explicit QgsRasterAttributeTableWidget( QWidget *parent /TransferThis/ = 0, QgsRasterLayer *rasterLayer = 0, const int bandNumber = 0 );
 %Docstring
 Creates a new QgsRasterAttributeTableWidget
@@ -41,7 +42,7 @@ Sets the raster layer and an optional band number.
 :param bandNumber: optional initial selected band number (default to 0, which makes the widget use the first available RAT, if any)
 %End
 
-    bool isDirty() const;
+    bool isDirty( ) const;
 %Docstring
 Returns ``True`` if the associated raster attribute table is dirty
 %End
@@ -54,7 +55,7 @@ to the appropriate message bar.
 
   signals:
 
-    void rendererChanged();
+    void rendererChanged( );
 %Docstring
 This signal is emitted after a successful classify operation which changed the raster renderer.
 %End

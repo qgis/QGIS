@@ -17,7 +17,6 @@
 #include <QListWidgetItem>
 
 #include "qgsdatasourcemanagerdialog.h"
-#include "moc_qgsdatasourcemanagerdialog.cpp"
 #include "ui_qgsdatasourcemanagerdialog.h"
 #include "qgsbrowserdockwidget.h"
 #include "qgssettings.h"
@@ -63,10 +62,11 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
   QWidget *browserWidgetWrapper = new QWidget( this );
   browserWidgetWrapper->setLayout( new QVBoxLayout( browserWidgetWrapper ) );
   browserWidgetWrapper->layout()->addWidget( mBrowserWidget );
-  QDialogButtonBox *browserButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Close | QDialogButtonBox::StandardButton::Help, browserWidgetWrapper );
+  QDialogButtonBox *browserButtonBox = new QDialogButtonBox( QDialogButtonBox::StandardButton::Close | QDialogButtonBox::StandardButton::Help,  browserWidgetWrapper );
   browserWidgetWrapper->layout()->addWidget( browserButtonBox );
 
-  connect( browserButtonBox, &QDialogButtonBox::helpRequested, this, [=] {
+  connect( browserButtonBox, &QDialogButtonBox::helpRequested, this, [ = ]
+  {
     QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#the-browser-panel" ) );
   } );
   connect( browserButtonBox, &QDialogButtonBox::rejected, this, &QgsDataSourceManagerDialog::reject );
@@ -82,7 +82,7 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
   connect( this, &QgsDataSourceManagerDialog::updateProjectHome, mBrowserWidget->browserWidget(), &QgsBrowserWidget::updateProjectHome );
 
   // Add registered source select dialogs
-  const QList<QgsSourceSelectProvider *> sourceSelectProviders = QgsGui::sourceSelectProviderRegistry()->providers();
+  const QList<QgsSourceSelectProvider *> sourceSelectProviders = QgsGui::sourceSelectProviderRegistry()->providers( );
   for ( QgsSourceSelectProvider *provider : sourceSelectProviders )
   {
     QgsAbstractDataSourceWidget *dlg = provider->createDataSourceWidget( this );
@@ -91,10 +91,11 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
       QgsMessageLog::logMessage( tr( "Cannot get %1 select dialog from source select provider %2." ).arg( provider->name(), provider->providerKey() ), QStringLiteral( "DataSourceManager" ), Qgis::MessageLevel::Critical );
       continue;
     }
-    addProviderDialog( dlg, provider->providerKey(), provider->name(), provider->text(), provider->icon(), provider->toolTip() );
+    addProviderDialog( dlg, provider->providerKey(), provider->name(), provider->text(), provider->icon( ), provider->toolTip( ) );
   }
 
-  connect( QgsGui::sourceSelectProviderRegistry(), &QgsSourceSelectProviderRegistry::providerAdded, this, [=]( const QString &name ) {
+  connect( QgsGui::sourceSelectProviderRegistry(), &QgsSourceSelectProviderRegistry::providerAdded, this, [ = ]( const QString & name )
+  {
     if ( QgsSourceSelectProvider *provider = QgsGui::sourceSelectProviderRegistry()->providerByName( name ) )
     {
       QgsAbstractDataSourceWidget *dlg = provider->createDataSourceWidget( this );
@@ -103,11 +104,12 @@ QgsDataSourceManagerDialog::QgsDataSourceManagerDialog( QgsBrowserGuiModel *brow
         QgsMessageLog::logMessage( tr( "Cannot get %1 select dialog from source select provider %2." ).arg( provider->name(), provider->providerKey() ), QStringLiteral( "DataSourceManager" ), Qgis::MessageLevel::Critical );
         return;
       }
-      addProviderDialog( dlg, provider->providerKey(), provider->name(), provider->text(), provider->icon(), provider->toolTip() );
+      addProviderDialog( dlg, provider->providerKey(), provider->name(), provider->text(), provider->icon( ), provider->toolTip( ) );
     }
   } );
 
-  connect( QgsGui::sourceSelectProviderRegistry(), &QgsSourceSelectProviderRegistry::providerRemoved, this, [=]( const QString &name ) {
+  connect( QgsGui::sourceSelectProviderRegistry(), &QgsSourceSelectProviderRegistry::providerRemoved, this, [ = ]( const QString & name )
+  {
     removeProviderDialog( name );
   } );
 
@@ -125,7 +127,7 @@ void QgsDataSourceManagerDialog::openPage( const QString &pageName )
   const int pageIdx = mPageProviderKeys.indexOf( pageName );
   if ( pageIdx != -1 )
   {
-    QTimer::singleShot( 0, this, [=] { setCurrentPage( pageIdx ); } );
+    QTimer::singleShot( 0, this, [ = ] { setCurrentPage( pageIdx ); } );
   }
 }
 
@@ -178,7 +180,8 @@ void QgsDataSourceManagerDialog::configureFromUri( const QString &pageName, cons
   const int pageIdx = mPageProviderNames.indexOf( pageName );
   if ( pageIdx != -1 )
   {
-    QTimer::singleShot( 0, this, [this, pageIdx, uri] {
+    QTimer::singleShot( 0, this, [ = ]
+    {
       setCurrentPage( pageIdx );
       if ( QgsAbstractDataSourceWidget *dataSourceWidget = qobject_cast<QgsAbstractDataSourceWidget *>( ui->mOptionsStackedWidget->currentWidget() ) )
       {
@@ -234,10 +237,13 @@ void QgsDataSourceManagerDialog::removeProviderDialog( const QString &providerNa
 void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *dlg, const QString &providerKey )
 {
   // DB
-  connect( dlg, &QgsAbstractDataSourceWidget::addDatabaseLayers, this, &QgsDataSourceManagerDialog::addDatabaseLayers );
-  connect( dlg, &QgsAbstractDataSourceWidget::progressMessage, this, &QgsDataSourceManagerDialog::showStatusMessage );
+  connect( dlg, &QgsAbstractDataSourceWidget::addDatabaseLayers,
+           this, &QgsDataSourceManagerDialog::addDatabaseLayers );
+  connect( dlg, &QgsAbstractDataSourceWidget::progressMessage,
+           this, &QgsDataSourceManagerDialog::showStatusMessage );
 
-  connect( dlg, &QgsAbstractDataSourceWidget::addLayer, this, [=]( Qgis::LayerType type, const QString &url, const QString &baseName, const QString &providerKey ) {
+  connect( dlg, &QgsAbstractDataSourceWidget::addLayer, this, [ = ]( Qgis::LayerType type, const QString & url, const QString & baseName, const QString & providerKey )
+  {
     Q_UNUSED( url )
     Q_UNUSED( baseName )
     Q_UNUSED( providerKey )
@@ -264,48 +270,58 @@ void QgsDataSourceManagerDialog::makeConnections( QgsAbstractDataSourceWidget *d
 
   // Vector
   Q_NOWARN_DEPRECATED_PUSH
-  connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayer, this, [=]( const QString &vectorLayerPath, const QString &baseName, const QString &specifiedProvider ) {
+  connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayer, this, [ = ]( const QString & vectorLayerPath, const QString & baseName, const QString & specifiedProvider )
+  {
     const QString key = specifiedProvider.isEmpty() ? providerKey : specifiedProvider;
     emit addLayer( Qgis::LayerType::Vector, vectorLayerPath, baseName, key );
-  } );
+  }
+         );
   Q_NOWARN_DEPRECATED_POP
-  connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayers, this, &QgsDataSourceManagerDialog::vectorLayersAdded );
+  connect( dlg, &QgsAbstractDataSourceWidget::addVectorLayers,
+           this, &QgsDataSourceManagerDialog::vectorLayersAdded );
   connect( dlg, &QgsAbstractDataSourceWidget::connectionsChanged, this, &QgsDataSourceManagerDialog::connectionsChanged );
 
   // Raster
   Q_NOWARN_DEPRECATED_PUSH
-  connect( dlg, &QgsAbstractDataSourceWidget::addRasterLayer, this, [=]( const QString &rasterLayerPath, const QString &baseName, const QString &providerKey ) {
+  connect( dlg, &QgsAbstractDataSourceWidget::addRasterLayer, this, [ = ]( const QString & rasterLayerPath, const QString & baseName, const QString & providerKey )
+  {
     emit addLayer( Qgis::LayerType::Raster, rasterLayerPath, baseName, providerKey );
   } );
   Q_NOWARN_DEPRECATED_POP
-  connect( dlg, &QgsAbstractDataSourceWidget::addRasterLayers, this, &QgsDataSourceManagerDialog::rasterLayersAdded );
+  connect( dlg, &QgsAbstractDataSourceWidget::addRasterLayers,
+           this, &QgsDataSourceManagerDialog::rasterLayersAdded );
 
   // Mesh
   Q_NOWARN_DEPRECATED_PUSH
-  connect( dlg, &QgsAbstractDataSourceWidget::addMeshLayer, this, [=]( const QString &url, const QString &baseName, const QString &providerKey ) {
+  connect( dlg, &QgsAbstractDataSourceWidget::addMeshLayer, this, [ = ]( const QString & url, const QString & baseName, const QString & providerKey )
+  {
     emit addLayer( Qgis::LayerType::Mesh, url, baseName, providerKey );
   } );
   Q_NOWARN_DEPRECATED_POP
   // Vector tile
   Q_NOWARN_DEPRECATED_PUSH
-  connect( dlg, &QgsAbstractDataSourceWidget::addVectorTileLayer, this, [=]( const QString &url, const QString &baseName ) {
+  connect( dlg, &QgsAbstractDataSourceWidget::addVectorTileLayer, this, [ = ]( const QString & url, const QString & baseName )
+  {
     emit addLayer( Qgis::LayerType::VectorTile, url, baseName, QString() );
   } );
   Q_NOWARN_DEPRECATED_POP
   // Point Cloud
   Q_NOWARN_DEPRECATED_PUSH
-  connect( dlg, &QgsAbstractDataSourceWidget::addPointCloudLayer, this, [=]( const QString &url, const QString &baseName, const QString &providerKey ) {
+  connect( dlg, &QgsAbstractDataSourceWidget::addPointCloudLayer, this, [ = ]( const QString & url, const QString & baseName, const QString & providerKey )
+  {
     emit addLayer( Qgis::LayerType::PointCloud, url, baseName, providerKey );
   } );
   Q_NOWARN_DEPRECATED_POP
   // Virtual
-  connect( dlg, &QgsAbstractDataSourceWidget::replaceVectorLayer, this, &QgsDataSourceManagerDialog::replaceSelectedVectorLayer );
+  connect( dlg, &QgsAbstractDataSourceWidget::replaceVectorLayer,
+           this, &QgsDataSourceManagerDialog::replaceSelectedVectorLayer );
   // Common
   connect( dlg, &QgsAbstractDataSourceWidget::connectionsChanged, this, &QgsDataSourceManagerDialog::connectionsChanged );
   connect( this, &QgsDataSourceManagerDialog::providerDialogsRefreshRequested, dlg, &QgsAbstractDataSourceWidget::refresh );
 
   // Message
-  connect( dlg, &QgsAbstractDataSourceWidget::pushMessage, this, [=]( const QString &title, const QString &message, const Qgis::MessageLevel level ) {
+  connect( dlg, &QgsAbstractDataSourceWidget::pushMessage, this, [ = ]( const QString & title, const QString & message, const Qgis::MessageLevel level )
+  {
     mMessageBar->pushMessage( title, message, level );
   } );
 }

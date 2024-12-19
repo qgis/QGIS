@@ -35,6 +35,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QgsPanelWidget, privat
 {
     Q_OBJECT
   public:
+
     /**
      * Constructor for QgsFieldConditionalFormatWidget.
      */
@@ -114,6 +115,7 @@ class GUI_EXPORT QgsFieldConditionalFormatWidget : public QgsPanelWidget, privat
     void addNewRule();
     void fieldChanged( const QString &fieldName );
     void deleteCurrentRule();
+
 };
 
 /**
@@ -127,6 +129,7 @@ class GUI_EXPORT QgsEditConditionalFormatRuleWidget : public QgsPanelWidget, pri
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for QgsFieldConditionalFormatWidget, with the specified \a parent widget.
      */
@@ -180,6 +183,9 @@ class GUI_EXPORT QgsEditConditionalFormatRuleWidget : public QgsPanelWidget, pri
 
   private:
     QgsVectorLayer *mLayer = nullptr;
+    int mEditIndex = 0;
+    bool mEditing = false;
+    QStandardItemModel *mModel = nullptr;
     QStandardItemModel *mPresetsModel = nullptr;
     QList<QgsConditionalStyle> mPresets;
 
@@ -189,6 +195,7 @@ class GUI_EXPORT QgsEditConditionalFormatRuleWidget : public QgsPanelWidget, pri
     void setExpression();
     void presetSet( int index );
     bool isCustomSet();
+
 };
 
 #endif // QGSFIELDCONDITIONALFORMATWIDGET_H

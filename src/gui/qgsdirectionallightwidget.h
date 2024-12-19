@@ -57,8 +57,8 @@ class GUI_EXPORT QgsDirectionalLightWidget : public QWidget, private Ui::QgsDire
   signals:
     //! Emitted when the direction is changed
     void directionChanged();
-
   private:
+
 };
 
 #endif // QGSDIRECTIONALLIGHTWIDGET_H

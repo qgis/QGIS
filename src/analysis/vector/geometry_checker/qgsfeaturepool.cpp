@@ -26,6 +26,7 @@
 #include <QThread>
 
 
+
 QgsFeaturePool::QgsFeaturePool( QgsVectorLayer *layer )
   : mFeatureCache( CACHE_SIZE )
   , mLayer( layer )
@@ -48,18 +49,7 @@ bool QgsFeaturePool::getFeature( QgsFeatureId id, QgsFeature &feature )
   //
   // https://bugreports.qt.io/browse/QTBUG-19794
 
-  // If the feature we want is amongst the features that have been updated,
-  // then get it from the dedicated hash.
-  // It would not be thread-safe to get it directly from the layer,
-  // and it could be outdated in the feature source (in case of a memory layer),
-  // and it could have been cleared from the cache due to a cache overflow.
-  if ( mUpdatedFeatures.contains( id ) )
-  {
-    feature = mUpdatedFeatures[id];
-    return true;
-  }
-
-  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Read );
+  QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Write );
   QgsFeature *cachedFeature = mFeatureCache.object( id );
   if ( cachedFeature )
   {
@@ -88,7 +78,6 @@ QgsFeatureIds QgsFeaturePool::getFeatures( const QgsFeatureRequest &request, Qgs
   Q_ASSERT( mLayer );
   Q_ASSERT( QThread::currentThread() == mLayer->thread() );
 
-  mUpdatedFeatures.clear();
   mFeatureCache.clear();
   mIndex = QgsSpatialIndex();
 
@@ -142,21 +131,19 @@ void QgsFeaturePool::insertFeature( const QgsFeature &feature, bool skipLock )
   mIndex.addFeature( indexFeature );
 }
 
-void QgsFeaturePool::refreshCache( QgsFeature feature, const QgsFeature &origFeature )
+void QgsFeaturePool::refreshCache( const QgsFeature &feature )
 {
-  // insert/refresh the updated features as well
-  mUpdatedFeatures.insert( feature.id(), feature );
-
   QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Write );
-  mFeatureCache.insert( feature.id(), new QgsFeature( feature ) );
-  mIndex.deleteFeature( origFeature );
-  mIndex.addFeature( feature );
+  mFeatureCache.remove( feature.id() );
+  mIndex.deleteFeature( feature );
   locker.unlock();
+
+  QgsFeature tempFeature;
+  getFeature( feature.id(), tempFeature );
 }
 
 void QgsFeaturePool::removeFeature( const QgsFeatureId featureId )
 {
-  mUpdatedFeatures.remove( featureId );
   QgsFeature origFeature;
   QgsReadWriteLocker locker( mCacheLock, QgsReadWriteLocker::Unlocked );
   if ( getFeature( featureId, origFeature ) )

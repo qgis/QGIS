@@ -37,6 +37,7 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
     Q_NOWARN_UNREACHABLE_POP
     // TODO QGIS 4 do not inherit QgsSettingsRegistry
   public:
+
     QgsSettingsRegistryGui();
     virtual ~QgsSettingsRegistryGui();
 
@@ -45,6 +46,7 @@ class GUI_EXPORT QgsSettingsRegistryGui : public QgsSettingsRegistry
     static const QgsSettingsEntryBool *settingsRespectScreenDPI;
 
 #endif
+
 };
 
 #endif // QGSSETTINGSREGISTRYGUI_H

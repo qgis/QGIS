@@ -506,12 +506,6 @@ Sets the ``unit`` for the line height for text.
 %Docstring
 Returns the distance for tab stops.
 
-.. note::
-
-   This value will be ignored if :py:func:`~QgsTextFormat.tabPositions` is non-empty.
-
-.. seealso:: :py:func:`tabPositions`
-
 .. seealso:: :py:func:`tabStopDistanceUnit`
 
 .. seealso:: :py:func:`setTabStopDistance`
@@ -521,15 +515,7 @@ Returns the distance for tab stops.
 
     void setTabStopDistance( double distance );
 %Docstring
-Sets the ``distance`` for tab stops.
-
-The units are specified using :py:func:`~QgsTextFormat.setTabStopDistanceUnit`.
-
-.. note::
-
-   This value will be ignored if :py:func:`~QgsTextFormat.tabPositions` is non-empty.
-
-.. seealso:: :py:func:`tabPositions`
+Sets the ``distance`` for tab stops. The units are specified using :py:func:`~QgsTextFormat.setTabStopDistanceUnit`.
 
 .. seealso:: :py:func:`tabStopDistance`
 
@@ -538,95 +524,11 @@ The units are specified using :py:func:`~QgsTextFormat.setTabStopDistanceUnit`.
 .. versionadded:: 3.38
 %End
 
-    class Tab
-{
-%Docstring(signature="appended")
-Defines a tab position for a text format.
-
-.. versionadded:: 3.42
-%End
-
-%TypeHeaderCode
-#include "qgstextformat.h"
-%End
-      public:
-
-        explicit Tab( double position );
-%Docstring
-Constructor for a Tab at the specified ``position``.
-%End
-
-        void setPosition( double position );
-%Docstring
-Sets the tab position.
-
-.. seealso:: :py:func:`position`
-%End
-
-        double position() const;
-%Docstring
-Returns the tab position.
-
-.. seealso:: :py:func:`setPosition`
-%End
-
-        bool operator==( const QgsTextFormat::Tab &other ) const;
-
-        SIP_PYOBJECT __repr__();
-%MethodCode
-        const QString str = QStringLiteral( "<QgsTextFormat.Tab: %1>" ).arg( sipCpp->position() );
-        sipRes = PyUnicode_FromString( str.toUtf8().constData() );
-%End
-
-    };
-
-    QList< QgsTextFormat::Tab > tabPositions() const;
-%Docstring
-Returns the list of tab positions for tab stops.
-
-The units are specified using :py:func:`~QgsTextFormat.tabStopDistanceUnit`.
-
-.. note::
-
-   If non-empty, this list overrides any distance defined by :py:func:`~QgsTextFormat.tabStopDistance`.
-
-.. seealso:: :py:func:`setTabPositions`
-
-.. seealso:: :py:func:`tabStopDistance`
-
-.. seealso:: :py:func:`tabStopDistanceUnit`
-
-.. seealso:: :py:func:`setTabStopDistance`
-
-.. versionadded:: 3.42
-%End
-
-    void setTabPositions( const QList< QgsTextFormat::Tab > &positions );
-%Docstring
-Sets the list of tab ``positions`` for tab stops.
-
-The units are specified using :py:func:`~QgsTextFormat.setTabStopDistanceUnit`.
-
-.. note::
-
-   If non-empty, this list overrides any distance defined by :py:func:`~QgsTextFormat.setTabStopDistance`.
-
-.. seealso:: :py:func:`tabPositions`
-
-.. seealso:: :py:func:`setTabStopDistance`
-
-.. seealso:: :py:func:`setTabStopDistanceUnit`
-
-.. versionadded:: 3.42
-%End
-
     Qgis::RenderUnit tabStopDistanceUnit() const;
 %Docstring
 Returns the units for the tab stop distance.
 
 .. seealso:: :py:func:`tabStopDistance`
-
-.. seealso:: :py:func:`tabPositions`
 
 .. seealso:: :py:func:`setTabStopDistanceUnit`
 
@@ -638,8 +540,6 @@ Returns the units for the tab stop distance.
 Sets the ``unit`` used for the tab stop distance.
 
 .. seealso:: :py:func:`setTabStopDistance`
-
-.. seealso:: :py:func:`setTabPositions`
 
 .. seealso:: :py:func:`tabStopDistanceUnit`
 

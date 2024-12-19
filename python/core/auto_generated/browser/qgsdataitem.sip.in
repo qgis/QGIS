@@ -154,7 +154,7 @@ Removes a child item and returns it without deleting it. Emits relevant signals 
 Returns ``True`` if this item is equal to another item (by testing item type and path).
 %End
 
- virtual QWidget *paramWidget() /Factory,Deprecated="Since 3.10. "/;
+ virtual QWidget *paramWidget() /Factory,Deprecated/;
 %Docstring
 Returns source widget from data item for :py:class:`QgsBrowserPropertiesWidget`
 
@@ -183,7 +183,7 @@ created menus is correctly handled by parenting them to the specified parent wid
 :return: list of menus
 %End
 
- virtual bool acceptDrop() /Deprecated="Since 3.10. "/;
+ virtual bool acceptDrop() /Deprecated/;
 %Docstring
 Returns whether the item accepts drag and dropped layers - e.g. for importing a dataset to a provider.
 Subclasses should override this and :py:func:`~QgsDataItem.handleDrop` to accept dropped layers.
@@ -196,7 +196,7 @@ Subclasses should override this and :py:func:`~QgsDataItem.handleDrop` to accept
 %End
 
 
- virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) /Deprecated="Since 3.10. "/;
+ virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) /Deprecated/;
 %Docstring
 Attempts to process the mime data dropped on this item. Subclasses must override this and :py:func:`~QgsDataItem.acceptDrop` if they
 accept dropped layers.
@@ -224,7 +224,7 @@ A draggable item has to implement :py:func:`~QgsDataItem.mimeUris` that will be 
 .. seealso:: :py:func:`mimeUris`
 %End
 
- virtual QgsMimeDataUtils::Uri mimeUri() const /Deprecated="Since 3.18. Use mimeUris() instead."/;
+ virtual QgsMimeDataUtils::Uri mimeUri() const /Deprecated/;
 %Docstring
 Returns mime URI for the data item.
 Items that return valid URI will be returned in mime data when dragging a selection from browser model.
@@ -247,7 +247,7 @@ Items that return valid URI will be returned in mime data when dragging a select
 .. versionadded:: 3.18
 %End
 
- virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) /Deprecated="Since 3.6. This method is no longer used by QGIS and will be removed in QGIS 4.0."/;
+ virtual bool setCrs( const QgsCoordinateReferenceSystem &crs ) /Deprecated/;
 %Docstring
 Writes the selected crs into data source. The original data source will be modified when calling this
 method.
@@ -257,7 +257,7 @@ method.
    This method is no longer used by QGIS and will be removed in QGIS 4.0.
 %End
 
- virtual bool rename( const QString &name ) /Deprecated="Since 3.10. "/;
+ virtual bool rename( const QString &name ) /Deprecated/;
 %Docstring
 Sets a new ``name`` for the item, and returns ``True`` if the item was successfully renamed.
 
@@ -287,12 +287,12 @@ Sets the capabilities for the data item.
 .. seealso:: :py:func:`capabilities2`
 %End
 
- void setCapabilities( int capabilities ) /Deprecated="Since 3.40. Use setCapabilitiesV2() instead."/;
+ void setCapabilities( int capabilities ) /Deprecated/;
 %Docstring
 
 .. deprecated:: 3.40
 
-   Use :py:func:`~QgsDataItem.setCapabilitiesV2` instead.
+   Use setCapabilitiesV2 instead.
 %End
 
 

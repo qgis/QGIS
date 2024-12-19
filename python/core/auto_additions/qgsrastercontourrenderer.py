@@ -2,5 +2,5 @@
 try:
     QgsRasterContourRenderer.create = staticmethod(QgsRasterContourRenderer.create)
     QgsRasterContourRenderer.__group__ = ['raster']
-except (NameError, AttributeError):
+except NameError:
     pass

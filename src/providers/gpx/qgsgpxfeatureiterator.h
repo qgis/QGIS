@@ -24,7 +24,7 @@
 class QgsGPXProvider;
 
 
-class QgsGPXFeatureSource final : public QgsAbstractFeatureSource
+class QgsGPXFeatureSource final: public QgsAbstractFeatureSource
 {
   public:
     explicit QgsGPXFeatureSource( const QgsGPXProvider *p );
@@ -44,7 +44,7 @@ class QgsGPXFeatureSource final : public QgsAbstractFeatureSource
 };
 
 
-class QgsGPXFeatureIterator final : public QgsAbstractFeatureIteratorFromSource<QgsGPXFeatureSource>
+class QgsGPXFeatureIterator final: public QgsAbstractFeatureIteratorFromSource<QgsGPXFeatureSource>
 {
   public:
     QgsGPXFeatureIterator( QgsGPXFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
@@ -55,9 +55,11 @@ class QgsGPXFeatureIterator final : public QgsAbstractFeatureIteratorFromSource<
     bool close() override;
 
   protected:
+
     bool fetchFeature( QgsFeature &feature ) override;
 
   private:
+
     bool readFid( QgsFeature &feature );
 
     bool readWaypoint( const QgsWaypoint &wpt, QgsFeature &feature );
@@ -84,7 +86,7 @@ class QgsGPXFeatureIterator final : public QgsAbstractFeatureIteratorFromSource<
     QgsCoordinateTransform mTransform;
     QgsRectangle mFilterRect;
     QgsGeometry mDistanceWithinGeom;
-    std::unique_ptr<QgsGeometryEngine> mDistanceWithinEngine;
+    std::unique_ptr< QgsGeometryEngine > mDistanceWithinEngine;
 };
 
 #endif // QGSGPXFEATUREITERATOR_H

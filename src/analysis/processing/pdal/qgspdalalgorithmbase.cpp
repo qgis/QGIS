@@ -46,7 +46,7 @@ QString QgsPdalAlgorithmBase::wrenchExecutableBinary() const
   QString wrenchExecutable = QProcessEnvironment::systemEnvironment().value( QStringLiteral( "QGIS_WRENCH_EXECUTABLE" ) );
   if ( wrenchExecutable.isEmpty() )
   {
-#if defined( Q_OS_WIN )
+#if defined(Q_OS_WIN)
     wrenchExecutable = QgsApplication::libexecPath() + "pdal_wrench.exe";
 #else
     wrenchExecutable = QgsApplication::libexecPath() + "pdal_wrench";
@@ -57,11 +57,11 @@ QString QgsPdalAlgorithmBase::wrenchExecutableBinary() const
 
 void QgsPdalAlgorithmBase::createCommonParameters()
 {
-  std::unique_ptr<QgsProcessingParameterExpression> filterParam = std::make_unique<QgsProcessingParameterExpression>( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QVariant(), QStringLiteral( "INPUT" ), true, Qgis::ExpressionType::PointCloud );
+  std::unique_ptr< QgsProcessingParameterExpression > filterParam = std::make_unique< QgsProcessingParameterExpression >( QStringLiteral( "FILTER_EXPRESSION" ), QObject::tr( "Filter expression" ), QVariant(), QStringLiteral( "INPUT" ), true, Qgis::ExpressionType::PointCloud );
   filterParam->setFlags( filterParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( filterParam.release() );
 
-  std::unique_ptr<QgsProcessingParameterExtent> extentParam = std::make_unique<QgsProcessingParameterExtent>( QStringLiteral( "FILTER_EXTENT" ), QObject::tr( "Cropping extent" ), QVariant(), true );
+  std::unique_ptr< QgsProcessingParameterExtent > extentParam = std::make_unique< QgsProcessingParameterExtent >( QStringLiteral( "FILTER_EXTENT" ), QObject::tr( "Cropping extent" ), QVariant(), true );
   extentParam->setFlags( extentParam->flags() | Qgis::ProcessingParameterFlag::Advanced );
   addParameter( extentParam.release() );
 }
@@ -81,19 +81,20 @@ void QgsPdalAlgorithmBase::applyCommonParameters( QStringList &arguments, QgsCoo
     {
       const QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "FILTER_EXTENT" ), context, crs );
       arguments << QStringLiteral( "--bounds=([%1, %2], [%3, %4])" )
-                     .arg( extent.xMinimum() )
-                     .arg( extent.xMaximum() )
-                     .arg( extent.yMinimum() )
-                     .arg( extent.yMaximum() );
+                .arg( extent.xMinimum() )
+                .arg( extent.xMaximum() )
+                .arg( extent.yMinimum() )
+                .arg( extent.yMaximum() );
+
     }
     else
     {
       const QgsRectangle extent = parameterAsExtent( parameters, QStringLiteral( "FILTER_EXTENT" ), context );
       arguments << QStringLiteral( "--bounds=([%1, %2], [%3, %4])" )
-                     .arg( extent.xMinimum() )
-                     .arg( extent.xMaximum() )
-                     .arg( extent.yMinimum() )
-                     .arg( extent.yMaximum() );
+                .arg( extent.xMinimum() )
+                .arg( extent.xMaximum() )
+                .arg( extent.yMinimum() )
+                .arg( extent.yMaximum() );
     }
   }
 }
@@ -119,9 +120,9 @@ QString QgsPdalAlgorithmBase::fixOutputFileName( const QString &inputFileName, c
 
     if ( context.willLoadLayerOnCompletion( outputFileName ) )
     {
-      QMap<QString, QgsProcessingContext::LayerDetails> layersToLoad = context.layersToLoadOnCompletion();
+      QMap< QString, QgsProcessingContext::LayerDetails > layersToLoad = context.layersToLoadOnCompletion();
       QgsProcessingContext::LayerDetails details = layersToLoad.take( outputFileName );
-      layersToLoad[newFileName] = details;
+      layersToLoad[ newFileName ] = details;
       context.setLayersToLoadOnCompletion( layersToLoad );
     }
     return newFileName;
@@ -135,16 +136,14 @@ void QgsPdalAlgorithmBase::checkOutputFormat( const QString &inputFileName, cons
     throw QgsProcessingException(
       QObject::tr( "This algorithm does not support output to COPC. Please use LAS or LAZ as the output format. "
                    "LAS/LAZ files get automatically converted to COPC when loaded in QGIS, alternatively you can use "
-                   "\"Create COPC\" algorithm." )
-    );
+                   "\"Create COPC\" algorithm." ) );
 
   bool inputIsVpc = inputFileName.endsWith( QStringLiteral( ".vpc" ), Qt::CaseInsensitive );
   bool outputIsVpc = outputFileName.endsWith( QStringLiteral( ".vpc" ), Qt::CaseInsensitive );
   if ( !inputIsVpc && outputIsVpc )
     throw QgsProcessingException(
       QObject::tr( "This algorithm does not support output to VPC if input is not a VPC. Please use LAS or LAZ as the output format. "
-                   "To create a VPC please use \"Build virtual point cloud (VPC)\" algorithm." )
-    );
+                   "To create a VPC please use \"Build virtual point cloud (VPC)\" algorithm." ) );
 }
 
 QStringList QgsPdalAlgorithmBase::createArgumentLists( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
@@ -158,11 +157,12 @@ QStringList QgsPdalAlgorithmBase::createArgumentLists( const QVariantMap &parame
 class EnableElevationPropertiesPostProcessor : public QgsProcessingLayerPostProcessorInterface
 {
   public:
+
     void postProcessLayer( QgsMapLayer *layer, QgsProcessingContext &, QgsProcessingFeedback * ) override
     {
-      if ( QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer ) )
+      if ( QgsRasterLayer *rl = qobject_cast< QgsRasterLayer * >( layer ) )
       {
-        QgsRasterLayerElevationProperties *props = qgis::down_cast<QgsRasterLayerElevationProperties *>( rl->elevationProperties() );
+        QgsRasterLayerElevationProperties *props = qgis::down_cast< QgsRasterLayerElevationProperties * >( rl->elevationProperties() );
         props->setMode( Qgis::RasterElevationMode::RepresentsElevationSurface );
         props->setEnabled( true );
         rl->trigger3DUpdate();
@@ -195,10 +195,12 @@ QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameter
   QString buffer;
 
   QgsBlockingProcess wrenchProcess( wrenchPath, processArgs );
-  wrenchProcess.setStdErrHandler( [=]( const QByteArray &ba ) {
+  wrenchProcess.setStdErrHandler( [ = ]( const QByteArray & ba )
+  {
     feedback->reportError( ba.trimmed() );
   } );
-  wrenchProcess.setStdOutHandler( [=, &progress, &buffer]( const QByteArray &ba ) {
+  wrenchProcess.setStdOutHandler( [ =, &progress, &buffer ]( const QByteArray & ba )
+  {
     QString data( ba );
 
     QRegularExpression re( "\\.*(\\d+)?\\.*$" );
@@ -242,7 +244,7 @@ QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameter
   const int res = wrenchProcess.run( feedback );
   if ( feedback->isCanceled() && res != 0 )
   {
-    feedback->pushInfo( QObject::tr( "Process was canceled and did not complete" ) );
+    feedback->pushInfo( QObject::tr( "Process was canceled and did not complete" ) )  ;
   }
   else if ( !feedback->isCanceled() && wrenchProcess.exitStatus() == QProcess::CrashExit )
   {
@@ -275,7 +277,7 @@ QVariantMap QgsPdalAlgorithmBase::processAlgorithm( const QVariantMap &parameter
   QMap<QString, QVariant>::const_iterator it = mOutputValues.constBegin();
   while ( it != mOutputValues.constEnd() )
   {
-    outputs[it.key()] = it.value();
+    outputs[ it.key() ] = it.value();
 
     const QString outputLayerName = it.value().toString();
     if ( context.willLoadLayerOnCompletion( outputLayerName ) && mEnableElevationProperties )

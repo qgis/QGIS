@@ -54,7 +54,9 @@
  */
 class GUI_EXPORT QgsApplicationExitBlockerInterface
 {
+
   public:
+
     virtual ~QgsApplicationExitBlockerInterface();
 
     /**

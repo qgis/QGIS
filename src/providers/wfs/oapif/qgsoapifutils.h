@@ -31,11 +31,11 @@ class QgsOAPIFJson
     //! A OAPIF Link
     struct Link
     {
-        QString href;
-        QString rel;
-        QString type;
-        QString title;
-        qint64 length = -1;
+      QString href;
+      QString rel;
+      QString type;
+      QString title;
+      qint64 length = -1;
     };
 
     //! Parses the "link" property of jParent

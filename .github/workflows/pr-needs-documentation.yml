@@ -76,16 +76,6 @@ jobs:
           reactions: '+1'
 
 
-  update-milestone:
-    if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') ) || github.event.label.name == 'Needs Documentation' )
-    # Update the milestone (if necessary)
-    name: Update final milestone
-    permissions:
-      issues: write
-      pull-requests: write
-      contents: read
-    uses: ./.github/workflows/pr-auto-milestone.yml
-
   create-doc-issue:
     if: github.event.pull_request.merged && ( ( github.event.action == 'closed' && contains( github.event.pull_request.labels.*.name, 'Needs Documentation') ) || github.event.label.name == 'Needs Documentation' )
     runs-on: ubuntu-latest

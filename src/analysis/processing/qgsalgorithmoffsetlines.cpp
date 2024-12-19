@@ -82,25 +82,27 @@ QgsOffsetLinesAlgorithm *QgsOffsetLinesAlgorithm::createInstance() const
 
 void QgsOffsetLinesAlgorithm::initParameters( const QVariantMap & )
 {
-  std::unique_ptr<QgsProcessingParameterDistance> offset = std::make_unique<QgsProcessingParameterDistance>( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), 10.0, QStringLiteral( "INPUT" ) );
+  std::unique_ptr< QgsProcessingParameterDistance > offset = std::make_unique< QgsProcessingParameterDistance >( QStringLiteral( "DISTANCE" ),
+      QObject::tr( "Distance" ),
+      10.0, QStringLiteral( "INPUT" ) );
   offset->setIsDynamic( true );
   offset->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "DISTANCE" ), QObject::tr( "Distance" ), QgsPropertyDefinition::Double ) );
   offset->setDynamicLayerParameterName( QStringLiteral( "INPUT" ) );
   addParameter( offset.release() );
 
-  auto segmentParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1 );
+  auto segmentParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "SEGMENTS" ), QObject::tr( "Segments" ), Qgis::ProcessingNumberParameterType::Integer, 8, false, 1 );
   addParameter( segmentParam.release() );
 
-  auto joinStyleParam = std::make_unique<QgsProcessingParameterEnum>( QStringLiteral( "JOIN_STYLE" ), QObject::tr( "Join style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Miter" ) << QObject::tr( "Bevel" ), false, 0 );
+  auto joinStyleParam = std::make_unique< QgsProcessingParameterEnum>( QStringLiteral( "JOIN_STYLE" ), QObject::tr( "Join style" ), QStringList() << QObject::tr( "Round" ) << QObject::tr( "Miter" ) << QObject::tr( "Bevel" ), false, 0 );
   addParameter( joinStyleParam.release() );
 
-  auto miterLimitParam = std::make_unique<QgsProcessingParameterNumber>( QStringLiteral( "MITER_LIMIT" ), QObject::tr( "Miter limit" ), Qgis::ProcessingNumberParameterType::Double, 2, false, 1 );
+  auto miterLimitParam = std::make_unique< QgsProcessingParameterNumber >( QStringLiteral( "MITER_LIMIT" ), QObject::tr( "Miter limit" ), Qgis::ProcessingNumberParameterType::Double, 2, false, 1 );
   addParameter( miterLimitParam.release() );
 }
 
 QList<int> QgsOffsetLinesAlgorithm::inputLayerTypes() const
 {
-  return QList<int>() << static_cast<int>( Qgis::ProcessingSourceType::VectorLine );
+  return QList< int >() << static_cast< int >( Qgis::ProcessingSourceType::VectorLine );
 }
 
 Qgis::ProcessingSourceType QgsOffsetLinesAlgorithm::outputLayerType() const
@@ -113,10 +115,10 @@ bool QgsOffsetLinesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Q
   mOffset = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
   mDynamicOffset = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
   if ( mDynamicOffset )
-    mOffsetProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value<QgsProperty>();
+    mOffsetProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >();
 
   mSegments = parameterAsInt( parameters, QStringLiteral( "SEGMENTS" ), context );
-  mJoinStyle = static_cast<Qgis::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
+  mJoinStyle = static_cast< Qgis::JoinStyle>( 1 + parameterAsInt( parameters, QStringLiteral( "JOIN_STYLE" ), context ) );
   mMiterLimit = parameterAsDouble( parameters, QStringLiteral( "MITER_LIMIT" ), context );
 
   return true;
@@ -144,3 +146,5 @@ QgsFeatureList QgsOffsetLinesAlgorithm::processFeature( const QgsFeature &featur
 }
 
 ///@endcond
+
+

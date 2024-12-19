@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgslegendfilterbutton.h"
-#include "moc_qgslegendfilterbutton.cpp"
 
 #include <QMenu>
 #include <QAction>
@@ -62,7 +61,7 @@ void QgsLegendFilterButton::onSetLegendFilterExpression()
 {
   QgsExpressionContext context;
   if ( mExpressionContextGenerator )
-    context = mExpressionContextGenerator->createExpressionContext();
+    context  = mExpressionContextGenerator->createExpressionContext();
   else
   {
     context.appendScopes( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );

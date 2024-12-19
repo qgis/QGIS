@@ -2,5 +2,5 @@
 try:
     QgsRecentColorScheme.addRecentColor = staticmethod(QgsRecentColorScheme.addRecentColor)
     QgsRecentColorScheme.lastUsedColor = staticmethod(QgsRecentColorScheme.lastUsedColor)
-except (NameError, AttributeError):
+except NameError:
     pass

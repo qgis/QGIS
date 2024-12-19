@@ -6,9 +6,9 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-__author__ = "Denis Rouzaud"
-__date__ = "2016-11-07"
-__copyright__ = "Copyright 2015, The QGIS Project"
+__author__ = 'Denis Rouzaud'
+__date__ = '2016-11-07'
+__copyright__ = 'Copyright 2015, The QGIS Project'
 
 import os
 
@@ -56,21 +56,14 @@ class TestQgsVectorLayerTools(QgisTestCase):
         :return:
         """
         super().setUpClass()
-        cls.dbconn = "service='qgis_test'"
-        if "QGIS_PGTEST_DB" in os.environ:
-            cls.dbconn = os.environ["QGIS_PGTEST_DB"]
+        cls.dbconn = 'service=\'qgis_test\''
+        if 'QGIS_PGTEST_DB' in os.environ:
+            cls.dbconn = os.environ['QGIS_PGTEST_DB']
 
         # Create test layers
-        cls.vl = QgsVectorLayer(
-            cls.dbconn
-            + ' sslmode=disable key=\'pk\' table="qgis_test"."someData" (geom) sql=',
-            "layer",
-            "postgres",
-        )
+        cls.vl = QgsVectorLayer(cls.dbconn + ' sslmode=disable key=\'pk\' table="qgis_test"."someData" (geom) sql=', 'layer', 'postgres')
 
-        cls.vl2 = QgsVectorLayer(
-            "Point?crs=EPSG:4326&field=id:integer(10,0)", "points", "memory"
-        )
+        cls.vl2 = QgsVectorLayer('Point?crs=EPSG:4326&field=id:integer(10,0)', 'points', 'memory')
         f = QgsFeature(cls.vl2.fields())
         f.setGeometry(QgsPoint(1, 1))
         f.setAttributes([1])
@@ -78,9 +71,7 @@ class TestQgsVectorLayerTools(QgisTestCase):
         cls.vl2.addFeature(f)
         cls.vl2.commitChanges()
 
-        cls.vl3 = QgsVectorLayer(
-            "NoGeometry?crs=EPSG:4326&field=point_id:integer(10,0)", "details", "memory"
-        )
+        cls.vl3 = QgsVectorLayer('NoGeometry?crs=EPSG:4326&field=point_id:integer(10,0)', 'details', 'memory')
         f = QgsFeature(cls.vl3.fields())
         f.setAttributes([1])
         cls.vl3.startEditing()
@@ -91,18 +82,18 @@ class TestQgsVectorLayerTools(QgisTestCase):
         QgsProject.instance().addMapLayers([cls.vl, cls.vl2, cls.vl3])
 
         relation = QgsRelation()
-        relation.setName("test")
+        relation.setName('test')
         relation.setReferencedLayer(cls.vl2.id())
         relation.setReferencingLayer(cls.vl3.id())
         relation.setStrength(Qgis.RelationshipStrength.Composition)
-        relation.addFieldPair("point_id", "id")
+        relation.addFieldPair('point_id', 'id')
         QgsProject.instance().relationManager().addRelation(relation)
 
         cls.vltools = SubQgsVectorLayerTools()
         cls.vltools.setProject(QgsProject.instance())
 
     def testCopyMoveFeature(self):
-        """Test copy and move features"""
+        """ Test copy and move features"""
         rqst = QgsFeatureRequest()
         rqst.setFilterFid(4)
         features_count = self.vl.featureCount()
@@ -116,7 +107,7 @@ class TestQgsVectorLayerTools(QgisTestCase):
             self.assertAlmostEqual(geom.asPoint().y(), 78.5)
 
     def testCopyMoveFeatureRelationship(self):
-        """Test copy and move features"""
+        """ Test copy and move features"""
         rqst = QgsFeatureRequest()
         rqst.setFilterFid(1)
         self.vl2.startEditing()
@@ -125,5 +116,5 @@ class TestQgsVectorLayerTools(QgisTestCase):
         self.assertEqual(self.vl3.featureCount(), 4)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

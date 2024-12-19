@@ -2,9 +2,9 @@
 try:
     QgsPointCloudAttribute.isNumeric = staticmethod(QgsPointCloudAttribute.isNumeric)
     QgsPointCloudAttribute.__group__ = ['pointcloud']
-except (NameError, AttributeError):
+except NameError:
     pass
 try:
     QgsPointCloudAttributeCollection.__group__ = ['pointcloud']
-except (NameError, AttributeError):
+except NameError:
     pass

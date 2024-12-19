@@ -147,36 +147,36 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     // might be fixed in newer Doxygen (does not on 1.8.13, might be ok on 1.8.16)
 
 
-    //! \deprecated QGIS 3.10. Use classficationMethod() instead.
+    //! \deprecated QGIS 3.10. Use classficationMethod instead.
     Q_DECL_DEPRECATED Mode mode() const SIP_DEPRECATED { return modeFromMethodId( mClassificationMethod->id() ); }
-    //! \deprecated QGIS 3.10. Use classficationMethod() instead.
+    //! \deprecated QGIS 3.10. Use classficationMethod instead.
     Q_DECL_DEPRECATED void setMode( Mode mode ) SIP_DEPRECATED;
 
     /**
      * Returns if we want to classify symmetric around a given value
      * \since QGIS 3.4
-     * \deprecated QGIS 3.10. Use classficationMethod() instead.
+     * \deprecated QGIS 3.10. Use classficationMethod instead.
      */
     Q_DECL_DEPRECATED bool useSymmetricMode() const SIP_DEPRECATED { return mClassificationMethod->symmetricModeEnabled(); }
 
     /**
      * Set if we want to classify symmetric around a given value
      * \since QGIS 3.4
-     * \deprecated QGIS 3.10. Use classficationMethod() instead.
+     * \deprecated QGIS 3.10. Use classficationMethod instead.
      */
     Q_DECL_DEPRECATED  void setUseSymmetricMode( bool useSymmetricMode ) SIP_DEPRECATED;
 
     /**
      * Returns the pivot value for symmetric classification
      * \since QGIS 3.4
-     * \deprecated QGIS 3.10. Use classficationMethod() instead.
+     * \deprecated QGIS 3.10. Use classficationMethod instead.
      */
     Q_DECL_DEPRECATED double symmetryPoint() const SIP_DEPRECATED { return mClassificationMethod->symmetryPoint(); }
 
     /**
      * Set the pivot point
      * \since QGIS 3.4
-     * \deprecated QGIS 3.10. Use classficationMethod() instead.
+     * \deprecated QGIS 3.10. Use classficationMethod instead.
      */
     Q_DECL_DEPRECATED void setSymmetryPoint( double symmetryPoint ) SIP_DEPRECATED;
 
@@ -184,14 +184,14 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     /**
      * Returns if we want to have a central class astride the pivot value
      * \since QGIS 3.4
-     * \deprecated QGIS 3.10. Use classficationMethod() instead.
+     * \deprecated QGIS 3.10. Use classficationMethod instead.
      */
     Q_DECL_DEPRECATED bool astride() const SIP_DEPRECATED { return mClassificationMethod->symmetryAstride(); }
 
     /**
      * Set if we want a central class astride the pivot value
      * \since QGIS 3.4
-     * \deprecated QGIS 3.10. Use classficationMethod() instead.
+     * \deprecated QGIS 3.10. Use classficationMethod instead.
      */
     Q_DECL_DEPRECATED void setAstride( bool astride ) SIP_DEPRECATED;
 

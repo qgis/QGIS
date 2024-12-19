@@ -26,6 +26,7 @@
  */
 class QgsWMSConnection : public QgsOwsConnection
 {
+
     Q_OBJECT
 
   public:
@@ -38,6 +39,7 @@ class QgsWMSConnection : public QgsOwsConnection
 
     static QString selectedConnection();
     static void setSelectedConnection( const QString &name );
+
 };
 
 #endif // QGSWMSCONNECTION_H

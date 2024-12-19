@@ -17,7 +17,6 @@
 #include <QVector>
 
 #include "qgsmaplayerloadstyledialog.h"
-#include "moc_qgsmaplayerloadstyledialog.cpp"
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgslayerpropertiesdialog.h"
@@ -46,7 +45,8 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   const QString myLastUsedDir = settings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
 
   // load style type combobox
-  connect( mStyleTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [=]( int ) {
+  connect( mStyleTypeComboBox, qOverload<int>( &QComboBox::currentIndexChanged ), this, [ = ]( int )
+  {
     const QgsLayerPropertiesDialog::StyleType type = currentStyleType();
     mFileLabel->setVisible( type != QgsLayerPropertiesDialog::StyleType::DatasourceDatabase && type != QgsLayerPropertiesDialog::StyleType::UserDatabase );
     mFileWidget->setVisible( type != QgsLayerPropertiesDialog::StyleType::DatasourceDatabase && type != QgsLayerPropertiesDialog::StyleType::UserDatabase );
@@ -84,7 +84,9 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
       break;
 
     case Qgis::LayerType::VectorTile:
-      mFileWidget->setFilter( tr( "All Styles" ) + QStringLiteral( " (*.qml *.json);;" ) + tr( "QGIS Layer Style File" ) + QStringLiteral( " (*.qml);;" ) + tr( "MapBox GL Style JSON File" ) + QStringLiteral( " (*.json)" ) );
+      mFileWidget->setFilter( tr( "All Styles" ) + QStringLiteral( " (*.qml *.json);;" )
+                              + tr( "QGIS Layer Style File" ) + QStringLiteral( " (*.qml);;" )
+                              + tr( "MapBox GL Style JSON File" ) + QStringLiteral( " (*.json)" ) );
       break;
 
     case Qgis::LayerType::Raster:
@@ -95,11 +97,13 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
     case Qgis::LayerType::Group:
     case Qgis::LayerType::TiledScene:
       break;
+
   }
 
   mFileWidget->setStorageMode( QgsFileWidget::GetFile );
   mFileWidget->setDefaultRoot( myLastUsedDir );
-  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [=]( const QString &path ) {
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, [ = ]( const QString & path )
+  {
     mStyleCategoriesListView->setEnabled( currentStyleType() != QgsLayerPropertiesDialog::SLD );
     QgsSettings settings;
     const QFileInfo tmplFileInfo( path );
@@ -127,7 +131,8 @@ QgsMapLayerLoadStyleDialog::QgsMapLayerLoadStyleDialog( QgsMapLayer *layer, QWid
   connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsMapLayerLoadStyleDialog::showHelp );
   connect( mLoadButton, &QPushButton::clicked, this, &QDialog::accept );
   connect( mDeleteButton, &QPushButton::clicked, this, &QgsMapLayerLoadStyleDialog::deleteStyleFromDB );
-  connect( this, &QgsMapLayerLoadStyleDialog::rejected, [=] {
+  connect( this, &QgsMapLayerLoadStyleDialog::rejected, [ = ]
+  {
     QgsSettings().setValue( QStringLiteral( "style/lastLoadStyleTypeSelection" ), currentStyleType() );
   } );
 
@@ -309,7 +314,9 @@ void QgsMapLayerLoadStyleDialog::deleteStyleFromDB()
   QString msgError;
   const QString opInfo = QObject::tr( "Delete style %1 from %2" ).arg( mSelectedStyleName, mLayer->providerType() );
 
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Style" ), QObject::tr( "Are you sure you want to delete the style %1?" ).arg( mSelectedStyleName ), QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Style" ),
+                              QObject::tr( "Are you sure you want to delete the style %1?" ).arg( mSelectedStyleName ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
 
   mLayer->deleteStyleFromDatabase( mSelectedStyleId, msgError );
@@ -320,7 +327,7 @@ void QgsMapLayerLoadStyleDialog::deleteStyleFromDB()
   }
   else
   {
-    //    QgisApp::instance()->messageBar()->pushMessage( opInfo, tr( "%1: success" ).arg( opInfo ), Qgis::MessageLevel::Info, QgisApp::instance()->messageTimeout() );
+//    QgisApp::instance()->messageBar()->pushMessage( opInfo, tr( "%1: success" ).arg( opInfo ), Qgis::MessageLevel::Info, QgisApp::instance()->messageTimeout() );
 
     //Delete all rows from the UI table widgets
     mRelatedTable->setRowCount( 0 );
@@ -345,7 +352,11 @@ void QgsMapLayerLoadStyleDialog::deleteStyleFromDB()
 void QgsMapLayerLoadStyleDialog::updateLoadButtonState()
 {
   const QgsLayerPropertiesDialog::StyleType type = currentStyleType();
-  mLoadButton->setEnabled( ( type == QgsLayerPropertiesDialog::DatasourceDatabase && ( mRelatedTable->selectionModel()->hasSelection() || mOthersTable->selectionModel()->hasSelection() ) ) || ( type != QgsLayerPropertiesDialog::DatasourceDatabase && !mFileWidget->filePath().isEmpty() ) || type == QgsLayerPropertiesDialog::UserDatabase );
+  mLoadButton->setEnabled( ( type == QgsLayerPropertiesDialog::DatasourceDatabase
+                             && ( mRelatedTable->selectionModel()->hasSelection() || mOthersTable->selectionModel()->hasSelection()
+                                ) ) ||
+                           ( type != QgsLayerPropertiesDialog::DatasourceDatabase && !mFileWidget->filePath().isEmpty() ) ||
+                           type == QgsLayerPropertiesDialog::UserDatabase );
 }
 
 void QgsMapLayerLoadStyleDialog::showHelp()

@@ -23,6 +23,7 @@ class QgsBrushStyleComboBox : QComboBox
 
   protected:
     QIcon iconForBrush( Qt::BrushStyle style );
+
 };
 
 /************************************************************************

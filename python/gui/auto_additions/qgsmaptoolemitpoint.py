@@ -3,5 +3,5 @@ try:
     QgsMapToolEmitPoint.__attribute_docs__ = {'canvasClicked': 'signal emitted on canvas click\n'}
     QgsMapToolEmitPoint.__signal_arguments__ = {'canvasClicked': ['point: QgsPointXY', 'button: Qt.MouseButton']}
     QgsMapToolEmitPoint.__group__ = ['maptools']
-except (NameError, AttributeError):
+except NameError:
     pass

@@ -19,10 +19,12 @@ A panel widget that can be shown in the developer tools panel.
 #include "qgsdevtoolwidget.h"
 %End
   public:
+
     QgsDevToolWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsDevToolWidget, with the specified ``parent`` widget.
 %End
+
 };
 
 /************************************************************************

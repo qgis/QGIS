@@ -25,6 +25,7 @@ items for the different data providers and folders accessible to users.
 #include "qgsbrowserguimodel.h"
 %End
   public:
+
     explicit QgsBrowserGuiModel( QObject *parent = 0 );
 %Docstring
 Constructor for QgsBrowserGuiModel, with the specified ``parent`` object.
@@ -38,8 +39,8 @@ Constructor for QgsBrowserGuiModel, with the specified ``parent`` object.
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
-    virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
-
+     virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action,
+                       int row, int column, const QModelIndex &parent );
     virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
     void setMessageBar( QgsMessageBar *bar );

@@ -32,16 +32,19 @@
 class QgsVectorizeAlgorithmBase : public QgsProcessingAlgorithm
 {
   public:
+
     QString group() const final;
     QString groupId() const final;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) final;
 
   protected:
+
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) final;
 
-    QVariantMap processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) final;
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) final;
 
-    std::unique_ptr<QgsRasterInterface> mInterface;
+    std::unique_ptr< QgsRasterInterface > mInterface;
 
     Qgis::DataType mDataType = Qgis::DataType::Float32;
     double mNoDataValue = -9999;
@@ -56,6 +59,7 @@ class QgsVectorizeAlgorithmBase : public QgsProcessingAlgorithm
     bool mUseNoDataForMissingValues = false;
 
   private:
+
     virtual QString outputName() const = 0;
     virtual Qgis::ProcessingSourceType outputType() const = 0;
     virtual Qgis::WkbType sinkType() const = 0;
@@ -68,6 +72,7 @@ class QgsVectorizeAlgorithmBase : public QgsProcessingAlgorithm
 class QgsRasterPixelsToPolygonsAlgorithm : public QgsVectorizeAlgorithmBase
 {
   public:
+
     QgsRasterPixelsToPolygonsAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -77,10 +82,12 @@ class QgsRasterPixelsToPolygonsAlgorithm : public QgsVectorizeAlgorithmBase
     QgsRasterPixelsToPolygonsAlgorithm *createInstance() const override SIP_FACTORY;
 
   private:
+
     QString outputName() const override;
     Qgis::ProcessingSourceType outputType() const override;
     Qgis::WkbType sinkType() const override;
     QgsGeometry createGeometryForPixel( double centerX, double centerY, double pixelWidthX, double pixelWidthY ) const override;
+
 };
 
 /**
@@ -89,6 +96,7 @@ class QgsRasterPixelsToPolygonsAlgorithm : public QgsVectorizeAlgorithmBase
 class QgsRasterPixelsToPointsAlgorithm : public QgsVectorizeAlgorithmBase
 {
   public:
+
     QgsRasterPixelsToPointsAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
@@ -98,12 +106,16 @@ class QgsRasterPixelsToPointsAlgorithm : public QgsVectorizeAlgorithmBase
     QgsRasterPixelsToPointsAlgorithm *createInstance() const override SIP_FACTORY;
 
   private:
+
     QString outputName() const override;
     Qgis::ProcessingSourceType outputType() const override;
     Qgis::WkbType sinkType() const override;
     QgsGeometry createGeometryForPixel( double centerX, double centerY, double pixelWidthX, double pixelWidthY ) const override;
+
 };
 
 ///@endcond PRIVATE
 
 #endif // QGSALGORITHMVECTORIZE_H
+
+
