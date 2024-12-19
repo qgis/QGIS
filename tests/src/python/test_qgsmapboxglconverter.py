@@ -2209,6 +2209,88 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             '"direction"',
         )
 
+    def test_parse_visibility(self):
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "sources": {"Basemaps": {"type": "vector", "url": "https://xxxxxx"}},
+            "layers": [
+                {
+                    "id": "at-layout-level-true",
+                    "source": "streets",
+                    "source-layer": "water",
+                    "type": "fill",
+                    "paint": {"fill-color": "#00ffff"},
+                    "layout": {
+                        "visibility": "visible",
+                        "text-field": "{substance}",
+                    },
+                },
+                {
+                    "id": "at-layout-level-other",
+                    "source": "streets",
+                    "source-layer": "water",
+                    "type": "fill",
+                    "paint": {"fill-color": "#00ffff"},
+                    "layout": {
+                        "visibility": "anOtherText",
+                        "text-field": "{substance}",
+                    },
+                },
+                {
+                    "id": "at-layout-level-false",
+                    "source": "streets",
+                    "source-layer": "water",
+                    "type": "fill",
+                    "paint": {"fill-color": "#00ffff"},
+                    "layout": {
+                        "visibility": "none",
+                        "text-field": "{substance}",
+                    },
+                },
+                {
+                    "id": "at-root-level-true",
+                    "source": "streets",
+                    "source-layer": "water",
+                    "type": "fill",
+                    "paint": {"fill-color": "#00ffff"},
+                    "visibility": "visible",
+                },
+                {
+                    "id": "at-root-level-other",
+                    "source": "streets",
+                    "source-layer": "water",
+                    "type": "fill",
+                    "paint": {"fill-color": "#00ffff"},
+                    "visibility": "anOtherText",
+                },
+                {
+                    "id": "at-root-level-false",
+                    "source": "streets",
+                    "source-layer": "water",
+                    "type": "fill",
+                    "paint": {"fill-color": "#00ffff"},
+                    "visibility": "none",
+                },
+            ],
+        }
+
+        converter = QgsMapBoxGlStyleConverter()
+        converter.convert(style, context)
+
+        renderer = converter.renderer()
+        style = renderer.style(0)
+        self.assertEqual(style.isEnabled(), True)
+        style = renderer.style(1)
+        self.assertEqual(style.isEnabled(), True)
+        style = renderer.style(2)
+        self.assertEqual(style.isEnabled(), False)
+        style = renderer.style(3)
+        self.assertEqual(style.isEnabled(), True)
+        style = renderer.style(4)
+        self.assertEqual(style.isEnabled(), True)
+        style = renderer.style(5)
+        self.assertEqual(style.isEnabled(), False)
+
     def test_parse_zoom_levels(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {
