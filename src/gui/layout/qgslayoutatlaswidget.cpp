@@ -78,18 +78,15 @@ void QgsLayoutAtlasWidget::setMessageBar( QgsMessageBar *bar )
 
 void QgsLayoutAtlasWidget::mUseAtlasCheckBox_stateChanged( int state )
 {
-  if ( state == Qt::Checked )
-  {
-    mAtlas->setEnabled( true );
-    mConfigurationGroup->setEnabled( true );
-    mOutputGroup->setEnabled( true );
-  }
-  else
-  {
-    mAtlas->setEnabled( false );
-    mConfigurationGroup->setEnabled( false );
-    mOutputGroup->setEnabled( false );
-  }
+  const bool enabled = state == Qt::Checked;
+  mAtlas->setEnabled( enabled );
+  mAtlasCoverageLayerComboBox->setEnabled( enabled );
+  mAtlasCoverageLayerLabel->setEnabled( enabled );
+
+  const bool validLayer = mAtlas->coverageLayer() != nullptr;
+
+  mConfigurationGroup->setEnabled( enabled && validLayer );
+  mOutputGroup->setEnabled( enabled && validLayer );
 }
 
 void QgsLayoutAtlasWidget::changeCoverageLayer( QgsMapLayer *layer )
@@ -111,6 +108,9 @@ void QgsLayoutAtlasWidget::changeCoverageLayer( QgsMapLayer *layer )
     mAtlas->setCoverageLayer( vl );
     updateAtlasFeatures();
   }
+
+  mConfigurationGroup->setEnabled( mAtlas->enabled() && !vl );
+  mOutputGroup->setEnabled( mAtlas->enabled() && !vl );
 
   // if page name expression is still valid, retain it. Otherwise switch to a nice default.
   QgsExpression exp( prevPageNameExpression );
