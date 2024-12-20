@@ -16,6 +16,8 @@
 #ifndef QGSPOINTCLOUDLAYEREDITUTILS_H
 #define QGSPOINTCLOUDLAYEREDITUTILS_H
 
+#include "qgis_core.h"
+
 #include <QVector>
 #include <QByteArray>
 
@@ -28,9 +30,19 @@ class QgsPointCloudAttribute;
 class QgsPointCloudAttributeCollection;
 class QgsPointCloudRequest;
 
-class QgsPointCloudLayerEditUtils
+/**
+ * \ingroup core
+ *
+ * \brief Contains utility functions for editing point cloud layers.
+ *
+ * \note Not available in Python bindings
+ *
+ * \since QGIS 3.42
+ */
+class CORE_EXPORT QgsPointCloudLayerEditUtils
 {
   public:
+    //! Ctor
     QgsPointCloudLayerEditUtils( QgsPointCloudLayer *layer );
 
     /**
