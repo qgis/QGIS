@@ -319,6 +319,16 @@ class CORE_EXPORT QgsPointCloudLayer : public QgsMapLayer, public QgsAbstractPro
      */
     bool changeAttributeValue( const QgsPointCloudNodeId &n, const QVector<int> &points, const QgsPointCloudAttribute &attribute, double value ) SIP_SKIP;
 
+    /**
+     * Returns the point cloud index associated with the layer.
+     * If the layer is editable, its QgsPointCloudEditingIndex is returned,
+     * otherwise the index is fetched from the data provider.
+     *
+     * Can be nullptr (e.g. the index is being created)
+     *
+     * \note Not available in Python bindings
+     * \since QGIS 3.42
+     */
     QgsPointCloudIndex *index() const SIP_SKIP;
 
 
