@@ -135,7 +135,9 @@ class Buffer(GdalAlgorithm):
             self.INPUT, parameters, context, feedback, executing
         )
         if not source_details.layer_name:
-            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+            raise QgsProcessingException(
+                self.invalidSourceError(parameters, self.INPUT)
+            )
 
         if source_details.geometry_column_name:
             geometry = source_details.geometry_column_name
@@ -153,7 +155,6 @@ class Buffer(GdalAlgorithm):
         other_fields_exist = any(True for f in fields if f.name() != geometry)
 
         other_fields = ",*" if other_fields_exist else ""
-
 
         arguments = [
             output_details.connection_string,
@@ -174,7 +175,7 @@ class Buffer(GdalAlgorithm):
         arguments.append(sql)
 
         if source_details.geometry_column_name:
-            arguments.append('-nlt PROMOTE_TO_MULTI')
+            arguments.append("-nlt PROMOTE_TO_MULTI")
 
         if self.parameterAsBoolean(parameters, self.EXPLODE_COLLECTIONS, context):
             arguments.append("-explodecollections")

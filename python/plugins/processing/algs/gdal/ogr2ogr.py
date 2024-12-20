@@ -100,7 +100,9 @@ class ogr2ogr(GdalAlgorithm):
             self.INPUT, parameters, context, feedback, executing
         )
         if not input_details.layer_name:
-            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+            raise QgsProcessingException(
+                self.invalidSourceError(parameters, self.INPUT)
+            )
         convertAllLayers = self.parameterAsBoolean(
             parameters, self.CONVERT_ALL_LAYERS, context
         )

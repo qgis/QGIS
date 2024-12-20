@@ -365,7 +365,9 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
             self.INPUT, parameters, context, feedback, executing
         )
         if not input_details.layer_name:
-            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
+            raise QgsProcessingException(
+                self.invalidSourceError(parameters, self.INPUT)
+            )
         shapeEncoding = self.parameterAsString(parameters, self.SHAPE_ENCODING, context)
         ssrs = self.parameterAsCrs(parameters, self.S_SRS, context)
         tsrs = self.parameterAsCrs(parameters, self.T_SRS, context)
