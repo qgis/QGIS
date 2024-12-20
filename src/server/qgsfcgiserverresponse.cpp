@@ -120,28 +120,51 @@ void QgsSocketMonitoringThread::run()
 
   mShouldStop.store( false );
   char c;
+
+  fd_set setOptions;
+  FD_ZERO( &setOptions );        // clear the set
+  FD_SET( mIpcFd, &setOptions ); // add our file descriptor to the set
+
+  struct timeval timeout;
+  timeout.tv_sec = 0;
+  timeout.tv_usec = 50000; // max 50ms of timeout for select
+
   while ( !mShouldStop.load() )
   {
-    const ssize_t x = recv( mIpcFd, &c, 1, MSG_PEEK | MSG_DONTWAIT ); // see https://stackoverflow.com/a/12402596
-    if ( x != 0 )
-    {
-      // Ie. we are still connected but we have an 'error' as there is nothing to read
-      QgsDebugMsgLevel( QStringLiteral( "FCGIServer %1: remote socket still connected. errno: %2, x: %3" ) //
-                          .arg( threadId )
-                          .arg( errno )
-                          .arg( x ),
-                        5 );
-    }
-    else
+    int rv = select( mIpcFd + 1, &setOptions, NULL, NULL, &timeout ); // see https://stackoverflow.com/a/30395738
+    if ( rv == -1 )
     {
       // socket closed, nothing can be read
-      QgsDebugMsgLevel( QStringLiteral( "FCGIServer %1: remote socket has been closed! errno: %2, x: %3" ) //
+      QgsDebugMsgLevel( QStringLiteral( "FCGIServer %1: remote socket has been closed (select)! errno: %2" ) //
                           .arg( threadId )
-                          .arg( errno )
-                          .arg( x ),
+                          .arg( errno ),
                         1 );
       mFeedback->cancel();
       break;
+    }
+    else
+    {
+      const ssize_t x = recv( mIpcFd, &c, 1, MSG_PEEK | MSG_DONTWAIT ); // see https://stackoverflow.com/a/12402596
+      if ( x != 0 )
+      {
+        // Ie. we are still connected but we have an 'error' as there is nothing to read
+        QgsDebugMsgLevel( QStringLiteral( "FCGIServer %1: remote socket still connected. errno: %2, x: %3" ) //
+                            .arg( threadId )
+                            .arg( errno )
+                            .arg( x ),
+                          5 );
+      }
+      else
+      {
+        // socket closed, nothing can be read
+        QgsDebugMsgLevel( QStringLiteral( "FCGIServer %1: remote socket has been closed (recv)! errno: %2, x: %3" ) //
+                            .arg( threadId )
+                            .arg( errno )
+                            .arg( x ),
+                          1 );
+        mFeedback->cancel();
+        break;
+      }
     }
 
     // If lock is acquired this means the response has finished and we will exit the while loop
