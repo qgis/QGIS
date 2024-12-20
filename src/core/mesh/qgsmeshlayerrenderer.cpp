@@ -188,9 +188,6 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
             layerStatistics->setMaximum( 0, max );
             layerStatistics->setMinimum( 0, min );
 
-            scalarRendererSettings.setClassificationMinimumMaximum( min, max );
-            mRendererSettings.setScalarSettings( activeDatasetIndex.group(), scalarRendererSettings );
-
             appendRenderedItemDetails( layerStatistics );
           }
         }
