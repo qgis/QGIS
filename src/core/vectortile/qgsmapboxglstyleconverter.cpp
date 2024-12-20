@@ -1713,6 +1713,19 @@ void QgsMapBoxGlStyleConverter::parseSymbolLayer( const QVariantMap &jsonLayer, 
         break;
       }
 
+      case QMetaType::Type::QVariantMap:
+      {
+        QVariantMap rotateMap = jsonTextRotate.toMap();
+        if ( rotateMap.contains( QStringLiteral( "property" ) ) && rotateMap[QStringLiteral( "type" )].toString() == QStringLiteral( "identity" ) )
+        {
+          const QgsProperty property = QgsProperty::fromExpression( rotateMap[QStringLiteral( "property" )].toString() );
+          ddLabelProperties.setProperty( QgsPalLayerSettings::Property::LabelRotation, property );
+        }
+        else
+          context.pushWarning( QObject::tr( "%1: Skipping unsupported text-rotate map content (%2)" ).arg( context.layerId(), QString( QJsonDocument::fromVariant( rotateMap ).toJson() ) ) );
+        break;
+      }
+
       default:
         context.pushWarning( QObject::tr( "%1: Skipping unsupported text-rotate type (%2)" ).arg( context.layerId(), QMetaType::typeName( static_cast<QMetaType::Type>( jsonTextRotate.userType() ) ) ) );
         break;
