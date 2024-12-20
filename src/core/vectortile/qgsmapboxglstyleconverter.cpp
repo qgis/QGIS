@@ -149,7 +149,18 @@ void QgsMapBoxGlStyleConverter::parseLayers( const QVariantList &layers, QgsMapB
     if ( maxZoom != -1 )
       maxZoom--;
 
-    const bool enabled = jsonLayer.value( QStringLiteral( "visibility" ) ).toString() != QLatin1String( "none" );
+    QString visibilyStr;
+    if ( jsonLayer.contains( QStringLiteral( "visibility" ) ) )
+    {
+      visibilyStr = jsonLayer.value( QStringLiteral( "visibility" ) ).toString();
+    }
+    else if ( jsonLayer.contains( QStringLiteral( "layout" ) ) && jsonLayer.value( QStringLiteral( "layout" ) ).userType() == QMetaType::Type::QVariantMap )
+    {
+      const QVariantMap jsonLayout = jsonLayer.value( QStringLiteral( "layout" ) ).toMap();
+      visibilyStr = jsonLayout.value( QStringLiteral( "visibility" ) ).toString();
+    }
+
+    const bool enabled = visibilyStr != QLatin1String( "none" );
 
     QString filterExpression;
     if ( jsonLayer.contains( QStringLiteral( "filter" ) ) )
