@@ -397,7 +397,10 @@ class OgrToPostGis(GdalAlgorithm):
         pk = self.parameterAsString(parameters, self.PK, context)
         pkstring = "-lco FID=" + pk
         primary_key = self.parameterAsString(parameters, self.PRIMARY_KEY, context)
-        geocolumn = self.parameterAsString(parameters, self.GEOCOLUMN, context)
+        if input_details.geometry_column_name:
+            geocolumn = input_details.geometry_column_name
+        else:
+            geocolumn = self.parameterAsString(parameters, self.GEOCOLUMN, context)
         geocolumnstring = "-lco GEOMETRY_NAME=" + geocolumn
         dim = self.DIMLIST[self.parameterAsEnum(parameters, self.DIM, context)]
         dimstring = "-lco DIM=" + dim

@@ -84,6 +84,8 @@ class ClipVectorByExtent(GdalAlgorithm):
         input_details = self.getOgrCompatibleSource(
             self.INPUT, parameters, context, feedback, executing
         )
+        if not input_details.layer_name:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
         source = self.parameterAsSource(parameters, self.INPUT, context)
         if source is None:
             raise QgsProcessingException(

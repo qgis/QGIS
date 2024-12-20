@@ -100,6 +100,8 @@ class ExecuteSql(GdalAlgorithm):
         input_details = self.getOgrCompatibleSource(
             self.INPUT, parameters, context, feedback, executing
         )
+        if not input_details.layer_name:
+            raise QgsProcessingException(self.invalidSourceError(parameters, self.INPUT))
         sql = self.parameterAsString(parameters, self.SQL, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
