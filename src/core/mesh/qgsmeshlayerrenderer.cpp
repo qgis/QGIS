@@ -171,9 +171,6 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
       double previousMin = scalarRendererSettings.classificationMinimum();
       double previousMax = scalarRendererSettings.classificationMaximum();
 
-      QgsRenderedLayerStatistics *layerStatistics = new QgsRenderedLayerStatistics( layer->id(), previousMin, previousMax );
-      layerStatistics->setBoundingBox( layer->extent() );
-
       if ( scalarRendererSettings.extent() == Qgis::MeshRangeExtent::UpdatedCanvas &&
            scalarRendererSettings.limits() == Qgis::MeshRangeLimit::MinimumMaximum )
       {
@@ -185,17 +182,19 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
         {
           if ( previousMin != min || previousMax != max )
           {
+            QgsRenderedLayerStatistics *layerStatistics = new QgsRenderedLayerStatistics( layer->id(), previousMin, previousMax );
+
             layerStatistics->setBoundingBox( context.extent() );
             layerStatistics->setMaximum( 0, max );
             layerStatistics->setMinimum( 0, min );
 
             scalarRendererSettings.setClassificationMinimumMaximum( min, max );
             mRendererSettings.setScalarSettings( activeDatasetIndex.group(), scalarRendererSettings );
+
+            appendRenderedItemDetails( layerStatistics );
           }
         }
       }
-
-      appendRenderedItemDetails( layerStatistics );
     }
   }
 
