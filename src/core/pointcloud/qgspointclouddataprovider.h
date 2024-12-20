@@ -154,10 +154,8 @@ class CORE_EXPORT QgsPointCloudDataProvider: public QgsDataProvider
      * Returns the point cloud index associated with the provider.
      *
      * Can be nullptr (e.g. the index is being created)
-     *
-     * \note Not available in Python bindings
      */
-    virtual QgsPointCloudIndex index() const SIP_SKIP {return QgsPointCloudIndex( nullptr );}
+    virtual QgsPointCloudIndex index() const { return QgsPointCloudIndex( nullptr ); }
 
     /**
      * Returns a list of sub indexes available if the provider supports multiple indexes, empty list otherwise.
