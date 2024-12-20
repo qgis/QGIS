@@ -407,7 +407,7 @@ class CORE_EXPORT QgsPointCloudIndex SIP_NODEFAULTCTORS
 {
   public:
     //! Construct wrapper, takes ownership of index
-    explicit QgsPointCloudIndex( QgsAbstractPointCloudIndex *index ) SIP_SKIP;
+    explicit QgsPointCloudIndex( QgsAbstractPointCloudIndex *index = nullptr ) SIP_SKIP;
 
     //! Checks if index is non-null
     operator bool() const;
