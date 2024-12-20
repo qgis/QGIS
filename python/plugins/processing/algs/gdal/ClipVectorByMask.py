@@ -25,6 +25,7 @@ from qgis.core import (
     QgsProcessingParameterDefinition,
     QgsProcessingParameterString,
     QgsProcessingParameterFeatureSource,
+    QgsProcessingException,
     QgsProcessingParameterVectorDestination,
 )
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
