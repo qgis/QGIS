@@ -1704,6 +1704,11 @@ bool QgsMeshLayer::minimumMaximumActiveScalarDataset( const QgsRectangle &extent
 
   QgsTriangularMesh *tMesh = triangularMesh();
 
+  if ( ! tMesh )
+  {
+    return false;
+  }
+
   QVector<double> scalarDatasetValues;
   const QgsMeshDatasetGroupMetadata metadata = datasetGroupMetadata( datasetIndex.group() );
 
