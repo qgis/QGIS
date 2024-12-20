@@ -2203,6 +2203,33 @@ class TestQgsMapBoxGlStyleConverter(QgisTestCase):
             '"direction"',
         )
 
+        context = QgsMapBoxGlStyleConversionContext()
+        style = {
+            "layout": {
+                "visibility": "visible",
+                "text-field": "{substance}",
+                "text-rotate": {
+                    "property": "label_angle1",
+                    "default": 0,
+                    "type": "identity",
+                },
+            },
+            "paint": {
+                "text-color": "rgba(47, 47, 47, 1)",
+            },
+            "type": "symbol",
+        }
+        rendererStyle, has_renderer, labeling_style, has_labeling = (
+            QgsMapBoxGlStyleConverter.parseSymbolLayer(style, context)
+        )
+        self.assertTrue(has_labeling)
+        ls = labeling_style.labelSettings()
+        ddp = ls.dataDefinedProperties()
+        self.assertEqual(
+            ddp.property(QgsPalLayerSettings.Property.LabelRotation).asExpression(),
+            "label_angle1",
+        )
+
     def test_parse_visibility(self):
         context = QgsMapBoxGlStyleConversionContext()
         style = {
