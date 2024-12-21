@@ -41,36 +41,17 @@ __copyright__ = "(C) 2023, Julien Cabieces"
 
 import argparse
 import ast
+import difflib
 import glob
 import inspect
+import json
 import os
 import sys
-
 from collections import defaultdict
 from collections.abc import Sequence
 from enum import Enum
+from pathlib import Path
 
-from PyQt6 import (
-    Qsci,
-    QtCore,
-    QtGui,
-    QtNetwork,
-    QtPrintSupport,
-    QtSql,
-    QtSvg,
-    QtTest,
-    QtWidgets,
-    QtXml,
-)
-from PyQt6.Qsci import *  # noqa: F403
-from PyQt6.QtCore import *  # noqa: F403
-from PyQt6.QtGui import *  # noqa: F403
-from PyQt6.QtNetwork import *  # noqa: F403
-from PyQt6.QtPrintSupport import *  # noqa: F403
-from PyQt6.QtSql import *  # noqa: F403
-from PyQt6.QtTest import *  # noqa: F403
-from PyQt6.QtWidgets import *  # noqa: F403
-from PyQt6.QtXml import *  # noqa: F403
 from tokenize_rt import Offset, Token, reversed_enumerate, src_to_tokens, tokens_to_src
 
 try:
@@ -78,34 +59,57 @@ try:
     import qgis.analysis as qgis_analysis  # noqa: F403
     import qgis.core as qgis_core  # noqa: F403
     import qgis.gui as qgis_gui  # noqa: F403
-
+    from PyQt6 import (
+        Qsci,
+        QtCore,
+        QtGui,
+        QtNetwork,
+        QtPrintSupport,
+        QtSql,
+        QtSvg,
+        QtTest,
+        QtWidgets,
+        QtXml,
+    )
+    from PyQt6.Qsci import *  # noqa: F403
+    from PyQt6.QtCore import *  # noqa: F403
+    from PyQt6.QtGui import *  # noqa: F403
+    from PyQt6.QtNetwork import *  # noqa: F403
+    from PyQt6.QtPrintSupport import *  # noqa: F403
+    from PyQt6.QtSql import *  # noqa: F403
+    from PyQt6.QtTest import *  # noqa: F403
+    from PyQt6.QtWidgets import *  # noqa: F403
+    from PyQt6.QtXml import *  # noqa: F403
     from qgis._3d import *  # noqa: F403
     from qgis.analysis import *  # noqa: F403
     from qgis.core import *  # noqa: F403
     from qgis.gui import *  # noqa: F403
-except ImportError:
-    qgis_core = None
-    qgis_gui = None
-    qgis_analysis = None
-    qgis_3d = None
-    print(
-        "QGIS classes not available for introspection, only a partial upgrade will be performed"
-    )
 
-target_modules = [
-    QtCore,
-    QtGui,
-    QtWidgets,
-    QtTest,
-    QtSql,
-    QtSvg,
-    QtXml,
-    QtNetwork,
-    QtPrintSupport,
-    Qsci,
-]
-if qgis_core is not None:
-    target_modules.extend([qgis_core, qgis_gui, qgis_analysis, qgis_3d])
+except ImportError:
+    pass
+
+try:
+    target_modules = [
+        QtCore,
+        QtGui,
+        QtWidgets,
+        QtTest,
+        QtSql,
+        QtSvg,
+        QtXml,
+        QtNetwork,
+        QtPrintSupport,
+        Qsci,
+        qgis_core,
+        qgis_gui,
+        qgis_analysis,
+        qgis_3d,
+    ]
+except NameError:
+    target_modules = None
+
+#TODO REMOVE!!!
+target_modules = None
 
 # qmetatype which have been renamed
 qmetatype_mapping = {
@@ -173,16 +177,14 @@ rename_function_attributes = {"exec_": "exec"}
 
 rename_function_definitions = {"exec_": "exec"}
 
-import_warnings = {
-    "QRegExp": "QRegExp is removed in Qt6, please use QRegularExpression for Qt5/Qt6 compatibility"
-}
+import_warnings = {"QRegExp": "QRegExp is removed in Qt6, please use QRegularExpression for Qt5/Qt6 compatibility"}
 
-# { (class, enum_value) : enum_name }
+
 qt_enums = {}
 ambiguous_enums = defaultdict(set)
 
 
-def fix_file(filename: str, qgis3_compat: bool) -> int:
+def fix_file(filename: str, in_place, qgis3_compat: bool, qt_enums: dict, ambiguous_enums: dict) -> int:
 
     with open(filename, encoding="UTF-8") as f:
         contents = f.read()
@@ -244,9 +246,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                     for i in range(start_index + 1, start_index + 3):
                         tokens[i] = tokens[i]._replace(src="")
 
-                custom_updates[Offset(_node.lineno, _node.col_offset)] = (
-                    _invalid_qvariant_to_null
-                )
+                custom_updates[Offset(_node.lineno, _node.col_offset)] = _invalid_qvariant_to_null
             elif (
                 len(_node.args) == 1
                 and isinstance(_node.args[0], ast.Attribute)
@@ -266,9 +266,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                     for i in range(start_index + 1, start_index + 6):
                         tokens[i] = tokens[i]._replace(src="")
 
-                custom_updates[Offset(_node.lineno, _node.col_offset)] = (
-                    _fix_null_qvariant
-                )
+                custom_updates[Offset(_node.lineno, _node.col_offset)] = _fix_null_qvariant
         elif isinstance(_node.func, ast.Name) and _node.func.id == "QDateTime":
             if len(_node.args) == 8:
                 # QDateTime(yyyy, mm, dd, hh, MM, ss, ms, ts) doesn't work anymore,
@@ -280,9 +278,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                     i = start_index + 1
                     assert tokens[i].src == "("
                     tokens[i] = tokens[i]._replace(src="(QDate(")
-                    while tokens[i].offset < Offset(
-                        _node.args[2].lineno, _node.args[2].col_offset
-                    ):
+                    while tokens[i].offset < Offset(_node.args[2].lineno, _node.args[2].col_offset):
                         i += 1
                     assert tokens[i + 1].src == ","
                     i += 1
@@ -291,22 +287,14 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                     while not tokens[i].src.strip():
                         tokens[i] = tokens[i]._replace(src="")
                         i += 1
-                    while tokens[i].offset < Offset(
-                        _node.args[6].lineno, _node.args[6].col_offset
-                    ):
+                    while tokens[i].offset < Offset(_node.args[6].lineno, _node.args[6].col_offset):
                         i += 1
                     i += 1
                     assert tokens[i].src == ","
                     tokens[i] = tokens[i]._replace(src="),")
 
-                custom_updates[Offset(_node.lineno, _node.col_offset)] = (
-                    _fix_qdatetime_construct
-                )
-            elif (
-                len(_node.args) == 1
-                and isinstance(_node.args[0], ast.Call)
-                and _node.args[0].func.id == "QDate"
-            ):
+                custom_updates[Offset(_node.lineno, _node.col_offset)] = _fix_qdatetime_construct
+            elif len(_node.args) == 1 and isinstance(_node.args[0], ast.Call) and _node.args[0].func.id == "QDate":
                 # QDateTime(QDate(..)) doesn't work anymore,
                 # so port to more reliable QDateTime(QDate(...), QTime(0,0,0)) form
                 extra_imports["qgis.PyQt.QtCore"].update({"QTime"})
@@ -317,24 +305,18 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                     assert tokens[start_index + 2].src == "QDate"
                     assert tokens[start_index + 3].src == "("
                     i = start_index + 4
-                    while tokens[i].offset < Offset(
-                        _node.args[0].end_lineno, _node.args[0].end_col_offset
-                    ):
+                    while tokens[i].offset < Offset(_node.args[0].end_lineno, _node.args[0].end_col_offset):
                         i += 1
 
                     assert tokens[i - 1].src == ")"
                     tokens[i - 1] = tokens[i - 1]._replace(src="), QTime(0, 0, 0)")
 
-                custom_updates[Offset(_node.lineno, _node.col_offset)] = (
-                    _fix_qdatetime_construct
-                )
+                custom_updates[Offset(_node.lineno, _node.col_offset)] = _fix_qdatetime_construct
 
     def visit_attribute(_node: ast.Attribute, _parent):
         if isinstance(_node.value, ast.Name):
             if _node.value.id == "qApp":
-                token_renames[Offset(_node.value.lineno, _node.value.col_offset)] = (
-                    "QApplication.instance()"
-                )
+                token_renames[Offset(_node.value.lineno, _node.value.col_offset)] = "QApplication.instance()"
                 extra_imports["qgis.PyQt.QtWidgets"].update({"QApplication"})
                 removed_imports["qgis.PyQt.QtWidgets"].update({"qApp"})
             if _node.value.id == "QVariant" and _node.attr == "Type":
@@ -349,9 +331,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                     tokens[start_index + 2] = tokens[start_index + 2]._replace(src="")
                     tokens[start_index + 3] = tokens[start_index + 3]._replace(src="")
 
-                custom_updates[Offset(node.lineno, node.col_offset)] = (
-                    _replace_qvariant_type
-                )
+                custom_updates[Offset(node.lineno, node.col_offset)] = _replace_qvariant_type
             if object_types.get(_node.value.id) in ("QFontMetrics", "QFontMetricsF"):
                 if _node.attr == "width":
                     sys.stderr.write(
@@ -362,14 +342,8 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
 
         elif isinstance(_node.value, ast.Call):
             if _node.attr == "width" and (
-                (
-                    isinstance(_node.value.func, ast.Attribute)
-                    and _node.value.func.attr == "fontMetrics"
-                )
-                or (
-                    isinstance(_node.value.func, ast.Name)
-                    and _node.value.func.id == "QFontMetrics"
-                )
+                (isinstance(_node.value.func, ast.Attribute) and _node.value.func.attr == "fontMetrics")
+                or (isinstance(_node.value.func, ast.Name) and _node.value.func.id == "QFontMetrics")
             ):
                 sys.stderr.write(
                     f"{filename}:{_node.lineno}:{_node.col_offset} WARNING: QFontMetrics.width() "
@@ -379,11 +353,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
 
     def visit_subscript(_node: ast.Subscript, _parent):
         if isinstance(_node.value, ast.Attribute):
-            if (
-                _node.value.attr == "activated"
-                and isinstance(_node.slice, ast.Name)
-                and _node.slice.id == "str"
-            ):
+            if _node.value.attr == "activated" and isinstance(_node.slice, ast.Name) and _node.slice.id == "str":
                 sys.stderr.write(
                     f"{filename}:{_node.lineno}:{_node.col_offset} WARNING: activated[str] "
                     "has been removed in Qt6. Consider using QComboBox.activated instead if the string is not required, "
@@ -435,13 +405,8 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
             elif isinstance(node, ast.Assign):
                 visit_assign(node, parent)
 
-            if (
-                isinstance(node, ast.FunctionDef)
-                and node.name in rename_function_definitions
-            ):
-                function_def_renames[Offset(node.lineno, node.col_offset)] = (
-                    rename_function_definitions[node.name]
-                )
+            if isinstance(node, ast.FunctionDef) and node.name in rename_function_definitions:
+                function_def_renames[Offset(node.lineno, node.col_offset)] = rename_function_definitions[node.name]
 
             if (
                 isinstance(node, ast.Attribute)
@@ -470,8 +435,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
 
                 if not disambiguated:
                     possible_values = [
-                        f"{node.value.id}.{e}.{node.attr}"
-                        for e in ambiguous_enums[(node.value.id, node.attr)]
+                        f"{node.value.id}.{e}.{node.attr}" for e in ambiguous_enums[(node.value.id, node.attr)]
                     ]
                     sys.stderr.write(
                         f'{filename}:{node.lineno}:{node.col_offset} WARNING: ambiguous enum, cannot fix: {node.value.id}.{node.attr}. Could be: {", ".join(possible_values)}\n'
@@ -495,11 +459,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
             ):
                 rename_qt_enums.append(Offset(node.lineno, node.col_offset))
 
-            elif (
-                isinstance(node, ast.ImportFrom)
-                and node.module
-                and node.module.startswith("PyQt5.")
-            ):
+            elif isinstance(node, ast.ImportFrom) and node.module and node.module.startswith("PyQt5."):
                 fix_pyqt_import.append(Offset(node.lineno, node.col_offset))
 
     for module, classes in extra_imports.items():
@@ -554,9 +514,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                         prev_token_index = token_index - 1
                         while True:
                             if tokens[prev_token_index].src.strip() in ("", ","):
-                                tokens[prev_token_index] = tokens[
-                                    prev_token_index
-                                ]._replace(src="")
+                                tokens[prev_token_index] = tokens[prev_token_index]._replace(src="")
                                 prev_token_index -= 1
                             else:
                                 break
@@ -589,13 +547,9 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
 
                             while True:
                                 if tokens[current_index].src in ("\n",):
-                                    tokens[current_index] = tokens[
-                                        current_index
-                                    ]._replace(src="")
+                                    tokens[current_index] = tokens[current_index]._replace(src="")
                                     break
-                                tokens[current_index] = tokens[current_index]._replace(
-                                    src=""
-                                )
+                                tokens[current_index] = tokens[current_index]._replace(src="")
                                 current_index += 1
 
                     else:
@@ -609,9 +563,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                         while tokens[token_index].src.strip() in ("", ",", ")"):
                             tokens[token_index] = tokens[token_index]._replace(src="")
                             token_index -= 1
-                        tokens[token_index + 1] = tokens[token_index + 1]._replace(
-                            src=f", {additional_import_string})"
-                        )
+                        tokens[token_index + 1] = tokens[token_index + 1]._replace(src=f", {additional_import_string})")
                     else:
                         tokens[token_index] = tokens[token_index]._replace(
                             src=f", {additional_import_string}{tokens[token_index].src}"
@@ -633,9 +585,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
             tokens[i + 2] = tokens[i + 2]._replace(src="qgis.PyQt")
 
         if token.offset in function_def_renames and tokens[i].src == "def":
-            tokens[i + 2] = tokens[i + 2]._replace(
-                src=function_def_renames[token.offset]
-            )
+            tokens[i + 2] = tokens[i + 2]._replace(src=function_def_renames[token.offset])
 
         if token.offset in token_renames:
             tokens[i] = tokens[i]._replace(src=token_renames[token.offset])
@@ -644,9 +594,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
             counter = i
             while tokens[counter].src != ".":
                 counter += 1
-            tokens[counter + 1] = tokens[counter + 1]._replace(
-                src=member_renames[token.offset]
-            )
+            tokens[counter + 1] = tokens[counter + 1]._replace(src=member_renames[token.offset])
 
         if token.offset in fix_qt_enums:
             assert tokens[i + 1].src == "."
@@ -654,9 +602,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
             # make sure we CAN import enum!
             try:
                 eval(f"{_class}.{enum_name}.{value}")
-                tokens[i + 2] = tokens[i + 2]._replace(
-                    src=f"{enum_name}.{tokens[i + 2].src}"
-                )
+                tokens[i + 2] = tokens[i + 2]._replace(src=f"{enum_name}.{tokens[i + 2].src}")
             except AttributeError:
                 # let's see if we can find what the replacement should be automatically...
                 # print(f'Trying to find {_class}.{value}.')
@@ -671,9 +617,7 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
                             if attr is actual.__class__:
                                 # print(f'Found alias {_class}.{attr_name}')
                                 recovered = True
-                                tokens[i + 2] = tokens[i + 2]._replace(
-                                    src=f"{attr_name}.{tokens[i + 2].src}"
-                                )
+                                tokens[i + 2] = tokens[i + 2]._replace(src=f"{attr_name}.{tokens[i + 2].src}")
 
                         except AttributeError:
                             continue
@@ -690,13 +634,17 @@ def fix_file(filename: str, qgis3_compat: bool) -> int:
             tokens[i + 2] = tokens[i + 2]._replace(src=f"{enum_name[0]}.{enum_name[1]}")
 
     new_contents = tokens_to_src(tokens)
-    with open(filename, "w") as f:
-        f.write(new_contents)
-
+    if in_place:
+        with open(filename, "w") as f:
+            f.write(new_contents)
+    else:
+        diff = difflib.unified_diff(contents.split("\n"), new_contents.split("\n"), fromfile=filename, tofile="fixed")
+        for line in diff:
+            print(line)
     return new_contents != contents
 
 
-def get_class_enums(item):
+def get_class_enums(item, qt_enums: dict, ambiguous_enums: dict):
     if not inspect.isclass(item):
         return
 
@@ -730,36 +678,29 @@ def get_class_enums(item):
                             pass
 
                         if (matched_class.__name__, ekey) in ambiguous_enums:
-                            if (
-                                value.__name__
-                                not in ambiguous_enums[(matched_class.__name__, ekey)]
-                            ):
-                                ambiguous_enums[(matched_class.__name__, ekey)].add(
-                                    value.__name__
-                                )
+                            if value.__name__ not in ambiguous_enums[(matched_class.__name__, ekey)]:
+                                ambiguous_enums[(matched_class.__name__, ekey)].add(value.__name__)
                             continue
 
                         existing_entry = qt_enums.get((matched_class.__name__, ekey))
                         if existing_entry != value.__name__ and existing_entry:
-                            ambiguous_enums[(matched_class.__name__, ekey)].add(
-                                existing_entry
-                            )
-                            ambiguous_enums[(matched_class.__name__, ekey)].add(
-                                value.__name__
-                            )
+                            ambiguous_enums[(matched_class.__name__, ekey)].add(existing_entry)
+                            ambiguous_enums[(matched_class.__name__, ekey)].add(value.__name__)
                             del qt_enums[(matched_class.__name__, ekey)]
                         else:
-                            qt_enums[(matched_class.__name__, ekey)] = (
-                                f"{value.__name__}"
-                            )
+                            qt_enums[(matched_class.__name__, ekey)] = f"{value.__name__}"
 
         elif inspect.isclass(value):
-            get_class_enums(value)
+            enums = get_class_enums(value, qt_enums, ambiguous_enums)
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("directory")
+    parser.add_argument("directory", nargs="?", default=os.getcwd())
+    parser.add_argument("-i", "--in-place", action="store_true", help="Apply changes in place")
+    parser.add_argument(
+        "--update-enum-file", action="store_true", help="Update enum file for usage without QGIS available"
+    )
     parser.add_argument(
         "--qgis3-incompatible-changes",
         action="store_true",
@@ -767,18 +708,41 @@ def main(argv: Sequence[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
 
-    # get all scope for all qt enum
-    for module in target_modules:
-        for key, value in module.__dict__.items():
-            get_class_enums(value)
+    if args.update_enum_file or target_modules is not None:
+        for module in target_modules:
+            for value in module.__dict__.values():
+                get_class_enums(value, qt_enums, ambiguous_enums)
+
+        if args.update_enum_file:
+            with open("enums.json", "w") as enum_file:
+                my_json_object = json.dump(
+                    {
+                        "qt_enums": {":".join(k): v for k, v in qt_enums.items()},
+                        "ambiguous_enums": {":".join(k): list(v) for k, v in ambiguous_enums.items()},
+                    },
+                    enum_file,
+                )
+            return
+
+    if target_modules is None:
+        print("PyQt or QGIS classes not available for introspection, loading enums from cached file.")
+        filename = inspect.getframeinfo(inspect.currentframe()).filename
+        path = os.path.dirname(os.path.abspath(filename))
+        with open(Path(path) / "enums.json") as file:
+            data = json.load(file)
+
+        for key in data["qt_enums"].keys():
+            qt_enums[tuple(key.split(":"))] = data["qt_enums"][key]
+        for key in data["ambiguous_enums"].keys():
+            ambiguous_enums[tuple(key.split(":"))] = set(data["ambiguous_enums"][key])
 
     ret = 0
     for filename in glob.glob(os.path.join(args.directory, "**/*.py"), recursive=True):
-        # print(f'Processing {filename}')
+        print(f'Processing {filename}')
         if "auto_additions" in filename:
             continue
 
-        ret |= fix_file(filename, not args.qgis3_incompatible_changes)
+        ret |= fix_file(filename, args.in_place, not args.qgis3_incompatible_changes, qt_enums, ambiguous_enums)
     return ret
 
 
