@@ -4679,6 +4679,10 @@ class CORE_EXPORT Qgis
       SourceAtop SIP_MONKEYPATCH_COMPAT_NAME( BlendSourceAtop ), //!< Source atop
       DestinationAtop SIP_MONKEYPATCH_COMPAT_NAME( BlendDestinationAtop ), //!< Destination atop
       Xor SIP_MONKEYPATCH_COMPAT_NAME( BlendXor ), //!< XOR
+      Nonseparable_Hue, //!< Nonseparable Hue
+      Nonseparable_Saturation, //!< Nonseparable Saturation
+      Nonseparable_Color, //!< Nonseparable Color
+      Nonseparable_Luminosity //!< Nonseparable Luminosity
     };
     Q_ENUM( BlendMode )
 

@@ -113,3 +113,4 @@ tests/testdata/test_qgis_config_path/profiles/default/*
 tests/testdata/widget_config.qlr
 tests/testdata/zip/testtar.tgz.properties
 venv
+!vcpkg/**

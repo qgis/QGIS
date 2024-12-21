@@ -8476,6 +8476,18 @@ QgsPainting.BlendXor = Qgis.BlendMode.Xor
 QgsPainting.BlendMode.BlendXor = Qgis.BlendMode.Xor
 QgsPainting.BlendXor.is_monkey_patched = True
 QgsPainting.BlendXor.__doc__ = "XOR"
+QgsPainting.Nonseparable_Hue = Qgis.BlendMode.Nonseparable_Hue
+QgsPainting.Nonseparable_Hue.is_monkey_patched = True
+QgsPainting.Nonseparable_Hue.__doc__ = "Nonseparable Hue"
+QgsPainting.Nonseparable_Saturation = Qgis.BlendMode.Nonseparable_Saturation
+QgsPainting.Nonseparable_Saturation.is_monkey_patched = True
+QgsPainting.Nonseparable_Saturation.__doc__ = "Nonseparable Saturation"
+QgsPainting.Nonseparable_Color = Qgis.BlendMode.Nonseparable_Color
+QgsPainting.Nonseparable_Color.is_monkey_patched = True
+QgsPainting.Nonseparable_Color.__doc__ = "Nonseparable Color"
+QgsPainting.Nonseparable_Luminosity = Qgis.BlendMode.Nonseparable_Luminosity
+QgsPainting.Nonseparable_Luminosity.is_monkey_patched = True
+QgsPainting.Nonseparable_Luminosity.__doc__ = "Nonseparable Luminosity"
 Qgis.BlendMode.__doc__ = """Blending modes defining the available composition modes that can
 be used when painting.
 
@@ -8581,6 +8593,10 @@ be used when painting.
 
   Available as ``QgsPainting.BlendXor`` in older QGIS releases.
 
+* ``Nonseparable_Hue``: Nonseparable Hue
+* ``Nonseparable_Saturation``: Nonseparable Saturation
+* ``Nonseparable_Color``: Nonseparable Color
+* ``Nonseparable_Luminosity``: Nonseparable Luminosity
 
 """
 # --

@@ -2635,6 +2635,10 @@ The development version
       SourceAtop,
       DestinationAtop,
       Xor,
+      Nonseparable_Hue,
+      Nonseparable_Saturation,
+      Nonseparable_Color,
+      Nonseparable_Luminosity
     };
 
     enum class SystemOfMeasurement /BaseType=IntEnum/

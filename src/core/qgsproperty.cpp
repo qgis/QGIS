@@ -105,7 +105,8 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
       mTypes = DataTypeString;
       mHelpText = trString() + QStringLiteral( "[<b>Normal</b>|<b>Lighten</b>|<b>Screen</b>|<b>Dodge</b>|<br>"
                   "<b>Addition</b>|<b>Darken</b>|<b>Multiply</b>|<b>Burn</b>|<b>Overlay</b>|<br>"
-                  "<b>SoftLight</b>|<b>HardLight</b>|<b>Difference</b>|<b>Subtract</b>]" );
+                  "<b>SoftLight</b>|<b>HardLight</b>|<b>Difference</b>|<b>Subtract</b><br>]"
+                  "<b>Nonseparable_Hue</b>|<b>Nonseparable_Saturation</b>|<b>Nonseparable_Color</b>|<b>Nonseparable_Luminosity</b>]" );
       break;
 
     case Point:

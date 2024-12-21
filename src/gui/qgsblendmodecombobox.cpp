@@ -57,6 +57,11 @@ void QgsBlendModeComboBox::updateModes()
   insertSeparator( count() );
   addItem( tr( "Difference" ), static_cast<int>( Qgis::BlendMode::Difference ) );
   addItem( tr( "Subtract" ), static_cast<int>( Qgis::BlendMode::Subtract ) );
+  insertSeparator( count() );
+  addItem( tr( "Nonseparable Hue" ), static_cast<int>( Qgis::BlendMode::Nonseparable_Hue ) );
+  addItem( tr( "Nonseparable Saturation" ), static_cast<int>( Qgis::BlendMode::Nonseparable_Saturation ) );
+  addItem( tr( "Nonseparable Color" ), static_cast<int>( Qgis::BlendMode::Nonseparable_Color ) );
+  addItem( tr( "Nonseparable Luminosity" ), static_cast<int>( Qgis::BlendMode::Nonseparable_Luminosity ) );
 
   if ( mShowClipModes )
   {

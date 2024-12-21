@@ -881,6 +881,10 @@ QPainter::CompositionMode QgsSymbolLayerUtils::decodeBlendMode( const QString &s
   if ( s.compare( QLatin1String( "HardLight" ), Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_HardLight;
   if ( s.compare( QLatin1String( "Difference" ), Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Difference;
   if ( s.compare( QLatin1String( "Subtract" ), Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Exclusion;
+  if ( s.compare( QLatin1String( "Nonseparable_Hue" ), Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Nonseparable_Hue;
+  if ( s.compare( QLatin1String( "Nonseparable_Saturation" ), Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Nonseparable_Saturation;
+  if ( s.compare( QLatin1String( "Nonseparable_Color" ), Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Nonseparable_Color;
+  if ( s.compare( QLatin1String( "Nonseparable_Luminosity" ), Qt::CaseInsensitive ) == 0 ) return QPainter::CompositionMode_Nonseparable_Luminosity;
   return QPainter::CompositionMode_SourceOver; // "Normal"
 }
 

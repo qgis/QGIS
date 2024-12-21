@@ -74,6 +74,14 @@ QPainter::CompositionMode QgsPainting::getCompositionMode( Qgis::BlendMode blend
       return QPainter::CompositionMode_DestinationAtop;
     case Qgis::BlendMode::Xor:
       return QPainter::CompositionMode_Xor;
+    case Qgis::BlendMode::Nonseparable_Hue:
+      return QPainter::CompositionMode_Nonseparable_Hue;
+    case Qgis::BlendMode::Nonseparable_Saturation:
+      return QPainter::CompositionMode_Nonseparable_Saturation;  
+    case Qgis::BlendMode::Nonseparable_Color:
+      return QPainter::CompositionMode_Nonseparable_Color;
+    case Qgis::BlendMode::Nonseparable_Luminosity:
+      return QPainter::CompositionMode_Nonseparable_Luminosity;
     default:
       QgsDebugError( QStringLiteral( "Blend mode %1 mapped to SourceOver" ).arg( qgsEnumValueToKey( blendMode ) ) );
       return QPainter::CompositionMode_SourceOver;
@@ -134,6 +142,14 @@ Qgis::BlendMode QgsPainting::getBlendModeEnum( QPainter::CompositionMode blendMo
       return Qgis::BlendMode::DestinationAtop;
     case QPainter::CompositionMode_Xor:
       return Qgis::BlendMode::Xor;
+    case QPainter::CompositionMode_Nonseparable_Hue:
+      return Qgis::BlendMode::Nonseparable_Hue;
+    case QPainter::CompositionMode_Nonseparable_Saturation:
+      return Qgis::BlendMode::Nonseparable_Saturation;
+    case  QPainter::CompositionMode_Nonseparable_Color:
+      return Qgis::BlendMode::Nonseparable_Color;
+    case QPainter::CompositionMode_Nonseparable_Luminosity:
+      return Qgis::BlendMode::Nonseparable_Luminosity;
     default:
       QgsDebugError( QStringLiteral( "Composition mode %1 mapped to Normal" ).arg( blendMode ) );
       return Qgis::BlendMode::Normal;
@@ -161,6 +177,10 @@ bool QgsPainting::isClippingMode( Qgis::BlendMode mode )
     case Qgis::BlendMode::DestinationOver:
     case Qgis::BlendMode::Clear:
     case Qgis::BlendMode::Destination:
+    case Qgis::BlendMode::Nonseparable_Hue:
+    case Qgis::BlendMode::Nonseparable_Saturation:
+    case Qgis::BlendMode::Nonseparable_Color:
+    case Qgis::BlendMode::Nonseparable_Luminosity;
       return false;
 
     case Qgis::BlendMode::SourceIn:
