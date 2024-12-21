@@ -159,7 +159,7 @@ class GdalParametersPanel(ParametersPanel):
 
             try:
                 commands = self.algorithm().getConsoleCommands(
-                    parameters, context, feedback, executing=False
+                    parameters, context, feedback, executing=True
                 )
                 commands = [c for c in commands if c not in ["cmd.exe", "/C "]]
                 self.text.setPlainText(" ".join(commands))
