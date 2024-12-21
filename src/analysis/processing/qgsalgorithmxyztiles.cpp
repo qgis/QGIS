@@ -494,6 +494,7 @@ QVariantMap QgsXyzTilesMbtilesAlgorithm::processAlgorithm( const QVariantMap &pa
   }
   mMbtilesWriter->setMetadataValue( "format", mTileFormat.toLower() );
   mMbtilesWriter->setMetadataValue( "name", QFileInfo( outputFile ).baseName() );
+  mMbtilesWriter->setMetadataValue( "description", QFileInfo( outputFile ).baseName() );
   mMbtilesWriter->setMetadataValue( "version", QStringLiteral( "1.1" ) );
   mMbtilesWriter->setMetadataValue( "type", QStringLiteral( "overlay" ) );
   mMbtilesWriter->setMetadataValue( "minzoom", QString::number( mMinZoom ) );
