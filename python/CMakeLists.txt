@@ -178,6 +178,15 @@ if(NOT WITH_QTWEBENGINE)
   set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} HAVE_WEBENGINE_SIP)
 endif()
 
+# Deprecated annotation supports message only since version 6.9.0 with abi-version 12.16 / 13.9 and above
+if(${SIP_VERSION_STR} VERSION_LESS 6.9.0)
+  set(sipabi "")
+elseif(BUILD_WITH_QT6)
+  set(sipabi "\n[tool.sip.project]\nabi-version = \"13.9\"")
+else()
+  set(sipabi "\n[tool.sip.project]\nabi-version = \"12.16\"")
+endif()
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/core/project.py.in ${CMAKE_CURRENT_BINARY_DIR}/core/project.py @ONLY)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/core/pyproject.toml.in ${CMAKE_CURRENT_BINARY_DIR}/core/pyproject.toml @ONLY)
 GENERATE_SIP_PYTHON_MODULE_CODE(qgis._core core/core.sip "${sip_files_core}" cpp_files)
