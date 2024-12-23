@@ -311,7 +311,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
      *
      * \since QGIS 3.42
      */
-    void addVertexWithDelaunayRefinement( const QgsMeshVertex vertex, const double tolerance );
+    void addVertexWithDelaunayRefinement( const QgsMeshVertex &vertex, const double tolerance );
 
   signals:
     //! Emitted when the mesh is edited
