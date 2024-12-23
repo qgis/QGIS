@@ -238,7 +238,8 @@ QgsMeshEditDigitizingAction::QgsMeshEditDigitizingAction( QObject *parent )
   int interpolateFromValue = settings.enumValue( QStringLiteral( "UI/Mesh/zValueFrom" ), PreferMeshThenZWidget );
   mComboZValueType->setCurrentIndex( interpolateFromValue );
 
-  mCheckBoxRefineNeighboringFaces = new QCheckBox( tr( "On add vertex in face refine neighboring faces" ) );
+  mCheckBoxRefineNeighboringFaces = new QCheckBox( tr( "Refine neighboring faces when adding vertices" ) );
+  mCheckBoxRefineNeighboringFaces->setToolTip( "Flip edges that do not fulfil delaunay rule on triangular faces that share at least one vertex with the face that new vertex was added to." );
 
   bool refineNeighboringFaces = settings.value( QStringLiteral( "UI/Mesh/refineNeighboringFaces" ) ).toBool();
   mCheckBoxRefineNeighboringFaces->setChecked( refineNeighboringFaces );
