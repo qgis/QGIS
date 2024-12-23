@@ -640,7 +640,7 @@ QgsMeshEditingError QgsMeshEditor::removeFaces( const QList<int> &facesToRemove 
   return error;
 }
 
-void QgsMeshEditor::addVertexWithDelaunayRefinement( const QgsMeshVertex vertex, const double tolerance )
+void QgsMeshEditor::addVertexWithDelaunayRefinement( const QgsMeshVertex &vertex, const double tolerance )
 {
   int triangleIndex = mTriangularMesh->faceIndexForPoint_v2( vertex );
   if ( triangleIndex == -1 )
@@ -1494,7 +1494,7 @@ void QgsMeshLayerUndoCommandAdvancedEditing::redo()
 
 QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement::QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement(
   QgsMeshEditor *meshEditor,
-  const QgsMeshVertex vertex,
+  const QgsMeshVertex &vertex,
   double tolerance )
   : QgsMeshLayerUndoCommandMeshEdit( meshEditor )
   , mVertex( vertex )
