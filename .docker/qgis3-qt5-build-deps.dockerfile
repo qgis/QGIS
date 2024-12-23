@@ -130,6 +130,8 @@ RUN unzip instantclient-sqlplus-linux.x64-19.9.0.0.0dbru.zip
 
 ENV PATH="/instantclient_19_9:${PATH}"
 ENV LD_LIBRARY_PATH="/instantclient_19_9:${LD_LIBRARY_PATH}"
+# workaround noble libaio SONAME issue -- see https://bugs.launchpad.net/ubuntu/+source/libaio/+bug/2067501
+RUN if [ -e /usr/lib/x86_64-linux-gnu/libaio.so.1t64 ] ; then ln -sf /usr/lib/x86_64-linux-gnu/libaio.so.1t64 /usr/lib/x86_64-linux-gnu/libaio.so.1 ; fi
 
 # Avoid sqlcmd termination due to locale -- see https://github.com/Microsoft/mssql-docker/issues/163
 RUN echo "nb_NO.UTF-8 UTF-8" > /etc/locale.gen
