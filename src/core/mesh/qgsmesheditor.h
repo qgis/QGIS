@@ -673,7 +673,7 @@ class QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement: public QgsMe
   public:
 
     //! Constructor with the associated \a meshEditor and indexes \a vertex and \a tolerance
-    QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement( QgsMeshEditor *meshEditor, const QgsMeshVertex vertex, double tolerance );
+    QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement( QgsMeshEditor *meshEditor, const QgsMeshVertex &vertex, double tolerance );
 
     void redo() override;
   private:
