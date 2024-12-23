@@ -307,6 +307,7 @@ class CORE_EXPORT QgsMeshEditor : public QObject
 
     /**
      * Add a vertex in a face with Delaunay refinement of neighboring faces
+     * All neighboring faces sharing a vertex will be refined to satisfy the Delaunay condition
      *
      * \since QGIS 3.42
      */
