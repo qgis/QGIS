@@ -1512,7 +1512,7 @@ void QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement::redo()
     mMeshEditor->applyAddVertex( edit, mVertex, mTolerance );
     mEdits.append( edit );
 
-    QList<std::pair<int, int>> sharedEdges = innerEdges( triangularFaces( facesContainingVertex( mMeshEditor->topologicalMesh().mesh()->vertexCount() - 1 ) ) );
+    QList<std::pair<int, int>> sharedEdges = innerEdges( secondNeighboringTriangularFaces() ); //innerEdges( triangularFaces( candidateFacesForRefinement( mMeshEditor->topologicalMesh().mesh()->vertexCount() - 1 ) ) );
 
     for ( std::pair<int, int> edge : sharedEdges )
     {
@@ -1532,68 +1532,31 @@ void QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement::redo()
   }
 }
 
-QSet<int> QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement::facesContainingVertex( const int vertexId )
+QSet<int> QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement::secondNeighboringTriangularFaces()
 {
-  QList<int> facesAroundVertex;
-
-  for ( int i = 0; i < mMeshEditor->topologicalMesh().mesh()->faceCount(); i++ )
+  const int vIndex = mMeshEditor->topologicalMesh().mesh()->vertexCount() - 1;
+  const QList<int> firstNeighborFaces = mMeshEditor->topologicalMesh().facesAroundVertex( vIndex );
+  QSet<int> firstNeighborVertices;
+  for ( int face : firstNeighborFaces )
   {
-    QgsMeshFace face = mMeshEditor->topologicalMesh().mesh()->face( i );
-
-    if ( face.contains( vertexId ) )
+    const QgsMeshFace meshFace = mMeshEditor->topologicalMesh().mesh()->face( face );
+    for ( int vertex : meshFace )
     {
-      facesAroundVertex.push_back( i );
+      firstNeighborVertices.insert( vertex );
     }
   }
 
-  QSet<int> vertexIndexes;
-
-  for ( int faceIndex : facesAroundVertex )
+  QSet<int> secondNeighboringFaces;
+  for ( int vertex : firstNeighborVertices )
   {
-    QgsMeshFace face = mMeshEditor->topologicalMesh().mesh()->face( faceIndex );
-
-    for ( int i = 0; i < face.count(); i++ )
+    const QList<int> faces = mMeshEditor->topologicalMesh().facesAroundVertex( vertex );
+    for ( int face : faces )
     {
-      vertexIndexes.insert( face.at( i ) );
+      if ( mMeshEditor->topologicalMesh().mesh()->face( face ).count() == 3 )
+        secondNeighboringFaces.insert( face );
     }
   }
-
-  // faces that have at least one common vertex with newly added faces
-  QSet<int> selectedFaces;
-
-  for ( int i = 0; i < mMeshEditor->topologicalMesh().mesh()->faceCount(); i++ )
-  {
-    const QgsMeshFace face = mMeshEditor->topologicalMesh().mesh()->face( i );
-
-    for ( int j = 0; j < face.count(); j++ )
-    {
-      for ( int vertex : vertexIndexes )
-      {
-        if ( face.contains( vertex ) )
-        {
-          selectedFaces.insert( i );
-          break;
-        }
-      }
-    }
-  }
-  return selectedFaces;
-}
-
-
-QSet<int> QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement::triangularFaces( const QSet<int> &faces )
-{
-  QSet<int> triangularFaces;
-
-  for ( int faceIndex : faces )
-  {
-    if ( mMeshEditor->topologicalMesh().mesh()->face( faceIndex ).count() == 3 )
-    {
-      triangularFaces.insert( faceIndex );
-    }
-  }
-
-  return triangularFaces;
+  return secondNeighboringFaces;
 }
 
 QList<std::pair<int, int>> QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement::innerEdges( const QSet<int> &faces )

@@ -677,9 +677,8 @@ class QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement: public QgsMe
 
     void redo() override;
   private:
-    QSet<int> facesContainingVertex( const int vertexId );
-    QSet<int> triangularFaces( const QSet<int> &faces );
     QList<std::pair<int, int>> innerEdges( const QSet<int> &faces );
+    QSet<int> secondNeighboringTriangularFaces();
 
     QgsMeshVertex mVertex;
     double mTolerance;
