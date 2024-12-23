@@ -23,12 +23,12 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransformcontext.h"
 #include "qgsexpressioncontext.h"
+#include "qgsabstractterrainsettings.h"
 
 #include <QColor>
 
 class QgsTerrainGenerator;
 class Qgs3DMapSettings;
-class QgsAbstractTerrainSettings;
 
 #define SIP_NO_FILE
 
