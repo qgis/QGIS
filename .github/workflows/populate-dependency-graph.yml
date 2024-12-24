@@ -1,0 +1,27 @@
+name: 🎋 Populate dependency graph
+
+on:
+  push:
+    branches: [depgraph]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  populate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: 🎡 Setup vcpkg
+        uses: ./.github/actions/setup-vcpkg
+
+      - name: 🎋 Populate depdendency graph
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VCPKG_FEATURE_FLAGS: dependencygraph
+          VCPKG_MANIFEST_DIR: vcpkg
+        run: |
+          vcpkg install --dry-run
