@@ -1512,7 +1512,7 @@ void QgsMeshLayerUndoCommandAddVertexInFaceWithDelaunayRefinement::redo()
     mMeshEditor->applyAddVertex( edit, mVertex, mTolerance );
     mEdits.append( edit );
 
-    QList<std::pair<int, int>> sharedEdges = innerEdges( secondNeighboringTriangularFaces() ); //innerEdges( triangularFaces( candidateFacesForRefinement( mMeshEditor->topologicalMesh().mesh()->vertexCount() - 1 ) ) );
+    QList<std::pair<int, int>> sharedEdges = innerEdges( secondNeighboringTriangularFaces() );
 
     for ( std::pair<int, int> edge : sharedEdges )
     {
