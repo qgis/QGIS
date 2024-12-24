@@ -19,7 +19,7 @@ runs:
         wget https://aka.ms/vcpkg-init.sh -O /tmp/vcpkg-init.sh
         . /tmp/vcpkg-init.sh
         echo "VCPKG_ROOT=$VCPKG_ROOT" >> $GITHUB_ENV
-        echo "PATH=$VCPKG_ROOT;$PATH" >> $GITHUB_ENV
+        echo "$VCPKG_ROOT" >> $GITHUB_PATH
 
     - name: Setup vcpkg
       if: runner.os == 'Windows'
@@ -28,4 +28,4 @@ runs:
         $env:VCPKG_ROOT = "C:/.vcpkg"
         iex (iwr -useb https://aka.ms/vcpkg-init.ps1)
         echo "VCPKG_ROOT=$env:VCPKG_ROOT" >> $env:GITHUB_ENV
-        echo "PATH=$env:VCPKG_ROOT;$env:PATH" >> $env:GITHUB_ENV
+        echo "$env:VCPKG_ROOT" >> $env:GITHUB_PATH
