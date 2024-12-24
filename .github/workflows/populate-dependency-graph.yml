@@ -22,6 +22,5 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           VCPKG_FEATURE_FLAGS: dependencygraph
-          VCPKG_MANIFEST_DIR: vcpkg
         run: |
-          vcpkg install --dry-run
+          vcpkg install --dry-run --x-manifest-root=${{ github.workspace}}/vcpkg
