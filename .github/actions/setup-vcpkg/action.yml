@@ -19,9 +19,7 @@ runs:
         wget https://aka.ms/vcpkg-init.sh -O /tmp/vcpkg-init.sh
         . /tmp/vcpkg-init.sh
         echo "VCPKG_ROOT=$VCPKG_ROOT" >> $GITHUB_ENV
-        echo "PATH=$VCPKG_ROOT;$PATH" >> $GITHUB_ENV
-        # Integrate patch from https://github.com/microsoft/vcpkg/pull/41146
-        wget https://raw.githubusercontent.com/microsoft/vcpkg/6271c9bfab7ff6dbf3444c3600a28e7c6b0ea462/scripts/cmake/z_vcpkg_fixup_rpath_macho.cmake -O /Users/runner/.vcpkg/scripts/cmake/z_vcpkg_fixup_rpath_macho.cmake
+        echo "$VCPKG_ROOT" >> $GITHUB_PATH
 
     - name: Setup vcpkg
       if: runner.os == 'Windows'
@@ -30,4 +28,4 @@ runs:
         $env:VCPKG_ROOT = "C:/.vcpkg"
         iex (iwr -useb https://aka.ms/vcpkg-init.ps1)
         echo "VCPKG_ROOT=$env:VCPKG_ROOT" >> $env:GITHUB_ENV
-        echo "PATH=$env:VCPKG_ROOT;$env:PATH" >> $env:GITHUB_ENV
+        echo "$env:VCPKG_ROOT" >> $env:GITHUB_PATH
