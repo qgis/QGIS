@@ -67,7 +67,6 @@ add_subdirectory(processing)
 
 include_directories(SYSTEM
   ${Python_INCLUDE_DIRS}
-  ${SIP_INCLUDE_DIR}
   ${QT_QTCORE_INCLUDE_DIR}
   ${QT_QTGUI_INCLUDE_DIR}
   ${QT_QTNETWORK_INCLUDE_DIR}
