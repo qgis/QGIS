@@ -2980,7 +2980,7 @@ void QgisApp::createActions()
   connect( mActionMeasureArea, &QAction::triggered, this, &QgisApp::measureArea );
   connect( mActionMeasureAngle, &QAction::triggered, this, &QgisApp::measureAngle );
   connect( mActionMeasureBearing, &QAction::triggered, this, [=] { setMapTool( mMapTools->mapTool( QgsAppMapTools::MeasureBearing ) ); } );
-  connect( mActionMeasureRadius, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::MeasureRadius ) ); } );
+  connect( mActionMeasureRadius, &QAction::triggered, this, [=] { setMapTool( mMapTools->mapTool( QgsAppMapTools::MeasureRadius ) ); } );
   connect( mActionZoomFullExtent, &QAction::triggered, this, &QgisApp::zoomFull );
   connect( mActionZoomToLayer, &QAction::triggered, this, &QgisApp::zoomToLayerExtent );
   connect( mActionZoomToLayers, &QAction::triggered, this, &QgisApp::zoomToLayerExtent );
@@ -3721,7 +3721,6 @@ void QgisApp::createToolBars()
     case 4:
       defMeasureAction = mActionMeasureRadius;
       break;
-
   }
   bt->setDefaultAction( defMeasureAction );
   QAction *measureAction = mAttributesToolBar->insertWidget( mActionMapTips, bt );

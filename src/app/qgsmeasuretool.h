@@ -35,7 +35,6 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     Q_OBJECT
 
   public:
-
     QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea, bool measureRadius );
 
     ~QgsMeasureTool() override;
@@ -78,7 +77,6 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     void updateSettings();
 
   protected:
-
     QVector<QgsPointXY> mPoints;
 
     QgsMeasureDialog *mDialog = nullptr;

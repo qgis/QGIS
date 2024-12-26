@@ -32,10 +32,10 @@ class TestQgsMeasureTool : public QObject
     TestQgsMeasureTool();
 
   private slots:
-    void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();// will be called after the last testfunction was executed.
-    void init() {} // will be called before each testfunction is executed.
-    void cleanup() {} // will be called after every testfunction.
+    void initTestCase();    // will be called before the first testfunction is executed.
+    void cleanupTestCase(); // will be called after the last testfunction was executed.
+    void init() {}          // will be called before each testfunction is executed.
+    void cleanup() {}       // will be called after every testfunction.
     void testLengthCalculationCartesian();
     void testLengthCalculationProjected();
     void testLengthCalculationNoCrs();
@@ -145,7 +145,6 @@ void TestQgsMeasureTool::testLengthCalculationCartesian()
   QGSCOMPARENEAR( p0.y(), n0.y(), 0.001 );
   QGSCOMPARENEAR( p1.x(), n1.x(), 0.001 );
   QGSCOMPARENEAR( p1.y(), n1.y(), 0.001 );
-
 }
 void TestQgsMeasureTool::testLengthCalculationProjected()
 {
@@ -367,7 +366,6 @@ void TestQgsMeasureTool::degreeDecimalPlaces()
   QCOMPARE( dlg->formatDistance( 0.001, false ), QString( "0.0010 deg" ) );
   QCOMPARE( dlg->formatDistance( 0.0001, false ), QString( "0.00010 deg" ) );
   QCOMPARE( dlg->formatDistance( 0.00001, false ), QString( "0.000010 deg" ) );
-
 }
 
 void TestQgsMeasureTool::testToolDesactivationNoExtraPoint()
@@ -385,14 +383,12 @@ void TestQgsMeasureTool::testToolDesactivationNoExtraPoint()
 
   dlg->mEllipsoidal->setChecked( true );
 
-  auto moveCanvas = [this]( int x, int y, int delay = 0 )
-  {
+  auto moveCanvas = [this]( int x, int y, int delay = 0 ) {
     auto widget = mCanvas->viewport();
     QTest::mouseMove( widget, QPoint( x, y ), delay );
   };
 
-  auto clickCanvas = [this]( int x, int y )
-  {
+  auto clickCanvas = [this]( int x, int y ) {
     auto widget = mCanvas->viewport();
     QTest::mouseMove( widget, QPoint( x, y ) );
     QTest::mouseClick( mCanvas->viewport(), Qt::LeftButton, Qt::NoModifier, QPoint( x, y ), 50 );
