@@ -180,7 +180,7 @@ bool QgsPainting::isClippingMode( Qgis::BlendMode mode )
     case Qgis::BlendMode::Nonseparable_Hue:
     case Qgis::BlendMode::Nonseparable_Saturation:
     case Qgis::BlendMode::Nonseparable_Color:
-    case Qgis::BlendMode::Nonseparable_Luminosity;
+    case Qgis::BlendMode::Nonseparable_Luminosity:
       return false;
 
     case Qgis::BlendMode::SourceIn:
