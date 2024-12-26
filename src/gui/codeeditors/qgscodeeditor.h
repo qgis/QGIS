@@ -415,6 +415,18 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     int wrapPosition( int line = -1 );
 
+
+    /**
+     * Returns the timeout (in milliseconds) threshold for the editingTimeout() signal to be emitted
+     * after an edit.
+     *
+     * \see setEditingTimeoutInterval()
+     *
+     * \since QGIS 3.42
+     */
+    int editingTimeoutInterval() const;
+
+
   public slots:
 
     /**
@@ -541,6 +553,17 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     // Override QsciScintilla::setText to adjust the scroll width
     void setText( const QString &text ) override;
 
+    /**
+     * Sets the \a timeout (in milliseconds) threshold for the editingTimeout() signal to be emitted
+     * after an edit.
+     *
+     * \see editingTimeoutInterval()
+     * \see editingTimeout()
+     *
+     * \since QGIS 3.42
+     */
+    void setEditingTimeoutInterval( int timeout );
+
   signals:
 
     /**
@@ -565,6 +588,20 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     void helpRequested( const QString &word );
 
+
+    /**
+     * Emitted when either:
+     *
+     * 1. 500ms have elapsed since the last text change in the widget
+     * 2. or, immediately after the widget has lost focus after its text was changed.
+     *
+     *
+     * \see editingTimeoutInterval()
+     *
+     * \since QGIS 3.42
+     */
+    void editingTimeout();
+
   protected:
     /**
      * Returns TRUE if a \a font is a fixed pitch font.
@@ -575,7 +612,6 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     void keyPressEvent( QKeyEvent *event ) override;
     void contextMenuEvent( QContextMenuEvent *event ) override;
     bool eventFilter( QObject *watched, QEvent *event ) override;
-
     /**
      * Called when the dialect specific code lexer needs to be initialized (or reinitialized).
      *
@@ -651,6 +687,9 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     virtual void showMessage( const QString &title, const QString &message, Qgis::MessageLevel level );
 
+  private slots:
+    void onLastEditTimeout();
+
   private:
     void setSciWidget();
     void updateFolding();
@@ -685,6 +724,8 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
     static QMap<QgsCodeEditorColorScheme::ColorRole, QString> sColorRoleToSettingsKey;
 
     static constexpr int MARKER_NUMBER = 6;
+
+    QTimer *mLastEditTimer = nullptr;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsCodeEditor::Flags )

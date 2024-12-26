@@ -373,6 +373,18 @@ If wrapping is disabled, returns -1 instead
 .. versionadded:: 3.40
 %End
 
+
+    int editingTimeoutInterval() const;
+%Docstring
+Returns the timeout (in milliseconds) threshold for the :py:func:`~QgsCodeEditor.editingTimeout` signal to be emitted
+after an edit.
+
+.. seealso:: :py:func:`setEditingTimeoutInterval`
+
+.. versionadded:: 3.42
+%End
+
+
   public slots:
 
     void runCommand( const QString &command, bool skipHistory = false );
@@ -509,6 +521,18 @@ Adjust the width of the scroll bar to fit the content.
     virtual void setText( const QString &text );
 
 
+    void setEditingTimeoutInterval( int timeout );
+%Docstring
+Sets the ``timeout`` (in milliseconds) threshold for the :py:func:`~QgsCodeEditor.editingTimeout` signal to be emitted
+after an edit.
+
+.. seealso:: :py:func:`editingTimeoutInterval`
+
+.. seealso:: :py:func:`editingTimeout`
+
+.. versionadded:: 3.42
+%End
+
   signals:
 
     void sessionHistoryCleared();
@@ -533,6 +557,19 @@ Emitted when documentation was requested for the specified ``word``.
 .. versionadded:: 3.42
 %End
 
+
+    void editingTimeout();
+%Docstring
+Emitted when either:
+
+1. 500ms have elapsed since the last text change in the widget
+2. or, immediately after the widget has lost focus after its text was changed.
+
+.. seealso:: :py:func:`editingTimeoutInterval`
+
+.. versionadded:: 3.42
+%End
+
   protected:
     static bool isFixedPitch( const QFont &font );
 %Docstring
@@ -546,7 +583,6 @@ Returns ``True`` if a ``font`` is a fixed pitch font.
     virtual void contextMenuEvent( QContextMenuEvent *event );
 
     virtual bool eventFilter( QObject *watched, QEvent *event );
-
 
     virtual void initializeLexer();
 %Docstring

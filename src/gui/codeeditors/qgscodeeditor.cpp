@@ -149,6 +149,12 @@ QgsCodeEditor::QgsCodeEditor( QWidget *parent, const QString &title, bool foldin
 #if QSCINTILLA_VERSION < 0x020d03
   installEventFilter( this );
 #endif
+
+  mLastEditTimer = new QTimer( this );
+  mLastEditTimer->setSingleShot( true );
+  mLastEditTimer->setInterval( 500 );
+  connect( mLastEditTimer, &QTimer::timeout, this, &QgsCodeEditor::onLastEditTimeout );
+  connect( this, &QgsCodeEditor::textChanged, mLastEditTimer, qOverload<>( &QTimer::start ) );
 }
 
 // Workaround a bug in QScintilla 2.8.X
@@ -177,6 +183,7 @@ void QgsCodeEditor::focusOutEvent( QFocusEvent *event )
   {
     QsciScintilla::focusOutEvent( event );
   }
+  onLastEditTimeout();
 }
 
 // This workaround a likely bug in QScintilla. The ESC key should not be consumned
@@ -352,6 +359,7 @@ void QgsCodeEditor::contextMenuEvent( QContextMenuEvent *event )
   }
 }
 
+
 bool QgsCodeEditor::eventFilter( QObject *watched, QEvent *event )
 {
 #if QSCINTILLA_VERSION < 0x020d03
@@ -451,6 +459,12 @@ void QgsCodeEditor::runPostLexerConfigurationTasks()
     setMarginsBackgroundColor( color( QgsCodeEditorColorScheme::ColorRole::Background ) );
     setEdgeMode( QsciScintilla::EdgeNone );
   }
+}
+
+void QgsCodeEditor::onLastEditTimeout()
+{
+  mLastEditTimer->stop();
+  emit editingTimeout();
 }
 
 void QgsCodeEditor::setSciWidget()
@@ -841,9 +855,23 @@ void QgsCodeEditor::adjustScrollWidth()
 
 void QgsCodeEditor::setText( const QString &text )
 {
+  disconnect( this, &QgsCodeEditor::textChanged, mLastEditTimer, qOverload<>( &QTimer::start ) );
   QsciScintilla::setText( text );
+  connect( this, &QgsCodeEditor::textChanged, mLastEditTimer, qOverload<>( &QTimer::start ) );
+  onLastEditTimeout();
   adjustScrollWidth();
 }
+
+int QgsCodeEditor::editingTimeoutInterval() const
+{
+  return mLastEditTimer->interval();
+}
+
+void QgsCodeEditor::setEditingTimeoutInterval( int timeout )
+{
+  mLastEditTimer->setInterval( timeout );
+}
+
 
 QStringList QgsCodeEditor::history() const
 {
