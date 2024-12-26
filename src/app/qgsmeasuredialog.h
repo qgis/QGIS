@@ -35,6 +35,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     Q_OBJECT
 
   public:
+
     static const QgsSettingsEntryBool *settingClipboardHeader;
     static const QgsSettingsEntryString *settingClipboardSeparator;
     static const QgsSettingsEntryBool *settingClipboardAlwaysUseDecimalPoint;
@@ -69,6 +70,12 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! When any external settings change
     void updateSettings();
 
+    //! Show the center point X & Y values in line edits when measuring radius
+    void setCenterXY( double x, double y );
+
+    //! Show the exterior point X & Y values in line edits when measuring radius
+    void setExteriorXY( double x, double y );
+
   private slots:
     void unitsChanged( int index );
 
@@ -83,6 +90,7 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void projChanged();
 
   private:
+
     //! \since QGIS 3.32 columns
     enum Columns
     {
@@ -118,6 +126,8 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     //! indicates whether we're measuring distances or areas
     bool mMeasureArea = false;
 
+    bool mMeasureRadius = false;
+
     //! Indicates whether the user chose "Map units" instead of directly selecting a unit
     bool mUseMapUnits = false;
 
@@ -134,13 +144,13 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     Qgis::DistanceUnit mCanvasUnits = Qgis::DistanceUnit::Unknown;
 
     //! Current unit for distance values
-    Qgis::DistanceUnit mDistanceUnits = Qgis::DistanceUnit::Unknown;
+    Qgis::DistanceUnit mDistanceUnits  = Qgis::DistanceUnit::Unknown;
 
     //! Current map unit for distance values
-    Qgis::DistanceUnit mMapDistanceUnits = Qgis::DistanceUnit::Unknown;
+    Qgis::DistanceUnit mMapDistanceUnits  = Qgis::DistanceUnit::Unknown;
 
     //! Current unit for area values
-    Qgis::AreaUnit mAreaUnits = Qgis::AreaUnit::Unknown;
+    Qgis::AreaUnit mAreaUnits  = Qgis::AreaUnit::Unknown;
 
     //! Our measurement object
     QgsDistanceArea mDa;
@@ -151,6 +161,12 @@ class APP_EXPORT QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     QgsMapCanvas *mCanvas = nullptr;
 
     QgsPointXY mLastMousePoint;
+
+    //! Line edits added when measuring radius
+    QLineEdit *mEditCenterX;
+    QLineEdit *mEditCenterY;
+    QLineEdit *mEditExteriorX;
+    QLineEdit *mEditExteriorY;
 
     void showHelp();
 

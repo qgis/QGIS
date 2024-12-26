@@ -25,15 +25,20 @@
 #include "qgsproject.h"
 #include "qgssnapindicator.h"
 #include "qgsmapmouseevent.h"
+#include "qgscircle.h"
+#include "qgssettingsregistrycore.h"
+#include "qgssettingsentryimpl.h"
 
 #include <QMessageBox>
 
 
-QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea )
+QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea,  bool measureRadius )
   : QgsMapTool( canvas )
   , mMeasureArea( measureArea )
+  , mMeasureRadius( measureRadius )
   , mSnapIndicator( new QgsSnapIndicator( canvas ) )
 {
+  mRubberBandCircle = new QgsRubberBand( canvas, Qgis::GeometryType::Polygon ); // Below other rubber bands
   mRubberBand = new QgsRubberBand( canvas, mMeasureArea ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line );
   mRubberBandPoints = new QgsRubberBand( canvas, Qgis::GeometryType::Point );
 
@@ -48,7 +53,7 @@ QgsMeasureTool::QgsMeasureTool( QgsMapCanvas *canvas, bool measureArea )
 
 QgsMeasureTool::~QgsMeasureTool()
 {
-  // important - dialog is not parented to this tool (it's parented to the main window)
+  // Important - dialog is not parented to this tool (it's parented to the main window)
   // but we want to clean it up now
   delete mDialog;
 }
@@ -64,23 +69,28 @@ void QgsMeasureTool::activate()
   mDialog->show();
   mRubberBand->show();
   mRubberBandPoints->show();
+  mRubberBandCircle->show();
   QgsMapTool::activate();
 
-  // ensure that we have correct settings
+  // Ensure that we have correct settings
   updateSettings();
 
   // If we suspect that they have data that is projected, yet the
   // map CRS is set to a geographic one, warn them.
-  if ( mCanvas->mapSettings().destinationCrs().isValid() && mCanvas->mapSettings().destinationCrs().isGeographic() && ( mCanvas->extent().height() > 360 || mCanvas->extent().width() > 720 ) )
+  if ( mCanvas->mapSettings().destinationCrs().isValid() &&
+       mCanvas->mapSettings().destinationCrs().isGeographic() &&
+       ( mCanvas->extent().height() > 360 ||
+         mCanvas->extent().width() > 720 ) )
   {
-    QMessageBox::warning( nullptr, tr( "Incorrect Measure Results" ), tr( "<p>This map is defined with a geographic coordinate system "
-                                                                          "(latitude/longitude) "
-                                                                          "but the map extents suggests that it is actually a projected "
-                                                                          "coordinate system (e.g., Mercator). "
-                                                                          "If so, the results from line or area measurements will be "
-                                                                          "incorrect.</p>"
-                                                                          "<p>To fix this, explicitly set an appropriate map coordinate "
-                                                                          "system using the <tt>Settings:Project Properties</tt> menu." ) );
+    QMessageBox::warning( nullptr, tr( "Incorrect Measure Results" ),
+                          tr( "<p>This map is defined with a geographic coordinate system "
+                              "(latitude/longitude) "
+                              "but the map extents suggests that it is actually a projected "
+                              "coordinate system (e.g., Mercator). "
+                              "If so, the results from line or area measurements will be "
+                              "incorrect.</p>"
+                              "<p>To fix this, explicitly set an appropriate map coordinate "
+                              "system using the <tt>Settings:Project Properties</tt> menu." ) );
     mWrongProjectProjection = true;
   }
 }
@@ -92,6 +102,8 @@ void QgsMeasureTool::deactivate()
   mDialog->hide();
   mRubberBand->hide();
   mRubberBandPoints->hide();
+  mRubberBandCircle->hide();
+
   QgsMapTool::deactivate();
 }
 
@@ -109,6 +121,7 @@ void QgsMeasureTool::restart()
 
   mRubberBand->reset( mMeasureArea ? Qgis::GeometryType::Polygon : Qgis::GeometryType::Line );
   mRubberBandPoints->reset( Qgis::GeometryType::Point );
+  mRubberBandCircle->reset( Qgis::GeometryType::Polygon );
 
   mDone = true;
   mWrongProjectProjection = false;
@@ -126,6 +139,14 @@ void QgsMeasureTool::updateSettings()
   mRubberBandPoints->setIcon( QgsRubberBand::ICON_CIRCLE );
   mRubberBandPoints->setIconSize( 10 );
   mRubberBandPoints->setColor( QColor( myRed, myGreen, myBlue, 150 ) );
+
+  QColor circularRbStrokeColor = QgsSettingsRegistryCore::settingsMeasureRadiusCircularRubberbandColor->value();
+  circularRbStrokeColor.setAlpha( 150 );
+  mRubberBandCircle->setStrokeColor( circularRbStrokeColor );
+  mRubberBandCircle->setWidth( 2 );
+  QColor circularRbFillColor = QColor( circularRbStrokeColor );
+  circularRbFillColor.setAlpha( 35 );
+  mRubberBandCircle->setFillColor( circularRbFillColor );
 
   // Reproject the points to the new destination CoordinateReferenceSystem
   if ( mRubberBand->size() > 0 && mDestinationCrs != mCanvas->mapSettings().destinationCrs() && mCanvas->mapSettings().destinationCrs().isValid() )
@@ -156,6 +177,12 @@ void QgsMeasureTool::updateSettings()
 
     mRubberBand->updatePosition();
     mRubberBandPoints->updatePosition();
+
+    if ( mMeasureRadius )
+    {
+      // Redraw the circular rubber band from updated points
+      mRubberBandCircle->setToGeometry( createCircleGeom() );
+    }
   }
   mDestinationCrs = mCanvas->mapSettings().destinationCrs();
 
@@ -166,7 +193,7 @@ void QgsMeasureTool::updateSettings()
   int nbVertices = mRubberBandPoints->numberOfVertices();
 
   // Add a temporary point to the rubber band if the user is currently measuring
-  if ( !mDone && mRubberBand->size() > 0 && nbTempVertices <= nbVertices )
+  if ( !mDone && mRubberBand->size() > 0  && nbTempVertices <= nbVertices )
   {
     mRubberBand->addPoint( mPoints.last() );
   }
@@ -189,10 +216,14 @@ void QgsMeasureTool::canvasMoveEvent( QgsMapMouseEvent *e )
   const QgsPointXY point = e->snapPoint();
   mSnapIndicator->setMatch( e->mapPointMatch() );
 
-  if ( !mDone )
+  if ( ! mDone )
   {
     mRubberBand->movePoint( point );
     mDialog->mouseMove( point );
+    if ( mMeasureRadius )
+    {
+      mRubberBandCircle->setToGeometry( createCircleGeom() );
+    }
   }
 }
 
@@ -201,24 +232,54 @@ void QgsMeasureTool::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   const QgsPointXY point = e->snapPoint();
 
-  if ( mDone ) // if we have stopped measuring any mouse click restart measuring
+  if ( mDone ) // If we have stopped measuring any mouse click restart measuring
   {
     mDialog->restart();
   }
 
-  if ( e->button() == Qt::RightButton ) // if we clicked the right button we stop measuring
+  if ( e->button() == Qt::RightButton ) // If we clicked the right button we stop measuring
   {
     mDone = true;
-    mRubberBand->removeLastPoint();
-    mDialog->removeLastPoint();
+    if ( mMeasureRadius )
+    {
+      // Add point to points rb
+      addPoint( point );
+    }
+    else
+    {
+      mRubberBand->removeLastPoint();
+      mDialog->removeLastPoint();
+    }
   }
   else if ( e->button() == Qt::LeftButton )
   {
     mDone = false;
+    if ( mMeasureRadius )
+    {
+      // Consecutive left clicks will clear the rubber bands and restart measuring
+      mPoints.clear();
+      mRubberBandPoints->removeLastPoint();
+      mRubberBand->removeLastPoint();
+      mRubberBandCircle->reset( Qgis::GeometryType::Polygon );
+    }
     addPoint( point );
   }
 
   mDialog->show();
+
+}
+
+QgsGeometry QgsMeasureTool::createCircleGeom()
+{
+  QgsPoint tmpCntrPt = QgsPoint( mPoints.at( 0 ) );
+  QgsPoint tmpOutrPt = mRubberBand->asGeometry().vertexAt( 1 );
+  double dist = mRubberBand->asGeometry().length();
+  double az = tmpCntrPt.azimuth( tmpOutrPt );
+  QgsCircle circ = QgsCircle( tmpCntrPt, dist, az );
+  QgsPolygon *poly = circ.toPolygon( 360 );
+  QgsGeometry circleGeom = QgsGeometry( poly );
+
+  return circleGeom;
 }
 
 void QgsMeasureTool::undo()
@@ -232,13 +293,13 @@ void QgsMeasureTool::undo()
 
     if ( mPoints.size() == 1 )
     {
-      //removing first point, so restart everything
+      // Removing first point, so restart everything
       restart();
       mDialog->restart();
     }
     else
     {
-      //remove second last point from line band, and last point from points band
+      // Remove second last point from line band, and last point from points band
       mRubberBand->removePoint( -2, true );
       mRubberBandPoints->removePoint( -1, true );
       mPoints.removeLast();
@@ -256,7 +317,7 @@ void QgsMeasureTool::keyPressEvent( QKeyEvent *e )
   }
   else if ( ( e->key() == Qt::Key_Backspace || e->key() == Qt::Key_Delete ) )
   {
-    if ( !mDone )
+    if ( !mDone && !mMeasureRadius )
     {
       undo();
     }
@@ -271,7 +332,7 @@ void QgsMeasureTool::addPoint( const QgsPointXY &point )
 {
   QgsDebugMsgLevel( "point=" + point.toString(), 2 );
 
-  // don't add points with the same coordinates
+  // Don't add points with the same coordinates
   if ( !mPoints.isEmpty() && mPoints.last() == point )
   {
     return;

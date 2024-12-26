@@ -2980,6 +2980,7 @@ void QgisApp::createActions()
   connect( mActionMeasureArea, &QAction::triggered, this, &QgisApp::measureArea );
   connect( mActionMeasureAngle, &QAction::triggered, this, &QgisApp::measureAngle );
   connect( mActionMeasureBearing, &QAction::triggered, this, [=] { setMapTool( mMapTools->mapTool( QgsAppMapTools::MeasureBearing ) ); } );
+  connect( mActionMeasureRadius, &QAction::triggered, this,  [ = ] { setMapTool( mMapTools->mapTool( QgsAppMapTools::MeasureRadius ) ); } );
   connect( mActionZoomFullExtent, &QAction::triggered, this, &QgisApp::zoomFull );
   connect( mActionZoomToLayer, &QAction::triggered, this, &QgisApp::zoomToLayerExtent );
   connect( mActionZoomToLayers, &QAction::triggered, this, &QgisApp::zoomToLayerExtent );
@@ -3294,6 +3295,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionMeasureArea );
   mMapToolGroup->addAction( mActionMeasureAngle );
   mMapToolGroup->addAction( mActionMeasureBearing );
+  mMapToolGroup->addAction( mActionMeasureRadius );
   mMapToolGroup->addAction( mActionAddFeature );
   mMapToolGroup->addAction( mActionMoveFeature );
   mMapToolGroup->addAction( mActionMoveFeatureCopy );
@@ -3699,6 +3701,7 @@ void QgisApp::createToolBars()
   bt->addAction( mActionMeasureArea );
   bt->addAction( mActionMeasureBearing );
   bt->addAction( mActionMeasureAngle );
+  bt->addAction( mActionMeasureRadius );
 
   QAction *defMeasureAction = mActionMeasure;
   switch ( settings.value( QStringLiteral( "UI/measureTool" ), 0 ).toInt() )
@@ -3715,6 +3718,10 @@ void QgisApp::createToolBars()
     case 3:
       defMeasureAction = mActionMeasureAngle;
       break;
+    case 4:
+      defMeasureAction = mActionMeasureRadius;
+      break;
+
   }
   bt->setDefaultAction( defMeasureAction );
   QAction *measureAction = mAttributesToolBar->insertWidget( mActionMapTips, bt );
@@ -3726,7 +3733,6 @@ void QgisApp::createToolBars()
   tbAllEdits->setPopupMode( QToolButton::InstantPopup );
 
   // new layer tool button
-
   bt = new QToolButton();
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionNewVectorLayer );
@@ -4502,6 +4508,7 @@ void QgisApp::setupCanvasTools()
   mMapTools->mapTool( QgsAppMapTools::MeasureArea )->setAction( mActionMeasureArea );
   mMapTools->mapTool( QgsAppMapTools::MeasureAngle )->setAction( mActionMeasureAngle );
   mMapTools->mapTool( QgsAppMapTools::MeasureBearing )->setAction( mActionMeasureBearing );
+  mMapTools->mapTool( QgsAppMapTools::MeasureRadius )->setAction( mActionMeasureRadius );
   mMapTools->mapTool( QgsAppMapTools::FormAnnotation )->setAction( mActionFormAnnotation );
   mMapTools->mapTool( QgsAppMapTools::HtmlAnnotation )->setAction( mActionHtmlAnnotation );
   mMapTools->mapTool( QgsAppMapTools::AddFeature )->setAction( mActionAddFeature );
@@ -12419,6 +12426,7 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage, in
     mMapTools->mapTool<QgsMeasureTool>( QgsAppMapTools::MeasureArea )->updateSettings();
     mMapTools->mapTool<QgsMapToolMeasureAngle>( QgsAppMapTools::MeasureAngle )->updateSettings();
     mMapTools->mapTool<QgsMapToolMeasureBearing>( QgsAppMapTools::MeasureBearing )->updateSettings();
+    mMapTools->mapTool< QgsMeasureTool >( QgsAppMapTools::MeasureRadius )->updateSettings();
 
 #ifdef HAVE_3D
     for ( Qgs3DMapCanvasWidget *canvas3D : std::as_const( mOpen3DMapViews ) )
