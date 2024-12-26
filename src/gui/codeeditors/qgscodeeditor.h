@@ -531,6 +531,16 @@ class GUI_EXPORT QgsCodeEditor : public QsciScintilla
      */
     virtual void toggleComment();
 
+    /**
+     * Adjust the width of the scroll bar to fit the content.
+     * 
+     * \since QGIS 3.42
+     */
+    void adjustScrollWidth();
+
+    // Override QsciScintilla::setText to adjust the scroll width
+    void setText( const QString &text ) override;
+
   signals:
 
     /**

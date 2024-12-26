@@ -817,6 +817,34 @@ void QgsCodeEditor::toggleComment()
 {
 }
 
+void QgsCodeEditor::adjustScrollWidth()
+{
+  // A zero width would make setScrollWidth crash
+  long maxWidth = 10;
+
+  // Get the number of lines
+  int lineCount = lines();
+
+  // Loop through all the lines to get the longest one
+  for ( int line = 0; line < lineCount; line++ )
+  {
+    // Get the linear position at the end of the current line
+    const long endLine = SendScintilla( SCI_GETLINEENDPOSITION, line );
+    // Get the x coordinates of the end of the line
+    const long x = SendScintilla( SCI_POINTXFROMPOSITION, 0, endLine );
+    maxWidth = std::max( maxWidth, x );
+  }
+
+  // Use the longest line width as the new scroll width
+  setScrollWidth( maxWidth );
+}
+
+void QgsCodeEditor::setText( const QString &text )
+{
+  QsciScintilla::setText( text );
+  adjustScrollWidth();
+}
+
 QStringList QgsCodeEditor::history() const
 {
   return mHistory;
