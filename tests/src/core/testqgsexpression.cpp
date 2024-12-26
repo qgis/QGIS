@@ -993,7 +993,8 @@ class TestQgsExpression : public QObject
       QTest::newRow( "scale_linear(10,0,10,100,200)" ) << "scale_linear(10,0,10,100,200)" << false << QVariant( 200. );
       QTest::newRow( "scale_linear(-1,0,10,100,200)" ) << "scale_linear(-1,0,10,100,200)" << false << QVariant( 100. );
       QTest::newRow( "scale_linear(11,0,10,100,200)" ) << "scale_linear(11,0,10,100,200)" << false << QVariant( 200. );
-      QTest::newRow( "scale_linear(5,0,10,0,100,2)" ) << "scale_linear(5,0,10,0,100,2)" << false << QVariant( 50. );
+      QTest::newRow( "scale_linear(5,0,10,0,100)" ) << "scale_linear(5,0,10,0,100)" << false << QVariant( 50. );
+      QTest::newRow( "scale_linear(0.2,0,1,0,360)" ) << "scale_linear(0.2,0,1,0,360)" << false << QVariant( 72. );
       QTest::newRow( "scale_linear(1500,1000,10000,9,20)" ) << "scale_linear(1500,1000,10000,9,20)" << false << QVariant( 9.61111111111111 );
 
       // previously had name scale_exp, but renamed to scale_polynomial as it uses polynomial interpolation formula
