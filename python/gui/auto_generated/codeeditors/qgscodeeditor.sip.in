@@ -499,6 +499,16 @@ This is only supported for editors which return the :py:class:`Qgis`.ScriptLangu
 .. versionadded:: 3.32
 %End
 
+    void adjustScrollWidth();
+%Docstring
+Adjust the width of the scroll bar to fit the content.
+
+.. versionadded:: 3.42
+%End
+
+    virtual void setText( const QString &text );
+
+
   signals:
 
     void sessionHistoryCleared();
