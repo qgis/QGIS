@@ -1373,6 +1373,8 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
         return;
 
       QDialog dlg;
+      dlg.setObjectName( "QML Form Configuration Widget" );
+      QgsGui::enableAutoGeometryRestore( &dlg );
       dlg.setWindowTitle( tr( "Configure QML Widget" ) );
 
       QVBoxLayout *mainLayout = new QVBoxLayout();
@@ -1562,6 +1564,8 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       if ( mType == QgsAttributesDnDTree::Type::Drag )
         return;
       QDialog dlg;
+      dlg.setObjectName( "HTML Form Configuration Widget" );
+      QgsGui::enableAutoGeometryRestore( &dlg );
       dlg.setWindowTitle( tr( "Configure HTML Widget" ) );
 
       QVBoxLayout *mainLayout = new QVBoxLayout();
@@ -1668,6 +1672,8 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       if ( mType == QgsAttributesDnDTree::Type::Drag )
         return;
       QDialog dlg;
+      dlg.setObjectName( "Text Form Configuration Widget" );
+      QgsGui::enableAutoGeometryRestore( &dlg );
       dlg.setWindowTitle( tr( "Configure Text Widget" ) );
 
       QVBoxLayout *mainLayout = new QVBoxLayout();
@@ -1772,6 +1778,8 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       if ( mType == QgsAttributesDnDTree::Type::Drag )
         return;
       QDialog dlg;
+      dlg.setObjectName( "Spacer Form Configuration Widget" );
+      QgsGui::enableAutoGeometryRestore( &dlg );
       dlg.setWindowTitle( tr( "Configure Spacer Widget" ) );
 
       QVBoxLayout *mainLayout = new QVBoxLayout();
