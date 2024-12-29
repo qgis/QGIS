@@ -993,6 +993,9 @@ class TestQgsExpression : public QObject
       QTest::newRow( "scale_linear(10,0,10,100,200)" ) << "scale_linear(10,0,10,100,200)" << false << QVariant( 200. );
       QTest::newRow( "scale_linear(-1,0,10,100,200)" ) << "scale_linear(-1,0,10,100,200)" << false << QVariant( 100. );
       QTest::newRow( "scale_linear(11,0,10,100,200)" ) << "scale_linear(11,0,10,100,200)" << false << QVariant( 200. );
+      QTest::newRow( "scale_linear(5,0,10,0,100)" ) << "scale_linear(5,0,10,0,100)" << false << QVariant( 50. );
+      QTest::newRow( "scale_linear(0.2,0,1,0,360)" ) << "scale_linear(0.2,0,1,0,360)" << false << QVariant( 72. );
+      QTest::newRow( "scale_linear(1500,1000,10000,9,20)" ) << "scale_linear(1500,1000,10000,9,20)" << false << QVariant( 9.61111111111111 );
 
       // previously had name scale_exp, but renamed to scale_polynomial as it uses polynomial interpolation formula
       // see https://github.com/qgis/QGIS/pull/53164 for more details
@@ -1002,6 +1005,8 @@ class TestQgsExpression : public QObject
       QTest::newRow( "scale_polynomial(10,0,10,100,200,0.5)" ) << "scale_polynomial(10,0,10,100,200,0.5)" << false << QVariant( 200. );
       QTest::newRow( "scale_polynomial(-1,0,10,100,200,0.5)" ) << "scale_polynomial(-1,0,10,100,200,0.5)" << false << QVariant( 100. );
       QTest::newRow( "scale_polynomial(4,0,9,0,90,0.5)" ) << "scale_polynomial(4,0,9,0,90,0.5)" << false << QVariant( 60. );
+      QTest::newRow( "scale_polynomial(5,0,10,0,100,2)" ) << "scale_polynomial(5,0,10,0,100,2)" << false << QVariant( 25. );
+      QTest::newRow( "scale_polynomial(3,0,10,0,100,0.5)" ) << "scale_polynomial(3,0,10,0,100,0.5)" << false << QVariant( 54.77225575051661 );
       // this is an alias for scale_polynomial to preserve backward compatibility
       QTest::newRow( "scale_exp(0.5,0,1,0,1,2)" ) << "scale_exp(0.5,0,1,0,1,2)" << false << QVariant( 0.25 );
       QTest::newRow( "scale_exp(0,0,10,100,200,2)" ) << "scale_exp(0,0,10,100,200,2)" << false << QVariant( 100. );
@@ -1016,6 +1021,8 @@ class TestQgsExpression : public QObject
       QTest::newRow( "scale_exponential(10,0,10,100,200,0.5)" ) << "scale_exponential(10,0,10,100,200,0.5)" << false << QVariant( 200. );
       QTest::newRow( "scale_exponential(-1,0,10,100,200,0.5)" ) << "scale_exponential(-1,0,10,100,200,0.5)" << false << QVariant( 100. );
       QTest::newRow( "scale_exponential(4,0,9,0,90,0.5)" ) << "scale_exponential(4,0,9,0,90,0.5)" << false << QVariant( 84.5401174168 );
+      QTest::newRow( "scale_exponential(5,0,10,0,100,2)" ) << "scale_exponential(5,0,10,0,100,2)" << false << QVariant( 3.0303030303030303 );
+      QTest::newRow( "scale_exponential(3,0,10,0,100,0.5)" ) << "scale_exponential(3,0,10,0,100,0.5)" << false << QVariant( 87.58553274682306 );
 
       // cast functions
       QTest::newRow( "double to int" ) << "toint(3.2)" << false << QVariant( 3 );
