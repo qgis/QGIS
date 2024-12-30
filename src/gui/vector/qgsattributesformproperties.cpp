@@ -1390,6 +1390,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
 
       //qmlCode
       QgsCodeEditor *qmlCode = new QgsCodeEditor( this );
+      qmlCode->setEditingTimeoutInterval( 250 );
       qmlCode->setText( itemData.qmlElementEditorConfiguration().qmlCode );
 
       QgsQmlWidgetWrapper *qmlWrapper = new QgsQmlWidgetWrapper( mLayer, nullptr, this );
@@ -1397,7 +1398,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       mLayer->getFeatures().nextFeature( previewFeature );
 
       //update preview on text change
-      connect( qmlCode, &QsciScintilla::textChanged, this, [=] {
+      connect( qmlCode, &QgsCodeEditor::editingTimeout, this, [=] {
         qmlWrapper->setQmlCode( qmlCode->text() );
         qmlWrapper->reinitWidget();
         qmlWrapper->setFeature( previewFeature );
@@ -1532,7 +1533,7 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       qmlPreviewBox->setMinimumWidth( 200 );
       qmlPreviewBox->setWidget( qmlWrapper->widget() );
       //emit to load preview for the first time
-      emit qmlCode->textChanged();
+      emit qmlCode->editingTimeout();
       qmlSplitter->addWidget( qmlPreviewBox );
       qmlSplitter->setChildrenCollapsible( false );
       qmlSplitter->setHandleWidth( 6 );
