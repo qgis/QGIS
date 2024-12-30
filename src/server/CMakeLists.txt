@@ -120,7 +120,6 @@ endif()
 target_link_libraries(qgis_server
   qgis_core
   ${FCGI_LIBRARY}
-  ${POSTGRES_LIBRARY}
   ${QCA_LIBRARY}
 )
 

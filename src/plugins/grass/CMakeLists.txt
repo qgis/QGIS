@@ -80,10 +80,6 @@ include_directories(
   ${CMAKE_BINARY_DIR}/src/app
   ${CMAKE_CURRENT_BINARY_DIR}
 )
-include_directories(SYSTEM
-  ${POSTGRES_INCLUDE_DIR}
-)
-
 
 macro(ADD_GRASSPLUGIN GRASS_BUILD_VERSION)
     set(GRASS_PREFIX ${GRASS_PREFIX${GRASS_BUILD_VERSION}})

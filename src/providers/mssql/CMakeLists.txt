@@ -68,7 +68,6 @@ target_compile_definitions(provider_mssql_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_
 
 target_link_libraries (provider_mssql_a
   qgis_core
-  ${POSTGRES_LIBRARY}
   ${Qt5Xml_LIBRARIES}
   ${Qt5Core_LIBRARIES}
   ${Qt5Svg_LIBRARIES}
