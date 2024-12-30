@@ -1028,6 +1028,21 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
     */
     void setPenJoinStyle( Qt::PenJoinStyle style ) { mPenJoinStyle = style; }
 
+    /**
+     * Set fixVerticalAnchor that means it considers the baseline position for all the characters
+     * \param fixVerticalAnchor the bool
+     * \see fixVerticalAnchor()
+     * \since QGIS 3.42
+     */
+    void setFixVerticalAnchor( const bool fixVerticalAnchor ) { mFixVerticalAnchor = fixVerticalAnchor;}
+
+    /**
+     * Returns wheter it considers teh baseline position for all the characters
+     * \see setFixVerticalAnchor()
+     * \since QGIS 3.42
+     */
+    bool fixVerticalAnchor() const { return mFixVerticalAnchor; }
+
     QRectF bounds( QPointF point, QgsSymbolRenderContext &context ) override;
 
   private:
@@ -1041,6 +1056,8 @@ class CORE_EXPORT QgsFontMarkerSymbolLayer : public QgsMarkerSymbolLayer
 
     double mChrWidth = 0;
     QPointF mChrOffset;
+    bool mFixVerticalAnchor = false;
+
     //! Scaling for font sizes, used if font size grows too large
     double mFontSizeScale = 1.0;
     double mOrigSize;

@@ -3559,7 +3559,10 @@ void QgsFontMarkerSymbolLayerWidget::setSymbolLayer( QgsSymbolLayer *layer )
 
   //anchor points
   whileBlocking( mHorizontalAnchorComboBox )->setCurrentIndex( mLayer->horizontalAnchorPoint() );
-  whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( mLayer->verticalAnchorPoint() );
+  int verticalAnchorIndex = mLayer->verticalAnchorPoint();
+  if ( mLayer->fixVerticalAnchor() )
+    verticalAnchorIndex += 3;
+  whileBlocking( mVerticalAnchorComboBox )->setCurrentIndex( verticalAnchorIndex );
 
   registerDataDefinedButton( mFontFamilyDDBtn, QgsSymbolLayer::Property::FontFamily );
   registerDataDefinedButton( mFontStyleDDBtn, QgsSymbolLayer::Property::FontStyle );
@@ -3769,6 +3772,17 @@ void QgsFontMarkerSymbolLayerWidget::mVerticalAnchorComboBox_currentIndexChanged
 {
   if ( mLayer )
   {
+    if ( index >= 3 )
+    {
+      mLayer->setFixVerticalAnchor( true );
+      //pass original types
+      index -= 3;
+    }
+    else
+    {
+
+      mLayer->setFixVerticalAnchor( false );
+    }
     mLayer->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( index ) );
     emit changed();
   }

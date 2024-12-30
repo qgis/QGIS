@@ -1119,6 +1119,26 @@ Sets the stroke join ``style``.
 .. seealso:: :py:func:`penJoinStyle`
 %End
 
+    void setFixVerticalAnchor( const bool fixVerticalAnchor );
+%Docstring
+Set fixVerticalAnchor that means it considers the baseline position for all the characters
+
+:param fixVerticalAnchor: the bool
+
+.. seealso:: :py:func:`fixVerticalAnchor`
+
+.. versionadded:: 3.42
+%End
+
+    bool fixVerticalAnchor() const;
+%Docstring
+Returns wheter it considers teh baseline position for all the characters
+
+.. seealso:: :py:func:`setFixVerticalAnchor`
+
+.. versionadded:: 3.42
+%End
+
     virtual QRectF bounds( QPointF point, QgsSymbolRenderContext &context );
 
 

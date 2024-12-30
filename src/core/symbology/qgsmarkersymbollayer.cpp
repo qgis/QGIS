@@ -3541,6 +3541,8 @@ QgsSymbolLayer *QgsFontMarkerSymbolLayer::create( const QVariantMap &props )
     m->setHorizontalAnchorPoint( QgsMarkerSymbolLayer::HorizontalAnchorPoint( props[ QStringLiteral( "horizontal_anchor_point" )].toInt() ) );
   if ( props.contains( QStringLiteral( "vertical_anchor_point" ) ) )
     m->setVerticalAnchorPoint( QgsMarkerSymbolLayer::VerticalAnchorPoint( props[ QStringLiteral( "vertical_anchor_point" )].toInt() ) );
+  if ( props.contains( QStringLiteral( "fix_vertical_anchor" ) ) )
+    m->setFixVerticalAnchor( props[ QStringLiteral( "fix_vertical_anchor" )].toBool() );
 
   m->restoreOldDataDefinedProperties( props );
 
@@ -3595,7 +3597,14 @@ void QgsFontMarkerSymbolLayer::startRender( QgsSymbolRenderContext &context )
   mFont.setPixelSize( std::max( 2, static_cast< int >( std::round( sizePixels ) ) ) );
   mFontMetrics.reset( new QFontMetrics( mFont ) );
   mChrWidth = mFontMetrics->horizontalAdvance( mString );
-  mChrOffset = QPointF( mChrWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
+  if ( mFixVerticalAnchor )
+  {
+    mChrOffset = QPointF( mChrWidth / 2.0, -sizePixels / 2.0 );
+  }
+  else
+  {
+    mChrOffset = QPointF( mChrWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
+  }
   mOrigSize = mSize; // save in case the size would be data defined
 
   // use caching only when not using a data defined character
@@ -3628,7 +3637,15 @@ QString QgsFontMarkerSymbolLayer::characterToRender( QgsSymbolRenderContext &con
     if ( stringToRender != mString )
     {
       charWidth = mFontMetrics->horizontalAdvance( stringToRender );
-      charOffset = QPointF( charWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
+      if ( mFixVerticalAnchor )
+      {
+        const double sizePixels = context.renderContext().convertToPainterUnits( mSize, mSizeUnit, mSizeMapUnitScale );
+        charOffset = QPointF( mChrWidth / 2.0, -sizePixels / 2.0 );
+      }
+      else
+      {
+        charOffset = QPointF( charWidth / 2.0, -mFontMetrics->ascent() / 2.0 );
+      }
     }
   }
   return stringToRender;
@@ -3858,6 +3875,7 @@ QVariantMap QgsFontMarkerSymbolLayer::properties() const
   props[QStringLiteral( "offset_map_unit_scale" )] = QgsSymbolLayerUtils::encodeMapUnitScale( mOffsetMapUnitScale );
   props[QStringLiteral( "horizontal_anchor_point" )] = QString::number( mHorizontalAnchorPoint );
   props[QStringLiteral( "vertical_anchor_point" )] = QString::number( mVerticalAnchorPoint );
+  props[QStringLiteral( "fix_vertical_anchor" )] = mFixVerticalAnchor;
   return props;
 }
 
@@ -3877,6 +3895,7 @@ QgsFontMarkerSymbolLayer *QgsFontMarkerSymbolLayer::clone() const
   m->setSizeMapUnitScale( mSizeMapUnitScale );
   m->setHorizontalAnchorPoint( mHorizontalAnchorPoint );
   m->setVerticalAnchorPoint( mVerticalAnchorPoint );
+  m->setFixVerticalAnchor( mFixVerticalAnchor );
   copyDataDefinedProperties( m );
   copyPaintEffect( m );
   return m;
