@@ -579,7 +579,6 @@ if (WITH_3D)
 endif()
 
 target_include_directories(qgis_app SYSTEM PUBLIC
-  ${QT_QTUITOOLS_INCLUDE_DIR}
   ${QWTPOLAR_INCLUDE_DIR}
   ${CMAKE_SOURCE_DIR}/external/qt-unix-signals
 )
