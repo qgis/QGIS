@@ -413,6 +413,9 @@ class GUI_EXPORT QgsModelParameterGraphicItem : public QgsModelComponentGraphicI
     QColor strokeColor( State state ) const override;
     QColor textColor( State state ) const override;
     QPicture iconPicture() const override;
+
+    int linkPointCount( Qt::Edge edge ) const override;
+    QString linkPointText( Qt::Edge edge, int index ) const override;
     void updateStoredComponentPosition( const QPointF &pos, const QSizeF &size ) override;
 
   protected slots:

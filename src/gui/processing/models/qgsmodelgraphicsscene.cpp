@@ -185,9 +185,16 @@ void QgsModelGraphicsScene::createItems( QgsProcessingModelAlgorithm *model, Qgs
               continue;
             QgsModelArrowItem *arrow = nullptr;
             if ( link.linkIndex == -1 )
-              arrow = new QgsModelArrowItem( link.item, QgsModelArrowItem::Marker::Circle, mChildAlgorithmItems.value( it.value().childId() ), parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge, parameter->isDestination() ? bottomIdx : topIdx, QgsModelArrowItem::Marker::Circle );
+              arrow = new QgsModelArrowItem( link.item, QgsModelArrowItem::Marker::Circle, mChildAlgorithmItems.value( it.value().childId() ),
+                                             parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge, 
+                                             parameter->isDestination() ? bottomIdx : topIdx, 
+                                             QgsModelArrowItem::Marker::Circle );
             else
-              arrow = new QgsModelArrowItem( link.item, link.edge, link.linkIndex, true, QgsModelArrowItem::Marker::Circle, mChildAlgorithmItems.value( it.value().childId() ), parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge, parameter->isDestination() ? bottomIdx : topIdx, true, QgsModelArrowItem::Marker::Circle );
+              arrow = new QgsModelArrowItem( link.item, link.edge, link.linkIndex, true,
+                                             QgsModelArrowItem::Marker::Circle, mChildAlgorithmItems.value( it.value().childId() ),
+                                             parameter->isDestination() ? Qt::BottomEdge : Qt::TopEdge,
+                                             parameter->isDestination() ? bottomIdx : topIdx,
+                                             true, QgsModelArrowItem::Marker::Circle );
             addItem( arrow );
           }
         }
@@ -399,6 +406,9 @@ QList<QgsModelGraphicsScene::LinkSource> QgsModelGraphicsScene::linkSourcesForPa
       {
         LinkSource l;
         l.item = mParameterItems.value( source.parameterName() );
+        l.edge = Qt::BottomEdge;
+        l.linkIndex = 0;
+
         res.append( l );
         break;
       }

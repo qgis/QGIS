@@ -376,7 +376,7 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
 
   painter->setPen( QPen( QApplication::palette().color( QPalette::Text ) ) );
 
-  if ( linkPointCount( Qt::TopEdge ) || linkPointCount( Qt::BottomEdge ) )
+  if ( linkPointCount( Qt::TopEdge ) )
   {
     h = -( fm.height() * 1.2 );
     h = h - componentSize.height() / 2.0 + 5;
@@ -395,7 +395,9 @@ void QgsModelComponentGraphicItem::paint( QPainter *painter, const QStyleOptionG
         i += 1;
       }
     }
-
+  }
+  if ( linkPointCount( Qt::BottomEdge ) )
+  {
     h = fm.height() * 1.1;
     h = h + componentSize.height() / 2.0;
     pt = QPointF( -componentSize.width() / 2 + 25, h );
@@ -768,6 +770,46 @@ QColor QgsModelParameterGraphicItem::textColor( QgsModelComponentGraphicItem::St
 QPicture QgsModelParameterGraphicItem::iconPicture() const
 {
   return mPicture;
+}
+
+int QgsModelParameterGraphicItem::linkPointCount( Qt::Edge edge ) const
+{
+
+    switch ( edge )
+    {
+      case Qt::BottomEdge:
+        return 1;
+      case Qt::TopEdge:
+      case Qt::LeftEdge:
+      case Qt::RightEdge:
+        break;
+    }
+  
+  return 0;
+}
+
+QString QgsModelParameterGraphicItem::linkPointText( Qt::Edge edge, int index ) const
+{
+  if ( index != 0 )
+  { 
+    // Always only one bottom socket for parameter
+    QgsMessageLog::logMessage(tr( "Cannot link output for parameter: %1" ),
+                              "QgsModelChildAlgorithmGraphicItem", Qgis::MessageLevel::Warning, true );
+    return QString();
+  }
+
+
+  if ( const QgsProcessingModelParameter *parameter = dynamic_cast< const QgsProcessingModelParameter * >( component() ) )
+    {
+    
+    return truncatedTextForItem(QStringLiteral( "lorem:" ) + parameter->description() + parameter->parameterName());
+    //return model()->parameterDefinition(  parameter->parameterName())->description();
+    
+    }
+    
+
+  return QString();
+
 }
 
 void QgsModelParameterGraphicItem::updateStoredComponentPosition( const QPointF &pos, const QSizeF &size )
