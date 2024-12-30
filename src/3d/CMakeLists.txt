@@ -288,7 +288,13 @@ target_include_directories(qgis_3d PUBLIC
   ${CMAKE_SOURCE_DIR}/external/tinygltf
 )
 
-target_link_libraries(qgis_3d Qt::3DCore Qt::3DRender Qt::3DInput Qt::3DLogic Qt::3DExtras)
+target_link_libraries(qgis_3d
+  ${QT_VERSION_BASE}::3DCore
+  ${QT_VERSION_BASE}::3DRender
+  ${QT_VERSION_BASE}::3DInput
+  ${QT_VERSION_BASE}::3DLogic
+  ${QT_VERSION_BASE}::3DExtras
+)
 
 GENERATE_EXPORT_HEADER(
    qgis_3d

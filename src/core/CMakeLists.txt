@@ -2467,7 +2467,7 @@ GENERATE_EXPORT_HEADER(
 set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_core.h)
 
 if(ENABLE_MODELTEST)
-  target_link_libraries(qgis_core Qt::Test)
+  target_link_libraries(qgis_core ${QT_VERSION_BASE}::Test)
 endif()
 
 if (NOT WITH_INTERNAL_POLY2TRI)
@@ -2531,15 +2531,15 @@ if (APPLE)
 endif()
 
 target_link_libraries(qgis_core
-  Qt::Core
-  Qt::Gui
-  Qt::Xml
-  Qt::Widgets
-  Qt::Svg
-  Qt::Network
-  Qt::Sql
-  Qt::Concurrent
-  Qt::Positioning
+  ${QT_VERSION_BASE}::Core
+  ${QT_VERSION_BASE}::Gui
+  ${QT_VERSION_BASE}::Xml
+  ${QT_VERSION_BASE}::Widgets
+  ${QT_VERSION_BASE}::Svg
+  ${QT_VERSION_BASE}::Network
+  ${QT_VERSION_BASE}::Sql
+  ${QT_VERSION_BASE}::Concurrent
+  ${QT_VERSION_BASE}::Positioning
   ${OPTIONAL_QTWEBKIT}
   ${QCA_LIBRARY}
   GEOS::geos_c
@@ -2566,7 +2566,7 @@ else()
 endif()
 
 if (WITH_QTPRINTER)
-  target_link_libraries(qgis_core Qt::PrintSupport)
+  target_link_libraries(qgis_core ${QT_VERSION_BASE}::PrintSupport)
 endif()
 
 if (WITH_DRACO)
@@ -2602,13 +2602,13 @@ endif()
 if (WITH_QTWEBENGINE)
     if(BUILD_WITH_QT6)
       target_link_libraries(qgis_core
-        Qt::WebEngineCore
+        ${QT_VERSION_BASE}::WebEngineCore
       )
     else()
       # QWebEnginePage is in WebEngineWidgets for Qt5
       target_link_libraries(qgis_core
-        Qt::WebEngineCore
-        Qt::WebEngineWidgets
+        ${QT_VERSION_BASE}::WebEngineCore
+        ${QT_VERSION_BASE}::WebEngineWidgets
       )
     endif()
 endif()
@@ -2650,7 +2650,7 @@ endif()
 
 if (WITH_QTSERIALPORT)
   target_link_libraries(qgis_core
-    Qt::SerialPort
+    ${QT_VERSION_BASE}::SerialPort
   )
 endif()
 
