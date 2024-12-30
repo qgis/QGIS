@@ -1352,12 +1352,13 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       QgsGui::enableAutoGeometryRestore( &dlg );
       dlg.setWindowTitle( tr( "Configure QML Widget" ) );
 
-      QVBoxLayout *mainLayout = new QVBoxLayout();
-      QHBoxLayout *qmlLayout = new QHBoxLayout();
-      QVBoxLayout *layout = new QVBoxLayout();
-      mainLayout->addLayout( qmlLayout );
-      qmlLayout->addLayout( layout );
-      dlg.setLayout( mainLayout );
+      QVBoxLayout *mainLayout = new QVBoxLayout( &dlg );
+      QSplitter *qmlSplitter = new QSplitter();
+      QWidget *qmlConfigWiget = new QWidget();
+      QVBoxLayout *layout = new QVBoxLayout( qmlConfigWiget );
+      layout->setContentsMargins( 0, 0, 0, 0 );
+      mainLayout->addWidget( qmlSplitter );
+      qmlSplitter->addWidget( qmlConfigWiget );
       layout->addWidget( baseWidget );
 
       QLineEdit *title = new QLineEdit( itemData.name() );
@@ -1503,12 +1504,14 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       layout->addWidget( qmlCodeBox );
       layout->addWidget( qmlCode );
       QScrollArea *qmlPreviewBox = new QgsScrollArea();
-      qmlPreviewBox->setLayout( new QGridLayout );
-      qmlPreviewBox->setMinimumWidth( 400 );
-      qmlPreviewBox->layout()->addWidget( qmlWrapper->widget() );
+      qmlPreviewBox->setMinimumWidth( 200 );
+      qmlPreviewBox->setWidget( qmlWrapper->widget() );
       //emit to load preview for the first time
       emit qmlCode->textChanged();
-      qmlLayout->addWidget( qmlPreviewBox );
+      qmlSplitter->addWidget( qmlPreviewBox );
+      qmlSplitter->setChildrenCollapsible( false );
+      qmlSplitter->setHandleWidth( 6 );
+      qmlSplitter->setSizes( QList<int>() << 1 << 1 );
 
       QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help );
 
@@ -1543,12 +1546,16 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       QgsGui::enableAutoGeometryRestore( &dlg );
       dlg.setWindowTitle( tr( "Configure HTML Widget" ) );
 
-      QVBoxLayout *mainLayout = new QVBoxLayout();
-      QHBoxLayout *htmlLayout = new QHBoxLayout();
-      QVBoxLayout *layout = new QVBoxLayout();
-      mainLayout->addLayout( htmlLayout );
-      htmlLayout->addLayout( layout );
-      dlg.setLayout( mainLayout );
+      QVBoxLayout *mainLayout = new QVBoxLayout( &dlg );
+      QSplitter *htmlSplitter = new QSplitter();
+      QWidget *htmlConfigWiget = new QWidget();
+      QVBoxLayout *layout = new QVBoxLayout( htmlConfigWiget );
+      layout->setContentsMargins( 0, 0, 0, 0 );
+      mainLayout->addWidget( htmlSplitter );
+      htmlSplitter->addWidget( htmlConfigWiget );
+      htmlSplitter->setChildrenCollapsible( false );
+      htmlSplitter->setHandleWidth( 6 );
+      htmlSplitter->setSizes( QList<int>() << 1 << 1 );
       layout->addWidget( baseWidget );
 
       QLineEdit *title = new QLineEdit( itemData.name() );
@@ -1612,11 +1619,14 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       layout->addWidget( htmlCode );
       QScrollArea *htmlPreviewBox = new QgsScrollArea();
       htmlPreviewBox->setLayout( new QGridLayout );
-      htmlPreviewBox->setMinimumWidth( 400 );
+      htmlPreviewBox->setMinimumWidth( 200 );
       htmlPreviewBox->layout()->addWidget( htmlWrapper->widget() );
       //emit to load preview for the first time
       emit htmlCode->textChanged();
-      htmlLayout->addWidget( htmlPreviewBox );
+      htmlSplitter->addWidget( htmlPreviewBox );
+      htmlSplitter->setChildrenCollapsible( false );
+      htmlSplitter->setHandleWidth( 6 );
+      htmlSplitter->setSizes( QList<int>() << 1 << 1 );
 
       QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help );
 
@@ -1651,12 +1661,13 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       QgsGui::enableAutoGeometryRestore( &dlg );
       dlg.setWindowTitle( tr( "Configure Text Widget" ) );
 
-      QVBoxLayout *mainLayout = new QVBoxLayout();
-      QHBoxLayout *textLayout = new QHBoxLayout();
-      QVBoxLayout *layout = new QVBoxLayout();
-      mainLayout->addLayout( textLayout );
-      textLayout->addLayout( layout );
-      dlg.setLayout( mainLayout );
+      QVBoxLayout *mainLayout = new QVBoxLayout( &dlg );
+      QSplitter *textSplitter = new QSplitter();
+      QWidget *textConfigWiget = new QWidget();
+      QVBoxLayout *layout = new QVBoxLayout( textConfigWiget );
+      layout->setContentsMargins( 0, 0, 0, 0 );
+      mainLayout->addWidget( textSplitter );
+      textSplitter->addWidget( textConfigWiget );
       layout->addWidget( baseWidget );
 
       QLineEdit *title = new QLineEdit( itemData.name() );
@@ -1718,11 +1729,14 @@ void QgsAttributesDnDTree::onItemDoubleClicked( QTreeWidgetItem *item, int colum
       layout->addWidget( text );
       QScrollArea *textPreviewBox = new QgsScrollArea();
       textPreviewBox->setLayout( new QGridLayout );
-      textPreviewBox->setMinimumWidth( 400 );
+      textPreviewBox->setMinimumWidth( 200 );
       textPreviewBox->layout()->addWidget( textWrapper->widget() );
       //emit to load preview for the first time
       emit text->textChanged();
-      textLayout->addWidget( textPreviewBox );
+      textSplitter->addWidget( textPreviewBox );
+      textSplitter->setChildrenCollapsible( false );
+      textSplitter->setHandleWidth( 6 );
+      textSplitter->setSizes( QList<int>() << 1 << 1 );
 
       QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel | QDialogButtonBox::Help );
 
