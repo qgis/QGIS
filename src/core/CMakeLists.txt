@@ -2364,18 +2364,9 @@ if (MSVC)
 endif()
 
 target_include_directories(qgis_core SYSTEM PUBLIC
-  ${${QT_VERSION_BASE}Core_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Gui_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Xml_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Widgets_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Svg_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Network_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Sql_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Concurrent_INCLUDE_DIRS}
   ${LIBZIP_INCLUDE_DIRS}
   ${SPATIALINDEX_INCLUDE_DIR} # before GEOS for case-insensitive filesystems
   ${QCA_INCLUDE_DIR}
-  ${${QT_VERSION_BASE}SerialPort_INCLUDE_DIRS}
   ${Protobuf_INCLUDE_DIRS}
   ${ZLIB_INCLUDE_DIRS}
   ${EXIV2_INCLUDE_DIR}
@@ -2476,7 +2467,7 @@ GENERATE_EXPORT_HEADER(
 set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS} ${CMAKE_CURRENT_BINARY_DIR}/qgis_core.h)
 
 if(ENABLE_MODELTEST)
-  target_link_libraries(qgis_core ${QT_VERSION_BASE}::Test)
+  target_link_libraries(qgis_core Qt::Test)
 endif()
 
 if (NOT WITH_INTERNAL_POLY2TRI)
@@ -2540,15 +2531,15 @@ if (APPLE)
 endif()
 
 target_link_libraries(qgis_core
-  ${QT_VERSION_BASE}::Core
-  ${QT_VERSION_BASE}::Gui
-  ${QT_VERSION_BASE}::Xml
-  ${QT_VERSION_BASE}::Widgets
-  ${QT_VERSION_BASE}::Svg
-  ${QT_VERSION_BASE}::Network
-  ${QT_VERSION_BASE}::Sql
-  ${QT_VERSION_BASE}::Concurrent
-  ${QT_VERSION_BASE}::Positioning
+  Qt::Core
+  Qt::Gui
+  Qt::Xml
+  Qt::Widgets
+  Qt::Svg
+  Qt::Network
+  Qt::Sql
+  Qt::Concurrent
+  Qt::Positioning
   ${OPTIONAL_QTWEBKIT}
   ${QCA_LIBRARY}
   GEOS::geos_c
@@ -2575,8 +2566,7 @@ else()
 endif()
 
 if (WITH_QTPRINTER)
-  target_link_libraries(qgis_core ${QT_VERSION_BASE}::PrintSupport)
-  target_include_directories(qgis_core SYSTEM PUBLIC ${${QT_VERSION_BASE}PrintSupport_INCLUDE_DIRS})
+  target_link_libraries(qgis_core Qt::PrintSupport)
 endif()
 
 if (WITH_DRACO)
@@ -2612,13 +2602,13 @@ endif()
 if (WITH_QTWEBENGINE)
     if(BUILD_WITH_QT6)
       target_link_libraries(qgis_core
-        ${QT_VERSION_BASE}::WebEngineCore
+        Qt::WebEngineCore
       )
     else()
       # QWebEnginePage is in WebEngineWidgets for Qt5
       target_link_libraries(qgis_core
-        ${QT_VERSION_BASE}::WebEngineCore
-        ${QT_VERSION_BASE}::WebEngineWidgets
+        Qt::WebEngineCore
+        Qt::WebEngineWidgets
       )
     endif()
 endif()
@@ -2658,9 +2648,9 @@ if (FORCE_STATIC_LIBS)
   endif()
 endif()
 
-if (${QT_VERSION_BASE}SerialPort_FOUND)
+if (WITH_QTSERIALPORT)
   target_link_libraries(qgis_core
-    ${QT_VERSION_BASE}::SerialPort
+    Qt::SerialPort
   )
 endif()
 
