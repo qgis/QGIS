@@ -164,7 +164,7 @@ class CORE_EXPORT QgsContrastEnhancement
     ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const { return mContrastEnhancementAlgorithm; }
 
     /**
-     * Applies the contrast enhancement to a \a value. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed.
+     * Applies the contrast enhancement to a \a value. Return values are 0 - 255, -1 means the pixel was clipped and should not be displayed.
      */
     int enhanceContrast( double value );
 
