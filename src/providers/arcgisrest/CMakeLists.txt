@@ -42,11 +42,7 @@ target_link_libraries (provider_arcgisfeatureserver_a
 )
 
 if (WITH_GUI)
-  if (BUILD_WITH_QT6)
-    QT6_WRAP_UI(AFS_UIS_H ${AFS_UIS})
-  else()
-    QT5_WRAP_UI(AFS_UIS_H ${AFS_UIS})
-  endif()
+  qt_wrap_ui(AFS_UIS_H ${AFS_UIS})
 
   add_library(provider_arcgisfeatureserver_gui_a STATIC ${AFS_GUI_SRCS} ${AFS_UIS_H})
 

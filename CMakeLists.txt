@@ -675,13 +675,6 @@ if(WITH_CORE)
     find_package(Libtasn1 REQUIRED)
   endif()
 
-  if (SUPPRESS_QT_WARNINGS)
-    # Newer versions of UseQt4.cmake include Qt with -isystem automatically
-    # This can be used to force this behavior on older systems
-    # Can be removed as soon as Travis-CI updates from precise
-    include_directories(SYSTEM ${QT_INCLUDE_DIR})
-  endif()
-
   # Disable automatic conversion from QString to ASCII 8-bit strings (char *)
   # (Keeps code compatible with Qt/Mac/64bit)
   add_definitions(-DQT_NO_CAST_TO_ASCII)

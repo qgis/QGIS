@@ -48,11 +48,7 @@ target_compile_features(provider_virtuallayer_a PRIVATE cxx_std_17)
 target_compile_definitions(provider_virtuallayer_a PRIVATE "-DQT_NO_FOREACH")
 
 if (WITH_GUI)
-  if (BUILD_WITH_QT6)
-    QT6_WRAP_UI(VLAYER_PROVIDER_UIS_H qgsvirtuallayersourceselectbase.ui qgsembeddedlayerselect.ui)
-  else()
-    QT5_WRAP_UI(VLAYER_PROVIDER_UIS_H qgsvirtuallayersourceselectbase.ui qgsembeddedlayerselect.ui)
-  endif()
+  qt_wrap_ui(VLAYER_PROVIDER_UIS_H qgsvirtuallayersourceselectbase.ui qgsembeddedlayerselect.ui)
   add_library(provider_virtuallayer_gui_a STATIC ${VLAYER_PROVIDER_GUI_SRCS} ${VLAYER_PROVIDER_GUI_HDRS} ${VLAYER_PROVIDER_UIS_H})
 
   target_include_directories(provider_virtuallayer_gui_a PUBLIC

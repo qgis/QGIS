@@ -16,11 +16,7 @@ if (WITH_GUI)
     gui/qgsauthawss3edit.h
   )
   set(AUTH_AWSS3_UIS gui/qgsauthawss3edit.ui)
-  if (BUILD_WITH_QT6)
-    QT6_WRAP_UI(AUTH_AWSS3_UIS_H ${AUTH_AWSS3_UIS})
-  else()
-    QT5_WRAP_UI(AUTH_AWSS3_UIS_H ${AUTH_AWSS3_UIS})
-  endif()
+  qt_wrap_ui(AUTH_AWSS3_UIS_H ${AUTH_AWSS3_UIS})
 endif()
 
 

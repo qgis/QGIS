@@ -35,11 +35,7 @@ target_include_directories(provider_wms_a PUBLIC
 target_compile_features(provider_wms_a PRIVATE cxx_std_17)
 
 if (WITH_GUI)
-  if (BUILD_WITH_QT6)
-    QT6_WRAP_UI(WMS_UIS_H ${WMS_UIS})
-  else()
-    QT5_WRAP_UI(WMS_UIS_H ${WMS_UIS})
-  endif()
+  qt_wrap_ui(WMS_UIS_H ${WMS_UIS})
 
   add_library(provider_wms_gui_a STATIC ${WMS_GUI_SRCS} ${WMS_UIS_H})
 

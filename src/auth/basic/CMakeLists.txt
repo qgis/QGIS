@@ -16,11 +16,7 @@ if (WITH_GUI)
     gui/qgsauthbasicedit.h
   )
   set(AUTH_BASIC_UIS gui/qgsauthbasicedit.ui)
-  if (BUILD_WITH_QT6)
-    QT6_WRAP_UI(AUTH_BASIC_UIS_H ${AUTH_BASIC_UIS})
-  else()
-    QT5_WRAP_UI(AUTH_BASIC_UIS_H ${AUTH_BASIC_UIS})
-  endif()
+  qt_wrap_ui(AUTH_BASIC_UIS_H ${AUTH_BASIC_UIS})
 endif()
 
 

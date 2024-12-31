@@ -77,11 +77,7 @@ target_compile_definitions(provider_wfs_a PRIVATE "CMAKE_SOURCE_DIR=\"${CMAKE_SO
 target_compile_definitions(provider_wfs_a PRIVATE "-DQT_NO_FOREACH")
 
 if (WITH_GUI)
-  if (BUILD_WITH_QT6)
-    QT6_WRAP_UI(WFS_UIS_H ${WFS_UIS})
-  else()
-    QT5_WRAP_UI(WFS_UIS_H ${WFS_UIS})
-  endif()
+  qt_wrap_ui(WFS_UIS_H ${WFS_UIS})
 
   add_library(provider_wfs_gui_a STATIC ${WFS_GUI_SRCS} ${WFS_UIS_H})
 

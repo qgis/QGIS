@@ -83,6 +83,7 @@ set(QGIS_CORE_SRCS
   gps/qgsgpsinformation.cpp
   gps/qgsgpslogger.cpp
   gps/qgsnmeaconnection.cpp
+  gps/qgsqtlocationconnection.cpp
   gps/qgssatelliteinformation.cpp
   gps/qgsvectorlayergpslogger.cpp
 
@@ -1066,12 +1067,6 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   set_source_files_properties(qgsspatialindex.cpp PROPERTIES COMPILE_FLAGS -Wno-overloaded-virtual)
 endif()
 
-if (${QT_VERSION_BASE}Positioning_FOUND)
-  set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
-    gps/qgsqtlocationconnection.cpp
-  )
-endif()
-
 if(NOT MSVC)
   set_source_files_properties(
     ${FLEX_QgsExpressionLexer_OUTPUTS}
@@ -1549,6 +1544,8 @@ set(QGIS_CORE_HDRS
   gps/qgsgpsinformation.h
   gps/qgsgpslogger.h
   gps/qgsnmeaconnection.h
+  gps/qgsqtlocationconnection.h
+  gps/qgsgpsconnectionregistry.h
   gps/qgssatelliteinformation.h
   gps/qgsvectorlayergpslogger.h
 
@@ -2170,13 +2167,6 @@ if (NOT WITH_QTWEBKIT)
   )
 endif()
 
-if (${QT_VERSION_BASE}Positioning_FOUND)
-  set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
-    gps/qgsqtlocationconnection.h
-  )
-endif()
-
-
 if (HAVE_WEBENGINE)
     set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
         web/qgswebenginepage.cpp
@@ -2214,13 +2204,6 @@ endif()
 # install headers
 # install qgsconfig.h and plugin.h here so they can get into
 # the OS X framework target
-
-if (${QT_VERSION_BASE}Positioning_FOUND)
-  set(QGIS_CORE_HDRS ${QGIS_CORE_HDRS}
-    gps/qgsqtlocationconnection.h
-    gps/qgsgpsconnectionregistry.h
-  )
-endif()
 
 if (HAVE_OPENCL)
     set(QGIS_CORE_SRCS ${QGIS_CORE_SRCS}
@@ -2381,18 +2364,9 @@ if (MSVC)
 endif()
 
 target_include_directories(qgis_core SYSTEM PUBLIC
-  ${${QT_VERSION_BASE}Core_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Gui_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Xml_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Widgets_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Svg_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Network_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Sql_INCLUDE_DIRS}
-  ${${QT_VERSION_BASE}Concurrent_INCLUDE_DIRS}
   ${LIBZIP_INCLUDE_DIRS}
   ${SPATIALINDEX_INCLUDE_DIR} # before GEOS for case-insensitive filesystems
   ${QCA_INCLUDE_DIR}
-  ${${QT_VERSION_BASE}SerialPort_INCLUDE_DIRS}
   ${Protobuf_INCLUDE_DIRS}
   ${ZLIB_INCLUDE_DIRS}
   ${EXIV2_INCLUDE_DIR}
@@ -2565,6 +2539,7 @@ target_link_libraries(qgis_core
   ${QT_VERSION_BASE}::Network
   ${QT_VERSION_BASE}::Sql
   ${QT_VERSION_BASE}::Concurrent
+  ${QT_VERSION_BASE}::Positioning
   ${OPTIONAL_QTWEBKIT}
   ${QCA_LIBRARY}
   GEOS::geos_c
@@ -2592,7 +2567,6 @@ endif()
 
 if (WITH_QTPRINTER)
   target_link_libraries(qgis_core ${QT_VERSION_BASE}::PrintSupport)
-  target_include_directories(qgis_core SYSTEM PUBLIC ${${QT_VERSION_BASE}PrintSupport_INCLUDE_DIRS})
 endif()
 
 if (WITH_DRACO)
@@ -2674,15 +2648,9 @@ if (FORCE_STATIC_LIBS)
   endif()
 endif()
 
-if (${QT_VERSION_BASE}SerialPort_FOUND)
+if (WITH_QTSERIALPORT)
   target_link_libraries(qgis_core
     ${QT_VERSION_BASE}::SerialPort
-  )
-endif()
-
-if (${QT_VERSION_BASE}Positioning_FOUND)
-  target_link_libraries(qgis_core
-    ${QT_VERSION_BASE}::Positioning
   )
 endif()
 
