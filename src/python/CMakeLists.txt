@@ -10,10 +10,6 @@ target_include_directories(qgispython PUBLIC
   ${CMAKE_BINARY_DIR}/src/python
 )
 
-set_target_properties(qgispython PROPERTIES
-  CLEAN_DIRECT_OUTPUT 1
-)
-
 #generate unversioned libs for android
 if (NOT ANDROID)
   set_target_properties(qgispython PROPERTIES
