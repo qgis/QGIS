@@ -75,7 +75,7 @@ Returns the minimum value for the contrast enhancement range.
 
     int enhanceContrast( double value );
 %Docstring
-Applies the contrast enhancement to a ``value``. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed.
+Applies the contrast enhancement to a ``value``. Return values are 0 - 255, -1 means the pixel was clipped and should not be displayed.
 %End
 
     bool isValueInDisplayableRange( double value );
