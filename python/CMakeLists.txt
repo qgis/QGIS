@@ -44,16 +44,6 @@ macro(PY_COMPILE TARGET_NAME RESOURCE_PATHS)
   endif()
 endmacro(PY_COMPILE)
 
-# Macro to auto migrate resources
-macro(PY_2TO3 TARGET_NAME RESOURCE_PATHS)
-  add_custom_command(TARGET ${TARGET_NAME}
-    POST_BUILD
-    COMMAND "${Python_EXECUTABLE}" "${CMAKE_SOURCE_DIR}/scripts/2to3" --no-diffs -w ${RESOURCE_PATHS}
-    WORKING_DIRECTORY "${CMAKE_BINARY_DIR}"
-    COMMENT "Porting ${RESOURCE_PATHS} to Python 3 and Qt5"
-  )
-endmacro(PY_2TO3)
-
 add_subdirectory(plugins)
 if (WITH_GUI)
   add_subdirectory(qsci_apis)
