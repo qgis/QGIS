@@ -163,20 +163,20 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
 
   if ( !context.testFlag( Qgis::RenderContextFlag::RenderPreviewJob ) )
   {
-    QgsMeshDatasetIndex activeDatasetIndex = layer->activeScalarDatasetIndex( context );
+    const QgsMeshDatasetIndex activeDatasetIndex = layer->activeScalarDatasetIndex( context );
 
     if ( activeDatasetIndex.isValid() )
     {
-      QgsMeshRendererScalarSettings scalarRendererSettings = mRendererSettings.scalarSettings( activeDatasetIndex.group() );
-      double previousMin = scalarRendererSettings.classificationMinimum();
-      double previousMax = scalarRendererSettings.classificationMaximum();
+      const QgsMeshRendererScalarSettings scalarRendererSettings = mRendererSettings.scalarSettings( activeDatasetIndex.group() );
+      const double previousMin = scalarRendererSettings.classificationMinimum();
+      const double previousMax = scalarRendererSettings.classificationMaximum();
 
       if ( scalarRendererSettings.extent() == Qgis::MeshRangeExtent::UpdatedCanvas &&
            scalarRendererSettings.limits() == Qgis::MeshRangeLimit::MinimumMaximum )
       {
         double min, max;
 
-        bool found  = layer->minimumMaximumActiveScalarDataset( context.extent(), activeDatasetIndex, min, max );
+        const bool found  = layer->minimumMaximumActiveScalarDataset( context.extent(), activeDatasetIndex, min, max );
 
         if ( found )
         {
