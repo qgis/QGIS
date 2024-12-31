@@ -3855,6 +3855,10 @@ QSize QgsWmsProvider::maximumTileSize() const
   {
     return QSize( capsMaxWidth, capsMaxHeight );
   }
+  else if( mSettings.mStepWidth > 0 && mSettings.mStepHeight > 0 ) //The chosen step size can be higher than the default max size
+  {
+    return QSize( mSettings.mStepWidth, mSettings.mStepHeight );
+  }
   else // default fallback
   {
     return QgsRasterDataProvider::maximumTileSize();
