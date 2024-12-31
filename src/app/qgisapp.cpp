@@ -17184,8 +17184,13 @@ void QgisApp::handleRenderedLayerStatistics() const
       QgsMeshLayer *meshLayer = qobject_cast<QgsMeshLayer *>( QgsProject::instance()->mapLayer( layerStatistics->layerId() ) );
       if ( meshLayer )
       {
-        meshLayer->emitStyleChanged();
-        emit meshLayer->rendererChanged();
+        QgsMeshRendererSettings rendererSettings = meshLayer->rendererSettings();
+        QgsMeshRendererScalarSettings scalarRendererSettings = rendererSettings.scalarSettings( rendererSettings.activeScalarDatasetGroup() );
+
+        scalarRendererSettings.setClassificationMinimumMaximum( layerStatistics->minimum( 0 ), layerStatistics->maximum( 0 ) );
+        rendererSettings.setScalarSettings( rendererSettings.activeScalarDatasetGroup(), scalarRendererSettings );
+        meshLayer->setRendererSettings( rendererSettings );
+
         emit meshLayer->legendChanged();
       }
     }
