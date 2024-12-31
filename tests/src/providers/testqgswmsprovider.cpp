@@ -639,7 +639,7 @@ void TestQgsWmsProvider::testMaxTileSize()
   QCOMPARE( maxTileSize5.height(), 3000 );
 
   // test that max tile size is set to mStepWidth/mStepHeight if max tile size is not set
-  QgsWmsProvider provider6( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=buildings&styles=&format=image/jpg&stepWidth=4000&stepHeight=4000" ), QgsDataProvider::ProviderOptions(), &capabilities);
+  QgsWmsProvider provider6( QStringLiteral( "http://localhost:8380/mapserv?xxx&layers=buildings&styles=&format=image/jpg&stepWidth=4000&stepHeight=4000" ), QgsDataProvider::ProviderOptions(), &capabilities );
   const QSize maxTileSize6 = provider6.maximumTileSize();
   QCOMPARE( maxTileSize6.width(), 4000 );
   QCOMPARE( maxTileSize6.height(), 4000 );
