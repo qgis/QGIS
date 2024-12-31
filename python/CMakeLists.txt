@@ -65,46 +65,6 @@ add_subdirectory(ext-libs)
 add_subdirectory(testing)
 add_subdirectory(processing)
 
-include_directories(SYSTEM
-  ${Python_INCLUDE_DIRS}
-  ${QT_QTCORE_INCLUDE_DIR}
-  ${QT_QTGUI_INCLUDE_DIR}
-  ${QT_QTNETWORK_INCLUDE_DIR}
-  ${QT_QTSERIALPORT_INCLUDE_DIR}
-  ${QT_QTSVG_INCLUDE_DIR}
-  ${QT_QTXML_INCLUDE_DIR}
-  ${QWT_INCLUDE_DIR}
-  ${QCA_INCLUDE_DIR}
-  ${QTKEYCHAIN_INCLUDE_DIR}
-  ${SPATIALINDEX_INCLUDE_DIR}
-)
-
-if (${SIP_VERSION_STR} VERSION_LESS 5)
-  include_directories(SYSTEM
-    ${SIP_INCLUDE_DIR}
-  )
-endif()
-
-if (WITH_GUI)
-  include_directories(SYSTEM
-    ${QSCINTILLA_INCLUDE_DIR}
-  )
-endif()
-
-include_directories(
-  ${CMAKE_SOURCE_DIR}/src/plugins
-
-  ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
-  ${CMAKE_BINARY_DIR}/src/ui
-  ${CMAKE_BINARY_DIR}/src/analysis
-)
-
-if (WITH_GUI)
-  include_directories(
-
-  )
-endif()
-
 if(NOT ENABLE_TESTS)
   set(SIP_DISABLE_FEATURES ${SIP_DISABLE_FEATURES} TESTS)
 endif()
@@ -252,9 +212,6 @@ endif()
 
 # 3D module
 if (WITH_3D)
-  include_directories(
-    ${QT5_3DEXTRA_INCLUDE_DIR}
-  )
   set(PY_MODULES ${PY_MODULES} 3d)
 
   file(GLOB_RECURSE sip_files_3d ${BINDING_FILES_ROOT_DIR}/3d/*.sip ${BINDING_FILES_ROOT_DIR}/3d/*.sip.in)

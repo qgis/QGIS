@@ -9,9 +9,6 @@ target_include_directories(qgispython PUBLIC
   ${CMAKE_SOURCE_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/python
 )
-target_include_directories(qgispython SYSTEM PRIVATE
-  ${Python_INCLUDE_DIRS}
-)
 
 set_target_properties(qgispython PROPERTIES
   CLEAN_DIRECT_OUTPUT 1
@@ -27,7 +24,7 @@ endif()
 
 target_link_libraries(qgispython
   qgis_core
-  ${Python_LIBRARIES}
+  Python::Python
   ${OPENPTY_LIBRARY}
 )
 
