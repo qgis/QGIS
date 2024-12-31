@@ -161,7 +161,8 @@ QgsMeshLayerRenderer::QgsMeshLayerRenderer(
 
   mClippingRegions = QgsMapClippingUtils::collectClippingRegionsForLayer( *renderContext(), layer );
 
-  if ( !context.testFlag( Qgis::RenderContextFlag::RenderPreviewJob ) )
+  if ( !context.testFlag( Qgis::RenderContextFlag::RenderPreviewJob )
+       && !( context.flags() & Qgis::RenderContextFlag::Render3DMap ) )
   {
     const QgsMeshDatasetIndex activeDatasetIndex = layer->activeScalarDatasetIndex( context );
 
